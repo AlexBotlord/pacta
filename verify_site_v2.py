@@ -176,7 +176,8 @@ def dom_tree(text):
     return next(n for n in t.root[2] if isinstance(n, list) and n[0] == "html")
 
 
-def app_behaviour(appjs, request_html, index_html, row_id, beacon="", protocol_html="", protocol_slug="", notfound_html=""):
+def app_behaviour(appjs, request_html, index_html, row_id, beacon="", protocol_html="", protocol_slug="", notfound_html="",
+                  clearance_html="", clearance_slug="", brief_html="", brief_slug="", prefill_slug=""):
     """Run docs/app.js (and the docs/b.js beacon) under node against a synthetic DOM of the real pages. No network, no listener, no files."""
     node = shutil.which("node")
     if not node:
@@ -184,6 +185,8 @@ def app_behaviour(appjs, request_html, index_html, row_id, beacon="", protocol_h
     payload = json.dumps({"app": appjs, "request": dom_tree(request_html), "index": dom_tree(index_html), "rowId": row_id, "beacon": beacon,
                           "protocol": dom_tree(protocol_html) if protocol_html else None, "protocolSlug": protocol_slug,
                           "notfound": dom_tree(notfound_html) if notfound_html else None,
+                          "clearanceProtocol": dom_tree(clearance_html) if clearance_html else None, "clearanceSlug": clearance_slug,
+                          "brief": dom_tree(brief_html) if brief_html else None, "briefSlug": brief_slug, "prefillSlug": prefill_slug,
                           # every published protocol slug (+ wave-2 shapes) must survive the beacon's client-side path redaction
                           "protocolSlugs": sorted(d for d in os.listdir(os.path.join(DOCS, "protocols")) if os.path.isdir(os.path.join(DOCS, "protocols", d)))})
     out = subprocess.run([node, os.path.join(ROOT, "tools", "app_harness.js")], input=payload, capture_output=True, text=True, timeout=120)
@@ -237,15 +240,16 @@ def main():
     subs = re.compile(r"Curator Radar|Commitment CI Gate|\$3,000|/ year|USDC/mo\)|USDC/yr", re.I)
     bad_s = sorted({f"{f}: {m.group(0)}" for f in copy_files for m in subs.finditer(read(f))})
     check("no curator / SaaS subscription tracks (one paid offer only)", not bad_s, str(bad_s[:4]))
-    offer = ("24h Collateral Onboarding &amp; Delta Clearance Attestation", "$5,000 USDC", "$1,500 / month", "Curator Diligence Dossier")
-    check("homepage + /request/ carry the $5,000 USDC 24h clearance offer and $1,500/month add-on",
+    offer = ("24h Onboarding &amp; Delta Clearance", "$5,000 USDC", "$1,500 USDC / month", "Continuous Aligned Maintenance", "Curator Diligence Dossier")
+    check("homepage + /request/ carry the $5,000 USDC 24h clearance offer and the $1,500 USDC / month continuous Aligned maintenance",
           all(t in page and t in req_page for t in offer) and "$5,000 USDC flat" in llms_txt(read)
           and "Immunefi" in page and "Cantina" in page and "15% referral" in page)
     check("public data stated free and real-time (homepage, llms.txt, README)",
           "free and real-time" in page and "Free and real-time" in llms_txt(read) and "Free and real-time" in read("README.md"))
     radios = re.findall(r'name="tier" value="(\w+)"', req_page)
     radios_home = re.findall(r'name="tier" value="(\w+)"', page)
-    check("request builder offers exactly clearance (default) + community, on both pages", radios == radios_home == ["clearance", "community"]
+    check("request builder offers exactly clearance (default) + continuous + api_sla + community, on both pages",
+          radios == radios_home == ["clearance", "continuous", "api_sla", "community"]
           and all(len(re.findall(r'name="tier" value="\w+" checked', t)) == 1 and 'value="clearance" checked' in t for t in (page, req_page)),
           str(radios))
     treasury = json.loads(read("docs/api/v1/index.json"))["onchain_anchoring"]["treasury_admin"]
@@ -255,9 +259,13 @@ def main():
           f"{sorted(shown)}")
     tmpl = read(".github/ISSUE_TEMPLATE/request-scan.yml")
     opts = re.findall(r'^\s+- "(.+)"$', tmpl.split("id: package_tier", 1)[1].split("validations", 1)[0], re.M)
-    js_opts = re.findall(r'"([^"]+)",\s*\n\s*"Pacta (?:24h clearance|community queue) request"', read("docs/app.js"))
-    check("GitHub dropdown prefill strings match the issue template exactly", sorted(opts) == sorted(js_opts) and len(opts) == 2
-          and all(f'id: {k}' in tmpl for k in ("forum_proposal_url", "payment_tx_hash")), f"template {opts} app.js {js_opts}")
+    js_opts = re.findall(r'"([^"]+)",\s*\n\s*"Pacta [^"]+ request"', read("docs/app.js"))
+    set_opts = re.findall(r'^\s+- "(.+)"$', tmpl.split("id: settlement_preference", 1)[1].split("validations", 1)[0], re.M) if "id: settlement_preference" in tmpl else []
+    js_set = re.findall(r'"(Option [AB]: [^"]+)"', read("docs/app.js"))
+    check("GitHub dropdown prefill strings match the issue template exactly (4 tracks + 2 settlement options)",
+          sorted(opts) == sorted(js_opts) and len(opts) == 4 and sorted(set_opts) == sorted(js_set) and len(set_opts) == 2
+          and all(f'id: {k}' in tmpl for k in ("forum_proposal_url", "payment_tx_hash", "settlement_preference")),
+          f"template {opts} {set_opts} app.js {js_opts} {js_set}")
     check("Sprint 15 summary stays out of audits/ (embargo)", not os.path.exists(os.path.join(ROOT, "audits", "sprint-15")))
     appjs = read("docs/app.js")
     check('radar says "Execution window opens in" (ETA = eligibility)', "Execution window opens in" in appjs and "Executing in" not in appjs)
@@ -450,18 +458,24 @@ def main():
     beacon_js = read("docs/b.js") if os.path.exists(os.path.join(DOCS, "b.js")) else ""
     res = app_behaviour(appjs, pages.get(os.path.join("request", "index.html"), ""), page, entries[0]["id"], beacon=beacon_js,
                         protocol_html=pages.get(os.path.join("protocols", "aave-v3-gho", "index.html"), ""), protocol_slug="aave-v3-gho",
-                        notfound_html=pages.get("404.html", ""))
-    expected = ["default_is_clearance", "clearance_pay_panel_shown", "clearance_tx_field_shown", "clearance_github_href",
-                "clearance_github_tier_exact", "clearance_brief_has_price_and_treasury", "tx_valid_in_brief", "tx_valid_in_github",
-                "forum_in_brief_and_github", "tx_valid_not_flagged", "tx_invalid_flagged", "tx_invalid_not_in_github",
+                        notfound_html=pages.get("404.html", ""),
+                        clearance_html=pages.get(os.path.join("protocols", "across-protocol-hubpool", "index.html"), ""), clearance_slug="across-protocol-hubpool",
+                        brief_html=pages.get(os.path.join("briefs", "kerne-kusd-base", "index.html"), ""), brief_slug="kerne-kusd-base",
+                        prefill_slug="across-protocol-hubpool")
+    expected = ["default_is_clearance", "default_settlement_is_invoice", "clearance_pay_panel_shown", "invoice_hides_tx_and_direct",
+                "clearance_github_href", "clearance_github_tier_exact", "clearance_brief_has_price_and_invoice", "pay_summary_tracks_tier",
+                "direct_shows_tx_and_treasury", "tx_valid_in_brief", "tx_valid_in_github",
+                "forum_in_brief_and_github", "tx_valid_not_flagged", "tx_invalid_flagged", "tx_invalid_not_in_github", "invoice_drops_tx",
                 "community_pay_panel_hidden", "community_tx_field_hidden", "community_github_tier_exact", "community_no_tx_anywhere",
-                "community_click_not_prevented", "clearance_restores_pay_panel", "prefill_selects_community",
-                "prefill_unknown_tier_keeps_clearance", "homepage_plan_button_preselects",
+                "community_click_not_prevented", "clearance_restores_pay_panel", "continuous_track", "api_sla_track", "prefill_selects_community",
+                "prefill_unknown_tier_keeps_clearance", "prefill_clearance_protocol_forum", "prefill_settlement_direct", "prefill_continuous_invoice",
+                "prefill_api_sla", "prefill_unknown_slug_text_only", "prefill_hostile_inert", "prefill_enum_closed", "prefill_forum_https_only",
+                "prefill_homepage_request", "homepage_plan_button_preselects",
                 "hash_ok #r-[unclosed", "hash_ok #r-x\\", 'hash_ok #r-"]', "hash_ok #r-%E0%A4%A", "valid_hash_opens_drawer", "livebar_skips_elapsed_etas",
                 "pf_present", "pf_no_fetch_on_load", "pf_preset_fetches_once", "pf_renders_verdict", "pf_text_only", "pf_cast_commands",
                 "pf_invalid_address_no_fetch", "pf_http_error_reported"]
     failed_b = [k for k in expected if res.get(k) is not True] + (["harness_error: " + res["harness_error"][:200]] if "harness_error" in res else [])
-    check("app.js behaviour: clearance/community tracks, payment panel, tx-hash + forum prefill; malformed #hash never throws; live pre-flight checker (explicit click only, text-only render, cast repro, errors)", not failed_b,
+    check("app.js behaviour: clearance / continuous / API SLA / community tracks, Option A invoice (default) vs Option B direct settlement, tx-hash + forum flow; malformed #hash never throws; live pre-flight checker (explicit click only, text-only render, cast repro, errors)", not failed_b,
           f"{len(expected) - len([k for k in expected if res.get(k) is not True])}/{len(expected)} assertions; failed {failed_b[:4]}")
 
     # live onboarding verification briefs (rendered from docs/api/v1/onboarding.json by tools/onboarding_scan.py + build_site.py)
@@ -614,10 +628,114 @@ def main():
           hero_ok and pf_ok, f"hero {hero_ok}; checker {pf_ok}")
     pr = re.search(r'<section class="sec" id="pricing">.*?</section>', home, re.S)
     pricing_ok = bool(pr) and "$0" in pr.group(0) and "Free launch" in pr.group(0) and "60 requests / minute" in pr.group(0) \
-        and "High volume, SLA &amp; on-chain clearance" in pr.group(0) and "remote MCP" in pr.group(0).lower().replace("remote mcp", "remote MCP")
-    req_ok = "free with no key" in req_page and "#preflight" in req_page and "High volume" in req_page
-    check("pricing: $0 free launch tier (60 req/min, 5 endpoints + remote MCP) and the high-volume SLA / on-chain clearance tier, on #pricing and /request/",
+        and "Curators, Risk Teams &amp; AI Agents" in pr.group(0) and "Collateral &amp; Protocol Issuers" in pr.group(0) \
+        and "remote MCP" in pr.group(0).lower().replace("remote mcp", "remote MCP")
+    req_ok = "free with no key" in req_page and "#preflight" in req_page and "high-throughput API SLA" in req_page
+    check("pricing: $0 tier for curators, risk teams & AI agents (60 req/min, remote MCP) and the issuer clearance tier, on #pricing and /request/",
           pricing_ok and req_ok, f"#pricing {pricing_ok}; /request/ {req_ok}")
+    # unbundled #pricing: 2 cards (free; issuers with no API jargon) + one high-throughput bar below the grid
+    tollbooth_pricing = {}
+    for rel, t in (("index.html", home), (os.path.join("request", "index.html"), req_page)):
+        sec = re.search(r'<section class="sec" id="pricing">.*?</section>', t, re.S)
+        sec = sec.group(0) if sec else ""
+        plans = re.findall(r'<div class="plan(?: feat)?">(.*?)</div>(?=<div class="plan|</div>\n)', sec, re.S)
+        issuer = next((x for x in plans if "Collateral &amp; Protocol Issuers" in x), "")
+        req_ = "#request" if rel == "index.html" else "../request/"
+        q = (lambda k: "") if rel == "index.html" else (lambda k: f"?tier={k}")
+        bar = re.search(r'</div>\n<p class="plan-bar">(.*?)</p>', sec, re.S)
+        tollbooth_pricing[rel] = (len(plans) == 2 and "Curators, Risk Teams &amp; AI Agents" in plans[0] and "$0" in plans[0]
+                                  and "Curators, risk analysts, and due-diligence agents never pay" in plans[0]
+                                  and all(x in issuer for x in ("$5,000 USDC", "$1,500 USDC / month", "Base Mainnet EAS", "Curator Diligence Dossier", "reconciliation PR"))
+                                  and not re.search(r"req/min|requests / minute|\brpm\b|\bSLA\b|rate limit|high.volume|throughput", issuer, re.I)
+                                  and f'href="{req_}{q("clearance")}" data-tier="clearance"' in issuer and f'href="{req_}{q("continuous")}" data-tier="continuous"' in issuer
+                                  and bool(bar) and "&gt; 60 req/min or a dedicated SLA" in bar.group(1) and "x402 metered endpoints" in bar.group(1)
+                                  and f'href="{req_}{q("api_sla")}" data-tier="api_sla"' in bar.group(1) and "request an Enterprise API key" in bar.group(1))
+    check("unbundled #pricing (homepage + /request/): card 1 Curators, Risk Teams & AI Agents ($0), card 2 Collateral & Protocol Issuers ($5,000 USDC 24h + $1,500 USDC / month, no API rpm / SLA jargon, clearance + continuous CTAs), high-throughput API bar below (> 60 req/min -> x402 or tier=api_sla)",
+          all(tollbooth_pricing.values()), str(tollbooth_pricing))
+
+    # ---- issuer conversion callouts: 8 briefs + every protocol page (aligned -> maintenance only; delta / RPC-observed -> clearance)
+    import html as _html
+    import urllib.parse as _up
+    CLR_H = "Reconcile &amp; Anchor 24h Institutional Clearance"
+    MNT_H = "Maintain Continuous Aligned Status"
+
+    def callout_ok(pg, kind, name, slug, forum=None):
+        q = f"tier={kind}&amp;protocol={slug}" + (f"&amp;forum={_up.quote(forum, safe='')}" if forum else "")
+        if kind == "clearance":
+            return (f"<h2>Issuing {_html.escape(name)}? {CLR_H}</h2>" in pg and pg.count('id="issuer-clearance"') == 1
+                    and f'<a class="btn primary" href="../../request/?{q}" data-cta="clearance">Request 24h Clearance ($5,000 USDC) <span class="arr">→</span></a>' in pg
+                    and f'<a class="btn" href="../../request/?{q}&amp;settlement=invoice" data-cta="clearance_invoice">Request Commercial Invoice (PDF)</a>' in pg
+                    and "anchor a Base EAS Aligned Attestation + Curator Diligence Dossier within 24 hours" in pg and MNT_H not in pg)
+        return (f"<h2>Operating {_html.escape(name)}? {MNT_H}</h2>" in pg and "issuer-clearance" not in pg and CLR_H not in pg
+                and "Request 24h Clearance" not in pg and "Clear findings" not in pg
+                and f'<a href="../../request/?{q}" data-cta="continuous">Request Continuous Aligned Maintenance ($1,500/mo) →</a>' in pg
+                and f'<a href="../../request/?{q}&amp;settlement=invoice" data-cta="continuous_invoice">Invoice option</a>' in pg)
+    brief_bad = []
+    radar_items = {it["brief"].rstrip("/").split("/")[-1]: it for it in json.loads(read("docs/api/v1/radar.json"))["items"]}
+    for slug_ in BS.BRIEFS:
+        pg = pages.get(os.path.join("briefs", slug_, "index.html"), "")
+        if not callout_ok(pg, "clearance", radar_items[slug_]["protocol"], BS.BRIEF_PROTOCOL[slug_]):
+            brief_bad.append(slug_)
+    for b in onb["briefs"]:
+        pg = pages.get(os.path.join("briefs", b["slug"], "index.html"), "")
+        if not callout_ok(pg, "clearance", b["asset"], b["slug"], b["forum"]["url"]):
+            brief_bad.append(b["slug"])
+    check("8 brief pages carry the 'Issuing <issuer>? Reconcile & Anchor 24h Institutional Clearance' callout: Request 24h Clearance ($5,000 USDC) -> /request/?tier=clearance&protocol=<slug>[&forum=<encoded>] + Request Commercial Invoice (PDF) (&settlement=invoice), both data-cta",
+          len(BS.BRIEFS) + len(onb["briefs"]) == 8 and not brief_bad, str(brief_bad))
+    sp_ = BS.site_protocols(json.loads(read("docs/api/v1/index.json")))
+    proto_bad, n_al, n_cl = [], 0, 0
+    for name_, v in sp_.items():
+        pg = pages.get(os.path.join("protocols", v["slug"], "index.html"), "")
+        cls_ = {e["classification"] for e in v["entries"]}
+        aligned = cls_ == {"aligned_baseline"} and not v["pinned"]
+        if aligned:
+            n_al += 1
+            ok_ = callout_ok(pg, "continuous", name_, v["slug"])
+        else:
+            n_cl += 1
+            fu = v["entries"][0].get("governance_url") if v["pinned"] else None
+            ok_ = callout_ok(pg, "clearance", name_, v["slug"], fu) and (bool(cls_ & {"parameter_delta", "rpc_observed", "protective_delta"}))
+        if not ok_:
+            proto_bad.append(v["slug"])
+    every_delta = all(not ({e["classification"] for e in v["entries"]} & {"parameter_delta", "rpc_observed"})
+                      or 'id="issuer-clearance"' in pages.get(os.path.join("protocols", v["slug"], "index.html"), "") for v in sp_.values())
+    check("53 protocol pages: every parameter_delta / rpc_observed page carries the 24h clearance callout (RPC-pinned pages pass their governance URL as &forum=); "
+          "only all-aligned_baseline EAS-attested pages get the quiet $1,500/mo Continuous Aligned Maintenance callout and never a delta-remediation pitch",
+          len(sp_) == 53 and not proto_bad and every_delta and n_al + n_cl == 53 and n_al == 17, f"aligned {n_al}, clearance {n_cl}; bad {proto_bad[:5]}")
+
+    # ---- #req-pay: Option A (invoice) first and default, Option B direct USDC to the treasury EOA, never called a Safe
+    pay_ok = {}
+    for rel, t in (("index.html", home), (os.path.join("request", "index.html"), req_page)):
+        m = re.search(r'<div class="pay" id="req-pay">.*?</dl><p class="hint">.*?</p></div>', t, re.S)
+        blk = m.group(0) if m else ""
+        a_, b_ = blk.find("Option A — Formal Commercial Invoice (PDF) &amp; Counterparty Settlement"), blk.find("Option B — Direct Express On-Chain USDC Settlement")
+        pay_ok[rel] = (0 <= a_ < b_ and 'name="settlement" value="invoice" checked' in blk and 'name="settlement" value="direct">' in blk
+                       and "Submit scope first (no upfront transfer required to open intake)" in blk
+                       and f'<dt>Pacta treasury (direct settlement EOA)</dt><dd><span class="mono full">{treasury}</span>' in blk
+                       and BS.USDC["Base"] in blk and BS.USDC["Ethereum"] in blk and not re.search(r"\bSafe\b|\bmultisig\b|\bGnosis\b", blk))
+    safe_near = []
+    for rel, t in pages.items():
+        for mm in re.finditer(treasury, t, re.I):
+            win = re.sub(r"<[^>]+>", " ", t[max(0, mm.start() - 300): mm.end() + 300])
+            if re.search(r"\bSafe\b|\bmultisig\b|\bGnosis\b", win, re.I):
+                safe_near.append(rel)
+    check("#req-pay on / and /request/: Option A formal commercial invoice (PDF) first + default, Option B direct USDC to 'Pacta treasury (direct settlement EOA)' "
+          f"{treasury[:6]}…{treasury[-4:]} (Base + Ethereum USDC); 0 Safe / multisig wording within 300 chars of the treasury on any HTML page",
+          all(pay_ok.values()) and not safe_near, f"{pay_ok}; near {sorted(set(safe_near))[:4]}")
+
+    # ---- prefill safety (static): the prefill code writes .value / .checked only; no inline scripts on the request surfaces
+    pre = re.search(r"PREFILL-BEGIN(.*?)PREFILL-END", appjs, re.S)
+    init_req = appjs[appjs.find("function initRequest()"): appjs.find("// ---- live pre-flight checker")]
+    # the only inline script allowed is the existing one-line theme bootstrap in <head> (build_site.head(), before CSS paints)
+    THEME_BOOT = re.search(r"<script>(document\.documentElement\.className=\"js\";.*?)</script>", read("docs/index.html"))
+    inline = [rel for rel in ("index.html", os.path.join("request", "index.html"))
+              if len(re.findall(r"<script(?![^>]*\bsrc=)(?![^>]*application/ld\+json)[^>]*>", pages.get(rel, ""))) != 1
+              or not THEME_BOOT or f"<script>{THEME_BOOT.group(1)}</script>" not in pages.get(rel, "") or "URLSearchParams" in THEME_BOOT.group(1)]
+    check("/request/ prefill (tier / protocol / forum / settlement): closed enums via hasOwnProperty, text <= 80 chars, https forum <= 300 chars without credentials, "
+          "written with .value only (0 innerHTML / insertAdjacentHTML / document.write in the request builder); no inline <script> added on / or /request/ (only the existing theme bootstrap)",
+          bool(pre) and "hasOwnProperty" in appjs and not re.search(r"innerHTML|outerHTML|insertAdjacentHTML|document\.write", pre.group(1) + init_req)
+          and "slice(0, max)" in pre.group(1) and "s.length > 300" in pre.group(1) and 'u.protocol === "https:"' in pre.group(1)
+          and not inline, f"inline {inline}")
 
     DEAD_NPX = re.compile(r"npx\s+(?:-y\s+|--yes\s+)?@pacta/mcp-server")
     npx_scope = sorted(set(
@@ -856,7 +974,7 @@ def main():
               "b_protocol_view", "b_protocol_copy_curl_and_cta", "b_not_found_404", "b_not_found_path_sanitised", "b_not_found_copy_mcp",
               "b_dnt_sends_nothing", "b_non_https_sends_nothing", "b_fetch_fallback", "b_no_cookie_access",
               "b_c1_spec_payloads", "b_c1_referrers_redacted", "b_c1_utm_redacted", "b_c1_all_protocol_slugs_kept", "b_c1_page_paths",
-              "b_c2_slug_only_from_canonical"]
+              "b_c2_slug_only_from_canonical", "b_cta_aligned_maintenance", "b_cta_clearance_protocol", "b_cta_clearance_brief", "b_cta_pricing"]
     failed_bk = [k for k in b_keys if res.get(k) is not True] + (["harness_error: " + res["harness_error"][:200]] if "harness_error" in res else [])
     check("beacon behaviour (node harness, mocked navigator.sendBeacon): page_load {r, u}, same-site r=self, protocol_view t=slug, copy_mcp_url / copy_curl / copy_skill_md / cta_click hooks, scroll_50/90 once, live_checker_submit t=chain:address, 404 path sanitised, DNT and http send nothing, fetch keepalive fallback",
           not failed_bk, f"{len(b_keys) - len([k for k in b_keys if res.get(k) is not True])}/{len(b_keys)}; failed {failed_bk[:4]}")

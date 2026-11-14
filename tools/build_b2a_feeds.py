@@ -53,6 +53,20 @@ X402_BARE_PROBE = ("A bare GET (no query) or zero-byte POST with no payment head
 X402_RECEIPT_NOTE = ("A settled call returns 200 with both PAYMENT-RESPONSE and X-PAYMENT-RESPONSE (base64 {success, transaction, network, payer}). "
                      "That receipt is the facilitator's settlement assertion bound to the payer; the MCP client checks it against the signed "
                      "authorization but does not look the transaction up on Base (onchainReceiptVerified: false).")
+# Gateway-side guard (pacta-core packages/x402-edge-worker): the Worker re-reads every paid settlement on Base itself.
+X402_GATEWAY_GUARD = {
+    "onchainReceiptVerification": True, "appliesTo": "x402_paid settlements only", "chainId": 8453, "rpcMethod": "eth_getTransactionReceipt",
+    "requires": "receipt status 0x1 and canonical USDC (Base) Transfer(payer -> payTo) logs summing to at least the route price",
+    "asset": USDC_BASE, "payTo": PAY_TO, "replay": "each settlement tx hash is accepted once (isolate memory + KV used_tx:<txHash>, 30-day TTL)",
+    "failures": {"402": ["unconfirmed_or_reverted_settlement_tx", "insufficient_onchain_usdc_transfer", "replay_settlement_tx"],
+                 "502": ["settlement_rpc_unavailable"]}}
+X402_GATEWAY_GUARD_NOTE = (f"In x402_paid mode the gateway verifies every settlement on Base before releasing the product: eth_getTransactionReceipt "
+                           f"must show status 0x1 and canonical USDC Transfer(payer -> payTo {PAY_TO}) logs summing to at least the route price, "
+                           "and each settlement tx hash buys one product only (402 replay_settlement_tx). Otherwise the product is withheld: "
+                           "402 unconfirmed_or_reverted_settlement_tx / insufficient_onchain_usdc_transfer, or 502 settlement_rpc_unavailable "
+                           "when no Base RPC answers.")
+TREASURY_USE = ("Pacta treasury (direct settlement EOA): Option B direct on-chain USDC settlement of commercial issuer clearance "
+                "(Option A is a formal commercial invoice). An externally owned account, not a smart-contract wallet; not the x402 payTo.")
 MCP_NAME = "io.github.Fractal-Neurons/pacta"
 MCP_PACKAGE = "@pacta/mcp-server"
 MCP_VERSION = "0.1.2"
@@ -214,7 +228,7 @@ def llms_full(idx, radar, prop, onb, pinned=None):
          "xPaymentHeader (x402 v1) or paymentSignatureHeader (x402 v2).", "",
          "## x402 micropayments (optional; only for live scans of unindexed contracts)",
          f"- Network: Base (chain id 8453) · scheme exact · asset USDC {USDC_BASE} · payTo {PAY_TO} (attester EOA, pacta.base.eth).",
-         f"- Pacta Treasury: {TREASURY} (an externally owned account; the PactaCommitmentRegistry treasury slot).",
+         f"- Pacta Treasury: {TREASURY} (an externally owned account; the PactaCommitmentRegistry treasury slot). {TREASURY_USE}",
          f"- Live gateway: {X402_URL} (Cloudflare Worker; pricingMode {PRICING_MODE}; x402Versions [1, 2]; PayAI facilitator; maxTimeoutSeconds {X402_MAX_TIMEOUT_S}).",
          f"- {FREE_LAUNCH_NOTE}",
          "- x402 v1: network base · amount field maxAmountRequired · challenge in the 402 JSON body · pay with X-PAYMENT · receipt X-PAYMENT-RESPONSE.",
@@ -222,6 +236,7 @@ def llms_full(idx, radar, prop, onb, pinned=None):
          f"receipt PAYMENT-RESPONSE · extensions.bazaar carries a JSON Schema draft 2020-12 schema ({JSON_SCHEMA_2020_12}).",
          f"- Bare probe: {X402_BARE_PROBE}",
          f"- Settlement: {X402_RECEIPT_NOTE}",
+         f"- Gateway settlement guard: {X402_GATEWAY_GUARD_NOTE}",
          "- Paid routes (GET query or POST JSON body with the same names):"] + [f"  - GET {X402_URL}{r}: {atomic} atomic USDC ({usd})" for r, atomic, usd in X402_ROUTES] + [
          "- Free: " + ", ".join(f"GET {X402_URL}{p}" for p in X402_FREE) + " (/.well-known/x402 is the Bazaar discovery manifest, discoverable: true).", "",
          "## On-chain anchoring (Base, chain id 8453)",
@@ -306,13 +321,14 @@ def agent_card(prop, onb, idx):
                  "status": "live", "gatewayUrl": X402_URL, "discovery": f"{X402_URL}/.well-known/x402", "wire": X402_WIRE,
                  "bareProbe": X402_BARE_PROBE, "settlement": {"receiptHeaders": ["PAYMENT-RESPONSE", "X-PAYMENT-RESPONSE"],
                                                               "onchainReceiptVerified": False, "note": X402_RECEIPT_NOTE},
+                 "onchainReceiptVerification": True, "settlementGuard": X402_GATEWAY_GUARD, "settlementGuardNote": X402_GATEWAY_GUARD_NOTE,
                  "free": [f"{X402_URL}{p}" for p in X402_FREE],
                  "routes": [{"path": r.split("?")[0], "url": X402_URL + r.split("?")[0], "methods": ["GET", "POST"],
                              "query": (r.split("?")[1] if "?" in r else ""), "maxAmountRequired": atomic, "amount": atomic, "priceUsd": usd,
                              "effectivePriceUsd": "0.00" if PRICING_MODE == "free_launch" else usd[1:]}
                             for r, atomic, usd in X402_ROUTES]},
         "anchoring": {"chainId": 8453, "registry": REGISTRY, "easSchema": EAS_SCHEMA, "attester": idx["onchain_anchoring"]["attester_eoa"],
-                      "treasury": {"address": TREASURY, "label": "Pacta Treasury", "kind": "externally owned account"}},
+                      "treasury": {"address": TREASURY, "label": "Pacta Treasury", "kind": "externally owned account", "use": TREASURY_USE}},
     }
 
 
@@ -336,7 +352,7 @@ def mcp_manifest(idx, onb):
                  "optIn": True, "payTo": PAY_TO, "asset": USDC_BASE, "chainId": 8453, "x402Versions": [1, 2],
                  "networks": ["base", X402_NETWORK_V2], "maxTimeoutSeconds": X402_MAX_TIMEOUT_S, "wire": X402_WIRE,
                  "toolPaymentArguments": {"v1": "xPaymentHeader", "v2": "paymentSignatureHeader", "preference": "x402Version"},
-                 "onchainReceiptVerified": False,
+                 "onchainReceiptVerified": False, "gatewayOnchainReceiptVerification": True, "gatewaySettlementGuard": X402_GATEWAY_GUARD_NOTE,
                  "paidRoutes": [{"path": r.split("?")[0], "amount": atomic, "priceUsd": usd} for r, atomic, usd in X402_ROUTES]},
     }
 

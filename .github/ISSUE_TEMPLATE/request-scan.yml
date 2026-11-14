@@ -1,5 +1,5 @@
-name: "Request a Pacta 24h Clearance or Community Queue Scope"
-description: "Submit non-sensitive public scope for a 24h collateral clearance attestation ($5,000 USDC) or the free community queue."
+name: "Request a Pacta 24h Clearance, Continuous Aligned Maintenance, API SLA or Community Queue Scope"
+description: "Submit non-sensitive public scope for a 24h onboarding & delta clearance ($5,000 USDC), continuous Aligned maintenance ($1,500 USDC per month), an enterprise API SLA, or the free community queue."
 title: "[Pacta Scope] <Organization / Protocol Name>"
 labels: ["pacta-intake"]
 body:
@@ -29,10 +29,22 @@ body:
     attributes:
       label: "3. Track"
       options:
-        - "24h Collateral Onboarding & Delta Clearance Attestation ($5,000 USDC flat; optional $1,500/mo Aligned monitoring)"
+        - "24h Onboarding & Delta Clearance ($5,000 USDC flat)"
+        - "Continuous Aligned Maintenance ($1,500 USDC per month)"
+        - "Enterprise / High-Throughput API SLA (priced on scope)"
         - "Community queue (free; unscheduled, typically 6–8 weeks)"
     validations:
       required: true
+  - type: dropdown
+    id: settlement_preference
+    attributes:
+      label: "3b. Settlement (paid tracks only)"
+      description: "Option A needs no upfront transfer: Pacta issues a formal commercial invoice (PDF) and verified counterparty payment instructions once scope is confirmed."
+      options:
+        - "Option A: formal commercial invoice (PDF) and counterparty settlement"
+        - "Option B: direct on-chain USDC settlement"
+    validations:
+      required: false
   - type: input
     id: forum_proposal_url
     attributes:
@@ -43,8 +55,8 @@ body:
   - type: input
     id: payment_tx_hash
     attributes:
-      label: "5. USDC Payment Transaction Hash (optional; 24h clearance only)"
-      description: "$5,000 USDC on Base or Ethereum to the Pacta treasury 0x4348DF1BEFAffcbA248B5118B1b782B1B2bdEd14. Leave blank to confirm scope first."
+      label: "5. USDC Payment Transaction Hash (optional; Option B direct settlement only)"
+      description: "USDC on Base or Ethereum to the Pacta treasury (direct settlement EOA) 0x4348DF1BEFAffcbA248B5118B1b782B1B2bdEd14. Leave blank to confirm scope first, or choose Option A for an invoice."
       placeholder: "0x… (66 characters)"
     validations:
       required: false

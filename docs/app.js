@@ -71,7 +71,7 @@
         if (/\/mcp\b/.test(q)) B("copy_mcp_url"); else if (/^curl /.test(q)) B("copy_curl");
       } else if ((a = x.closest("a"))) {
         if (/SKILL\.md$/.test(a.getAttribute("href") || "")) B("copy_skill_md");
-        else if (a.closest("a.primary,.memo-foot a")) B("cta_click");
+        else if (a.closest("a.primary,.memo-foot a,a[data-cta]")) B("cta_click");
       }
     }, true);
   }
@@ -302,28 +302,65 @@
   }
 
   // ---- request builder: brief + GitHub intake + Gmail compose + copy ---------------------------------
-  // Two tracks: the 24h clearance attestation (paid, default) and the free community queue. The public data itself is
-  // free for everyone, so nothing here gates access. GitHub dropdown strings must match .github/ISSUE_TEMPLATE/request-scan.yml.
+  // Tracks: 24h clearance (default), continuous Aligned maintenance, high-throughput API SLA, free community queue. The
+  // public data itself is free for everyone, so nothing here gates access. GitHub dropdown strings must match
+  // .github/ISSUE_TEMPLATE/request-scan.yml. Paid tracks settle by Option A (commercial invoice, default) or Option B
+  // (direct on-chain USDC to the Pacta treasury, an EOA).
   var REQ_TO = "pacta@dri.network";
   var TRACK = {
-    clearance: ["24h Collateral Onboarding & Delta Clearance Attestation ($5,000 USDC flat; optional $1,500/month Aligned monitoring)",
-                "24h Collateral Onboarding & Delta Clearance Attestation ($5,000 USDC flat; optional $1,500/mo Aligned monitoring)",
-                "Pacta 24h clearance request"],
+    clearance: ["24h Onboarding & Delta Clearance ($5,000 USDC flat)",
+                "24h Onboarding & Delta Clearance ($5,000 USDC flat)",
+                "Pacta 24h clearance request", "$5,000 USDC flat"],
+    continuous: ["Continuous Aligned Maintenance ($1,500 USDC per month)",
+                 "Continuous Aligned Maintenance ($1,500 USDC per month)",
+                 "Pacta continuous Aligned maintenance request", "$1,500 USDC per month"],
+    api_sla: ["Enterprise / High-Throughput API SLA (priced on scope)",
+              "Enterprise / High-Throughput API SLA (priced on scope)",
+              "Pacta enterprise API SLA request", "the scoped amount (quoted on the invoice)"],
     community: ["Community queue (free; unscheduled, typically 6–8 weeks)", "Community queue (free; unscheduled, typically 6–8 weeks)",
-                "Pacta community queue request"]
+                "Pacta community queue request", ""]
+  };
+  var SETTLE = {
+    invoice: ["Option A — formal commercial invoice (PDF) & counterparty settlement (no upfront transfer; invoice on scope confirmation)",
+              "Option A: formal commercial invoice (PDF) and counterparty settlement"],
+    direct: ["Option B — direct on-chain USDC settlement", "Option B: direct on-chain USDC settlement"]
   };
   var TX_RE = /^0x[0-9a-fA-F]{64}$/;
+  function own(o, k) { return typeof k === "string" && Object.prototype.hasOwnProperty.call(o, k); }
+  // ---- URL prefill (/request/?tier=…&protocol=…&forum=…&settlement=…, also /?…#request): closed enums and sanitised
+  //      text only, written with .value / .checked, never as markup. PREFILL-BEGIN
+  var BAD_CHARS = /[\u0000-\u001f\u007f-\u009f\u200b-\u200f\u2028-\u202e\u2060-\u2069\ufeff]/g;
+  function cleanText(v, max) { return String(v || "").replace(BAD_CHARS, "").replace(/\s+/g, " ").trim().slice(0, max); }
+  function cleanForum(v) {
+    var s = String(v || "").trim(), u;
+    if (!s || s.length > 300 || /[\u0000-\u0020\u007f-\u009f\u200b-\u200f\u2028-\u202e\u2060-\u2069\ufeff]/.test(s)) return "";
+    try { u = new URL(s); } catch (e) { return ""; }
+    return u.protocol === "https:" && !u.username && !u.password && u.hostname ? s : "";
+  }
+  function readPrefill(search) {
+    var q, out = {};
+    try { q = new URLSearchParams(search || ""); } catch (e) { return out; }
+    var t = q.get("tier"), st = q.get("settlement"), p = cleanText(q.get("protocol"), 80), f = cleanForum(q.get("forum"));
+    if (own(TRACK, t)) out.tier = t;
+    if (own(SETTLE, st)) out.settlement = st;
+    if (p) out.protocol = p;
+    if (f) out.forum = f;
+    return out;
+  }
+  // PREFILL-END
   function initRequest() {
     var form = $("#req-form"); if (!form) return;
     var out = $("#req-brief"), gh = $("#req-gh"), gm = $("#req-gmail"), st = $("#req-status"), pay = $("#req-pay");
-    var txField = $("#req-tx-field"), txHint = $("#req-tx-hint"), txIn = $("#req-tx");
+    var txField = $("#req-tx-field"), txHint = $("#req-tx-hint"), txIn = $("#req-tx"), sum = $("#req-pay-sum"), direct = $("#req-direct");
     var treasury = form.getAttribute("data-treasury") || "";
     function val(n) { var x = form.elements[n]; return x ? String(x.value || "").trim() : ""; }
-    function tier() { var x = $('input[name="tier"]:checked', form); return x && TRACK[x.value] ? x.value : "clearance"; }
+    function tier() { var x = $('input[name="tier"]:checked', form); return x && own(TRACK, x.value) ? x.value : "clearance"; }
+    function settlement() { var x = $('input[name="settlement"]:checked', form); return x && own(SETTLE, x.value) ? x.value : "invoice"; }
     function protocols() { return $$('input[name="protocol"]:checked', form).map(function (x) { return x.value; }); }
     function update() {
-      var t = tier(), paid = t === "clearance", ps = protocols(), org = val("org"), scope = val("scope"), contact = val("contact");
-      var forum = val("forum"), tx = paid ? val("tx") : "", txOk = !tx || TX_RE.test(tx);
+      var t = tier(), paid = t !== "community", s = settlement(), dir = paid && s === "direct";
+      var ps = protocols(), org = val("org"), scope = val("scope"), contact = val("contact");
+      var forum = val("forum"), tx = dir ? val("tx") : "", txOk = !tx || TX_RE.test(tx);
       var subj = TRACK[t][2] + (org ? " — " + org : "");
       var lines = ["To: " + REQ_TO, "Subject: " + subj, "",
         "Track: " + TRACK[t][0],
@@ -332,31 +369,54 @@
       if (scope) lines.push("Contracts / docs / portfolio:", scope);
       if (forum) lines.push("Forum proposal: " + forum);
       if (paid) {
-        lines.push("Payment: " + (tx ? tx + (txOk ? "" : "  (check: not a 0x-prefixed 32-byte transaction hash)")
-                                     : "not yet sent; please confirm scope first") + " — $5,000 USDC to " + treasury + " on Base or Ethereum");
+        lines.push("Settlement: " + SETTLE[s][0]);
+        if (dir) {
+          lines.push("Payment: " + (tx ? tx + (txOk ? "" : "  (check: not a 0x-prefixed 32-byte transaction hash)")
+                                       : "not yet sent; please confirm scope first") + " — " + TRACK[t][3] +
+                     " in USDC to the Pacta treasury (direct settlement EOA) " + treasury + " on Base or Ethereum");
+        }
       }
       lines.push("Contact: " + (contact || "(not given)"));
       lines.push("", "Sent from " + location.href.split("#")[0]);
       out.textContent = lines.join("\n");
       if (pay) pay.hidden = !paid;
-      if (txField) txField.hidden = !paid;
+      if (sum) sum.textContent = paid ? TRACK[t][0].replace(/ \((.*)\)$/, " · $1") : "";
+      if (direct) direct.hidden = !dir;
+      if (txField) txField.hidden = !dir;
       if (txIn) { if (txOk) txIn.removeAttribute("aria-invalid"); else txIn.setAttribute("aria-invalid", "true"); }
       if (txHint) txHint.textContent = txOk ? "A 66-character hash starting with 0x." : "That does not look like a transaction hash (0x + 64 hex characters).";
-      var title = "[Pacta Scope] " + (org || (ps.length ? ps.slice(0, 3).join(", ") : (paid ? "24h clearance" : "community queue")));
+      var title = "[Pacta Scope] " + (org || (ps.length ? ps.slice(0, 3).join(", ") : TRACK[t][2].replace(/^Pacta | request$/g, "")));
       var p = new URLSearchParams({ template: "request-scan.yml", title: title });
       p.set("repo_or_portfolio_url", forum || scope.split(/\s+/).filter(function (w) { return /^https?:\/\//.test(w); })[0] || "");
       p.set("commitments_and_addresses", ["Protocols: " + (ps.join(", ") || "-"), scope].filter(Boolean).join("\n"));
       p.set("package_tier", TRACK[t][1]);
+      if (paid) p.set("settlement_preference", SETTLE[s][1]);
       if (forum) p.set("forum_proposal_url", forum);
-      if (paid && tx && txOk) p.set("payment_tx_hash", tx);
+      if (dir && tx && txOk) p.set("payment_tx_hash", tx);
       p.set("contact_channel", contact);
       gh.href = "https://github.com/Fractal-Neurons/pacta/issues/new?" + p.toString();
       gm.href = "https://mail.google.com/mail/?view=cm&fs=1&to=" + encodeURIComponent(REQ_TO) + "&su=" + encodeURIComponent(subj) +
         "&body=" + encodeURIComponent(lines.slice(3).join("\n"));
       if (st) st.textContent = "";
     }
-    function preselect(t) {
-      var r = $$('input[name="tier"]', form).filter(function (x) { return x.value === t; })[0]; if (r) { r.checked = true; update(); }
+    function pick(name, v) {
+      var r = $$('input[name="' + name + '"]', form).filter(function (x) { return x.value === v; })[0];
+      if (r) r.checked = true;
+      return !!r;
+    }
+    function preselect(t) { if (pick("tier", t)) update(); }
+    function prefill(o) {
+      if (o.tier) pick("tier", o.tier);
+      if (o.settlement) pick("settlement", o.settlement);
+      if (o.protocol) {
+        var low = o.protocol.toLowerCase(), orgIn = form.elements.org;
+        var box = $$('input[name="protocol"]', form).filter(function (x) {
+          return x.getAttribute("data-slug") === o.protocol || String(x.value).toLowerCase() === low;
+        })[0];
+        if (box) box.checked = true;
+        if (orgIn && !String(orgIn.value || "").trim()) orgIn.value = box ? box.value : o.protocol;
+      }
+      if (o.forum && form.elements.forum) form.elements.forum.value = o.forum;
     }
     form.addEventListener("input", update);
     form.addEventListener("change", update);
@@ -366,7 +426,7 @@
       var a = ev.target.closest("a[data-tier]"); if (!a) return;
       if ((a.getAttribute("href") || "").charAt(0) === "#") { preselect(a.getAttribute("data-tier")); }
     });
-    var m = location.search.match(/[?&]tier=(\w+)/); if (m && TRACK[m[1]]) preselect(m[1]);
+    prefill(readPrefill(location.search));
     update();
   }
 

@@ -7,7 +7,8 @@
   "treasury": {
    "address": "0x4348DF1BEFAffcbA248B5118B1b782B1B2bdEd14",
    "kind": "externally owned account",
-   "label": "Pacta Treasury"
+   "label": "Pacta Treasury",
+   "use": "Pacta treasury (direct settlement EOA): Option B direct on-chain USDC settlement of commercial issuer clearance (Option A is a formal commercial invoice). An externally owned account, not a smart-contract wallet; not the x402 payTo."
   }
  },
  "authentication": {
@@ -192,6 +193,7 @@
    "base",
    "eip155:8453"
   ],
+  "onchainReceiptVerification": true,
   "payTo": "0xcA4E2ff22B69A7284210c47BdeE21Aac1269da09",
   "pricingMode": "free_launch",
   "routes": [
@@ -270,6 +272,27 @@
     "X-PAYMENT-RESPONSE"
    ]
   },
+  "settlementGuard": {
+   "appliesTo": "x402_paid settlements only",
+   "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+   "chainId": 8453,
+   "failures": {
+    "402": [
+     "unconfirmed_or_reverted_settlement_tx",
+     "insufficient_onchain_usdc_transfer",
+     "replay_settlement_tx"
+    ],
+    "502": [
+     "settlement_rpc_unavailable"
+    ]
+   },
+   "onchainReceiptVerification": true,
+   "payTo": "0xcA4E2ff22B69A7284210c47BdeE21Aac1269da09",
+   "replay": "each settlement tx hash is accepted once (isolate memory + KV used_tx:<txHash>, 30-day TTL)",
+   "requires": "receipt status 0x1 and canonical USDC (Base) Transfer(payer -> payTo) logs summing to at least the route price",
+   "rpcMethod": "eth_getTransactionReceipt"
+  },
+  "settlementGuardNote": "In x402_paid mode the gateway verifies every settlement on Base before releasing the product: eth_getTransactionReceipt must show status 0x1 and canonical USDC Transfer(payer -> payTo 0xcA4E2ff22B69A7284210c47BdeE21Aac1269da09) logs summing to at least the route price, and each settlement tx hash buys one product only (402 replay_settlement_tx). Otherwise the product is withheld: 402 unconfirmed_or_reverted_settlement_tx / insufficient_onchain_usdc_transfer, or 502 settlement_rpc_unavailable when no Base RPC answers.",
   "status": "live",
   "wire": {
    "v1": {

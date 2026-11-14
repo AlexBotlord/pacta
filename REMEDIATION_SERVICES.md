@@ -21,9 +21,14 @@ For **collateral issuers** onboarding a new asset to Morpho, Euler, Aave or Sky,
 3. **Base Mainnet EAS `Aligned` attestation** recorded in `PactaCommitmentRegistry` [`0x35D21Bb4Df6586FE7759b5e57263ffeB3e1fd872`](https://basescan.org/address/0x35D21Bb4Df6586FE7759b5e57263ffeB3e1fd872).
 4. **Curator Diligence Dossier (PDF + JSON)**, paste-ready for Morpho, Euler, Aave and Sky forum listing proposals.
 
-Delivered within **24 hours** of confirmed scope and payment. Optional **continuous `Aligned` badge maintenance: `$1,500 / month`** (continuous monitoring of the attested control plane).
+Delivered within **24 hours** of confirmed scope and settlement. Optional **Continuous Aligned Maintenance: `$1,500 USDC / month`** (keeps the attestation and dossier current across governance proposals, signer rotations and timelock upgrades). Request at [`pacta.wtf/request/?tier=clearance`](https://pacta.wtf/request/?tier=clearance) or [`?tier=continuous`](https://pacta.wtf/request/?tier=continuous).
 
-**Payment:** `5,000 USDC` on Base (USDC `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913`) or Ethereum (USDC `0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48`) to the Pacta treasury **`0x4348DF1BEFAffcbA248B5118B1b782B1B2bdEd14`** (same address on both chains). Include the transaction hash and forum proposal URL in the request at [`pacta.wtf/request/`](https://pacta.wtf/request/), or send the scope first and pay after confirmation.
+**Settlement, two tracks:**
+
+- **Option A (recommended for protocol treasuries and CFOs): formal commercial invoice (PDF) and counterparty settlement.** Submit scope first; no upfront transfer is needed to open intake. Pacta issues a formal commercial invoice (PDF) and verified counterparty payment instructions once scope is confirmed, for foundation finance teams, legal review and multi-signer treasury workflows.
+- **Option B (direct express): on-chain USDC.** `5,000 USDC` on Base (USDC `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913`) or Ethereum (USDC `0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48`) to the Pacta treasury (direct settlement EOA) **`0x4348DF1BEFAffcbA248B5118B1b782B1B2bdEd14`**, an externally owned account (the same address on both chains). Include the transaction hash and forum proposal URL in the request at [`pacta.wtf/request/`](https://pacta.wtf/request/).
+
+**High-throughput API (more than 60 requests / minute or a dedicated SLA):** x402 metered endpoints, or an Enterprise API key priced on scope at [`pacta.wtf/request/?tier=api_sla`](https://pacta.wtf/request/?tier=api_sla).
 
 **Community queue (free):** the standard public queue, unscheduled (typically 6–8 weeks).
 

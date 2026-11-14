@@ -174,9 +174,12 @@ const SCOPE = "HARNESS-SCOPE-7c1e https://example.invalid/docs 0x111111111111111
 const TX = "0x" + "ab".repeat(32);
 const FORUM = "https://forum.example.invalid/t/harness-listing/1";
 const OPT = {
-  clearance: "24h Collateral Onboarding & Delta Clearance Attestation ($5,000 USDC flat; optional $1,500/mo Aligned monitoring)",
+  clearance: "24h Onboarding & Delta Clearance ($5,000 USDC flat)",
+  continuous: "Continuous Aligned Maintenance ($1,500 USDC per month)",
+  api_sla: "Enterprise / High-Throughput API SLA (priced on scope)",
   community: "Community queue (free; unscheduled, typically 6–8 weeks)"
 };
+const SET = { invoice: "Option A: formal commercial invoice (PDF) and counterparty settlement", direct: "Option B: direct on-chain USDC settlement" };
 function ghParams(doc) {
   const h = doc.getElementById("req-gh").getAttribute("href") || "";
   if (!/^https:\/\/github\.com\/Fractal-Neurons\/pacta\/issues\/new\?/.test(h)) return null;
@@ -192,23 +195,37 @@ function pick(doc, val) {
   const ev = new Event_("change"); ev.target = r; r.dispatchEvent(ev);
 }
 const checked = doc => (doc.querySelector('input[name="tier"]:checked') || { getAttribute: () => null }).getAttribute("value");
+const settled = doc => (doc.querySelector('input[name="settlement"]:checked') || { getAttribute: () => null }).getAttribute("value");
+function settle(doc, val) {
+  const r = doc.querySelectorAll('input[name="settlement"]').find(x => x.getAttribute("value") === val);
+  r.checked = true;
+  const ev = new Event_("change"); ev.target = r; r.dispatchEvent(ev);
+}
 const brief = doc => doc.getElementById("req-brief").textContent;
 try {
-  // (a) /request/ defaults to the 24h clearance: payment panel + tx field visible, GitHub intake prefilled with the exact dropdown option
+  // (a) /request/ defaults to the 24h clearance settled by Option A (commercial invoice): settlement panel visible,
+  //     tx field and direct-settlement address hidden, GitHub intake prefilled with the exact dropdown options
   let p = run(input.request, input.app, { path: "/request/" });
   const d = p.document, treasury = d.getElementById("req-form").getAttribute("data-treasury");
   res.default_is_clearance = checked(d) === "clearance";
+  res.default_settlement_is_invoice = settled(d) === "invoice";
   res.clearance_pay_panel_shown = d.getElementById("req-pay").hidden === false;
-  res.clearance_tx_field_shown = d.getElementById("req-tx-field").hidden === false;
+  res.invoice_hides_tx_and_direct = d.getElementById("req-tx-field").hidden === true && d.getElementById("req-direct").hidden === true;
   let q = ghParams(d);
   res.clearance_github_href = q !== null;
-  res.clearance_github_tier_exact = !!q && q.get("package_tier") === OPT.clearance;
-  res.clearance_brief_has_price_and_treasury = /\$5,000 USDC/.test(brief(d)) && /^0x[0-9a-fA-F]{40}$/.test(treasury || "") && brief(d).includes(treasury);
-  // (b) a valid payment tx hash + forum URL flow into the brief and the GitHub prefill
+  res.clearance_github_tier_exact = !!q && q.get("package_tier") === OPT.clearance && q.get("settlement_preference") === SET.invoice;
+  res.clearance_brief_has_price_and_invoice = /\$5,000 USDC/.test(brief(d)) && brief(d).includes("Settlement: Option A") && !brief(d).includes("Payment:")
+    && /^0x[0-9a-fA-F]{40}$/.test(treasury || "") && !brief(d).includes(treasury);
+  res.pay_summary_tracks_tier = d.getElementById("req-pay-sum").textContent === "24h Onboarding & Delta Clearance · $5,000 USDC flat";
+  // (b) Option B (direct on-chain USDC): tx field + treasury shown; a valid tx hash + forum URL flow into the brief and the GitHub prefill
+  settle(d, "direct");
+  res.direct_shows_tx_and_treasury = d.getElementById("req-tx-field").hidden === false && d.getElementById("req-direct").hidden === false
+    && brief(d).includes("Settlement: Option B") && brief(d).includes(treasury) && brief(d).includes("Pacta treasury (direct settlement EOA)")
+    && !/\bSafe\b|multisig/i.test(brief(d));
   setField(d, "req-scope", SCOPE); setField(d, "req-forum", FORUM); setField(d, "req-tx", TX);
   q = ghParams(d);
   res.tx_valid_in_brief = brief(d).includes("Payment: " + TX) && !/\(check:/.test(brief(d));
-  res.tx_valid_in_github = !!q && q.get("payment_tx_hash") === TX;
+  res.tx_valid_in_github = !!q && q.get("payment_tx_hash") === TX && q.get("settlement_preference") === SET.direct;
   res.forum_in_brief_and_github = brief(d).includes("Forum proposal: " + FORUM) && !!q && q.get("forum_proposal_url") === FORUM;
   res.tx_valid_not_flagged = d.getElementById("req-tx").hasAttribute("aria-invalid") === false;
   // (c) a malformed tx hash is flagged and never forwarded to GitHub
@@ -217,23 +234,83 @@ try {
   res.tx_invalid_flagged = d.getElementById("req-tx").getAttribute("aria-invalid") === "true" && /\(check:/.test(brief(d));
   res.tx_invalid_not_in_github = !!q && !q.has("payment_tx_hash");
   setField(d, "req-tx", TX);
+  // (c2) back to Option A drops the tx hash from the brief and the intake (it stays in the field)
+  settle(d, "invoice");
+  q = ghParams(d);
+  res.invoice_drops_tx = !brief(d).includes(TX) && !!q && !q.has("payment_tx_hash") && d.getElementById("req-tx").value === TX;
+  settle(d, "direct");
   // (d) switching to the community queue hides payment, drops the tx hash, keeps the intake link working
   pick(d, "community");
   q = ghParams(d);
   res.community_pay_panel_hidden = d.getElementById("req-pay").hidden === true;
   res.community_tx_field_hidden = d.getElementById("req-tx-field").hidden === true;
-  res.community_github_tier_exact = !!q && q.get("package_tier") === OPT.community;
-  res.community_no_tx_anywhere = !!q && !q.has("payment_tx_hash") && !brief(d).includes(TX) && !/Payment:/.test(brief(d));
+  res.community_github_tier_exact = !!q && q.get("package_tier") === OPT.community && !q.has("settlement_preference");
+  res.community_no_tx_anywhere = !!q && !q.has("payment_tx_hash") && !brief(d).includes(TX) && !/Payment:|Settlement:/.test(brief(d));
   const ev = new Event_("click"); d.getElementById("req-gh").dispatchEvent(ev);
   res.community_click_not_prevented = ev.defaultPrevented === false;
-  // (e) back to clearance restores the payment panel
+  // (e) back to clearance restores the payment panel (Option B still chosen, so the tx hash returns)
   pick(d, "clearance");
   res.clearance_restores_pay_panel = d.getElementById("req-pay").hidden === false && ghParams(d).get("payment_tx_hash") === TX;
+  // (e2) continuous and API SLA tracks: own dropdown option, own amount in the summary and the Option B payment line
+  pick(d, "continuous");
+  q = ghParams(d);
+  res.continuous_track = q.get("package_tier") === OPT.continuous && brief(d).includes("$1,500 USDC per month in USDC to the Pacta treasury")
+    && d.getElementById("req-pay-sum").textContent === "Continuous Aligned Maintenance · $1,500 USDC per month";
+  pick(d, "api_sla");
+  q = ghParams(d);
+  res.api_sla_track = q.get("package_tier") === OPT.api_sla && d.getElementById("req-pay").hidden === false
+    && d.getElementById("req-pay-sum").textContent === "Enterprise / High-Throughput API SLA · priced on scope";
   // (f) ?tier=community prefill; unknown tiers fall back to the default
   p = run(input.request, input.app, { path: "/request/", search: "?tier=community" });
   res.prefill_selects_community = checked(p.document) === "community" && p.document.getElementById("req-pay").hidden === true;
   p = run(input.request, input.app, { path: "/request/", search: "?tier=disclosure" });
   res.prefill_unknown_tier_keeps_clearance = checked(p.document) === "clearance";
+  // (f2) /request/?tier=…&protocol=…&forum=…&settlement=… prefill (the conversion-card links)
+  {
+    const PF = "https://forum.example.invalid/t/listing-proposal/42";
+    const fieldVal = (doc, id) => doc.getElementById(id).value;
+    const box = (doc, slug) => doc.querySelectorAll('input[name="protocol"]').find(x => x.getAttribute("data-slug") === slug);
+    const slug = input.prefillSlug, name = box(d, slug) && box(d, slug).getAttribute("value");
+    let x = run(input.request, input.app, { path: "/request/", search: "?tier=clearance&protocol=" + slug + "&forum=" + encodeURIComponent(PF) });
+    let xd = x.document, xq = ghParams(xd);
+    res.prefill_clearance_protocol_forum = checked(xd) === "clearance" && settled(xd) === "invoice" && !!name && box(xd, slug).checked === true
+      && fieldVal(xd, "req-org") === name && fieldVal(xd, "req-forum") === PF && brief(xd).includes("Protocols in scope: " + name)
+      && brief(xd).includes("Forum proposal: " + PF) && xq.get("forum_proposal_url") === PF && xq.get("settlement_preference") === SET.invoice;
+    x = run(input.request, input.app, { path: "/request/", search: "?tier=clearance&protocol=" + slug + "&forum=" + encodeURIComponent(PF) + "&settlement=direct" });
+    xd = x.document;
+    res.prefill_settlement_direct = settled(xd) === "direct" && xd.getElementById("req-tx-field").hidden === false
+      && xd.getElementById("req-direct").hidden === false && brief(xd).includes("Settlement: Option B");
+    x = run(input.request, input.app, { path: "/request/", search: "?tier=continuous&protocol=" + slug + "&settlement=invoice" });
+    xd = x.document; xq = ghParams(xd);
+    res.prefill_continuous_invoice = checked(xd) === "continuous" && settled(xd) === "invoice" && xq.get("package_tier") === OPT.continuous
+      && xq.get("settlement_preference") === SET.invoice && fieldVal(xd, "req-forum") === "";
+    x = run(input.request, input.app, { path: "/request/", search: "?tier=api_sla" });
+    res.prefill_api_sla = checked(x.document) === "api_sla" && x.document.getElementById("req-pay").hidden === false;
+    // an issuer slug that is not an indexed protocol (e.g. an onboarding brief) only fills the organisation field
+    x = run(input.request, input.app, { path: "/request/", search: "?tier=clearance&protocol=kerne-kusd-base" });
+    res.prefill_unknown_slug_text_only = fieldVal(x.document, "req-org") === "kerne-kusd-base"
+      && x.document.querySelectorAll('input[name="protocol"]').every(b => b.checked === false);
+    // hostile input: unknown / prototype enum values ignored; markup stays text; control and bidi characters stripped; length capped
+    const evil = "<img src=x onerror=alert(1)>" + String.fromCharCode(0, 7, 0x202e, 0x2066, 0x200b) + "x".repeat(200);
+    x = run(input.request, input.app, { path: "/request/", search: "?tier=constructor&settlement=__proto__&protocol=" + encodeURIComponent(evil) + "&forum=" + encodeURIComponent("javascript:alert(1)") });
+    xd = x.document;
+    const org = fieldVal(xd, "req-org");
+    res.prefill_hostile_inert = checked(xd) === "clearance" && settled(xd) === "invoice" && org.length === 80 && org.startsWith("<img src=x onerror=alert(1)>xxx")
+      && !/[\u0000-\u001f\u202e\u2066\u200b]/.test(org) && fieldVal(xd, "req-forum") === ""
+      && xd.querySelectorAll("img").length === d.querySelectorAll("img").length && !xd.querySelectorAll("img").some(i => i.getAttribute("onerror") !== null)
+      && brief(xd).includes("Organization: <img src=x onerror=alert(1)>");
+    for (const tier of ["__proto__", "toString", "hasOwnProperty", "TIER", "clearance%00", ""]) {
+      x = run(input.request, input.app, { path: "/request/", search: "?tier=" + tier + "&settlement=" + tier });
+      if (checked(x.document) !== "clearance" || settled(x.document) !== "invoice") res.prefill_enum_closed = false;
+    }
+    if (res.prefill_enum_closed !== false) res.prefill_enum_closed = true;
+    const badForums = ["http://forum.example.invalid/t/1", "https://user:pw@forum.example.invalid/t/1", "https://:pw@forum.example.invalid/",
+      "https://forum.example.invalid/" + "a".repeat(300), "https://forum.example.invalid/t 1", "data:text/html,hi", "//forum.example.invalid/t/1", "https:"];
+    res.prefill_forum_https_only = badForums.every(f => fieldVal(run(input.request, input.app, { path: "/request/", search: "?forum=" + encodeURIComponent(f) }).document, "req-forum") === "");
+    // the homepage #request builder reads the same parameters
+    x = run(input.index, input.app, { path: "/", search: "?tier=continuous&protocol=" + slug, hash: "#request" });
+    res.prefill_homepage_request = checked(x.document) === "continuous" && box(x.document, slug).checked === true && fieldVal(x.document, "req-org") === name;
+  }
   // (g) homepage plan buttons preselect their track in #request
   p = run(input.index, input.app, { path: "/" });
   const btn = p.document.querySelectorAll("a[data-tier]").find(a => a.getAttribute("data-tier") === "community");
@@ -383,6 +460,25 @@ async function beaconScenario() {
     const n2 = p.beacons.length; click(termBtn);
     const foot = p.document.querySelector(".memo-foot a"); click(foot);
     res.b_protocol_copy_curl_and_cta = same(p.events().slice(n2).map(e => e.e), ["copy_curl", "cta_click"]);
+    // conversion callouts: every data-cta link (aligned page: maintenance + invoice; delta / RPC-observed page and briefs:
+    // clearance + commercial invoice) fires cta_click
+    const ctaClicks = (tree, path) => {
+      const q = run(tree, input.app, { path, beacon: B }), links = q.document.querySelectorAll("a[data-cta]"), n = q.beacons.length;
+      links.forEach(click);
+      return { kinds: links.map(a => a.getAttribute("data-cta")), events: q.events().slice(n).map(e => e.e) };
+    };
+    const al = ctaClicks(input.protocol, path);
+    res.b_cta_aligned_maintenance = same(al.kinds, ["continuous", "continuous_invoice"]) && same(al.events, ["cta_click", "cta_click"]);
+    if (input.clearanceProtocol) {
+      const cl = ctaClicks(input.clearanceProtocol, "/protocols/" + input.clearanceSlug + "/");
+      res.b_cta_clearance_protocol = same(cl.kinds, ["clearance", "clearance_invoice"]) && same(cl.events, ["cta_click", "cta_click"]);
+    }
+    if (input.brief) {
+      const br = ctaClicks(input.brief, "/briefs/" + input.briefSlug + "/");
+      res.b_cta_clearance_brief = same(br.kinds, ["clearance", "clearance_invoice"]) && same(br.events, ["cta_click", "cta_click"]);
+    }
+    const hp = ctaClicks(input.index, "/");
+    res.b_cta_pricing = same(hp.kinds, ["pricing_clearance", "pricing_continuous", "pricing_api_sla"]) && same(hp.events, ["cta_click", "cta_click", "cta_click"]);
   }
   // 404: not_found_404 instead of page_load; paths are redacted to a closed canonical set BEFORE transmission
   // (Phase C.1): only /protocols/<safe-slug>/ keeps its slug (and t); anything else is "/404"; IP / local referrers are dropped

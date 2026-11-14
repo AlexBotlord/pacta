@@ -58,22 +58,47 @@ BRIEFS = {
 }
 NAV = [("preflight", "Free API"), ("protocols/", "Protocols"), ("inspector", "Inspector"), ("radar", "Radar"), ("findings", "Findings"), ("index", "Index"), ("verify", "Verify"),
        ("pricing", "Pricing"), ("faq", "FAQ")]
-# Engagement tracks shown in #pricing and offered by the request builder. key -> (title, price, unit, summary, GitHub dropdown option)
-# One commercial offer (for collateral issuers) plus the free community queue. The public data itself (every indexed
-# record, the timelock radar, briefs, /api/v1/*.json and llms.txt) is free and real-time for everyone: no paywall, no delay.
-# The GitHub dropdown option strings must match .github/ISSUE_TEMPLATE/request-scan.yml exactly (prefill is by value).
-CLEARANCE_PRICE, MONITORING_PRICE = "$5,000 USDC", "$1,500 / month"
+# Engagement tracks offered by the request builder (and linked from #pricing). key -> (title, price, unit, summary,
+# GitHub dropdown option). Issuer work (24h clearance, continuous Aligned maintenance), the high-throughput API SLA and
+# the free community queue. The public data itself (every indexed record, the timelock radar, briefs, /api/v1/*.json
+# and llms.txt) is free and real-time for everyone: no paywall, no delay. The keys are the closed `tier=` enum that
+# /request/?tier=… prefills; the GitHub dropdown option strings must match .github/ISSUE_TEMPLATE/request-scan.yml
+# exactly (prefill is by value).
+CLEARANCE_PRICE, MONITORING_PRICE = "$5,000 USDC", "$1,500 USDC / month"
 TRACKS = {
-    "clearance": ("24h Collateral Onboarding & Delta Clearance Attestation", CLEARANCE_PRICE, "flat",
-                  f"Block-pinned control-plane audit, GitBook / config reconciliation PR, Base EAS Aligned attestation and a "
-                  f"Curator Diligence Dossier, delivered in 24 hours. Optional continuous Aligned monitoring: {MONITORING_PRICE}.",
-                  "24h Collateral Onboarding & Delta Clearance Attestation ($5,000 USDC flat; optional $1,500/mo Aligned monitoring)"),
+    "clearance": ("24h Onboarding & Delta Clearance", CLEARANCE_PRICE, "flat",
+                  "Archive-RPC control-plane verification, an upstream docs reconciliation PR, a Base EAS Aligned attestation "
+                  "and a Curator Diligence Dossier, delivered in 24 hours.",
+                  "24h Onboarding & Delta Clearance ($5,000 USDC flat)"),
+    "continuous": ("Continuous Aligned Maintenance", "$1,500 USDC", "per month",
+                   "Keeps the Base EAS Aligned attestation and Curator Diligence Dossier current across governance proposals, "
+                   "signer rotations and timelock upgrades.",
+                   "Continuous Aligned Maintenance ($1,500 USDC per month)"),
+    "api_sla": ("Enterprise / High-Throughput API SLA", "Priced on scope", "",
+                "For wallets, custodians and DeFAI agents that need more than 60 requests / minute or a dedicated SLA.",
+                "Enterprise / High-Throughput API SLA (priced on scope)"),
     "community": ("Community queue", "Free", "",
                   "Standard public queue, unscheduled (typically 6–8 weeks). Curators and risk stewards always have free, "
                   "real-time access to pacta.wtf and llms.txt.",
                   "Community queue (free; unscheduled, typically 6–8 weeks)"),
 }
 DEFAULT_TRACK = "clearance"
+PAID_TRACKS = ("clearance", "continuous", "api_sla")
+# Settlement tracks in #req-pay (closed `settlement=` enum). Option A first: no transfer is needed to open intake.
+# key -> (heading, sub-line, explanation, GitHub dropdown option)
+SETTLEMENT = {
+    "invoice": ("Option A — Formal Commercial Invoice (PDF) & Counterparty Settlement", "Recommended for protocol treasuries & CFOs",
+                "Submit scope first (no upfront transfer required to open intake): Pacta issues a formal commercial invoice (PDF) "
+                "and verified counterparty payment instructions upon scope confirmation — designed for foundation finance teams, "
+                "legal review, and multi-signer treasury workflows.",
+                "Option A: formal commercial invoice (PDF) and counterparty settlement"),
+    "direct": ("Option B — Direct Express On-Chain USDC Settlement", "Immediate 24h turnaround",
+               "USDC on Base or Ethereum to the Pacta treasury (direct settlement EOA) below; paste the transaction hash in the "
+               "form and the 24-hour window starts once scope is confirmed.",
+               "Option B: direct on-chain USDC settlement"),
+}
+DEFAULT_SETTLEMENT = "invoice"
+TREASURY_LABEL = "Pacta treasury (direct settlement EOA)"     # an externally owned account: never a Safe / multisig
 # Payment rail for the clearance offer. The treasury is an externally owned account (no contract code on Base or
 # Ethereum), so the same key controls it on both chains; USDC contracts are Circle's native deployments.
 USDC = {"Base": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", "Ethereum": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"}
@@ -435,7 +460,7 @@ def onboarding_page(b, idx):
             f'<dt>Pinned block</dt><dd>{E(OR.CHAIN_NAME[b["chain"]])} <span class="num">#{pin["number"]:,}</span> · {E(utc(pin["timestamp"], True))} '
             f'<span class="badge final">Canonical (EIP-1898)</span></dd><dt>Block hash</dt><dd>{hexref(pin["hash"], 10, 6)}</dd>'
             f'<dt>Data</dt><dd><a href="../../api/v1/onboarding.json">/api/v1/onboarding.json</a> · slug <code>{E(b["slug"])}</code></dd></dl>')
-    content = content.replace("</header>", "</header>\n" + meta, 1)
+    content = content.replace("</header>", "</header>\n" + meta, 1) + clearance_callout(b["asset"], b["slug"], b["forum"]["url"])
     c = counts(idx)
     count_line = f'{c["sprints"]} Sprints · {c["records"]} Indexed Records'
     reg = idx["onchain_anchoring"]["commitment_registry"]
@@ -567,39 +592,39 @@ def verify_section(idx, c):
 </div></section>"""
 
 
-def pricing_section(home=""):
+def pricing_section(idx, home=""):
+    """#pricing: free for curators, risk teams and agents; paid work is for issuers only; one bar for high-throughput API users."""
     req = "#request" if home == "" else f"{home}request/"
-
-    def plan(key, tier, bullets, cta, feat=False, addon="", title=None, price=None):
-        t_, p_, unit, _, _ = TRACKS[key]
-        title, price = title or t_, price or p_
-        lis = "".join(f"<li>{b}</li>" for b in bullets)
-        return (f'<div class="plan{" feat" if feat else ""}"><span class="tier">{tier}</span><h3>{E(title)}</h3>'
-                f'<div class="price">{price}{f"<small>{unit}</small>" if unit else ""}</div>{addon}<ul>{lis}</ul>'
-                f'<a class="btn{" primary" if feat else ""}" href="{req}{"" if home == "" else "?tier=" + key}" data-tier="{key}">{cta} <span class="arr">→</span></a></div>')
+    tq = (lambda k: "") if home == "" else (lambda k: f"?tier={k}")
+    sp = site_protocols(idx)
+    n_p, n_s = len(sp), sum(len(v["entries"]) for v in sp.values())
     free_lis = "".join(f"<li>{b}</li>" for b in [
-        "All 5 endpoints: <code>/v1/check/preflight</code>, control-plane, timelock-op, proposal-diff, live timelocks",
+        f"All {n_p} protocols ({n_s} block-pinned surfaces), live governance and timelock briefs, free and real-time; no key, no delay, no paywall",
+        "Static JSON and LLM feeds: <code>/api/v1/*.json</code>, <code>llms.txt</code>, <code>llms-full.txt</code>, <code>SKILL.md</code>",
+        f"<code>/v1/check/preflight</code> and the other live checks at {E(RATE_LIMIT)}; 5-minute edge cache on unpinned checks",
         f"Remote MCP (5 read-only tools) at <code>{E(MCP_URL)}</code> and OpenAPI 3.1",
-        f"{E(RATE_LIMIT)}; 5-minute edge cache on unpinned checks",
-        "Every indexed record, the timelock radar and briefs, free and real-time; no key, no delay, no paywall",
-        "x402 v1 + v2 (USDC on Base) is wired in for metered use later; nothing to set up today"])
-    free_plan = (f'<div class="plan feat"><span class="tier">AI agents, agent builders &amp; risk teams</span><h3>Free launch</h3>'
-                 f'<div class="price">$0<small>no API key · no wallet</small></div><ul>{free_lis}</ul>'
+        "Curators, risk analysts, and due-diligence agents never pay"])
+    free_plan = (f'<div class="plan feat"><span class="tier">Curators, Risk Teams &amp; AI Agents</span><h3>Free launch</h3>'
+                 f'<div class="price">$0<small>Free · no API key · no wallet</small></div><ul>{free_lis}</ul>'
                  f'<a class="btn primary" href="{"" if home == "" else home}#preflight">Run a check in one call <span class="arr">→</span></a>'
-                 f'<a class="plan-sub" href="{req}{"" if home == "" else "?tier=community"}" data-tier="community">Suggest a protocol for the free community queue →</a></div>')
-    plans = (free_plan
-             + plan("clearance", "High volume, SLA &amp; on-chain clearance",
-                    ["Canonical block-pinned control-plane audit of your proxy admins, Safes, roles and timelocks",
-                     "GitBook / config reconciliation PR wherever docs and on-chain state differ",
-                     "Base Mainnet EAS <i>Aligned</i> attestation in PactaCommitmentRegistry, clearing open <code>parameter_delta</code> flags",
-                     "Paste-ready Curator Diligence Dossier (PDF + JSON) for Morpho, Euler, Aave and Sky forum proposals",
-                     "Dedicated rate limits and an SLA for high-volume agent traffic: scoped in the request builder",
-                     "USDC on Base or Ethereum; payment details are in the request builder"],
-                    "Request SLA or a 24h clearance", feat=False,
-                    addon=f'<p class="addon">Optional: continuous <i>Aligned</i> badge maintenance, {E(MONITORING_PRICE)}</p>'))
+                 f'<a class="plan-sub" href="{req}{tq("community")}" data-tier="community">Suggest a protocol for the free community queue →</a></div>')
+    issuer_lis = "".join(f"<li>{b}</li>" for b in [
+        "Archive-RPC control-plane verification of your proxy admins, Safes, roles and timelocks, pinned to a canonical block",
+        "Upstream GitBook / docs reconciliation PR wherever documentation and on-chain state differ",
+        "Base Mainnet EAS <i>Aligned</i> attestation in PactaCommitmentRegistry, clearing open <code>parameter_delta</code> flags",
+        "Paste-ready Curator Diligence Dossier (PDF + JSON) for Morpho, Euler, Aave and Sky forum proposals",
+        "Settle by formal commercial invoice (PDF) or directly in USDC on Base or Ethereum"])
+    issuer_plan = (f'<div class="plan"><span class="tier">Collateral &amp; Protocol Issuers</span><h3>24h Onboarding &amp; Delta Clearance</h3>'
+                   f'<div class="price">{E(CLEARANCE_PRICE)}<small>flat · 24h</small></div>'
+                   f'<p class="addon">Then optional Continuous Aligned Maintenance: {E(MONITORING_PRICE)}</p><ul>{issuer_lis}</ul>'
+                   f'<a class="btn" href="{req}{tq("clearance")}" data-tier="clearance" data-cta="pricing_clearance">Request 24h Clearance ({E(CLEARANCE_PRICE)}) <span class="arr">→</span></a>'
+                   f'<a class="plan-sub" href="{req}{tq("continuous")}" data-tier="continuous" data-cta="pricing_continuous">Continuous Aligned Maintenance ($1,500/mo) →</a></div>')
+    bar = (f'<p class="plan-bar">Building a high-throughput wallet, custodian, or DeFAI agent needing &gt; 60 req/min or a dedicated SLA? '
+           f'Use x402 metered endpoints or <a href="{req}{tq("api_sla")}" data-tier="api_sla" data-cta="pricing_api_sla">request an Enterprise API key →</a></p>')
     return f"""<section class="sec" id="pricing"><div class="wrap">
-<div class="sec-head"><span class="n">07</span><h2>Pricing</h2><span class="aside">The API, MCP server and all public data are free during the launch. Paid work is optional: high-volume SLAs and on-chain clearance.</span></div>
-<div class="plans two">{plans}</div>
+<div class="sec-head"><span class="n">07</span><h2>Pricing</h2><span class="aside">The API, MCP server and all public data are free. Paid work is for collateral and protocol issuers only.</span></div>
+<div class="plans two">{free_plan}{issuer_plan}</div>
+{bar}
 <p class="note">{E(VULN_ROUTE)}</p>
 </div></section>"""
 
@@ -616,13 +641,20 @@ def protocol_options(idx, pinned=None):
 
 
 def pay_panel(idx):
+    """#req-pay: two settlement tracks, Option A (invoice) first and checked; app.js switches them (settlement=invoice|direct)."""
     treasury = idx["onchain_anchoring"]["treasury_admin"]
     rows = "".join(f'<dt>USDC on {k}</dt><dd>{hexref(v)}</dd>' for k, v in USDC.items())
-    return (f'<div class="pay" id="req-pay"><span class="label">Payment · 24h clearance</span>'
-            f'<p>{E(CLEARANCE_PRICE)} flat, sent to the Pacta treasury (EOA) on Base or Ethereum. USDC only; the same address on both chains.</p>'
-            f'<dl class="kv"><dt>Pacta treasury (EOA)</dt><dd><span class="mono full">{treasury}</span>{copy_btn(treasury)}</dd>{rows}</dl>'
-            f'<p class="hint">Paid already? Add the transaction hash on the left. Otherwise send the brief first: the 24-hour window '
-            f'starts once scope and payment are both confirmed.</p></div>')
+    opts = "".join(
+        f'<label class="pay-opt"><input type="radio" name="settlement" value="{k}"{" checked" if k == DEFAULT_SETTLEMENT else ""}>'
+        f'<span><b>{E(h)}</b><span class="tag">{E(t)}</span><span class="sub">{E(x)}</span></span></label>'
+        for k, (h, t, x, _) in SETTLEMENT.items())
+    t0 = TRACKS[DEFAULT_TRACK]
+    return (f'<div class="pay" id="req-pay"><span class="label">Settlement</span>'
+            f'<p class="pay-sum" id="req-pay-sum">{E(t0[0])} · {E(t0[1])} {E(t0[2])}</p>'
+            f'<div class="opts one settle" role="radiogroup" aria-label="Settlement track">{opts}</div>'
+            f'<dl class="kv" id="req-direct"><dt>{E(TREASURY_LABEL)}</dt><dd><span class="mono full">{treasury}</span>{copy_btn(treasury)}</dd>{rows}</dl>'
+            f'<p class="hint">Option B only: USDC to this externally owned account, the same address on Base and Ethereum. '
+            f'Not a smart-contract wallet.</p></div>')
 
 
 def request_builder(idx, home=""):
@@ -630,7 +662,8 @@ def request_builder(idx, home=""):
         f'<label><input type="radio" name="tier" value="{k}"{" checked" if k == DEFAULT_TRACK else ""}><span><b>{E(t)}</b>'
         f'{" · " + E(p) + (" " + E(u) if u else "")}<span class="sub">{E(sm)}</span></span></label>'
         for k, (t, p, u, sm, _) in TRACKS.items())
-    protos = "".join(f'<label><input type="checkbox" name="protocol" value="{E(n)}"><span>{E(n)}</span></label>'
+    slugs = {n: v["slug"] for n, v in site_protocols(idx).items()}
+    protos = "".join(f'<label><input type="checkbox" name="protocol" value="{E(n)}"{f" data-slug={chr(34)}{slugs[n]}{chr(34)}" if n in slugs else ""}><span>{E(n)}</span></label>'
                      for n in protocol_options(idx))
     gh = f"{REPO}/issues/new?template=request-scan.yml&title=" + urllib.parse.quote("[Pacta Scope] ")
     gm = "https://mail.google.com/mail/?view=cm&fs=1&to=" + urllib.parse.quote(CONTACT) + "&su=" + urllib.parse.quote("Pacta 24h clearance request")
@@ -641,7 +674,7 @@ def request_builder(idx, home=""):
 <div class="field"><label for="req-org">Organization or protocol</label><input id="req-org" name="org" type="text" placeholder="e.g. Example Labs, or the asset you issue"></div>
 <div class="field"><label for="req-scope">Contracts, docs or portfolio</label><textarea id="req-scope" name="scope" placeholder="Public docs URL, mainnet addresses, or the collateral list you curate"></textarea><p class="hint">Public information only. Never paste keys or exploit details here.</p></div>
 <div class="field" id="req-forum-field"><label for="req-forum">Forum proposal URL <span class="legend-note">· optional</span></label><input id="req-forum" name="forum" type="url" placeholder="https://… Morpho, Euler, Aave or Sky forum listing proposal"></div>
-<div class="field" id="req-tx-field"><label for="req-tx">Payment transaction hash <span class="legend-note">· optional</span></label><input id="req-tx" name="tx" type="text" spellcheck="false" placeholder="0x… (Base or Ethereum)"><p class="hint" id="req-tx-hint">A 66-character hash starting with 0x.</p></div>
+<div class="field" id="req-tx-field"><label for="req-tx">Payment transaction hash <span class="legend-note">· Option B · optional</span></label><input id="req-tx" name="tx" type="text" spellcheck="false" placeholder="0x… (Base or Ethereum)"><p class="hint" id="req-tx-hint">A 66-character hash starting with 0x.</p></div>
 <div class="field"><label for="req-contact">How should we reach you?</label><input id="req-contact" name="contact" type="text" placeholder="Work email, Telegram or GitHub handle"></div>
 </div>
 <div class="req-out">
@@ -679,14 +712,14 @@ def faq_section(c, r):
          "For collateral issuers onboarding an asset or clearing a <code>parameter_delta</code> flag: a canonical block-pinned control-plane audit, "
          "a GitBook / config reconciliation PR, a Base Mainnet EAS <i>Aligned</i> attestation and a Curator Diligence Dossier (PDF + JSON) "
          "ready to paste into Morpho, Euler, Aave or Sky forum proposals, in 24 hours, for $5,000 USDC flat. Continuous <i>Aligned</i> "
-         "badge maintenance is optional at $1,500 / month."),
+         "maintenance is optional at $1,500 USDC / month. Settle by formal commercial invoice (PDF) or directly in USDC."),
         ("How do I reproduce a record?",
          "Every record gives the contract, the call signature with all arguments (or the storage slot), the block and the canonical block hash. "
          "Copy its <code>cast</code> command from the inspector or the index and run it against any archive node."),
         ("What happens to exploit-sensitive findings?",
          E(VULN_ROUTE)),
         ("Do I need a wallet?",
-         "No. The inspector, the radar, the briefs and the JSON feed are public and read-only. A wallet is only needed to pay for a clearance."),
+         "No. The inspector, the radar, the briefs and the JSON feed are public and read-only. No wallet is needed for a clearance either: a commercial invoice (PDF) is the default; direct USDC settlement is optional."),
         ("How fresh is the radar?",
          f'The radar states the exact finalized block it was refreshed at (#{r["block_number"]:,}, {E(r["block_time_utc"])}); countdowns are computed '
          f'from each operation’s on-chain ETA. An ETA is when execution becomes possible, not a guarantee that it happens.'),
@@ -907,6 +940,52 @@ def controller_dd(e):
     return out
 
 
+# ---- issuer conversion callouts (briefs + protocol pages) ----
+# /request/?tier=…&protocol=<slug>[&forum=<url>][&settlement=invoice]: app.js prefills the request builder from these
+# (closed enums, sanitised text, .value only). Aligned records never get a delta-remediation pitch.
+SLUG_RE = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
+# radar briefs -> the protocol page of the issuer they concern (the request builder checks that protocol)
+BRIEF_PROTOCOL = {"ethena-ops-0x0ca0-0x1fe5": "ethena-usde-susde", "etherfi-op-0x244e": "ether-fi-core-eeth-weeth",
+                  "treehouse-op-0x2f11": "treehouse-tree-teth"}
+
+
+def request_href(tier, slug, forum=None, settlement=None, home="../../"):
+    assert tier in TRACKS and SLUG_RE.fullmatch(slug), (tier, slug)
+    q = f"tier={tier}&protocol={slug}"
+    if forum:
+        assert forum.startswith("https://") and len(forum) <= 300 and "@" not in forum.split("/")[2], forum
+        q += "&forum=" + urllib.parse.quote(forum, safe="")
+    if settlement:
+        assert settlement in SETTLEMENT
+        q += "&settlement=" + settlement
+    return f"{home}request/?{q}"
+
+
+def is_aligned_page(entries):
+    """Only pages whose every record is an EAS-attested aligned_baseline get the maintenance (not the clearance) callout."""
+    return all(e["classification"] == "aligned_baseline" and not is_pinned(e) for e in entries)
+
+
+def clearance_callout(name, slug, forum=None, home="../../"):
+    return (f'<section class="memo-sec convert" id="issuer-clearance"><span class="label">For issuers</span>'
+            f'<h2>Issuing {E(name)}? Reconcile &amp; Anchor 24h Institutional Clearance</h2>'
+            f'<p>Reconcile documentation drift, verify multisig and timelock control planes across archive RPCs, prepare an upstream '
+            f'docs reconciliation PR, and anchor a Base EAS Aligned Attestation + Curator Diligence Dossier within 24 hours.</p>'
+            f'<div class="convert-cta"><a class="btn primary" href="{E(request_href("clearance", slug, forum, home=home))}" data-cta="clearance">'
+            f'Request 24h Clearance ({E(CLEARANCE_PRICE)}) <span class="arr">→</span></a>'
+            f'<a class="btn" href="{E(request_href("clearance", slug, forum, "invoice", home))}" data-cta="clearance_invoice">Request Commercial Invoice (PDF)</a>'
+            f'</div></section>\n')
+
+
+def maintenance_callout(name, slug, home="../../"):
+    return (f'<section class="memo-sec convert quiet" id="aligned-maintenance">'
+            f'<h2>Operating {E(name)}? Maintain Continuous Aligned Status</h2>'
+            f'<p>Keep your Base EAS Aligned Attestation and Curator Diligence Dossier continuously updated across governance proposals, '
+            f'signer rotations, and timelock upgrades ($1,500 USDC/mo).</p>'
+            f'<p class="convert-cta"><a href="{E(request_href("continuous", slug, home=home))}" data-cta="continuous">Request Continuous Aligned Maintenance ($1,500/mo) →</a>'
+            f'<a href="{E(request_href("continuous", slug, settlement="invoice", home=home))}" data-cta="continuous_invoice">Invoice option</a></p></section>\n')
+
+
 def protocol_page(name, entries, idx, radar, digest=None, slug=None):
     """Static, deterministic protocol safety record (no wall-clock time): every indexed surface with its pinned block.
     index.json Sprint records (Base-EAS-anchored) and RPC-pinned records (not EAS-attested) are labelled as such."""
@@ -982,6 +1061,13 @@ def protocol_page(name, entries, idx, radar, digest=None, slug=None):
     codes = ", ".join(f'<code class="mono">{E(t)}</code>' for t in targets)
     lede = (f'{n} indexed control-plane {"surface" if n == 1 else "surfaces"} for {E(name)}, {pin_clause}. '
             f'{"Contract" if len(targets) == 1 else "Contracts"}: {codes}.')
+    forum = first.get("governance_url") if pinned else None
+    if is_aligned_page(entries):
+        callout = maintenance_callout(name, slug)
+        foot = f'<a href="{E(request_href("continuous", slug))}">Maintain Aligned status · {E(MONITORING_PRICE)} →</a>'
+    else:
+        callout = clearance_callout(name, slug, forum)
+        foot = f'<a href="{E(request_href("clearance", slug, forum))}">Clear findings in 24h · {E(CLEARANCE_PRICE)} →</a>'
     body = f"""<body>
 {topbar("../../")}
 <main id="main" class="memo-wrap">
@@ -991,8 +1077,8 @@ def protocol_page(name, entries, idx, radar, digest=None, slug=None):
 <p class="lede">{lede}</p></header>
 <section class="memo-sec"><h2>Check it live (free)</h2><p>The pre-flight API re-reads the controller, proxy and capabilities of a contract at the latest block. No key, no wallet.</p>
 {term(curl, "Live pre-flight check")}<p>MCP: <code class="mono">{E(MCP_URL)}</code> · tool <code>pacta_check_preflight</code>.</p></section>
-{provenance}{governance_section(name, digest)}{records}{ops}</article>
-<div class="memo-foot"><span>Read-only on-chain analysis. Not investment advice. Exploit-sensitive vulnerabilities are never published here; they go through Immunefi or Cantina bounty programmes.</span><a href="../../request/?tier=clearance">Clear findings in 24h · {E(CLEARANCE_PRICE)} →</a></div>
+{provenance}{governance_section(name, digest)}{records}{callout}{ops}</article>
+<div class="memo-foot"><span>Read-only on-chain analysis. Not investment advice. Exploit-sensitive vulnerabilities are never published here; they go through Immunefi or Cantina bounty programmes.</span>{foot}</div>
 </main>
 {footer(count_line, reg, "../../")}
 <script type="application/ld+json">{ld_json}</script>
@@ -1062,7 +1148,7 @@ def not_found_page(idx, sp=None):
 <dl class="deflist">
 <div><dt><a href="/protocols/">Protocol safety records →</a></dt><dd>Block-pinned control-plane records for {n_protocols} DeFi protocols, each with a <code>cast</code> reproduction.</dd></div>
 <div><dt><a href="/#preflight">Run a free pre-flight check →</a></dt><dd>Who can upgrade, pause or change any contract on Ethereum or Base. No key, no wallet.</dd></div>
-<div><dt><a href="/request/">Request coverage →</a></dt><dd>High-volume SLA access or a 24h collateral clearance attestation.</dd></div>
+<div><dt><a href="/request/">Request coverage →</a></dt><dd>Issuers: a 24h onboarding &amp; delta clearance or continuous Aligned maintenance. High-throughput API SLAs.</dd></div>
 <div><dt>For agents</dt><dd><a href="/llms.txt">llms.txt</a> · <a href="/SKILL.md">SKILL.md</a> · <a href="/.well-known/agent.json">agent.json</a> · <a href="/api/v1/index.json">/api/v1/index.json</a></dd></div>
 </dl></section>
 <section class="memo-sec"><h2>Remote MCP server (free)</h2>
@@ -1108,7 +1194,7 @@ def page(idx, radar):
 {findings_section(idx)}
 {index_section(idx, c, count_line)}
 {verify_section(idx, c)}
-{pricing_section()}
+{pricing_section(idx)}
 {request_section(idx)}
 {faq_section(c, r)}
 {about_section(idx)}
@@ -1123,17 +1209,17 @@ def request_page(idx):
     c = counts(idx)
     count_line = f'{c["sprints"]} Sprints · {c["records"]} Indexed Records'
     reg = idx["onchain_anchoring"]["commitment_registry"]
-    desc = "The API is free for agents ($0, no key). Teams: request high-volume SLA access or a 24h collateral clearance attestation ($5,000 USDC)."
+    desc = "The API is free for agents ($0, no key). Issuers: request a 24h onboarding & delta clearance ($5,000 USDC) or continuous Aligned maintenance."
     body = f"""<body>
 {topbar("../")}
 <main id="main">
 <section class="sec" id="request"><div class="wrap">
 <div class="crumbs"><a href="../">Pacta</a> / Request coverage</div>
 <div class="sec-head"><span class="n">→</span><h2>Request coverage</h2><span class="aside">Nothing is sent until you choose a channel</span></div>
-<p class="sec-intro">Agents do not need this page: the API, MCP server and all public data are free with no key (<a href="../#preflight">start here</a>). For high-volume SLA access or an on-chain clearance, pick a track and the protocols you hold, run or issue. The scope brief builds in your browser; open it as a pre-filled GitHub intake issue, compose it in Gmail, or copy it with our address. Public data stays free either way.</p>
+<p class="sec-intro">Agents do not need this page: the API, MCP server and all public data are free with no key (<a href="../#preflight">start here</a>). For a 24h onboarding &amp; delta clearance, continuous Aligned maintenance or a high-throughput API SLA, pick a track and the protocols you issue, run or hold. The scope brief builds in your browser; open it as a pre-filled GitHub intake issue, compose it in Gmail, or copy it with our address. Public data stays free either way.</p>
 {request_builder(idx, "../")}
 </div></section>
-{pricing_section("../")}
+{pricing_section(idx, "../")}
 </main>
 {footer(count_line, reg, "../")}
 </body></html>
@@ -1159,6 +1245,8 @@ def brief_page(slug, desc, idx, radar):
                 f'<dt>State</dt><dd>{state} at finalized block <span class="num">#{r["block_number"]:,}</span> ({E(r["block_time_utc"])}) '
                 f'<span class="badge final">Scanner-pinned (L1 finalized)</span></dd></dl>')
     content = content.replace("</header>", "</header>\n" + meta, 1)
+    issuer = item["protocol"] if item else title
+    content = content.rstrip("\n") + "\n" + clearance_callout(issuer, BRIEF_PROTOCOL[slug])
     c = counts(idx)
     count_line = f'{c["sprints"]} Sprints · {c["records"]} Indexed Records'
     reg = idx["onchain_anchoring"]["commitment_registry"]
@@ -1217,14 +1305,18 @@ def llms(idx, radar):
         f"- EAS schema: `{a['eas_schema_uid']}`. {anchoring_text(c)}",
     ] + [f"- Multi-attest tx, Sprints {r_}: `{tx}`" for r_, tx in c["multi_txs"].items()] + [
         "- Per-sprint attestation UIDs: `onchain_anchoring.sprint_eas_attestations` in /api/v1/index.json; each record's `base_eas_uid`.", "",
-        "## Engagements (collateral issuers)",
-        f"- 24h Collateral Onboarding & Delta Clearance Attestation: {CLEARANCE_PRICE} flat (optional continuous Aligned badge maintenance: {MONITORING_PRICE}). Canonical block-pinned control-plane audit, GitBook / config reconciliation PR, Base Mainnet EAS Aligned attestation in PactaCommitmentRegistry, and a Curator Diligence Dossier (PDF + JSON) for Morpho, Euler, Aave and Sky forum proposals. Clears open parameter_delta flags or onboards a new asset.",
-        f"- Payment: USDC on Base (`{USDC['Base']}`) or Ethereum (`{USDC['Ethereum']}`) to the Pacta treasury (EOA) `{a['treasury_admin']}` (same address on both chains).",
+        "## Engagements (collateral and protocol issuers only; curators, risk teams and agents never pay)",
+        f"- 24h Onboarding & Delta Clearance: {CLEARANCE_PRICE} flat. Archive-RPC control-plane verification, an upstream GitBook / docs reconciliation PR, a Base Mainnet EAS Aligned attestation in PactaCommitmentRegistry, and a Curator Diligence Dossier (PDF + JSON) for Morpho, Euler, Aave and Sky forum proposals, within 24 hours. Clears open parameter_delta flags or onboards a new asset. Request: {BASE_URL}/request/?tier=clearance",
+        f"- Continuous Aligned Maintenance: {MONITORING_PRICE}. Keeps the Aligned attestation and dossier current across governance proposals, signer rotations and timelock upgrades. Request: {BASE_URL}/request/?tier=continuous",
+        f"- High-throughput API (> 60 requests / minute or a dedicated SLA): x402 metered endpoints, or an Enterprise API key priced on scope: {BASE_URL}/request/?tier=api_sla",
+        f"- Settlement, Option A (recommended for protocol treasuries): a formal commercial invoice (PDF) with verified counterparty payment instructions, issued on scope confirmation; no upfront transfer is needed to open intake.",
+        f"- Settlement, Option B (direct express): USDC on Base (`{USDC['Base']}`) or Ethereum (`{USDC['Ethereum']}`) to the Pacta treasury (direct settlement EOA) `{a['treasury_admin']}` (an externally owned account; the same address on both chains).",
         "- Community queue: free, unscheduled (typically 6–8 weeks).",
-        f"- Request: {BASE_URL}/request/ (builds a scope brief; opens a pre-filled GitHub intake issue or Gmail compose, or copies the brief).", "",
+        f"- Request: {BASE_URL}/request/ (builds a scope brief; opens a pre-filled GitHub intake issue or Gmail compose, or copies the brief). Prefill: `?tier=clearance|continuous|api_sla&protocol=<slug>&forum=<https URL>&settlement=invoice|direct`.", "",
         "## x402 API (live; free during the launch)",
         f"- On-demand scans of contracts outside the index. Free launch: every route answers HTTP 200 at $0 with no payment header (pricingMode free_launch); the x402 flow below applies only when the operator switches pricingMode to x402_paid. Live gateway: {B2A.X402_URL} (Cloudflare Worker, x402Versions [1, 2]: v1 network `base` with `X-PAYMENT` / `X-PAYMENT-RESPONSE`, v2 network `{B2A.X402_NETWORK_V2}` with `PAYMENT-REQUIRED` / `PAYMENT-SIGNATURE` / `PAYMENT-RESPONSE`; USDC on Base, payTo `{B2A.PAY_TO}`, maxTimeoutSeconds {B2A.X402_MAX_TIMEOUT_S}). Routes (x402_paid prices): `GET /v1/check/preflight?chain=&address=` ($0.01), `GET /v1/scan/control-plane?chain=&address=` ($0.10), `GET /v1/scan/timelock-op?chain=&timelock=&opId=` ($0.25), `GET /v1/scan/proposal-diff?forum=&topicId=` ($0.15), `GET /v1/briefs/live-timelocks` ($0.10); free `/health`, `/.well-known/x402` (Bazaar discovery), `/v1/sample/control-plane`. A bare GET (no query) or zero-byte POST with no payment header on a paid route returns HTTP 402 with both challenges; the Bazaar extension carries a JSON Schema draft 2020-12 schema.",
-        f"- Remote MCP: {MCP_URL} (free, no install). Local stdio server (from a clone of the repo; npm publication pending): set `PACTA_X402_URL={B2A.X402_URL}` to enable the scan tools; in x402_paid mode pay with `xPaymentHeader` (v1) or `paymentSignatureHeader` (v2). Settlement receipts are the facilitator's assertion (onchainReceiptVerified: false).", "",
+        f"- Remote MCP: {MCP_URL} (free, no install). Local stdio server (from a clone of the repo; npm publication pending): set `PACTA_X402_URL={B2A.X402_URL}` to enable the scan tools; in x402_paid mode pay with `xPaymentHeader` (v1) or `paymentSignatureHeader` (v2). The MCP client does not re-check receipts on-chain (onchainReceiptVerified: false); the gateway does.",
+        f"- Gateway settlement guard: {B2A.X402_GATEWAY_GUARD_NOTE}", "",
         "## Contact",
         f"- {CONTACT} · {REPO} · {FN} · security: {BASE_URL}/.well-known/security.txt", "",
     ]

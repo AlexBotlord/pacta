@@ -898,6 +898,16 @@ def main():
     check("registries: glama.json (schema + maintainer), smithery.yaml (stdio from the Dockerfile + remote URL), server.json + server.remote.json remotes (streamable-http), Dockerfile stdio entrypoint",
           all(reg_ok.values()), str({k: v for k, v in reg_ok.items() if not v}))
 
+    # Codex F1 (task-70ae059323fc): the published replay scope is exact (best-effort; not globally atomic without Durable Objects)
+    f1_files = ["docs/.well-known/agent.json", "docs/.well-known/mcp.json", "docs/llms.txt", "docs/llms-full.txt", "docs/llms/index.html",
+                "docs/SKILL.md", "README.md", "REMEDIATION_SERVICES.md"]
+    f1_bad = [f for f in f1_files if re.search(r"accepted once|buys one product only|buys exactly one product", read(f), re.I)]
+    card_f1 = json.loads(read("docs/.well-known/agent.json"))["x402"]
+    check("x402 settlement guard replay scope is exact on every agent surface: no 'accepted once' / 'buys one product only'; best-effort, not globally atomic without Durable Objects",
+          not f1_bad and card_f1["settlementGuard"]["replay"].startswith("best-effort replay rejection: ")
+          and card_f1["settlementGuard"]["replay"].endswith("not globally atomic without Durable Objects")
+          and all("not globally atomic without Durable Objects" in read(f) for f in ("docs/.well-known/agent.json", "docs/.well-known/mcp.json", "docs/llms.txt", "docs/llms-full.txt")),
+          str(f1_bad))
     remote_tools = ["pacta_check_preflight", "pacta_scan_control_plane", "pacta_scan_timelock_op", "pacta_scan_proposal_diff", "pacta_get_live_timelocks"]
     man_ = json.loads(read("docs/.well-known/mcp.json"))
     card_ = json.loads(read("docs/.well-known/agent.json"))

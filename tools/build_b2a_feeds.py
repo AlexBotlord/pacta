@@ -57,12 +57,17 @@ X402_RECEIPT_NOTE = ("A settled call returns 200 with both PAYMENT-RESPONSE and 
 X402_GATEWAY_GUARD = {
     "onchainReceiptVerification": True, "appliesTo": "x402_paid settlements only", "chainId": 8453, "rpcMethod": "eth_getTransactionReceipt",
     "requires": "receipt status 0x1 and canonical USDC (Base) Transfer(payer -> payTo) logs summing to at least the route price",
-    "asset": USDC_BASE, "payTo": PAY_TO, "replay": "each settlement tx hash is accepted once (isolate memory + KV used_tx:<txHash>, 30-day TTL)",
+    "asset": USDC_BASE, "payTo": PAY_TO, "replay": ("best-effort replay rejection: synchronous same-isolate in-flight + FIFO (4,096) sets block same-isolate "
+               "concurrent/serial replays, and non-atomic eventually-consistent KV used_tx:<txHash> (30-day TTL) blocks "
+               "post-propagation serial cross-isolate replays (402 replay_settlement_tx); concurrent cross-isolate races before "
+               "KV write/propagation are not globally atomic without Durable Objects"),
     "failures": {"402": ["unconfirmed_or_reverted_settlement_tx", "insufficient_onchain_usdc_transfer", "replay_settlement_tx"],
                  "502": ["settlement_rpc_unavailable"]}}
 X402_GATEWAY_GUARD_NOTE = (f"In x402_paid mode the gateway verifies every settlement on Base before releasing the product: eth_getTransactionReceipt "
                            f"must show status 0x1 and canonical USDC Transfer(payer -> payTo {PAY_TO}) logs summing to at least the route price, "
-                           "and each settlement tx hash buys one product only (402 replay_settlement_tx). Otherwise the product is withheld: "
+                           "and replays are rejected on a best-effort basis (402 replay_settlement_tx) via synchronous same-isolate state and "
+                           "non-atomic eventually-consistent KV used_tx:<txHash>; concurrent cross-isolate races are not globally atomic "
+                           "without Durable Objects. Otherwise the product is withheld: "
                            "402 unconfirmed_or_reverted_settlement_tx / insufficient_onchain_usdc_transfer, or 502 settlement_rpc_unavailable "
                            "when no Base RPC answers.")
 TREASURY_USE = ("Pacta treasury (direct settlement EOA): Option B direct on-chain USDC settlement of commercial issuer clearance "

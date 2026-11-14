@@ -170,7 +170,7 @@
   "discovery": "https://pacta-x402.pacta.workers.dev/.well-known/x402",
   "enableWith": "PACTA_X402_URL=https://pacta-x402.pacta.workers.dev",
   "gatewayOnchainReceiptVerification": true,
-  "gatewaySettlementGuard": "In x402_paid mode the gateway verifies every settlement on Base before releasing the product: eth_getTransactionReceipt must show status 0x1 and canonical USDC Transfer(payer -> payTo 0xcA4E2ff22B69A7284210c47BdeE21Aac1269da09) logs summing to at least the route price, and each settlement tx hash buys one product only (402 replay_settlement_tx). Otherwise the product is withheld: 402 unconfirmed_or_reverted_settlement_tx / insufficient_onchain_usdc_transfer, or 502 settlement_rpc_unavailable when no Base RPC answers.",
+  "gatewaySettlementGuard": "In x402_paid mode the gateway verifies every settlement on Base before releasing the product: eth_getTransactionReceipt must show status 0x1 and canonical USDC Transfer(payer -> payTo 0xcA4E2ff22B69A7284210c47BdeE21Aac1269da09) logs summing to at least the route price, and replays are rejected on a best-effort basis (402 replay_settlement_tx) via synchronous same-isolate state and non-atomic eventually-consistent KV used_tx:<txHash>; concurrent cross-isolate races are not globally atomic without Durable Objects. Otherwise the product is withheld: 402 unconfirmed_or_reverted_settlement_tx / insufficient_onchain_usdc_transfer, or 502 settlement_rpc_unavailable when no Base RPC answers.",
   "gatewayUrl": "https://pacta-x402.pacta.workers.dev",
   "maxTimeoutSeconds": 60,
   "networks": [

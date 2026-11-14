@@ -313,7 +313,9 @@ test("free-tier caller attribution (stdio): gateway tools require caller_agent /
   assert.equal(none.error.code, -32602);
   for (const v of ["caller_agent (missing)", "requester_role (missing)", "caller_purpose (missing)", ...REQUESTER_ROLES, ...CALLER_PURPOSES, "claude-code"]) assert.ok(none.error.message.includes(v), v);
   const tok = (p) => p + "abcdefghijklmnop0123456789";
-  for (const a of ["alice@example.com", "my agent", "0x" + "ab".repeat(20), "https://evil.example.com", "10.0.0.7", tok("sk" + "-"), tok("gh" + "p_"), "a", "x".repeat(49)]) {
+  const jwt = "ey" + "JhbGciOiJIUzI1NiJ9.e30.sig";   // JWT: mixed case and already lowercased (Codex task-344fc12c4e24)
+  for (const a of ["alice@example.com", "my agent", "0x" + "ab".repeat(20), "https://evil.example.com", "10.0.0.7", tok("sk" + "-"), tok("gh" + "p_"), "a", "x".repeat(49),
+    jwt, jwt.toLowerCase(), "agent/" + "ey" + "jhbgcioi.x1"]) {
     const r = await call({ ...CALLER, caller_agent: a });
     assert.equal(r.error?.code, -32602, a);
     assert.match(r.error.message, /caller_agent \(invalid\)/);
@@ -322,7 +324,8 @@ test("free-tier caller attribution (stdio): gateway tools require caller_agent /
   assert.equal(f.calls.length, 0, "a rejected call never reaches the gateway");
   assert.equal((await call({ ...CALLER, caller_agent: "Cursor" })).result.isError, false);
   assert.equal(f.calls[0].url, `${BASE_URL}/v1/check/preflight?chain=base&address=${FROM}&caller_agent=cursor&requester_role=defi_developer&caller_purpose=integration_testing`);
-  assert.deepEqual([normalizeCallerAgent(" Claude-Code "), normalizeCallerAgent("user@example.com")], ["claude-code", null]);
+  assert.deepEqual([normalizeCallerAgent(" Claude-Code "), normalizeCallerAgent("user@example.com"), normalizeCallerAgent(jwt), normalizeCallerAgent("eyeglass-agent")],
+    ["claude-code", null, null, "eyeglass-agent"]);
   // paying: never rejected for missing caller fields, and the request carries no attribution (x402 resource unchanged)
   const paid = await call({ xPaymentHeader: "not-base64!" });
   assert.notEqual(paid.error?.code, -32602);

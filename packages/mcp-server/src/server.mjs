@@ -170,10 +170,13 @@ export const CALLER_FIELDS = Object.freeze(["caller_agent", "requester_role", "c
 const CALLER_AGENT_RE = /^[a-z0-9][a-z0-9._/-]{1,47}$/;
 const CALLER_AGENT_DENY = /(?:^|[^a-z0-9])(?:\d{1,3}\.){3}\d{1,3}(?:$|[^0-9])|0x[0-9a-f]{16,}|https?|sk-|sk_live|ghp_|gho_|ghu_|ghs_|github_pat_|akia|bearer|xox[a-z]-|token|secret|passw|apikey|api_key|\.\./;
 const CALLER_EXAMPLE = Object.freeze({ caller_agent: "claude-code", requester_role: "autonomous_agent", caller_purpose: "pre_trade_safety" });
+// A JWT / base64url JSON header ("eyJ" is base64 for '{"') survives lowercasing as "eyj…" and fits the slug charset:
+// never accept it as a caller slug, at the start or after a separator (Codex task-344fc12c4e24).
+const CALLER_AGENT_JWT = /(?:^|[/_.-])eyj[a-z0-9_-]{4,}\.[a-z0-9_-]{2,}/i;
 export function normalizeCallerAgent(v) {
   if (typeof v !== "string") return null;
   const s = v.trim().toLowerCase();
-  return CALLER_AGENT_RE.test(s) && !CALLER_AGENT_DENY.test(s) ? s : null;
+  return CALLER_AGENT_RE.test(s) && !CALLER_AGENT_DENY.test(s) && !CALLER_AGENT_JWT.test(s) ? s : null;
 }
 /** {fields (valid, normalized), problems: [{field, reason: "missing" | "invalid"}]}. */
 export function callerContext(src) {

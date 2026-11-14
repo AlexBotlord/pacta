@@ -33,7 +33,7 @@ MCP_REMOTE_URL = X402_URL + "/mcp"                               # remote MCP (S
 OPENAPI_URL = X402_URL + "/openapi.json"
 PRICING_MODE = "free_launch"                                     # live Worker default: $0, no key, no wallet; x402 behind a switch
 RATE_LIMIT_PER_MIN = 60
-REMOTE_TOOLS = ["pacta_check_preflight", "pacta_scan_control_plane", "pacta_scan_timelock_op", "pacta_scan_proposal_diff", "pacta_get_live_timelocks"]
+REMOTE_TOOLS = ["pacta_lookup_protocol", "pacta_check_preflight", "pacta_scan_control_plane", "pacta_scan_timelock_op", "pacta_scan_proposal_diff", "pacta_get_live_timelocks"]
 STDIO_FROM_SOURCE = "node packages/mcp-server/bin/pacta-mcp.mjs"  # from a clone of the repository (npm publication pending)
 FREE_LAUNCH_NOTE = (f"Free launch: every route answers HTTP 200 at $0 with no API key and no wallet ({RATE_LIMIT_PER_MIN} requests / minute per caller). "
                     "The x402 prices below apply only if the operator switches pricingMode to x402_paid.")
@@ -74,7 +74,7 @@ TREASURY_USE = ("Pacta treasury (direct settlement EOA): Option B direct on-chai
                 "(Option A is a formal commercial invoice). An externally owned account, not a smart-contract wallet; not the x402 payTo.")
 MCP_NAME = "io.github.Fractal-Neurons/pacta"
 MCP_PACKAGE = "@pacta/mcp-server"
-MCP_VERSION = "0.1.2"
+MCP_VERSION = "0.1.3"
 CALLER_FIELDS_DOC = 'Free MCP tier: every tools/call takes three required, non-personal fields: caller_agent (a lowercase slug naming the calling agent, IDE or framework, e.g. claude-code, cursor, coinbase-agentkit; never a name, e-mail, IP, URL, address or secret), requester_role (autonomous_agent | defi_developer | risk_curator_analyst | security_researcher | protocol_team | institutional_allocator | individual_user) and caller_purpose (pre_trade_safety | collateral_due_diligence | yield_allocation | security_audit | governance_monitoring | integration_testing | general_research). Missing or invalid values get JSON-RPC -32602 listing what is allowed. Over REST they are optional query parameters. Location is never asked: only the Cloudflare edge country is counted; no IP is stored.'                                            # @pacta/mcp-server package.json version (SKILL.md is shipped in it)
 MCP_ENV = [("PACTA_INDEX_PATH", "Local snapshot of /api/v1/index.json (offline use)"),
            ("PACTA_PROPOSALS_PATH", "Local snapshot of /api/v1/proposals.json"),
@@ -179,12 +179,21 @@ def proposals(idx, onb):
 
 
 FEEDS = [("/api/v1/index.json", "Block-pinned control-plane index (every record: target, call, block, block hash, classification, Base EAS UID)"),
+         ("/api/v1/lookup.json", "Protocol / token lookup catalog: 53 protocols + 8 briefs with slug, aliases, checksummed contracts, evidence basis and preflightArgs"),
          ("/api/v1/onboarding.json", "Onboarding verification scans: every check with call, calldata, raw result, decoded value; role maps"),
          ("/api/v1/proposals.json", "Live governance proposals (Aave, Euler, Morpho, Sky) mapped to block-pinned observations"),
          ("/api/v1/radar.json", "Queued timelock operations with on-chain ETAs at a finalized block"),
          ("/llms.txt", "Short index for language models"), ("/llms-full.txt", "This file: the complete agent reference"),
          ("/.well-known/agent.json", "A2A Agent Card"), ("/.well-known/mcp.json", "MCP discovery manifest"), ("/SKILL.md", "Portable agent skill")]
-MCP_TOOLS = [("pacta_list_commitments", "free", "Filter indexed records (protocol, classification, sprint, limit)"),
+LOOKUP_URL = f"{X402_URL}/v1/protocols/lookup"
+LOOKUP_DOC = (f"Name lookup first: if you only have a protocol or token name (e.g. Aave, Ethena, USDe, Moonwell, kUSD), call pacta_lookup_protocol "
+              f"(or GET {LOOKUP_URL}?q=<name>) to resolve its verified record: canonical slug and page URL, checksummed primary contract and controller, "
+              "classification with its evidence basis (eas_attested: Base-EAS-attested, documentation compared; rpc_observed: on-chain control plane "
+              "pinned over JSON-RPC, documentationComparison not_assessed; briefs), and preflightArgs {chain, address} for pacta_check_preflight. "
+              "53 protocols + 8 briefs, answered in memory with no RPC; free in every pricing mode; an empty query lists the catalog. "
+              f"Catalog: {BASE}/api/v1/lookup.json.")
+MCP_TOOLS = [("pacta_lookup_protocol", "free", "Resolve a protocol or token name, symbol, slug or 0x address to its verified record and preflightArgs {chain, address} (query, chain, kind, limit; no RPC)"),
+             ("pacta_list_commitments", "free", "Filter indexed records (protocol, classification, sprint, limit)"),
              ("pacta_get_anchoring", "free", "Base EAS anchoring: PactaCommitmentRegistry, schema, sprint attestation UIDs"),
              ("pacta_list_proposals", "free", "Governance proposals feed (forum, topic_id, chain, limit, include_repro)"),
              ("pacta_x402_discover", "free", "x402 gateway status and discovery manifest (only when PACTA_X402_URL is set)"),
@@ -227,6 +236,7 @@ def llms_full(idx, radar, prop, onb, pinned=None):
          f"MCP client config: {{\"mcpServers\": {{\"pacta\": {{\"url\": \"{MCP_REMOTE_URL}\"}}}}}} · remote tools: {', '.join(REMOTE_TOOLS)}.",
          f"- Local stdio server (from a clone; npm publication pending): `{STDIO_FROM_SOURCE}`. OpenAPI 3.1: {OPENAPI_URL}.",
          f"- {CALLER_FIELDS_DOC}",
+         f"- {LOOKUP_DOC}",
          "- Tools:"] + [f"  - {n} ({p}): {d}" for n, p, d in MCP_TOOLS] + [
          f"- Paid tools are disabled unless PACTA_X402_URL is set (opt-in: PACTA_X402_URL={X402_URL}); the client refuses any 402 challenge (v1 body or v2 "
          "PAYMENT-REQUIRED header) whose payTo, asset or network differ from the values below, or whose amount exceeds $1.00 by default. Pay with "
@@ -296,6 +306,10 @@ def agent_card(prop, onb, idx):
         "defaultOutputModes": ["application/json", "text/markdown"],
         "authentication": {"schemes": ["none"], "notes": "No API key, no account, no wallet during the free launch. If metered mode is switched on later, live scans use x402 instead of keys: v1 (HTTP 402 + X-PAYMENT) or v2 (PAYMENT-REQUIRED + PAYMENT-SIGNATURE)."},
         "skills": [
+            {"id": "protocol-lookup", "name": "Protocol / token name lookup",
+             "description": "Resolve a protocol or token name (Aave, Ethena, USDe, Moonwell, kUSD, ...) to Pacta's verified record and the checksummed contract to check next. Free, in memory, every pricing mode.",
+             "tags": ["lookup", "discovery", "agent-safety", "free"], "inputModes": ["application/json"], "outputModes": ["application/json"],
+             "examples": [f"GET {LOOKUP_URL}?q=ethena", "MCP tool pacta_lookup_protocol {\"query\": \"USDe\"}"]},
             {"id": "contract-preflight", "name": "Pre-execution contract check",
              "description": "Before approving, depositing into or calling a contract: who controls it (EOA, Safe, timelock, nobody), how fast it can change, and whether it can pause, blacklist or upgrade. Free, one call.",
              "tags": ["preflight", "agent-safety", "proxy", "timelock", "multisig", "free"], "inputModes": ["application/json"], "outputModes": ["application/json"],
@@ -318,6 +332,7 @@ def agent_card(prop, onb, idx):
         ],
         "endpoints": {"feeds": {p: f"{BASE}{p}" for p, _ in FEEDS}, "mcp_manifest": f"{BASE}/.well-known/mcp.json", "skill": f"{BASE}/SKILL.md",
                       "x402_gateway": X402_URL, "mcp_remote": MCP_REMOTE_URL, "openapi": OPENAPI_URL, "preflight": f"{X402_URL}/v1/check/preflight",
+                      "lookup": LOOKUP_URL, "lookup_catalog": f"{BASE}/api/v1/lookup.json",
                       "protocols": f"{BASE}/protocols/"},
         "pricing": {"mode": PRICING_MODE, "priceUsd": "0.00", "apiKey": False, "wallet": False, "rateLimitPerMinute": RATE_LIMIT_PER_MIN,
                     "note": FREE_LAUNCH_NOTE},
@@ -348,6 +363,7 @@ def mcp_manifest(idx, onb):
                        {"type": "stdio", "command": "node", "args": ["packages/mcp-server/bin/pacta-mcp.mjs"],
                         "install": "from a clone of the repository (npm publication pending)"}],
         "openapi": OPENAPI_URL,
+        "lookup": {"tool": "pacta_lookup_protocol", "http": LOOKUP_URL, "catalog": f"{BASE}/api/v1/lookup.json", "free": True, "note": LOOKUP_DOC},
         "environment": [{"name": n, "required": False, "secret": False, "description": d} for n, d in MCP_ENV],
         "tools": [{"name": n, "access": "free" if p == "free" else PRICING_MODE, "price": None if p == "free" else p.split(" ")[1],
                    "effectivePriceUsd": "0.00", "description": d} for n, p, d in MCP_TOOLS],
@@ -380,6 +396,7 @@ or a live collateral onboarding proposal. Pacta publishes {m['records_indexed']}
 ## Free pre-execution API (launch: $0, no API key, no wallet)
 - Remote MCP, zero install: `{MCP_REMOTE_URL}` (Streamable HTTP). Claude Code: `claude mcp add --transport http pacta {MCP_REMOTE_URL}`.
   Tools: {", ".join(f"`{t}`" for t in REMOTE_TOOLS)}.
+- {LOOKUP_DOC}
 - {CALLER_FIELDS_DOC}
 - One call: `curl -s "{X402_URL}/v1/check/preflight?chain=ethereum&address=0x..."` returns `verdict`, `riskScore` (0-100), proxy /
   implementation (EIP-1967, EIP-1822 or beacon), `controller` (eoa, multisig_safe, timelock, contract,

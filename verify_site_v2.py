@@ -829,11 +829,11 @@ def main():
         "defined in llms.txt + llms-full.txt": all("rpc_observed (on-chain control plane pinned at an archive block height" in read(f) or
                                                    "Classification rpc_observed: on-chain control plane pinned at an archive block height" in read(f)
                                                    for f in ("docs/llms.txt", "docs/llms-full.txt")),
-        "mcp.json packageVersion 0.1.2": json.loads(read("docs/.well-known/mcp.json")).get("packageVersion") == "0.1.2"
+        "mcp.json packageVersion 0.1.3": json.loads(read("docs/.well-known/mcp.json")).get("packageVersion") == "0.1.3"
                                          == json.loads(read("packages/mcp-server/package.json"))["version"],
-        "llms-full names v0.1.2": "@pacta/mcp-server v0.1.2" in read("docs/llms-full.txt"),
+        "llms-full names v0.1.3": "@pacta/mcp-server v0.1.3" in read("docs/llms-full.txt"),
     }
-    check("Codex F1: all 20 RPC-pinned records are classification rpc_observed with documentation linked but not compared (no 'publishes' claim, no documented delays); their pages and /protocols/ rows show only the neutral 'RPC-observed baseline' badge; rpc_observed defined in llms.txt + llms-full.txt; mcp.json packageVersion 0.1.1; llms-full names v0.1.1",
+    check("Codex F1: all 20 RPC-pinned records are classification rpc_observed with documentation linked but not compared (no 'publishes' claim, no documented delays); their pages and /protocols/ rows show only the neutral 'RPC-observed baseline' badge; rpc_observed defined in llms.txt + llms-full.txt; mcp.json packageVersion 0.1.3; llms-full names v0.1.3",
           all(f1_ok.values()), str([k for k, v in f1_ok.items() if not v]))
     # free-tier MCP caller attribution (task-06d4550a8b0f): documented on every agent surface; the browser checker names itself
     roles_ = ["autonomous_agent", "defi_developer", "risk_curator_analyst", "security_researcher", "protocol_team", "institutional_allocator", "individual_user"]
@@ -908,7 +908,8 @@ def main():
           and card_f1["settlementGuard"]["replay"].endswith("not globally atomic without Durable Objects")
           and all("not globally atomic without Durable Objects" in read(f) for f in ("docs/.well-known/agent.json", "docs/.well-known/mcp.json", "docs/llms.txt", "docs/llms-full.txt")),
           str(f1_bad))
-    remote_tools = ["pacta_check_preflight", "pacta_scan_control_plane", "pacta_scan_timelock_op", "pacta_scan_proposal_diff", "pacta_get_live_timelocks"]
+    remote_tools = ["pacta_lookup_protocol", "pacta_check_preflight", "pacta_scan_control_plane", "pacta_scan_timelock_op", "pacta_scan_proposal_diff",
+                    "pacta_get_live_timelocks"]
     man_ = json.loads(read("docs/.well-known/mcp.json"))
     card_ = json.loads(read("docs/.well-known/agent.json"))
     man_remote = next((t_ for t_ in man_.get("transports", []) if t_.get("type") == "streamable-http"), {})
@@ -916,15 +917,72 @@ def main():
     surfaces5 = {
         "mcp.json": man_remote.get("url") == MCP_ and man_remote.get("tools") == remote_tools,
         "agent.json": card_.get("endpoints", {}).get("mcp_remote") == MCP_ and card_.get("pricing", {}).get("mode") == "free_launch"
-                      and card_["x402"].get("pricingMode") == "free_launch" and card_["skills"][0]["id"] == "contract-preflight",
+                      and card_["x402"].get("pricingMode") == "free_launch" and [k["id"] for k in card_["skills"]][:2] == ["protocol-lookup", "contract-preflight"],
         "SKILL.md": all(n in primary["docs/SKILL.md"] for n in remote_tools),
         "llms.txt": all(n in primary["docs/llms.txt"] for n in remote_tools) and "## Free API for agents" in primary["docs/llms.txt"],
         "llms-full.txt": all(n in primary["docs/llms-full.txt"] for n in remote_tools),
         "@pacta/mcp-server": 'name: "pacta_check_preflight"' in srv_src and "PAID_ROUTES.checkPreflight" in srv_src,
         "SKILL.md copies": read("packages/mcp-server/SKILL.md") == primary["docs/SKILL.md"],
     }
-    check("remote MCP: 5 tools (pacta_check_preflight first) on mcp.json, agent.json (free_launch pricing), SKILL.md, llms.txt, llms-full.txt; @pacta/mcp-server ships pacta_check_preflight; SKILL.md copies byte-identical",
+    check("remote MCP: 6 tools (pacta_lookup_protocol, then pacta_check_preflight) on mcp.json, agent.json (free_launch pricing), SKILL.md, llms.txt, llms-full.txt; @pacta/mcp-server ships pacta_check_preflight; SKILL.md copies byte-identical",
           all(surfaces5.values()), str({k: v for k, v in surfaces5.items() if not v}))
+
+    # ---- protocol / token lookup (task-14e685be73f9): docs/api/v1/lookup.json == packages/mcp-server/src/lookup.mjs, exact parity with the feeds
+    import build_lookup as BL
+    lk_doc = json.loads(read("docs/api/v1/lookup.json"))
+    node_ = shutil.which("node")
+    probe = ("import('" + os.path.join(ROOT, "packages", "mcp-server", "src", "lookup.mjs").replace("\\", "/") + "').then((M) => { const q = (x) => M.lookupProtocols(x); "
+             "process.stdout.write(JSON.stringify({ catalog: M.LOOKUP_CATALOG, totals: M.LOOKUP_TOTALS, "
+             "probes: Object.fromEntries(['ethena', 'usde', 'aave', 'moonwell', 'kusd', 'uniswap', 'ether.fi'].map((k) => [k, q({ query: k }).results.slice(0, 2).map((r) => [r.slug, r.match])])), "
+             "empty: q({}), base: q({ chain: 'base', limit: 61 }).results.map((r) => r.chain), over: q({ query: 'x'.repeat(81) }) })); })")
+    lk_run = subprocess.run([node_, "--input-type=module", "-e", probe], capture_output=True, text=True, timeout=60) if node_ else None
+    lk = json.loads(lk_run.stdout) if lk_run and lk_run.returncode == 0 else {}
+    sp_lk = BS.site_protocols(json.loads(read("docs/api/v1/index.json")))
+    idx_lk, pin_lk = json.loads(read("docs/api/v1/index.json")), json.loads(read("docs/api/v1/rpc-pinned.json"))
+    onb_lk, rad_lk = json.loads(read("docs/api/v1/onboarding.json")), json.loads(read("docs/api/v1/radar.json"))
+    items_lk = lk_doc.get("items", [])
+    by_lk = {x["slug"]: x for x in items_lk}
+    surf_lk = {su["id"]: (x, su) for x in items_lk if x.get("easAttested") for su in x["surfaces"]}
+    lk_ok = {
+        "schema + totals 53/8/33/20": lk_doc.get("schema") == "pacta.protocol_lookup_catalog.v1"
+            and lk_doc.get("totals") == {"protocols": 53, "briefs": 8, "easAttestedProtocols": 33, "rpcObservedProtocols": 20, "items": 61},
+        "lookup.json == src/lookup.mjs (node import)": bool(lk) and lk.get("catalog") == items_lk and lk.get("totals") == lk_doc.get("totals"),
+        "regenerates byte-identically": BL.catalog_json(BL.build_items(sp_lk, onb_lk, rad_lk, BS.BRIEF_PROTOCOL)) == read("docs/api/v1/lookup.json"),
+        "53 protocol slugs == /protocols/ pages": sorted(x["slug"] for x in items_lk if x["kind"] == "protocol") == sorted(v["slug"] for v in sp_lk.values()),
+        "every index.json record -> its EAS protocol (uid, classification, target)": len(surf_lk) == len(idx_lk["entries"]) and all(
+            e["id"] in surf_lk and surf_lk[e["id"]][1]["classification"] == e["classification"] and surf_lk[e["id"]][1]["targetContract"] == e["target_contract"]
+            and e["base_eas_uid"] in surf_lk[e["id"]][0]["baseEasUids"] for e in idx_lk["entries"]),
+        "every rpc-pinned record: rpc_observed, not EAS, not_assessed": all(
+            e["slug"] in by_lk and by_lk[e["slug"]]["primaryContract"] == e["target_contract"] and by_lk[e["slug"]]["controllerAddress"] == e["controller_address"]
+            and (by_lk[e["slug"]]["classification"], by_lk[e["slug"]]["easAttested"], by_lk[e["slug"]]["documentationComparison"]) == ("rpc_observed", False, "not_assessed")
+            for e in pin_lk["entries"]),
+        "rpc_observed never aligned / parameter_delta": not [x["slug"] for x in items_lk if not x.get("easAttested") and x["classification"] in
+                                                             ("aligned_baseline", "parameter_delta", "protective_delta", "mixed")],
+        "8 briefs (onboarding + radar)": sorted(x["slug"] for x in items_lk if x["kind"] == "brief") == sorted(
+            [b["slug"] for b in onb_lk["briefs"]] + [i["brief"].rstrip("/").split("/")[-1] for i in rad_lk["items"]]),
+        "EIP-55 + preflightArgs": all(eip55_ok(x["primaryContract"]) and (x["controllerAddress"] is None or eip55_ok(x["controllerAddress"]))
+                                      and x["preflightArgs"] == {"chain": x["chain"], "address": x["primaryContract"]} for x in items_lk),
+        "search probes": lk.get("probes") == {"ethena": [["ethena-usde-susde", "prefix"], ["ethena-ops-0x0ca0-0x1fe5", "prefix"]],
+                                              "usde": [["ethena-usde-susde", "exact"], ["ethena-ops-0x0ca0-0x1fe5", "exact"]],
+                                              "aave": [["aave-v3-gho", "exact"], ["circle-cirbtc-eth", "substring"]],
+                                              "moonwell": [["moonwell-lending-base", "prefix"]], "kusd": [["kerne-kusd-base", "exact"]],
+                                              "uniswap": [["uniswap-governance-timelock", "prefix"]],
+                                              "ether.fi": [["ether-fi-core-eeth-weeth", "prefix"], ["ether-fi-liquid-veda-boringvault", "prefix"]]}
+                          and (lk.get("empty") or {}).get("count") == 20 and (lk.get("empty") or {}).get("totalMatches") == 61
+                          and set(lk.get("base") or ["x"]) == {"base"} and (lk.get("over") or {}).get("error") == "invalid_input",
+        "documented on every agent surface": all("pacta_lookup_protocol" in primary[f] and "/v1/protocols/lookup" in primary[f]
+                                                 for f in ("docs/SKILL.md", "docs/llms.txt", "docs/llms-full.txt"))
+            and card_["endpoints"].get("lookup") == API_ + "/v1/protocols/lookup" and man_.get("lookup", {}).get("tool") == "pacta_lookup_protocol"
+            and "pacta_lookup_protocol" in read("docs/llms/index.html") and f"{BS.BASE_URL}/api/v1/lookup.json" in read("docs/sitemap.xml"),
+        "@pacta/mcp-server 0.1.3 everywhere": {json.loads(read("packages/mcp-server/package.json"))["version"], json.loads(read("packages/mcp-server/server.json"))["version"],
+                                               json.loads(read("packages/mcp-server/server.json"))["packages"][0]["version"], json.loads(read("packages/mcp-server/server.remote.json"))["version"],
+                                               man_.get("packageVersion")} == {"0.1.3"}
+            and 'version: "0.1.3"' in read("docs/SKILL.md") and 'version: "0.1.3"' in read("packages/mcp-server/src/server.mjs"),
+    }
+    check("protocol / token lookup: docs/api/v1/lookup.json (53 protocols + 8 briefs; 33 EAS-attested, 20 rpc_observed / not_assessed) regenerates byte-identically, "
+          "equals packages/mcp-server/src/lookup.mjs, matches index.json / rpc-pinned.json / onboarding.json / radar.json record by record; search probes "
+          "(ethena, usde, aave, moonwell, kusd, uniswap, listing, chain=base, overlong); documented on SKILL.md / llms / agent.json / mcp.json / sitemap; @pacta/mcp-server 0.1.3",
+          all(lk_ok.values()), str([k for k, v in lk_ok.items() if not v]))
 
     # ---- Phase C: first-party beacon, 404, governance forum digest, MCP Registry workflow, root Dockerfile ----
     BEACON_URL = API_ + "/v1/telemetry/beacon"

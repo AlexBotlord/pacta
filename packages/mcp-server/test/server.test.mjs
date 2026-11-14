@@ -84,7 +84,7 @@ test("default mode (PACTA_X402_URL unset) exposes only free tools and disables p
   const list = await srv.handleMessage({ jsonrpc: "2.0", id: 2, method: "tools/list" });
   assert.deepEqual(
     list.result.tools.map((t) => t.name),
-    ["pacta_list_commitments", "pacta_list_proposals", "pacta_get_anchoring", "pacta_x402_discover"]
+    ["pacta_lookup_protocol", "pacta_list_commitments", "pacta_list_proposals", "pacta_get_anchoring", "pacta_x402_discover"]
   );
 
   const disc = await srv.callTool("pacta_x402_discover");
@@ -106,7 +106,7 @@ test("default mode (PACTA_X402_URL unset) exposes only free tools and disables p
   assert.ok(paidAttempt.result.content[0].text.includes("https://pacta-x402.pacta.workers.dev"));
 });
 
-test("setting PACTA_X402_URL enables all 8 free + paid x402 tools and live discovery", async () => {
+test("setting PACTA_X402_URL enables all free + paid x402 tools (lookup + 4 local + 5 gateway) and live discovery", async () => {
   const srv = new PactaMcpServer({
     indexData: FIXTURE,
     x402Url: TEST_X402_URL,
@@ -116,7 +116,7 @@ test("setting PACTA_X402_URL enables all 8 free + paid x402 tools and live disco
         : mockJson(200, { chain: "base" }),
   });
   const list = await srv.handleMessage({ jsonrpc: "2.0", id: 1, method: "tools/list" });
-  assert.equal(list.result.tools.length, 9);
+  assert.equal(list.result.tools.length, 10);
 
   const out = await srv.callTool("pacta_x402_discover");
   assert.equal(out.enabled, true);

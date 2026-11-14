@@ -32,8 +32,13 @@ import {
   BASE_NETWORK_V2,
   validatePaymentSignatureHeader,
 } from "./x402.mjs";
+import { lookupProtocols, parseLookupInput, LOOKUP_CATALOG, LOOKUP_TOTALS, LOOKUP_LIMITS, LOOKUP_CHAINS, LOOKUP_KINDS, LOOKUP_SCHEMA } from "./lookup.mjs";
 
-export const SERVER_INFO = Object.freeze({ name: "@pacta/mcp-server", version: "0.1.2" });
+export const SERVER_INFO = Object.freeze({ name: "@pacta/mcp-server", version: "0.1.3" });
+export const MCP_INSTRUCTIONS =
+  "Pacta: read-only, block-pinned pre-execution checks for EVM contracts (Ethereum, Base). If you only have a protocol or token name " +
+  "(e.g. 'Aave', 'Ethena', 'USDe', 'Moonwell', 'kUSD'), call pacta_lookup_protocol first to resolve its verified record and checksummed 0x " +
+  "contract address, then call pacta_check_preflight. Every value is pinned to a block hash. Not investment advice.";
 export const SUPPORTED_PROTOCOL_VERSION = "2024-11-05";
 
 const REGISTRY = "0x35D21Bb4Df6586FE7759b5e57263ffeB3e1fd872";
@@ -204,6 +209,12 @@ const CALLER_PROPS = {
   requester_role: { type: "string", enum: [...REQUESTER_ROLES], description: "High-level role category of the requester or system running this check (closed enum; no personal data)." },
   caller_purpose: { type: "string", enum: [...CALLER_PURPOSES], description: "Operational workflow context for this pre-execution check (closed enum)." },
 };
+/** -32602 naming each missing / invalid caller field with what is allowed, so an agent can fix the call and retry. */
+function callerError(problems) {
+  const lines = problems.map((p) => `${p.field} (${p.reason}): ${CALLER_HINT[p.field]}`);
+  return Object.assign(new Error("The free Pacta tier needs three non-personal caller fields in the tool arguments. " + lines.join("; ")
+    + `. Retry with e.g. ${JSON.stringify(CALLER_EXAMPLE)} added to the arguments.`), { code: -32602 });
+}
 const gatewaySchema = (properties, required = []) => objSchema({ ...properties, ...CALLER_PROPS }, [...required, ...CALLER_FIELDS]);
 
 export const FREE_TOOLS = Object.freeze([
@@ -301,7 +312,30 @@ export const PAID_TOOLS = Object.freeze([
   },
 ]);
 
-export const TOOL_DEFINITIONS = Object.freeze([...FREE_TOOLS, ...PAID_TOOLS]);
+// Free discovery: answered from the embedded catalog (src/lookup.mjs, the same block the hosted worker serves); with
+// PACTA_X402_URL set it asks GET /v1/protocols/lookup first and falls back to the embedded catalog on any failure.
+export const LOOKUP_TOOL = Object.freeze({
+  name: "pacta_lookup_protocol",
+  title: "Lookup Protocol or Token by Name",
+  description:
+    "Resolve a protocol or token name, symbol, slug or 0x address (e.g. 'Aave', 'Ethena', 'USDe', 'Moonwell', 'kUSD') to Pacta's verified record: " +
+    "canonical slug and page URL, checksummed primary contract and controller, classification with its evidence basis (Base-EAS-attested vs " +
+    "RPC-observed only), and preflightArgs {chain, address} ready for pacta_check_preflight. " +
+    `${LOOKUP_TOTALS.protocols} protocols + ${LOOKUP_TOTALS.briefs} briefs; free, no RPC. An empty query lists what Pacta tracks.`,
+  inputSchema: objSchema(
+    {
+      query: { type: "string", maxLength: LOOKUP_LIMITS.queryMaxChars, description: "Protocol / token name, symbol, slug or 0x address. Empty or '*' lists the catalog." },
+      chain: { type: "string", enum: [...LOOKUP_CHAINS] },
+      kind: { type: "string", enum: [...LOOKUP_KINDS], description: "protocol, brief or all (default)." },
+      limit: { type: "integer", minimum: 1, maximum: LOOKUP_LIMITS.maxLimit, description: "Default 10 (20 when listing)." },
+      ...CALLER_PROPS,
+    },
+    [...CALLER_FIELDS]
+  ),
+  annotations: { title: "Lookup Protocol or Token by Name", readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+});
+export const TOOL_DEFINITIONS = Object.freeze([LOOKUP_TOOL, ...FREE_TOOLS, ...PAID_TOOLS]);
+const LOCAL_TOOLS = Object.freeze([LOOKUP_TOOL, ...FREE_TOOLS]);
 /** Accepted alternative tool names (the hosted remote MCP calls this tool pacta_get_live_timelocks); not listed. */
 export const TOOL_ALIASES = Object.freeze(Object.assign(Object.create(null), { pacta_get_live_timelocks: "pacta_live_timelocks" }));
 export const canonicalToolName = (name) =>
@@ -332,7 +366,7 @@ export class PactaMcpServer {
   }
 
   getTools() {
-    return this.x402Url ? TOOL_DEFINITIONS : FREE_TOOLS;
+    return this.x402Url ? TOOL_DEFINITIONS : LOCAL_TOOLS;
   }
 
   async loadSpec() {
@@ -447,11 +481,7 @@ export class PactaMcpServer {
       const paying = Boolean(args.xPaymentHeader || args.paymentSignatureHeader);
       const cc = callerContext(args);
       if (!paying) {
-        if (cc.problems.length) {
-          const lines = cc.problems.map((p) => `${p.field} (${p.reason}): ${CALLER_HINT[p.field]}`);
-          throw Object.assign(new Error("The free Pacta tier needs three non-personal caller fields in the tool arguments. " + lines.join("; ")
-            + `. Retry with e.g. ${JSON.stringify(CALLER_EXAMPLE)} added to the arguments.`), { code: -32602 });
-        }
+        if (cc.problems.length) throw callerError(cc.problems);
         query = { ...query, ...cc.fields };                         // forwarded as optional REST query params
       }
     }
@@ -472,6 +502,35 @@ export class PactaMcpServer {
     });
   }
 
+  async _lookup(args) {
+    const cc = callerContext(args);
+    if (cc.problems.length) throw callerError(cc.problems);
+    const unknown = Object.keys(args).filter((k) => !CALLER_FIELDS.includes(k) && !["query", "chain", "kind", "limit"].includes(k));
+    if (unknown.length) throw new X402Error("invalid_input", `Unknown argument ${String(unknown[0]).slice(0, 40)}; allowed: query, chain, kind, limit.`);
+    const input = { query: args.query, chain: args.chain, kind: args.kind, limit: args.limit };
+    const p = parseLookupInput(input);
+    if (!p.ok) throw new X402Error("invalid_input", p.detail);
+    let gatewayFallback = null;
+    if (this.x402Url) {
+      const q = new URLSearchParams();
+      if (p.query) q.set("q", p.query);
+      if (p.chain) q.set("chain", p.chain);
+      if (p.kind !== "all") q.set("kind", p.kind);
+      q.set("limit", String(p.limit));
+      for (const [k, v] of Object.entries(cc.fields)) q.set(k, v);
+      const url = new URL("/v1/protocols/lookup?" + q.toString(), this.x402Url).toString();
+      try {
+        const { res, text } = await fetchTextWithTimeout(this.fetchImpl, url, { headers: { Accept: "application/json" }, redirect: "error" }, { timeoutMs: this.timeoutMs });
+        const data = res.status === 200 ? JSON.parse(text) : null;
+        if (isPlainObject(data) && data.schema === LOOKUP_SCHEMA && Array.isArray(data.results)) return { ...data, source: "gateway" };
+        gatewayFallback = `gateway answered HTTP ${res.status}`;
+      } catch (e) {
+        gatewayFallback = e && e.code ? String(e.code) : "gateway_unreachable";
+      }
+    }
+    return { ...lookupProtocols(input), source: "embedded_catalog", ...(gatewayFallback ? { gatewayFallback } : {}) };
+  }
+
   async callTool(name, args = {}) {
     name = canonicalToolName(name);
     if (!args || typeof args !== "object" || Array.isArray(args)) {
@@ -479,6 +538,9 @@ export class PactaMcpServer {
     }
 
     switch (name) {
+      case "pacta_lookup_protocol":
+        return this._lookup(args);
+
       case "pacta_list_commitments": {
         const { source, index } = await this.loadIndex();
         const entries = Array.isArray(index.entries) ? index.entries : [];
@@ -682,6 +744,7 @@ export class PactaMcpServer {
           protocolVersion: SUPPORTED_PROTOCOL_VERSION,
           capabilities: { tools: {} },
           serverInfo: SERVER_INFO,
+          instructions: MCP_INSTRUCTIONS,
         });
       }
       if (msg.method === "ping") return rpcResult(msg.id, {});
@@ -757,6 +820,7 @@ export function startStdioServer(options = {}) {
   return { server, close: () => rl.close(), done };
 }
 
+export { lookupProtocols, parseLookupInput, LOOKUP_CATALOG, LOOKUP_TOTALS };
 export {
   encodeXPaymentHeader,
   encodePaymentSignatureHeader,

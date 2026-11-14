@@ -1,7 +1,7 @@
 ---
 name: pacta-protocol-commitments
 description: Run Pacta's free pre-execution check on any Ethereum or Base contract before an agent approves, deposits into or calls it (who can upgrade, pause or blacklist it, how fast), query the free block-pinned DeFi control-plane feeds, verify any value on an archive node, and map live Aave / Euler / Morpho / Sky governance proposals to on-chain state.
-version: "0.1.2"
+version: "0.1.3"
 homepage: https://pacta.wtf/
 ---
 
@@ -13,7 +13,8 @@ or a live collateral onboarding proposal. Pacta publishes 37 block-pinned record
 
 ## Free pre-execution API (launch: $0, no API key, no wallet)
 - Remote MCP, zero install: `https://pacta-x402.pacta.workers.dev/mcp` (Streamable HTTP). Claude Code: `claude mcp add --transport http pacta https://pacta-x402.pacta.workers.dev/mcp`.
-  Tools: `pacta_check_preflight`, `pacta_scan_control_plane`, `pacta_scan_timelock_op`, `pacta_scan_proposal_diff`, `pacta_get_live_timelocks`.
+  Tools: `pacta_lookup_protocol`, `pacta_check_preflight`, `pacta_scan_control_plane`, `pacta_scan_timelock_op`, `pacta_scan_proposal_diff`, `pacta_get_live_timelocks`.
+- Name lookup first: if you only have a protocol or token name (e.g. Aave, Ethena, USDe, Moonwell, kUSD), call pacta_lookup_protocol (or GET https://pacta-x402.pacta.workers.dev/v1/protocols/lookup?q=<name>) to resolve its verified record: canonical slug and page URL, checksummed primary contract and controller, classification with its evidence basis (eas_attested: Base-EAS-attested, documentation compared; rpc_observed: on-chain control plane pinned over JSON-RPC, documentationComparison not_assessed; briefs), and preflightArgs {chain, address} for pacta_check_preflight. 53 protocols + 8 briefs, answered in memory with no RPC; free in every pricing mode; an empty query lists the catalog. Catalog: https://pacta.wtf/api/v1/lookup.json.
 - Free MCP tier: every tools/call takes three required, non-personal fields: caller_agent (a lowercase slug naming the calling agent, IDE or framework, e.g. claude-code, cursor, coinbase-agentkit; never a name, e-mail, IP, URL, address or secret), requester_role (autonomous_agent | defi_developer | risk_curator_analyst | security_researcher | protocol_team | institutional_allocator | individual_user) and caller_purpose (pre_trade_safety | collateral_due_diligence | yield_allocation | security_audit | governance_monitoring | integration_testing | general_research). Missing or invalid values get JSON-RPC -32602 listing what is allowed. Over REST they are optional query parameters. Location is never asked: only the Cloudflare edge country is counted; no IP is stored.
 - One call: `curl -s "https://pacta-x402.pacta.workers.dev/v1/check/preflight?chain=ethereum&address=0x..."` returns `verdict`, `riskScore` (0-100), proxy /
   implementation (EIP-1967, EIP-1822 or beacon), `controller` (eoa, multisig_safe, timelock, contract,
@@ -26,6 +27,7 @@ or a live collateral onboarding proposal. Pacta publishes 37 block-pinned record
 
 ## Feeds (no key, no paywall)
 - `https://pacta.wtf/api/v1/index.json`: Block-pinned control-plane index (every record: target, call, block, block hash, classification, Base EAS UID)
+- `https://pacta.wtf/api/v1/lookup.json`: Protocol / token lookup catalog: 53 protocols + 8 briefs with slug, aliases, checksummed contracts, evidence basis and preflightArgs
 - `https://pacta.wtf/api/v1/onboarding.json`: Onboarding verification scans: every check with call, calldata, raw result, decoded value; role maps
 - `https://pacta.wtf/api/v1/proposals.json`: Live governance proposals (Aave, Euler, Morpho, Sky) mapped to block-pinned observations
 - `https://pacta.wtf/api/v1/radar.json`: Queued timelock operations with on-chain ETAs at a finalized block
@@ -48,6 +50,7 @@ Use EIP-1898 `{"blockHash": "<hash>", "requireCanonical": true}` when calling et
 ## MCP server (io.github.Fractal-Neurons/pacta)
 publication_pending: @pacta/mcp-server is not yet published to npm or the MCP registry. Use the remote MCP server now (no install): https://pacta-x402.pacta.workers.dev/mcp. The stdio server runs from a clone of the repository: node packages/mcp-server/bin/pacta-mcp.mjs.
 
+- `pacta_lookup_protocol` (free): Resolve a protocol or token name, symbol, slug or 0x address to its verified record and preflightArgs {chain, address} (query, chain, kind, limit; no RPC)
 - `pacta_list_commitments` (free): Filter indexed records (protocol, classification, sprint, limit)
 - `pacta_get_anchoring` (free): Base EAS anchoring: PactaCommitmentRegistry, schema, sprint attestation UIDs
 - `pacta_list_proposals` (free): Governance proposals feed (forum, topic_id, chain, limit, include_repro)

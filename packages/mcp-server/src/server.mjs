@@ -33,7 +33,7 @@ import {
   validatePaymentSignatureHeader,
 } from "./x402.mjs";
 
-export const SERVER_INFO = Object.freeze({ name: "@pacta/mcp-server", version: "0.1.1" });
+export const SERVER_INFO = Object.freeze({ name: "@pacta/mcp-server", version: "0.1.2" });
 export const SUPPORTED_PROTOCOL_VERSION = "2024-11-05";
 
 const REGISTRY = "0x35D21Bb4Df6586FE7759b5e57263ffeB3e1fd872";
@@ -158,6 +158,51 @@ const PAID_AUTH_PROPS = {
   nonce: { type: "string", description: "0x-prefixed 32-byte hex nonce." },
 };
 
+// ---- Free-tier caller attribution (task-06d4550a8b0f): three NON-PII fields, required on the gateway tools ----
+// Same vocabulary and checks as the hosted worker (x402-edge-worker/worker.mjs). Location is never asked: the hosted
+// worker reads the Cloudflare edge country. Local-only tools (index, proposals, anchoring, discovery) send nothing
+// anywhere, so they do not ask for these fields.
+export const REQUESTER_ROLES = Object.freeze(["autonomous_agent", "defi_developer", "risk_curator_analyst", "security_researcher", "protocol_team",
+  "institutional_allocator", "individual_user"]);
+export const CALLER_PURPOSES = Object.freeze(["pre_trade_safety", "collateral_due_diligence", "yield_allocation", "security_audit",
+  "governance_monitoring", "integration_testing", "general_research"]);
+export const CALLER_FIELDS = Object.freeze(["caller_agent", "requester_role", "caller_purpose"]);
+const CALLER_AGENT_RE = /^[a-z0-9][a-z0-9._/-]{1,47}$/;
+const CALLER_AGENT_DENY = /(?:^|[^a-z0-9])(?:\d{1,3}\.){3}\d{1,3}(?:$|[^0-9])|0x[0-9a-f]{16,}|https?|sk-|sk_live|ghp_|gho_|ghu_|ghs_|github_pat_|akia|bearer|xox[a-z]-|token|secret|passw|apikey|api_key|\.\./;
+const CALLER_EXAMPLE = Object.freeze({ caller_agent: "claude-code", requester_role: "autonomous_agent", caller_purpose: "pre_trade_safety" });
+export function normalizeCallerAgent(v) {
+  if (typeof v !== "string") return null;
+  const s = v.trim().toLowerCase();
+  return CALLER_AGENT_RE.test(s) && !CALLER_AGENT_DENY.test(s) ? s : null;
+}
+/** {fields (valid, normalized), problems: [{field, reason: "missing" | "invalid"}]}. */
+export function callerContext(src) {
+  const o = src && typeof src === "object" ? src : {}, fields = {}, problems = [];
+  const has = (k) => o[k] !== undefined && o[k] !== null && o[k] !== "";
+  if (!has("caller_agent")) problems.push({ field: "caller_agent", reason: "missing" });
+  else { const a = normalizeCallerAgent(o.caller_agent); if (a) fields.caller_agent = a; else problems.push({ field: "caller_agent", reason: "invalid" }); }
+  for (const [k, set] of [["requester_role", REQUESTER_ROLES], ["caller_purpose", CALLER_PURPOSES]]) {
+    if (!has(k)) problems.push({ field: k, reason: "missing" });
+    else if (typeof o[k] === "string" && set.includes(o[k].trim().toLowerCase())) fields[k] = o[k].trim().toLowerCase();
+    else problems.push({ field: k, reason: "invalid" });
+  }
+  return { fields, problems };
+}
+const CALLER_HINT = {
+  caller_agent: "a lowercase slug naming the calling AI agent, IDE or framework (e.g. claude-code, cursor, windsurf, coinbase-agentkit, elizaos, langchain, custom-agent); never a personal name, e-mail, IP, URL, address or secret",
+  requester_role: "one of " + REQUESTER_ROLES.join(", "),
+  caller_purpose: "one of " + CALLER_PURPOSES.join(", "),
+};
+const CALLER_PROPS = {
+  caller_agent: {
+    type: "string", pattern: CALLER_AGENT_RE.source, maxLength: 48,
+    description: "Identifier of the calling AI agent, IDE, or framework (e.g. 'claude-code', 'cursor', 'windsurf', 'coinbase-agentkit', 'elizaos', 'langchain', 'chatgpt', 'gemini', 'custom-agent'). Required on the free MCP tier. Lowercase slug only; never include personal names, emails, or secrets.",
+  },
+  requester_role: { type: "string", enum: [...REQUESTER_ROLES], description: "High-level role category of the requester or system running this check (closed enum; no personal data)." },
+  caller_purpose: { type: "string", enum: [...CALLER_PURPOSES], description: "Operational workflow context for this pre-execution check (closed enum)." },
+};
+const gatewaySchema = (properties, required = []) => objSchema({ ...properties, ...CALLER_PROPS }, [...required, ...CALLER_FIELDS]);
+
 export const FREE_TOOLS = Object.freeze([
   {
     name: "pacta_list_commitments",
@@ -206,7 +251,7 @@ export const PAID_TOOLS = Object.freeze([
     description:
       "Gateway tool (requires PACTA_X402_URL; x402 $0.01 Base USDC when metered). One-call pre-execution safety check of a contract before an agent interacts with it: verdict (IMMUTABLE_NO_ADMIN / TIMELOCK_PROTECTED / ZERO_DELAY_TIMELOCK_RISK / MULTISIG_NO_TIMELOCK / INSTANT_EOA_ADMIN_RISK / UNCLASSIFIED_CONTRACT_CONTROLLER / UNDEPLOYED_OR_EOA), 0-100 risk score, proxy + implementation, controller kind, zero-delay upgradeability, pause / blacklist / upgrade capabilities, pinned block. " +
       FREE_LAUNCH_HINT,
-    inputSchema: objSchema(
+    inputSchema: gatewaySchema(
       {
         chain: CHAIN_PROP,
         address: { type: "string" },
@@ -219,20 +264,17 @@ export const PAID_TOOLS = Object.freeze([
   {
     name: "pacta_scan_control_plane",
     description: "Gateway tool (requires PACTA_X402_URL; x402 $0.10 Base USDC when metered): pinned-block EVM control-plane scan. " + FREE_LAUNCH_HINT,
-    inputSchema: objSchema({ chain: CHAIN_PROP, address: { type: "string" }, ...PAID_AUTH_PROPS }, [
-      "chain",
-      "address",
-    ]),
+    inputSchema: gatewaySchema({ chain: CHAIN_PROP, address: { type: "string" }, ...PAID_AUTH_PROPS }, ["chain", "address"]),
   },
   {
     name: "pacta_live_timelocks",
     description: "Gateway tool (requires PACTA_X402_URL; x402 $0.10 Base USDC when metered): live tracked DeFi TimelockController operations. " + FREE_LAUNCH_HINT,
-    inputSchema: objSchema({ ...PAID_AUTH_PROPS }),
+    inputSchema: gatewaySchema({ ...PAID_AUTH_PROPS }),
   },
   {
     name: "pacta_scan_timelock_op",
     description: "Gateway tool (requires PACTA_X402_URL; x402 $0.25 Base USDC when metered): pinned-block OZ TimelockController operation state. " + FREE_LAUNCH_HINT,
-    inputSchema: objSchema(
+    inputSchema: gatewaySchema(
       { chain: CHAIN_PROP, timelock: { type: "string" }, opId: { type: "string" }, ...PAID_AUTH_PROPS },
       ["timelock", "opId"]
     ),
@@ -242,7 +284,7 @@ export const PAID_TOOLS = Object.freeze([
     description:
       "Gateway tool (requires PACTA_X402_URL; x402 $0.15 Base USDC when metered): re-run a tracked governance proposal's pinned control-plane reads live and return pinned-vs-live diffs. The proposal must be listed in https://pacta.wtf/api/v1/proposals.json as <forum>-<topicId>. " +
       FREE_LAUNCH_HINT,
-    inputSchema: objSchema(
+    inputSchema: gatewaySchema(
       {
         forum: { type: "string", enum: [...PROPOSAL_FORUMS] },
         topicId: {
@@ -398,6 +440,18 @@ export class PactaMcpServer {
   }
 
   _paid(routeSpec, query, args) {
+    if (this.x402Url) {                                           // nothing leaves the process when unset
+      const paying = Boolean(args.xPaymentHeader || args.paymentSignatureHeader);
+      const cc = callerContext(args);
+      if (!paying) {
+        if (cc.problems.length) {
+          const lines = cc.problems.map((p) => `${p.field} (${p.reason}): ${CALLER_HINT[p.field]}`);
+          throw Object.assign(new Error("The free Pacta tier needs three non-personal caller fields in the tool arguments. " + lines.join("; ")
+            + `. Retry with e.g. ${JSON.stringify(CALLER_EXAMPLE)} added to the arguments.`), { code: -32602 });
+        }
+        query = { ...query, ...cc.fields };                         // forwarded as optional REST query params
+      }
+    }
     return callX402Resource({
       fetchImpl: this.fetchImpl,
       baseUrl: this.x402Url,

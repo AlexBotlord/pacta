@@ -92,3 +92,6 @@ export function collectLines(stream) {
     },
   };
 }
+
+/** Free-tier caller fields (task-06d4550a8b0f): required on unpaid gateway tool calls. */
+export const CALLER = Object.freeze({ caller_agent: "pacta-test-agent", requester_role: "defi_developer", caller_purpose: "integration_testing" });

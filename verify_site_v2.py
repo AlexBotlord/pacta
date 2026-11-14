@@ -711,12 +711,21 @@ def main():
         "defined in llms.txt + llms-full.txt": all("rpc_observed (on-chain control plane pinned at an archive block height" in read(f) or
                                                    "Classification rpc_observed: on-chain control plane pinned at an archive block height" in read(f)
                                                    for f in ("docs/llms.txt", "docs/llms-full.txt")),
-        "mcp.json packageVersion 0.1.1": json.loads(read("docs/.well-known/mcp.json")).get("packageVersion") == "0.1.1"
+        "mcp.json packageVersion 0.1.2": json.loads(read("docs/.well-known/mcp.json")).get("packageVersion") == "0.1.2"
                                          == json.loads(read("packages/mcp-server/package.json"))["version"],
-        "llms-full names v0.1.1": "@pacta/mcp-server v0.1.1" in read("docs/llms-full.txt"),
+        "llms-full names v0.1.2": "@pacta/mcp-server v0.1.2" in read("docs/llms-full.txt"),
     }
     check("Codex F1: all 20 RPC-pinned records are classification rpc_observed with documentation linked but not compared (no 'publishes' claim, no documented delays); their pages and /protocols/ rows show only the neutral 'RPC-observed baseline' badge; rpc_observed defined in llms.txt + llms-full.txt; mcp.json packageVersion 0.1.1; llms-full names v0.1.1",
           all(f1_ok.values()), str([k for k, v in f1_ok.items() if not v]))
+    # free-tier MCP caller attribution (task-06d4550a8b0f): documented on every agent surface; the browser checker names itself
+    roles_ = ["autonomous_agent", "defi_developer", "risk_curator_analyst", "security_researcher", "protocol_team", "institutional_allocator", "individual_user"]
+    purposes_ = ["pre_trade_safety", "collateral_due_diligence", "yield_allocation", "security_audit", "governance_monitoring", "integration_testing", "general_research"]
+    cdoc = {f: read(f) for f in ("docs/SKILL.md", "docs/llms.txt", "docs/llms-full.txt", "docs/llms/index.html", "packages/mcp-server/README.md")}
+    cbad = [f for f, t in cdoc.items() if not (all(x in t for x in ["caller_agent", "requester_role", "caller_purpose"] + roles_ + purposes_)
+                                              and "Cloudflare edge country" in t and re.search(r"never[^.]{0,40}(?:name|e-mail)", t))]
+    check("free MCP tier caller fields (caller_agent slug + requester_role / caller_purpose closed enums) documented in SKILL.md, llms.txt, llms-full.txt, /llms/ and the MCP README (no personal data; location only from the Cloudflare edge); docs SKILL.md == packages/mcp-server/SKILL.md; the live checker passes caller_agent=pacta-wtf-checker",
+          not cbad and read("docs/SKILL.md") == read("packages/mcp-server/SKILL.md")
+          and "&caller_agent=pacta-wtf-checker&requester_role=individual_user&caller_purpose=general_research" in read("docs/app.js"), str(cbad))
     bare = []
     for dp, _dn, fns in os.walk(ROOT):
         if os.sep + ".git" in dp:
@@ -841,7 +850,7 @@ def main():
     check("no cookies, no storage identifiers, no third-party requests in page scripts: localStorage only for the theme preference; app.js fetches only this site's JSON and the first-party API (data-api)",
           not js_bad and ls_keys == {"pacta-theme"} and appjs.count("localStorage") == 2 and data_api <= {API_}
           and app_fetch == 2 and 'fetch(document.documentElement.getAttribute("data-api") || "api/v1/index.json")' in appjs
-          and 'fetch(api + "/v1/check/preflight?chain=" + ch + "&address=" + a, opts)' in appjs,
+          and 'fetch(api + "/v1/check/preflight?chain=" + ch + "&address=" + a + "&caller_agent=pacta-wtf-checker&requester_role=individual_user&caller_purpose=general_research", opts)' in appjs,
           f"bad {js_bad}; localStorage keys {sorted(ls_keys)}; data-api {sorted(data_api)}; fetch {app_fetch}")
     b_keys = ["b_page_load_payload", "b_hook_exposed", "b_copy_and_cta_events", "b_scroll_once_each", "b_live_checker_submit", "b_invalid_submit_not_reported",
               "b_protocol_view", "b_protocol_copy_curl_and_cta", "b_not_found_404", "b_not_found_path_sanitised", "b_not_found_copy_mcp",

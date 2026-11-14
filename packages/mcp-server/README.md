@@ -51,6 +51,13 @@ git clone https://github.com/Fractal-Neurons/pacta.git
   - `pacta_scan_timelock_op` → `/v1/scan/timelock-op` (`$0.25` = `250000` atomic; `chain`, `timelock`, `opId`)
   - `pacta_scan_proposal_diff` → `/v1/scan/proposal-diff` (`$0.15` = `150000` atomic; `forum` = `aave` | `euler` | `morpho` | `sky`, `topicId` = the forum topic id). The proposal must be listed in `https://pacta.wtf/api/v1/proposals.json`.
 
+  **Free-tier caller fields (required on every gateway tool while it is free).** Each gateway tool takes three non-personal fields, the exchange for $0 calls:
+  - `caller_agent`: a lowercase slug naming the calling AI agent, IDE or framework, `^[a-z0-9][a-z0-9._/-]{1,47}$` (e.g. `claude-code`, `cursor`, `windsurf`, `coinbase-agentkit`, `elizaos`, `langchain`, `custom-agent`). E-mails, spaces, IP literals, `0x` addresses, URLs and secret-shaped tokens are rejected; never put a personal name here.
+  - `requester_role`: one of `autonomous_agent`, `defi_developer`, `risk_curator_analyst`, `security_researcher`, `protocol_team`, `institutional_allocator`, `individual_user`.
+  - `caller_purpose`: one of `pre_trade_safety`, `collateral_due_diligence`, `yield_allocation`, `security_audit`, `governance_monitoring`, `integration_testing`, `general_research`.
+
+  An unpaid call without valid values fails locally with JSON-RPC `-32602` naming each field and its allowed values (nothing is sent). Valid values are forwarded as optional REST query parameters. A paying call (`xPaymentHeader` / `paymentSignatureHeader`) never fails on them and is sent without them. Location is never asked: the hosted Worker counts only the Cloudflare edge country. The static-feed tools send nothing anywhere, so they do not take these fields.
+
   When metering is on, the live Worker answers every metered route in both protocol versions. A bare request (no query, no payment header) gets the 402 immediately.
   - **x402 v1**: the 402 JSON body (`x402Version: 1`, `network: "base"`, `maxAmountRequired`). Pay with `xPaymentHeader`, sent as `X-PAYMENT`. The receipt is `X-PAYMENT-RESPONSE`.
   - **x402 v2**: the `PAYMENT-REQUIRED` header (base64 JSON, `x402Version: 2`, `network: "eip155:8453"`, `amount`, `extensions.bazaar` with a JSON Schema 2020-12 schema). Pay with `paymentSignatureHeader`, sent as `PAYMENT-SIGNATURE`. The receipt is `PAYMENT-RESPONSE`.

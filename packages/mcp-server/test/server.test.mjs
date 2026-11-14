@@ -12,7 +12,7 @@ import {
   X402_DEFAULTS,
   DEFAULT_ANCHORING,
 } from "../src/server.mjs";
-import { collectLines, makeScratchDir } from "./helpers.mjs";
+import { collectLines, makeScratchDir, CALLER } from "./helpers.mjs";
 
 // `node --test test/server.test.mjs` (== `npm test`) must cover every suite, so the other files register here.
 import "./x402.test.mjs";
@@ -99,7 +99,7 @@ test("default mode (PACTA_X402_URL unset) exposes only free tools and disables p
     jsonrpc: "2.0",
     id: 3,
     method: "tools/call",
-    params: { name: "pacta_live_timelocks", arguments: {} },
+    params: { name: "pacta_live_timelocks", arguments: { ...CALLER } },
   });
   assert.equal(paidAttempt.result.isError, true);
   assert.match(paidAttempt.result.content[0].text, /PACTA_X402_URL/);
@@ -171,7 +171,7 @@ test("402 challenge builds PaymentRequirements + EIP-712 typedData when x402Url 
         ],
       }),
   });
-  const c = await srv.callTool("pacta_scan_control_plane", {
+  const c = await srv.callTool("pacta_scan_control_plane", { ...CALLER,
     chain: "base",
     address: DEFAULT_ANCHORING.commitment_registry,
     payer,
@@ -213,7 +213,7 @@ test("200 paid scan forwards X-PAYMENT and verifies X-PAYMENT-RESPONSE", async (
       return mockJson(200, { isOperationPending: true }, { "X-PAYMENT-RESPONSE": receiptB64 });
     },
   });
-  const paid = await srv.callTool("pacta_scan_timelock_op", {
+  const paid = await srv.callTool("pacta_scan_timelock_op", { ...CALLER,
     // v2.1 used 0xceCf30B925bf40129794A0810622354f2ACCD515, which fails EIP-55 (see x402-gateway README);
     // addresses are now checksum-validated, so use the gateway's own example timelock.
     timelock: "0x2225DAbFfC7F862c99477381E971E8B1FDaB467e",

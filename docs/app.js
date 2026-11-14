@@ -436,7 +436,8 @@
       var opts = { headers: { Accept: "application/json" } };
       if (typeof AbortController === "function") { ctl = new AbortController(); opts.signal = ctl.signal; }
       msg("Checking " + short(a, 6, 4) + " on " + ch + " at the latest block…");
-      fetch(api + "/v1/check/preflight?chain=" + ch + "&address=" + a, opts)
+      // optional free-tier attribution (non-personal): the browser demo names itself; no location, no personal data
+      fetch(api + "/v1/check/preflight?chain=" + ch + "&address=" + a + "&caller_agent=pacta-wtf-checker&requester_role=individual_user&caller_purpose=general_research", opts)
         .then(function (res) { return res.json().then(function (b) { return { status: res.status, body: b }; }); })
         .then(function (x) {
           if (my !== seq) return;

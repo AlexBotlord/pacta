@@ -21,10 +21,11 @@ Generated deterministically from the feeds below (data as of 2026-11-13T21:40:42
 3. Run `cast block N --field hash` and compare with the recorded block hash.
 
 ## MCP server
-- Name: io.github.Fractal-Neurons/pacta · package @pacta/mcp-server v0.1.1 · transport stdio.
+- Name: io.github.Fractal-Neurons/pacta · package @pacta/mcp-server v0.1.2 · transport stdio.
 - Status: publication_pending: @pacta/mcp-server is not yet published to npm or the MCP registry. Use the remote MCP server now (no install): https://pacta-x402.pacta.workers.dev/mcp. The stdio server runs from a clone of the repository: node packages/mcp-server/bin/pacta-mcp.mjs.
 - Remote MCP (primary, zero install, Streamable HTTP): https://pacta-x402.pacta.workers.dev/mcp · Claude Code: `claude mcp add --transport http pacta https://pacta-x402.pacta.workers.dev/mcp` · MCP client config: {"mcpServers": {"pacta": {"url": "https://pacta-x402.pacta.workers.dev/mcp"}}} · remote tools: pacta_check_preflight, pacta_scan_control_plane, pacta_scan_timelock_op, pacta_scan_proposal_diff, pacta_get_live_timelocks.
 - Local stdio server (from a clone; npm publication pending): `node packages/mcp-server/bin/pacta-mcp.mjs`. OpenAPI 3.1: https://pacta-x402.pacta.workers.dev/openapi.json.
+- Free MCP tier: every tools/call takes three required, non-personal fields: caller_agent (a lowercase slug naming the calling agent, IDE or framework, e.g. claude-code, cursor, coinbase-agentkit; never a name, e-mail, IP, URL, address or secret), requester_role (autonomous_agent | defi_developer | risk_curator_analyst | security_researcher | protocol_team | institutional_allocator | individual_user) and caller_purpose (pre_trade_safety | collateral_due_diligence | yield_allocation | security_audit | governance_monitoring | integration_testing | general_research). Missing or invalid values get JSON-RPC -32602 listing what is allowed. Over REST they are optional query parameters. Location is never asked: only the Cloudflare edge country is counted; no IP is stored.
 - Tools:
   - pacta_list_commitments (free): Filter indexed records (protocol, classification, sprint, limit)
   - pacta_get_anchoring (free): Base EAS anchoring: PactaCommitmentRegistry, schema, sprint attestation UIDs

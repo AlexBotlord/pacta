@@ -9,7 +9,7 @@ import { join } from "node:path";
 import { PassThrough } from "node:stream";
 import { fileURLToPath } from "node:url";
 import { PactaMcpServer, startStdioServer, ALLOWED_PAY_TO, BASE_USDC, encodeXPaymentHeader } from "../src/server.mjs";
-import { collectLines, makeScratchDir } from "./helpers.mjs";
+import { collectLines, makeScratchDir, CALLER } from "./helpers.mjs";
 
 const NOW = 1794580000;
 const X402_URL = "https://x402.example.invalid";
@@ -52,7 +52,7 @@ test("in-process tools/list + tools/call: valid 402 challenge, rogue 402 rejecte
   const tl = list.result.tools.find((t) => t.name === "pacta_scan_timelock_op");
   assert.equal(tl.inputSchema.properties.validBeforeSeconds.maximum, 600);
 
-  const ok = await srv.handleMessage(callMsg(2, "pacta_scan_timelock_op", { timelock: TIMELOCK, opId: OP_ID, payer: FROM }));
+  const ok = await srv.handleMessage(callMsg(2, "pacta_scan_timelock_op", { ...CALLER,  timelock: TIMELOCK, opId: OP_ID, payer: FROM }));
   assert.equal(ok.result.isError, false);
   const challenge = textOf(ok);
   assert.equal(challenge.eip712TypedData.message.to, ALLOWED_PAY_TO[0]);
@@ -60,7 +60,7 @@ test("in-process tools/list + tools/call: valid 402 challenge, rogue 402 rejecte
   assert.equal(challenge.eip712TypedData.domain.chainId, 8453);
 
   accepts = [entry({ payTo: "0x000000000000000000000000000000000000dEaD" }), entry({ maxAmountRequired: "250001" })];
-  const rogue = await srv.handleMessage(callMsg(3, "pacta_scan_timelock_op", { timelock: TIMELOCK, opId: OP_ID }));
+  const rogue = await srv.handleMessage(callMsg(3, "pacta_scan_timelock_op", { ...CALLER,  timelock: TIMELOCK, opId: OP_ID }));
   assert.equal(rogue.result.isError, true);
   const body = textOf(rogue);
   assert.equal(body.code, "rejected_challenge");
@@ -68,7 +68,7 @@ test("in-process tools/list + tools/call: valid 402 challenge, rogue 402 rejecte
 
   const before = calls.length;
   const badPay = await srv.handleMessage(
-    callMsg(4, "pacta_live_timelocks", {
+    callMsg(4, "pacta_live_timelocks", { ...CALLER,
       xPaymentHeader: encodeXPaymentHeader({
         signature: SIG,
         authorization: { from: FROM, to: ALLOWED_PAY_TO[0], value: "100001", validAfter: "0", validBefore: String(NOW + 60), nonce: "0x" + "cd".repeat(32) },
@@ -81,7 +81,7 @@ test("in-process tools/list + tools/call: valid 402 challenge, rogue 402 rejecte
   assert.equal(calls.length, before);
 
   const badAddr = await srv.handleMessage(
-    callMsg(5, "pacta_scan_timelock_op", { timelock: "0xceCf30B925bf40129794A0810622354f2ACCD515", opId: OP_ID })
+    callMsg(5, "pacta_scan_timelock_op", { ...CALLER,  timelock: "0xceCf30B925bf40129794A0810622354f2ACCD515", opId: OP_ID })
   );
   assert.equal(textOf(badAddr).code, "invalid_argument");
   assert.equal(calls.length, before);
@@ -93,7 +93,7 @@ test("server honours PACTA_X402_MAX_ATOMIC (cap below route price rejects the ch
     process.env.PACTA_X402_MAX_ATOMIC = "200000";
     const srv = new PactaMcpServer({ x402Url: X402_URL, nowSeconds: NOW, fetchImpl: async () => mockRes(402, { x402Version: 1, accepts: [entry()] }) });
     assert.equal(srv.maxAtomic, "200000");
-    const r = await srv.handleMessage(callMsg(1, "pacta_scan_timelock_op", { timelock: TIMELOCK, opId: OP_ID }));
+    const r = await srv.handleMessage(callMsg(1, "pacta_scan_timelock_op", { ...CALLER,  timelock: TIMELOCK, opId: OP_ID }));
     assert.deepEqual(textOf(r).entries[0].reasons, ["amount_over_cap"]);
 
     process.env.PACTA_X402_MAX_ATOMIC = "999999999999";
@@ -147,7 +147,7 @@ test("stdio stream wrapper: initialize + tools/list + structured paid error", as
   const h = startStdioServer({ input, output, x402Url: X402_URL, fetchImpl: async () => mockRes(500, { error: "boom" }) });
   input.write(`${JSON.stringify({ jsonrpc: "2.0", id: 1, method: "initialize" })}\n`);
   input.write(`${JSON.stringify({ jsonrpc: "2.0", id: 2, method: "tools/list" })}\n`);
-  input.write(`${JSON.stringify(callMsg(3, "pacta_live_timelocks", {}))}\n`);
+  input.write(`${JSON.stringify(callMsg(3, "pacta_live_timelocks", { ...CALLER }))}\n`);
   input.write("not json\n");
   const lines = await out.waitFor(4);
   h.close();

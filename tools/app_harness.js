@@ -284,7 +284,8 @@ async function preflightScenario() {
   const preset = d.querySelectorAll("[data-pf-address]")[0];
   preset.dispatchEvent(new Event_("click"));
   await flush(); await flush(); await flush();
-  const want = box.getAttribute("data-api") + "/v1/check/preflight?chain=" + preset.getAttribute("data-pf-chain") + "&address=" + preset.getAttribute("data-pf-address");
+  const want = box.getAttribute("data-api") + "/v1/check/preflight?chain=" + preset.getAttribute("data-pf-chain") + "&address=" + preset.getAttribute("data-pf-address")
+    + "&caller_agent=pacta-wtf-checker&requester_role=individual_user&caller_purpose=general_research";
   res.pf_preset_fetches_once = calls.length === 1 && calls[0] === want;
   const txt = out.textContent;
   res.pf_renders_verdict = txt.includes("MULTISIG_NO_TIMELOCK") && txt.includes("Risk 60/100") && txt.includes("multisig_safe (3-of-5)") && txt.includes("pause, upgrade");

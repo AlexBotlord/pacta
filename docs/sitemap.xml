@@ -17,6 +17,8 @@
   <url><loc>https://pacta.wtf/api/v1/proposals.json</loc><lastmod>2026-11-14</lastmod></url>
   <url><loc>https://pacta.wtf/api/v1/rpc-pinned.json</loc><lastmod>2026-11-14</lastmod></url>
   <url><loc>https://pacta.wtf/api/v1/lookup.json</loc><lastmod>2026-11-14</lastmod></url>
+  <url><loc>https://pacta.wtf/api/v1/protocols.json</loc><lastmod>2026-11-14</lastmod></url>
+  <url><loc>https://pacta.wtf/integrations/vault-factories/</loc><lastmod>2026-11-14</lastmod></url>
   <url><loc>https://pacta.wtf/llms/</loc><lastmod>2026-11-14</lastmod></url>
   <url><loc>https://pacta.wtf/llms-full.txt</loc><lastmod>2026-11-14</lastmod></url>
   <url><loc>https://pacta.wtf/SKILL.md</loc><lastmod>2026-11-14</lastmod></url>

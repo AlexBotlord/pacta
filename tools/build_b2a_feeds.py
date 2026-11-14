@@ -180,6 +180,7 @@ def proposals(idx, onb):
 
 FEEDS = [("/api/v1/index.json", "Block-pinned control-plane index (every record: target, call, block, block hash, classification, Base EAS UID)"),
          ("/api/v1/lookup.json", "Protocol / token lookup catalog: 53 protocols + 8 briefs with slug, aliases, checksummed contracts, evidence basis and preflightArgs"),
+         ("/api/v1/protocols.json", "Every published protocol: badge tier + URLs, evidence basis (33 EAS-attested / 20 RPC-observed), Sprint ids, EAS UIDs, controller, pinned surfaces"),
          ("/api/v1/onboarding.json", "Onboarding verification scans: every check with call, calldata, raw result, decoded value; role maps"),
          ("/api/v1/proposals.json", "Live governance proposals (Aave, Euler, Morpho, Sky) mapped to block-pinned observations"),
          ("/api/v1/radar.json", "Queued timelock operations with on-chain ETAs at a finalized block"),
@@ -237,6 +238,7 @@ def llms_full(idx, radar, prop, onb, pinned=None):
          f"- Local stdio server (from a clone; npm publication pending): `{STDIO_FROM_SOURCE}`. OpenAPI 3.1: {OPENAPI_URL}.",
          f"- {CALLER_FIELDS_DOC}",
          f"- {LOOKUP_DOC}",
+         f"- Vault factories and curators: {BASE}/integrations/vault-factories/ (Control-Plane & Role Map tab from {BASE}/api/v1/protocols.json, status badges {BASE}/badges/<slug>.svg and {X402_URL}/v1/badges/<slug>.svg, and PactaSentinelGuard.sol: refuses cap increases without a healthy Pacta attestation, never blocks a decrease).",
          "- Tools:"] + [f"  - {n} ({p}): {d}" for n, p, d in MCP_TOOLS] + [
          f"- Paid tools are disabled unless PACTA_X402_URL is set (opt-in: PACTA_X402_URL={X402_URL}); the client refuses any 402 challenge (v1 body or v2 "
          "PAYMENT-REQUIRED header) whose payTo, asset or network differ from the values below, or whose amount exceeds $1.00 by default. Pay with "

@@ -28,6 +28,7 @@ or a live collateral onboarding proposal. Pacta publishes 37 block-pinned record
 ## Feeds (no key, no paywall)
 - `https://pacta.wtf/api/v1/index.json`: Block-pinned control-plane index (every record: target, call, block, block hash, classification, Base EAS UID)
 - `https://pacta.wtf/api/v1/lookup.json`: Protocol / token lookup catalog: 53 protocols + 8 briefs with slug, aliases, checksummed contracts, evidence basis and preflightArgs
+- `https://pacta.wtf/api/v1/protocols.json`: Every published protocol: badge tier + URLs, evidence basis (33 EAS-attested / 20 RPC-observed), Sprint ids, EAS UIDs, controller, pinned surfaces
 - `https://pacta.wtf/api/v1/onboarding.json`: Onboarding verification scans: every check with call, calldata, raw result, decoded value; role maps
 - `https://pacta.wtf/api/v1/proposals.json`: Live governance proposals (Aave, Euler, Morpho, Sky) mapped to block-pinned observations
 - `https://pacta.wtf/api/v1/radar.json`: Queued timelock operations with on-chain ETAs at a finalized block

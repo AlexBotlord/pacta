@@ -1,0 +1,69 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vault factories: control-plane tab, status badges and PactaSentinelGuard · Pacta</title>
+<meta name="description" content="Free building blocks for vault factories and curators: a Control-Plane &amp; Role Map tab from one static JSON file, embeddable status badges, and a cap-increase tripwire.">
+<link rel="canonical" href="https://pacta.wtf/integrations/vault-factories/">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Pacta by Fractal Neurons">
+<meta property="og:title" content="Vault factories: control-plane tab, status badges and PactaSentinelGuard">
+<meta property="og:description" content="Free building blocks for vault factories and curators: a Control-Plane &amp; Role Map tab from one static JSON file, embeddable status badges, and a cap-increase tripwire.">
+<meta property="og:url" content="https://pacta.wtf/integrations/vault-factories/">
+<meta property="og:image" content="https://pacta.wtf/og-preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Vault factories: control-plane tab, status badges and PactaSentinelGuard">
+<meta name="twitter:description" content="Free building blocks for vault factories and curators: a Control-Plane &amp; Role Map tab from one static JSON file, embeddable status badges, and a cap-increase tripwire.">
+<meta name="twitter:image" content="https://pacta.wtf/og-preview.png">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../../favicon.png" type="image/png" sizes="32x32">
+<link rel="stylesheet" href="../../styles.css">
+<link rel="alternate" type="text/markdown" href="../../llms.txt" title="llms.txt">
+<link rel="alternate" type="text/html" href="../../llms/" title="llms.txt (HTML mirror)">
+<script>document.documentElement.className="js";try{if(localStorage.getItem("pacta-theme")==="slate")document.documentElement.dataset.theme="slate"}catch(e){}</script>
+<script src="../../app.js" defer></script>
+<script src="../../b.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar"><div class="wrap"><a class="brand" href="../../"><img src="../../favicon.svg" alt="" width="22" height="22">PACTA<small>by Fractal Neurons</small></a><nav class="nav" aria-label="Sections"><a href="../../#preflight">Free API</a><a href="../../protocols/">Protocols</a><a href="../../#inspector">Inspector</a><a href="../../#radar">Radar</a><a href="../../#findings">Findings</a><a href="../../#index">Index</a><a href="../../#verify">Verify</a><a href="../../#pricing">Pricing</a><a href="../../#faq">FAQ</a></nav><div class="tools"><button class="tt" type="button" aria-label="Theme: Paper (switch to Slate)"><span data-t="paper" class="on">Paper</span><span data-t="slate">Slate</span></button><a class="btn sm primary" href="../../request/">Request coverage</a></div></div></header>
+<main id="main" class="memo-wrap">
+<div class="crumbs"><a href="../../">Pacta</a> / Integrations / Vault factories</div>
+<article class="memo">
+<header><span class="tier">Integrations</span><h1>Vault factories: control-plane tab, status badges and PactaSentinelGuard</h1>
+<p class="lede">Free building blocks for vault factories and curator tooling: a <b>Control-Plane &amp; Role Map</b> tab from one static JSON file, embeddable status badges, and <code>PactaSentinelGuard.sol</code>, an on-chain tripwire that refuses cap increases for collateral without a healthy Pacta attestation and never blocks a decrease.</p></header>
+<section class="memo-sec" id="control-plane-tab"><h2>1. Control-Plane &amp; Role Map tab (free, no key)</h2>
+<p><a href="../../api/v1/protocols.json">/api/v1/protocols.json</a> (schema <code>pacta.protocols.v1</code>) lists every published protocol record: 53 protocols, of which 33 are Base-EAS-attested (<code>evidenceBasis: "eas_attested"</code>, documentation compared) and 20 are RPC-observed only (<code>evidenceBasis: "rpc_observed"</code>, <code>documentationComparison: "not_assessed"</code>). Each record carries the checksummed target and controller, every pinned surface with its block number and block hash, the badge URLs and ready-to-use <code>preflightArgs</code>.</p>
+<div class="term"><div class="term-h"><span>JavaScript</span><button class="copy" type="button" data-copy-term>Copy JavaScript</button></div><pre>const res = await fetch(&quot;https://pacta.wtf/api/v1/protocols.json&quot;);
+const { protocols } = await res.json();
+const p = protocols.find((x) =&gt; x.slug === &quot;aave-v3-gho&quot;);
+// p.badge.svg, p.evidenceBasis (&quot;eas_attested&quot; | &quot;rpc_observed&quot;), p.classification, p.controllerAddress,
+// p.surfaces[i].blockNumber / blockHash, p.preflightArgs (for a live re-read)
+badgeImg.src = p.badge.svg;            // render text with textContent, never innerHTML
+statusCell.textContent = p.badge.label;</pre></div>
+<p>Show RPC-observed protocols as observed control planes only: never present them as aligned or as having a documentation delta. For a live re-read of any contract, call the free <code>https://pacta-x402.pacta.workers.dev/v1/check/preflight</code> with <code>preflightArgs</code>.</p></section>
+<section class="memo-sec" id="badges"><h2>2. Control-plane status badges</h2>
+<p>Static: <code>https://pacta.wtf/badges/&lt;slug&gt;.svg</code> (rebuilt with the site). Live: <code>https://pacta-x402.pacta.workers.dev/v1/badges/&lt;slug&gt;.svg</code> (5-minute cache, CORS open). Three tiers, per protocol page:</p>
+<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Badge</th><th class="r">Protocols</th><th>Meaning</th></tr></thead><tbody><tr><td><img class="cp-badge" src="../../badges/aave-v3-gho.svg" alt="Pacta Control Plane: Aligned · Base EAS" height="20"></td><td class="num">17</td><td>Every record is a Base-EAS-attested aligned baseline: on-chain state matches the documentation.</td></tr><tr><td><img class="cp-badge" src="../../badges/curve-finance-crvusd.svg" alt="Pacta Control Plane: Parameter Delta" height="20"></td><td class="num">16</td><td>Base-EAS-attested; at least one surface differs from the documentation.</td></tr><tr><td><img class="cp-badge" src="../../badges/moonwell-lending-base.svg" alt="Pacta Control Plane: RPC-Observed" height="20"></td><td class="num">20</td><td>RPC-pinned only: control plane pinned at an archive block; documentation not assessed; not EAS-attested.</td></tr></tbody></table></div>
+<div class="term"><div class="term-h"><span>Markdown</span><button class="copy" type="button" data-copy-term>Copy Markdown</button></div><pre>[![Pacta Control Plane](https://pacta.wtf/badges/aave-v3-gho.svg)](https://pacta.wtf/protocols/aave-v3-gho/)</pre></div></section>
+<section class="memo-sec" id="sentinel-guard"><h2>3. PactaSentinelGuard.sol: refuse unhealthy cap increases, never block a decrease</h2>
+<p>An MIT, zero-dependency, non-custodial Solidity <code>^0.8.24</code> contract (source and offline Foundry tests in <a href="https://github.com/Fractal-Neurons/pacta/tree/main/packages/sentinel-guard"><code>packages/sentinel-guard</code></a>; not audited, review before production use). A cap increase passes only if the collateral's binding resolves to:</p>
+<ul><li>a Sprint receipt in PactaCommitmentRegistry <span class="addr" title="0x35D21Bb4Df6586FE7759b5e57263ffeB3e1fd872">0x35D2…d872</span><button class="copy" type="button" data-copy="0x35D21Bb4Df6586FE7759b5e57263ffeB3e1fd872">Copy</button> on Base with <code>driftCount == 0</code> (the receipt covers the whole Sprint, so drift anywhere in it blocks increases);</li>
+<li>a Base EAS attestation with the Pacta schema, made by the registry's current attester, not revoked or expired, younger than <code>maxStaleness</code> (default 30 days), whose payload matches the registry receipt.</li></ul>
+<p>Decreases, equal caps and zeroing always pass, so curators and sentinels can de-risk during an incident. Pacta deploys no shared instance: each curator deploys one on Base, where the registry and EAS live (vaults on other chains can run the same checks from an off-chain bot), and binds collateral with Sprint ids and UIDs from <code>protocols.json</code>. RPC-observed protocols have no attestation to bind, so an increase guarded for them always reverts.</p>
+<div class="term"><div class="term-h"><span>Solidity</span><button class="copy" type="button" data-copy-term>Copy Solidity</button></div><pre>PactaSentinelGuard guard = new PactaSentinelGuard(
+    0x35D21Bb4Df6586FE7759b5e57263ffeB3e1fd872, // PactaCommitmentRegistry (Base)
+    0x4200000000000000000000000000000000000021, // EAS predeploy (Base)
+    curatorSafe,                                // binds collateral
+    0                                           // maxStaleness: 0 = 30 days (1 to 365 days)
+);
+guard.bind(collateral, sprintId, easUid);       // from protocols.json `sprints` / `baseEasUids`
+guard.validateCapIncrease(collateral, currentCap, newCap); // reverts only on an unhealthy increase</pre></div>
+<div class="tbl-wrap"><table class="tbl"><thead><tr><th>Platform</th><th>Call</th><th>Where</th></tr></thead><tbody><tr><td><b>Morpho Vault V2</b></td><td><code>checkMorphoV2AbsoluteCapIncrease(vault, collateral, idData, newCap)</code></td><td>Before a curator submits increaseAbsoluteCap. Reads absoluteCap(keccak256(idData)); decreaseAbsoluteCap and sentinel revoke are never gated.</td></tr><tr><td><b>Euler EVK</b></td><td><code>checkEulerCapsChange(evault, collateral, newSupplyCap, newBorrowCap)</code></td><td>Before setCaps. AmountCap 0 means unlimited, so setting a cap to 0 counts as an increase; lowering a cap never needs the attestation.</td></tr><tr><td><b>Veda (BoringVault), Lagoon, Upshift, Mellow</b></td><td><code>validateCapIncrease(collateral, currentCap, newCap)</code></td><td>In your cap-setting path: a manager or strategist module, a Safe transaction guard, or an off-chain approval bot.</td></tr><tr><td><b>Off-chain Sentinel bots</b></td><td><code>attestationHealth(collateral)</code></td><td>Poll the health state (it never reverts on a malformed attestation) and alert or de-risk.</td></tr></tbody></table></div></section>
+</article>
+<div class="memo-foot"><span>Read-only on-chain analysis. Not investment advice. No partner integration is implied: these are open building blocks.</span><a href="../../protocols/">Protocol records →</a></div>
+</main>
+<footer class="ftr"><div class="wrap"><span>Pacta · Fractal Neurons · pacta.base.eth · 14 Sprints · 37 Indexed Records</span><nav aria-label="Footer"><a href="https://github.com/Fractal-Neurons/pacta" target="_blank" rel="noopener">GitHub</a><a href="../../api/v1/index.json">JSON feed</a><a href="../../llms.txt">llms.txt</a><a href="../../llms/">llms (HTML)</a><a href="https://basescan.org/address/0x35D21Bb4Df6586FE7759b5e57263ffeB3e1fd872" target="_blank" rel="noopener">Base registry</a><a href="../../.well-known/security.txt">security.txt</a><a href="../../request/">Contact</a></nav></div></footer>
+</body></html>

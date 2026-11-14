@@ -177,7 +177,7 @@ def dom_tree(text):
 
 
 def app_behaviour(appjs, request_html, index_html, row_id, beacon="", protocol_html="", protocol_slug="", notfound_html="",
-                  clearance_html="", clearance_slug="", brief_html="", brief_slug="", prefill_slug=""):
+                  clearance_html="", clearance_slug="", brief_html="", brief_slug="", prefill_slug="", timelock_brief_html=""):
     """Run docs/app.js (and the docs/b.js beacon) under node against a synthetic DOM of the real pages. No network, no listener, no files."""
     node = shutil.which("node")
     if not node:
@@ -187,6 +187,7 @@ def app_behaviour(appjs, request_html, index_html, row_id, beacon="", protocol_h
                           "notfound": dom_tree(notfound_html) if notfound_html else None,
                           "clearanceProtocol": dom_tree(clearance_html) if clearance_html else None, "clearanceSlug": clearance_slug,
                           "brief": dom_tree(brief_html) if brief_html else None, "briefSlug": brief_slug, "prefillSlug": prefill_slug,
+                          "timelockBrief": dom_tree(timelock_brief_html) if timelock_brief_html else None,
                           # every published protocol slug (+ wave-2 shapes) must survive the beacon's client-side path redaction
                           "protocolSlugs": sorted(d for d in os.listdir(os.path.join(DOCS, "protocols")) if os.path.isdir(os.path.join(DOCS, "protocols", d)))})
     out = subprocess.run([node, os.path.join(ROOT, "tools", "app_harness.js")], input=payload, capture_output=True, text=True, timeout=120)
@@ -361,6 +362,17 @@ def main():
         need = {f"{base}/", f"{base}/request/", f"{base}/llms.txt", f"{base}/api/v1/index.json", f"{base}/demos/swapio-x402/"} | \
                {f"{base}/briefs/{os.path.basename(os.path.dirname(p))}/" for p in glob.glob(os.path.join(DOCS, "briefs", "*", "index.html"))}
         check("sitemap.xml lists home, request, llms.txt, API, every brief and the demo", need <= locs, f"missing {sorted(need - locs)}")
+        # Codex F3: <lastmod> comes from the pinned data, never the wall clock (a rebuild after 00:00 UTC must be byte-identical)
+        sys.path.insert(0, os.path.join(ROOT, "tools"))
+        sys.dont_write_bytecode = True
+        import build_site as BSF
+        lastmods = {e.text for e in sm.iter("{http://www.sitemaps.org/schemas/sitemap/0.9}lastmod")}
+        want_day = BSF.site_date(idx, json.loads(read("docs/api/v1/radar.json")), json.loads(read("docs/api/v1/rpc-pinned.json")),
+                                 json.loads(read("docs/api/v1/onboarding.json")) if os.path.exists(os.path.join(DOCS, "api", "v1", "onboarding.json")) else None)
+        wall = [f for f in ("tools/build_site.py", "tools/build_b2a_feeds.py", "tools/build_lookup.py")
+                if re.search(r"date\.today\(|datetime\.now\(|datetime\.utcnow\(|time\.time\(|time\.gmtime\(\)|time\.localtime\(", read(f))]
+        check("sitemap <lastmod> is deterministic: every entry = the newest pinned-data date (index / radar / rpc-pinned / onboarding), "
+              "no wall-clock call in the build scripts (Codex F3)", lastmods == {want_day} and not wall, f"lastmod {sorted(lastmods)} want {want_day}; wall-clock in {wall}")
     except ET.ParseError as e:
         check("sitemap.xml parses", False, str(e))
     sec = read("docs/.well-known/security.txt")
@@ -461,7 +473,8 @@ def main():
                         notfound_html=pages.get("404.html", ""),
                         clearance_html=pages.get(os.path.join("protocols", "across-protocol-hubpool", "index.html"), ""), clearance_slug="across-protocol-hubpool",
                         brief_html=pages.get(os.path.join("briefs", "kerne-kusd-base", "index.html"), ""), brief_slug="kerne-kusd-base",
-                        prefill_slug="across-protocol-hubpool")
+                        prefill_slug="across-protocol-hubpool",
+                        timelock_brief_html=pages.get(os.path.join("briefs", "ethena-ops-0x0ca0-0x1fe5", "index.html"), ""))
     expected = ["default_is_clearance", "default_settlement_is_invoice", "clearance_pay_panel_shown", "invoice_hides_tx_and_direct",
                 "clearance_github_href", "clearance_github_tier_exact", "clearance_brief_has_price_and_invoice", "pay_summary_tracks_tier",
                 "direct_shows_tx_and_treasury", "tx_valid_in_brief", "tx_valid_in_github",
@@ -888,12 +901,13 @@ def main():
     srv_r = json.loads(read("packages/mcp-server/server.remote.json"))
     dockerfile = read("packages/mcp-server/Dockerfile")
     reg_ok = {
-        "glama.json": glama == {"$schema": "https://glama.ai/mcp/schemas/server.json", "maintainers": ["pacta-fractal-neurons", "ben-grokvisor"]},
+        "glama.json": glama == {"$schema": "https://glama.ai/mcp/schemas/server.json", "maintainers": ["pacta-fractal-neurons"]},
         "smithery.yaml": bool(re.search(r"^startCommand:\n  type: stdio$", smith, re.M)) and "dockerfile: packages/mcp-server/Dockerfile" in smith
                          and MCP_ in smith and '"/app/bin/pacta-mcp.mjs"' in smith,
         "server.json remotes": srv.get("remotes") == [{"type": "streamable-http", "url": MCP_}] and srv_r.get("remotes") == srv["remotes"]
                                and "packages" not in srv_r and srv_r["name"] == srv["name"] and srv_r["version"] == srv["version"],
-        "Dockerfile stdio": 'ENTRYPOINT ["node", "/app/bin/pacta-mcp.mjs"]' in dockerfile and "EXPOSE" not in dockerfile,
+        "Dockerfile stdio": 'CMD ["node", "/app/bin/pacta-mcp.mjs"]' in dockerfile and re.search(r"^USER node$", dockerfile, re.M) is not None
+                            and not re.search(r"^ENTRYPOINT", dockerfile, re.M) and "EXPOSE" not in dockerfile,
     }
     check("registries: glama.json (schema + maintainer), smithery.yaml (stdio from the Dockerfile + remote URL), server.json + server.remote.json remotes (streamable-http), Dockerfile stdio entrypoint",
           all(reg_ok.values()), str({k: v for k, v in reg_ok.items() if not v}))
@@ -1033,9 +1047,12 @@ def main():
     js_bad = sorted(f for f, t in page_js.items() if re.search(r"document\.cookie|sessionStorage|indexedDB|XMLHttpRequest|new Image\b|WebSocket|EventSource|importScripts|createElement\(\s*\"script", t))
     data_api = set(re.findall(r'data-api="([^"]+)"', "".join(pages.values())))
     app_fetch = len(re.findall(r"\bfetch\(", appjs))
-    check("no cookies, no storage identifiers, no third-party requests in page scripts: localStorage only for the theme preference; app.js fetches only this site's JSON and the first-party API (data-api)",
+    check("no cookies, no storage identifiers, no third-party requests in page scripts: localStorage only for the theme preference; app.js fetches only this site's JSON, the first-party API (data-api) and the first-party /v1/briefs/live-timelocks (data-live-timelocks)",
           not js_bad and ls_keys == {"pacta-theme"} and appjs.count("localStorage") == 2 and data_api <= {API_}
-          and app_fetch == 2 and 'fetch(document.documentElement.getAttribute("data-api") || "api/v1/index.json")' in appjs
+          and app_fetch == 3 and 'fetch(document.documentElement.getAttribute("data-api") || "api/v1/index.json")' in appjs
+          and "    fetch(url, init)\n" in appjs and "if (!LIVE_TL_RE.test(url)) return;" in appjs
+          and set(re.findall(r'data-live-timelocks="([^"]+)"', "".join(pages.values()))) == {html.escape(BS.LIVE_TIMELOCKS_URL)}
+          and BS.LIVE_TIMELOCKS_URL.startswith(API_ + "/v1/briefs/live-timelocks?")
           and 'fetch(api + "/v1/check/preflight?chain=" + ch + "&address=" + a + "&caller_agent=pacta-wtf-checker&requester_role=individual_user&caller_purpose=general_research", opts)' in appjs,
           f"bad {js_bad}; localStorage keys {sorted(ls_keys)}; data-api {sorted(data_api)}; fetch {app_fetch}")
     b_keys = ["b_page_load_payload", "b_hook_exposed", "b_copy_and_cta_events", "b_scroll_once_each", "b_live_checker_submit", "b_invalid_submit_not_reported",
@@ -1152,10 +1169,11 @@ def main():
         "copies only packages/mcp-server": bool(copies) and all(all(x.startswith("packages/mcp-server/") for x in c.split()[:-1]) for c in copies)
                                             and {"packages/mcp-server/bin", "packages/mcp-server/src"} <= {x for c in copies for x in c.split()[:-1]},
         "gateway env": f"ENV PACTA_X402_URL={API_}" in df,
-        "stdio entrypoint, no EXPOSE": 'ENTRYPOINT ["node", "/app/bin/pacta-mcp.mjs"]' in df and "EXPOSE" not in df and "RUN npm" not in df,
+        "stdio CMD as USER node, no ENTRYPOINT / EXPOSE": 'CMD ["node", "/app/bin/pacta-mcp.mjs"]' in df and re.search(r"^USER node$", df, re.M) is not None
+                                                       and not re.search(r"^ENTRYPOINT", df, re.M) and "EXPOSE" not in df and "RUN npm" not in df,
         "no Smithery": "smithery" not in df.lower() and "smithery" not in wf.lower() and "smithery" not in nf.lower(),
     }
-    check("root Dockerfile (glama.ai): node:22-alpine, copies only packages/mcp-server, PACTA_X402_URL = live gateway, stdio ENTRYPOINT node /app/bin/pacta-mcp.mjs, no EXPOSE",
+    check("root Dockerfile (glama.ai mcp-proxy): node:22-alpine, copies only packages/mcp-server, PACTA_X402_URL = live gateway, USER node + CMD [node, /app/bin/pacta-mcp.mjs] (no ENTRYPOINT), no EXPOSE",
           all(df_ok.values()), str({k: v for k, v in df_ok.items() if not v}))
     readme = read("README.md")
     priv = readme[readme.find("## Analytics & privacy"):][:1500] if "## Analytics & privacy" in readme else ""
@@ -1164,6 +1182,124 @@ def main():
 
     # private identifiers must never be published: compared by SHA-256 of lowercased tokens, so the
     # repository itself never contains the literal identifiers this check guards against
+    # ================= Batch C (task-d40112b6b379) =================
+    import build_lookup as BLC
+    # C1: Glama mcp-proxy needs CMD (it replaces ENTRYPOINT); one maintainer; no stale "5 read-only tools" anywhere
+    stale5 = sorted({os.path.relpath(p, ROOT) for p in glob.glob(os.path.join(ROOT, "**", "*"), recursive=True)
+                     if os.path.isfile(p) and "/.git/" not in p and "__pycache__" not in p and not p.endswith((".png", ".svg", ".pyc"))
+                     and re.search(r"\b(?:5|five) read-only tools?\b", open(p, errors="replace").read(), re.I)
+                     and os.path.relpath(p, ROOT) != "verify_site_v2.py"})
+    c1 = {
+        "Dockerfiles: USER node + CMD, no ENTRYPOINT line": all(
+            re.search(r'^USER node$\n(?:.*\n)*?^CMD \["node", "/app/bin/pacta-mcp\.mjs"\]$', read(f), re.M) is not None and not re.search(r"^ENTRYPOINT", read(f), re.M)
+            for f in ("Dockerfile", "packages/mcp-server/Dockerfile")),
+        "glama maintainers": json.loads(read("glama.json"))["maintainers"] == ["pacta-fractal-neurons"],
+        "6 remote / 10 stdio tools": "6 read-only tools, led by `pacta_lookup_protocol`" in read("README.md") and "10 read-only tools" in read("README.md")
+            and "`pacta_live_timelocks`" in read("README.md") and "6 read-only tools" in read("smithery.yaml")
+            and "Remote MCP (6 read-only tools)" in home and "Remote MCP (6 read-only tools)" in req_page,
+        "no stale 5-tool strings": not stale5,
+    }
+    check("C1: root + package Dockerfile run as USER node with CMD [node, /app/bin/pacta-mcp.mjs] (Glama mcp-proxy), glama.json maintainers [pacta-fractal-neurons], 6 remote / 10 stdio read-only tools everywhere, 0 stale '5 read-only tools' strings",
+          all(c1.values()), f"{[k for k, v in c1.items() if not v]} stale {stale5[:4]}")
+
+    # C2: post-ETA state from radar.json; READY never rendered as executed; live hydrate (harness)
+    rad = json.loads(read("docs/api/v1/radar.json"))
+    fin_ts = rad["refreshed_at"]["block_timestamp"]
+    ready_ok = all(isinstance(o.get("ready"), bool) and o["ready"] == bool(o["pending"] and not o["done"] and (o["eta"] or 0) > 1 and fin_ts >= o["eta"])
+                   for it in rad["items"] for o in it["operations"])
+    want_state = {}
+    for it in rad["items"]:
+        for o in it["operations"]:
+            want_state[o["op_id"]] = BS.op_state(o)
+    badge_bad = []
+    for rel, t in pages.items():
+        for m in re.finditer(r'<span class="opstate (\w+)" data-opstate="(\w+)" data-ops="([^"]+)">([^<]+)</span>', t):
+            sts = {want_state.get(i) for i in m.group(3).split()}
+            exp = sts.pop() if len(sts) == 1 else "mixed"
+            if not (m.group(1) == m.group(2) == exp and html.unescape(m.group(4)) == BS.OP_STATE_LABEL[exp]):
+                badge_bad.append(rel)
+    eth = pages.get(os.path.join("briefs", "ethena-ops-0x0ca0-0x1fe5", "index.html"), "")
+    eth_ready = all(want_state[o["op_id"]] == "ready" for it in rad["items"] if it["brief"].endswith("ethena-ops-0x0ca0-0x1fe5/") for o in it["operations"])
+    banner = re.search(r'<div class="poststatus (\w+)" id="post-eta-status".*?</div>', eth, re.S)
+    live_keys = ["live_static_ready", "live_flips_executed", "live_mixed", "live_ready_kept", "live_failures_keep_static", "live_radar_row", "live_no_fetch_elsewhere"]
+    c2 = {
+        "refresh_radar computes ready": 'fin_ts = int(fin["timestamp"], 16)' in read("tools/refresh_radar.py")
+            and '"ready": bool(pending and not done and ts > 1 and fin_ts >= ts)' in read("tools/refresh_radar.py"),
+        "radar.json ready consistent": ready_ok and rad["refreshed_at"]["block_number"] >= 26415856,
+        "every state badge = radar state": not badge_bad,
+        "Ethena: READY banner, never Executed": (not eth_ready) or (bool(banner) and banner.group(1) == "ready"
+            and "READY · EXECUTABLE NOW" in banner.group(0) and f"Unexecuted on L1 at Finalized Block #{rad['refreshed_at']['block_number']:,}" in banner.group(0)
+            and "24h Delay Elapsed" in banner.group(0) and "Post-ETA Live Status" in banner.group(0)
+            and not re.search(r'data-opstate="executed"|>EXECUTED<|>Executed<', eth)),
+        "no Executed label while done is false": not any(re.search(r'data-opstate="executed"|>EXECUTED<|>Executed at refresh<', t) for t in pages.values())
+            or any(o["done"] for it in rad["items"] for o in it["operations"]),
+        "live hydrate harness": all(res.get(k) is True for k in live_keys),
+        "no reload / refresh": "location.reload" not in appjs and not any('http-equiv="refresh"' in t for t in pages.values()),
+        "live block writes text only": (lambda b: bool(b) and not re.search(r"innerHTML|outerHTML|insertAdjacentHTML|document\.write|setInterval|setTimeout", b))(
+            appjs[appjs.find("// ---- live timelock re-check"):appjs.find("// ---- first-party beacon hooks")]),
+    }
+    check("C2: radar.json carries ready (delay elapsed, unexecuted) at finalized block #26,415,856+; Ethena brief + #radar render READY · EXECUTABLE NOW (never Executed while done is false); app.js re-checks /v1/briefs/live-timelocks once (textContent only; failures keep the static state)",
+          all(c2.values()), f"{[k for k, v in c2.items() if not v]} badges {badge_bad[:3]} live {[k for k in live_keys if res.get(k) is not True]}")
+
+    # C3: 53 deterministic badges == the worker's badgeSvg (node), 3 truthful tiers, embed / explainer cards
+    probe_b = ("import('" + os.path.join(ROOT, "packages", "mcp-server", "src", "lookup.mjs") + "').then((M) => process.stdout.write(JSON.stringify("
+               "Object.fromEntries(M.LOOKUP_CATALOG.filter((x) => x.kind === 'protocol').map((x) => [x.slug, M.badgeSvg(x.slug)])))))")
+    rb = subprocess.run([node_, "--input-type=module", "-e", probe_b], capture_output=True, text=True, timeout=60) if node_ else None
+    js_badges = json.loads(rb.stdout) if rb and rb.returncode == 0 else {}
+    svg_files = sorted(f for f in os.listdir(os.path.join(DOCS, "badges")) if f.endswith(".svg")) if os.path.isdir(os.path.join(DOCS, "badges")) else []
+    tier_of = {v["slug"]: ("rpc_observed" if v["pinned"] else ("aligned" if BS.is_aligned_page(v["entries"]) else "parameter_delta")) for v in sp_lk.values()}
+    card_bad = []
+    for slug_, t in tier_of.items():
+        pg = pages.get(os.path.join("protocols", slug_, "index.html"), "")
+        md_ = f"[![Pacta Control Plane]({BS.BASE_URL}/badges/{slug_}.svg)]({BS.BASE_URL}/protocols/{slug_}/)"
+        if t == "aligned":
+            ok_ = 'id="embed-badge"' in pg and html.escape(md_) in pg and f'src="../../badges/{slug_}.svg"' in pg and 'id="badge-status"' not in pg \
+                and f"{API_}/v1/badges/{slug_}.svg" in pg
+        elif t == "parameter_delta":
+            ok_ = 'id="badge-status"' in pg and f'href="../../request/?tier=clearance&amp;protocol={slug_}&amp;settlement=invoice"' in pg \
+                and "Aligned · Base EAS" in pg and 'id="embed-badge"' not in pg
+        else:
+            ok_ = 'id="embed-badge"' not in pg and 'id="badge-status"' not in pg
+        if not ok_:
+            card_bad.append(slug_)
+    counts_ = {}
+    for t in tier_of.values():
+        counts_[t] = counts_.get(t, 0) + 1
+    c3 = {
+        "53 static badges": svg_files == sorted(f"{s_}.svg" for s_ in tier_of),
+        "== worker badgeSvg (node)": len(js_badges) == 53 and all(js_badges[s_] == read(f"docs/badges/{s_}.svg") for s_ in tier_of),
+        "tiers 17 / 16 / 20": counts_ == {"aligned": 17, "parameter_delta": 16, "rpc_observed": 20}
+            and all(("Aligned · Base EAS" if t == "aligned" else "Parameter Delta" if t == "parameter_delta" else "RPC-Observed") in read(f"docs/badges/{s_}.svg")
+                    for s_, t in tier_of.items()),
+        "RPC-observed never implies EAS": not any("EAS" in read(f"docs/badges/{s_}.svg") for s_, t in tier_of.items() if t == "rpc_observed"),
+        "cards": not card_bad,
+    }
+    check("C3: 53 deterministic /badges/<slug>.svg byte-identical to the worker's /v1/badges/<slug>.svg (badgeSvg); 17 emerald Aligned · Base EAS, 16 amber Parameter Delta (protocol-level: 12 parameter + 2 protective + 2 mixed), 20 slate RPC-Observed (no EAS claim); embed card on aligned pages, clearance-to-green explainer on delta pages",
+          all(c3.values()), f"{[k for k, v in c3.items() if not v]} cards {card_bad[:4]} tiers {counts_}")
+
+    # C5: protocols.json, vault-factories page, sentinel-guard package, feeds + sitemap links, robots untouched
+    pj = json.loads(read("docs/api/v1/protocols.json"))
+    vf = pages.get(os.path.join("integrations", "vault-factories", "index.html"), "")
+    sg = read("packages/sentinel-guard/contracts/PactaSentinelGuard.sol") if os.path.exists(os.path.join(ROOT, "packages", "sentinel-guard", "contracts", "PactaSentinelGuard.sol")) else ""
+    c5 = {
+        "protocols.json": pj.get("schema") == "pacta.protocols.v1" and pj["totals"]["protocols"] == 53 and pj["totals"]["easAttested"] == 33
+            and pj["totals"]["rpcObserved"] == 20 and pj["totals"]["badgeTiers"] == counts_
+            and BLC.protocols_json(sp_lk, BLC.build_items(sp_lk, onb_lk, rad_lk, BS.BRIEF_PROTOCOL)) == read("docs/api/v1/protocols.json")
+            and all((p_["evidenceBasis"] == "rpc_observed") == (not p_["easAttested"]) and (p_["easAttested"] or (p_["documentationComparison"] == "not_assessed"
+                     and p_["baseEasUids"] == [] and p_["classification"] == "rpc_observed")) for p_ in pj["protocols"]),
+        "vault-factories page": bool(vf) and all(x in vf for x in ("Morpho Vault V2", "Euler EVK", "Veda (BoringVault), Lagoon, Upshift, Mellow", "PactaSentinelGuard",
+            "../../api/v1/protocols.json", "never blocks a decrease", "not audited")) and 'rel="canonical" href="https://pacta.wtf/integrations/vault-factories/"' in vf,
+        "sentinel-guard package": bool(sg) and "if (newCap <= currentCap) return;" in sg and "0x7ff485bc1159dff3c70eefcb9dff2d65be990301760c2d53799e5a45e3badf83" in sg
+            and all(os.path.exists(os.path.join(ROOT, "packages", "sentinel-guard", f)) for f in ("foundry.toml", "README.md", "test/PactaSentinelGuard.t.sol",
+                                                                                                   "contracts/interfaces/IPactaCommitmentRegistry.sol"))
+            and 'src = "contracts"' in read("packages/sentinel-guard/foundry.toml") and "offline = true" in read("packages/sentinel-guard/foundry.toml"),
+        "linked in llms / llms-full / /llms/ / sitemap": all(f"{BS.BASE_URL}/integrations/vault-factories/" in read(f) and f"{BS.BASE_URL}/api/v1/protocols.json" in read(f)
+                                                           for f in ("docs/llms.txt", "docs/llms-full.txt", "docs/llms/index.html", "docs/sitemap.xml")),
+        "robots.txt exact": read("docs/robots.txt") == "User-agent: *\nAllow: /\n\nSitemap: https://pacta.wtf/sitemap.xml\n" and len(read("docs/robots.txt").encode()) == 63,
+    }
+    check("C5: api/v1/protocols.json (53: 33 eas_attested / 20 rpc_observed not_assessed, badge tiers, Sprint ids + EAS UIDs, pinned surfaces) regenerates byte-identically; /integrations/vault-factories/; packages/sentinel-guard (never blocks a decrease); linked in llms.txt, llms-full.txt, /llms/, sitemap; robots.txt 63 B",
+          all(c5.values()), str([k for k, v in c5.items() if not v]))
+
     scope = [p for p in glob.glob(os.path.join(ROOT, "docs", "**", "*"), recursive=True) + glob.glob(os.path.join(ROOT, "audits", "**", "*"), recursive=True)
              + glob.glob(os.path.join(ROOT, "tools", "**", "*"), recursive=True) + [os.path.join(ROOT, "README.md"), os.path.abspath(__file__)]
              if os.path.isfile(p) and p.endswith((".html", ".txt", ".json", ".xml", ".js", ".css", ".md", ".py"))]

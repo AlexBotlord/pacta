@@ -41,6 +41,7 @@
    "/api/v1/lookup.json": "https://pacta.wtf/api/v1/lookup.json",
    "/api/v1/onboarding.json": "https://pacta.wtf/api/v1/onboarding.json",
    "/api/v1/proposals.json": "https://pacta.wtf/api/v1/proposals.json",
+   "/api/v1/protocols.json": "https://pacta.wtf/api/v1/protocols.json",
    "/api/v1/radar.json": "https://pacta.wtf/api/v1/radar.json",
    "/llms-full.txt": "https://pacta.wtf/llms-full.txt",
    "/llms.txt": "https://pacta.wtf/llms.txt"

@@ -168,4 +168,35 @@ export function lookupProtocols(raw = {}) {
   }
   return out;
 }
+// ---- control-plane status badges (GET /v1/badges/<slug>.svg on the worker, docs/badges/<slug>.svg on the site).
+// Three truthful tiers per protocol page: "aligned" (every record an EAS-attested aligned_baseline), "parameter_delta"
+// (EAS-attested, at least one record differs from the documentation), "rpc_observed" (RPC-pinned only, documentation not
+// assessed; never implies an EAS attestation). Byte-identical to tools/build_lookup.py badge_svg() (the site build checks).
+export const BADGE_TIERS = Object.freeze({
+  aligned: Object.freeze({ label: "Aligned · Base EAS", color: "#047857" }),
+  parameter_delta: Object.freeze({ label: "Parameter Delta", color: "#b45309" }),
+  rpc_observed: Object.freeze({ label: "RPC-Observed", color: "#475569" }),
+});
+export const BADGE_TITLE = "Pacta Control Plane";
+const BADGE_SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+export function badgeTier(item) {
+  if (!item || item.kind !== "protocol") return null;
+  if (item.evidenceBasis === "rpc_observed") return "rpc_observed";
+  return item.classification === "aligned_baseline" ? "aligned" : "parameter_delta";
+}
+/** Deterministic flat shield for a published protocol slug; null for anything else. */
+export function badgeSvg(slug) {
+  if (typeof slug !== "string" || slug.length > 80 || !BADGE_SLUG_RE.test(slug)) return null;
+  const item = LOOKUP_CATALOG.find((x) => x.kind === "protocol" && x.slug === slug);
+  const tier = badgeTier(item);
+  if (!tier) return null;
+  const t = BADGE_TIERS[tier], left = BADGE_TITLE, right = t.label;
+  const lw = left.length * 7 + 12, rw = right.length * 7 + 12, w = lw + rw;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="20" role="img" aria-label="${left}: ${right}">`
+    + `<title>${left}: ${right} (${slug})</title>`
+    + `<clipPath id="r"><rect width="${w}" height="20" rx="3" fill="#fff"/></clipPath>`
+    + `<g clip-path="url(#r)"><rect width="${lw}" height="20" fill="#1f2937"/><rect x="${lw}" width="${rw}" height="20" fill="${t.color}"/></g>`
+    + `<g fill="#fff" text-anchor="middle" font-family="Verdana,DejaVu Sans,Geneva,sans-serif" font-size="11">`
+    + `<text x="${lw / 2}" y="14">${left}</text><text x="${lw + rw / 2}" y="14">${right}</text></g></svg>\n`;
+}
 // ---- LOOKUP-END

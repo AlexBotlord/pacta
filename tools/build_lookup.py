@@ -175,4 +175,101 @@ def write_all(root, docs, sp, onb, radar, brief_protocol):
     with open(os.path.join(docs, "api", "v1", "lookup.json"), "w", encoding="utf-8") as fh:
         fh.write(catalog_json(items))
     sync_module(os.path.join(root, "packages", "mcp-server", "src", "lookup.mjs"), items)
+    write_badges(docs, items)
+    with open(os.path.join(docs, "api", "v1", "protocols.json"), "w", encoding="utf-8") as fh:
+        fh.write(protocols_json(sp, items))
     return items
+
+
+# ---- control-plane status badges: byte-identical to badgeSvg() in packages/mcp-server/src/lookup.mjs (the worker's
+# GET /v1/badges/<slug>.svg serves the same block); verify_site_v2.py compares all 53 through node.
+BADGE_TITLE = "Pacta Control Plane"
+BADGE_TIERS = {"aligned": ("Aligned · Base EAS", "#047857"), "parameter_delta": ("Parameter Delta", "#b45309"),
+               "rpc_observed": ("RPC-Observed", "#475569")}
+
+
+def badge_tier(item):
+    if not item or item.get("kind") != "protocol":
+        return None
+    if item.get("evidenceBasis") == "rpc_observed":
+        return "rpc_observed"
+    return "aligned" if item.get("classification") == "aligned_baseline" else "parameter_delta"
+
+
+def _num(x):
+    return str(int(x)) if float(x).is_integer() else repr(float(x))
+
+
+def badge_svg(item):
+    tier = badge_tier(item)
+    right, color = BADGE_TIERS[tier]
+    left, slug = BADGE_TITLE, item["slug"]
+    lw, rw = len(left) * 7 + 12, len(right) * 7 + 12
+    w = lw + rw
+    return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{w}" height="20" role="img" aria-label="{left}: {right}">'
+            f'<title>{left}: {right} ({slug})</title>'
+            f'<clipPath id="r"><rect width="{w}" height="20" rx="3" fill="#fff"/></clipPath>'
+            f'<g clip-path="url(#r)"><rect width="{lw}" height="20" fill="#1f2937"/><rect x="{lw}" width="{rw}" height="20" fill="{color}"/></g>'
+            f'<g fill="#fff" text-anchor="middle" font-family="Verdana,DejaVu Sans,Geneva,sans-serif" font-size="11">'
+            f'<text x="{_num(lw / 2)}" y="14">{left}</text><text x="{_num(lw + rw / 2)}" y="14">{right}</text></g></svg>\n')
+
+
+def write_badges(docs, items):
+    d = os.path.join(docs, "badges")
+    os.makedirs(d, exist_ok=True)
+    want = {}
+    for x in items:
+        if x["kind"] == "protocol":
+            want[x["slug"] + ".svg"] = badge_svg(x)
+    for name in os.listdir(d):                      # stale badges of removed protocols never linger
+        if name.endswith(".svg") and name not in want:
+            os.remove(os.path.join(d, name))
+    for name, svg in sorted(want.items()):
+        with open(os.path.join(d, name), "w", encoding="utf-8") as fh:
+            fh.write(svg)
+    return want
+
+
+# ---- docs/api/v1/protocols.json: one record per /protocols/<slug>/ page with its badge tier, evidence basis and pinned
+# surfaces (block number + hash). The same truthful split as the catalog: 33 eas_attested vs 20 rpc_observed.
+PROTOCOLS_SCHEMA = "pacta.protocols.v1"
+API = "https://pacta-x402.pacta.workers.dev"
+REGISTRY = "0x35D21Bb4Df6586FE7759b5e57263ffeB3e1fd872"
+EAS_BASE = "0x4200000000000000000000000000000000000021"
+EAS_SCHEMA_UID = "0x7ff485bc1159dff3c70eefcb9dff2d65be990301760c2d53799e5a45e3badf83"
+
+
+def protocols_json(sp, items):
+    by = {x["slug"]: x for x in items if x["kind"] == "protocol"}
+    out = []
+    for name, v in sp.items():
+        x = by[v["slug"]]
+        tier = badge_tier(x)
+        surf = []
+        for e in v["entries"]:
+            surf.append({"id": e["id"], "surface": e["surface"], "classification": e["classification"], "targetContract": _addr(e["target_contract"]),
+                         "targetLabel": e["target_label"], "chain": e.get("chain", "ethereum"), "blockNumber": int(e["block_number"]),
+                         "blockHash": e["block_hash"], "baseEasUid": e.get("base_eas_uid"), "sprint": e.get("sprint")})
+        out.append({"slug": x["slug"], "name": name, "category": x["category"], "chain": x["chain"], "chainId": x["chainId"],
+                    "url": x["url"], "evidenceBasis": x["evidenceBasis"], "easAttested": x["easAttested"],
+                    "documentationComparison": x["documentationComparison"], "classification": x["classification"],
+                    "sprints": x.get("sprints", []), "baseEasUids": x["baseEasUids"],
+                    "badge": {"tier": tier, "label": BADGE_TIERS[tier][0], "svg": f"{BASE}/badges/{x['slug']}.svg", "live": f"{API}/v1/badges/{x['slug']}.svg"},
+                    "primaryContract": x["primaryContract"], "targetLabel": x["targetLabel"], "controllerAddress": x["controllerAddress"],
+                    "controllerKind": x["controllerKind"], "preflightArgs": x["preflightArgs"], "tokens": x["tokens"], "surfaces": surf})
+    out.sort(key=lambda r: r["slug"])
+    tiers = {}
+    for r in out:
+        tiers[r["badge"]["tier"]] = tiers.get(r["badge"]["tier"], 0) + 1
+    doc = {"schema": PROTOCOLS_SCHEMA, "totals": {"protocols": len(out), "easAttested": sum(r["easAttested"] for r in out),
+                                                  "rpcObserved": sum(r["evidenceBasis"] == "rpc_observed" for r in out),
+                                                  "surfaces": sum(len(r["surfaces"]) for r in out), "badgeTiers": dict(sorted(tiers.items()))},
+           "evidence": {"eas_attested": "Base-EAS-attested Sprint records: on-chain control plane compared with the protocol's documentation.",
+                        "rpc_observed": "RPC-pinned records: on-chain control plane pinned at an archive block; documentation not assessed (documentationComparison: not_assessed); not EAS-attested."},
+           "sentinelGuard": {"package": "packages/sentinel-guard (PactaSentinelGuard.sol)", "registry": REGISTRY, "eas": EAS_BASE, "schemaUid": EAS_SCHEMA_UID,
+                             "bind": "bind(collateral, sprintId, easUid) with a Sprint id from `sprints` and its UID from `baseEasUids` (eas_attested protocols only; an unbound collateral can never have its cap increased)",
+                             "guide": f"{BASE}/integrations/vault-factories/"},
+           "protocols": out}
+    t = doc["totals"]
+    assert (t["protocols"], t["easAttested"], t["rpcObserved"]) == (53, 33, 20), t
+    return json.dumps(doc, indent=1, sort_keys=True, ensure_ascii=False) + "\n"

@@ -543,9 +543,95 @@ async function beaconScenario() {
   click(t0.document.querySelectorAll("button[data-copy]")[0]);
   res.b_no_cookie_access = !touched && t0.events().length >= 1;
 }
+// (j) live timelock re-check: brief pages and #radar fetch the free /v1/briefs/live-timelocks once on load and update the
+// state badges with textContent + class only; failures and malformed payloads keep the static block-pinned state.
+async function liveTimelockScenario() {
+  if (!input.timelockBrief) { res.live_error = "no timelock brief page"; return; }
+  const LIVE = "https://pacta-x402.pacta.workers.dev/v1/briefs/live-timelocks?caller_agent=pacta-wtf-radar&requester_role=individual_user&caller_purpose=governance_monitoring";
+  const opsOf = (doc) => (doc.querySelector("#post-eta-status [data-ops]").getAttribute("data-ops") || "").split(/\s+/).filter(Boolean);
+  const op = (opId, live, block = 26420000) => ({ protocol: "Ethena", opId, live, block: { number: block, hash: "0x" + "ab".repeat(32), timestamp: 1794700000 } });
+  const runWith = async (tree, path, reply) => {
+    const calls = [];
+    const fetchMock = (url, init) => {
+      calls.push({ url: String(url), init });
+      if (reply instanceof Error) return Promise.reject(reply);
+      return Promise.resolve({ status: reply.status, json: () => (reply.bad ? Promise.reject(new Error("bad json")) : Promise.resolve(reply.body)) });
+    };
+    const p = run(tree, input.app, { path, fetch: fetchMock });
+    for (let i = 0; i < 6; i++) await flush();
+    return { d: p.document, calls };
+  };
+  const badge = (d) => d.querySelector("#post-eta-status [data-ops]");
+  // static state before any network: READY, never EXECUTED
+  let x = await runWith(input.timelockBrief, "/briefs/ethena-ops-0x0ca0-0x1fe5/", new Error("offline"));
+  const ids = opsOf(x.d);
+  res.live_static_ready = ids.length === 2 && badge(x.d).textContent === "READY · EXECUTABLE NOW" && badge(x.d).classList.contains("ready")
+    && x.calls.length === 1 && x.calls[0].url === LIVE && x.d.querySelector("[data-live-line]").textContent === "";
+  // live: both executed -> EXECUTED, banner flips, clause says superseded, latest block named
+  x = await runWith(input.timelockBrief, "/briefs/ethena-ops-0x0ca0-0x1fe5/", { status: 200, body: { operations: ids.map((i) => op(i, { status: "done", isOperationDone: true, isOperationPending: false })) } });
+  const ban = x.d.getElementById("post-eta-status");
+  res.live_flips_executed = badge(x.d).textContent === "EXECUTED" && badge(x.d).classList.contains("executed") && !badge(x.d).classList.contains("ready")
+    && ban.classList.contains("executed") && /live re-check at block #26,420,000: EXECUTED/.test(ban.querySelector(".ps-clause").textContent)
+    && /#26,420,000/.test(x.d.querySelector("[data-live-line]").textContent);
+  // live: one ready, one done -> MIXED; still ready -> READY (no change of meaning)
+  x = await runWith(input.timelockBrief, "/briefs/ethena-ops-0x0ca0-0x1fe5/", { status: 200, body: { operations: [op(ids[0], { status: "ready", isOperationPending: true, isOperationDone: false }), op(ids[1], { status: "done", isOperationDone: true })] } });
+  res.live_mixed = badge(x.d).textContent === "MIXED" && badge(x.d).classList.contains("mixed");
+  x = await runWith(input.timelockBrief, "/briefs/ethena-ops-0x0ca0-0x1fe5/", { status: 200, body: { operations: ids.map((i) => op(i, { status: "ready", isOperationPending: true, isOperationDone: false })) } });
+  res.live_ready_kept = badge(x.d).textContent === "READY · EXECUTABLE NOW" && badge(x.d).getAttribute("data-live") === "1";
+  // failures keep the static state: HTTP 502, malformed JSON, missing / partial operations, markup in the payload stays text
+  let keep = true;
+  for (const reply of [{ status: 502, body: {} }, { status: 200, bad: true }, { status: 200, body: { operations: "nope" } },
+    { status: 200, body: { operations: [op(ids[0], { status: "done", isOperationDone: true })] } },
+    { status: 200, body: { operations: ids.map((i) => op(i, { status: "<img src=x onerror=alert(1)>" })) } }]) {
+    x = await runWith(input.timelockBrief, "/briefs/ethena-ops-0x0ca0-0x1fe5/", reply);
+    keep = keep && badge(x.d).textContent === "READY · EXECUTABLE NOW" && !x.d.querySelectorAll("img").some((i) => i.getAttribute("onerror") !== null);
+  }
+  res.live_failures_keep_static = keep;
+  // homepage #radar: the Ethena row badge updates; pages without data-live-timelocks never fetch
+  x = await runWith(input.index, "/", { status: 200, body: { operations: ids.map((i) => op(i, { status: "done", isOperationDone: true })) } });
+  const row = x.d.querySelectorAll("#radar [data-ops]").find((b) => b.getAttribute("data-ops") === ids.join(" "));
+  res.live_radar_row = !!row && row.textContent === "EXECUTED" && x.calls.filter((c) => /live-timelocks/.test(c.url)).length === 1
+    && x.calls.filter((c) => /live-timelocks/.test(c.url))[0].url === LIVE;
+  x = await runWith(input.request, "/request/", { status: 200, body: { operations: [] } });
+  res.live_no_fetch_elsewhere = x.calls.length === 0;
+}
+// /protocols/ (Batch D3): text search + status / chain pills only toggle the hidden attribute and the count text
+function protocolFilterScenario() {
+  if (!input.protocolsIndex) return;
+  const x = run(input.protocolsIndex, input.app, { path: "/protocols/" }), d = x.document;
+  const rows = d.querySelectorAll("#proto-table tbody tr"), shown = () => rows.filter((r) => !r.hidden);
+  const count = () => d.getElementById("proto-count").textContent, q = d.getElementById("proto-q");
+  const pill = (k) => d.querySelectorAll("[data-pfilter]").find((b) => b.getAttribute("data-pfilter") === k);
+  const click = (k) => { const ev = new Event_("click"); ev.target = pill(k); pill(k).dispatchEvent(ev); };
+  const type = (v) => { q.value = v; const ev = new Event_("input"); ev.target = q; q.dispatchEvent(ev); };
+  const n = rows.length, want = (pred) => rows.filter(pred).length;
+  res.pfilter_initial_all = n === 53 && shown().length === n && count() === n + " of " + n + " protocols shown";
+  let ok = true;
+  for (const [k, pred] of [["aligned", (r) => r.getAttribute("data-ptier") === "aligned"], ["parameter_delta", (r) => r.getAttribute("data-ptier") === "parameter_delta"],
+    ["rpc_observed", (r) => r.getAttribute("data-ptier") === "rpc_observed"], ["ethereum", (r) => r.getAttribute("data-pchains").split(" ").includes("ethereum")],
+    ["base", (r) => r.getAttribute("data-pchains").split(" ").includes("base")]]) {
+    click(k);
+    const label = (pill(k).querySelector(".num") || { textContent: "" }).textContent;
+    ok = ok && shown().length === want(pred) && shown().every(pred) && String(want(pred)) === label && pill(k).getAttribute("aria-pressed") === "true"
+      && d.querySelectorAll('[data-pfilter][aria-pressed="true"]').length === 1 && count() === want(pred) + " of " + n + " protocols shown";
+  }
+  res.pfilter_pills_exact = ok;
+  click("all"); type("ethena");
+  res.pfilter_text_search = shown().length >= 1 && shown().every((r) => r.textContent.toLowerCase().includes("ethena") || (r.getAttribute("data-psearch") || "").includes("ethena"))
+    && shown().length < n;
+  click("base"); type("ethena");
+  res.pfilter_combined = shown().length === 0 && count() === "0 of " + n + " protocols shown";
+  type("<img src=x onerror=alert(1)>");
+  res.pfilter_inert = shown().length === 0 && d.querySelectorAll("img").every((i) => i.getAttribute("onerror") === null) && count() === "0 of " + n + " protocols shown";
+  click("all"); type("");
+  res.pfilter_reset = shown().length === n;
+}
+
 (async () => {
+  try { protocolFilterScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await preflightScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await staleResponseScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await beaconScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
+  try { await liveTimelockScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   process.stdout.write(JSON.stringify(res));
 })();

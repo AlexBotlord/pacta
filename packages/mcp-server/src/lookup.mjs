@@ -1,4 +1,4 @@
-// Pacta protocol / token lookup (pacta_lookup_protocol, GET /v1/protocols/lookup): a deterministic embedded catalog of
+// Pacta's protocol / token lookup (pacta_lookup_protocol, GET /v1/protocols/lookup): a deterministic embedded catalog of
 // every published Pacta record page (53 protocols + 8 briefs) and a pure in-memory search. No network, no files, no
 // clock, no Node APIs. Everything between LOOKUP-BEGIN and LOOKUP-END is embedded verbatim in
 // packages/x402-edge-worker/worker.mjs (pacta-core scripts/sync-lookup-catalog.py keeps the two identical). The items
@@ -167,5 +167,104 @@ export function lookupProtocols(raw = {}) {
     out.hint = "No match. Call again with an empty query to list what Pacta tracks, or pass a known 0x contract address straight to pacta_check_preflight.";
   }
   return out;
+}
+// ---- control-plane status badges (GET /v1/badges/<slug>.svg on the worker, docs/badges/<slug>.svg on the site).
+// Three truthful tiers per protocol page: "aligned" (every record an EAS-attested aligned_baseline), "parameter_delta"
+// (EAS-attested, at least one record differs from the documentation), "rpc_observed" (RPC-pinned only, documentation not
+// assessed; never implies an EAS attestation). Byte-identical to tools/build_lookup.py badge_svg() (the site build checks).
+export const BADGE_TIERS = Object.freeze({
+  aligned: Object.freeze({ label: "Aligned · Base EAS", color: "#047857" }),
+  parameter_delta: Object.freeze({ label: "Parameter Delta", color: "#b45309" }),
+  rpc_observed: Object.freeze({ label: "RPC-Observed", color: "#475569" }),
+});
+export const BADGE_TITLE = "Pacta Control Plane";
+const BADGE_SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+export function badgeTier(item) {
+  if (!item || item.kind !== "protocol") return null;
+  if (item.evidenceBasis === "rpc_observed") return "rpc_observed";
+  return item.classification === "aligned_baseline" ? "aligned" : "parameter_delta";
+}
+/** Deterministic flat shield for a published protocol slug; null for anything else. */
+export function badgeSvg(slug) {
+  if (typeof slug !== "string" || slug.length > 80 || !BADGE_SLUG_RE.test(slug)) return null;
+  const item = LOOKUP_CATALOG.find((x) => x.kind === "protocol" && x.slug === slug);
+  const tier = badgeTier(item);
+  if (!tier) return null;
+  const t = BADGE_TIERS[tier], left = BADGE_TITLE, right = t.label;
+  const lw = left.length * 7 + 12, rw = right.length * 7 + 12, w = lw + rw;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="20" role="img" aria-label="${left}: ${right}">`
+    + `<title>${left}: ${right} (${slug})</title>`
+    + `<clipPath id="r"><rect width="${w}" height="20" rx="3" fill="#fff"/></clipPath>`
+    + `<g clip-path="url(#r)"><rect width="${lw}" height="20" fill="#1f2937"/><rect x="${lw}" width="${rw}" height="20" fill="${t.color}"/></g>`
+    + `<g fill="#fff" text-anchor="middle" font-family="Verdana,DejaVu Sans,Geneva,sans-serif" font-size="11">`
+    + `<text x="${lw / 2}" y="14">${left}</text><text x="${lw + rw / 2}" y="14">${right}</text></g></svg>\n`;
+}
+// ---- demand intake (pacta_submit_request / POST /v1/requests), shared by the worker and the stdio server ----
+// Closed enums, the exact contact_handle wording, the coverage hint, and the input guard every string field must pass
+// (the worker enforces it; the stdio server also checks locally so a secret never leaves the machine).
+export const REQUEST_TYPES = Object.freeze(["missing_protocol", "unsupported_chain", "missing_check_surface", "doc_or_data_discrepancy", "mcp_or_api_feature"]);
+export const URGENCY_TRACKS = Object.freeze(["community_queue_free", "active_due_diligence", "issuer_24h_clearance_5k", "api_high_volume_sla"]);
+export const COVERAGE_GAP_HINT = "Target is not yet indexed or fully classified. Ask the user if they want you to queue coverage or request this capability via pacta_submit_request (free community queue, or 24h priority clearance for issuers).";
+export const CONTACT_HANDLE_DESCRIPTION = "Optional work email, Telegram @handle, or GitHub handle ONLY if the human user explicitly asks for follow-up or an invoice. NEVER guess or populate without explicit user consent; never pass keys or secrets.";
+/** Request-specific JSON Schema 2020-12 properties (the three caller fields are added by each server). */
+export const REQUEST_SCHEMA_PROPS = Object.freeze({
+  request_type: { type: "string", enum: [...REQUEST_TYPES], description: "What is missing: a protocol, a chain, a check surface, a doc/data discrepancy, or an MCP/API feature." },
+  target_subject: { type: "string", minLength: 2, maxLength: 120, description: "Protocol / token slug, chain name, or chain:0xAddress the request is about (e.g. 'pendle-v2', 'arbitrum', 'base:0x...')." },
+  requested_capability: { type: "string", minLength: 5, maxLength: 280, description: "One sentence: the specific data, check or feature needed. No secrets, keys or personal data." },
+  urgency_track: { type: "string", enum: [...URGENCY_TRACKS], description: "community_queue_free (default, free), active_due_diligence, issuer_24h_clearance_5k (paid issuer clearance), api_high_volume_sla." },
+  forum_proposal_url: { type: "string", format: "uri", maxLength: 200, pattern: "^https://", description: "Optional https:// link to the governance forum proposal this request concerns." },
+  contact_handle: { type: "string", maxLength: 120, description: CONTACT_HANDLE_DESCRIPTION },
+});
+export const REQUEST_REQUIRED = Object.freeze(["caller_agent", "requester_role", "caller_purpose", "request_type", "target_subject", "requested_capability", "urgency_track"]);
+export const REQUEST_FIELDS = Object.freeze([...REQUEST_REQUIRED, "forum_proposal_url", "contact_handle"]);
+const HEX64_RE = /(?:0x)?[a-fA-F0-9]{64,}/g;
+const SECRET_RES = [/sk-[A-Za-z0-9_-]{12,}/, /sk_live_[A-Za-z0-9]{8,}/, /gh[pousr]_[A-Za-z0-9]{16,}/, /github_pat_[A-Za-z0-9_]{16,}/, /\bBearer\s+/i,
+  /eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/, /\bAKIA[0-9A-Z]{16}\b/, /xox[abprs]-[A-Za-z0-9-]{10,}/, /-----BEGIN [A-Z ]*PRIVATE KEY-----/];
+const HTML_RES = [/<[^>]+>/, /javascript\s*:/i, /\bdata\s*:\s*text\/html/i];
+// Personal / network-identifying data refused in public request texts: e-mail, IPv4, @handle, and (Codex F5) IPv6 literals in
+// every form (any "::", a bracketed IP literal, 3+ colon-separated hex groups) and host:port endpoints. A canonical
+// <chain>:0x<40 hex> id, tx:0x / block:0x hashes and ordinary "Note: ..." punctuation stay valid.
+export const PERSONAL_RES = [/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/, /(?:^|[^0-9.])(?:\d{1,3}\.){3}\d{1,3}(?:$|[^0-9.])/, /(?:^|[^A-Za-z0-9._%+-])@[A-Za-z0-9_]{4,}/,
+  /::/, /\[[^\]\s]*:[^\]\s]*\]/, /(?:^|[^0-9A-Za-z])[0-9A-Fa-f]{1,4}(?::[0-9A-Fa-f]{1,4}){2,}(?![0-9A-Za-z])/,
+  /(?:^|[^A-Za-z0-9.-])(?:localhost|(?:[A-Za-z0-9-]+\.)+[A-Za-z]{2,24}):\d{1,5}(?:$|[^0-9])/i];   // F5b: any punctuation boundary
+/** target_subject may contain ":" ONLY as a canonical <chain>:0x<40 hex> id (lowercase, after canonicalisation). */
+export const REQUEST_TARGET_CHAIN_ADDR_RE = /^[a-z][a-z0-9_-]{1,23}:0x[0-9a-f]{40}$/;
+export const requestTargetOk = (t) => typeof t === "string" && (!t.includes(":") || REQUEST_TARGET_CHAIN_ADDR_RE.test(t));
+export const CONTACT_PLACEHOLDERS = ["none", "n/a", "na", "unknown", "null", "undefined", "example.com", ["test", "test.com"].join("@"), "user@example.com"];
+export const CONTACT_RES = [/^[A-Za-z0-9._%+-]{1,64}@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,24}$/, /^@[A-Za-z][A-Za-z0-9_]{4,31}$/,
+  /^(?:github:|gh:|https:\/\/github\.com\/)?@?[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$/];
+const DEMAND_CONTROL_RE = new RegExp("[" + [[0x00, 0x1f], [0x7f, 0x9f], [0x200b, 0x200f], [0x2028, 0x202e], [0x2060, 0x2069], [0xfeff, 0xfeff]]
+  .map(([a, b]) => "\\u" + lookupHex4(a) + "-\\u" + lookupHex4(b)).join("") + "]");
+// Common English / DeFi words that are NOT in the BIP-39 English wordlist (bitcoin/bips bip-0039/english.txt, sha256
+// 2f5eed53a4727b4bf8880d8f3f199efc90e58503646d9ff8eff3a2ed3b24dbda): a real mnemonic never contains one, so any of them
+// ends a candidate run and ordinary lowercase sentences are not mistaken for seed phrases.
+const MNEMONIC_BREAKERS = new Set(("adds admin after and api arbitrum are been being but chain chains checks contract could coverage curator curators data "
+  + "delays did diff doc docs does each endpoint ethereum for from governor has here how indexed its lending lookup mainnet markets maybe mcp minter "
+  + "missing most multisig needs not oracle oracles our owners pacta paused pools protocol proxy request requests role roles router scans should show "
+  + "shows signer signers some staking support supports teams than thanks the their them these those timelock tokens tools tracks upgrades vaults "
+  + "wants was were which while who why with would yield your").split(" "));
+/** A run of 12+ whitespace-separated lowercase 3-8 letter words with no breaker (BIP-39 mnemonic shape). False positives are preferred. */
+function mnemonicLike(s) {
+  let run = 0;
+  for (const w of s.split(/\s+/)) { run = /^[a-z]{3,8}$/.test(w) && !MNEMONIC_BREAKERS.has(w) ? run + 1 : 0; if (run >= 12) return true; }
+  return false;
+}
+/** null when the string is safe to store, else the reason: secret_or_key | html | control_characters. */
+export function demandGuard(s) {
+  if (typeof s !== "string") return null;
+  if (DEMAND_CONTROL_RE.test(s)) return "control_characters";
+  for (const m of s.matchAll(HEX64_RE)) {
+    const before = s.slice(0, m.index), after = s.charAt(m.index + m[0].length);
+    if (/[a-fA-F0-9]$/.test(before) || /[a-fA-F0-9]/.test(after)) continue;
+    if (/(?:^|[^A-Za-z])(?:tx|block):$/i.test(before) && /^0x[a-fA-F0-9]{64}$/.test(m[0])) continue;   // tx:0x... / block:0x... are public hashes
+    return "secret_or_key";
+  }
+  if (SECRET_RES.some((re) => re.test(s)) || mnemonicLike(s)) return "secret_or_key";
+  if (HTML_RES.some((re) => re.test(s))) return "html";
+  return null;
+}
+/** A lookup that matched nothing carries coverage_gap_hint (no write side effect: the agent decides, with the user). */
+export function withCoverageHint(r) {
+  return r && r.ok !== false && r.totalMatches === 0 ? { ...r, coverage_gap_hint: COVERAGE_GAP_HINT } : r;
 }
 // ---- LOOKUP-END

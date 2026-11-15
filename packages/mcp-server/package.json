@@ -1,6 +1,6 @@
 {
   "name": "@pacta/mcp-server",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "mcpName": "io.github.Fractal-Neurons/pacta",
   "description": "Zero-dependency MCP server for Pacta DeFi control-plane telemetry, Base EAS commitments, and x402 Base USDC live scans.",
   "license": "MIT",

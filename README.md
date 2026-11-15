@@ -1,4 +1,4 @@
-# Pacta — Institutional Counterparty & On-Chain Commitment Index
+# Pacta by Fractal Neurons — Institutional Counterparty & On-Chain Commitment Index
 
 [![Counterparty Index Portal](https://img.shields.io/badge/Live_Index-pacta.wtf-38bdf8?style=for-the-badge&labelColor=000000)](https://pacta.wtf/)
 [![JSON API v1](https://img.shields.io/badge/JSON_Feed-%2Fapi%2Fv1%2Findex.json-22c55e?style=for-the-badge&labelColor=000000)](https://pacta.wtf/api/v1/index.json)
@@ -11,9 +11,11 @@
 > **On-Chain Base Registry (`pacta.base.eth`):** [`0x35D21Bb4Df6586FE7759b5e57263ffeB3e1fd872`](https://basescan.org/address/0x35D21Bb4Df6586FE7759b5e57263ffeB3e1fd872) ([Sourcify `exact_match`](https://sourcify.dev/#/lookup/0x35D21Bb4Df6586FE7759b5e57263ffeB3e1fd872)) · [Base EAS Schema `0x7ff4...df83`](https://base.easscan.org/schema/view/0x7ff485bc1159dff3c70eefcb9dff2d65be990301760c2d53799e5a45e3badf83)  
 > **Foundry Suite & Contracts:** [`contracts/test/PactaGovernanceInvariants.t.sol`](contracts/test/PactaGovernanceInvariants.t.sol) · [`contracts/PactaCommitmentRegistry.sol`](contracts/PactaCommitmentRegistry.sol) · [`REMEDIATION_SERVICES.md`](REMEDIATION_SERVICES.md)
 
+> Disambiguation: Pacta by Fractal Neurons (https://pacta.wtf, pacta.base.eth, io.github.Fractal-Neurons/pacta) is the EVM DeFi control-plane, Safe multisig, and timelock verification registry — unrelated to pactaprotocol.org (commercial escrow) or RMI PACTA (climate assessment).
+
 ---
 
-**Pacta** is the Protocol Commitments DRI at [Fractal Neurons](https://fractalneurons.com). We publish a deterministic, block-pinned **Counterparty Control-Plane & Timelock Snapshot Index** for institutional DeFi risk curators, vault allocators, underwriters, and protocol security teams — documenting how sampled proxy admins, `TimelockController` delays, `RolesAuthority` bitmasks, and Gnosis Safe thresholds compare against cited protocol documentation at specific Ethereum Mainnet block heights.
+**Pacta** (Pacta by Fractal Neurons, `pacta.base.eth`) is the Protocol Commitments DRI at [Fractal Neurons](https://fractalneurons.com). We publish a deterministic, block-pinned **Counterparty Control-Plane & Timelock Snapshot Index** for institutional DeFi risk curators, vault allocators, underwriters, and protocol security teams — documenting how sampled proxy admins, `TimelockController` delays, `RolesAuthority` bitmasks, and Gnosis Safe thresholds compare against cited protocol documentation at specific Ethereum Mainnet block heights.
 
 ---
 
@@ -21,11 +23,47 @@
 
 One call tells an agent who can upgrade, pause or blacklist a contract before it interacts with it: a verdict, a 0–100 risk score, the proxy / admin / timelock breakdown and the pinned block. Free during the launch at 60 requests / minute per caller.
 
-- **Remote MCP (zero install):** `claude mcp add --transport http pacta https://pacta-x402.pacta.workers.dev/mcp`. Cursor and other clients: `{"mcpServers": {"pacta": {"url": "https://pacta-x402.pacta.workers.dev/mcp"}}}`. 5 read-only tools: `pacta_check_preflight`, `pacta_scan_control_plane`, `pacta_scan_timelock_op`, `pacta_scan_proposal_diff`, `pacta_get_live_timelocks`.
+- **Remote MCP (zero install):** `claude mcp add --transport http pacta https://pacta-x402.pacta.workers.dev/mcp`. Cursor and other clients: `{"mcpServers": {"pacta": {"url": "https://pacta-x402.pacta.workers.dev/mcp"}}}`. 6 read-only inspection tools + 1 opt-in coverage/feature request tool (`pacta_submit_request`), led by `pacta_lookup_protocol` (resolve a protocol or token name first): `pacta_lookup_protocol`, `pacta_check_preflight`, `pacta_scan_control_plane`, `pacta_scan_timelock_op`, `pacta_scan_proposal_diff`, `pacta_get_live_timelocks`, plus `pacta_submit_request`. The stdio server (`@pacta/mcp-server` 0.1.4) exposes 10 read-only inspection tools + 1 opt-in request tool: the same lookup and gateway tools (its live-timelocks tool is named `pacta_live_timelocks`; `pacta_get_live_timelocks` is accepted as an alias) plus `pacta_list_commitments`, `pacta_list_proposals`, `pacta_get_anchoring`, `pacta_x402_discover` and `pacta_submit_request`. Every inspection tool is annotated `readOnlyHint: true`, `destructiveHint: false`, `openWorldHint: false` with `_meta` (`resultType`, `ttlMs`, `cacheScope`).
+- **Coverage gaps:** a lookup miss or a pre-flight of an unindexed / unclassified target carries `coverage_gap_hint`; with the user's consent the agent calls `pacta_submit_request` (or `POST https://pacta-x402.pacta.workers.dev/v1/requests`) to queue or upvote the request (`REQ-2026-xxxxxxxx`). Free, 5 per hour, never opens a GitHub issue; a contact handle is optional, only on explicit user request, and never published.
+- **Bounties ($100):** [`pacta.wtf/bounties/`](https://pacta.wtf/bounties/) — Pacta Chain-Feed Mismatch Challenge, 4 × $25 USDC = $100 USDC hard cap, 7-day sprint Nov 15 – Nov 22, 2026 (issues [#21](https://github.com/Fractal-Neurons/pacta/issues/21)–[#24](https://github.com/Fractal-Neurons/pacta/issues/24); PR template [`bounty_mismatch.md`](.github/PULL_REQUEST_TEMPLATE/bounty_mismatch.md); offline check `python3 tools/verify_bounty_submission.py --body PR_BODY.md`).
 - **One curl:** `curl -s "https://pacta-x402.pacta.workers.dev/v1/check/preflight?chain=ethereum&address=0xA35b1B31Ce002FBF2058D22F30f95D405200A15b"`
 - **OpenAPI 3.1** (ChatGPT Actions, LangChain): [`openapi.json`](https://pacta-x402.pacta.workers.dev/openapi.json) · agent skill [`SKILL.md`](https://pacta.wtf/SKILL.md) · [`llms.txt`](https://pacta.wtf/llms.txt) · [`agent.json`](https://pacta.wtf/.well-known/agent.json) · [`mcp.json`](https://pacta.wtf/.well-known/mcp.json)
 - **stdio from a clone:** `node packages/mcp-server/bin/pacta-mcp.mjs` with `PACTA_X402_URL=https://pacta-x402.pacta.workers.dev` ([`packages/mcp-server`](packages/mcp-server); Docker: the root [`Dockerfile`](Dockerfile) or `packages/mcp-server/Dockerfile`). The npm package is not published yet.
 - **Per-protocol safety records:** [`pacta.wtf/protocols/`](https://pacta.wtf/protocols/)
+
+### MCP recipes (copy-paste)
+
+**Claude Code**
+
+```bash
+claude mcp add --transport http pacta https://pacta-x402.pacta.workers.dev/mcp
+```
+
+**OpenAI Agents SDK (Python)**
+
+```python
+from agents import Agent, Runner
+from agents.mcp import MCPServerStreamableHttp
+
+async def main():
+    async with MCPServerStreamableHttp(params={"url": "https://pacta-x402.pacta.workers.dev/mcp"}) as pacta:
+        agent = Agent(name="risk-agent", mcp_servers=[pacta],
+                      instructions="Call pacta_lookup_protocol, then pacta_check_preflight, before any deposit.")
+        print((await Runner.run(agent, "Is it safe to deposit into Ethena sUSDe?")).final_output)
+```
+
+**LangChain (langchain-mcp-adapters)**
+
+```python
+from langchain_mcp_adapters.client import MultiServerMCPClient
+from langgraph.prebuilt import create_react_agent
+
+async def main(model):
+    client = MultiServerMCPClient({"pacta": {"url": "https://pacta-x402.pacta.workers.dev/mcp", "transport": "streamable_http"}})
+    agent = create_react_agent(model, await client.get_tools())
+    out = await agent.ainvoke({"messages": "Who can upgrade the Ethena timelock, and how fast?"})
+    print(out["messages"][-1].content)
+```
 
 x402 v1 + v2 (USDC on Base) is wired in for metered use later; nothing to set up today. High-volume SLAs and on-chain EAS clearance: [`pacta.wtf/request/`](https://pacta.wtf/request/).
 
@@ -48,7 +86,7 @@ Each public record in the Pacta Index separates scanner archive replay from offl
 
 ## On-Chain Anchoring on Base Mainnet (`pacta.base.eth`)
 
-**14 Sprints · 37 Indexed Records** (14 parameter deltas · 4 protective deltas · 19 aligned baselines).
+**53 Protocols (37 Base EAS-Attested Records across 14 Sprints + 20 RPC-Observed Records)**. The 37 Sprint records: 14 parameter deltas · 4 protective deltas · 19 aligned baselines.
 
 Sprints 1–16 carry **16 on-chain Base EAS sprint attestations**: Sprints 1–12 in multi-attest tx `0x8c53e155a4b2f28ffbf069f1b65952fc8f7d81740f362b8aafb39493c6bd001b` and Sprints 13–16 in multi-attest tx `0x11546aac53e3fe57fa6ac9f7e4397f06c58b6803252e099eb9349eca00f2edbf` (Base block 57,032,413). Each attestation commits to the sprint's Ethereum block number, canonical block hash and summary SHA-256; Sprints 15–16 records join the public index after review. Every attested sprint summary is cryptographically anchored on **Base Mainnet (`Chain ID 8453`)** by our dedicated Tier-2 Attester (`pacta.base.eth` / `0xcA4E2ff22B69A7284210c47BdeE21Aac1269da09`, governed by cold Tier-1 owner `0x4348DF1BEFAffcbA248B5118B1b782B1B2bdEd14`):
 
@@ -60,7 +98,7 @@ Sprints 1–16 carry **16 on-chain Base EAS sprint attestations**: Sprints 1–1
 
 ## Block-Pinned Public Sprint Summaries (Ethereum Mainnet)
 
-**14 Sprints · 37 Indexed Records.** Site build: `python3 tools/refresh_radar.py && python3 tools/onboarding_scan.py && python3 tools/build_site.py && python3 verify_site_v2.py` (`onboarding_scan.py` writes `docs/api/v1/onboarding.json`, the single source of the live onboarding verification briefs at `/briefs/<slug>/`: every check is a block-pinned, two-endpoint cross-checked read, and role maps are replayed from event logs with each log verified against its receipt) (the canonical base URL is a single `BASE_URL` constant in `tools/build_site.py`; brief pages are rendered from `tools/briefs_src/` inside the shared site chrome, and every call to action goes through the in-browser request builder at `/request/`).
+**53 Protocols (37 Base EAS-Attested Records across 14 Sprints + 20 RPC-Observed Records).** Site build: `python3 tools/refresh_radar.py && python3 tools/onboarding_scan.py && python3 tools/build_site.py && python3 verify_site_v2.py` (`onboarding_scan.py` writes `docs/api/v1/onboarding.json`, the single source of the live onboarding verification briefs at `/briefs/<slug>/`: every check is a block-pinned, two-endpoint cross-checked read, and role maps are replayed from event logs with each log verified against its receipt) (the canonical base URL is a single `BASE_URL` constant in `tools/build_site.py`; brief pages are rendered from `tools/briefs_src/` inside the shared site chrome, and every call to action goes through the in-browser request builder at `/request/`).
 
 | Sprint | Pinned Block | Canonical Block Hash | Base EAS Attestation | Public Summary & Sampled Protocols |
 | :--- | :--- | :--- | :--- | :--- |

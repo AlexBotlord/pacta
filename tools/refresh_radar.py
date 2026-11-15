@@ -54,6 +54,7 @@ def main():
         raise RuntimeError("not Ethereum mainnet")
     fin = both("eth_getBlockByNumber", ["finalized", False])
     pin = {"blockHash": fin["hash"], "requireCanonical": True}
+    fin_ts = int(fin["timestamp"], 16)
     items = []
     for o in OPS:
         delay = int(both("eth_call", [{"to": o["timelock"], "data": SEL["getMinDelay"]}, pin]), 16)
@@ -62,7 +63,10 @@ def main():
             ts = int(both("eth_call", [{"to": o["timelock"], "data": SEL["getTimestamp"] + op[2:]}, pin]), 16)
             pending = int(both("eth_call", [{"to": o["timelock"], "data": SEL["isOperationPending"] + op[2:]}, pin]), 16) == 1
             done = int(both("eth_call", [{"to": o["timelock"], "data": SEL["isOperationDone"] + op[2:]}, pin]), 16) == 1
-            ops.append({"op_id": op, "eta": ts if ts > 1 else None, "pending": pending, "done": done})
+            # ready: the delay has elapsed at the finalized block and the op is still unexecuted (execute() is now callable).
+            # Never "executed" unless isOperationDone is true.
+            ops.append({"op_id": op, "eta": ts if ts > 1 else None, "pending": pending, "done": done,
+                        "ready": bool(pending and not done and ts > 1 and fin_ts >= ts)})
         items.append({**{k: o[k] for k in ("protocol", "title", "summary", "timelock", "brief")}, "min_delay_seconds": delay, "operations": ops,
                       "eta": min((x["eta"] for x in ops if x["eta"]), default=None)})
     out = {"schema": "pacta.radar.v1", "chain_id": 1, "refreshed_at": {

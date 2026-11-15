@@ -33,7 +33,50 @@ MCP_REMOTE_URL = X402_URL + "/mcp"                               # remote MCP (S
 OPENAPI_URL = X402_URL + "/openapi.json"
 PRICING_MODE = "free_launch"                                     # live Worker default: $0, no key, no wallet; x402 behind a switch
 RATE_LIMIT_PER_MIN = 60
-REMOTE_TOOLS = ["pacta_lookup_protocol", "pacta_check_preflight", "pacta_scan_control_plane", "pacta_scan_timelock_op", "pacta_scan_proposal_diff", "pacta_get_live_timelocks"]
+REMOTE_READ_ONLY_TOOLS = ["pacta_lookup_protocol", "pacta_check_preflight", "pacta_scan_control_plane", "pacta_scan_timelock_op", "pacta_scan_proposal_diff", "pacta_get_live_timelocks"]
+REQUEST_TOOL = "pacta_submit_request"                              # the one opt-in write tool (remote + stdio): queue / upvote a request
+REMOTE_TOOLS = REMOTE_READ_ONLY_TOOLS + [REQUEST_TOOL]
+REQUESTS_URL = "https://pacta-x402.pacta.workers.dev/v1/requests"
+REMOTE_TOOLS_DOC = "6 read-only inspection tools + 1 opt-in coverage/feature request tool (pacta_submit_request)"
+STDIO_TOOLS_DOC = "10 read-only inspection tools + 1 opt-in request tool"
+BRAND = "Pacta by Fractal Neurons (https://pacta.wtf · pacta.base.eth)"
+# Brand / RAG disambiguation (receipt/1817): never call this project by the two-word name of the dormant escrow project.
+DISAMBIGUATION = ("Disambiguation: Pacta by Fractal Neurons (https://pacta.wtf, pacta.base.eth, io.github.Fractal-Neurons/pacta) is the EVM DeFi "
+                  "control-plane, Safe multisig, and timelock verification registry — unrelated to pactaprotocol.org (commercial escrow) or RMI PACTA "
+                  "(climate assessment).")
+BOUNTIES_URL = "https://pacta.wtf/bounties/"
+BOUNTIES_DOC = ("Bounties ($100): Pacta Chain-Feed Mismatch Challenge, 4 × $25 USDC = $100 USDC hard cap, 7-day sprint Nov 15 – Nov 22, 2026: "
+                "a verified on-chain control-plane parameter_delta on an unindexed protocol, or live drift on an indexed one, submitted as a PR to "
+                "Fractal-Neurons/pacta. Paid in USDC on Base Mainnet after maintainer merge (not pre-escrowed): " + BOUNTIES_URL)
+REQUEST_DOC = ("Opt-in demand intake: when a result carries coverage_gap_hint (lookup miss, unindexed or unclassified pre-flight target, unsupported chain), "
+               "ask the user, then call pacta_submit_request (or POST " + REQUESTS_URL + ") with the three caller fields, request_type "
+               "(missing_protocol | unsupported_chain | missing_check_surface | doc_or_data_discrepancy | mcp_or_api_feature), target_subject, "
+               "requested_capability and urgency_track (community_queue_free | active_due_diligence | issuer_24h_clearance_5k | api_high_volume_sla). "
+               "It returns request_id (REQ-2026-xxxxxxxx), status (queued | upvoted_existing), demand_votes and fast_track_url; an identical request "
+               "upvotes the existing one. Free in every pricing mode, 5 per hour; never opens a GitHub issue. contact_handle only when the user "
+               "explicitly asks for follow-up or an invoice: it is stored privately and never published.")
+# Copy-paste MCP recipes (receipt/1818): Claude Code, OpenAI Agents SDK, LangChain (each <= 10 lines).
+MCP_RECIPES = [
+    ("Claude Code", "bash", "claude mcp add --transport http pacta https://pacta-x402.pacta.workers.dev/mcp"),
+    ("OpenAI Agents SDK (Python)", "python", "\n".join([
+        "from agents import Agent, Runner",
+        "from agents.mcp import MCPServerStreamableHttp",
+        "",
+        "async def main():",
+        "    async with MCPServerStreamableHttp(params={\"url\": \"https://pacta-x402.pacta.workers.dev/mcp\"}) as pacta:",
+        "        agent = Agent(name=\"risk-agent\", mcp_servers=[pacta],",
+        "                      instructions=\"Call pacta_lookup_protocol, then pacta_check_preflight, before any deposit.\")",
+        "        print((await Runner.run(agent, \"Is it safe to deposit into Ethena sUSDe?\")).final_output)"])),
+    ("LangChain (langchain-mcp-adapters)", "python", "\n".join([
+        "from langchain_mcp_adapters.client import MultiServerMCPClient",
+        "from langgraph.prebuilt import create_react_agent",
+        "",
+        "async def main(model):",
+        "    client = MultiServerMCPClient({\"pacta\": {\"url\": \"https://pacta-x402.pacta.workers.dev/mcp\", \"transport\": \"streamable_http\"}})",
+        "    agent = create_react_agent(model, await client.get_tools())",
+        "    out = await agent.ainvoke({\"messages\": \"Who can upgrade the Ethena timelock, and how fast?\"})",
+        "    print(out[\"messages\"][-1].content)"])),
+]
 STDIO_FROM_SOURCE = "node packages/mcp-server/bin/pacta-mcp.mjs"  # from a clone of the repository (npm publication pending)
 FREE_LAUNCH_NOTE = (f"Free launch: every route answers HTTP 200 at $0 with no API key and no wallet ({RATE_LIMIT_PER_MIN} requests / minute per caller). "
                     "The x402 prices below apply only if the operator switches pricingMode to x402_paid.")
@@ -74,7 +117,7 @@ TREASURY_USE = ("Pacta treasury (direct settlement EOA): Option B direct on-chai
                 "(Option A is a formal commercial invoice). An externally owned account, not a smart-contract wallet; not the x402 payTo.")
 MCP_NAME = "io.github.Fractal-Neurons/pacta"
 MCP_PACKAGE = "@pacta/mcp-server"
-MCP_VERSION = "0.1.3"
+MCP_VERSION = "0.1.4"
 CALLER_FIELDS_DOC = 'Free MCP tier: every tools/call takes three required, non-personal fields: caller_agent (a lowercase slug naming the calling agent, IDE or framework, e.g. claude-code, cursor, coinbase-agentkit; never a name, e-mail, IP, URL, address or secret), requester_role (autonomous_agent | defi_developer | risk_curator_analyst | security_researcher | protocol_team | institutional_allocator | individual_user) and caller_purpose (pre_trade_safety | collateral_due_diligence | yield_allocation | security_audit | governance_monitoring | integration_testing | general_research). Missing or invalid values get JSON-RPC -32602 listing what is allowed. Over REST they are optional query parameters. Location is never asked: only the Cloudflare edge country is counted; no IP is stored.'                                            # @pacta/mcp-server package.json version (SKILL.md is shipped in it)
 MCP_ENV = [("PACTA_INDEX_PATH", "Local snapshot of /api/v1/index.json (offline use)"),
            ("PACTA_PROPOSALS_PATH", "Local snapshot of /api/v1/proposals.json"),
@@ -180,6 +223,7 @@ def proposals(idx, onb):
 
 FEEDS = [("/api/v1/index.json", "Block-pinned control-plane index (every record: target, call, block, block hash, classification, Base EAS UID)"),
          ("/api/v1/lookup.json", "Protocol / token lookup catalog: 53 protocols + 8 briefs with slug, aliases, checksummed contracts, evidence basis and preflightArgs"),
+         ("/api/v1/protocols.json", "Every published protocol: badge tier + URLs, evidence basis (33 EAS-attested / 20 RPC-observed), Sprint ids, EAS UIDs, controller, pinned surfaces"),
          ("/api/v1/onboarding.json", "Onboarding verification scans: every check with call, calldata, raw result, decoded value; role maps"),
          ("/api/v1/proposals.json", "Live governance proposals (Aave, Euler, Morpho, Sky) mapped to block-pinned observations"),
          ("/api/v1/radar.json", "Queued timelock operations with on-chain ETAs at a finalized block"),
@@ -201,7 +245,8 @@ MCP_TOOLS = [("pacta_lookup_protocol", "free", "Resolve a protocol or token name
              ("pacta_scan_control_plane", "x402 $0.10", "Live control-plane scan of a contract (chain, address)"),
              ("pacta_scan_timelock_op", "x402 $0.25", "Live TimelockController operation state (timelock, opId)"),
              ("pacta_live_timelocks", "x402 $0.10", "Live state of tracked queued timelock operations"),
-             ("pacta_scan_proposal_diff", "x402 $0.15", "Re-run a tracked governance proposal's pinned reads live, pinned-vs-live diffs (forum, topicId)")]
+             ("pacta_scan_proposal_diff", "x402 $0.15", "Re-run a tracked governance proposal's pinned reads live, pinned-vs-live diffs (forum, topicId)"),
+             ("pacta_submit_request", "free", "Opt-in (the only tool that writes): queue or upvote a coverage / feature request after a coverage_gap_hint, with the user's consent; forwards to POST /v1/requests (only when PACTA_X402_URL is set)")]
 X402_ROUTES = [("/v1/check/preflight?chain=ethereum|base&address=0x…", "10000", "$0.01"),
                ("/v1/scan/control-plane?chain=ethereum|base&address=0x…", "100000", "$0.10"),
                ("/v1/scan/timelock-op?chain=ethereum|base&timelock=0x…&opId=0x…", "250000", "$0.25"),
@@ -219,8 +264,9 @@ MCP_STATUS = (f"publication_pending: @pacta/mcp-server is not yet published to n
 
 def llms_full(idx, radar, prop, onb, pinned=None):
     a, m = idx["onchain_anchoring"], idx["summary_metrics"]
-    L = ["# Pacta — full agent reference (llms-full.txt)", "",
-         "> Block-pinned DeFi control-plane observations for AI agents: who can change a protocol's rules (proxy admins, timelocks, "
+    L = ["# Pacta by Fractal Neurons — full agent reference (llms-full.txt)", "",
+         DISAMBIGUATION, "",
+         f"> {BRAND}: block-pinned DeFi control-plane observations for AI agents: who can change a protocol's rules (proxy admins, timelocks, "
          "Safe quorums, roles), what the docs say, and what is queued. All feeds are free, real-time and read-only; every value replays "
          "against any archive node with the given cast command.", "",
          f"Generated deterministically from the feeds below (data as of {max(idx['generated_at'], onb['generated_at'])}). "
@@ -233,11 +279,14 @@ def llms_full(idx, radar, prop, onb, pinned=None):
          "3. Run `cast block N --field hash` and compare with the recorded block hash.", "",
          "## MCP server", f"- Name: {MCP_NAME} · package {MCP_PACKAGE} v{MCP_VERSION} · transport stdio.", f"- Status: {MCP_STATUS}",
          f"- Remote MCP (primary, zero install, Streamable HTTP): {MCP_REMOTE_URL} · Claude Code: `claude mcp add --transport http pacta {MCP_REMOTE_URL}` · "
-         f"MCP client config: {{\"mcpServers\": {{\"pacta\": {{\"url\": \"{MCP_REMOTE_URL}\"}}}}}} · remote tools: {', '.join(REMOTE_TOOLS)}.",
+         f"MCP client config: {{\"mcpServers\": {{\"pacta\": {{\"url\": \"{MCP_REMOTE_URL}\"}}}}}} · remote tools ({REMOTE_TOOLS_DOC}): {', '.join(REMOTE_TOOLS)}.",
          f"- Local stdio server (from a clone; npm publication pending): `{STDIO_FROM_SOURCE}`. OpenAPI 3.1: {OPENAPI_URL}.",
          f"- {CALLER_FIELDS_DOC}",
          f"- {LOOKUP_DOC}",
-         "- Tools:"] + [f"  - {n} ({p}): {d}" for n, p, d in MCP_TOOLS] + [
+         f"- {REQUEST_DOC}",
+         f"- {BOUNTIES_DOC}",
+         f"- Vault factories and curators: {BASE}/integrations/vault-factories/ (Control-Plane & Role Map tab from {BASE}/api/v1/protocols.json, status badges {BASE}/badges/<slug>.svg and {X402_URL}/v1/badges/<slug>.svg, and PactaSentinelGuard.sol: refuses cap increases without a healthy Pacta attestation, never blocks a decrease).",
+         f"- Stdio tools ({STDIO_TOOLS_DOC}):"] + [f"  - {n} ({p}): {d}" for n, p, d in MCP_TOOLS] + [
          f"- Paid tools are disabled unless PACTA_X402_URL is set (opt-in: PACTA_X402_URL={X402_URL}); the client refuses any 402 challenge (v1 body or v2 "
          "PAYMENT-REQUIRED header) whose payTo, asset or network differ from the values below, or whose amount exceeds $1.00 by default. Pay with "
          "xPaymentHeader (x402 v1) or paymentSignatureHeader (x402 v2).", "",
@@ -325,6 +374,10 @@ def agent_card(prop, onb, idx):
             {"id": "timelock-radar", "name": "Queued timelock radar",
              "description": "Pending timelock operations and their on-chain ETAs.", "tags": ["timelock", "monitoring"],
              "inputModes": ["application/json"], "outputModes": ["application/json"], "examples": [f"Fetch {BASE}/api/v1/radar.json."]},
+            {"id": "coverage-request", "name": "Opt-in coverage / feature request",
+             "description": "When a lookup misses or a pre-flight target is unindexed (coverage_gap_hint), queue or upvote a coverage / feature request with the user's consent: pacta_submit_request or POST /v1/requests. Free, 5 per hour, never opens a GitHub issue; contact details only on explicit request and never published.",
+             "tags": ["demand", "coverage", "opt-in", "free"], "inputModes": ["application/json"], "outputModes": ["application/json"],
+             "examples": ["MCP tool pacta_submit_request {\"request_type\": \"missing_protocol\", \"target_subject\": \"pendle-v2\", ...}", f"POST {REQUESTS_URL}"]},
             {"id": "verify-onchain", "name": "Reproduce a value",
              "description": "Replay any record with eth_call / cast at its pinned block and compare the canonical block hash.",
              "tags": ["verification", "eip-1898", "coding-agent"], "inputModes": ["text/plain"], "outputModes": ["text/plain"],
@@ -332,7 +385,7 @@ def agent_card(prop, onb, idx):
         ],
         "endpoints": {"feeds": {p: f"{BASE}{p}" for p, _ in FEEDS}, "mcp_manifest": f"{BASE}/.well-known/mcp.json", "skill": f"{BASE}/SKILL.md",
                       "x402_gateway": X402_URL, "mcp_remote": MCP_REMOTE_URL, "openapi": OPENAPI_URL, "preflight": f"{X402_URL}/v1/check/preflight",
-                      "lookup": LOOKUP_URL, "lookup_catalog": f"{BASE}/api/v1/lookup.json",
+                      "lookup": LOOKUP_URL, "lookup_catalog": f"{BASE}/api/v1/lookup.json", "requests": REQUESTS_URL, "bounties": BOUNTIES_URL,
                       "protocols": f"{BASE}/protocols/"},
         "pricing": {"mode": PRICING_MODE, "priceUsd": "0.00", "apiKey": False, "wallet": False, "rateLimitPerMinute": RATE_LIMIT_PER_MIN,
                     "note": FREE_LAUNCH_NOTE},
@@ -354,7 +407,7 @@ def agent_card(prop, onb, idx):
 
 def mcp_manifest(idx, onb):
     return {
-        "name": MCP_NAME, "title": "Pacta", "package": MCP_PACKAGE, "packageVersion": MCP_VERSION,
+        "name": MCP_NAME, "title": "Pacta by Fractal Neurons", "package": MCP_PACKAGE, "packageVersion": MCP_VERSION,
         "description": "Block-pinned DeFi control-plane commitments, Base EAS attestations and governance proposals for agents.",
         "version": max(idx["generated_at"], onb["generated_at"])[:10].replace("-", "."), "homepage": f"{BASE}/", "documentation": f"{BASE}/llms-full.txt",
         "status": MCP_STATUS,
@@ -366,7 +419,9 @@ def mcp_manifest(idx, onb):
         "lookup": {"tool": "pacta_lookup_protocol", "http": LOOKUP_URL, "catalog": f"{BASE}/api/v1/lookup.json", "free": True, "note": LOOKUP_DOC},
         "environment": [{"name": n, "required": False, "secret": False, "description": d} for n, d in MCP_ENV],
         "tools": [{"name": n, "access": "free" if p == "free" else PRICING_MODE, "price": None if p == "free" else p.split(" ")[1],
-                   "effectivePriceUsd": "0.00", "description": d} for n, p, d in MCP_TOOLS],
+                   "effectivePriceUsd": "0.00", "readOnly": n != REQUEST_TOOL, "description": d} for n, p, d in MCP_TOOLS],
+        "toolSummary": {"remote": REMOTE_TOOLS_DOC, "stdio": STDIO_TOOLS_DOC, "requestTool": REQUEST_TOOL, "requestsEndpoint": REQUESTS_URL},
+        "disambiguation": DISAMBIGUATION,
         "feeds": {p: f"{BASE}{p}" for p, _ in FEEDS},
         "verification": {"chainId": 8453, "registry": REGISTRY, "easSchema": EAS_SCHEMA, "method": "eth_call with EIP-1898 {blockHash, requireCanonical: true}"},
         "x402": {"gatewayUrl": X402_URL, "discovery": f"{X402_URL}/.well-known/x402", "enableWith": f"PACTA_X402_URL={X402_URL}",
@@ -387,16 +442,21 @@ version: "{MCP_VERSION}"
 homepage: {BASE}/
 ---
 
-# Pacta protocol commitments
+# Pacta by Fractal Neurons: protocol commitments skill
+
+{DISAMBIGUATION}
 
 Use this skill when a task involves DeFi collateral risk, governance or upgrade authority, timelocks, Safe quorums or roles,
 or a live collateral onboarding proposal. Pacta publishes {m['records_indexed']} block-pinned records ({m['sprints_completed']} sprints) and
-{len(prop['proposals'])} governance proposals mapped to on-chain state. Everything is read-only and free.
+{len(prop['proposals'])} governance proposals mapped to on-chain state. Every inspection tool is read-only and free; one opt-in tool,
+`pacta_submit_request`, queues a coverage / feature request with the user's consent.
 
 ## Free pre-execution API (launch: $0, no API key, no wallet)
 - Remote MCP, zero install: `{MCP_REMOTE_URL}` (Streamable HTTP). Claude Code: `claude mcp add --transport http pacta {MCP_REMOTE_URL}`.
-  Tools: {", ".join(f"`{t}`" for t in REMOTE_TOOLS)}.
+  Tools ({REMOTE_TOOLS_DOC}): {", ".join(f"`{t}`" for t in REMOTE_TOOLS)}.
 - {LOOKUP_DOC}
+- {REQUEST_DOC}
+- {BOUNTIES_DOC}
 - {CALLER_FIELDS_DOC}
 - One call: `curl -s "{X402_URL}/v1/check/preflight?chain=ethereum&address=0x..."` returns `verdict`, `riskScore` (0-100), proxy /
   implementation (EIP-1967, EIP-1822 or beacon), `controller` (eoa, multisig_safe, timelock, contract,
@@ -406,6 +466,9 @@ or a live collateral onboarding proposal. Pacta publishes {m['records_indexed']}
   `UNCLASSIFIED_CONTRACT_CONTROLLER` (never treat it as safe).
 - OpenAPI 3.1: `{OPENAPI_URL}`. Every route takes GET query parameters or a POST JSON body. {RATE_LIMIT_PER_MIN} requests / minute per caller.
 - Protocol safety records: `{BASE}/protocols/`.
+
+## MCP recipes (copy-paste)
+""" + "\n\n".join(f"{t}:\n\n```{lang}\n{code}\n```" for t, lang, code in MCP_RECIPES) + f"""
 
 ## Feeds (no key, no paywall)
 """ + "\n".join(f"- `{BASE}{p}`: {d}" for p, d in FEEDS) + f"""

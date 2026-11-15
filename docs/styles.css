@@ -127,6 +127,21 @@ input:focus, textarea:focus, select:focus { outline: none; border-color: var(--a
 .badge.delta { color: var(--amber); background: var(--amber-bg); border-color: var(--amber-line); }
 .badge.protect, .badge.ok, .badge.final { color: var(--green); background: var(--green-bg); border-color: var(--green-line); }
 .badge.plain::before { display: none; }
+/* control-plane badge cards on protocol pages */
+.badge-card .badge-preview { margin: 4px 0 12px; }
+.badge-card .cp-badge { display: block; height: 20px; width: auto; }
+.badge-card .term { margin-top: 10px; }
+.badge-card pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+/* timelock operation state: PENDING / READY · EXECUTABLE NOW / EXECUTED (radar.json, re-checked live by app.js) */
+.opstate { display: inline-flex; align-items: center; height: 20px; padding: 0 7px; border: 1px solid var(--line-2); border-radius: 2px; font: 600 10.5px/1 var(--sans); letter-spacing: 0.05em; color: var(--muted); white-space: nowrap; }
+.opstate.ready { color: var(--amber); background: var(--amber-bg); border-color: var(--amber-line); }
+.opstate.executed { color: var(--green); background: var(--green-bg); border-color: var(--green-line); }
+.opstate.mixed, .opstate.unknown { border-style: dashed; }
+.poststatus { margin: 0 0 22px; padding: 14px 16px; border: 1px solid var(--line-2); border-left: 3px solid var(--amber); border-radius: var(--r); }
+.poststatus.executed { border-left-color: var(--green); }
+.poststatus .ps-head { margin: 6px 0 4px; font-size: 15px; }
+.poststatus .s { margin: 0; font-size: 13px; color: var(--ink-2); }
+.live-line:empty { display: none; }
 .badge.observed { border-style: dashed; background: transparent; }  /* RPC-observed baseline: neutral, no doc-comparison claim */
 pre.llms { white-space: pre-wrap; word-break: break-word; font: 12.5px/1.55 var(--mono); }
 .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--gray); flex: none; }
@@ -151,6 +166,8 @@ pre.llms { white-space: pre-wrap; word-break: break-word; font: 12.5px/1.55 var(
 .tt { display: inline-flex; border: 1px solid var(--line-2); border-radius: var(--r); overflow: hidden; background: var(--surface); padding: 0; cursor: pointer; height: 28px; }
 .tt span { display: inline-flex; align-items: center; padding: 0 9px; font-size: 12px; color: var(--muted); }
 .tt span.on { background: var(--ink); color: var(--bg); }
+.tools .gh { font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+.tools .gh:hover { color: var(--ink); }
 
 /* ---------- hero ---------- */
 .hero { padding: 72px 0 0; }
@@ -530,3 +547,16 @@ legend { padding: 0; margin-bottom: 8px; font: 600 11px/1 var(--sans); letter-sp
   .qs-item + .qs-item { padding-left: 0; border-left: 0; border-top: 1px solid var(--line); }
   .pf-form, .pf-dl { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* ---------- radar provenance note, /protocols/ filter, /bounties/ (Batch D3 / E1) ---------- */
+.radar-live { margin: 0 0 14px; font-size: 13px; color: var(--muted); }
+.radar-live b { color: var(--ink-2); font-weight: 600; }
+tr[hidden] { display: none; }
+.bounty-issue { border-top: 1px solid var(--line); padding: 12px 0; }
+.bounty-issue:last-child { border-bottom: 1px solid var(--line); }
+.bounty-issue summary { cursor: pointer; font-weight: 600; color: var(--ink); }
+.bounty-issue .md { margin-top: 10px; font-size: 14px; }
+.bounty-issue .md h3 { font-size: 15px; margin: 14px 0 6px; }
+.bounty-issue .md h4 { font-size: 14px; margin: 14px 0 6px; }
+.bounty-issue .md hr { border: 0; border-top: 1px solid var(--line); margin: 14px 0; }
+.bounty-issue pre.term-pre { margin: 8px 0; padding: 10px 12px; border: 1px solid var(--term-line); border-radius: var(--r); background: var(--term-bg); color: var(--term-ink); overflow-x: auto; font: 12.5px/1.6 var(--mono); }

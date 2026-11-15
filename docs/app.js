@@ -59,6 +59,69 @@
     });
   }
 
+  // ---- live timelock re-check (read-only): one GET to the free /v1/briefs/live-timelocks on timelock briefs and #radar.
+  //      Badges (data-ops) change only through textContent + class; any failure keeps the static block-pinned state.
+  //      No polling, no reload, no markup from the network. --------------------------------------------------------------
+  var OP_LABEL = { executed: "EXECUTED", ready: "READY · EXECUTABLE NOW", pending: "PENDING", unknown: "CANCELLED OR UNKNOWN", mixed: "MIXED" };
+  var OP_STATES = ["executed", "ready", "pending", "unknown", "mixed"];
+  var LIVE_TL_RE = /^https:\/\/pacta-x402\.pacta\.workers\.dev\/v1\/briefs\/live-timelocks(\?[a-z_=&.-]*)?$/;
+  function liveOpState(op) {
+    var l = op && typeof op.live === "object" && op.live ? op.live : {};
+    if (l.isOperationDone === true || l.status === "done") return "executed";
+    if (l.status === "ready" && l.isOperationPending !== false) return "ready";
+    if (l.status === "pending") return "pending";
+    if (l.status === "unset") return "unknown";
+    return null;
+  }
+  function setOpState(b, st) {
+    b.textContent = OP_LABEL[st];
+    OP_STATES.forEach(function (c) { b.classList.toggle(c, c === st); });
+    b.setAttribute("data-opstate", st);
+    b.setAttribute("data-live", "1");
+  }
+  function applyLiveTimelocks(j) {
+    if (!j || typeof j !== "object" || !Array.isArray(j.operations)) return;
+    var by = {}, blk = null;
+    j.operations.forEach(function (op) {
+      var id = op && typeof op.opId === "string" ? op.opId.toLowerCase() : "", st = liveOpState(op);
+      if (/^0x[0-9a-f]{64}$/.test(id) && st) by[id] = st;
+      var n = op && op.block ? op.block.number : null;
+      if (typeof n === "number" && isFinite(n) && n > 0 && (blk === null || n > blk)) blk = Math.floor(n);
+    });
+    var updated = 0;
+    $$("[data-ops]").forEach(function (b) {
+      var ids = (b.getAttribute("data-ops") || "").toLowerCase().split(/\s+/).filter(Boolean);
+      var sts = ids.map(function (i) { return by[i]; });
+      if (!sts.length || sts.some(function (s) { return !s; })) return;     // every operation must have been re-read
+      var before = b.getAttribute("data-opstate"), st = sts.every(function (s) { return s === sts[0]; }) ? sts[0] : "mixed";
+      setOpState(b, st);
+      updated++;
+      var banner = b.closest(".poststatus"), clause = banner && $(".ps-clause", banner);
+      if (banner && st !== before) {
+        OP_STATES.forEach(function (c) { banner.classList.toggle(c, c === st); });
+        if (clause) clause.textContent = "(live re-check" + (blk !== null ? " at block #" + blk.toLocaleString("en-US") : "") + ": " + OP_LABEL[st]
+          + "; the finalized-block reading below is superseded)";
+      }
+    });
+    if (updated && blk !== null) {
+      $$("[data-live-line]").forEach(function (n) {
+        n.textContent = "Live re-check at the latest block #" + blk.toLocaleString("en-US") + " via the free /v1/briefs/live-timelocks.";
+      });
+    }
+  }
+  function initLiveTimelocks() {
+    var host = $("[data-live-timelocks]");
+    if (!host || typeof fetch !== "function" || !$("[data-ops]")) return;
+    var url = host.getAttribute("data-live-timelocks") || "";
+    if (!LIVE_TL_RE.test(url)) return;
+    var init = { cache: "no-store", headers: { Accept: "application/json" } };
+    try { if (typeof AbortSignal !== "undefined" && typeof AbortSignal.timeout === "function") init.signal = AbortSignal.timeout(8000); } catch (e) { /* no timeout */ }
+    fetch(url, init)
+      .then(function (r) { return r && r.status === 200 ? r.json() : null; })
+      .then(applyLiveTimelocks, function () { /* offline / blocked / timeout: keep the static state */ })
+      .catch(function () { /* malformed payload: keep the static state */ });
+  }
+
   // ---- first-party beacon hooks: b.js defines window.pactaBeacon (and applies DNT / https / redaction); without it
   //      nothing is sent. copy_mcp_url / copy_curl by what a copy button copies, copy_skill_md, primary CTAs. --------
   function initBeaconHooks() {
@@ -517,9 +580,40 @@
     });
   }
 
+  // /protocols/: text search + one status / chain pill. Rows are only shown or hidden (hidden attribute); text via textContent.
+  function initProtocolFilter() {
+    var root = $("[data-pfilter-root]"), q = $("#proto-q"), count = $("#proto-count");
+    if (!root || !q) return;
+    var rows = $$("#proto-table tbody tr"), pills = $$("[data-pfilter]", root), active = "all";
+    function match(tr) {
+      var t = tr.getAttribute("data-ptier"), ch = (tr.getAttribute("data-pchains") || "").split(" ");
+      if (active === "ethereum" || active === "base") return ch.indexOf(active) >= 0;
+      return active === "all" || t === active;
+    }
+    function apply() {
+      var words = q.value.toLowerCase().split(" ").filter(Boolean), shown = 0;
+      rows.forEach(function (tr) {
+        var hay = tr.getAttribute("data-psearch") || "";
+        var ok = match(tr) && words.every(function (w) { return hay.indexOf(w) >= 0; });
+        tr.hidden = !ok;
+        if (ok) shown++;
+      });
+      if (count) count.textContent = shown + " of " + rows.length + " protocols shown";
+    }
+    pills.forEach(function (b) {
+      b.addEventListener("click", function () {
+        active = b.getAttribute("data-pfilter") || "all";
+        pills.forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+        apply();
+      });
+    });
+    q.addEventListener("input", apply);
+    apply();
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     initTheme(); initCopy(); initBeaconHooks(); tick(); setInterval(tick, 30000);
-    initIndex(); initRequest(); initInspector(); initPreflight();
+    initIndex(); initRequest(); initInspector(); initPreflight(); initLiveTimelocks(); initProtocolFilter();
     if ($("#insp-list")) loadData().catch(function () { /* static sheet and drawer links keep working */ });
   });
 })();

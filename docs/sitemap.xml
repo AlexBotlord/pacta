@@ -27,6 +27,7 @@
   <url><loc>https://pacta.wtf/demos/swapio-x402/</loc><lastmod>2026-11-15</lastmod></url>
   <url><loc>https://pacta.wtf/bounties/</loc><lastmod>2026-11-15</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/</loc><lastmod>2026-11-15</lastmod></url>
+  <url><loc>https://pacta.wtf/protocols/aave-v3-base/</loc><lastmod>2026-11-15</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/aave-v3-gho/</loc><lastmod>2026-11-15</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/across-protocol-hubpool/</loc><lastmod>2026-11-15</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/aerodrome-finance-base/</loc><lastmod>2026-11-15</lastmod></url>
@@ -35,12 +36,14 @@
   <url><loc>https://pacta.wtf/protocols/bedrock-unieth/</loc><lastmod>2026-11-15</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/beefy-finance-base/</loc><lastmod>2026-11-15</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/centrifuge-liquidity-pools-base/</loc><lastmod>2026-11-15</lastmod></url>
+  <url><loc>https://pacta.wtf/protocols/compound-v3-base/</loc><lastmod>2026-11-15</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/compound-v3-comet/</loc><lastmod>2026-11-15</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/convex-finance/</loc><lastmod>2026-11-15</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/curve-finance-crvusd/</loc><lastmod>2026-11-15</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/eigenlayer-core/</loc><lastmod>2026-11-15</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/enzyme-finance/</loc><lastmod>2026-11-15</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/ethena-usde-susde/</loc><lastmod>2026-11-15</lastmod></url>
+  <url><loc>https://pacta.wtf/protocols/ethena-usdtb/</loc><lastmod>2026-11-15</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/ether-fi-core-eeth-weeth/</loc><lastmod>2026-11-15</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/ether-fi-liquid-veda-boringvault/</loc><lastmod>2026-11-15</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/euler-v2-evk/</loc><lastmod>2026-11-15</lastmod></url>
@@ -53,6 +56,7 @@
   <url><loc>https://pacta.wtf/protocols/inverse-finance-firm/</loc><lastmod>2026-11-15</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/kelp-dao-rseth/</loc><lastmod>2026-11-15</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/lido-steth-dual-governance/</loc><lastmod>2026-11-15</lastmod></url>
+  <url><loc>https://pacta.wtf/protocols/liquid-collective-lseth/</loc><lastmod>2026-11-15</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/liquity-v2-bold/</loc><lastmod>2026-11-15</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/lombard-lbtc/</loc><lastmod>2026-11-15</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/m0-protocol-m/</loc><lastmod>2026-11-15</lastmod></url>

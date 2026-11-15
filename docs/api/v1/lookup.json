@@ -2,6 +2,55 @@
  "items": [
   {
    "baseEasUids": [
+    "0xa04d9c98873fce6fffb60fe535510092f22284f3afeeb78e36e4a0c25d5ea928"
+   ],
+   "category": "Lending Market (Base)",
+   "chain": "base",
+   "chainId": 8453,
+   "classification": "aligned_baseline",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
+   "documentedDelaySeconds": null,
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "kind": "protocol",
+   "name": "Aave V3 (Base)",
+   "observedDelaySeconds": null,
+   "preflightArgs": {
+    "address": "0x56C1a4b54921DEA9A344967a8693C7E661D72968",
+    "chain": "base"
+   },
+   "primaryContract": "0x56C1a4b54921DEA9A344967a8693C7E661D72968",
+   "slug": "aave-v3-base",
+   "sprints": [
+    19
+   ],
+   "surfaces": [
+    {
+     "classification": "aligned_baseline",
+     "id": "aave-v3-base-emergency-admin-protocol-guardian-4of7-s19",
+     "surface": "EMERGENCY_ADMIN (pause / unpause) = Aave Protocol Guardian 4-of-7 Safe",
+     "targetContract": "0x56C1a4b54921DEA9A344967a8693C7E661D72968",
+     "targetLabel": "Aave Protocol Guardian Safe (Base)"
+    },
+    {
+     "classification": "aligned_baseline",
+     "id": "aave-v3-base-payloads-level1-1d-delay-s19",
+     "surface": "Level-1 governance payloads execute on Base through ExecutorLvl1 after a 1-day delay",
+     "targetContract": "0x2DC219E716793fb4b21548C0f009Ba3Af753ab01",
+     "targetLabel": "Aave Governance V3 PayloadsController (Base)"
+    }
+   ],
+   "targetLabel": "Aave Protocol Guardian Safe (Base)",
+   "tokens": [
+    "AAVE",
+    "Aave Base"
+   ],
+   "url": "https://pacta.wtf/protocols/aave-v3-base/"
+  },
+  {
+   "baseEasUids": [
     "0x0e017bc4399101f9fef3d98a434dd9f2829b6e386e7733408dfd4b626d186eea"
    ],
    "category": "Blue-Chip Lending & Decentralized Stablecoin",
@@ -304,6 +353,55 @@
   },
   {
    "baseEasUids": [
+    "0xa04d9c98873fce6fffb60fe535510092f22284f3afeeb78e36e4a0c25d5ea928"
+   ],
+   "category": "Lending Market (Base)",
+   "chain": "base",
+   "chainId": 8453,
+   "classification": "aligned_baseline",
+   "controllerAddress": "0xCC3E7c85Bb0EE4f09380e041fee95a0caeDD4a02",
+   "controllerKind": "timelock",
+   "documentationComparison": "compared",
+   "documentedDelaySeconds": null,
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "kind": "protocol",
+   "name": "Compound V3 (Base)",
+   "observedDelaySeconds": 86400,
+   "preflightArgs": {
+    "address": "0x18281dfC4d00905DA1aaA6731414EABa843c468A",
+    "chain": "base"
+   },
+   "primaryContract": "0x18281dfC4d00905DA1aaA6731414EABa843c468A",
+   "slug": "compound-v3-base",
+   "sprints": [
+    19
+   ],
+   "surfaces": [
+    {
+     "classification": "aligned_baseline",
+     "id": "compound-v3-base-mainnet-timelock-local-1d-delay-s19",
+     "surface": "Both Base Comet markets are governed by the Ethereum Timelock through a bridge receiver and a 1-day local timelock",
+     "targetContract": "0x18281dfC4d00905DA1aaA6731414EABa843c468A",
+     "targetLabel": "Compound BridgeReceiver (Base)"
+    },
+    {
+     "classification": "aligned_baseline",
+     "id": "compound-v3-base-pause-guardian-community-multisig-5of9-s19",
+     "surface": "Pause Guardian of both Base markets = 5-of-9 Safe with the Community Multi-Sig's owners",
+     "targetContract": "0x9c4ec768c28520B50860ea7a15bd7213a9fF58bf",
+     "targetLabel": "Compound III cUSDbCv3 (Base)"
+    }
+   ],
+   "targetLabel": "Compound BridgeReceiver (Base)",
+   "tokens": [
+    "COMP",
+    "cUSDCv3"
+   ],
+   "url": "https://pacta.wtf/protocols/compound-v3-base/"
+  },
+  {
+   "baseEasUids": [
     "0x0e017bc4399101f9fef3d98a434dd9f2829b6e386e7733408dfd4b626d186eea"
    ],
    "category": "Blue-Chip Lending",
@@ -563,6 +661,55 @@
     "ENA"
    ],
    "url": "https://pacta.wtf/protocols/ethena-usde-susde/"
+  },
+  {
+   "baseEasUids": [
+    "0xa04d9c98873fce6fffb60fe535510092f22284f3afeeb78e36e4a0c25d5ea928"
+   ],
+   "category": "RWA-Backed Stablecoin",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "mixed",
+   "controllerAddress": "0xE8Dc0Fab349EA169283C48Ccfd09d797E6DB7c94",
+   "controllerKind": "timelock",
+   "documentationComparison": "compared",
+   "documentedDelaySeconds": null,
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "kind": "protocol",
+   "name": "Ethena USDtb",
+   "observedDelaySeconds": 86400,
+   "preflightArgs": {
+    "address": "0x73E35C5c35A274E34AdE6EB13cC7f62aEE323728",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x73E35C5c35A274E34AdE6EB13cC7f62aEE323728",
+   "slug": "ethena-usdtb",
+   "sprints": [
+    19
+   ],
+   "surfaces": [
+    {
+     "classification": "protective_delta",
+     "id": "ethena-usdtb-psm-owner-24h-timelock-s19",
+     "surface": "USDtb PSM owned by a 24-hour TimelockController (Dev multisig proposes), not by the Dev multisig directly",
+     "targetContract": "0x73E35C5c35A274E34AdE6EB13cC7f62aEE323728",
+     "targetLabel": "USDtb PSM"
+    },
+    {
+     "classification": "aligned_baseline",
+     "id": "ethena-usdtb-single-admin-no-timelock-s19",
+     "surface": "USDtb token administered by a single admin address with no timelock (issuer: Anchorage)",
+     "targetContract": "0xC139190F447e929f090Edeb554D95AbB8b18aC1C",
+     "targetLabel": "USDtb token proxy"
+    }
+   ],
+   "targetLabel": "USDtb PSM",
+   "tokens": [
+    "USDtb",
+    "USDTB"
+   ],
+   "url": "https://pacta.wtf/protocols/ethena-usdtb/"
   },
   {
    "baseEasUids": [
@@ -1090,6 +1237,55 @@
   },
   {
    "baseEasUids": [
+    "0xa04d9c98873fce6fffb60fe535510092f22284f3afeeb78e36e4a0c25d5ea928"
+   ],
+   "category": "Institutional Liquid Staking",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "aligned_baseline",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
+   "documentedDelaySeconds": null,
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "kind": "protocol",
+   "name": "Liquid Collective (LsETH)",
+   "observedDelaySeconds": null,
+   "preflightArgs": {
+    "address": "0x8c1BEd5b9a0928467c9B1341Da1D7BD5e10b6549",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x8c1BEd5b9a0928467c9B1341Da1D7BD5e10b6549",
+   "slug": "liquid-collective-lseth",
+   "sprints": [
+    19
+   ],
+   "surfaces": [
+    {
+     "classification": "aligned_baseline",
+     "id": "liquid-collective-lseth-admin-multisig-4of7-s19",
+     "surface": "River (LsETH) upgrade and admin Firewalls are administered by 4-of-7 Safes",
+     "targetContract": "0x8c1BEd5b9a0928467c9B1341Da1D7BD5e10b6549",
+     "targetLabel": "River (LsETH) proxy"
+    },
+    {
+     "classification": "aligned_baseline",
+     "id": "liquid-collective-lseth-service-fee-10pct-s19",
+     "surface": "Protocol service fee = 10.0% of network rewards",
+     "targetContract": "0x8c1BEd5b9a0928467c9B1341Da1D7BD5e10b6549",
+     "targetLabel": "River (LsETH) proxy"
+    }
+   ],
+   "targetLabel": "River (LsETH) proxy",
+   "tokens": [
+    "LsETH",
+    "Liquid Collective"
+   ],
+   "url": "https://pacta.wtf/protocols/liquid-collective-lseth/"
+  },
+  {
+   "baseEasUids": [
     "0x749d96e1a3d214a4ab66c528ca12c84dce085fa138dc370dd0eb817d890f09fa"
    ],
    "category": "Immutable CDP Stablecoin",
@@ -1614,36 +1810,48 @@
    "url": "https://pacta.wtf/protocols/origin-superoeth-base/"
   },
   {
-   "baseEasUids": [],
+   "baseEasUids": [
+    "0xa04d9c98873fce6fffb60fe535510092f22284f3afeeb78e36e4a0c25d5ea928"
+   ],
    "category": "Yield Tokenization & AMM",
    "chain": "ethereum",
    "chainId": 1,
-   "classification": "rpc_observed",
-   "controllerAddress": "0x8119EC16F0573B7dAc7C0CB94EB504FB32456ee1",
-   "controllerKind": "multisig_safe",
-   "documentationComparison": "not_assessed",
+   "classification": "aligned_baseline",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
    "documentedDelaySeconds": null,
-   "easAttested": false,
-   "evidenceBasis": "rpc_observed",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
    "kind": "protocol",
    "name": "Pendle Finance V2",
    "observedDelaySeconds": null,
    "preflightArgs": {
-    "address": "0x4f30A9D41B80ecC5B94306AB4364951AE3170210",
+    "address": "0x6d247b1c044fA1E22e6B04fA9F71Baf99EB29A9f",
     "chain": "ethereum"
    },
-   "primaryContract": "0x4f30A9D41B80ecC5B94306AB4364951AE3170210",
+   "primaryContract": "0x6d247b1c044fA1E22e6B04fA9F71Baf99EB29A9f",
    "slug": "pendle-finance-v2",
+   "sprints": [
+    19
+   ],
    "surfaces": [
     {
-     "classification": "rpc_observed",
-     "id": "pendle-finance-v2-control-plane",
-     "surface": "VotingEscrowPendleMainchain · 3-of-5 Safe Control Plane",
-     "targetContract": "0x4f30A9D41B80ecC5B94306AB4364951AE3170210",
-     "targetLabel": "VotingEscrowPendleMainchain"
+     "classification": "aligned_baseline",
+     "id": "pendle-finance-v2-reserve-fee-80-lp-20-s19",
+     "surface": "Market factory sends 80% of swap fees to the treasury, leaving 20% to LPs",
+     "targetContract": "0x6d247b1c044fA1E22e6B04fA9F71Baf99EB29A9f",
+     "targetLabel": "PendleMarketFactory (V7Upg)"
+    },
+    {
+     "classification": "aligned_baseline",
+     "id": "pendle-finance-v2-yt-interest-fee-5pct-s19",
+     "surface": "Yield contract factory takes a 5% fee on YT yield",
+     "targetContract": "0x3E6EBa46AbC5ab18ED95F6667d8B2fd4020E4637",
+     "targetLabel": "PendleYieldContractFactory"
     }
    ],
-   "targetLabel": "VotingEscrowPendleMainchain",
+   "targetLabel": "PendleMarketFactory (V7Upg)",
    "tokens": [
     "PENDLE",
     "vePENDLE"
@@ -1811,36 +2019,55 @@
    "url": "https://pacta.wtf/protocols/resolv-usr-rlp/"
   },
   {
-   "baseEasUids": [],
+   "baseEasUids": [
+    "0xa04d9c98873fce6fffb60fe535510092f22284f3afeeb78e36e4a0c25d5ea928"
+   ],
    "category": "Decentralized Liquid Staking",
    "chain": "ethereum",
    "chainId": 1,
-   "classification": "rpc_observed",
-   "controllerAddress": "0x1d8f8f00cfa6758d7bE78336684788Fb0ee0Fa46",
-   "controllerKind": "contract_controller",
-   "documentationComparison": "not_assessed",
+   "classification": "mixed",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
    "documentedDelaySeconds": null,
-   "easAttested": false,
-   "evidenceBasis": "rpc_observed",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
    "kind": "protocol",
    "name": "Rocket Pool (rETH)",
    "observedDelaySeconds": null,
    "preflightArgs": {
-    "address": "0xae78736Cd615f374D3085123A210448E74Fc6393",
+    "address": "0xdA1AB39e62E0A5297AF44C7064E501b0613f0D01",
     "chain": "ethereum"
    },
-   "primaryContract": "0xae78736Cd615f374D3085123A210448E74Fc6393",
+   "primaryContract": "0xdA1AB39e62E0A5297AF44C7064E501b0613f0D01",
    "slug": "rocket-pool-reth",
+   "sprints": [
+    19
+   ],
    "surfaces": [
     {
-     "classification": "rpc_observed",
-     "id": "rocket-pool-reth-control-plane",
-     "surface": "RocketTokenRETH & RocketStorage Control Plane",
-     "targetContract": "0xae78736Cd615f374D3085123A210448E74Fc6393",
-     "targetLabel": "RocketTokenRETH"
+     "classification": "aligned_baseline",
+     "id": "rocket-pool-reth-odao-quorum-51pct-s19",
+     "surface": "Oracle DAO proposal quorum = 51% of members",
+     "targetContract": "0xdA1AB39e62E0A5297AF44C7064E501b0613f0D01",
+     "targetLabel": "RocketDAONodeTrustedSettingsMembers"
+    },
+    {
+     "classification": "parameter_delta",
+     "id": "rocket-pool-reth-security-council-leave-time-28d-s19",
+     "surface": "Security council members.leave.time = 28 days (RPIP-33 bound: < 14 days)",
+     "targetContract": "0xC9D771AaF504F33bB3C8a7E67eA9f1881F837cFf",
+     "targetLabel": "RocketDAOProtocolSettingsSecurity"
+    },
+    {
+     "classification": "aligned_baseline",
+     "id": "rocket-pool-reth-upgrade-delay-1w-s19",
+     "surface": "oDAO contract upgrades wait a 1-week upgrade delay (security council veto window)",
+     "targetContract": "0xC9D771AaF504F33bB3C8a7E67eA9f1881F837cFf",
+     "targetLabel": "RocketDAOProtocolSettingsSecurity"
     }
    ],
-   "targetLabel": "RocketTokenRETH",
+   "targetLabel": "RocketDAONodeTrustedSettingsMembers",
    "tokens": [
     "rETH",
     "RPL"
@@ -2855,9 +3082,9 @@
  ],
  "totals": {
   "briefs": 8,
-  "easAttestedProtocols": 44,
-  "items": 70,
-  "protocols": 62,
-  "rpcObservedProtocols": 18
+  "easAttestedProtocols": 50,
+  "items": 74,
+  "protocols": 66,
+  "rpcObservedProtocols": 16
  }
 }

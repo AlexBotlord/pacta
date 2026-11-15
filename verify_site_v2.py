@@ -44,18 +44,19 @@ import xml.etree.ElementTree as ET
 ROOT = os.path.dirname(os.path.abspath(__file__))
 DOCS = os.path.join(ROOT, "docs")
 RESULTS = []
-# ---- EXPECT-BEGIN: the published numbers, in one place (tools/apply_sprint18_attestation.py rewrites this block when it stamps a Sprint)
+# ---- EXPECT-BEGIN: the published numbers, in one place (tools/apply_sprint19_attestation.py rewrites this block when it stamps a Sprint)
 EXPECT = {
-    "sprints": 18, "records": 53, "eas_attestations": 18,              # index.json sprints_completed / records_indexed; Base EAS sprint UIDs
-    "protocols": 62, "eas_protocols": 44, "rpc_protocols": 18,          # /protocols/ pages = EAS-attested + RPC-pinned; badges = protocols
-    "briefs": 8, "badge_tiers": {"aligned": 25, "parameter_delta": 19, "rpc_observed": 18},
-    "base_records": 4,                                                  # index.json records with chain "base"
-    "rpc_by_chain": {"ethereum": 11, "base": 7},                         # rpc-pinned.json records per chain (sum = rpc_protocols)
-    "multi_attest_txs": ["1–12", "13–16", "17", "18"],                              # attestation_coverage.eas_multi_attest_txs keys
+    "sprints": 19, "records": 66, "eas_attestations": 19,              # index.json sprints_completed / records_indexed; Base EAS sprint UIDs
+    "protocols": 66, "eas_protocols": 50, "rpc_protocols": 16,          # /protocols/ pages = EAS-attested + RPC-pinned; badges = protocols
+    "briefs": 8, "badge_tiers": {"aligned": 29, "parameter_delta": 21, "rpc_observed": 16},
+    "base_records": 8,                                                  # index.json records with chain "base"
+    "rpc_by_chain": {"ethereum": 9, "base": 7},                         # rpc-pinned.json records per chain (sum = rpc_protocols)
+    "multi_attest_txs": ["1–12", "13–16", "17", "18", "19"],                              # attestation_coverage.eas_multi_attest_txs keys
     "summaries": {"15": "61c0cc292cfa1fc3840277cf312383d24a6c81af56afac303afdbd84e7316cf6",
                   "16": "91b8e29301ef0e625c4ddc9eadaf5388115812f5958f90b6e0ed53a4808ba8ae",
                   "17": "2fd7ab979c6dfc3aae44f6c46c8f0397959927874ff0358574043a056d3168ea",
-                  "18": "fc2f39d1c8c9a0c301f1a664be5fcdee9391971598a24739dccd3fbd0364aeae"},   # audits/sprint-<n>/ summary SHA-256 (attested)
+                  "18": "fc2f39d1c8c9a0c301f1a664be5fcdee9391971598a24739dccd3fbd0364aeae",
+                  "19": "be0b41a158027fb99a3b54d5411d13790c08047e40a1c6804412f82b1f183968"},   # audits/sprint-<n>/ summary SHA-256 (attested)
 }
 # ---- EXPECT-END
 X = EXPECT
@@ -1016,9 +1017,9 @@ def main():
             [b["slug"] for b in onb_lk["briefs"]] + [i["brief"].rstrip("/").split("/")[-1] for i in rad_lk["items"]]),
         "EIP-55 + preflightArgs": all(eip55_ok(x["primaryContract"]) and (x["controllerAddress"] is None or eip55_ok(x["controllerAddress"]))
                                       and x["preflightArgs"] == {"chain": x["chain"], "address": x["primaryContract"]} for x in items_lk),
-        "search probes": lk.get("probes") == {"ethena": [["ethena-usde-susde", "prefix"], ["ethena-ops-0x0ca0-0x1fe5", "prefix"]],
+        "search probes": lk.get("probes") == {"ethena": [["ethena-usde-susde", "prefix"], ["ethena-usdtb", "prefix"]],
                                               "usde": [["ethena-usde-susde", "exact"], ["ethena-ops-0x0ca0-0x1fe5", "exact"]],
-                                              "aave": [["aave-v3-gho", "exact"], ["circle-cirbtc-eth", "substring"]],
+                                              "aave": [["aave-v3-base", "exact"], ["aave-v3-gho", "exact"]],
                                               "moonwell": [["moonwell-lending-base", "prefix"]], "kusd": [["kerne-kusd-base", "exact"], ["steakhouse-usdc-metamorpho-base", "substring"]],
                                               "uniswap": [["uniswap-governance-timelock", "prefix"]],
                                               "ether.fi": [["ether-fi-core-eeth-weeth", "prefix"], ["ether-fi-liquid-veda-boringvault", "prefix"]]}

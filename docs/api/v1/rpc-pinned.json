@@ -1,7 +1,7 @@
 {
   "schema": "pacta.rpc_pinned_records.v1",
   "title": "Pacta RPC-pinned control-plane records",
-  "description": "Read-only control-plane observations of 18 protocols (11 Ethereum, 7 Base), each pinned to a canonical block number and block hash and reproducible with cast. These records are NOT EAS-attested: they have no sprint number, no summary document and no Base EAS UID. The Base-EAS-attested Sprint records are in /api/v1/index.json. Euler V2 (EVK) and Moonwell Lending (Base) were re-scanned in Sprint 18, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here.",
+  "description": "Read-only control-plane observations of 16 protocols (9 Ethereum, 7 Base), each pinned to a canonical block number and block hash and reproducible with cast. These records are NOT EAS-attested: they have no sprint number, no summary document and no Base EAS UID. The Base-EAS-attested Sprint records are in /api/v1/index.json. Euler V2 (EVK) and Moonwell Lending (Base) were re-scanned in Sprint 18, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Pendle Finance V2 and Rocket Pool (rETH) were re-scanned in Sprint 19, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here.",
   "attestation": {
     "eas_attested": false,
     "base_eas_uid": null,
@@ -24,9 +24,9 @@
   },
   "verification": "Captured by one Pacta seat over public JSON-RPC and independently re-read at the same pinned blocks by a second seat (block hash, runtime bytecode size and keccak256, EIP-1967 implementation / admin slots, controller getter, Safe getThreshold / getOwners, timelock delay). Two records were corrected by the re-read (Moonwell admin contract, Uniswap V3 factory owner contract).",
   "summary": {
-    "protocols": 18,
-    "records": 18,
-    "ethereum": 11,
+    "protocols": 16,
+    "records": 16,
+    "ethereum": 9,
     "base": 7
   },
   "source_pack_sha256": "857179d8c3024fae3b2204fcae4b542f96cba9b03777cfb6f56095a607f00950",
@@ -131,17 +131,6 @@
       ]
     },
     {
-      "slug": "pendle-finance-v2",
-      "name": "Pendle Finance V2",
-      "family": "pendle",
-      "category": "Yield Tokenization & AMM",
-      "chain": "ethereum",
-      "chain_label": "Ethereum",
-      "record_ids": [
-        "pendle-finance-v2-control-plane"
-      ]
-    },
-    {
       "slug": "puffer-finance-pufeth",
       "name": "Puffer Finance (pufETH)",
       "family": "puffer",
@@ -161,17 +150,6 @@
       "chain_label": "Ethereum",
       "record_ids": [
         "reserve-protocol-rtoken-control-plane"
-      ]
-    },
-    {
-      "slug": "rocket-pool-reth",
-      "name": "Rocket Pool (rETH)",
-      "family": "rocket",
-      "category": "Decentralized Liquid Staking",
-      "chain": "ethereum",
-      "chain_label": "Ethereum",
-      "record_ids": [
-        "rocket-pool-reth-control-plane"
       ]
     },
     {
@@ -686,60 +664,6 @@
       "documented_reference": "Origin Protocol (SuperOETHb Base) documentation is linked for reference (https://docs.originprotocol.com/; governance: https://snapshot.org/#/ousdgov.eth). This RPC-pinned record does not compare documentation parameters with the on-chain state."
     },
     {
-      "id": "pendle-finance-v2-control-plane",
-      "protocol": "Pendle Finance V2",
-      "slug": "pendle-finance-v2",
-      "family": "pendle",
-      "category": "Yield Tokenization & AMM",
-      "chain": "ethereum",
-      "chain_id": 1,
-      "caip2": "eip155:1",
-      "chain_label": "Ethereum",
-      "rpc_env_var": "$ETH_RPC_URL",
-      "provenance": "rpc_pinned",
-      "base_eas_uid": null,
-      "block_number": 26414499,
-      "block_hash": "0xb83fee0a1d10d5fb8510d87ee9e33b180acac3208a7d00162a6a6f97789c0978",
-      "classification": "rpc_observed",
-      "documentation_comparison": "not_assessed",
-      "surface": "VotingEscrowPendleMainchain · 3-of-5 Safe Control Plane",
-      "target_contract": "0x4f30A9D41B80ecC5B94306AB4364951AE3170210",
-      "target_label": "VotingEscrowPendleMainchain",
-      "bytecode_bytes": 13144,
-      "bytecode_keccak256": "0xbfbc0073d6bc18a46321732011d0ac25b64c114e033352a24ce6cf88bb3ae325",
-      "is_eip1967_proxy": false,
-      "eip1967_implementation": null,
-      "eip1967_admin": null,
-      "controller_kind": "multisig_safe",
-      "controller_address": "0x8119EC16F0573B7dAc7C0CB94EB504FB32456ee1",
-      "upstream_controller": null,
-      "upstream_kind": null,
-      "safe_quorum": "3-of-5",
-      "paired_contract": null,
-      "paired_label": null,
-      "check_type": "eth_call",
-      "selector_or_slot": "0x8da5cb5b",
-      "call_signature": "owner()",
-      "call_args": [],
-      "repro_calldata": "0x8da5cb5b",
-      "extra_calls": [
-        {
-          "to": "0x8119EC16F0573B7dAc7C0CB94EB504FB32456ee1",
-          "signature": "getThreshold()(uint256)"
-        },
-        {
-          "to": "0x8119EC16F0573B7dAc7C0CB94EB504FB32456ee1",
-          "signature": "getOwners()(address[])"
-        }
-      ],
-      "onchain_observed": "VotingEscrowPendleMainchain (0x4f30A9D41B80ecC5B94306AB4364951AE3170210) verified on Ethereum Mainnet at canonical block #26,414,499 (13,144 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). Direct owner() returns 0x8119EC16F0573B7dAc7C0CB94EB504FB32456ee1, verified via getThreshold() and getOwners() as a 3-of-5 Safe multisig.",
-      "observed_delay_seconds": null,
-      "documented_delay_seconds": null,
-      "docs_url": "https://docs.pendle.finance/",
-      "governance_url": "https://app.pendle.finance/vependle/overview",
-      "documented_reference": "Pendle Finance V2 documentation is linked for reference (https://docs.pendle.finance/; governance: https://app.pendle.finance/vependle/overview). This RPC-pinned record does not compare documentation parameters with the on-chain state."
-    },
-    {
       "id": "puffer-finance-pufeth-control-plane",
       "protocol": "Puffer Finance (pufETH)",
       "slug": "puffer-finance-pufeth",
@@ -828,51 +752,6 @@
       "docs_url": "https://reserve.org/",
       "governance_url": "https://forum.reserve.org/",
       "documented_reference": "Reserve Protocol (eUSD RToken) documentation is linked for reference (https://reserve.org/; governance: https://forum.reserve.org/). This RPC-pinned record does not compare documentation parameters with the on-chain state."
-    },
-    {
-      "id": "rocket-pool-reth-control-plane",
-      "protocol": "Rocket Pool (rETH)",
-      "slug": "rocket-pool-reth",
-      "family": "rocket",
-      "category": "Decentralized Liquid Staking",
-      "chain": "ethereum",
-      "chain_id": 1,
-      "caip2": "eip155:1",
-      "chain_label": "Ethereum",
-      "rpc_env_var": "$ETH_RPC_URL",
-      "provenance": "rpc_pinned",
-      "base_eas_uid": null,
-      "block_number": 26414499,
-      "block_hash": "0xb83fee0a1d10d5fb8510d87ee9e33b180acac3208a7d00162a6a6f97789c0978",
-      "classification": "rpc_observed",
-      "documentation_comparison": "not_assessed",
-      "surface": "RocketTokenRETH & RocketStorage Control Plane",
-      "target_contract": "0xae78736Cd615f374D3085123A210448E74Fc6393",
-      "target_label": "RocketTokenRETH",
-      "bytecode_bytes": 8800,
-      "bytecode_keccak256": "0xe34255314ec42825a6444800e6894665b8c74e84e9dd2f20866f7057812b3adf",
-      "is_eip1967_proxy": false,
-      "eip1967_implementation": null,
-      "eip1967_admin": null,
-      "controller_kind": "contract_controller",
-      "controller_address": "0x1d8f8f00cfa6758d7bE78336684788Fb0ee0Fa46",
-      "upstream_controller": null,
-      "upstream_kind": null,
-      "safe_quorum": null,
-      "paired_contract": "0x1d8f8f00cfa6758d7bE78336684788Fb0ee0Fa46",
-      "paired_label": "RocketStorage",
-      "check_type": "eth_getStorageAt",
-      "selector_or_slot": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
-      "call_signature": null,
-      "call_args": [],
-      "repro_calldata": null,
-      "extra_calls": [],
-      "onchain_observed": "RocketTokenRETH (0xae78736Cd615f374D3085123A210448E74Fc6393) verified on Ethereum Mainnet at canonical block #26,414,499 (8,800 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). Paired protocol control contract RocketStorage (0x1d8f8f00cfa6758d7bE78336684788Fb0ee0Fa46, 11,270 bytes) verified live at the same block.",
-      "observed_delay_seconds": null,
-      "documented_delay_seconds": null,
-      "docs_url": "https://docs.rocketpool.net/overview/contracts-integrations",
-      "governance_url": "https://dao.rocketpool.net/",
-      "documented_reference": "Rocket Pool (rETH) documentation is linked for reference (https://docs.rocketpool.net/overview/contracts-integrations; governance: https://dao.rocketpool.net/). This RPC-pinned record does not compare documentation parameters with the on-chain state."
     },
     {
       "id": "safe-singleton-core-control-plane",

@@ -57,10 +57,7 @@
         "1–12": "0x8c53e155a4b2f28ffbf069f1b65952fc8f7d81740f362b8aafb39493c6bd001b",
         "13–16": "0x11546aac53e3fe57fa6ac9f7e4397f06c58b6803252e099eb9349eca00f2edbf"
       },
-      "attested_not_yet_indexed_sprints": [
-        15,
-        16
-      ]
+      "attested_not_yet_indexed_sprints": []
     }
   },
   "methodology": {
@@ -77,11 +74,11 @@
     "scope_limitation": "Entries report sampled historical read-only getter/slot returns alongside cited documentation; they do not certify protocol-wide immutability, exhaustive authority coverage, downstream mutation semantics, or exploitability."
   },
   "summary_metrics": {
-    "sprints_completed": 14,
-    "records_indexed": 37,
+    "sprints_completed": 16,
+    "records_indexed": 40,
     "parameter_deltas": 14,
     "protective_deltas": 4,
-    "aligned_baselines": 19
+    "aligned_baselines": 22
   },
   "entries": [
     {
@@ -1155,6 +1152,92 @@
       "call_signature": null,
       "call_args": [],
       "repro_calldata": null
+    },
+    {
+      "id": "threshold-tbtc-timelock-1d-walletregistry-op-0xb667",
+      "protocol": "Threshold Network (tBTC)",
+      "category": "Decentralized Bitcoin Bridge",
+      "sprint": 15,
+      "block_number": 26407707,
+      "block_hash": "0x9030abf37638c14a5f9c145f298a0f4cd74b247a99f3dddd119b9c6b09f5dced",
+      "classification": "aligned_baseline",
+      "surface": "tBTC TimelockController 1d delay — public WalletRegistry upgradeAndCall schedule",
+      "target_contract": "0x92f2d8b72a7F6a551Be60b9aa4194248E9B4913D",
+      "target_label": "Threshold Council TimelockController",
+      "check_type": "eth_call",
+      "selector_or_slot": "0xf27a0c92",
+      "onchain_observed": "getMinDelay() = 86400s (1d). Operation 0xb6671bbbedf818d7232a4006d4a85b21e3f3055d17244188f244c1da8263e0c7: isOperationPending() = true, getTimestamp() = 1794604955 (2026-11-13 21:22:35 UTC). It is a public CallScheduled upgradeAndCall (0x9623609d) on ProxyAdmin (0x7Affa05f726D293eB1193807A91617318292008e) for WalletRegistry (0x46d52E41C2F300BC82217Ce22b920c34995204eb) to implementation 0x14fAD0C11C83AC736e5929D5661bbA7E6BB9c0D6.",
+      "documented_reference": "docs.threshold.network contract addresses (Mainnet, tBTC application contracts) list 0x92f2d8b72a7F6a551Be60b9aa4194248E9B4913D as the tBTC 'Timelock Controller'; the docs state no delay for it. The '2-day' timelock in the Governance Process page belongs to the separate Governor Bravo Timelock Controller (0x87F005317692D05BAA4193AB0c961c69e175f45f, getMinDelay() = 172800s at the same block).",
+      "observed_delay_seconds": 86400,
+      "observed_delay_source": {
+        "contract": "0x92f2d8b72a7F6a551Be60b9aa4194248E9B4913D",
+        "selector": "0xf27a0c92",
+        "getter": "getMinDelay()"
+      },
+      "documented_delay_seconds": null,
+      "verification_status": "scanner_dual_rpc_replayed_base_eas_attested_pending_static_review",
+      "summary_doc": "audits/sprint-15/block-26407707-summary.md",
+      "summary_sha256": "0x61c0cc292cfa1fc3840277cf312383d24a6c81af56afac303afdbd84e7316cf6",
+      "base_eas_uid": "0x967a4935786194575835d5a46e3e39b1d553225deb6a96c7ff4acf52a34dff22",
+      "call_signature": "getMinDelay()",
+      "call_args": [],
+      "repro_calldata": "0xf27a0c92"
+    },
+    {
+      "id": "treehouse-teth-owner-5d-timelock-s16",
+      "protocol": "Treehouse (TREE / tETH)",
+      "category": "Fixed Income / LST",
+      "sprint": 16,
+      "block_number": 26407707,
+      "block_hash": "0x9030abf37638c14a5f9c145f298a0f4cd74b247a99f3dddd119b9c6b09f5dced",
+      "classification": "aligned_baseline",
+      "surface": "tETH owner() = 5d TimelockController",
+      "target_contract": "0xD11c452fc99cF405034ee446803b6F6c1F6d5ED8",
+      "target_label": "Treehouse tETH",
+      "check_type": "eth_call",
+      "selector_or_slot": "0x8da5cb5b",
+      "onchain_observed": "tETH (0xD11c452fc99cF405034ee446803b6F6c1F6d5ED8).owner() = TimelockController (0x2225DAbFfC7F862c99477381E971E8B1FDaB467e) with getMinDelay() = 432000s (5d); tETH totalSupply() = 19,359.96 tETH.",
+      "documented_reference": "Treehouse docs: 'All Treehouse contracts are secured by a 5-day timelock' (protocol/tasset/security/timelock).",
+      "observed_delay_seconds": 432000,
+      "observed_delay_source": {
+        "contract": "0x2225DAbFfC7F862c99477381E971E8B1FDaB467e",
+        "selector": "0xf27a0c92",
+        "getter": "getMinDelay()"
+      },
+      "documented_delay_seconds": 432000,
+      "verification_status": "scanner_dual_rpc_replayed_base_eas_attested_pending_static_review",
+      "summary_doc": "audits/sprint-16/block-26407707-summary.md",
+      "summary_sha256": "0x91b8e29301ef0e625c4ddc9eadaf5388115812f5958f90b6e0ed53a4808ba8ae",
+      "base_eas_uid": "0x217d213de3cd9ef094670ff69d258af35adf132406caa547f729f487dc9d7e58",
+      "call_signature": "owner()",
+      "call_args": [],
+      "repro_calldata": "0x8da5cb5b"
+    },
+    {
+      "id": "lombard-lbtc-gmpbascule-zero-validate-threshold-s16",
+      "protocol": "Lombard (LBTC)",
+      "category": "Institutional BTCfi / Liquid Staked Bitcoin",
+      "sprint": 16,
+      "block_number": 26407707,
+      "block_hash": "0x9030abf37638c14a5f9c145f298a0f4cd74b247a99f3dddd119b9c6b09f5dced",
+      "classification": "aligned_baseline",
+      "surface": "GMPBascule validateThreshold() = 0 — deposit-ID validation on every inbound mint",
+      "target_contract": "0xC3ecFE771564e3f28CFB7a9b203F4d10279338eD",
+      "target_label": "Lombard GMPBascule",
+      "check_type": "eth_call",
+      "selector_or_slot": "0xeffbcbf3",
+      "onchain_observed": "GMPBascule (0xC3ecFE771564e3f28CFB7a9b203F4d10279338eD).validateThreshold() = 0. The Sprint 16 summary reports that the contract source requires validation when amount >= validateThreshold, so a zero threshold applies Bascule deposit-ID validation to every inbound cross-chain mint.",
+      "documented_reference": "docs.lombard.finance/learn/architecture (Bascule Drawbridge): 'Before any mint, Bascule independently verifies that the BTC deposit exists on the Bitcoin network with 6 confirmations. Minting requires valid signatures from both the Consortium and Bascule.'",
+      "observed_delay_seconds": null,
+      "observed_delay_source": null,
+      "documented_delay_seconds": null,
+      "verification_status": "scanner_dual_rpc_replayed_base_eas_attested_pending_static_review",
+      "summary_doc": "audits/sprint-16/block-26407707-summary.md",
+      "summary_sha256": "0x91b8e29301ef0e625c4ddc9eadaf5388115812f5958f90b6e0ed53a4808ba8ae",
+      "base_eas_uid": "0x217d213de3cd9ef094670ff69d258af35adf132406caa547f729f487dc9d7e58",
+      "call_signature": "validateThreshold()",
+      "call_args": [],
+      "repro_calldata": "0xeffbcbf3"
     }
   ]
 }

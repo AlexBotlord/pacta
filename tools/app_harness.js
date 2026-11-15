@@ -505,7 +505,7 @@ async function beaconScenario() {
     const canon = "https://pacta.wtf/protocols/" + input.protocolSlug + "/";
     const pageFor = (url) => JSON.parse(JSON.stringify(input.protocol).split(canon).join(url));
     const pages = (input.protocolSlugs || []).map((sl) => run(pageFor("https://pacta.wtf/protocols/" + sl + "/"), input.app, { path: "/protocols/" + sl + "/", beacon: B }).events()[0]);
-    res.b_c1_all_protocol_slugs_kept = pages.length === 53 && pages.every((e, i) => e.p === "/protocols/" + input.protocolSlugs[i] + "/" && e.t === input.protocolSlugs[i]);
+    res.b_c1_all_protocol_slugs_kept = pages.length === input.expectProtocols && pages.length === input.protocolSlugs.length && pages.every((e, i) => e.p === "/protocols/" + input.protocolSlugs[i] + "/" && e.t === input.protocolSlugs[i]);
     const mismatch = run(input.protocol, input.app, { path: "/protocols/alice-jones/", beacon: B }).events()[0];
     const brief = run(pageFor("https://pacta.wtf/briefs/etherfi-op-0x244e/"), input.app, { path: "/briefs/etherfi-op-0x244e/", beacon: B }).events()[0];
     res.b_c2_slug_only_from_canonical = same(mismatch, { v: 1, e: "page_load", p: "/other" }) && same(brief, { v: 1, e: "page_load", p: "/briefs/etherfi-op-0x244e/" })
@@ -605,7 +605,7 @@ function protocolFilterScenario() {
   const click = (k) => { const ev = new Event_("click"); ev.target = pill(k); pill(k).dispatchEvent(ev); };
   const type = (v) => { q.value = v; const ev = new Event_("input"); ev.target = q; q.dispatchEvent(ev); };
   const n = rows.length, want = (pred) => rows.filter(pred).length;
-  res.pfilter_initial_all = n === 53 && shown().length === n && count() === n + " of " + n + " protocols shown";
+  res.pfilter_initial_all = n === input.expectProtocols && shown().length === n && count() === n + " of " + n + " protocols shown";
   let ok = true;
   for (const [k, pred] of [["aligned", (r) => r.getAttribute("data-ptier") === "aligned"], ["parameter_delta", (r) => r.getAttribute("data-ptier") === "parameter_delta"],
     ["rpc_observed", (r) => r.getAttribute("data-ptier") === "rpc_observed"], ["ethereum", (r) => r.getAttribute("data-pchains").split(" ").includes("ethereum")],

@@ -221,9 +221,19 @@ def proposals(idx, onb):
             "counts": {"total": len(out), "by_forum": by_forum}, "proposals": out}
 
 
+def _catalog_counts():
+    """Published protocol pages / briefs, read from the committed input feeds (the same sources build_lookup.py uses), so the
+    agent docs never carry a stale count: protocols = index.json Sprint protocols + rpc-pinned.json protocols."""
+    rd = lambda n: json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "docs", "api", "v1", n), encoding="utf-8"))
+    eas = len({e["protocol"] for e in rd("index.json")["entries"]})
+    rpc = len({e["slug"] for e in rd("rpc-pinned.json")["entries"]})
+    return {"protocols": eas + rpc, "eas": eas, "rpc": rpc, "briefs": len(rd("onboarding.json")["briefs"]) + len(rd("radar.json")["items"])}
+
+
+CAT = _catalog_counts()
 FEEDS = [("/api/v1/index.json", "Block-pinned control-plane index (every record: target, call, block, block hash, classification, Base EAS UID)"),
-         ("/api/v1/lookup.json", "Protocol / token lookup catalog: 53 protocols + 8 briefs with slug, aliases, checksummed contracts, evidence basis and preflightArgs"),
-         ("/api/v1/protocols.json", "Every published protocol: badge tier + URLs, evidence basis (33 EAS-attested / 20 RPC-observed), Sprint ids, EAS UIDs, controller, pinned surfaces"),
+         ("/api/v1/lookup.json", f"Protocol / token lookup catalog: {CAT['protocols']} protocols + {CAT['briefs']} briefs with slug, aliases, checksummed contracts, evidence basis and preflightArgs"),
+         ("/api/v1/protocols.json", f"Every published protocol: badge tier + URLs, evidence basis ({CAT['eas']} EAS-attested / {CAT['rpc']} RPC-observed), Sprint ids, EAS UIDs, controller, pinned surfaces"),
          ("/api/v1/onboarding.json", "Onboarding verification scans: every check with call, calldata, raw result, decoded value; role maps"),
          ("/api/v1/proposals.json", "Live governance proposals (Aave, Euler, Morpho, Sky) mapped to block-pinned observations"),
          ("/api/v1/radar.json", "Queued timelock operations with on-chain ETAs at a finalized block"),
@@ -234,7 +244,7 @@ LOOKUP_DOC = (f"Name lookup first: if you only have a protocol or token name (e.
               f"(or GET {LOOKUP_URL}?q=<name>) to resolve its verified record: canonical slug and page URL, checksummed primary contract and controller, "
               "classification with its evidence basis (eas_attested: Base-EAS-attested, documentation compared; rpc_observed: on-chain control plane "
               "pinned over JSON-RPC, documentationComparison not_assessed; briefs), and preflightArgs {chain, address} for pacta_check_preflight. "
-              "53 protocols + 8 briefs, answered in memory with no RPC; free in every pricing mode; an empty query lists the catalog. "
+              f"{CAT['protocols']} protocols + {CAT['briefs']} briefs, answered in memory with no RPC; free in every pricing mode; an empty query lists the catalog. "
               f"Catalog: {BASE}/api/v1/lookup.json.")
 MCP_TOOLS = [("pacta_lookup_protocol", "free", "Resolve a protocol or token name, symbol, slug or 0x address to its verified record and preflightArgs {chain, address} (query, chain, kind, limit; no RPC)"),
              ("pacta_list_commitments", "free", "Filter indexed records (protocol, classification, sprint, limit)"),

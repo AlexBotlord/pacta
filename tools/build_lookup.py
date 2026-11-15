@@ -46,7 +46,8 @@ TOKENS = {
     "safe-singleton-core": ["SAFE"], "seamless-protocol-base": ["SEAM"], "spark-sky": ["USDS", "sUSDS", "DAI", "SKY", "MKR", "SPK"],
     "stader-labs-ethx": ["ETHx", "SD"], "stakewise-v3-oseth": ["osETH", "SWISE"], "superform-v2-base": ["Superform", "SuperVaults"],
     "superstate-ustb-uscc": ["USTB", "USCC"], "swell-sweth-rsweth": ["swETH", "rswETH", "SWELL"], "symbiotic-core": ["Symbiotic"],
-    "synthetix-v3-core": ["SNX", "sUSD"], "treehouse-tree-teth": ["tETH", "TREE"], "uniswap-governance-timelock": ["UNI"],
+    "synthetix-v3-core": ["SNX", "sUSD"], "threshold-network-tbtc": ["tBTC", "T"], "treehouse-tree-teth": ["tETH", "TREE"],
+    "uniswap-governance-timelock": ["UNI"],
     "usual-money-usd0-usd0": ["USD0", "USD0++", "USUAL"], "yearn-v3": ["YFI"],
     # briefs
     "kerne-kusd-base": ["kUSD", "Kerne"], "efix-efixdi-base": ["efixDI+", "EFIXDI", "EFIX"], "circle-cirbtc-eth": ["cirBTC", "Circle"],
@@ -171,7 +172,9 @@ def sync_module(path, items):
 def write_all(root, docs, sp, onb, radar, brief_protocol):
     items = build_items(sp, onb, radar, brief_protocol)
     t = totals(items)
-    assert (t["protocols"], t["briefs"], t["easAttestedProtocols"], t["rpcObservedProtocols"]) == (53, 8, 33, 20), t
+    n_pin = sum(v["pinned"] for v in sp.values())          # counts follow the feeds; verify_site_v2.EXPECT pins the published numbers
+    assert (t["protocols"], t["briefs"], t["easAttestedProtocols"], t["rpcObservedProtocols"]) == (
+        len(sp), len(onb["briefs"]) + len(radar["items"]), len(sp) - n_pin, n_pin), t
     with open(os.path.join(docs, "api", "v1", "lookup.json"), "w", encoding="utf-8") as fh:
         fh.write(catalog_json(items))
     sync_module(os.path.join(root, "packages", "mcp-server", "src", "lookup.mjs"), items)
@@ -271,5 +274,6 @@ def protocols_json(sp, items):
                              "guide": f"{BASE}/integrations/vault-factories/"},
            "protocols": out}
     t = doc["totals"]
-    assert (t["protocols"], t["easAttested"], t["rpcObserved"]) == (53, 33, 20), t
+    assert t["protocols"] == len(items_p := [x for x in items if x["kind"] == "protocol"]) == t["easAttested"] + t["rpcObserved"], t
+    assert t["easAttested"] == sum(x["evidenceBasis"] == "eas_attested" for x in items_p), t
     return json.dumps(doc, indent=1, sort_keys=True, ensure_ascii=False) + "\n"

@@ -7,11 +7,14 @@ import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { PactaMcpServer, TOOL_DEFINITIONS, LOOKUP_TOOL, MCP_INSTRUCTIONS, LOOKUP_CATALOG, LOOKUP_TOTALS, lookupProtocols, toChecksumAddress } from "../src/server.mjs";
+import { LOOKUP_LIMITS } from "../src/lookup.mjs";
 import { CALLER } from "./helpers.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const DOCS = join(HERE, "..", "..", "..", "docs", "api", "v1");
 const GW = "https://gateway.example.test";
+// PUBLISHED-COUNTS (the one line a Sprint stamp rewrites; equals pacta-github-repo verify_site_v2.EXPECT)
+const PUBLISHED = Object.freeze({ protocols: 54, briefs: 8, easAttestedProtocols: 34, rpcObservedProtocols: 20 });
 const rec = (reply) => {
   const calls = [];
   const f = async (url) => { calls.push(String(url)); return reply(String(url)); };
@@ -47,7 +50,7 @@ test("pacta_lookup_protocol: -32602 without valid caller fields (JWT, e-mail); i
     const r = await call(srv, { ...CALLER, caller_agent: a, query: "ethena" });
     assert.equal(r.error?.code, -32602, a);
   }
-  for (const args of [{ query: "x".repeat(81) }, { chain: "polygon" }, { kind: "token" }, { limit: 0 }, { limit: 62 }, { address: "0x1" }, { query: 7 }]) {
+  for (const args of [{ query: "x".repeat(81) }, { chain: "polygon" }, { kind: "token" }, { limit: 0 }, { limit: LOOKUP_CATALOG.length + 1 }, { address: "0x1" }, { query: 7 }]) {
     const r = await call(srv, { ...CALLER, ...args });
     assert.equal(r.result.isError, true, JSON.stringify(args));
     assert.equal(body(r).code, "invalid_input", JSON.stringify(args));
@@ -62,7 +65,7 @@ test("pacta_lookup_protocol without PACTA_X402_URL: answered from the embedded c
   assert.deepEqual([r.source, r.schema, r.results[0].slug, r.results[0].match, r.results[0].preflightArgs.chain], ["embedded_catalog", "pacta.protocol_lookup.v1", "ethena-usde-susde", "exact", "ethereum"]);
   assert.equal(r.gatewayFallback, undefined);
   const all = body(await call(srv, { ...CALLER }));
-  assert.deepEqual([all.count, all.totalCatalog], [20, { protocols: 53, briefs: 8, easAttestedProtocols: 33, rpcObservedProtocols: 20 }]);
+  assert.deepEqual([all.count, all.totalCatalog], [20, { ...PUBLISHED }]);
   const mw = body(await call(srv, { ...CALLER, query: "moonwell" })).results[0];
   assert.deepEqual([mw.evidenceBasis, mw.easAttested, mw.documentationComparison, mw.classification], ["rpc_observed", false, "not_assessed", "rpc_observed"]);
   assert.equal(f.calls.length, 0);
@@ -87,8 +90,9 @@ test("pacta_lookup_protocol with PACTA_X402_URL: asks GET /v1/protocols/lookup (
   }
 });
 
-test("catalog invariants: 53 protocols + 8 briefs, checksummed addresses, preflightArgs, scoped evidence basis", () => {
-  assert.deepEqual(LOOKUP_TOTALS, { protocols: 53, briefs: 8, easAttestedProtocols: 33, rpcObservedProtocols: 20, items: 61 });
+test("catalog invariants: PUBLISHED protocols + briefs, maxLimit = catalog size, checksummed addresses, preflightArgs, scoped evidence basis", () => {
+  assert.deepEqual(LOOKUP_TOTALS, { ...PUBLISHED, items: PUBLISHED.protocols + PUBLISHED.briefs });
+  assert.equal(LOOKUP_LIMITS.maxLimit, LOOKUP_CATALOG.length);
   for (const x of LOOKUP_CATALOG) {
     assert.equal(toChecksumAddress(x.primaryContract), x.primaryContract, x.slug);
     assert.deepEqual(x.preflightArgs, { chain: x.chain, address: x.primaryContract }, x.slug);
@@ -116,7 +120,7 @@ test("catalog parity with docs/api/v1 (index.json, rpc-pinned.json, onboarding.j
     const { x, s } = surf.get(e.id);
     assert.deepEqual([s.classification, s.targetContract, x.baseEasUids.includes(e.base_eas_uid)], [e.classification, e.target_contract, true], e.id);
   }
-  assert.equal(new Set([...surf.values()].map((v) => v.x.slug)).size, 33);
+  assert.equal(new Set([...surf.values()].map((v) => v.x.slug)).size, PUBLISHED.easAttestedProtocols);
   const briefs = LOOKUP_CATALOG.filter((x) => x.kind === "brief").map((x) => x.slug).sort();
   assert.deepEqual(briefs, [...onb.briefs.map((b) => b.slug), ...radar.items.map((i) => i.brief.replace(/\/$/, "").split("/").pop())].sort());
 });

@@ -1001,6 +1001,7 @@
   },
   {
    "baseEasUids": [
+    "0x217d213de3cd9ef094670ff69d258af35adf132406caa547f729f487dc9d7e58",
     "0x754edd7612258b755ff2e56903243d1f8867bad53c29ce3febb5ed9114005e42"
    ],
    "category": "Institutional BTCfi / Liquid Staked Bitcoin",
@@ -1023,7 +1024,8 @@
    "primaryContract": "0x055E84e7FE8955E2781010B866f10Ef6E1E77e59",
    "slug": "lombard-lbtc",
    "sprints": [
-    11
+    11,
+    16
    ],
    "surfaces": [
     {
@@ -1032,6 +1034,13 @@
      "surface": "Sampled Core ProxyAdmin Wiring & 24h TimelockController",
      "targetContract": "0x055E84e7FE8955E2781010B866f10Ef6E1E77e59",
      "targetLabel": "Lombard TimelockController"
+    },
+    {
+     "classification": "aligned_baseline",
+     "id": "lombard-lbtc-gmpbascule-zero-validate-threshold-s16",
+     "surface": "GMPBascule validateThreshold() = 0 — deposit-ID validation on every inbound mint",
+     "targetContract": "0xC3ecFE771564e3f28CFB7a9b203F4d10279338eD",
+     "targetLabel": "Lombard GMPBascule"
     }
    ],
    "targetLabel": "Lombard TimelockController",
@@ -2006,6 +2015,49 @@
   },
   {
    "baseEasUids": [
+    "0x967a4935786194575835d5a46e3e39b1d553225deb6a96c7ff4acf52a34dff22"
+   ],
+   "category": "Decentralized Bitcoin Bridge",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "aligned_baseline",
+   "controllerAddress": "0x92f2d8b72a7F6a551Be60b9aa4194248E9B4913D",
+   "controllerKind": "timelock",
+   "documentationComparison": "compared",
+   "documentedDelaySeconds": null,
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "kind": "protocol",
+   "name": "Threshold Network (tBTC)",
+   "observedDelaySeconds": 86400,
+   "preflightArgs": {
+    "address": "0x92f2d8b72a7F6a551Be60b9aa4194248E9B4913D",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x92f2d8b72a7F6a551Be60b9aa4194248E9B4913D",
+   "slug": "threshold-network-tbtc",
+   "sprints": [
+    15
+   ],
+   "surfaces": [
+    {
+     "classification": "aligned_baseline",
+     "id": "threshold-tbtc-timelock-1d-walletregistry-op-0xb667",
+     "surface": "tBTC TimelockController 1d delay — public WalletRegistry upgradeAndCall schedule",
+     "targetContract": "0x92f2d8b72a7F6a551Be60b9aa4194248E9B4913D",
+     "targetLabel": "Threshold Council TimelockController"
+    }
+   ],
+   "targetLabel": "Threshold Council TimelockController",
+   "tokens": [
+    "tBTC",
+    "T"
+   ],
+   "url": "https://pacta.wtf/protocols/threshold-network-tbtc/"
+  },
+  {
+   "baseEasUids": [
+    "0x217d213de3cd9ef094670ff69d258af35adf132406caa547f729f487dc9d7e58",
     "0x8965ae6e51a78132a77eb14c0ac1c6cd1be357d6f261253efff28869478ae5b8"
    ],
    "category": "Fixed Income / LST",
@@ -2028,7 +2080,8 @@
    "primaryContract": "0x2225DAbFfC7F862c99477381E971E8B1FDaB467e",
    "slug": "treehouse-tree-teth",
    "sprints": [
-    14
+    14,
+    16
    ],
    "surfaces": [
     {
@@ -2037,6 +2090,13 @@
      "surface": "TREE UUPS owner = 5d TimelockController — queued Blacklistable upgrade",
      "targetContract": "0x2225DAbFfC7F862c99477381E971E8B1FDaB467e",
      "targetLabel": "Treehouse TimelockController"
+    },
+    {
+     "classification": "aligned_baseline",
+     "id": "treehouse-teth-owner-5d-timelock-s16",
+     "surface": "tETH owner() = 5d TimelockController",
+     "targetContract": "0xD11c452fc99cF405034ee446803b6F6c1F6d5ED8",
+     "targetLabel": "Treehouse tETH"
     }
    ],
    "targetLabel": "Treehouse TimelockController",
@@ -2425,9 +2485,9 @@
  ],
  "totals": {
   "briefs": 8,
-  "easAttestedProtocols": 33,
-  "items": 61,
-  "protocols": 53,
+  "easAttestedProtocols": 34,
+  "items": 62,
+  "protocols": 54,
   "rpcObservedProtocols": 20
  }
 }

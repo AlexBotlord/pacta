@@ -44,6 +44,17 @@ import xml.etree.ElementTree as ET
 ROOT = os.path.dirname(os.path.abspath(__file__))
 DOCS = os.path.join(ROOT, "docs")
 RESULTS = []
+# ---- EXPECT-BEGIN: the published numbers, in one place (tools/apply_sprint17_attestation.py rewrites this block when it stamps a Sprint)
+EXPECT = {
+    "sprints": 16, "records": 40, "eas_attestations": 16,              # index.json sprints_completed / records_indexed; Base EAS sprint UIDs
+    "protocols": 54, "eas_protocols": 34, "rpc_protocols": 20,          # /protocols/ pages = EAS-attested + RPC-pinned; badges = protocols
+    "briefs": 8, "badge_tiers": {"aligned": 18, "parameter_delta": 16, "rpc_observed": 20},
+    "multi_attest_txs": ["1–12", "13–16"],                              # attestation_coverage.eas_multi_attest_txs keys
+    "summaries": {"15": "61c0cc292cfa1fc3840277cf312383d24a6c81af56afac303afdbd84e7316cf6",   # audits/sprint-<n>/ summary SHA-256 (attested)
+                  "16": "91b8e29301ef0e625c4ddc9eadaf5388115812f5958f90b6e0ed53a4808ba8ae"},
+}
+# ---- EXPECT-END
+X = EXPECT
 
 
 def check(name, ok, detail=""):
@@ -190,6 +201,7 @@ def app_behaviour(appjs, request_html, index_html, row_id, beacon="", protocol_h
                           "timelockBrief": dom_tree(timelock_brief_html) if timelock_brief_html else None,
                           "protocolsIndex": dom_tree(protocols_index_html) if protocols_index_html else None,
                           # every published protocol slug (+ wave-2 shapes) must survive the beacon's client-side path redaction
+                          "expectProtocols": X["protocols"],
                           "protocolSlugs": sorted(d for d in os.listdir(os.path.join(DOCS, "protocols")) if os.path.isdir(os.path.join(DOCS, "protocols", d)))})
     out = subprocess.run([node, os.path.join(ROOT, "tools", "app_harness.js")], input=payload, capture_output=True, text=True, timeout=120)
     try:
@@ -268,7 +280,16 @@ def main():
           sorted(opts) == sorted(js_opts) and len(opts) == 4 and sorted(set_opts) == sorted(js_set) and len(set_opts) == 2
           and all(f'id: {k}' in tmpl for k in ("forum_proposal_url", "payment_tx_hash", "settlement_preference")),
           f"template {opts} {set_opts} app.js {js_opts} {js_set}")
-    check("Sprint 15 summary stays out of audits/ (embargo)", not os.path.exists(os.path.join(ROOT, "audits", "sprint-15")))
+    sums_ = {k: (hashlib.sha256(read(p_, "rb")).hexdigest() if os.path.exists(os.path.join(ROOT, p_)) else None)
+             for k in X["summaries"] for p_ in glob.glob(os.path.join(ROOT, "audits", f"sprint-{k}", "block-*-summary.md"))[:1] or [f"audits/sprint-{k}/missing"]}
+    idx_s = json.loads(read("docs/api/v1/index.json"))
+    check(f"audits/ summaries for Sprints {', '.join(sorted(X['summaries'], key=int))} are byte-identical to the attested files (SHA-256), and every index.json "
+          "summary_sha256 equals the SHA-256 of its summary_doc", sums_ == X["summaries"] and all(
+              e["summary_sha256"] == "0x" + hashlib.sha256(read(e["summary_doc"], "rb")).hexdigest() for e in idx_s["entries"]
+              if int(e["sprint"]) >= 15), str(sums_))
+    check("attested_not_yet_indexed_sprints is empty (every attested Sprint is indexed)",
+          idx_s["onchain_anchoring"]["attestation_coverage"].get("attested_not_yet_indexed_sprints") == []
+          and sorted(map(int, idx_s["onchain_anchoring"]["sprint_eas_attestations"])) == sorted({int(e["sprint"]) for e in idx_s["entries"]}))
     appjs = read("docs/app.js")
     check('radar says "Execution window opens in" (ETA = eligibility)', "Execution window opens in" in appjs and "Executing in" not in appjs)
     check('finality badge says "Scanner-pinned (L1 finalized)"', "Scanner-pinned (L1 finalized)" in appjs and "Scanner-pinned (L1 finalized)" in page)
@@ -277,14 +298,14 @@ def main():
     idx = json.loads(read("docs/api/v1/index.json"))
     m, entries = idx["summary_metrics"], idx["entries"]
     n, sprints = len(entries), max(e["sprint"] for e in entries)
-    check("index.json records_indexed == len(entries) == 37", m["records_indexed"] == n == 37, f"{m['records_indexed']} / {n}")
-    check("index.json sprints_completed == max(sprint) == 14", m["sprints_completed"] == sprints == 14, f"{m['sprints_completed']} / {sprints}")
+    check(f"index.json records_indexed == len(entries) == {X['records']}", m["records_indexed"] == n == X["records"], f"{m['records_indexed']} / {n}")
+    check(f"index.json sprints_completed == max(sprint) == {X['sprints']}", m["sprints_completed"] == sprints == X["sprints"], f"{m['sprints_completed']} / {sprints}")
     check("classification counts sum to records", m["parameter_deltas"] + m["protective_deltas"] + m["aligned_baselines"] == n
           and all(sum(1 for e in entries if e["classification"] == k) == m[v] for k, v in
                   (("parameter_delta", "parameter_deltas"), ("protective_delta", "protective_deltas"), ("aligned_baseline", "aligned_baselines"))))
     # Batch D3 (receipt/1818): the coverage line names protocols, EAS-attested Sprint records (and their Sprints) and RPC-observed records
     n_pin = len(json.load(open(os.path.join(DOCS, "api", "v1", "rpc-pinned.json")))["entries"])
-    line = f"53 Protocols ({n} Base EAS-Attested Records across {sprints} Sprints + {n_pin} RPC-Observed Records)"
+    line = f"{X['protocols']} Protocols ({n} Base EAS-Attested Records across {sprints} Sprints + {n_pin} RPC-Observed Records)"
     for f in ("docs/index.html", "docs/llms.txt", "README.md"):
         t = read(f)
         nums_s = set(re.findall(r"\b(\d+) Sprints\b", t))
@@ -293,20 +314,29 @@ def main():
               f"sprints {sorted(nums_s)} records {sorted(nums_r)}")
     rows = len(re.findall(r'<tr data-class="', page))
     check("homepage matrix renders every record", rows == n, f"{rows} rows")
+    cat_ = f"{X['protocols']} protocols + {X['briefs']} briefs"
+    stale_ = {f: sorted(set(re.findall(r"\b(\d+) protocols \+ (\d+) briefs\b", read(f))) - {(str(X["protocols"]), str(X["briefs"]))})
+              for f in ("docs/SKILL.md", "docs/llms.txt", "docs/llms-full.txt", "packages/mcp-server/SKILL.md")}
+    check(f"agent docs carry the published catalog size ('{cat_}', '{X['eas_protocols']} EAS-attested / {X['rpc_protocols']} RPC-observed'); no stale count",
+          all(cat_ in read(f) for f in stale_) and not any(stale_.values())
+          and f"({X['eas_protocols']} EAS-attested / {X['rpc_protocols']} RPC-observed)" in read("docs/llms-full.txt"), str(stale_))
     anc = idx["onchain_anchoring"]
     eas = anc["sprint_eas_attestations"]
     uid_ok = all(re.fullmatch(r"0x[0-9a-f]{64}", u) for u in eas.values()) and len(set(eas.values())) == len(eas)
-    check("16 Base EAS sprint attestations (Sprints 1-16); every record carries its sprint's UID", len(eas) == 16 and sorted(map(int, eas)) == list(range(1, 17))
-          and uid_ok and all(e["base_eas_uid"] == eas[str(e["sprint"])] for e in entries) and "16 Base EAS sprint attestations" in page
-          and re.search(r"<b>16</b><span>Base EAS attestations</span>", page) is not None)
+    ne = X["eas_attestations"]
+    check(f"{ne} Base EAS sprint attestations (Sprints 1-{ne}); every record carries its sprint's UID", len(eas) == ne and sorted(map(int, eas)) == list(range(1, ne + 1))
+          and uid_ok and all(e["base_eas_uid"] == eas[str(e["sprint"])] for e in entries) and f"{ne} Base EAS sprint attestations" in page
+          and re.search(rf"<b>{ne}</b><span>Base EAS attestations</span>", page) is not None)
     # Sprints 13-16 batch, read back from Base on 2026-11-13 (tx status 1, Attested logs from the attester, schema 0x7ff4..df83,
     # not revoked; Sprint 13/14 block, block hash, record count and summary SHA-256 match this index)
     pinned = {"13": "0x6afd266541ea1643b680ce6ec15d218874356598820987c6b3eaf16342cd075c", "14": "0x8965ae6e51a78132a77eb14c0ac1c6cd1be357d6f261253efff28869478ae5b8",
               "15": "0x967a4935786194575835d5a46e3e39b1d553225deb6a96c7ff4acf52a34dff22", "16": "0x217d213de3cd9ef094670ff69d258af35adf132406caa547f729f487dc9d7e58"}
     check("Sprint 13-16 UIDs + batch tx equal the values verified on Base", all(eas.get(k) == v for k, v in pinned.items())
           and anc.get("eas_multi_attest_sprints_13_16_tx") == "0x11546aac53e3fe57fa6ac9f7e4397f06c58b6803252e099eb9349eca00f2edbf")
-    check("multi-attest txs recorded (Sprints 1-12 and 13-16)", re.fullmatch(r"0x[0-9a-f]{64}", anc.get("eas_multi_attest_sprints_13_16_tx", "")) is not None
-          and anc["attestation_coverage"]["eas_multi_attest_txs"] == {"1–12": anc["eas_multi_attest_tx"], "13–16": anc["eas_multi_attest_sprints_13_16_tx"]})
+    mtx = anc["attestation_coverage"]["eas_multi_attest_txs"]
+    check(f"multi-attest txs recorded (Sprints {', '.join(X['multi_attest_txs'])})", re.fullmatch(r"0x[0-9a-f]{64}", anc.get("eas_multi_attest_sprints_13_16_tx", "")) is not None
+          and list(mtx) == X["multi_attest_txs"] and mtx["1–12"] == anc["eas_multi_attest_tx"] and mtx["13–16"] == anc["eas_multi_attest_sprints_13_16_tx"]
+          and all(re.fullmatch(r"0x[0-9a-f]{64}", t_) for t_ in mtx.values()) and len(set(mtx.values())) == len(mtx), str(mtx))
 
     # data integrity
     bad_sha = [e["id"] for e in entries if "0x" + hashlib.sha256(read(e["summary_doc"], "rb")).hexdigest() != e["summary_sha256"]]
@@ -716,9 +746,9 @@ def main():
             proto_bad.append(v["slug"])
     every_delta = all(not ({e["classification"] for e in v["entries"]} & {"parameter_delta", "rpc_observed"})
                       or 'id="issuer-clearance"' in pages.get(os.path.join("protocols", v["slug"], "index.html"), "") for v in sp_.values())
-    check("53 protocol pages: every parameter_delta / rpc_observed page carries the 24h clearance callout (RPC-pinned pages pass their governance URL as &forum=); "
+    check(f"{X['protocols']} protocol pages: every parameter_delta / rpc_observed page carries the 24h clearance callout (RPC-pinned pages pass their governance URL as &forum=); "
           "only all-aligned_baseline EAS-attested pages get the quiet $1,500/mo Continuous Aligned Maintenance callout and never a delta-remediation pitch",
-          len(sp_) == 53 and not proto_bad and every_delta and n_al + n_cl == 53 and n_al == 17, f"aligned {n_al}, clearance {n_cl}; bad {proto_bad[:5]}")
+          len(sp_) == X["protocols"] and not proto_bad and every_delta and n_al + n_cl == X["protocols"] and n_al == X["badge_tiers"]["aligned"], f"aligned {n_al}, clearance {n_cl}; bad {proto_bad[:5]}")
 
     # ---- #req-pay: Option A (invoice) first and default, Option B direct USDC to the treasury EOA, never called a Safe
     pay_ok = {}
@@ -803,7 +833,7 @@ def main():
         and all(f'href="{v["slug"]}/"' in pidx for v in site_.values()) and '"@type": "ItemList"' in pidx.replace('"@type":"ItemList"', '"@type": "ItemList"')
     on_disk = sorted(d for d in os.listdir(os.path.join(DOCS, "protocols")) if os.path.isdir(os.path.join(DOCS, "protocols", d)))
     check(f"/protocols/<slug>/ SEO pages: one per published protocol ({len(site_)} = {len(groups)} index.json + {len(site_) - len(groups)} RPC-pinned), deterministic, Dataset + BreadcrumbList JSON-LD, pinned block + hash, cast repro, preflight quickstart, in the sitemap; /protocols/ index (ItemList); no stray protocol directories",
-          not prot_bad and pidx_ok and len(groups) == len({e["protocol"] for e in idx_["entries"]}) and len(site_) == 53
+          not prot_bad and pidx_ok and len(groups) == len({e["protocol"] for e in idx_["entries"]}) == X["eas_protocols"] and len(site_) == X["protocols"]
           and on_disk == sorted(v["slug"] for v in site_.values()), f"bad {prot_bad[:4]}; index {pidx_ok}; dirs {len(on_disk)}")
 
     # RPC-pinned records: a separate, explicitly NOT EAS-attested dataset; never merged into index.json or its EAS counts
@@ -827,10 +857,10 @@ def main():
         if ("not EAS-attested" not in pt or "/api/v1/rpc-pinned.json" not in pt or "· sprint" in pt or "easscan" in pt
                 or ld0["distribution"][0]["contentUrl"] != f"{BS.BASE_URL}/api/v1/rpc-pinned.json" or f'--rpc-url &quot;{e["rpc_env_var"]}&quot;' not in pt):
             pin_bad.append(f'{e["id"]}: page provenance')
-    check("rpc-pinned.json (pacta.rpc_pinned_records.v1): 20 records (12 Ethereum + 8 Base), NOT EAS-attested (attestation.eas_attested false, base_eas_uid null, no sprint / summary fields), every block = the chain's pinned head (number + hash), EIP-55 addresses, selector = keccak(signature), slugs disjoint from index.json; each page says not EAS-attested, links rpc-pinned.json (Dataset distribution too), uses the chain's RPC variable; index.json untouched (37 records)",
+    check(f"rpc-pinned.json (pacta.rpc_pinned_records.v1): 20 records (12 Ethereum + 8 Base), NOT EAS-attested (attestation.eas_attested false, base_eas_uid null, no sprint / summary fields), every block = the chain's pinned head (number + hash), EIP-55 addresses, selector = keccak(signature), slugs disjoint from index.json; each page says not EAS-attested, links rpc-pinned.json (Dataset distribution too), uses the chain's RPC variable; index.json untouched ({X['records']} records)",
           pinned_.get("schema") == "pacta.rpc_pinned_records.v1" and pinned_.get("attestation", {}).get("eas_attested") is False
           and pinned_.get("summary") == {"protocols": 20, "records": 20, "ethereum": 12, "base": 8} and len(pinned_.get("entries", [])) == 20
-          and not pin_bad and len(idx_["entries"]) == 37, f"bad {pin_bad[:4]}")
+          and not pin_bad and len(idx_["entries"]) == X["records"], f"bad {pin_bad[:4]}")
 
     pv_ = json.loads(read("docs/api/v1/rpc-pinned.json"))
     w2_pages = {e["slug"]: read(f'docs/protocols/{e["slug"]}/index.html') for e in pv_["entries"]}
@@ -962,11 +992,12 @@ def main():
     by_lk = {x["slug"]: x for x in items_lk}
     surf_lk = {su["id"]: (x, su) for x in items_lk if x.get("easAttested") for su in x["surfaces"]}
     lk_ok = {
-        "schema + totals 53/8/33/20": lk_doc.get("schema") == "pacta.protocol_lookup_catalog.v1"
-            and lk_doc.get("totals") == {"protocols": 53, "briefs": 8, "easAttestedProtocols": 33, "rpcObservedProtocols": 20, "items": 61},
+        "schema + totals (EXPECT)": lk_doc.get("schema") == "pacta.protocol_lookup_catalog.v1"
+            and lk_doc.get("totals") == {"protocols": X["protocols"], "briefs": X["briefs"], "easAttestedProtocols": X["eas_protocols"],
+                                         "rpcObservedProtocols": X["rpc_protocols"], "items": X["protocols"] + X["briefs"]},
         "lookup.json == src/lookup.mjs (node import)": bool(lk) and lk.get("catalog") == items_lk and lk.get("totals") == lk_doc.get("totals"),
         "regenerates byte-identically": BL.catalog_json(BL.build_items(sp_lk, onb_lk, rad_lk, BS.BRIEF_PROTOCOL)) == read("docs/api/v1/lookup.json"),
-        "53 protocol slugs == /protocols/ pages": sorted(x["slug"] for x in items_lk if x["kind"] == "protocol") == sorted(v["slug"] for v in sp_lk.values()),
+        "protocol slugs == /protocols/ pages": sorted(x["slug"] for x in items_lk if x["kind"] == "protocol") == sorted(v["slug"] for v in sp_lk.values()),
         "every index.json record -> its EAS protocol (uid, classification, target)": len(surf_lk) == len(idx_lk["entries"]) and all(
             e["id"] in surf_lk and surf_lk[e["id"]][1]["classification"] == e["classification"] and surf_lk[e["id"]][1]["targetContract"] == e["target_contract"]
             and e["base_eas_uid"] in surf_lk[e["id"]][0]["baseEasUids"] for e in idx_lk["entries"]),
@@ -986,7 +1017,7 @@ def main():
                                               "moonwell": [["moonwell-lending-base", "prefix"]], "kusd": [["kerne-kusd-base", "exact"]],
                                               "uniswap": [["uniswap-governance-timelock", "prefix"]],
                                               "ether.fi": [["ether-fi-core-eeth-weeth", "prefix"], ["ether-fi-liquid-veda-boringvault", "prefix"]]}
-                          and (lk.get("empty") or {}).get("count") == 20 and (lk.get("empty") or {}).get("totalMatches") == 61
+                          and (lk.get("empty") or {}).get("count") == 20 and (lk.get("empty") or {}).get("totalMatches") == X["protocols"] + X["briefs"]
                           and set(lk.get("base") or ["x"]) == {"base"} and (lk.get("over") or {}).get("error") == "invalid_input",
         "documented on every agent surface": all("pacta_lookup_protocol" in primary[f] and "/v1/protocols/lookup" in primary[f]
                                                  for f in ("docs/SKILL.md", "docs/llms.txt", "docs/llms-full.txt"))
@@ -997,7 +1028,7 @@ def main():
                                                man_.get("packageVersion")} == {"0.1.4"}
             and 'version: "0.1.4"' in read("docs/SKILL.md") and 'version: "0.1.4"' in read("packages/mcp-server/src/server.mjs"),
     }
-    check("protocol / token lookup: docs/api/v1/lookup.json (53 protocols + 8 briefs; 33 EAS-attested, 20 rpc_observed / not_assessed) regenerates byte-identically, "
+    check(f"protocol / token lookup: docs/api/v1/lookup.json ({X['protocols']} protocols + {X['briefs']} briefs; {X['eas_protocols']} EAS-attested, {X['rpc_protocols']} rpc_observed / not_assessed) regenerates byte-identically, "
           "equals packages/mcp-server/src/lookup.mjs, matches index.json / rpc-pinned.json / onboarding.json / radar.json record by record; search probes "
           "(ethena, usde, aave, moonwell, kusd, uniswap, listing, chain=base, overlong); documented on SKILL.md / llms / agent.json / mcp.json / sitemap; @pacta/mcp-server 0.1.4",
           all(lk_ok.values()), str([k for k, v in lk_ok.items() if not v]))
@@ -1272,15 +1303,15 @@ def main():
     for t in tier_of.values():
         counts_[t] = counts_.get(t, 0) + 1
     c3 = {
-        "53 static badges": svg_files == sorted(f"{s_}.svg" for s_ in tier_of),
-        "== worker badgeSvg (node)": len(js_badges) == 53 and all(js_badges[s_] == read(f"docs/badges/{s_}.svg") for s_ in tier_of),
-        "tiers 17 / 16 / 20": counts_ == {"aligned": 17, "parameter_delta": 16, "rpc_observed": 20}
+        "static badges (one per protocol)": svg_files == sorted(f"{s_}.svg" for s_ in tier_of),
+        "== worker badgeSvg (node)": len(js_badges) == X["protocols"] == len(svg_files) and all(js_badges[s_] == read(f"docs/badges/{s_}.svg") for s_ in tier_of),
+        "badge tiers (EXPECT)": counts_ == X["badge_tiers"]
             and all(("Aligned · Base EAS" if t == "aligned" else "Parameter Delta" if t == "parameter_delta" else "RPC-Observed") in read(f"docs/badges/{s_}.svg")
                     for s_, t in tier_of.items()),
         "RPC-observed never implies EAS": not any("EAS" in read(f"docs/badges/{s_}.svg") for s_, t in tier_of.items() if t == "rpc_observed"),
         "cards": not card_bad,
     }
-    check("C3: 53 deterministic /badges/<slug>.svg byte-identical to the worker's /v1/badges/<slug>.svg (badgeSvg); 17 emerald Aligned · Base EAS, 16 amber Parameter Delta (protocol-level: 12 parameter + 2 protective + 2 mixed), 20 slate RPC-Observed (no EAS claim); embed card on aligned pages, clearance-to-green explainer on delta pages",
+    check(f"C3: {X['protocols']} deterministic /badges/<slug>.svg byte-identical to the worker's /v1/badges/<slug>.svg (badgeSvg); {X['badge_tiers']['aligned']} emerald Aligned · Base EAS, {X['badge_tiers']['parameter_delta']} amber Parameter Delta (protocol-level: any parameter / protective delta), {X['badge_tiers']['rpc_observed']} slate RPC-Observed (no EAS claim); embed card on aligned pages, clearance-to-green explainer on delta pages",
           all(c3.values()), f"{[k for k, v in c3.items() if not v]} cards {card_bad[:4]} tiers {counts_}")
 
     # C5: protocols.json, vault-factories page, sentinel-guard package, feeds + sitemap links, robots untouched
@@ -1288,8 +1319,8 @@ def main():
     vf = pages.get(os.path.join("integrations", "vault-factories", "index.html"), "")
     sg = read("packages/sentinel-guard/contracts/PactaSentinelGuard.sol") if os.path.exists(os.path.join(ROOT, "packages", "sentinel-guard", "contracts", "PactaSentinelGuard.sol")) else ""
     c5 = {
-        "protocols.json": pj.get("schema") == "pacta.protocols.v1" and pj["totals"]["protocols"] == 53 and pj["totals"]["easAttested"] == 33
-            and pj["totals"]["rpcObserved"] == 20 and pj["totals"]["badgeTiers"] == counts_
+        "protocols.json": pj.get("schema") == "pacta.protocols.v1" and pj["totals"]["protocols"] == X["protocols"] and pj["totals"]["easAttested"] == X["eas_protocols"]
+            and pj["totals"]["rpcObserved"] == X["rpc_protocols"] and pj["totals"]["badgeTiers"] == counts_
             and BLC.protocols_json(sp_lk, BLC.build_items(sp_lk, onb_lk, rad_lk, BS.BRIEF_PROTOCOL)) == read("docs/api/v1/protocols.json")
             and all((p_["evidenceBasis"] == "rpc_observed") == (not p_["easAttested"]) and (p_["easAttested"] or (p_["documentationComparison"] == "not_assessed"
                      and p_["baseEasUids"] == [] and p_["classification"] == "rpc_observed")) for p_ in pj["protocols"]),
@@ -1303,7 +1334,7 @@ def main():
                                                            for f in ("docs/llms.txt", "docs/llms-full.txt", "docs/llms/index.html", "docs/sitemap.xml")),
         "robots.txt exact": read("docs/robots.txt") == "User-agent: *\nAllow: /\n\nSitemap: https://pacta.wtf/sitemap.xml\n" and len(read("docs/robots.txt").encode()) == 63,
     }
-    check("C5: api/v1/protocols.json (53: 33 eas_attested / 20 rpc_observed not_assessed, badge tiers, Sprint ids + EAS UIDs, pinned surfaces) regenerates byte-identically; /integrations/vault-factories/; packages/sentinel-guard (never blocks a decrease); linked in llms.txt, llms-full.txt, /llms/, sitemap; robots.txt 63 B",
+    check(f"C5: api/v1/protocols.json ({X['protocols']}: {X['eas_protocols']} eas_attested / {X['rpc_protocols']} rpc_observed not_assessed, badge tiers, Sprint ids + EAS UIDs, pinned surfaces) regenerates byte-identically; /integrations/vault-factories/; packages/sentinel-guard (never blocks a decrease); linked in llms.txt, llms-full.txt, /llms/, sitemap; robots.txt 63 B",
           all(c5.values()), str([k for k, v in c5.items() if not v]))
 
     # ================= Batch D3 + E1 (task-66ff0d53564a) =================
@@ -1321,7 +1352,7 @@ def main():
                                                                               for f in ("docs/llms.txt", "docs/llms-full.txt", "docs/llms/index.html", "README.md", "docs/SKILL.md")),
         "Organization JSON-LD disambiguatingDescription (home + /llms/)": bool(org) and all(o["disambiguatingDescription"] == B2AV.DISAMBIGUATION for o in org)
             and '"disambiguatingDescription"' in read("docs/index.html") and '"disambiguatingDescription"' in read("docs/llms/index.html"),
-        "coverage line from the data": cov == "53 Protocols (37 Base EAS-Attested Records across 14 Sprints + 20 RPC-Observed Records)"
+        "coverage line from the data": cov == f"{X['protocols']} Protocols ({X['records']} Base EAS-Attested Records across {X['sprints']} Sprints + {X['rpc_protocols']} RPC-Observed Records)"
             and cov in read("README.md") and all(cov in t for r, t in pages.items() if 'class="ftr"' in t) and f"{cov}." in read("docs/llms.txt"),
         "0 stale 'Indexed Records' lines": not [r for r, t in pages.items() if "Indexed Records" in t] and "Indexed Records" not in read("README.md")
             and "Indexed Records" not in read("docs/llms.txt"),
@@ -1337,8 +1368,8 @@ def main():
         "MCP recipes (Claude Code / OpenAI Agents SDK / LangChain, <= 10 lines) in README + SKILL.md": all(code in read("README.md") and code in read("docs/SKILL.md")
                                                                                                          and len(code.splitlines()) <= 10 for _, _, code in B2AV.MCP_RECIPES)
             and [t for t, _, _ in B2AV.MCP_RECIPES] == ["Claude Code", "OpenAI Agents SDK (Python)", "LangChain (langchain-mcp-adapters)"],
-        "/protocols/ filter: input + 6 pills, data attrs on 53 rows": all(f'data-pfilter="{k}"' in hub_ for k in ("all", "aligned", "parameter_delta", "rpc_observed", "ethereum", "base"))
-            and 'id="proto-q"' in hub_ and len(re.findall(r'<tr data-ptier="(?:aligned|parameter_delta|rpc_observed)" data-pchains="[a-z ]+" data-psearch="[^"]*">', hub_)) == 53,
+        "/protocols/ filter: input + 6 pills, data attrs on every protocol row": all(f'data-pfilter="{k}"' in hub_ for k in ("all", "aligned", "parameter_delta", "rpc_observed", "ethereum", "base"))
+            and 'id="proto-q"' in hub_ and len(re.findall(r'<tr data-ptier="(?:aligned|parameter_delta|rpc_observed)" data-pchains="[a-z ]+" data-psearch="[^"]*">', hub_)) == X["protocols"],
         "/protocols/ filter: textContent / hidden only": (lambda m: bool(m) and not re.search(r"innerHTML|outerHTML|insertAdjacentHTML|document\.write|fetch\(", m.group(0)))(
             re.search(r"function initProtocolFilter\(\) \{.*?\n  \}\n", appjs, re.S)),
         "/protocols/ filter behaviour (harness)": all(res.get(k) is True for k in ("pfilter_initial_all", "pfilter_pills_exact", "pfilter_text_search",

@@ -3,9 +3,9 @@
 
     python3 tools/apply_sprint17_attestation.py --uid 0x<32-byte UID> --tx 0x<32-byte tx hash> [--core ../pacta-core] [--skip-tests]
 
-Input: tools/staged/sprint-17-records.json (7 records, audits/sprint-17/block-26418060-summary.md, Ethereum pin #26418060 plus
-the Base pin #57635450 of the two Steakhouse USDC records). The UID must be the attestation of that summary under schema
-0x7ff4..df83 (chainId 1, block 26418060, verifiedCount 6, driftCount 1, summarySha256 = the staged SHA-256); this script does
+Input: tools/staged/sprint-17-records.json (6 records, audits/sprint-17/block-26418060-summary.md, Ethereum pin #26418060 plus
+the Base pin #57635450 of the Steakhouse USDC record). The UID must be the attestation of that summary under schema
+0x7ff4..df83 (chainId 1, block 26418060, verifiedCount 6, driftCount 0, summarySha256 = the staged SHA-256); this script does
 not read the chain, so check the UID on base.easscan.org first.
 
 It then, in one pass:
@@ -37,8 +37,8 @@ STAGED = os.path.join(HERE, "staged", f"sprint-{SPRINT}-records.json")
 INDEX = os.path.join(ROOT, "docs", "api", "v1", "index.json")
 HEX32 = re.compile(r"0x[0-9a-f]{64}")
 # The published numbers after the stamp (Gemini's Sprint 17 spec: 58 protocol pages = 38 EAS + 20 RPC, 58 badges).
-TARGET = {"sprints": 17, "records": 47, "eas_attestations": 17, "protocols": 58, "eas_protocols": 38, "rpc_protocols": 20, "briefs": 8,
-          "badge_tiers": {"aligned": 20, "parameter_delta": 18, "rpc_observed": 20}, "base_records": 2}
+TARGET = {"sprints": 17, "records": 46, "eas_attestations": 17, "protocols": 58, "eas_protocols": 38, "rpc_protocols": 20, "briefs": 8,
+          "badge_tiers": {"aligned": 21, "parameter_delta": 17, "rpc_observed": 20}, "base_records": 1}
 NEW_TOKENS = {"falcon-finance-usdf-susdf": ["USDf", "sUSDf"], "m0-protocol-m": ["M", "M0", "MToken"],
               "solv-protocol-solvbtc": ["SolvBTC", "SOLV"], "steakhouse-usdc-metamorpho-base": ["steakUSDC", "Steakhouse", "MetaMorpho"]}
 RPC_BY_CHAIN = {"ethereum": ["https://gateway.tenderly.co/public/mainnet", "https://rpc.mevblocker.io"],

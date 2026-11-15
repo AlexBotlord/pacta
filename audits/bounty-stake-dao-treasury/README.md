@@ -21,7 +21,7 @@ cast call 0xF930EBBd05eF8b25B1797b9b2109DDC9B0d43063 'getThreshold()(uint256)' -
 cast call 0xF930EBBd05eF8b25B1797b9b2109DDC9B0d43063 'getOwners()(address[])' --block 26417900 --rpc-url "$RPC"
 ```
 
-Both RPCs returned `3` and the same five owner addresses; raw ABI outputs are in `fixture.json`. Verify finality independently. `python3 verify_fixture.py` checks the saved values offline; it does not prove live chain state or source authenticity.
+Both RPCs returned `3` and the same five owner addresses; raw ABI outputs are in `fixture.json`. Verify finality independently. `python3 verify_fixture.py` checks the saved values offline; it does not prove live chain state or source authenticity. Run `python3 -m unittest discover -s audits/bounty-stake-dao-treasury -p "test_*.py" -v` from the repository root to exercise the valid fixture and five tampering regressions.
 
 ## Contribution grant
 

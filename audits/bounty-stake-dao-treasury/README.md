@@ -11,17 +11,19 @@ Candidate for [bounty #21](https://github.com/Fractal-Neurons/pacta/issues/21); 
 
 ## Reproduce
 
-With Foundry `cast` 1.7.1, execute each command against both `https://ethereum-rpc.publicnode.com` and `https://eth.drpc.org`, e.g. set `RPC` to each in turn:
+With Foundry `cast` 1.7.1, execute each command against both `https://ethereum.public.blockpi.network/v1/rpc/public` and `https://eth.drpc.org`, e.g. set `RPC` to each in turn:
 
 ```sh
-RPC=https://ethereum-rpc.publicnode.com # repeat with https://eth.drpc.org
+RPC=https://ethereum.public.blockpi.network/v1/rpc/public # repeat with https://eth.drpc.org
 cast chain-id --rpc-url "$RPC"
 cast block 26417900 --field hash --rpc-url "$RPC"
 cast call 0xF930EBBd05eF8b25B1797b9b2109DDC9B0d43063 'getThreshold()(uint256)' --block 26417900 --rpc-url "$RPC"
 cast call 0xF930EBBd05eF8b25B1797b9b2109DDC9B0d43063 'getOwners()(address[])' --block 26417900 --rpc-url "$RPC"
 ```
 
-Both RPCs returned `3` and the same five owner addresses; raw ABI outputs are in `fixture.json`. Verify finality independently. `python3 verify_fixture.py` checks the saved values offline; it does not prove live chain state or source authenticity. Run `python3 -m unittest discover -s audits/bounty-stake-dao-treasury -p "test_*.py" -v` from the repository root to exercise the valid fixture and five tampering regressions.
+Both RPCs returned `3` and the same five owner addresses; raw ABI outputs are in `fixture.json`. Verify finality independently. `python3 verify_fixture.py` checks the saved values offline; it does not prove live chain state or source authenticity. Run `python3 -m unittest discover -s audits/bounty-stake-dao-treasury -p "test_*.py" -v` from the repository root to exercise the valid fixture and tampering regressions.
+
+The original PublicNode replay worked initially but later returned an archive-access 403. BlockPI and dRPC were rechecked at the pinned block and their raw outputs replaced the original saved RPC records; availability can change.
 
 ## Contribution grant
 

@@ -13,7 +13,7 @@ CHECKER = (DIR / "verify_fixture.py").read_text()
 
 
 class FixtureValidationTests(unittest.TestCase):
-    def check_fixture(self, mutation=None):
+    def check_fixture(self, mutation=None, optimized=False):
         payload = copy.deepcopy(FIXTURE)
         if mutation:
             mutation(payload)
@@ -22,7 +22,7 @@ class FixtureValidationTests(unittest.TestCase):
             (path / "fixture.json").write_text(json.dumps(payload))
             (path / "verify_fixture.py").write_text(CHECKER)
             return subprocess.run(
-                [sys.executable, str(path / "verify_fixture.py")],
+                [sys.executable] + (["-O"] if optimized else []) + [str(path / "verify_fixture.py")],
                 capture_output=True,
                 text=True,
                 check=False,
@@ -52,6 +52,34 @@ class FixtureValidationTests(unittest.TestCase):
     def test_inconsistent_mcp(self):
         def mutate(f):
             f["mcp"]["pacta_scan_control_plane"]["safe"]["ownerCount"] = 7
+        self.assertNotEqual(self.check_fixture(mutate).returncode, 0)
+
+
+    def test_optimized_mode_enforces_checks(self):
+        result = self.check_fixture(lambda f: f.update(chainId=8453), optimized=True)
+        self.assertNotEqual(result.returncode, 0)
+
+    def test_mcp_owner_changed(self):
+        def mutate(f):
+            f["mcp"]["pacta_scan_control_plane"]["safe"]["owners"][0] = "0x" + "11" * 20
+        self.assertNotEqual(self.check_fixture(mutate).returncode, 0)
+
+    def test_mcp_identity_changed(self):
+        def mutate(f):
+            f["mcp"]["pacta_scan_control_plane"]["address"] = "0x" + "11" * 20
+            f["mcp"]["pacta_check_preflight"]["address"] = "0x" + "11" * 20
+        self.assertNotEqual(self.check_fixture(mutate).returncode, 0)
+
+    def test_coordinated_rpc_owner_changes(self):
+        def mutate(f):
+            for evidence in f["rpc"].values():
+                raw = evidence["owners_raw"]
+                evidence["owners_raw"] = raw[:-40] + "11" * 20
+        self.assertNotEqual(self.check_fixture(mutate).returncode, 0)
+
+    def test_lookup_chain_changed(self):
+        def mutate(f):
+            f["mcp"]["pacta_lookup_protocol"]["filters"]["chain"] = "base"
         self.assertNotEqual(self.check_fixture(mutate).returncode, 0)
 
 

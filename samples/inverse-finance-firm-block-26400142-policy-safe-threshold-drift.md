@@ -37,9 +37,9 @@ The live on-chain control plane has therefore drifted to a **`3-of-6` Gnosis Saf
 
 ## 3. Official Documentation Citation (HTTP 200)
 
-- **Documentation URL**: `https://docs.inverse.finance/inverse-finance/governance/working-groups`
+- **Documentation URL**: `https://docs.inverse.finance/inverse-finance/inverse-finance/governance/governance-overview.md`
 - **Verbatim Quote**:
-  > "Policy Committee: Operates as a 5 of 9 multisig. Acts as the Governance Guardian role for the DAO (with the ability to cancel proposals). Manages reward rate policies. Operates as the BondsManager."
+  > "| **Policy Committee**   | 5 of 9 | Governance guardian role (can cancel proposals), manages reward rate policies, operates as BondsManager |"
 
 ---
 

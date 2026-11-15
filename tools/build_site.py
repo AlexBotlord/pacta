@@ -255,6 +255,7 @@ def load():
     n = len(idx["entries"])
     assert m["records_indexed"] == n == m["parameter_deltas"] + m["protective_deltas"] + m["aligned_baselines"]
     assert m["sprints_completed"] == max(e["sprint"] for e in idx["entries"])
+    check_index_chains(idx)
     return idx, radar
 
 
@@ -264,6 +265,31 @@ def load():
 PINNED_SRC = os.path.join(DOCS, "api", "v1", "rpc-pinned.json")
 PINNED_SCHEMA = "pacta.rpc_pinned_records.v1"
 CHAINS = {"ethereum": ("Ethereum", "Ethereum Mainnet (chain id 1)", "$ETH_RPC_URL"), "base": ("Base", "Base Mainnet (chain id 8453)", "$BASE_RPC_URL")}
+CHAIN_IDS = {"ethereum": 1, "base": 8453}
+EXPLORERS = {"ethereum": ("Etherscan", "https://etherscan.io"), "base": ("Basescan", "https://basescan.org")}
+
+
+def chain_of(e):
+    """A record's chain: index.json records without a chain field are Ethereum Mainnet (Sprints 1-16)."""
+    return e.get("chain", "ethereum")
+
+
+def check_index_chains(idx):
+    """index.json records may carry chain + rpc_env_var (both or neither); the pair must be one of CHAINS."""
+    for e in idx["entries"]:
+        assert ("chain" in e) == ("rpc_env_var" in e), e["id"]
+        assert chain_of(e) in CHAINS and e.get("rpc_env_var", "$ETH_RPC_URL") == CHAINS[chain_of(e)][2], e["id"]
+
+
+def record_chains(idx):
+    return sorted({chain_of(e) for e in idx["entries"]}, key=list(CHAINS).index)
+
+
+def explorer_link(e, kind="block"):
+    """Block (or target address) on the record's own chain explorer."""
+    name, url = EXPLORERS[chain_of(e)]
+    ref = e["block_number"] if kind == "block" else e["target_contract"]
+    return f'<a href="{url}/{"block" if kind == "block" else "address"}/{E(str(ref))}" target="_blank" rel="noopener">{name} ↗</a>'
 
 
 def load_pinned(path=None):
@@ -303,7 +329,8 @@ def counts(idx):
     rng = lambda xs: "" if not xs else (str(xs[0]) if len(xs) == 1 else f"{xs[0]}–{xs[-1]}")
     return {"sprints": s, "records": m["records_indexed"], "eas_n": len(eas), "eas_from": eas[0], "eas_to": eas[-1],
             "pending": rng(pend), "later": rng(later), "multi_txs": a["attestation_coverage"]["eas_multi_attest_txs"],
-            "delta": m["parameter_deltas"], "protect": m["protective_deltas"], "aligned": m["aligned_baselines"]}
+            "delta": m["parameter_deltas"], "protect": m["protective_deltas"], "aligned": m["aligned_baselines"],
+            "chains": " + ".join(CHAINS[ch][1].split(" (")[0] for ch in record_chains(idx))}
 
 
 def coverage_line(idx, pinned=None):
@@ -408,7 +435,7 @@ def sheet(e):
         rows.append(("Safe quorum", f'<span class="mono">{E(ms)}</span>'))
     if pa:
         rows.append(("EIP-1967 ProxyAdmin", hexref(pa)))
-    rows += [("Pinned block", f'<span class="num">#{e["block_number"]:,}</span> · Sprint {e["sprint"]} '
+    rows += [("Pinned block", f'{"" if chain_of(e) == "ethereum" else E(CHAINS[chain_of(e)][0]) + " "}<span class="num">#{e["block_number"]:,}</span> · Sprint {e["sprint"]} '
                               f'<span class="badge final">Scanner-pinned (L1 finalized)</span>'),
              ("Canonical block hash", hexref(e["block_hash"], 8, 6)),
              ("Proof", proof_html(e)),
@@ -620,7 +647,7 @@ def index_rows(idx):
             f'<td class="hide-m num nowrap">{secs(e["observed_delay_seconds"])} <span class="muted">/ {secs(e["documented_delay_seconds"])}</span></td>'
             f'<td class="hide-m nowrap"><span class="num">S{e["sprint"]} · #{e["block_number"]:,}</span><span class="sub">{proof}</span></td>'
             f'<td class="x"><a class="inspect-btn" href="#r-{rid}" aria-expanded="false" aria-controls="r-{rid}">Details</a></td></tr>')
-        kv = (f'<dt>Pinned block</dt><dd><span class="num">#{e["block_number"]:,}</span> · {hexref(e["block_hash"], 8, 6)}</dd>'
+        kv = (f'<dt>Pinned block</dt><dd>{E(CHAINS[chain_of(e)][1])} <span class="num">#{e["block_number"]:,}</span> · {explorer_link(e)} · {hexref(e["block_hash"], 8, 6)}</dd>'
               f'<dt>Delay</dt><dd>{delay_cmp(e)}</dd>'
               f'<dt>Summary</dt><dd><a href="{REPO}/blob/main/{E(e["summary_doc"])}" target="_blank" rel="noopener">Sprint {e["sprint"]} summary ↗</a></dd>'
               f'<dt>SHA-256</dt><dd>{hexref(e["summary_sha256"], 10, 6)}</dd>'
@@ -667,7 +694,7 @@ def verify_section(idx, c):
 <div class="sec-head"><span class="n">06</span><h2>Don’t trust, verify</h2><span class="aside">Everything here replays against any archive node</span></div>
 <div class="split">
 <dl class="deflist">
-<div><dt>Ethereum Mainnet</dt><dd>All {c["records"]} indexed records are pinned to a block number and its canonical block hash; reads use EIP-1898 <code>requireCanonical</code>.</dd></div>
+<div><dt>{E(c["chains"])}</dt><dd>All {c["records"]} indexed records are pinned to a block number and its canonical block hash on their own chain; reads use EIP-1898 <code>requireCanonical</code>.</dd></div>
 <div><dt>Open verifier spec</dt><dd>Each record lists the target contract, the full call signature and arguments (or EIP-1967 slot), the block and the block hash. Replay it with <code>cast</code> or raw <code>eth_call</code> / <code>eth_getStorageAt</code>.</dd></div>
 <div><dt>On-chain anchoring on Base</dt><dd>{anchoring_text(c)} Multi-attest txs {multi_tx_html(c)} · Registry {hexref(reg)} (Sourcify verified) · EAS schema {hexref(schema)}.</dd></div>
 <div><dt>Machine-readable</dt><dd><a href="api/v1/index.json">/api/v1/index.json</a> (schema <code>{E(idx["schema"])}</code>) · <a href="api/v1/radar.json">/api/v1/radar.json</a> · <a href="api/v1/onboarding.json">/api/v1/onboarding.json</a> · <a href="api/v1/proposals.json">/api/v1/proposals.json</a> · <a href="llms.txt">/llms.txt</a> · <a href="llms-full.txt">/llms-full.txt</a></dd></div>
@@ -1132,8 +1159,8 @@ def protocol_page(name, entries, idx, radar, digest=None, slug=None):
         doc_lbl = "Documentation (linked, not compared)." if pinned else "Documented."
         records += (f'<article class="memo-sec" id="{E(e["id"])}"><h2>{E(e["surface"])}</h2>'
                     f'<dl class="memo-meta"><dt>Status</dt><dd>{badge(e["classification"])}</dd>'
-                    f'<dt>Target</dt><dd>{E(e["target_label"])} {hexref(e["target_contract"])}</dd>'
-                    f'<dt>Pinned block</dt><dd>{ch} <span class="num">#{int(e["block_number"]):,}</span> · {prov}</dd>'
+                    f'<dt>Target</dt><dd>{E(e["target_label"])} {hexref(e["target_contract"])} · {explorer_link(e, "address")}</dd>'
+                    f'<dt>Pinned block</dt><dd>{ch} <span class="num">#{int(e["block_number"]):,}</span> · {explorer_link(e)} · {prov}</dd>'
                     f'<dt>Block hash</dt><dd>{hexref(e["block_hash"], 10, 6)}</dd>{ctrl}</dl>'
                     f'<p><b>Observed on-chain.</b> {E(e["onchain_observed"])}</p>'
                     f'<p><b>{doc_lbl}</b> {E(e["documented_reference"])}</p>'
@@ -1324,7 +1351,7 @@ def page(idx, radar):
 <div class="ctas"><a class="btn primary" href="#preflight">Run a free check <span class="arr">→</span></a><a class="btn" href="protocols/">Protocol safety records</a><a class="btn" href="#inspector">Inspect a protocol</a></div>
 <div class="livebar" data-etas="{E(livebar_etas(radar))}"><span class="dot live"></span><b>{n_ops} timelock operations queued across {len(radar["items"])} protocols.</b> {f'<span class="opstate ready lb-ready">{n_ready} READY · EXECUTABLE NOW</span> ' if n_ready else ""}<span class="lb-next">Next: <span class="lb-p">{E(nxt["protocol"])}</span>, <span class="countdown" data-eta="{nxt["eta"]}">ETA {E(utc(nxt["eta"]))}</span></span> <small class="lb-asof">(as of radar block {r["block_number"]:,})</small> · <a href="#radar">Radar →</a></div>
 <div class="ledger">
-<div><b>{c["sprints"]}</b><span>Sprints completed</span><small>Ethereum Mainnet control-plane reviews</small></div>
+<div><b>{c["sprints"]}</b><span>Sprints completed</span><small>{E(c["chains"])} control-plane reviews</small></div>
 <div><b>{c["records"]}</b><span>Verified surfaces</span><small>Each pinned to a canonical block hash</small></div>
 <div><b>{c["eas_n"]}</b><span>Base EAS attestations</span><small>Sprints {c["eas_from"]}–{c["eas_to"]}{"; " + c["pending"] + " hash-pinned" if c["pending"] else ""}{"; " + c["later"] + " records after review" if c["later"] else ""}</small></div>
 <div><b>$0</b><span>Free launch API</span><small>{E(RATE_LIMIT)} · no key · no wallet</small></div>
@@ -1654,7 +1681,7 @@ def llms(idx, radar):
         "# Pacta by Fractal Neurons", "",
         DISAMBIGUATION, "",
         f"> {BRAND}: free pre-execution contract and governance safety API for AI agents (launch: $0, no API key, no wallet), plus block-pinned DeFi control-plane snapshots and timelock alerts. {coverage_line(idx)}.", "",
-        "Pacta checks who can change the rules of DeFi protocols (proxy admins, timelock delays, Safe quorums, roles) and compares that with what the protocols document. Every record is a read-only on-chain observation pinned to an Ethereum Mainnet block number and canonical block hash.", "",
+        "Pacta checks who can change the rules of DeFi protocols (proxy admins, timelock delays, Safe quorums, roles) and compares that with what the protocols document. Every record is a read-only on-chain observation pinned to a block number and canonical block hash on its chain ({counts(idx)['chains']}).", "",
         "## Free API for agents (launch: $0, no API key, no wallet)",
         f"- Remote MCP (Streamable HTTP, zero install): {MCP_URL} · Claude Code: `claude mcp add --transport http pacta {MCP_URL}` · Cursor: `{{\"mcpServers\": {{\"pacta\": {{\"url\": \"{MCP_URL}\"}}}}}}`. Tools ({REMOTE_TOOLS_DOC}): {', '.join(B2A.REMOTE_TOOLS)}. Local stdio server: {STDIO_TOOLS_DOC}.",
         "- " + B2A.CALLER_FIELDS_DOC,

@@ -209,8 +209,10 @@
     return m ? m[1] : null;
   }
   // Runnable as-is: full signature + every argument (call_signature / call_args in /api/v1/index.json).
+  // A record's chain (index.json records without one are Ethereum Mainnet); the RPC variable is never taken from the feed.
+  function chainOf(e) { return e && e.chain === "base" ? "base" : "ethereum"; }
   function castCmd(e) {
-    var rpc = '--rpc-url "$ETH_RPC_URL"';
+    var rpc = '--rpc-url "' + (chainOf(e) === "base" ? "$BASE_RPC_URL" : "$ETH_RPC_URL") + '"';
     var first = e.check_type === "eth_getStorageAt"
       ? "cast storage " + e.target_contract + " \\\n  " + e.selector_or_slot + " \\\n  --block " + e.block_number + " " + rpc
       : "cast call " + e.target_contract + ' \\\n  "' + (e.call_signature || e.selector_or_slot) + '"' +
@@ -248,7 +250,7 @@
       ["Timelock delay", [delayCmp(e)]]];
     if (ms) rows.push(["Safe quorum", [el("span", { "class": "mono", text: ms })]]);
     if (pa) rows.push(["EIP-1967 ProxyAdmin", hexref(pa)]);
-    rows.push(["Pinned block", [el("span", { "class": "num", text: "#" + num(e.block_number) }), " · Sprint " + e.sprint + " ",
+    rows.push(["Pinned block", [chainOf(e) === "base" ? "Base " : "", el("span", { "class": "num", text: "#" + num(e.block_number) }), " · Sprint " + e.sprint + " ",
       badge(null, "Scanner-pinned (L1 finalized)", "final")]]);
     rows.push(["Canonical block hash", hexref(e.block_hash, 8, 6)]);
     rows.push(["Proof", [proof(e)]]);

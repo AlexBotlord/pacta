@@ -174,8 +174,11 @@ def predicates_for(text):
     return out or [PREDICATES[0]]
 
 
+RPC_ENV = {"ethereum": "$ETH_RPC_URL", "base": "$BASE_RPC_URL"}
+
+
 def index_cast(e):
-    rpc = '--rpc-url "$ETH_RPC_URL"'
+    rpc = f'--rpc-url "{RPC_ENV[e.get("chain", "ethereum")]}"'
     if e["check_type"] == "eth_getStorageAt":
         first = f'cast storage {e["target_contract"]} {e["selector_or_slot"]} --block {e["block_number"]} {rpc}'
     else:
@@ -202,11 +205,14 @@ def proposals(idx, onb):
     briefs_by_record = {"ethena-minting-rlusd-usat-onboarding-ops": f"{BASE}/briefs/ethena-ops-0x0ca0-0x1fe5/"}
     for x in CROSS_REF:
         recs = [byid[r] for r in x["records"]]                         # KeyError = a mapping points at a missing record
+        chains = {e.get("chain", "ethereum") for e in recs}
+        assert len(chains) == 1, (x["records"], chains)                 # a cross-reference stays on one chain
         pin = max(recs, key=lambda e: e["block_number"])
+        chain = chains.pop()
         summ = [f'{e["protocol"]} — {e["surface"]} [{e["classification"]}, Sprint {e["sprint"]}, block {e["block_number"]}]: {e["onchain_observed"]} '
                 f'Documented: {e["documented_reference"]}' for e in recs]
         out.append({"proposal_id": f'{x["forum"]}-{x["topic_id"]}', "forum": x["forum"], "topic_id": x["topic_id"], "title": x["title"],
-                    "forum_url": x["forum_url"], "relation": x["relation"], "chain": "ethereum", "chain_id": 1,
+                    "forum_url": x["forum_url"], "relation": x["relation"], "chain": chain, "chain_id": {"ethereum": 1, "base": 8453}[chain],
                     "pinned_block_number": pin["block_number"], "pinned_block_hash": pin["block_hash"], "source_feed": "/api/v1/index.json",
                     "source_record_ids": x["records"], "brief_url": next((briefs_by_record[r] for r in x["records"] if r in briefs_by_record), None),
                     "record_urls": [f'{BASE}/#r-{r}' for r in x["records"]],

@@ -49,6 +49,7 @@ EXPECT = {
     "sprints": 16, "records": 40, "eas_attestations": 16,              # index.json sprints_completed / records_indexed; Base EAS sprint UIDs
     "protocols": 54, "eas_protocols": 34, "rpc_protocols": 20,          # /protocols/ pages = EAS-attested + RPC-pinned; badges = protocols
     "briefs": 8, "badge_tiers": {"aligned": 18, "parameter_delta": 16, "rpc_observed": 20},
+    "base_records": 0,                                                  # index.json records with chain "base" (Sprint 17 adds the first)
     "multi_attest_txs": ["1–12", "13–16"],                              # attestation_coverage.eas_multi_attest_txs keys
     "summaries": {"15": "61c0cc292cfa1fc3840277cf312383d24a6c81af56afac303afdbd84e7316cf6",   # audits/sprint-<n>/ summary SHA-256 (attested)
                   "16": "91b8e29301ef0e625c4ddc9eadaf5388115812f5958f90b6e0ed53a4808ba8ae"},
@@ -1336,6 +1337,71 @@ def main():
     }
     check(f"C5: api/v1/protocols.json ({X['protocols']}: {X['eas_protocols']} eas_attested / {X['rpc_protocols']} rpc_observed not_assessed, badge tiers, Sprint ids + EAS UIDs, pinned surfaces) regenerates byte-identically; /integrations/vault-factories/; packages/sentinel-guard (never blocks a decrease); linked in llms.txt, llms-full.txt, /llms/, sitemap; robots.txt 63 B",
           all(c5.values()), str([k for k, v in c5.items() if not v]))
+
+    # ================= Sprint 17 (task-6ea8c50607d1): multi-chain index.json records =================
+    idx_mc = json.loads(read("docs/api/v1/index.json"))
+    sp_mc = BS.site_protocols(idx_mc)
+    slug_of = {e["id"]: v["slug"] for v in sp_mc.values() if not v["pinned"] for e in v["entries"]}
+    lk_mc = {x["slug"]: x for x in json.loads(read("docs/api/v1/lookup.json"))["items"]}
+    props_mc = json.loads(read("docs/api/v1/proposals.json"))["proposals"]
+    mc_bad = []
+    for e in idx_mc["entries"]:
+        ch = BS.chain_of(e)
+        rpc_, (_, xurl) = BS.CHAINS[ch][2], BS.EXPLORERS[ch]
+        pg = pages.get(os.path.join("protocols", slug_of[e["id"]], "index.html"), "")
+        if not (f'{xurl}/block/{e["block_number"]}"' in pg and f'{xurl}/address/{e["target_contract"]}"' in pg and f"--block {e['block_number']} --rpc-url &quot;{rpc_}&quot;" in pg):
+            mc_bad.append(f'{e["id"]}: protocol page chain')
+        if f'{xurl}/block/{e["block_number"]}"' not in home or ("chain" in e and e["rpc_env_var"] != rpc_):
+            mc_bad.append(f'{e["id"]}: homepage drawer / rpc_env_var')
+    for v in sp_mc.values():
+        if not v["pinned"]:
+            ch = BS.chain_of(v["entries"][0])
+            x_ = lk_mc[v["slug"]]
+            if (x_["chain"], x_["chainId"], x_["preflightArgs"]["chain"]) != (ch, BS.CHAIN_IDS[ch], ch):
+                mc_bad.append(f'{v["slug"]}: lookup chain / chainId')
+    by_id_mc = {e["id"]: e for e in idx_mc["entries"]}
+    for p_ in props_mc:
+        if p_.get("source_feed") == "/api/v1/index.json":
+            chs = {BS.chain_of(by_id_mc[r]) for r in p_["source_record_ids"]}
+            if chs != {p_["chain"]} or p_["chain_id"] != BS.CHAIN_IDS[p_["chain"]] or not all(f'--rpc-url "{BS.CHAINS[p_["chain"]][2]}"' in c for c in p_["repro_commands"]):
+                mc_bad.append(f'{p_["proposal_id"]}: proposals chain')
+    # docs/app.js castCmd (node) == build_site.cast_line for every record and for a synthetic Base clone of each
+    clone = lambda e: {**e, "chain": "base", "rpc_env_var": "$BASE_RPC_URL"}
+    sample = [e for e in idx_mc["entries"] if not e.get("extra_calls")]
+    sample += [clone(e) for e in sample[:3]]
+    a0 = appjs.index("  // A record's chain (index.json records without one are Ethereum Mainnet)")
+    a1 = appjs.index("  function term(cmd, title)", a0)
+    js_cast = ("const recs = " + json.dumps(sample) + ";\n" + appjs[a0:a1] + "\nprocess.stdout.write(JSON.stringify(recs.map(castCmd)));")
+    rc_ = subprocess.run([node_, "--input-type=module", "-e", js_cast], capture_output=True, text=True, timeout=60) if node_ else None
+    js_out = json.loads(rc_.stdout) if rc_ and rc_.returncode == 0 else None
+    cast_ok = js_out == [BS.cast_line(e) for e in sample] and all("$BASE_RPC_URL" in c and "$ETH_RPC_URL" not in c for c in js_out[-3:])
+    n_base = sum(BS.chain_of(e) == "base" for e in idx_mc["entries"])
+    check(f"multi-chain index.json records ({n_base} on Base): protocol pages + homepage drawers link the record's own explorer (etherscan.io / basescan.org block + "
+          "address) and cast with its RPC variable ($ETH_RPC_URL / $BASE_RPC_URL); lookup chain / chainId (1 / 8453) and preflightArgs follow the record; "
+          "proposals.json chain_id + repro RPC follow the cross-referenced records; docs/app.js castCmd == build_site.cast_line (node), Base clones included",
+          not mc_bad and cast_ok and n_base == X["base_records"], f"bad {mc_bad[:4]}; castCmd parity {cast_ok}")
+
+    # staged Sprint bundles (tools/staged/sprint-<n>-records.json): consistent and attestable until the apply script stamps them
+    st_bad = []
+    for sp_path in sorted(glob.glob(os.path.join(ROOT, "tools", "staged", "sprint-*-records.json"))):
+        stg = json.load(open(sp_path, encoding="utf-8"))
+        rs, n_ = stg["records"], stg["sprint"]
+        cl_ = [r["classification"] for r in rs]
+        sha_ = "0x" + hashlib.sha256(read(stg["summary_doc"], "rb")).hexdigest()
+        pins_ = {ch: (pv["block_number"], pv["block_hash"]) for ch, pv in stg["pins"].items()}
+        if (str(n_) in idx_mc["onchain_anchoring"]["sprint_eas_attestations"] or any(e["sprint"] == n_ for e in idx_mc["entries"])
+                or stg["summary_sha256"] != sha_ or any(r["summary_sha256"] != sha_ or r["summary_doc"] != stg["summary_doc"] for r in rs)
+                or stg["eas"] != {"chainId": 1, "blockNumber": pins_["ethereum"][0], "blockHash": pins_["ethereum"][1],
+                                  "verifiedCount": cl_.count("aligned_baseline") + cl_.count("protective_delta"), "driftCount": cl_.count("parameter_delta")}
+                or any(r["base_eas_uid"] is not None or r["sprint"] != n_ or (r["block_number"], r["block_hash"]) != pins_[r["chain"]]
+                       or r["rpc_env_var"] != BS.CHAINS[r["chain"]][2] or not eip55_ok(r["target_contract"])
+                       or (r["check_type"] == "eth_call" and "0x" + keccak(r["call_signature"].encode()).hex()[:8] != r["selector_or_slot"]) for r in rs)
+                or len({r["id"] for r in rs} | {e["id"] for e in idx_mc["entries"]}) != len(rs) + len(idx_mc["entries"])
+                or str(pins_["ethereum"][0]) not in stg["summary_doc"] or not all(h_ in read(stg["summary_doc"]) for _, h_ in pins_.values())):
+            st_bad.append(os.path.relpath(sp_path, ROOT))
+    check("staged Sprint bundles (not yet indexed): summary SHA-256, EAS verified / drift counts, per-chain pins (number + hash, also in the summary), "
+          "RPC variable, EIP-55 targets, selector = keccak(signature), base_eas_uid null, ids disjoint from index.json",
+          not st_bad, str(st_bad))
 
     # ================= Batch D3 + E1 (task-66ff0d53564a) =================
     import build_b2a_feeds as B2AV

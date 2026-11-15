@@ -4,7 +4,7 @@ Disambiguation: Pacta by Fractal Neurons (https://pacta.wtf, pacta.base.eth, io.
 
 > Pacta by Fractal Neurons (https://pacta.wtf · pacta.base.eth): free pre-execution contract and governance safety API for AI agents (launch: $0, no API key, no wallet), plus block-pinned DeFi control-plane snapshots and timelock alerts. 54 Protocols (40 Base EAS-Attested Records across 16 Sprints + 20 RPC-Observed Records).
 
-Pacta checks who can change the rules of DeFi protocols (proxy admins, timelock delays, Safe quorums, roles) and compares that with what the protocols document. Every record is a read-only on-chain observation pinned to an Ethereum Mainnet block number and canonical block hash.
+Pacta checks who can change the rules of DeFi protocols (proxy admins, timelock delays, Safe quorums, roles) and compares that with what the protocols document. Every record is a read-only on-chain observation pinned to a block number and canonical block hash on its chain ({counts(idx)['chains']}).
 
 ## Free API for agents (launch: $0, no API key, no wallet)
 - Remote MCP (Streamable HTTP, zero install): https://pacta-x402.pacta.workers.dev/mcp · Claude Code: `claude mcp add --transport http pacta https://pacta-x402.pacta.workers.dev/mcp` · Cursor: `{"mcpServers": {"pacta": {"url": "https://pacta-x402.pacta.workers.dev/mcp"}}}`. Tools (6 read-only inspection tools + 1 opt-in coverage/feature request tool (pacta_submit_request)): pacta_lookup_protocol, pacta_check_preflight, pacta_scan_control_plane, pacta_scan_timelock_op, pacta_scan_proposal_diff, pacta_get_live_timelocks, pacta_submit_request. Local stdio server: 10 read-only inspection tools + 1 opt-in request tool.

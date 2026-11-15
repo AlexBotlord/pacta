@@ -21,6 +21,7 @@ import "./static-safety.test.mjs";
 import "./proposals.test.mjs";
 import "./registry-skill.test.mjs";
 import "./x402-v2.test.mjs";
+import "./submit.test.mjs";
 
 // Tests must not depend on the caller's environment.
 for (const k of ["PACTA_X402_URL", "PACTA_X402_MAX_ATOMIC", "PACTA_X402_TIMEOUT_MS", "PACTA_INDEX_PATH", "PACTA_PROPOSALS_PATH", "PACTA_SPEC_PATH"]) {
@@ -116,7 +117,7 @@ test("setting PACTA_X402_URL enables all free + paid x402 tools (lookup + 4 loca
         : mockJson(200, { chain: "base" }),
   });
   const list = await srv.handleMessage({ jsonrpc: "2.0", id: 1, method: "tools/list" });
-  assert.equal(list.result.tools.length, 10);
+  assert.equal(list.result.tools.length, 11);
 
   const out = await srv.callTool("pacta_x402_discover");
   assert.equal(out.enabled, true);

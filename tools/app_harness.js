@@ -595,7 +595,40 @@ async function liveTimelockScenario() {
   x = await runWith(input.request, "/request/", { status: 200, body: { operations: [] } });
   res.live_no_fetch_elsewhere = x.calls.length === 0;
 }
+// /protocols/ (Batch D3): text search + status / chain pills only toggle the hidden attribute and the count text
+function protocolFilterScenario() {
+  if (!input.protocolsIndex) return;
+  const x = run(input.protocolsIndex, input.app, { path: "/protocols/" }), d = x.document;
+  const rows = d.querySelectorAll("#proto-table tbody tr"), shown = () => rows.filter((r) => !r.hidden);
+  const count = () => d.getElementById("proto-count").textContent, q = d.getElementById("proto-q");
+  const pill = (k) => d.querySelectorAll("[data-pfilter]").find((b) => b.getAttribute("data-pfilter") === k);
+  const click = (k) => { const ev = new Event_("click"); ev.target = pill(k); pill(k).dispatchEvent(ev); };
+  const type = (v) => { q.value = v; const ev = new Event_("input"); ev.target = q; q.dispatchEvent(ev); };
+  const n = rows.length, want = (pred) => rows.filter(pred).length;
+  res.pfilter_initial_all = n === 53 && shown().length === n && count() === n + " of " + n + " protocols shown";
+  let ok = true;
+  for (const [k, pred] of [["aligned", (r) => r.getAttribute("data-ptier") === "aligned"], ["parameter_delta", (r) => r.getAttribute("data-ptier") === "parameter_delta"],
+    ["rpc_observed", (r) => r.getAttribute("data-ptier") === "rpc_observed"], ["ethereum", (r) => r.getAttribute("data-pchains").split(" ").includes("ethereum")],
+    ["base", (r) => r.getAttribute("data-pchains").split(" ").includes("base")]]) {
+    click(k);
+    const label = (pill(k).querySelector(".num") || { textContent: "" }).textContent;
+    ok = ok && shown().length === want(pred) && shown().every(pred) && String(want(pred)) === label && pill(k).getAttribute("aria-pressed") === "true"
+      && d.querySelectorAll('[data-pfilter][aria-pressed="true"]').length === 1 && count() === want(pred) + " of " + n + " protocols shown";
+  }
+  res.pfilter_pills_exact = ok;
+  click("all"); type("ethena");
+  res.pfilter_text_search = shown().length >= 1 && shown().every((r) => r.textContent.toLowerCase().includes("ethena") || (r.getAttribute("data-psearch") || "").includes("ethena"))
+    && shown().length < n;
+  click("base"); type("ethena");
+  res.pfilter_combined = shown().length === 0 && count() === "0 of " + n + " protocols shown";
+  type("<img src=x onerror=alert(1)>");
+  res.pfilter_inert = shown().length === 0 && d.querySelectorAll("img").every((i) => i.getAttribute("onerror") === null) && count() === "0 of " + n + " protocols shown";
+  click("all"); type("");
+  res.pfilter_reset = shown().length === n;
+}
+
 (async () => {
+  try { protocolFilterScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await preflightScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await staleResponseScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await beaconScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }

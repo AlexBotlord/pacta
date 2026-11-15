@@ -168,6 +168,16 @@ export declare const DEFAULT_ANCHORING: Readonly<Record<string, unknown>>;
 export declare const FREE_TOOLS: ReadonlyArray<Record<string, unknown>>;
 export declare const PAID_TOOLS: ReadonlyArray<Record<string, unknown>>;
 export declare const TOOL_DEFINITIONS: ReadonlyArray<Record<string, unknown>>;
+/** The 10 read-only inspection tools (annotations readOnlyHint true, destructiveHint false, openWorldHint false). */
+export declare const READ_ONLY_TOOLS: ReadonlyArray<Record<string, unknown>>;
+/** The one opt-in write tool: pacta_submit_request (forwards to POST <PACTA_X402_URL>/v1/requests). */
+export declare const SUBMIT_TOOL: Readonly<Record<string, unknown>>;
+/** tools/list _meta per tool name: { resultType, ttlMs, cacheScope }. */
+export declare const TOOL_META: Readonly<Record<string, Readonly<{ resultType: string; ttlMs: number; cacheScope: "public" | "none" }>>>;
+/** Exact hint added to lookup misses (and, on the gateway, to unindexed / unclassified pre-flights). */
+export declare const COVERAGE_GAP_HINT: string;
+/** null when a request string is safe to send, else "secret_or_key" | "html" | "control_characters". */
+export declare function demandGuard(s: unknown): null | "secret_or_key" | "html" | "control_characters";
 /** Accepted alternative tool names -> canonical name (accepted in tools/call, not listed). */
 export declare const TOOL_ALIASES: Readonly<Record<string, string>>;
 export declare function canonicalToolName(name: unknown): unknown;

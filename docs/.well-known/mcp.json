@@ -1,5 +1,6 @@
 {
  "description": "Block-pinned DeFi control-plane commitments, Base EAS attestations and governance proposals for agents.",
+ "disambiguation": "Disambiguation: Pacta by Fractal Neurons (https://pacta.wtf, pacta.base.eth, io.github.Fractal-Neurons/pacta) is the EVM DeFi control-plane, Safe multisig, and timelock verification registry — unrelated to pactaprotocol.org (commercial escrow) or RMI PACTA (climate assessment).",
  "documentation": "https://pacta.wtf/llms-full.txt",
  "environment": [
   {
@@ -63,79 +64,103 @@
  "name": "io.github.Fractal-Neurons/pacta",
  "openapi": "https://pacta-x402.pacta.workers.dev/openapi.json",
  "package": "@pacta/mcp-server",
- "packageVersion": "0.1.3",
+ "packageVersion": "0.1.4",
  "status": "publication_pending: @pacta/mcp-server is not yet published to npm or the MCP registry. Use the remote MCP server now (no install): https://pacta-x402.pacta.workers.dev/mcp. The stdio server runs from a clone of the repository: node packages/mcp-server/bin/pacta-mcp.mjs.",
- "title": "Pacta",
+ "title": "Pacta by Fractal Neurons",
+ "toolSummary": {
+  "remote": "6 read-only inspection tools + 1 opt-in coverage/feature request tool (pacta_submit_request)",
+  "requestTool": "pacta_submit_request",
+  "requestsEndpoint": "https://pacta-x402.pacta.workers.dev/v1/requests",
+  "stdio": "10 read-only inspection tools + 1 opt-in request tool"
+ },
  "tools": [
   {
    "access": "free",
    "description": "Resolve a protocol or token name, symbol, slug or 0x address to its verified record and preflightArgs {chain, address} (query, chain, kind, limit; no RPC)",
    "effectivePriceUsd": "0.00",
    "name": "pacta_lookup_protocol",
-   "price": null
+   "price": null,
+   "readOnly": true
   },
   {
    "access": "free",
    "description": "Filter indexed records (protocol, classification, sprint, limit)",
    "effectivePriceUsd": "0.00",
    "name": "pacta_list_commitments",
-   "price": null
+   "price": null,
+   "readOnly": true
   },
   {
    "access": "free",
    "description": "Base EAS anchoring: PactaCommitmentRegistry, schema, sprint attestation UIDs",
    "effectivePriceUsd": "0.00",
    "name": "pacta_get_anchoring",
-   "price": null
+   "price": null,
+   "readOnly": true
   },
   {
    "access": "free",
    "description": "Governance proposals feed (forum, topic_id, chain, limit, include_repro)",
    "effectivePriceUsd": "0.00",
    "name": "pacta_list_proposals",
-   "price": null
+   "price": null,
+   "readOnly": true
   },
   {
    "access": "free",
    "description": "x402 gateway status and discovery manifest (only when PACTA_X402_URL is set)",
    "effectivePriceUsd": "0.00",
    "name": "pacta_x402_discover",
-   "price": null
+   "price": null,
+   "readOnly": true
   },
   {
    "access": "free_launch",
    "description": "Pre-execution check of a contract: verdict, 0-100 risk score, proxy / admin / timelock, capabilities (chain, address, block)",
    "effectivePriceUsd": "0.00",
    "name": "pacta_check_preflight",
-   "price": "$0.01"
+   "price": "$0.01",
+   "readOnly": true
   },
   {
    "access": "free_launch",
    "description": "Live control-plane scan of a contract (chain, address)",
    "effectivePriceUsd": "0.00",
    "name": "pacta_scan_control_plane",
-   "price": "$0.10"
+   "price": "$0.10",
+   "readOnly": true
   },
   {
    "access": "free_launch",
    "description": "Live TimelockController operation state (timelock, opId)",
    "effectivePriceUsd": "0.00",
    "name": "pacta_scan_timelock_op",
-   "price": "$0.25"
+   "price": "$0.25",
+   "readOnly": true
   },
   {
    "access": "free_launch",
    "description": "Live state of tracked queued timelock operations",
    "effectivePriceUsd": "0.00",
    "name": "pacta_live_timelocks",
-   "price": "$0.10"
+   "price": "$0.10",
+   "readOnly": true
   },
   {
    "access": "free_launch",
    "description": "Re-run a tracked governance proposal's pinned reads live, pinned-vs-live diffs (forum, topicId)",
    "effectivePriceUsd": "0.00",
    "name": "pacta_scan_proposal_diff",
-   "price": "$0.15"
+   "price": "$0.15",
+   "readOnly": true
+  },
+  {
+   "access": "free",
+   "description": "Opt-in (the only tool that writes): queue or upvote a coverage / feature request after a coverage_gap_hint, with the user's consent; forwards to POST /v1/requests (only when PACTA_X402_URL is set)",
+   "effectivePriceUsd": "0.00",
+   "name": "pacta_submit_request",
+   "price": null,
+   "readOnly": false
   }
  ],
  "transport": {
@@ -147,7 +172,8 @@
    "pacta_scan_control_plane",
    "pacta_scan_timelock_op",
    "pacta_scan_proposal_diff",
-   "pacta_get_live_timelocks"
+   "pacta_get_live_timelocks",
+   "pacta_submit_request"
   ],
   "type": "streamable-http",
   "url": "https://pacta-x402.pacta.workers.dev/mcp"
@@ -161,7 +187,8 @@
     "pacta_scan_control_plane",
     "pacta_scan_timelock_op",
     "pacta_scan_proposal_diff",
-    "pacta_get_live_timelocks"
+    "pacta_get_live_timelocks",
+    "pacta_submit_request"
    ],
    "type": "streamable-http",
    "url": "https://pacta-x402.pacta.workers.dev/mcp"

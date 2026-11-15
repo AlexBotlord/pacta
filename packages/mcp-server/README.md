@@ -1,6 +1,8 @@
 # `@pacta/mcp-server`
 
-Zero-dependency Node.js MCP stdio server for [Pacta](https://pacta.wtf/) DeFi control-plane commitments and Base Mainnet EAS attestations, with live gateway tools (pre-flight check, control-plane / timelock / proposal scans) when `PACTA_X402_URL` is configured. The gateway is **free during the launch**: $0, no API key, no wallet, 60 requests / minute per caller. The x402 v1 + v2 Base USDC prices below apply only if metering is switched on.
+Zero-dependency Node.js MCP stdio server (v0.1.4) for [Pacta by Fractal Neurons](https://pacta.wtf/) (`pacta.base.eth`) DeFi control-plane commitments and Base Mainnet EAS attestations, with live gateway tools (pre-flight check, control-plane / timelock / proposal scans) when `PACTA_X402_URL` is configured. The gateway is **free during the launch**: $0, no API key, no wallet, 60 requests / minute per caller. The x402 v1 + v2 Base USDC prices below apply only if metering is switched on.
+
+It exposes **10 read-only inspection tools + 1 opt-in request tool** (`pacta_submit_request`); the hosted remote MCP exposes 6 read-only inspection tools + the same request tool. Every inspection tool is annotated `readOnlyHint: true`, `destructiveHint: false`, `openWorldHint: false` and carries `_meta` (`resultType`, `ttlMs`, `cacheScope`) in `tools/list`.
 
 This package is stdio-only. It never opens a listening socket, and the test suite checks that statically. It is **not published on npm yet**: run it from a clone, or use the hosted remote endpoint.
 
@@ -75,6 +77,11 @@ git clone https://github.com/Fractal-Neurons/pacta.git
   Every challenge entry, v1 or v2, passes the same pins: allowlisted `payTo`, Base USDC, the `PACTA_X402_MAX_ATOMIC` cap, the route price, the `maxTimeoutSeconds` ceiling, and binding to the requested URL. Anything else is `rejected_challenge`. Sign the typedData yourself (the server holds no keys), base64-encode the envelope, and call the tool again with `xPaymentHeader` (v1) or `paymentSignatureHeader` (v2), never both.
 
   A paid call succeeds only with a 2xx and a valid `PAYMENT-RESPONSE` / `X-PAYMENT-RESPONSE` receipt on that version's network, whose payer, payTo and amount match your authorization. The receipt is the facilitator's assertion and is not looked up on Base (`onchainReceiptVerified: false`).
+
+- **Opt-in request tool: `pacta_submit_request`** (listed only when `PACTA_X402_URL` is set; annotations `readOnlyHint: false`, `destructiveHint: false`, `idempotentHint: true`, `openWorldHint: false`; `_meta` `{resultType: "demand_receipt", ttlMs: 0, cacheScope: "none"}`). When a lookup misses or a pre-flight hits an unindexed target, the result carries `coverage_gap_hint`; ask the user, then call this tool to queue the coverage or feature request. It forwards one JSON `POST <PACTA_X402_URL>/v1/requests`.
+  - Required: the three caller fields, `request_type` (`missing_protocol` | `unsupported_chain` | `missing_check_surface` | `doc_or_data_discrepancy` | `mcp_or_api_feature`), `target_subject` (2–120 characters), `requested_capability` (5–280 characters), `urgency_track` (`community_queue_free` | `active_due_diligence` | `issuer_24h_clearance_5k` | `api_high_volume_sla`). Optional: `forum_proposal_url` (`https://`), `contact_handle` (only when the user explicitly asks for follow-up or an invoice; never guessed).
+  - Returns `request_id` (`REQ-2026-xxxxxxxx`), `status` (`queued` | `upvoted_existing`), `demand_votes` and `fast_track_url`. An identical `request_type` + `target_subject` upvotes the existing request. Free in every pricing mode, 5 per hour per caller; never opens a GitHub issue.
+  - Every string is checked locally first: private-key-shaped hex, API tokens, JWTs, `Bearer` credentials, seed-phrase-shaped word runs and HTML are refused with `-32602` and nothing is sent. The gateway stores `contact_handle` only in a private, write-only key; public records and the telemetry summary carry `has_contact_opt_in` (a boolean) only.
 
 ## Environment variables
 

@@ -32,13 +32,17 @@ import {
   BASE_NETWORK_V2,
   validatePaymentSignatureHeader,
 } from "./x402.mjs";
-import { lookupProtocols, parseLookupInput, LOOKUP_CATALOG, LOOKUP_TOTALS, LOOKUP_LIMITS, LOOKUP_CHAINS, LOOKUP_KINDS, LOOKUP_SCHEMA } from "./lookup.mjs";
+import { lookupProtocols, parseLookupInput, LOOKUP_CATALOG, LOOKUP_TOTALS, LOOKUP_LIMITS, LOOKUP_CHAINS, LOOKUP_KINDS, LOOKUP_SCHEMA,
+  REQUEST_SCHEMA_PROPS, REQUEST_REQUIRED, REQUEST_FIELDS, REQUEST_TYPES, URGENCY_TRACKS, COVERAGE_GAP_HINT, CONTACT_HANDLE_DESCRIPTION, demandGuard,
+  withCoverageHint } from "./lookup.mjs";
 
-export const SERVER_INFO = Object.freeze({ name: "@pacta/mcp-server", version: "0.1.3" });
+export const SERVER_INFO = Object.freeze({ name: "@pacta/mcp-server", version: "0.1.4" });
 export const MCP_INSTRUCTIONS =
-  "Pacta: read-only, block-pinned pre-execution checks for EVM contracts (Ethereum, Base). If you only have a protocol or token name " +
+  "Pacta by Fractal Neurons: 10 read-only, block-pinned inspection tools for EVM contracts (Ethereum, Base) + 1 opt-in request tool. If you only have a protocol or token name " +
   "(e.g. 'Aave', 'Ethena', 'USDe', 'Moonwell', 'kUSD'), call pacta_lookup_protocol first to resolve its verified record and checksummed 0x " +
-  "contract address, then call pacta_check_preflight. Every value is pinned to a block hash. Not investment advice.";
+  "contract address, then call pacta_check_preflight. Every value is pinned to a block hash. When a result carries coverage_gap_hint, ask the user " +
+  "before calling pacta_submit_request (the only tool that writes: it queues or upvotes a coverage / feature request; contact_handle only with the " +
+  "user's explicit consent). Not investment advice.";
 export const SUPPORTED_PROTOCOL_VERSION = "2024-11-05";
 
 const REGISTRY = "0x35D21Bb4Df6586FE7759b5e57263ffeB3e1fd872";
@@ -217,6 +221,30 @@ function callerError(problems) {
 }
 const gatewaySchema = (properties, required = []) => objSchema({ ...properties, ...CALLER_PROPS }, [...required, ...CALLER_FIELDS]);
 
+/** MCP tool annotations: every inspection tool is read-only, non-destructive and closed-world. */
+export const readOnlyAnnotations = (title) => Object.freeze({ title, readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false });
+/** tools/list _meta per tool: result type, how long a result stays valid (ms), and whether a client may share a cached result. */
+export const TOOL_META = Object.freeze({
+  pacta_lookup_protocol: Object.freeze({ resultType: "protocol_lookup", ttlMs: 300000, cacheScope: "public" }),
+  pacta_list_commitments: Object.freeze({ resultType: "commitment_records", ttlMs: 3600000, cacheScope: "public" }),
+  pacta_list_proposals: Object.freeze({ resultType: "governance_proposals", ttlMs: 3600000, cacheScope: "public" }),
+  pacta_get_anchoring: Object.freeze({ resultType: "anchoring_metadata", ttlMs: 86400000, cacheScope: "public" }),
+  pacta_x402_discover: Object.freeze({ resultType: "x402_configuration", ttlMs: 300000, cacheScope: "public" }),
+  pacta_check_preflight: Object.freeze({ resultType: "preflight_check", ttlMs: 300000, cacheScope: "public" }),
+  pacta_scan_control_plane: Object.freeze({ resultType: "control_plane_scan", ttlMs: 300000, cacheScope: "public" }),
+  pacta_live_timelocks: Object.freeze({ resultType: "live_timelock_operations", ttlMs: 60000, cacheScope: "public" }),
+  pacta_scan_timelock_op: Object.freeze({ resultType: "timelock_operation_state", ttlMs: 60000, cacheScope: "public" }),
+  pacta_scan_proposal_diff: Object.freeze({ resultType: "proposal_diff", ttlMs: 60000, cacheScope: "public" }),
+  pacta_submit_request: Object.freeze({ resultType: "demand_receipt", ttlMs: 0, cacheScope: "none" }),
+});
+const TOOL_TITLES = Object.freeze({
+  pacta_list_commitments: "List Pacta Control-Plane Records", pacta_list_proposals: "List Tracked Governance Proposals",
+  pacta_get_anchoring: "Get Base EAS Anchoring Metadata", pacta_x402_discover: "Discover x402 Gateway Configuration",
+  pacta_check_preflight: "Pre-execution Safety Check", pacta_scan_control_plane: "Control-plane Scan", pacta_live_timelocks: "Live Tracked Timelock Operations",
+  pacta_scan_timelock_op: "Timelock Operation State", pacta_scan_proposal_diff: "Governance Proposal Pinned-vs-Live Diff",
+});
+const readOnlyTool = (t) => Object.freeze({ ...t, title: TOOL_TITLES[t.name], annotations: readOnlyAnnotations(TOOL_TITLES[t.name]), _meta: TOOL_META[t.name] });
+
 export const FREE_TOOLS = Object.freeze([
   {
     name: "pacta_list_commitments",
@@ -254,7 +282,7 @@ export const FREE_TOOLS = Object.freeze([
       "Return x402 configuration status; when PACTA_X402_URL is set, also fetch /.well-known/x402 and /v1/sample/control-plane.",
     inputSchema: objSchema(),
   },
-]);
+].map(readOnlyTool));
 
 const BLOCK_RE = /^(latest|0x[0-9a-fA-F]{1,14}|0|[1-9][0-9]{0,15})$/;
 const FREE_LAUNCH_HINT = "Free during the launch (the live gateway answers $0, no payment); x402 price applies only if metering is switched on.";
@@ -310,7 +338,7 @@ export const PAID_TOOLS = Object.freeze([
       ["forum", "topicId"]
     ),
   },
-]);
+].map(readOnlyTool));
 
 // Free discovery: answered from the embedded catalog (src/lookup.mjs, the same block the hosted worker serves); with
 // PACTA_X402_URL set it asks GET /v1/protocols/lookup first and falls back to the embedded catalog on any failure.
@@ -332,9 +360,27 @@ export const LOOKUP_TOOL = Object.freeze({
     },
     [...CALLER_FIELDS]
   ),
-  annotations: { title: "Lookup Protocol or Token by Name", readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false },
+  annotations: readOnlyAnnotations("Lookup Protocol or Token by Name"),
+  _meta: TOOL_META.pacta_lookup_protocol,
 });
-export const TOOL_DEFINITIONS = Object.freeze([LOOKUP_TOOL, ...FREE_TOOLS, ...PAID_TOOLS]);
+export const SUBMIT_TITLE = "Submit Pacta Coverage or Feature Request";
+// The one opt-in write tool: forwards to POST ${PACTA_X402_URL}/v1/requests (listed only when PACTA_X402_URL is set; nothing
+// leaves the process otherwise). Every string is checked locally first (demandGuard), so a secret never leaves the machine.
+export const SUBMIT_TOOL = Object.freeze({
+  name: "pacta_submit_request",
+  title: SUBMIT_TITLE,
+  description:
+    "Opt-in: queue a coverage or feature request with Pacta when a target is not indexed, a chain or check is unsupported, or data looks wrong " +
+    "(coverage_gap_hint). Ask the user first. Forwards to POST ${PACTA_X402_URL}/v1/requests; free in every pricing mode, 5 per hour; an identical " +
+    "request_type + target_subject upvotes the existing request (same request_id). Returns request_id, status, demand_votes and an optional " +
+    "fast_track_url. Never opens a GitHub issue. Pass contact_handle ONLY when the user explicitly asks for follow-up or an invoice.",
+  inputSchema: Object.freeze({ $schema: "https://json-schema.org/draft/2020-12/schema", type: "object", additionalProperties: false,
+    required: [...REQUEST_REQUIRED], properties: { ...CALLER_PROPS, ...REQUEST_SCHEMA_PROPS } }),
+  annotations: Object.freeze({ title: SUBMIT_TITLE, readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false }),
+  _meta: TOOL_META.pacta_submit_request,
+});
+export const READ_ONLY_TOOLS = Object.freeze([LOOKUP_TOOL, ...FREE_TOOLS, ...PAID_TOOLS]);
+export const TOOL_DEFINITIONS = Object.freeze([...READ_ONLY_TOOLS, SUBMIT_TOOL]);
 const LOCAL_TOOLS = Object.freeze([LOOKUP_TOOL, ...FREE_TOOLS]);
 /** Accepted alternative tool names (the hosted remote MCP calls this tool pacta_get_live_timelocks); not listed. */
 export const TOOL_ALIASES = Object.freeze(Object.assign(Object.create(null), { pacta_get_live_timelocks: "pacta_live_timelocks" }));
@@ -522,13 +568,49 @@ export class PactaMcpServer {
       try {
         const { res, text } = await fetchTextWithTimeout(this.fetchImpl, url, { headers: { Accept: "application/json" }, redirect: "error" }, { timeoutMs: this.timeoutMs });
         const data = res.status === 200 ? JSON.parse(text) : null;
-        if (isPlainObject(data) && data.schema === LOOKUP_SCHEMA && Array.isArray(data.results)) return { ...data, source: "gateway" };
+        if (isPlainObject(data) && data.schema === LOOKUP_SCHEMA && Array.isArray(data.results)) return withCoverageHint({ ...data, source: "gateway" });
         gatewayFallback = `gateway answered HTTP ${res.status}`;
       } catch (e) {
         gatewayFallback = e && e.code ? String(e.code) : "gateway_unreachable";
       }
     }
-    return { ...lookupProtocols(input), source: "embedded_catalog", ...(gatewayFallback ? { gatewayFallback } : {}) };
+    return withCoverageHint({ ...lookupProtocols(input), source: "embedded_catalog", ...(gatewayFallback ? { gatewayFallback } : {}) });
+  }
+
+  /** pacta_submit_request: local checks (fields, types, secrets / HTML guard, caller fields), then POST /v1/requests. */
+  async _submit(args) {
+    const problems = [];
+    for (const k of Object.keys(args)) if (!REQUEST_FIELDS.includes(k)) problems.push(`${String(k).slice(0, 40)} (unknown_field)`);
+    for (const k of REQUEST_FIELDS) {
+      const v = args[k];
+      if (v === undefined || v === null || v === "") { if (REQUEST_REQUIRED.includes(k)) problems.push(`${k} (missing)`); continue; }
+      if (typeof v !== "string") { problems.push(`${k} (invalid: a string)`); continue; }
+      const g = demandGuard(v);
+      if (g) problems.push(`${k} (${g})`);
+    }
+    if (!problems.length) for (const p of callerContext(args).problems) if (p.reason !== "missing") problems.push(`${p.field} (${p.reason})`);
+    for (const [k, set] of [["request_type", REQUEST_TYPES], ["urgency_track", URGENCY_TRACKS]]) {
+      if (typeof args[k] === "string" && args[k] && !set.includes(args[k].trim().toLowerCase())) problems.push(`${k} (invalid: one of ${set.join(", ")})`);
+    }
+    if (problems.length) {
+      throw Object.assign(new Error("pacta_submit_request refused locally (nothing was sent): " + problems.join("; ") +
+        ". Never include secrets or personal data outside contact_handle; contact_handle: " + CONTACT_HANDLE_DESCRIPTION), { code: -32602 });
+    }
+    if (!this.x402Url) {
+      throw new X402Error("gateway_not_configured", `pacta_submit_request forwards to POST <PACTA_X402_URL>/v1/requests: set PACTA_X402_URL=${X402_DEFAULTS.gatewayUrl} (nothing was sent).`);
+    }
+    const body = Object.fromEntries(REQUEST_FIELDS.filter((k) => typeof args[k] === "string" && args[k] !== "").map((k) => [k, args[k]]));
+    const url = new URL("/v1/requests", this.x402Url).toString();
+    const { res, text } = await fetchTextWithTimeout(this.fetchImpl, url,
+      { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(body), redirect: "error" },
+      { timeoutMs: this.timeoutMs });
+    let data = null;
+    try { data = JSON.parse(text); } catch { /* handled below */ }
+    if (res.status === 200 && isPlainObject(data) && typeof data.request_id === "string") return { ...data, source: "gateway" };
+    const detail = isPlainObject(data) && typeof data.detail === "string" ? data.detail.slice(0, 500) : `HTTP ${res.status}`;
+    if (res.status === 429) throw new X402Error("rate_limited", detail, { status: 429, retryAfterSeconds: isPlainObject(data) ? data.retryAfterSeconds ?? null : null });
+    if (res.status === 400) throw new X402Error("invalid_request", detail, { status: 400, problems: isPlainObject(data) && Array.isArray(data.problems) ? data.problems : [] });
+    throw new X402Error("upstream_http_error", `POST /v1/requests answered ${detail}`, { status: res.status });
   }
 
   async callTool(name, args = {}) {
@@ -540,6 +622,9 @@ export class PactaMcpServer {
     switch (name) {
       case "pacta_lookup_protocol":
         return this._lookup(args);
+
+      case "pacta_submit_request":
+        return this._submit(args);
 
       case "pacta_list_commitments": {
         const { source, index } = await this.loadIndex();
@@ -820,7 +905,7 @@ export function startStdioServer(options = {}) {
   return { server, close: () => rl.close(), done };
 }
 
-export { lookupProtocols, parseLookupInput, LOOKUP_CATALOG, LOOKUP_TOTALS };
+export { lookupProtocols, parseLookupInput, LOOKUP_CATALOG, LOOKUP_TOTALS, COVERAGE_GAP_HINT, demandGuard };
 export {
   encodeXPaymentHeader,
   encodePaymentSignatureHeader,

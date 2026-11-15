@@ -580,9 +580,40 @@
     });
   }
 
+  // /protocols/: text search + one status / chain pill. Rows are only shown or hidden (hidden attribute); text via textContent.
+  function initProtocolFilter() {
+    var root = $("[data-pfilter-root]"), q = $("#proto-q"), count = $("#proto-count");
+    if (!root || !q) return;
+    var rows = $$("#proto-table tbody tr"), pills = $$("[data-pfilter]", root), active = "all";
+    function match(tr) {
+      var t = tr.getAttribute("data-ptier"), ch = (tr.getAttribute("data-pchains") || "").split(" ");
+      if (active === "ethereum" || active === "base") return ch.indexOf(active) >= 0;
+      return active === "all" || t === active;
+    }
+    function apply() {
+      var words = q.value.toLowerCase().split(" ").filter(Boolean), shown = 0;
+      rows.forEach(function (tr) {
+        var hay = tr.getAttribute("data-psearch") || "";
+        var ok = match(tr) && words.every(function (w) { return hay.indexOf(w) >= 0; });
+        tr.hidden = !ok;
+        if (ok) shown++;
+      });
+      if (count) count.textContent = shown + " of " + rows.length + " protocols shown";
+    }
+    pills.forEach(function (b) {
+      b.addEventListener("click", function () {
+        active = b.getAttribute("data-pfilter") || "all";
+        pills.forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+        apply();
+      });
+    });
+    q.addEventListener("input", apply);
+    apply();
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     initTheme(); initCopy(); initBeaconHooks(); tick(); setInterval(tick, 30000);
-    initIndex(); initRequest(); initInspector(); initPreflight(); initLiveTimelocks();
+    initIndex(); initRequest(); initInspector(); initPreflight(); initLiveTimelocks(); initProtocolFilter();
     if ($("#insp-list")) loadData().catch(function () { /* static sheet and drawer links keep working */ });
   });
 })();

@@ -30,6 +30,10 @@ import build_b2a_feeds as B2A  # noqa: E402
 import build_lookup as LK  # noqa: E402
 
 BASE_URL = "https://pacta.wtf"   # cutover: "https://pacta.fractalneurons.com"
+# Batch E: the $100 USDC capped bounty (pacta.wtf/bounties/). Issues #21-#24 on Fractal-Neurons/pacta, one per $25 slot; the
+# issue text is tools/bounty_issues.json (verbatim, rendered on the page). Update the numbers here if GitHub assigns others.
+BOUNTY_ISSUE_URLS = {1: "https://github.com/Fractal-Neurons/pacta/issues/21", 2: "https://github.com/Fractal-Neurons/pacta/issues/22",
+                     3: "https://github.com/Fractal-Neurons/pacta/issues/23", 4: "https://github.com/Fractal-Neurons/pacta/issues/24"}
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
 DOCS = os.path.join(ROOT, "docs")
@@ -58,7 +62,15 @@ BRIEFS = {
                            "and installs a 5-of-7 Safe blacklister (ETA 2026-11-17 04:51 UTC).",
 }
 NAV = [("preflight", "Free API"), ("protocols/", "Protocols"), ("inspector", "Inspector"), ("radar", "Radar"), ("findings", "Findings"), ("index", "Index"), ("verify", "Verify"),
-       ("pricing", "Pricing"), ("faq", "FAQ")]
+       ("pricing", "Pricing"), ("bounties/", "Bounties ($100)"), ("faq", "FAQ")]
+# Brand / RAG disambiguation (receipt/1817): the exact line in llms.txt, llms-full.txt, /llms/ and the Organization JSON-LD.
+DISAMBIGUATION = B2A.DISAMBIGUATION
+BRAND = B2A.BRAND
+REMOTE_TOOLS_DOC, STDIO_TOOLS_DOC = B2A.REMOTE_TOOLS_DOC, B2A.STDIO_TOOLS_DOC
+ORG_LD = {"@context": "https://schema.org", "@type": "Organization", "name": "Pacta by Fractal Neurons", "alternateName": ["Pacta", "pacta.base.eth"],
+          "url": f"{BASE_URL}/", "logo": f"{BASE_URL}/favicon.png", "sameAs": [REPO, "https://fractalneurons.com", "https://basescan.org/name-lookup-search?id=pacta.base.eth"],
+          "parentOrganization": {"@type": "Organization", "name": "Fractal Neurons", "url": "https://fractalneurons.com"},
+          "disambiguatingDescription": DISAMBIGUATION}
 # Engagement tracks offered by the request builder (and linked from #pricing). key -> (title, price, unit, summary,
 # GitHub dropdown option). Issuer work (24h clearance, continuous Aligned maintenance), the high-throughput API SLA and
 # the free community queue. The public data itself (every indexed record, the timelock radar, briefs, /api/v1/*.json
@@ -219,16 +231,18 @@ def topbar(home=""):
             f'<nav class="nav" aria-label="Sections">{links}</nav>'
             f'<div class="tools"><button class="tt" type="button" aria-label="Theme: Paper (switch to Slate)">'
             f'<span data-t="paper" class="on">Paper</span><span data-t="slate">Slate</span></button>'
+            f'<a class="gh" href="{REPO}" target="_blank" rel="noopener" title="Source on GitHub: Fractal-Neurons/pacta">GitHub ↗</a>'
             f'<a class="btn sm primary" href="{req}">Request coverage</a></div>'
             f'</div></header>')
 
 
 def footer(count_line, reg, home=""):
     return (f'<footer class="ftr"><div class="wrap">'
-            f'<span>Pacta · Fractal Neurons · pacta.base.eth · {E(count_line)}</span>'
+            f'<span>Pacta by Fractal Neurons · pacta.base.eth · {E(count_line)}</span>'
             f'<nav aria-label="Footer"><a href="{REPO}" target="_blank" rel="noopener">GitHub</a>'
             f'<a href="{home}api/v1/index.json">JSON feed</a><a href="{home}llms.txt">llms.txt</a><a href="{home}llms/">llms (HTML)</a>'
             f'<a href="https://basescan.org/address/{E(reg)}" target="_blank" rel="noopener">Base registry</a>'
+            f'<a href="{home}bounties/">Bounties ($100)</a>'
             f'<a href="{home}.well-known/security.txt">security.txt</a>'
             f'<a href="{home}{"#request" if home == "" else "request/"}">Contact</a></nav>'
             f'</div></footer>')
@@ -290,6 +304,19 @@ def counts(idx):
     return {"sprints": s, "records": m["records_indexed"], "eas_n": len(eas), "eas_from": eas[0], "eas_to": eas[-1],
             "pending": rng(pend), "later": rng(later), "multi_txs": a["attestation_coverage"]["eas_multi_attest_txs"],
             "delta": m["parameter_deltas"], "protect": m["protective_deltas"], "aligned": m["aligned_baselines"]}
+
+
+def coverage_line(idx, pinned=None):
+    """The site-wide coverage line (receipt/1818), derived from the data: protocols published, EAS-attested Sprint records (and the
+    Sprints they come from: index.json sprints_completed, not the attestation count), RPC-observed records."""
+    pinned = load_pinned() if pinned is None else pinned
+    c = counts(idx)
+    return (f'{len(site_protocols(idx, pinned))} Protocols ({c["records"]} Base EAS-Attested Records across {c["sprints"]} Sprints + '
+            f'{len(pinned["entries"])} RPC-Observed Records)')
+
+
+def org_ld_script():
+    return '<script type="application/ld+json">' + json.dumps(ORG_LD, ensure_ascii=False, sort_keys=True).replace("</", "<\\/") + "</script>"
 
 
 def multi_tx_html(c):
@@ -463,7 +490,7 @@ def onboarding_page(b, idx):
             f'<dt>Data</dt><dd><a href="../../api/v1/onboarding.json">/api/v1/onboarding.json</a> · slug <code>{E(b["slug"])}</code></dd></dl>')
     content = content.replace("</header>", "</header>\n" + meta, 1) + clearance_callout(b["asset"], b["slug"], b["forum"]["url"])
     c = counts(idx)
-    count_line = f'{c["sprints"]} Sprints · {c["records"]} Indexed Records'
+    count_line = coverage_line(idx)
     reg = idx["onchain_anchoring"]["commitment_registry"]
     title = f'{b["asset"]}: onboarding verification brief'
     body = f"""<body>
@@ -547,8 +574,14 @@ def radar_section(radar):
             f'<td class="nowrap"><span class="countdown" data-eta="{it["eta"]}">ETA {E(utc(it["eta"]))}</span><span class="sub">{E(utc(it["eta"]))}</span></td>'
             f'<td class="r nowrap"><a href="{E(it["brief"])}">Read brief →</a></td></tr>')
     fresh = f'Last refreshed: {r["block_time_utc"]} (Mainnet finalized block #{r["block_number"]:,})'
+    tls = "".join(f' · <a href="https://etherscan.io/address/{E(it["timelock"])}" target="_blank" rel="noopener">{E(it["protocol"])} timelock ↗</a>'
+                  for it in radar["items"])
+    live_note = (f'<p class="radar-live" data-radar-live><b>All queued operations are live Ethereum Mainnet timelock reads (zero demo data)</b>: '
+                 f'read at finalized block <a href="https://etherscan.io/block/{r["block_number"]}" target="_blank" rel="noopener">#{r["block_number"]:,} ↗</a>'
+                 f'{tls}.</p>')
     return f"""<section class="sec" id="radar" data-live-timelocks="{E(LIVE_TIMELOCKS_URL)}"><div class="wrap">
 <div class="sec-head"><span class="n">02</span><h2>Queued timelock radar</h2><span class="aside">{sum(len(it["operations"]) for it in radar["items"])} operations · {len(radar["items"])} protocols</span></div>
+{live_note}
 <div class="tbl-wrap"><table class="tbl radar"><thead><tr><th>Protocol</th><th>Queued operation</th><th class="hide-m">Delay</th><th>Execution window</th><th class="r">Brief</th></tr></thead>
 <tbody>{"".join(rows)}</tbody></table></div>
 <div class="prov"><span class="badge final">Scanner-pinned (L1 finalized)</span><span>{E(fresh)}</span><span>State and ETAs read at that block on {r.get("rpcs_cross_checked", 2)} independent RPCs; READY means the delay has elapsed and the operation is still unexecuted. Countdowns run in your browser from each on-chain ETA.</span><span class="live-line" data-live-line></span></div>
@@ -656,7 +689,7 @@ def pricing_section(idx, home=""):
         f"All {n_p} protocols ({n_s} block-pinned surfaces), live governance and timelock briefs, free and real-time; no key, no delay, no paywall",
         "Static JSON and LLM feeds: <code>/api/v1/*.json</code>, <code>llms.txt</code>, <code>llms-full.txt</code>, <code>SKILL.md</code>",
         f"<code>/v1/check/preflight</code> and the other live checks at {E(RATE_LIMIT)}; 5-minute edge cache on unpinned checks",
-        f"Remote MCP (6 read-only tools) at <code>{E(MCP_URL)}</code> and OpenAPI 3.1",
+        f"Remote MCP ({E(REMOTE_TOOLS_DOC)}) at <code>{E(MCP_URL)}</code> and OpenAPI 3.1",
         "Curators, risk analysts, and due-diligence agents never pay"])
     free_plan = (f'<div class="plan feat"><span class="tier">Curators, Risk Teams &amp; AI Agents</span><h3>Free launch</h3>'
                  f'<div class="price">$0<small>Free · no API key · no wallet</small></div><ul>{free_lis}</ul>'
@@ -1081,7 +1114,7 @@ def protocol_page(name, entries, idx, radar, digest=None, slug=None):
     slug = slug or protocol_slug(name)
     url = f"{BASE_URL}/protocols/{slug}/"
     c = counts(idx)
-    count_line = f'{c["sprints"]} Sprints · {c["records"]} Indexed Records'
+    count_line = coverage_line(idx)
     reg = idx["onchain_anchoring"]["commitment_registry"]
     cat = entries[0]["category"]
     targets = sorted({e["target_contract"] for e in entries})
@@ -1182,7 +1215,7 @@ def protocols_index_page(idx, sp=None):
     """/protocols/: every published protocol page (index.json Sprint protocols + RPC-pinned protocols), with provenance."""
     sp = site_protocols(idx) if sp is None else sp
     c = counts(idx)
-    count_line = f'{c["sprints"]} Sprints · {c["records"]} Indexed Records'
+    count_line = coverage_line(idx)
     reg = idx["onchain_anchoring"]["commitment_registry"]
     n_surf = sum(len(v["entries"]) for v in sp.values())
     n_pin = sum(len(v["entries"]) for v in sp.values() if v["pinned"])
@@ -1193,10 +1226,27 @@ def protocols_index_page(idx, sp=None):
         ss = sorted({e["sprint"] for e in v["entries"]})
         return f'Sprint{"s" if len(ss) > 1 else ""} {", ".join(str(x) for x in ss)} · Base EAS'
 
-    rows = "".join(f'<tr><td><a href="{v["slug"]}/">{E(n)}</a></td><td>{E(v["entries"][0]["category"])}</td>'
+    def tier(v):
+        return "rpc_observed" if v["pinned"] else ("aligned" if is_aligned_page(v["entries"]) else "parameter_delta")
+
+    def attrs(n, v):
+        chains = " ".join(sorted({e.get("chain", "ethereum") for e in v["entries"]}))
+        text = " ".join([n, v["slug"], v["entries"][0]["category"], chains] + [e["target_contract"] for e in v["entries"]]).lower()
+        return f' data-ptier="{tier(v)}" data-pchains="{E(chains)}" data-psearch="{E(text)}"'
+
+    n_tier = {t: sum(tier(v) == t for v in sp.values()) for t in ("aligned", "parameter_delta", "rpc_observed")}
+    n_chain = {ch: sum(any(e.get("chain", "ethereum") == ch for e in v["entries"]) for v in sp.values()) for ch in ("ethereum", "base")}
+    pills = [("all", "All", len(sp)), ("aligned", "Aligned", n_tier["aligned"]), ("parameter_delta", "Parameter Delta", n_tier["parameter_delta"]),
+             ("rpc_observed", "RPC-Observed", n_tier["rpc_observed"]), ("ethereum", "Ethereum", n_chain["ethereum"]), ("base", "Base", n_chain["base"])]
+    tools = (f'<div class="ix-tools" data-pfilter-root><input id="proto-q" type="search" placeholder="Filter by name, token, category or 0x address" '
+             f'aria-label="Filter protocols" autocomplete="off"><div class="seg" role="group" aria-label="Filter by status or chain">'
+             + "".join(f'<button type="button" data-pfilter="{k}" aria-pressed="{"true" if k == "all" else "false"}">{lbl}<span class="num">{n}</span></button>'
+                       for k, lbl, n in pills)
+             + f'</div><span class="ix-count" id="proto-count" aria-live="polite">{len(sp)} of {len(sp)} protocols shown</span></div>')
+    rows = "".join(f'<tr{attrs(n, v)}><td><a href="{v["slug"]}/">{E(n)}</a></td><td>{E(v["entries"][0]["category"])}</td>'
                    f'<td>{" · ".join(sorted({CHAINS[e.get("chain", "ethereum")][0] for e in v["entries"]}))}</td><td class="num">{len(v["entries"])}</td>'
                    f'<td>{" ".join(badge(cl) for cl in sorted({e["classification"] for e in v["entries"]}))}</td><td>{prov(v)}</td></tr>' for n, v in sp.items())
-    ld = {"@context": "https://schema.org", "@type": "ItemList", "name": "Pacta protocol control-plane safety records", "numberOfItems": len(sp),
+    ld = {"@context": "https://schema.org", "@type": "ItemList", "name": "Pacta by Fractal Neurons: protocol control-plane safety records", "numberOfItems": len(sp),
           "itemListElement": [{"@type": "ListItem", "position": i + 1, "url": f"{BASE_URL}/protocols/{v['slug']}/", "name": n}
                               for i, (n, v) in enumerate(sp.items())]}
     ld_json = json.dumps(ld, ensure_ascii=False, sort_keys=True).replace("</", "<\\/")
@@ -1207,7 +1257,8 @@ def protocols_index_page(idx, sp=None):
 <div class="crumbs"><a href="../">Pacta</a> / Protocols</div>
 <div class="sec-head"><span class="n">→</span><h2>Protocol safety records</h2><span class="aside">{len(sp)} protocols · {n_surf} block-pinned surfaces</span></div>
 <p class="sec-intro">Who can upgrade, pause or change each protocol, pinned to canonical Ethereum and Base blocks. The {c["records"]} Sprint records are anchored on Base by EAS attestations; the {n_pin} RPC-pinned records are reproducible with <code>cast</code> but not yet EAS-attested. Check any other contract live and free with <code>/v1/check/preflight</code>.</p>
-<table class="ix"><thead><tr><th>Protocol</th><th>Category</th><th>Chain</th><th>Surfaces</th><th>Status</th><th>Provenance</th></tr></thead><tbody>{rows}</tbody></table>
+{tools}
+<table class="ix" id="proto-table"><thead><tr><th>Protocol</th><th>Category</th><th>Chain</th><th>Surfaces</th><th>Status</th><th>Provenance</th></tr></thead><tbody>{rows}</tbody></table>
 </div></section>
 </main>
 {footer(count_line, reg, "../")}
@@ -1222,7 +1273,7 @@ def not_found_page(idx, sp=None):
     """docs/404.html: GitHub Pages serves it for any missing path, so every link is root-relative. data-nf on <main>
     makes the beacon (b.js) send not_found_404 (sanitised path, plus the slug for /protocols/<slug>/...) instead of page_load."""
     c = counts(idx)
-    count_line = f'{c["sprints"]} Sprints · {c["records"]} Indexed Records'
+    count_line = coverage_line(idx)
     reg = idx["onchain_anchoring"]["commitment_registry"]
     n_protocols = len(site_protocols(idx) if sp is None else sp)
     claude = f"claude mcp add --transport http pacta {MCP_URL}"
@@ -1242,7 +1293,7 @@ def not_found_page(idx, sp=None):
 <div><dt>For agents</dt><dd><a href="/llms.txt">llms.txt</a> · <a href="/SKILL.md">SKILL.md</a> · <a href="/.well-known/agent.json">agent.json</a> · <a href="/api/v1/index.json">/api/v1/index.json</a></dd></div>
 </dl></section>
 <section class="memo-sec"><h2>Remote MCP server (free)</h2>
-<p>Six read-only tools over Streamable HTTP, zero install, led by <code>pacta_lookup_protocol</code> (resolve a protocol or token name first). Tool <code>pacta_check_preflight</code> runs the same check as the live checker on the homepage.</p>
+<p>Six read-only inspection tools + one opt-in coverage / feature request tool (<code>pacta_submit_request</code>) over Streamable HTTP, zero install, led by <code>pacta_lookup_protocol</code> (resolve a protocol or token name first). Tool <code>pacta_check_preflight</code> runs the same check as the live checker on the homepage.</p>
 {snippet("Any MCP client (Streamable HTTP)", MCP_URL)}{snippet("Claude Code", claude)}</section>
 </article>
 </main>
@@ -1256,7 +1307,7 @@ def not_found_page(idx, sp=None):
 def page(idx, radar):
     c = counts(idx)
     r = radar["refreshed_at"]
-    count_line = f'{c["sprints"]} Sprints · {c["records"]} Indexed Records'
+    count_line = coverage_line(idx)
     reg = idx["onchain_anchoring"]["commitment_registry"]
     later = [it for it in radar["items"] if it["eta"] and it["eta"] > r["block_timestamp"]]
     nxt = min(later or radar["items"], key=lambda it: it["eta"])
@@ -1292,6 +1343,7 @@ def page(idx, radar):
 {about_section(idx)}
 </main>
 {footer(count_line, reg)}
+{org_ld_script()}
 </body></html>
 """
     return head(TITLE, DESC, BASE_URL + "/") + "\n" + body
@@ -1301,7 +1353,7 @@ def vault_factories_page(idx, sp):
     """/integrations/vault-factories/: the zero-cost Control-Plane & Role Map tab (api/v1/protocols.json), status badges and
     PactaSentinelGuard.sol wiring for vault factories and curators. Platform-neutral; no claim of any partner integration."""
     c = counts(idx)
-    count_line = f'{c["sprints"]} Sprints · {c["records"]} Indexed Records'
+    count_line = coverage_line(idx)
     reg = idx["onchain_anchoring"]["commitment_registry"]
     tiers = {}
     for v in sp.values():
@@ -1374,7 +1426,7 @@ def vault_factories_page(idx, sp):
 
 def request_page(idx):
     c = counts(idx)
-    count_line = f'{c["sprints"]} Sprints · {c["records"]} Indexed Records'
+    count_line = coverage_line(idx)
     reg = idx["onchain_anchoring"]["commitment_registry"]
     desc = "The API is free for agents ($0, no key). Issuers: request a 24h onboarding & delta clearance ($5,000 USDC) or continuous Aligned maintenance."
     body = f"""<body>
@@ -1416,7 +1468,7 @@ def brief_page(slug, desc, idx, radar):
     issuer = item["protocol"] if item else title
     content = content.rstrip("\n") + "\n" + clearance_callout(issuer, BRIEF_PROTOCOL[slug])
     c = counts(idx)
-    count_line = f'{c["sprints"]} Sprints · {c["records"]} Indexed Records'
+    count_line = coverage_line(idx)
     reg = idx["onchain_anchoring"]["commitment_registry"]
     body = f"""<body>
 {topbar("../../")}
@@ -1432,19 +1484,184 @@ def brief_page(slug, desc, idx, radar):
     return head(title, desc, f"{BASE_URL}/briefs/{slug}/", prefix="../../", og_title=title, og_type="article") + "\n" + body
 
 
+# ---- Batch E: pacta.wtf/bounties/ ($100 USDC hard cap, 4 x $25 USDC slots) --------------------------------------------
+BOUNTY_SRC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "bounty_issues.json")
+BOUNTY_TEMPLATE = ".github/PULL_REQUEST_TEMPLATE/bounty_mismatch.md"
+BOUNTY_TEMPLATE_URL = f"{REPO}/blob/main/{BOUNTY_TEMPLATE}"
+BOUNTY_COMPARE_URL = f"{REPO}/compare/main...main?quick_pull=1&template=bounty_mismatch.md"
+BOUNTY_TITLE = "Pacta Chain-Feed Mismatch Challenge ($100 USDC Hard-Cap · 7-Day Sprint Nov 15 – Nov 22, 2026)"
+BOUNTY_SLOTS = {   # slot -> scope line (receipt/1825)
+    1: "Ethereum Mainnet (chainId: 1, >=$25M TVL) unindexed control-plane parameter_delta #1",
+    2: "Ethereum Mainnet (chainId: 1, >=$25M TVL) unindexed control-plane parameter_delta #2",
+    3: "Base (8453) or Arbitrum One (42161) (>=$10M TVL) unindexed control-plane parameter_delta",
+    4: "Live chain-feed drift catch on any of Pacta's 53 indexed protocols OR 4th unindexed (>=$15M TVL) mismatch",
+}
+# receipt/1827: the truthful settlement statement (word for word); the treasury is an externally owned account, never a Safe.
+BOUNTY_PAYOUT = ("Paid in USDC on Base Mainnet within 48h of maintainer merge from Pacta treasury (0x4348DF1BEFAffcbA248B5118B1b782B1B2bdEd14) "
+                 "once the winner comments their public Base 0x... address on the merged PR. Funds are not pre-escrowed in an automated contract; "
+                 "zero automatic on-chain payouts.")
+BOUNTY_PROOF = [   # the 6 required PR proof items (the PR template enforces them; tools/verify_bounty_submission.py checks them)
+    ("chainId & contract address", "chainId (1, 8453 or 42161), the checksummed 0x target contract, the protocol name and a verifiable TVL reference (or the Pacta slug for indexed drift)."),
+    ("Pinned finalized block", "The finalized blockNumber and its exact 32-byte blockHash (plus the prior pinned Pacta block / tx for post-snapshot drift)."),
+    ("Deterministic dual-RPC cast proof", "The exact cast call / cast storage commands with --block <blockNumber> and their raw outputs, identical on 2 independent RPC endpoints."),
+    ("Live official documentation claim (HTTP 200)", "A direct https:// URL to the protocol's official docs and the verbatim quote that conflicts with the on-chain state."),
+    ("Pacta MCP output", "The JSON from pacta_lookup_protocol / pacta_check_preflight / pacta_scan_control_plane."),
+    ("Apache-2.0 contribution & commercialization grant", "A checked confirmation granting Pacta by Fractal Neurons perpetual, irrevocable rights under Apache-2.0 to ingest, Base EAS-attest, publish on pacta.wtf, and commercialize the merged mismatch record."),
+]
+BOUNTY_RULES = [
+    ("First valid merged PR wins", "it must pass deterministic CI and an independent dual-RPC archive replay at the pinned blockHash."),
+    ("Max 1 open PR per contributor", "across all bounty slots at a time; Slots #1 and #2 must cover two distinct protocols."),
+    ("Zero AI-slop", "fabricated RPC outputs, unpinned block reads, or broken / hallucinated doc URLs are closed and disqualified."),
+    ("Strict ban on third-party spam", "never open unsolicited PRs, issues or comments in third-party repositories on Pacta's behalf; submissions are PRs to Fractal-Neurons/pacta only."),
+    ("No public exploit PoCs", "governance and documentation parameter mismatches only; route security vulnerabilities via Immunefi / Cantina per /.well-known/security.txt."),
+    ("Agent-assisted & autonomous-agent submissions welcome", "Human, agent-assisted, and autonomous-agent submissions are equally eligible under the exact "
+     "same deterministic dual-RPC archive replay, HTTP 200 official-docs verification, and 1-open-PR-per-contributor rules (0 fabricated outputs)."),
+]
+BOUNTY_FIXTURE = "bounties/submissions/slot-<slot>-<protocol-slug>.json"
+
+
+def bounty_hours(pr):
+    """Length of the sprint window in hours (sprintWindow "<ISO start> to <ISO end>"): 168 for the 7-day sprint."""
+    start, end = (dt.datetime.fromisoformat(x.strip().replace("Z", "+00:00")) for x in pr["sprintWindow"].split(" to "))
+    return int((end - start).total_seconds() // 3600)
+
+
+def load_bounties(path=None):
+    d = json.load(open(path or BOUNTY_SRC))
+    pr, issues = d["program"], d["issues"]
+    assert pr["totalHardCapUsdc"] == 100 and pr["slots"] == 4 and pr["slotRewardUsdc"] == 25 and len(issues) == 4
+    assert [i["slot"] for i in issues] == [1, 2, 3, 4] and all(i["rewardUsdc"] == 25 for i in issues)
+    assert sum(i["rewardUsdc"] for i in issues) == pr["totalHardCapUsdc"] and set(BOUNTY_ISSUE_URLS) == {1, 2, 3, 4}
+    assert pr["treasuryAddress"] == "0x4348DF1BEFAffcbA248B5118B1b782B1B2bdEd14"
+    assert bounty_hours(pr) == 168, "the sprint window must be exactly 7 days (168 h)"
+    return d
+
+
+def md_inline(t):
+    """Escape, then **bold**, *italic* and `code` (code spans are protected first, so bold may contain code)."""
+    codes = []
+    t = re.sub(r"`([^`]+)`", lambda m: codes.append(m.group(1)) or f"\x00{len(codes) - 1}\x00", t)
+    t = E(t, quote=False)
+    t = re.sub(r"\*\*(.+?)\*\*", r"<b>\1</b>", t)
+    t = re.sub(r"(?<![\w*])\*(?=\S)(.+?)(?<=\S)\*(?![\w*])", r"<i>\1</i>", t)
+    return re.sub("\x00(\\d+)\x00", lambda m: f"<code>{E(codes[int(m.group(1))], quote=False)}</code>", t)
+
+
+def md_html(text):
+    """The small Markdown subset the bounty issues use: ## / ### headings, paragraphs (one per line, as GitHub renders issue line
+    breaks), - and 1. lists, --- rules and ``` fences. Deterministic; every text node is escaped."""
+    out, lst, code = [], None, None
+    def close():
+        nonlocal lst
+        if lst:
+            out.append(f"</{lst}>")
+            lst = None
+    for line in text.split("\n"):
+        if code is not None:
+            if line.startswith("```"):
+                out.append(f'<pre class="term-pre"><code>{E(chr(10).join(code), quote=False)}</code></pre>')
+                code = None
+            else:
+                code.append(line)
+            continue
+        if line.startswith("```"):
+            close()
+            code = []
+        elif not line.strip():
+            close()
+        elif line.strip() == "---":
+            close()
+            out.append("<hr>")
+        elif line.startswith("### "):
+            close()
+            out.append(f"<h4>{md_inline(line[4:])}</h4>")
+        elif line.startswith("## "):
+            close()
+            out.append(f"<h3>{md_inline(line[3:])}</h3>")
+        elif re.match(r"^- ", line) or re.match(r"^\d+\. ", line):
+            kind = "ul" if line.startswith("- ") else "ol"
+            if lst != kind:
+                close()
+                out.append(f"<{kind}>")
+                lst = kind
+            item = re.sub(r"^(?:- |\d+\. )", "", line)
+            out.append(f"<li>{md_inline(item)}</li>")
+        else:
+            close()
+            out.append(f"<p>{md_inline(line)}</p>")
+    close()
+    assert code is None, "unterminated code fence"
+    return "\n".join(out)
+
+
+def bounties_page(idx, radar, bounties=None):
+    """docs/bounties/index.html: the $100 USDC capped Chain-Feed Mismatch Challenge (4 x $25 USDC), issue text verbatim."""
+    d = load_bounties() if bounties is None else bounties
+    pr = d["program"]
+    count_line = coverage_line(idx)
+    reg = idx["onchain_anchoring"]["commitment_registry"]
+    claude = f"claude mcp add --transport http pacta {MCP_URL}"
+    slot_rows = "".join(f'<tr data-bounty-slot="{n}"><td class="num">#{n}</td><td class="num">$25 USDC</td><td>{E(BOUNTY_SLOTS[n])}</td>'
+                        f'<td><a href="{E(BOUNTY_ISSUE_URLS[n])}" target="_blank" rel="noopener">Issue #{E(BOUNTY_ISSUE_URLS[n].rsplit("/", 1)[1])} ↗</a></td></tr>'
+                        for n in (1, 2, 3, 4))
+    proof = "".join(f"<li><b>{E(k)}.</b> {E(v)}</li>" for k, v in BOUNTY_PROOF)
+    rules = "".join(f"<li><b>{E(k)}:</b> {E(v)}</li>" for k, v in BOUNTY_RULES)
+    issues = "".join(f'<details class="bounty-issue" id="slot-{i["slot"]}" data-bounty-issue="{i["slot"]}"><summary>{E(i["title"])}</summary>'
+                     f'<p class="s">GitHub: <a href="{E(BOUNTY_ISSUE_URLS[i["slot"]])}" target="_blank" rel="noopener">{E(BOUNTY_ISSUE_URLS[i["slot"]])} ↗</a> · labels: '
+                     f'{E(", ".join(i["labels"]))}</p><div class="md">{md_html(i["body"])}</div></details>' for i in d["issues"])
+    ld = {"@context": "https://schema.org", "@type": "WebPage", "name": BOUNTY_TITLE, "url": f"{BASE_URL}/bounties/",
+          "isPartOf": {"@type": "WebSite", "name": "Pacta by Fractal Neurons", "url": f"{BASE_URL}/"},
+          "about": "Capped USDC bounty for verified on-chain control-plane mismatch records", "publisher": ORG_LD}
+    ld_json = json.dumps(ld, ensure_ascii=False, sort_keys=True).replace("</", "<\\/")
+    body = f"""<body>
+{topbar("../")}
+<main id="main" class="memo-wrap">
+<div class="crumbs"><a href="../">Pacta</a> / Bounties</div>
+<article class="memo">
+<header><span class="tier">Bounties · $100 USDC hard cap · {E(pr["sprintWindow"])}</span><h1>{E(BOUNTY_TITLE)}</h1>
+<p class="lede">Find a live on-chain control-plane fact that contradicts a protocol's official documentation (<code>parameter_delta</code>): a proxy admin, Safe threshold, timelock delay or guardian role that differs from what the docs say. Four slots, <b>4 × $25 USDC = $100 USDC</b> in total, first valid merged PR per slot wins. Organizer: {E(pr["organizer"])}.</p></header>
+<section class="memo-sec" id="slots"><h2>Slots (4 × $25 USDC)</h2>
+<table class="ix" data-bounty-slots><thead><tr><th>Slot</th><th>Reward</th><th>Scope</th><th>Issue</th></tr></thead><tbody>{slot_rows}</tbody></table>
+<p>Total hard cap: <b>$100 USDC</b> across Slots #1–#4. Sprint window: <b>Nov 15 00:00 UTC – Nov 22 00:00 UTC, 2026</b> (<code>{E(pr["sprintWindow"])}</code>, {bounty_hours(pr)}h).</p></section>
+<section class="memo-sec" id="payout"><h2>How the reward is paid</h2>
+<p data-bounty-payout>{E(BOUNTY_PAYOUT)}</p>
+<p class="s">The Pacta treasury <code class="mono">{E(pr["treasuryAddress"])}</code> is an externally owned account (EOA) on {E(pr["settlementChain"])}; settlement happens after deterministic dual-RPC replay verification and maintainer merge.</p></section>
+<section class="memo-sec" id="quickstart"><h2>1-line Remote MCP quickstart (free)</h2>
+<div class="qs-snip"><span class="qs-l">Claude Code</span><code class="mono">{E(claude)}</code>{copy_btn(claude)}</div>
+<p>Query <code>pacta_lookup_protocol</code> (confirm the target is unindexed: a miss carries <code>coverage_gap_hint</code>), <code>pacta_check_preflight</code> and <code>pacta_scan_control_plane</code>, then pin the reads with <code>cast</code> on two RPC endpoints. Indexed protocols: <a href="../api/v1/protocols.json">/api/v1/protocols.json</a>.</p></section>
+<section class="memo-sec" id="proof"><h2>Required PR proof (all 6)</h2>
+<ol>{proof}</ol>
+<p>Open the PR to <code>Fractal-Neurons/pacta</code> with the <a href="{E(BOUNTY_TEMPLATE_URL)}" target="_blank" rel="noopener">bounty_mismatch.md PR template ↗</a> (<a href="{E(BOUNTY_COMPARE_URL)}" target="_blank" rel="noopener">pre-filled PR ↗</a>). Each PR commits exactly one JSON fixture at <code data-bounty-fixture>{E(BOUNTY_FIXTURE)}</code> (keys: <a href="{E(REPO)}/blob/main/bounties/submissions/README.md" target="_blank" rel="noopener">bounties/submissions/README.md ↗</a>). Check both offline before you submit: <code>python3 tools/verify_bounty_submission.py --json {E(BOUNTY_FIXTURE)}</code> and <code>python3 tools/verify_bounty_submission.py --body PR_BODY.md</code> (deterministic field checks; maintainers re-run the dual-RPC replay and the HTTP 200 docs check).</p>
+<p><b>Apache-2.0:</b> by checking the grant box you grant Pacta by Fractal Neurons perpetual, irrevocable rights under Apache-2.0 to ingest, Base EAS-attest, publish on pacta.wtf, and commercialize the merged mismatch record.</p></section>
+<section class="memo-sec" id="rules"><h2>Anti-slop, fair-play &amp; safety rules</h2><ul>{rules}</ul></section>
+<section class="memo-sec" id="issues"><h2>Issue text (verbatim)</h2><p class="s">The four GitHub issues, word for word.</p>{issues}</section>
+</article>
+<div class="memo-foot"><span>Governance and documentation mismatches only. Exploit-sensitive vulnerabilities are never published here; they go through Immunefi or Cantina bounty programmes.</span><a href="../protocols/">Indexed protocols →</a></div>
+</main>
+{footer(count_line, reg, "../")}
+<script type="application/ld+json">{ld_json}</script>
+</body></html>
+"""
+    return head("Bounties ($100 USDC) · Pacta Chain-Feed Mismatch Challenge", "4 × $25 USDC for verified on-chain control-plane mismatches (Nov 15 – Nov 22, 2026). Paid in USDC on Base after maintainer merge.",
+                f"{BASE_URL}/bounties/", prefix="../", og_title="Pacta Chain-Feed Mismatch Challenge · $100 USDC") + "\n" + body
+
+
 def llms(idx, radar):
     c = counts(idx)
     a = idx["onchain_anchoring"]
     r = radar["refreshed_at"]
     lines = [
-        "# Pacta (by Fractal Neurons)", "",
-        f"> Free pre-execution contract and governance safety API for AI agents (launch: $0, no API key, no wallet), plus block-pinned DeFi control-plane snapshots and timelock alerts. {c['sprints']} Sprints · {c['records']} Indexed Records.", "",
+        "# Pacta by Fractal Neurons", "",
+        DISAMBIGUATION, "",
+        f"> {BRAND}: free pre-execution contract and governance safety API for AI agents (launch: $0, no API key, no wallet), plus block-pinned DeFi control-plane snapshots and timelock alerts. {coverage_line(idx)}.", "",
         "Pacta checks who can change the rules of DeFi protocols (proxy admins, timelock delays, Safe quorums, roles) and compares that with what the protocols document. Every record is a read-only on-chain observation pinned to an Ethereum Mainnet block number and canonical block hash.", "",
         "## Free API for agents (launch: $0, no API key, no wallet)",
-        f"- Remote MCP (Streamable HTTP, zero install): {MCP_URL} · Claude Code: `claude mcp add --transport http pacta {MCP_URL}` · Cursor: `{{\"mcpServers\": {{\"pacta\": {{\"url\": \"{MCP_URL}\"}}}}}}`. Tools: pacta_check_preflight, pacta_scan_control_plane, pacta_scan_timelock_op, pacta_scan_proposal_diff, pacta_get_live_timelocks (all read-only).",
+        f"- Remote MCP (Streamable HTTP, zero install): {MCP_URL} · Claude Code: `claude mcp add --transport http pacta {MCP_URL}` · Cursor: `{{\"mcpServers\": {{\"pacta\": {{\"url\": \"{MCP_URL}\"}}}}}}`. Tools ({REMOTE_TOOLS_DOC}): {', '.join(B2A.REMOTE_TOOLS)}. Local stdio server: {STDIO_TOOLS_DOC}.",
         "- " + B2A.CALLER_FIELDS_DOC,
         f"- One call: `curl -s \"{API}/v1/check/preflight?chain=ethereum&address=0x...\"` returns a verdict (IMMUTABLE_NO_ADMIN, TIMELOCK_PROTECTED, ZERO_DELAY_TIMELOCK_RISK, MULTISIG_NO_TIMELOCK, INSTANT_EOA_ADMIN_RISK, UNDEPLOYED_OR_EOA, UNCLASSIFIED_CONTRACT_CONTROLLER), a 0-100 risk score, proxy / admin / timelock breakdown and pause / blacklist / upgrade capabilities, pinned to a block hash.",
         f"- [{B2A.LOOKUP_URL}?q=ethena]({B2A.LOOKUP_URL}?q=ethena): free protocol / token name lookup (MCP tool pacta_lookup_protocol). {B2A.LOOKUP_DOC}",
+        f"- {B2A.REQUEST_DOC}",
+        f"- [{BASE_URL}/bounties/]({BASE_URL}/bounties/): {B2A.BOUNTIES_DOC}",
         f"- [{OPENAPI_URL}]({OPENAPI_URL}): OpenAPI 3.1 for ChatGPT Actions, LangChain and OpenAPI tools; every route takes GET query parameters or a POST JSON body. {RATE_LIMIT}; free during the launch (pricingMode free_launch), x402 v1 + v2 ready.",
         f"- [{BASE_URL}/protocols/]({BASE_URL}/protocols/): per-protocol control-plane safety records.",
         f"- [{BASE_URL}/integrations/vault-factories/]({BASE_URL}/integrations/vault-factories/): free building blocks for vault factories and curators (Morpho Vault V2, Euler EVK, Veda BoringVault, Lagoon, Upshift, Mellow): a Control-Plane & Role Map tab from /api/v1/protocols.json, status badges (/badges/<slug>.svg; live {API}/v1/badges/<slug>.svg), and PactaSentinelGuard.sol, a cap-increase tripwire that never blocks a decrease.", "",
@@ -1497,9 +1714,10 @@ def llms(idx, radar):
 def llms_html(idx, text):
     """docs/llms/index.html: the exact llms.txt text in a semantic HTML page (some chat URL fetchers only accept text/html)."""
     c = counts(idx)
-    count_line = f'{c["sprints"]} Sprints · {c["records"]} Indexed Records'
+    count_line = coverage_line(idx)
     reg = idx["onchain_anchoring"]["commitment_registry"]
     alt = f'<link rel="alternate" type="text/plain" href="{BASE_URL}/llms.txt" title="llms.txt (plain text)">'
+    ld = org_ld_script()
     body = f"""<body>
 {topbar("../")}
 <main id="main" class="memo-wrap">
@@ -1511,6 +1729,7 @@ def llms_html(idx, text):
 </article>
 </main>
 {footer(count_line, reg, "../")}
+{ld}
 </body></html>
 """
     return head("llms.txt · Pacta (HTML mirror)", "Pacta llms.txt as HTML: free pre-execution contract checks for AI agents, feeds, MCP and data.",
@@ -1563,12 +1782,13 @@ def main():
         w(f"protocols/{v['slug']}/index.html", protocol_page(name, v["entries"], idx, radar, digest, v["slug"]))
     w("protocols/index.html", protocols_index_page(idx, sp))
     w("integrations/vault-factories/index.html", vault_factories_page(idx, sp))
+    w("bounties/index.html", bounties_page(idx, radar))
     w("404.html", not_found_page(idx, sp))       # GitHub Pages serves it for any missing path
     w("robots.txt", ROBOTS_TXT)
     urls = ["/", "/request/", "/llms.txt", "/api/v1/index.json", "/api/v1/radar.json"] + [f"/briefs/{k}/" for k in BRIEFS] + \
         [f"/briefs/{b['slug']}/" for b in load_onboarding()["briefs"]] + (["/api/v1/onboarding.json"] if load_onboarding()["briefs"] else []) + \
         ["/api/v1/proposals.json", "/api/v1/rpc-pinned.json", "/api/v1/lookup.json", "/api/v1/protocols.json", "/integrations/vault-factories/", "/llms/", "/llms-full.txt", "/SKILL.md", "/.well-known/agent.json", "/.well-known/mcp.json",
-         "/demos/swapio-x402/", "/protocols/"] + [f"/protocols/{v['slug']}/" for v in sp.values()]
+         "/demos/swapio-x402/", "/bounties/", "/protocols/"] + [f"/protocols/{v['slug']}/" for v in sp.values()]
     w("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
       + "".join(f"  <url><loc>{BASE_URL}{u}</loc><lastmod>{today}</lastmod></url>\n" for u in urls) + "</urlset>\n")
     w(".well-known/security.txt", f"Contact: mailto:{CONTACT}\nExpires: 2027-11-13T00:00:00.000Z\nPreferred-Languages: en\n"

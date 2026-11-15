@@ -177,7 +177,7 @@ def dom_tree(text):
 
 
 def app_behaviour(appjs, request_html, index_html, row_id, beacon="", protocol_html="", protocol_slug="", notfound_html="",
-                  clearance_html="", clearance_slug="", brief_html="", brief_slug="", prefill_slug="", timelock_brief_html=""):
+                  clearance_html="", clearance_slug="", brief_html="", brief_slug="", prefill_slug="", timelock_brief_html="", protocols_index_html=""):
     """Run docs/app.js (and the docs/b.js beacon) under node against a synthetic DOM of the real pages. No network, no listener, no files."""
     node = shutil.which("node")
     if not node:
@@ -188,6 +188,7 @@ def app_behaviour(appjs, request_html, index_html, row_id, beacon="", protocol_h
                           "clearanceProtocol": dom_tree(clearance_html) if clearance_html else None, "clearanceSlug": clearance_slug,
                           "brief": dom_tree(brief_html) if brief_html else None, "briefSlug": brief_slug, "prefillSlug": prefill_slug,
                           "timelockBrief": dom_tree(timelock_brief_html) if timelock_brief_html else None,
+                          "protocolsIndex": dom_tree(protocols_index_html) if protocols_index_html else None,
                           # every published protocol slug (+ wave-2 shapes) must survive the beacon's client-side path redaction
                           "protocolSlugs": sorted(d for d in os.listdir(os.path.join(DOCS, "protocols")) if os.path.isdir(os.path.join(DOCS, "protocols", d)))})
     out = subprocess.run([node, os.path.join(ROOT, "tools", "app_harness.js")], input=payload, capture_output=True, text=True, timeout=120)
@@ -281,12 +282,14 @@ def main():
     check("classification counts sum to records", m["parameter_deltas"] + m["protective_deltas"] + m["aligned_baselines"] == n
           and all(sum(1 for e in entries if e["classification"] == k) == m[v] for k, v in
                   (("parameter_delta", "parameter_deltas"), ("protective_delta", "protective_deltas"), ("aligned_baseline", "aligned_baselines"))))
-    line = f"{sprints} Sprints · {n} Indexed Records"
+    # Batch D3 (receipt/1818): the coverage line names protocols, EAS-attested Sprint records (and their Sprints) and RPC-observed records
+    n_pin = len(json.load(open(os.path.join(DOCS, "api", "v1", "rpc-pinned.json")))["entries"])
+    line = f"53 Protocols ({n} Base EAS-Attested Records across {sprints} Sprints + {n_pin} RPC-Observed Records)"
     for f in ("docs/index.html", "docs/llms.txt", "README.md"):
         t = read(f)
         nums_s = set(re.findall(r"\b(\d+) Sprints\b", t))
-        nums_r = set(re.findall(r"\b(\d+) (?:Indexed )?Records\b", t))
-        check(f"count parity in {f}", line in t and nums_s <= {str(sprints)} and nums_r <= {str(n)},
+        nums_r = set(re.findall(r"\b(\d+) (?:Indexed |Base EAS-Attested )?Records\b", t))
+        check(f"count parity in {f}", line in t and nums_s <= {str(sprints)} and nums_r <= {str(n)} and set(re.findall(r"\b(\d+) RPC-Observed Records\b", t)) <= {str(n_pin)},
               f"sprints {sorted(nums_s)} records {sorted(nums_r)}")
     rows = len(re.findall(r'<tr data-class="', page))
     check("homepage matrix renders every record", rows == n, f"{rows} rows")
@@ -474,7 +477,8 @@ def main():
                         clearance_html=pages.get(os.path.join("protocols", "across-protocol-hubpool", "index.html"), ""), clearance_slug="across-protocol-hubpool",
                         brief_html=pages.get(os.path.join("briefs", "kerne-kusd-base", "index.html"), ""), brief_slug="kerne-kusd-base",
                         prefill_slug="across-protocol-hubpool",
-                        timelock_brief_html=pages.get(os.path.join("briefs", "ethena-ops-0x0ca0-0x1fe5", "index.html"), ""))
+                        timelock_brief_html=pages.get(os.path.join("briefs", "ethena-ops-0x0ca0-0x1fe5", "index.html"), ""),
+                        protocols_index_html=pages.get(os.path.join("protocols", "index.html"), ""))
     expected = ["default_is_clearance", "default_settlement_is_invoice", "clearance_pay_panel_shown", "invoice_hides_tx_and_direct",
                 "clearance_github_href", "clearance_github_tier_exact", "clearance_brief_has_price_and_invoice", "pay_summary_tracks_tier",
                 "direct_shows_tx_and_treasury", "tx_valid_in_brief", "tx_valid_in_github",
@@ -831,7 +835,7 @@ def main():
     pv_ = json.loads(read("docs/api/v1/rpc-pinned.json"))
     w2_pages = {e["slug"]: read(f'docs/protocols/{e["slug"]}/index.html') for e in pv_["entries"]}
     hub_ = read("docs/protocols/index.html")
-    hub_rows = {sl: re.search(rf'<tr><td><a href="{sl}/">.*?</tr>', hub_).group(0) for sl in w2_pages}
+    hub_rows = {sl: re.search(rf'<tr[^>]*><td><a href="{sl}/">.*?</tr>', hub_).group(0) for sl in w2_pages}
     f1_ok = {
         "all 20 rpc_observed": [e["classification"] for e in pv_["entries"]] == ["rpc_observed"] * 20,
         "documentation not compared": all(e.get("documentation_comparison") == "not_assessed" and e["documented_delay_seconds"] is None
@@ -842,11 +846,11 @@ def main():
         "defined in llms.txt + llms-full.txt": all("rpc_observed (on-chain control plane pinned at an archive block height" in read(f) or
                                                    "Classification rpc_observed: on-chain control plane pinned at an archive block height" in read(f)
                                                    for f in ("docs/llms.txt", "docs/llms-full.txt")),
-        "mcp.json packageVersion 0.1.3": json.loads(read("docs/.well-known/mcp.json")).get("packageVersion") == "0.1.3"
+        "mcp.json packageVersion 0.1.4": json.loads(read("docs/.well-known/mcp.json")).get("packageVersion") == "0.1.4"
                                          == json.loads(read("packages/mcp-server/package.json"))["version"],
-        "llms-full names v0.1.3": "@pacta/mcp-server v0.1.3" in read("docs/llms-full.txt"),
+        "llms-full names v0.1.4": "@pacta/mcp-server v0.1.4" in read("docs/llms-full.txt"),
     }
-    check("Codex F1: all 20 RPC-pinned records are classification rpc_observed with documentation linked but not compared (no 'publishes' claim, no documented delays); their pages and /protocols/ rows show only the neutral 'RPC-observed baseline' badge; rpc_observed defined in llms.txt + llms-full.txt; mcp.json packageVersion 0.1.3; llms-full names v0.1.3",
+    check("Codex F1: all 20 RPC-pinned records are classification rpc_observed with documentation linked but not compared (no 'publishes' claim, no documented delays); their pages and /protocols/ rows show only the neutral 'RPC-observed baseline' badge; rpc_observed defined in llms.txt + llms-full.txt; mcp.json packageVersion 0.1.4; llms-full names v0.1.4",
           all(f1_ok.values()), str([k for k, v in f1_ok.items() if not v]))
     # free-tier MCP caller attribution (task-06d4550a8b0f): documented on every agent surface; the browser checker names itself
     roles_ = ["autonomous_agent", "defi_developer", "risk_curator_analyst", "security_researcher", "protocol_team", "institutional_allocator", "individual_user"]
@@ -923,7 +927,7 @@ def main():
           and all("not globally atomic without Durable Objects" in read(f) for f in ("docs/.well-known/agent.json", "docs/.well-known/mcp.json", "docs/llms.txt", "docs/llms-full.txt")),
           str(f1_bad))
     remote_tools = ["pacta_lookup_protocol", "pacta_check_preflight", "pacta_scan_control_plane", "pacta_scan_timelock_op", "pacta_scan_proposal_diff",
-                    "pacta_get_live_timelocks"]
+                    "pacta_get_live_timelocks", "pacta_submit_request"]
     man_ = json.loads(read("docs/.well-known/mcp.json"))
     card_ = json.loads(read("docs/.well-known/agent.json"))
     man_remote = next((t_ for t_ in man_.get("transports", []) if t_.get("type") == "streamable-http"), {})
@@ -938,7 +942,7 @@ def main():
         "@pacta/mcp-server": 'name: "pacta_check_preflight"' in srv_src and "PAID_ROUTES.checkPreflight" in srv_src,
         "SKILL.md copies": read("packages/mcp-server/SKILL.md") == primary["docs/SKILL.md"],
     }
-    check("remote MCP: 6 tools (pacta_lookup_protocol, then pacta_check_preflight) on mcp.json, agent.json (free_launch pricing), SKILL.md, llms.txt, llms-full.txt; @pacta/mcp-server ships pacta_check_preflight; SKILL.md copies byte-identical",
+    check("remote MCP: 6 read-only tools + pacta_submit_request (pacta_lookup_protocol, then pacta_check_preflight) on mcp.json, agent.json (free_launch pricing), SKILL.md, llms.txt, llms-full.txt; @pacta/mcp-server ships pacta_check_preflight; SKILL.md copies byte-identical",
           all(surfaces5.values()), str({k: v for k, v in surfaces5.items() if not v}))
 
     # ---- protocol / token lookup (task-14e685be73f9): docs/api/v1/lookup.json == packages/mcp-server/src/lookup.mjs, exact parity with the feeds
@@ -988,14 +992,14 @@ def main():
                                                  for f in ("docs/SKILL.md", "docs/llms.txt", "docs/llms-full.txt"))
             and card_["endpoints"].get("lookup") == API_ + "/v1/protocols/lookup" and man_.get("lookup", {}).get("tool") == "pacta_lookup_protocol"
             and "pacta_lookup_protocol" in read("docs/llms/index.html") and f"{BS.BASE_URL}/api/v1/lookup.json" in read("docs/sitemap.xml"),
-        "@pacta/mcp-server 0.1.3 everywhere": {json.loads(read("packages/mcp-server/package.json"))["version"], json.loads(read("packages/mcp-server/server.json"))["version"],
+        "@pacta/mcp-server 0.1.4 everywhere": {json.loads(read("packages/mcp-server/package.json"))["version"], json.loads(read("packages/mcp-server/server.json"))["version"],
                                                json.loads(read("packages/mcp-server/server.json"))["packages"][0]["version"], json.loads(read("packages/mcp-server/server.remote.json"))["version"],
-                                               man_.get("packageVersion")} == {"0.1.3"}
-            and 'version: "0.1.3"' in read("docs/SKILL.md") and 'version: "0.1.3"' in read("packages/mcp-server/src/server.mjs"),
+                                               man_.get("packageVersion")} == {"0.1.4"}
+            and 'version: "0.1.4"' in read("docs/SKILL.md") and 'version: "0.1.4"' in read("packages/mcp-server/src/server.mjs"),
     }
     check("protocol / token lookup: docs/api/v1/lookup.json (53 protocols + 8 briefs; 33 EAS-attested, 20 rpc_observed / not_assessed) regenerates byte-identically, "
           "equals packages/mcp-server/src/lookup.mjs, matches index.json / rpc-pinned.json / onboarding.json / radar.json record by record; search probes "
-          "(ethena, usde, aave, moonwell, kusd, uniswap, listing, chain=base, overlong); documented on SKILL.md / llms / agent.json / mcp.json / sitemap; @pacta/mcp-server 0.1.3",
+          "(ethena, usde, aave, moonwell, kusd, uniswap, listing, chain=base, overlong); documented on SKILL.md / llms / agent.json / mcp.json / sitemap; @pacta/mcp-server 0.1.4",
           all(lk_ok.values()), str([k for k, v in lk_ok.items() if not v]))
 
     # ---- Phase C: first-party beacon, 404, governance forum digest, MCP Registry workflow, root Dockerfile ----
@@ -1194,12 +1198,14 @@ def main():
             re.search(r'^USER node$\n(?:.*\n)*?^CMD \["node", "/app/bin/pacta-mcp\.mjs"\]$', read(f), re.M) is not None and not re.search(r"^ENTRYPOINT", read(f), re.M)
             for f in ("Dockerfile", "packages/mcp-server/Dockerfile")),
         "glama maintainers": json.loads(read("glama.json"))["maintainers"] == ["pacta-fractal-neurons"],
-        "6 remote / 10 stdio tools": "6 read-only tools, led by `pacta_lookup_protocol`" in read("README.md") and "10 read-only tools" in read("README.md")
-            and "`pacta_live_timelocks`" in read("README.md") and "6 read-only tools" in read("smithery.yaml")
-            and "Remote MCP (6 read-only tools)" in home and "Remote MCP (6 read-only tools)" in req_page,
+        "6 + 1 remote / 10 + 1 stdio tools": "6 read-only inspection tools + 1 opt-in coverage/feature request tool (`pacta_submit_request`), led by `pacta_lookup_protocol`" in read("README.md")
+            and "10 read-only inspection tools + 1 opt-in request tool" in read("README.md")
+            and "`pacta_live_timelocks`" in read("README.md") and "6 read-only inspection tools led by pacta_lookup_protocol + 1 opt-in request tool" in read("smithery.yaml")
+            and "Remote MCP (6 read-only inspection tools + 1 opt-in coverage/feature request tool (pacta_submit_request))" in home
+            and "Remote MCP (6 read-only inspection tools + 1 opt-in coverage/feature request tool (pacta_submit_request))" in req_page,
         "no stale 5-tool strings": not stale5,
     }
-    check("C1: root + package Dockerfile run as USER node with CMD [node, /app/bin/pacta-mcp.mjs] (Glama mcp-proxy), glama.json maintainers [pacta-fractal-neurons], 6 remote / 10 stdio read-only tools everywhere, 0 stale '5 read-only tools' strings",
+    check("C1: root + package Dockerfile run as USER node with CMD [node, /app/bin/pacta-mcp.mjs] (Glama mcp-proxy), glama.json maintainers [pacta-fractal-neurons], 6 + 1 remote / 10 + 1 stdio tools everywhere, 0 stale '5 read-only tools' strings",
           all(c1.values()), f"{[k for k, v in c1.items() if not v]} stale {stale5[:4]}")
 
     # C2: post-ETA state from radar.json; READY never rendered as executed; live hydrate (harness)
@@ -1299,6 +1305,91 @@ def main():
     }
     check("C5: api/v1/protocols.json (53: 33 eas_attested / 20 rpc_observed not_assessed, badge tiers, Sprint ids + EAS UIDs, pinned surfaces) regenerates byte-identically; /integrations/vault-factories/; packages/sentinel-guard (never blocks a decrease); linked in llms.txt, llms-full.txt, /llms/, sitemap; robots.txt 63 B",
           all(c5.values()), str([k for k, v in c5.items() if not v]))
+
+    # ================= Batch D3 + E1 (task-66ff0d53564a) =================
+    import build_b2a_feeds as B2AV
+    import verify_bounty_submission as VBS
+    agent_docs = {f: read(f) for f in ("docs/llms.txt", "docs/llms-full.txt", "docs/llms/index.html", "docs/SKILL.md", "README.md", "tools/build_site.py",
+                                       "packages/mcp-server/README.md", "packages/mcp-server/SKILL.md")}
+    lds = [m for t in pages.values() for m in re.findall(r'<script type="application/ld\+json">(.*?)</script>', t, re.S)]
+    brand_hits = sorted(f for f, t in list(agent_docs.items()) + [("JSON-LD", "\n".join(lds))] if re.search(r"\bpacta\s+protocol", t, re.I))
+    org = [o for o in (json.loads(x) for x in lds) if o.get("@type") == "Organization"]
+    cov = BS.coverage_line(idx_)
+    d3 = {
+        "0 'Pacta Protocol' self-descriptions (llms, SKILL, README, build_site, JSON-LD)": not brand_hits,
+        "disambiguation line in llms.txt / llms-full.txt / /llms/ / README": all(B2AV.DISAMBIGUATION in read(f) or html.escape(B2AV.DISAMBIGUATION, quote=False) in read(f)
+                                                                              for f in ("docs/llms.txt", "docs/llms-full.txt", "docs/llms/index.html", "README.md", "docs/SKILL.md")),
+        "Organization JSON-LD disambiguatingDescription (home + /llms/)": bool(org) and all(o["disambiguatingDescription"] == B2AV.DISAMBIGUATION for o in org)
+            and '"disambiguatingDescription"' in read("docs/index.html") and '"disambiguatingDescription"' in read("docs/llms/index.html"),
+        "coverage line from the data": cov == "53 Protocols (37 Base EAS-Attested Records across 14 Sprints + 20 RPC-Observed Records)"
+            and cov in read("README.md") and all(cov in t for r, t in pages.items() if 'class="ftr"' in t) and f"{cov}." in read("docs/llms.txt"),
+        "0 stale 'Indexed Records' lines": not [r for r, t in pages.items() if "Indexed Records" in t] and "Indexed Records" not in read("README.md")
+            and "Indexed Records" not in read("docs/llms.txt"),
+        "6 + 1 remote / 10 + 1 stdio wording": all(B2AV.REMOTE_TOOLS_DOC in read(f) for f in ("docs/llms.txt", "docs/llms-full.txt", "docs/SKILL.md"))
+            and all(B2AV.STDIO_TOOLS_DOC in read(f) for f in ("docs/llms.txt", "docs/llms-full.txt"))
+            and not re.search(r"all read-only|Everything is read-only", read("docs/llms.txt") + read("docs/SKILL.md") + read("docs/llms-full.txt")),
+        "mcp.json lists 7 remote tools + readOnly flags": man_["transport"]["tools"] == B2AV.REMOTE_TOOLS and len(B2AV.REMOTE_TOOLS) == 7
+            and [t["name"] for t in man_["tools"] if not t["readOnly"]] == ["pacta_submit_request"],
+        "radar: live mainnet note + Etherscan links": "All queued operations are live Ethereum Mainnet timelock reads (zero demo data)" in home
+            and all(f'https://etherscan.io/address/{it["timelock"]}' in home for it in rad["items"])
+            and f'https://etherscan.io/block/{rad["refreshed_at"]["block_number"]}' in home,
+        "GitHub repo link in every header": all(f'<a class="gh" href="{BS.REPO}"' in t for r, t in pages.items() if 'class="topbar"' in t),
+        "MCP recipes (Claude Code / OpenAI Agents SDK / LangChain, <= 10 lines) in README + SKILL.md": all(code in read("README.md") and code in read("docs/SKILL.md")
+                                                                                                         and len(code.splitlines()) <= 10 for _, _, code in B2AV.MCP_RECIPES)
+            and [t for t, _, _ in B2AV.MCP_RECIPES] == ["Claude Code", "OpenAI Agents SDK (Python)", "LangChain (langchain-mcp-adapters)"],
+        "/protocols/ filter: input + 6 pills, data attrs on 53 rows": all(f'data-pfilter="{k}"' in hub_ for k in ("all", "aligned", "parameter_delta", "rpc_observed", "ethereum", "base"))
+            and 'id="proto-q"' in hub_ and len(re.findall(r'<tr data-ptier="(?:aligned|parameter_delta|rpc_observed)" data-pchains="[a-z ]+" data-psearch="[^"]*">', hub_)) == 53,
+        "/protocols/ filter: textContent / hidden only": (lambda m: bool(m) and not re.search(r"innerHTML|outerHTML|insertAdjacentHTML|document\.write|fetch\(", m.group(0)))(
+            re.search(r"function initProtocolFilter\(\) \{.*?\n  \}\n", appjs, re.S)),
+        "/protocols/ filter behaviour (harness)": all(res.get(k) is True for k in ("pfilter_initial_all", "pfilter_pills_exact", "pfilter_text_search",
+                                                                                   "pfilter_combined", "pfilter_inert", "pfilter_reset")),
+    }
+    check("D3: v0.1.4 brand / RAG disambiguation (0 'Pacta Protocol', exact disambiguation line, Organization JSON-LD), data-derived coverage line, 6 + 1 / 10 + 1 tools, "
+          "#radar live-mainnet note with Etherscan links, GitHub link in the header, MCP recipes, /protocols/ client-side filter (text only)",
+          all(d3.values()), f"{[k for k, v in d3.items() if not v]} brand {brand_hits}")
+
+    bounty = read("docs/bounties/index.html")
+    bd = BS.load_bounties()
+    tpl = read(".github/PULL_REQUEST_TEMPLATE/bounty_mismatch.md")
+    links = {"README.md": read("README.md"), "docs/llms.txt": read("docs/llms.txt"), "docs/llms-full.txt": read("docs/llms-full.txt"),
+             "docs/llms/index.html": read("docs/llms/index.html"), "docs/sitemap.xml": read("docs/sitemap.xml")}
+    e1 = {
+        "4 x $25 USDC = $100 USDC": [i["rewardUsdc"] for i in bd["issues"]] == [25] * 4 and bd["program"]["totalHardCapUsdc"] == 100
+            and bounty.count('<td class="num">$25 USDC</td>') == 4 and "4 × $25 USDC = $100 USDC" in bounty and "Total hard cap: <b>$100 USDC</b>" in bounty,
+        "sprint Nov 15 – Nov 22, 2026 (168 h exactly)": "Nov 15 – Nov 22, 2026" in bounty and bd["program"]["sprintWindow"] == "2026-11-15T00:00:00Z to 2026-11-22T00:00:00Z"
+            and bd["program"]["sprintWindow"] in bounty and BS.bounty_hours(bd["program"]) == 168 and "Nov 15 00:00 UTC – Nov 22 00:00 UTC, 2026" in bounty and ", 168h)" in bounty
+            and hashlib.sha256(read("tools/bounty_issues.json", "rb")).hexdigest() == "874df3fd179ad241e3f2e4a7e837e9aa07f462a8a842b25fb1803049a6b84954",
+        "issues #21-#24 via BOUNTY_ISSUE_URLS": BS.BOUNTY_ISSUE_URLS == {n: f"https://github.com/Fractal-Neurons/pacta/issues/{20 + n}" for n in (1, 2, 3, 4)}
+            and all(f'href="{u}"' in bounty for u in BS.BOUNTY_ISSUE_URLS.values()),
+        "slot scopes": all(html.escape(v) in bounty for v in BS.BOUNTY_SLOTS.values()),
+        "issue text verbatim (titles + bodies)": all(html.escape(i["title"], quote=False) in bounty and BS.md_html(i["body"]) in bounty for i in bd["issues"]),
+        "truthful payout (receipt/1827), treasury an EOA, never a Safe": BS.BOUNTY_PAYOUT == (
+            "Paid in USDC on Base Mainnet within 48h of maintainer merge from Pacta treasury (0x4348DF1BEFAffcbA248B5118B1b782B1B2bdEd14) once the winner "
+            "comments their public Base 0x... address on the merged PR. Funds are not pre-escrowed in an automated contract; zero automatic on-chain payouts.")
+            and BS.BOUNTY_TITLE == "Pacta Chain-Feed Mismatch Challenge ($100 USDC Hard-Cap · 7-Day Sprint Nov 15 – Nov 22, 2026)"
+            and html.escape(BS.BOUNTY_PAYOUT, quote=False) in bounty
+            and "externally owned account (EOA)" in bounty and not re.search(r"0x4348DF1BEFAffcbA248B5118B1b782B1B2bdEd14.{0,160}\b(?:Safe|multisig)\b", bounty, re.S),
+        "quickstart + Apache-2.0 + rules": f"claude mcp add --transport http pacta {BS.MCP_URL}" in bounty and "Apache-2.0" in bounty
+            and all(html.escape(k, quote=False) in bounty for k, _ in BS.BOUNTY_RULES) and len(BS.BOUNTY_PROOF) == 6,
+        "linked: README, llms.txt, llms-full.txt, /llms/, sitemap, nav + footer": all("https://pacta.wtf/bounties/" in t for t in links.values())
+            and all('bounties/">Bounties ($100)</a>' in t for r, t in pages.items() if 'class="topbar"' in t and 'class="ftr"' in t),
+        "robots.txt exact 4 lines / 63 B": read("docs/robots.txt") == BS.ROBOTS_TXT and len(read("docs/robots.txt").encode()) == 63 and len(read("docs/robots.txt").splitlines()) == 4,
+        "PR template: 6 sections + Apache-2.0 box": all(h in tpl for h in ("## 1. chainId & contract address", "## 2. Pinned finalized block", "## 3. Deterministic dual-RPC cast proof",
+                                                                       "## 4. Live official documentation claim (HTTP 200)", "## 5. Pacta MCP output",
+                                                                       "## 6. Apache-2.0 contribution & commercialization grant"))
+            and "- [ ] " + VBS.GRANT in tpl and "blockHash" in tpl and "--block <blockNumber>" in tpl,
+        "validator self-test + empty template rejected": VBS.self_test() and len(VBS.validate(VBS.parse_body(tpl))) >= 10,
+        "canonical fixture path + agent-assisted eligibility (#23 addendum)": "bounties/submissions/slot-&lt;slot&gt;-&lt;protocol-slug&gt;.json" in bounty
+            and "bounties/submissions/slot-<slot>-<protocol-slug>.json" in tpl and os.path.exists(os.path.join(ROOT, "bounties", "submissions", "README.md"))
+            and all(k in read("bounties/submissions/README.md") for k in VBS.FIELDS_JSON)
+            and "--json bounties/submissions/slot-<slot>-<protocol-slug>.json" in read("bounties/submissions/README.md")
+            and all("Human, agent-assisted, and autonomous-agent submissions are equally eligible under the exact same deterministic dual-RPC archive replay" in t
+                    for t in (bounty, read("bounties/submissions/README.md")))
+            and "Agent-assisted &amp; autonomous-agent submissions welcome" in bounty,
+    }
+    check("E1: pacta.wtf/bounties/ ($100 USDC hard cap = 4 x $25 USDC, Nov 15 – Nov 22, 2026, issues #21-#24, issue text verbatim, truthful post-merge Base USDC payout "
+          "from the Pacta treasury EOA, Apache-2.0, rules), linked everywhere; PR template + deterministic validator (self-test); robots.txt 63 B",
+          all(e1.values()), str([k for k, v in e1.items() if not v]))
 
     scope = [p for p in glob.glob(os.path.join(ROOT, "docs", "**", "*"), recursive=True) + glob.glob(os.path.join(ROOT, "audits", "**", "*"), recursive=True)
              + glob.glob(os.path.join(ROOT, "tools", "**", "*"), recursive=True) + [os.path.join(ROOT, "README.md"), os.path.abspath(__file__)]

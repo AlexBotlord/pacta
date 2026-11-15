@@ -1,0 +1,180 @@
+{
+  "slot": 2,
+  "issue": "https://github.com/Fractal-Neurons/pacta/issues/22",
+  "chainId": 1,
+  "contractAddress": "0xFE11a5009f2121622271e7dd0FD470264e076af6",
+  "protocol": "Resupply",
+  "tvlReference": "https://api.llama.fi/protocol/resupply",
+  "pactaSlug": null,
+  "blockNumber": 26418318,
+  "blockHash": "0xc7b09992970509aead9300af1288d5c3eb82f6235cc00d4bccfc93898fe928e2",
+  "priorPin": null,
+  "castCommands": [
+    "cast call 0xFE11a5009f2121622271e7dd0FD470264e076af6 \"getOwners()\" --block 26418318 --rpc-url https://rpc.mevblocker.io",
+    "cast call 0xFE11a5009f2121622271e7dd0FD470264e076af6 \"getOwners()\" --block 26418318 --rpc-url https://gateway.tenderly.co/public/mainnet",
+    "cast call 0xFE11a5009f2121622271e7dd0FD470264e076af6 \"getOwners()\" --block 26418318 --rpc-url https://eth.drpc.org",
+    "cast call 0xFE11a5009f2121622271e7dd0FD470264e076af6 \"getOwners()\" --block 26418318 --rpc-url https://eth-mainnet.public.blastapi.io",
+    "cast call 0xFE11a5009f2121622271e7dd0FD470264e076af6 \"getThreshold()\" --block 26418318 --rpc-url https://rpc.mevblocker.io",
+    "cast call 0xFE11a5009f2121622271e7dd0FD470264e076af6 \"getThreshold()\" --block 26418318 --rpc-url https://gateway.tenderly.co/public/mainnet",
+    "cast call 0xA4745e0B1F40ab3DCFD98F381835De591a8974E3 \"guardian()\" --block 26418318 --rpc-url https://rpc.mevblocker.io",
+    "cast call 0x4CF97a55d58Aad14C493A46C8151a0BFffb10403 \"manager()\" --block 26418318 --rpc-url https://gateway.tenderly.co/public/mainnet"
+  ],
+  "rpcOutputs": {
+    "a": "0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000050000000000000000000000004d1b56274c01481c0312fca332016d83512beee3000000000000000000000000bd0a74e51729a4d0b92742e67183c4cbc97bca920000000000000000000000001101c94c6001e4074ad4dbad5ad08117979ca9d40000000000000000000000001b1d2806de441eaaac7f6677bd15dfa937a5b97c000000000000000000000000aac0aa431c237c2c0b5f041c8e59b3f1a43ac78f",
+    "b": "0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000050000000000000000000000004d1b56274c01481c0312fca332016d83512beee3000000000000000000000000bd0a74e51729a4d0b92742e67183c4cbc97bca920000000000000000000000001101c94c6001e4074ad4dbad5ad08117979ca9d40000000000000000000000001b1d2806de441eaaac7f6677bd15dfa937a5b97c000000000000000000000000aac0aa431c237c2c0b5f041c8e59b3f1a43ac78f"
+  },
+  "docsUrl": "https://docs.resupply.finance/faq/multisig-and-admin-permissions.md",
+  "docsQuote": "## Multisig Members (3 of 4)",
+  "mcpOutput": {
+    "schema": "pacta.protocol_lookup.v1",
+    "query": "Resupply",
+    "filters": {
+      "chain": "ethereum",
+      "kind": "all",
+      "limit": 10
+    },
+    "totalCatalog": {
+      "protocols": 53,
+      "briefs": 8,
+      "easAttestedProtocols": 33,
+      "rpcObservedProtocols": 20
+    },
+    "totalMatches": 0,
+    "count": 0,
+    "results": [],
+    "catalog": "https://pacta.wtf/api/v1/lookup.json",
+    "nextStep": "Pass a result's preflightArgs ({chain, address}) to pacta_check_preflight (or pacta_scan_control_plane) for a live check.",
+    "note": "easAttested protocols are Base-EAS-anchored records that compare on-chain state with the protocol's documentation. rpc_observed protocols pin the on-chain control plane over archive JSON-RPC and do not assess the documentation (documentationComparison: not_assessed). Briefs are block-pinned verification briefs. preflightArgs re-read the contract live.",
+    "hint": "No match. Call again with an empty query to list what Pacta tracks, or pass a known 0x contract address straight to pacta_check_preflight.",
+    "coverage_gap_hint": "Target is not yet indexed or fully classified. Ask the user if they want you to queue coverage or request this capability via pacta_submit_request (free community queue, or 24h priority clearance for issuers).",
+    "scanControlPlaneSafeAt26418318": {
+      "chain": "ethereum",
+      "address": "0xFE11a5009f2121622271e7dd0FD470264e076af6",
+      "block": {
+        "number": 26418318,
+        "hash": "0xc7b09992970509aead9300af1288d5c3eb82f6235cc00d4bccfc93898fe928e2",
+        "timestamp": 1794720623
+      },
+      "codeBytes": 171,
+      "eip1967": {
+        "implementation": null,
+        "admin": null,
+        "beacon": null
+      },
+      "owner": null,
+      "probedStatus": {
+        "eip1967Slots": "ok",
+        "owner": "reverted_or_absent",
+        "safeGetters": "ok"
+      },
+      "safe": {
+        "threshold": 3,
+        "owners": [
+          "0x4D1b56274C01481C0312fCa332016d83512BEEe3",
+          "0xBd0a74e51729a4D0B92742e67183C4cBc97bCA92",
+          "0x1101c94c6001e4074Ad4dBAd5Ad08117979cA9D4",
+          "0x1B1D2806dE441eaaAc7f6677bd15DFa937A5b97c",
+          "0xAAc0aa431c237C2C0B5f041c8e59B3f1a43aC78F"
+        ],
+        "ownerCount": 5,
+        "guard": null
+      },
+      "upgradeAuthority": null,
+      "ownerPrincipal": null,
+      "riskFlags": [
+        "not_eip1967_upgradeable"
+      ],
+      "summary": "OBSERVED: No EIP-1967, Ownable, or Safe single-key control detected in probed standard slots/selectors (custom AccessControl/RolesAuthority not excluded)"
+    },
+    "preflightSafeAt26418318": {
+      "schema": "pacta.preflight_check.v1",
+      "chain": "ethereum",
+      "chainId": 1,
+      "address": "0xFE11a5009f2121622271e7dd0FD470264e076af6",
+      "pinnedBlock": 26418318,
+      "pinnedBlockHash": "0xc7b09992970509aead9300af1288d5c3eb82f6235cc00d4bccfc93898fe928e2",
+      "blockTimestamp": 1794720623,
+      "verdict": "IMMUTABLE_NO_ADMIN",
+      "riskScore": 0,
+      "isContract": true,
+      "isProxy": false,
+      "proxyType": null,
+      "implementation": null,
+      "beacon": null,
+      "hasAdminSlot": false,
+      "canUpgradeZeroDelay": false,
+      "capabilities": {
+        "pause": false,
+        "blacklist": false,
+        "upgrade": false
+      },
+      "paused": null,
+      "controller": {
+        "address": null,
+        "kind": "none",
+        "safeThreshold": null,
+        "timelockDelaySec": null,
+        "source": null
+      },
+      "roleAdminMembers": null,
+      "codeBytes": 171,
+      "method": "Batched JSON-RPC reads pinned to the block hash (EIP-1898); EIP-1967 / EIP-1822 / beacon proxies; capabilities from PUSH4 selectors in proxy + implementation bytecode (heuristic).",
+      "summary": "No proxy (EIP-1967, EIP-1822 or beacon) and no owner(), admin(), authority() or AccessControl admin found: immutable as far as these standard surfaces show.",
+      "coverage_gap_hint": "Target is not yet indexed or fully classified. Ask the user if they want you to queue coverage or request this capability via pacta_submit_request (free community queue, or 24h priority clearance for issuers)."
+    },
+    "scanControlPlaneGuardianOperatorProxyAt26418318": {
+      "chain": "ethereum",
+      "address": "0xA4745e0B1F40ab3DCFD98F381835De591a8974E3",
+      "block": {
+        "number": 26418318,
+        "hash": "0xc7b09992970509aead9300af1288d5c3eb82f6235cc00d4bccfc93898fe928e2",
+        "timestamp": 1794720623
+      },
+      "codeBytes": 89,
+      "eip1967": {
+        "implementation": "0x74C85620F1459862834A947dB9441911BCEBF066",
+        "admin": null,
+        "beacon": null
+      },
+      "owner": "0xc07e000044F95655c11fda4cD37F70A94d7e0a7d",
+      "probedStatus": {
+        "eip1967Slots": "ok",
+        "owner": "ok",
+        "safeGetters": "reverted_or_absent"
+      },
+      "upgradeAuthority": {
+        "address": "0xc07e000044F95655c11fda4cD37F70A94d7e0a7d",
+        "codeBytes": 2372,
+        "type": "contract",
+        "owner": null,
+        "probedStatus": {
+          "safeGetters": "reverted_or_absent",
+          "timelockDelay": "reverted_or_absent",
+          "owner": "reverted_or_absent"
+        }
+      },
+      "ownerPrincipal": {
+        "address": "0xc07e000044F95655c11fda4cD37F70A94d7e0a7d",
+        "codeBytes": 2372,
+        "type": "contract",
+        "owner": null,
+        "probedStatus": {
+          "safeGetters": "reverted_or_absent",
+          "timelockDelay": "reverted_or_absent",
+          "owner": "reverted_or_absent"
+        }
+      },
+      "riskFlags": [
+        "upgradeable"
+      ],
+      "summary": "OBSERVED: No EIP-1967, Ownable, or Safe single-key control detected in probed standard slots/selectors (custom AccessControl/RolesAuthority not excluded)"
+    }
+  },
+  "apacheGrant": true,
+  "rules": [
+    true,
+    true,
+    true,
+    true
+  ]
+}

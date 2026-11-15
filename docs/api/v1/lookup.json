@@ -693,6 +693,48 @@
   },
   {
    "baseEasUids": [
+    "0xbeb412dfc350f879f816a5cb001b53257a3ee03c12cf1d8e2c15a070141ed8c7"
+   ],
+   "category": "Synthetic Dollar",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "aligned_baseline",
+   "controllerAddress": "0xc8CF6D7991f15525488b2A83Df53468D682Ba4B0",
+   "controllerKind": "timelock",
+   "documentationComparison": "compared",
+   "documentedDelaySeconds": 0,
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "kind": "protocol",
+   "name": "Falcon Finance (USDf / sUSDf)",
+   "observedDelaySeconds": 0,
+   "preflightArgs": {
+    "address": "0xc8CF6D7991f15525488b2A83Df53468D682Ba4B0",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xc8CF6D7991f15525488b2A83Df53468D682Ba4B0",
+   "slug": "falcon-finance-usdf-susdf",
+   "sprints": [
+    17
+   ],
+   "surfaces": [
+    {
+     "classification": "aligned_baseline",
+     "id": "falcon-susdf-zero-cooldown-instant-unstake-s17",
+     "surface": "sUSDf cooldownDuration() = 0 — instant unstaking to USDf",
+     "targetContract": "0xc8CF6D7991f15525488b2A83Df53468D682Ba4B0",
+     "targetLabel": "Falcon sUSDf vault"
+    }
+   ],
+   "targetLabel": "Falcon sUSDf vault",
+   "tokens": [
+    "USDf",
+    "sUSDf"
+   ],
+   "url": "https://pacta.wtf/protocols/falcon-finance-usdf-susdf/"
+  },
+  {
+   "baseEasUids": [
     "0x804289d4357b0a8d5a360911ec450c13ca36c4422d1e811c4c7040ef7d2628e5"
    ],
    "category": "Modular Lending & DEX Vaults",
@@ -1048,6 +1090,56 @@
     "LBTC"
    ],
    "url": "https://pacta.wtf/protocols/lombard-lbtc/"
+  },
+  {
+   "baseEasUids": [
+    "0xbeb412dfc350f879f816a5cb001b53257a3ee03c12cf1d8e2c15a070141ed8c7"
+   ],
+   "category": "Stablecoin Infrastructure",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "aligned_baseline",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
+   "documentedDelaySeconds": null,
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "kind": "protocol",
+   "name": "M0 Protocol ($M)",
+   "observedDelaySeconds": null,
+   "preflightArgs": {
+    "address": "0x866A2BF4E572CbcF37D5071A7a58503Bfb36be1b",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x866A2BF4E572CbcF37D5071A7a58503Bfb36be1b",
+   "slug": "m0-protocol-m",
+   "sprints": [
+    17
+   ],
+   "surfaces": [
+    {
+     "classification": "aligned_baseline",
+     "id": "m0-mtoken-no-eip1967-proxy-immutable-s17",
+     "surface": "MToken: no EIP-1967 proxy slots (immutable core logic)",
+     "targetContract": "0x866A2BF4E572CbcF37D5071A7a58503Bfb36be1b",
+     "targetLabel": "M0 MToken ($M)"
+    },
+    {
+     "classification": "aligned_baseline",
+     "id": "m0-ttg-registrar-governors-match-docs-s17",
+     "surface": "TTG Registrar governors = the docs-listed Standard / Emergency / Zero Governor",
+     "targetContract": "0x119FbeeDD4F4f4298Fb59B720d5654442b81ae2c",
+     "targetLabel": "M0 TTG Registrar"
+    }
+   ],
+   "targetLabel": "M0 MToken ($M)",
+   "tokens": [
+    "M",
+    "M0",
+    "MToken"
+   ],
+   "url": "https://pacta.wtf/protocols/m0-protocol-m/"
   },
   {
    "baseEasUids": [
@@ -1685,6 +1777,55 @@
   },
   {
    "baseEasUids": [
+    "0xbeb412dfc350f879f816a5cb001b53257a3ee03c12cf1d8e2c15a070141ed8c7"
+   ],
+   "category": "Bitcoin Reserve / Wrapped BTC",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "mixed",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
+   "documentedDelaySeconds": null,
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "kind": "protocol",
+   "name": "Solv Protocol (SolvBTC)",
+   "observedDelaySeconds": null,
+   "preflightArgs": {
+    "address": "0x7A56E1C57C7475CCf742a1832B028F0456652F97",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x7A56E1C57C7475CCf742a1832B028F0456652F97",
+   "slug": "solv-protocol-solvbtc",
+   "sprints": [
+    17
+   ],
+   "surfaces": [
+    {
+     "classification": "aligned_baseline",
+     "id": "solv-solvbtc-owner-3of5-safe-s17",
+     "surface": "SolvBTC owner() = 3-of-5 Gnosis Safe (OpenZeppelin Ownable)",
+     "targetContract": "0x7A56E1C57C7475CCf742a1832B028F0456652F97",
+     "targetLabel": "Solv SolvBTC"
+    },
+    {
+     "classification": "protective_delta",
+     "id": "solv-solvbtc-upgrade-beacon-3d-timelock-s17",
+     "surface": "SolvBTC beacon upgrades behind a 3d TimelockController (docs: timelock 'will be added')",
+     "targetContract": "0xfd4B809AD88db6Ca9dbB295A4B9d23bB0093f497",
+     "targetLabel": "Solv TimelockController"
+    }
+   ],
+   "targetLabel": "Solv SolvBTC",
+   "tokens": [
+    "SolvBTC",
+    "SOLV"
+   ],
+   "url": "https://pacta.wtf/protocols/solv-protocol-solvbtc/"
+  },
+  {
+   "baseEasUids": [
     "0x3e0e0e1b62de65b277b1399f9833cd70baf627e5ba69e17f1f4f76be30008779"
    ],
    "category": "Decentralized Credit & Liquidity",
@@ -1812,6 +1953,49 @@
     "SWISE"
    ],
    "url": "https://pacta.wtf/protocols/stakewise-v3-oseth/"
+  },
+  {
+   "baseEasUids": [
+    "0xbeb412dfc350f879f816a5cb001b53257a3ee03c12cf1d8e2c15a070141ed8c7"
+   ],
+   "category": "Curated Lending Vault (MetaMorpho)",
+   "chain": "base",
+   "chainId": 8453,
+   "classification": "aligned_baseline",
+   "controllerAddress": "0xbeeF010f9cb27031ad51e3333f9aF9C6B1228183",
+   "controllerKind": "timelock",
+   "documentationComparison": "compared",
+   "documentedDelaySeconds": 604800,
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "kind": "protocol",
+   "name": "Steakhouse USDC MetaMorpho (Base)",
+   "observedDelaySeconds": 604800,
+   "preflightArgs": {
+    "address": "0xbeeF010f9cb27031ad51e3333f9aF9C6B1228183",
+    "chain": "base"
+   },
+   "primaryContract": "0xbeeF010f9cb27031ad51e3333f9aF9C6B1228183",
+   "slug": "steakhouse-usdc-metamorpho-base",
+   "sprints": [
+    17
+   ],
+   "surfaces": [
+    {
+     "classification": "aligned_baseline",
+     "id": "steakhouse-usdc-base-timelock-7d-s17",
+     "surface": "MetaMorpho timelock() = 7d (604800s)",
+     "targetContract": "0xbeeF010f9cb27031ad51e3333f9aF9C6B1228183",
+     "targetLabel": "Steakhouse USDC (steakUSDC) vault on Base"
+    }
+   ],
+   "targetLabel": "Steakhouse USDC (steakUSDC) vault on Base",
+   "tokens": [
+    "steakUSDC",
+    "Steakhouse",
+    "MetaMorpho"
+   ],
+   "url": "https://pacta.wtf/protocols/steakhouse-usdc-metamorpho-base/"
   },
   {
    "baseEasUids": [],
@@ -2485,9 +2669,9 @@
  ],
  "totals": {
   "briefs": 8,
-  "easAttestedProtocols": 34,
-  "items": 62,
-  "protocols": 54,
+  "easAttestedProtocols": 38,
+  "items": 66,
+  "protocols": 58,
   "rpcObservedProtocols": 20
  }
 }

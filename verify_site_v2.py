@@ -46,13 +46,14 @@ DOCS = os.path.join(ROOT, "docs")
 RESULTS = []
 # ---- EXPECT-BEGIN: the published numbers, in one place (tools/apply_sprint17_attestation.py rewrites this block when it stamps a Sprint)
 EXPECT = {
-    "sprints": 16, "records": 40, "eas_attestations": 16,              # index.json sprints_completed / records_indexed; Base EAS sprint UIDs
-    "protocols": 54, "eas_protocols": 34, "rpc_protocols": 20,          # /protocols/ pages = EAS-attested + RPC-pinned; badges = protocols
-    "briefs": 8, "badge_tiers": {"aligned": 18, "parameter_delta": 16, "rpc_observed": 20},
-    "base_records": 0,                                                  # index.json records with chain "base" (Sprint 17 adds the first)
-    "multi_attest_txs": ["1–12", "13–16"],                              # attestation_coverage.eas_multi_attest_txs keys
-    "summaries": {"15": "61c0cc292cfa1fc3840277cf312383d24a6c81af56afac303afdbd84e7316cf6",   # audits/sprint-<n>/ summary SHA-256 (attested)
-                  "16": "91b8e29301ef0e625c4ddc9eadaf5388115812f5958f90b6e0ed53a4808ba8ae"},
+    "sprints": 17, "records": 46, "eas_attestations": 17,              # index.json sprints_completed / records_indexed; Base EAS sprint UIDs
+    "protocols": 58, "eas_protocols": 38, "rpc_protocols": 20,          # /protocols/ pages = EAS-attested + RPC-pinned; badges = protocols
+    "briefs": 8, "badge_tiers": {"aligned": 21, "parameter_delta": 17, "rpc_observed": 20},
+    "base_records": 1,                                                  # index.json records with chain "base" (Sprint 17 adds the first)
+    "multi_attest_txs": ["1–12", "13–16", "17"],                              # attestation_coverage.eas_multi_attest_txs keys
+    "summaries": {"15": "61c0cc292cfa1fc3840277cf312383d24a6c81af56afac303afdbd84e7316cf6",
+                  "16": "91b8e29301ef0e625c4ddc9eadaf5388115812f5958f90b6e0ed53a4808ba8ae",
+                  "17": "2fd7ab979c6dfc3aae44f6c46c8f0397959927874ff0358574043a056d3168ea"},   # audits/sprint-<n>/ summary SHA-256 (attested)
 }
 # ---- EXPECT-END
 X = EXPECT
@@ -1015,7 +1016,7 @@ def main():
         "search probes": lk.get("probes") == {"ethena": [["ethena-usde-susde", "prefix"], ["ethena-ops-0x0ca0-0x1fe5", "prefix"]],
                                               "usde": [["ethena-usde-susde", "exact"], ["ethena-ops-0x0ca0-0x1fe5", "exact"]],
                                               "aave": [["aave-v3-gho", "exact"], ["circle-cirbtc-eth", "substring"]],
-                                              "moonwell": [["moonwell-lending-base", "prefix"]], "kusd": [["kerne-kusd-base", "exact"]],
+                                              "moonwell": [["moonwell-lending-base", "prefix"]], "kusd": [["kerne-kusd-base", "exact"], ["steakhouse-usdc-metamorpho-base", "substring"]],
                                               "uniswap": [["uniswap-governance-timelock", "prefix"]],
                                               "ether.fi": [["ether-fi-core-eeth-weeth", "prefix"], ["ether-fi-liquid-veda-boringvault", "prefix"]]}
                           and (lk.get("empty") or {}).get("count") == 20 and (lk.get("empty") or {}).get("totalMatches") == X["protocols"] + X["briefs"]

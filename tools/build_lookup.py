@@ -49,6 +49,7 @@ TOKENS = {
     "synthetix-v3-core": ["SNX", "sUSD"], "threshold-network-tbtc": ["tBTC", "T"], "treehouse-tree-teth": ["tETH", "TREE"],
     "uniswap-governance-timelock": ["UNI"],
     "usual-money-usd0-usd0": ["USD0", "USD0++", "USUAL"], "yearn-v3": ["YFI"],
+    "falcon-finance-usdf-susdf": ["USDf", "sUSDf"], "m0-protocol-m": ["M", "M0", "MToken"], "solv-protocol-solvbtc": ["SolvBTC", "SOLV"], "steakhouse-usdc-metamorpho-base": ["steakUSDC", "Steakhouse", "MetaMorpho"],
     # briefs
     "kerne-kusd-base": ["kUSD", "Kerne"], "efix-efixdi-base": ["efixDI+", "EFIXDI", "EFIX"], "circle-cirbtc-eth": ["cirBTC", "Circle"],
     "paxos-paxgy-eth": ["PAXGy", "Paxos"], "tether-usat-eth": ["USAT", "Tether"], "ethena-ops-0x0ca0-0x1fe5": ["USDe", "RLUSD", "USAT"],

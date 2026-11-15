@@ -13,6 +13,7 @@
     "base:0x7ed48c31f2fdc40d37407cbabf0870b2b688368f": "centrifuge",
     "base:0xb5396ef2bf8ca360ceb4166b77afb2bed20e74d4": "superform",
     "base:0xbb505c54d71e9e599cb8435b4f0ceec05fc71cbd": "extra",
+    "base:0xbeef010f9cb27031ad51e3333f9af9c6b1228183": "steakhouse",
     "base:0xdbfefd2e8460a6ee4955a68582f85708baea60a3": "origin",
     "base:0xfbb21d0380bee3312b33c4353c8936a0f13ef26c": "moonwell",
     "base:0xfc69704cc3caac545cc7577009ea4aa04f1a61eb": "beefy",
@@ -20,6 +21,7 @@
     "ethereum:0x055e84e7fe8955e2781010b866f10ef6e1e77e59": "lombard",
     "ethereum:0x0c9a3dd6b8f28529d72d7f9ce918d493519ee383": "euler",
     "ethereum:0x0d374775e962c3608b8f0a4b8b10567df739bb56": "usual",
+    "ethereum:0x119fbeedd4f4f4298fb59b720d5654442b81ae2c": "m0",
     "ethereum:0x1d8f8f00cfa6758d7be78336684788fb0ee0fa46": "rocket",
     "ethereum:0x1f98431c8ad98523631ae4a59f267346ea31f984": "uniswap",
     "ethereum:0x2225dabffc7f862c99477381e971e8b1fdab467e": "treehouse",
@@ -37,7 +39,9 @@
     "ethereum:0x66a1e37c9b0eaddca17d3662d6c05f4decf3e110": "resolv",
     "ethereum:0x6b5815467da09daa7dc83db21c9239d98bb487b5": "stakewise",
     "ethereum:0x78fc2c2ed1a4cdb5402365934ae5648adad094d0": "morpho",
+    "ethereum:0x7a56e1c57c7475ccf742a1832b028f0456652f97": "solv",
     "ethereum:0x8412ebf45bac1b340bbe8f318b928c466c4e39ca": "frax",
+    "ethereum:0x866a2bf4e572cbcf37d5071a7a58503bfb36be1b": "m0",
     "ethereum:0x92f2d8b72a7f6a551be60b9aa4194248e9b4913d": "threshold",
     "ethereum:0x98db502215da1ad9f626d4a0090a8a2f4971003c": "ondo",
     "ethereum:0x9f26d4c958fd811a1f59b01b86be7dffc9d20761": "ether",
@@ -60,6 +64,7 @@
     "ethereum:0xc2aacf6553d20d1e9d78e365aaba8032af9c85b0": "aave",
     "ethereum:0xc3d688b66703497daa19211eedff47f25384cdc3": "compound",
     "ethereum:0xc3ecfe771564e3f28cfb7a9b203f4d10279338ed": "lombard",
+    "ethereum:0xc8cf6d7991f15525488b2a83df53468d682ba4b0": "falcon",
     "ethereum:0xc9332fdcb1c491dcc683bae86fe3cb70360738bc": "curve",
     "ethereum:0xce0425301c85c5ea2a0873a2dee44d78e02d2316": "lido",
     "ethereum:0xd11c452fc99cf405034ee446803b6f6c1f6d5ed8": "treehouse",
@@ -69,6 +74,7 @@
     "ethereum:0xf1376bcef0f78459c0ed0ba5ddce976f1ddf51f4": "bedrock",
     "ethereum:0xf2f305d14dcd8aaef887e0428b3c9534795d0d60": "renzo",
     "ethereum:0xf403c135812408bfbe8713b5a23a04b3d48aae31": "convex",
+    "ethereum:0xfd4b809ad88db6ca9dbb295a4b9d23bb0093f497": "solv",
     "ethereum:0xffffffaeff0b96ea8e4f94b2253f31abdd875847": "synthetix"
   }
 }

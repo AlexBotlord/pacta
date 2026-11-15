@@ -14,7 +14,7 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const DOCS = join(HERE, "..", "..", "..", "docs", "api", "v1");
 const GW = "https://gateway.example.test";
 // PUBLISHED-COUNTS (the one line a Sprint stamp rewrites; equals pacta-github-repo verify_site_v2.EXPECT)
-const PUBLISHED = Object.freeze({ protocols: 54, briefs: 8, easAttestedProtocols: 34, rpcObservedProtocols: 20 });
+const PUBLISHED = Object.freeze({ protocols: 58, briefs: 8, easAttestedProtocols: 38, rpcObservedProtocols: 20 });
 const rec = (reply) => {
   const calls = [];
   const f = async (url) => { calls.push(String(url)); return reply(String(url)); };

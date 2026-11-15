@@ -6,7 +6,7 @@
 - **Prior Pinned Pacta Block**: `26399876` (`0x8bf896b892683ff3267b88b367ab015a70cf5caf53542eb405f4f648f6bcde8a`)
 - **Governing Rotation Block**: `26400142` (`0x30f8e960fa8ced601ff9dc60e88da16530da0e1ab07631af9b381b426dab229b`)
 - **Governing Transaction Hash**: `0x46563d089a267b88b76a857994fedd6bf24fb5c3a31e201c5956879cd90fb39e`
-- **Replay Finalized Block**: `26418033` (`0xda8ab82e66967d5952f31cfca199e96d188aaa1076d292bfe165caa07a7f71f1`)
+- **Replay Finalized Block**: `26418220` (`0xf468c725d385d2d645c011d9c563eed575ff6e976bd3fab072a34556757a7b5e`)
 - **Classification**: Post-Snapshot Governance Control-Plane Drift (`parameter_delta`)
 
 ---
@@ -26,7 +26,7 @@ The live on-chain control plane has therefore drifted to a **`3-of-6` Gnosis Saf
 
 ## 2. On-Chain State Comparison
 
-| Parameter | Documentation Claim | Pacta Pinned Baseline (Block 26399876) | Current Live State (Block 26418033) |
+| Parameter | Documentation Claim | Pacta Pinned Baseline (Block 26399876) | Current Live State (Block 26418220) |
 | :--- | :--- | :--- | :--- |
 | **Multisig Threshold** | `5` | `4` | **`3`** |
 | **Total Signers** | `9` | `7` | **`6`** |
@@ -58,18 +58,18 @@ cast call 0x4b6c63E6a94ef26E2dF60b89372db2d8e211F1B7 "getThreshold()(uint256)" -
 # Output: 4
 ```
 
-### B. Threshold at Current Finalized Block (`26418033`)
+### B. Threshold at Current Finalized Block (`26418220`)
 ```bash
-cast call 0x4b6c63E6a94ef26E2dF60b89372db2d8e211F1B7 "getThreshold()(uint256)" --block 26418033 --rpc-url https://rpc.mevblocker.io
+cast call 0x4b6c63E6a94ef26E2dF60b89372db2d8e211F1B7 "getThreshold()(uint256)" --block 26418220 --rpc-url https://rpc.mevblocker.io
 # Output: 3
 
-cast call 0x4b6c63E6a94ef26E2dF60b89372db2d8e211F1B7 "getThreshold()(uint256)" --block 26418033 --rpc-url https://eth-mainnet.public.blastapi.io
+cast call 0x4b6c63E6a94ef26E2dF60b89372db2d8e211F1B7 "getThreshold()(uint256)" --block 26418220 --rpc-url https://eth-mainnet.public.blastapi.io
 # Output: 3
 ```
 
-### C. Active Signers at Block `26418033`
+### C. Active Signers at Block `26418220`
 ```bash
-cast call 0x4b6c63E6a94ef26E2dF60b89372db2d8e211F1B7 "getOwners()(address[])" --block 26418033 --rpc-url https://rpc.mevblocker.io
+cast call 0x4b6c63E6a94ef26E2dF60b89372db2d8e211F1B7 "getOwners()(address[])" --block 26418220 --rpc-url https://rpc.mevblocker.io
 # Output: [0x52f63971afD2a32524c859C29943f9BEa38CA907, 0x3FcB35a1CbFB6007f9BC638D388958Bc4550cB28, 0x962228a90eaC69238c7D1F216d80037e61eA9255, 0x9F3614afb3Df9f899caDBFfaA05c6C908059F726, 0x6535020cCeB810Bdb3F3cA5e93dE2460FF7989BB, 0x2723723FDd3Db8ba2D6f0e1B333e90A7E60A0411]
 ```
 

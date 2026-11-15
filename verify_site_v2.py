@@ -1132,7 +1132,7 @@ def main():
     ai = fd.get("addressIndex", {})
     want_ai = {}
     for e in sorted(idx_["entries"], key=lambda e: e["id"]):
-        want_ai.setdefault("ethereum:" + e["target_contract"].lower(), BS.protocol_family(e["protocol"]))
+        want_ai.setdefault(f'{BS.chain_of(e)}:{e["target_contract"].lower()}', BS.protocol_family(e["protocol"]))   # own chain (Sprint 17: Base records)
     for e in sorted(pinned_["entries"], key=lambda e: e["id"]):               # RPC-pinned targets + paired protocol contracts, own chain
         for a in (e["target_contract"], e.get("paired_contract")):
             if a:

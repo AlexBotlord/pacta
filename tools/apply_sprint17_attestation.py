@@ -149,7 +149,11 @@ def set_expect(staged):
     x = {**ns["EXPECT"], **TARGET}
     x["multi_attest_txs"] = ns["EXPECT"]["multi_attest_txs"] + [str(SPRINT)]
     x["summaries"] = {**ns["EXPECT"]["summaries"], str(SPRINT): staged["summary_sha256"][2:]}
-    write(p, s[:a] + head + render_expect(x) + s[b:])
+    s = s[:a] + head + render_expect(x) + s[b:]
+    # "kusd" now also substring-matches the new "steakUSDC" alias (ranked after the exact kUSD brief)
+    s = sub_once(s, re.escape('"kusd": [["kerne-kusd-base", "exact"]],'),
+                 '"kusd": [["kerne-kusd-base", "exact"], ["steakhouse-usdc-metamorpho-base", "substring"]],', "verifier kusd probe")
+    write(p, s)
 
 
 def readme(staged, uid, tx):
@@ -222,9 +226,8 @@ def render_list(slugs, indent="  ", width=145):
 def sync_core(core):
     t = TARGET
     src_pkg, dst_pkg = os.path.join(ROOT, "packages", "mcp-server"), os.path.join(core, "packages", "mcp-server")
-    for sub in ("src", "test"):
-        for f in sorted(os.listdir(os.path.join(src_pkg, sub))):
-            shutil.copyfile(os.path.join(src_pkg, sub, f), os.path.join(dst_pkg, sub, f))
+    for sub in ("src", "test"):                                   # byte-identical trees (test/ has fixtures/)
+        shutil.copytree(os.path.join(src_pkg, sub), os.path.join(dst_pkg, sub), dirs_exist_ok=True)
     for f in ("README.md", "SKILL.md"):
         shutil.copyfile(os.path.join(src_pkg, f), os.path.join(dst_pkg, f))
     run([sys.executable, "-B", "scripts/sync-lookup-catalog.py"], core, "pacta-core sync-lookup-catalog")
@@ -293,10 +296,10 @@ def main(argv=None):
     have = idx["onchain_anchoring"]["sprint_eas_attestations"].get(str(SPRINT))
     if have is not None:
         txs = idx["onchain_anchoring"]["attestation_coverage"]["eas_multi_attest_txs"]
-        if have == uid and txs.get(str(SPRINT)) == tx and any(e["sprint"] == SPRINT for e in idx["entries"]):
-            print(f"Sprint {SPRINT} is already stamped with {uid}; nothing to do")
-            return 0
-        fail(f"Sprint {SPRINT} is already stamped with UID {have} / tx {txs.get(str(SPRINT))}; refusing to overwrite")
+        if not (have == uid and txs.get(str(SPRINT)) == tx and any(e["sprint"] == SPRINT for e in idx["entries"])):
+            fail(f"Sprint {SPRINT} is already stamped with UID {have} / tx {txs.get(str(SPRINT))}; refusing to overwrite")
+        print(f"Sprint {SPRINT} is already stamped with {uid}: re-running the idempotent steps (rebuild, verify, pacta-core sync, tests)")
+        return finish(core, node, a.skip_tests)
     if not os.path.exists(STAGED):
         fail(f"{os.path.relpath(STAGED, ROOT)} not found")
     staged = json.loads(read(STAGED))
@@ -323,6 +326,11 @@ def main(argv=None):
     os.remove(STAGED)
     if not os.listdir(os.path.dirname(STAGED)):
         os.rmdir(os.path.dirname(STAGED))
+    return finish(core, node, a.skip_tests)
+
+
+def finish(core, node, skip_tests):
+    """Everything after the stamp; idempotent, so a re-run with the same --uid / --tx completes an interrupted apply."""
     build_twice()
     lk = json.loads(read(os.path.join(ROOT, "docs", "api", "v1", "lookup.json")))["totals"]
     pj = json.loads(read(os.path.join(ROOT, "docs", "api", "v1", "protocols.json")))["totals"]
@@ -334,7 +342,7 @@ def main(argv=None):
     run([sys.executable, "verify_site_v2.py"], ROOT, "verify_site_v2")
     if core:
         sync_core(core)
-    if not a.skip_tests:
+    if not skip_tests:
         tests(core, node)
     print(f"done: Sprint {SPRINT} stamped ({TARGET['records']} records, {TARGET['sprints']} sprints, {TARGET['protocols']} protocol pages = "
           f"{TARGET['eas_protocols']} EAS + {TARGET['rpc_protocols']} RPC, {TARGET['protocols']} badges). Review the diffs, then commit; nothing was pushed.")

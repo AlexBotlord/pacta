@@ -151,7 +151,7 @@
       "rpc_env_var": "$ETH_RPC_URL"
     },
     {
-      "id": "solv-solvbtc-beacon-upgrade-3d-timelock-s17",
+      "id": "solv-solvbtc-upgrade-beacon-3d-timelock-s17",
       "protocol": "Solv Protocol (SolvBTC)",
       "category": "Bitcoin Reserve / Wrapped BTC",
       "sprint": 17,

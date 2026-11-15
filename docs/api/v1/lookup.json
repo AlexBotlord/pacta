@@ -116,6 +116,48 @@
    "url": "https://pacta.wtf/protocols/aerodrome-finance-base/"
   },
   {
+   "baseEasUids": [
+    "0x105ea2849a5cd9ef601ae565e6b0adf288884771c8ac82c1c3d0a87aa789eb4f"
+   ],
+   "category": "Concentrated-Liquidity DEX",
+   "chain": "base",
+   "chainId": 8453,
+   "classification": "aligned_baseline",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
+   "documentedDelaySeconds": null,
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "kind": "protocol",
+   "name": "Aerodrome Slipstream (Base)",
+   "observedDelaySeconds": null,
+   "preflightArgs": {
+    "address": "0x5e7BB104d84c7CB9B682AaC2F3d509f5F406809A",
+    "chain": "base"
+   },
+   "primaryContract": "0x5e7BB104d84c7CB9B682AaC2F3d509f5F406809A",
+   "slug": "aerodrome-slipstream-base",
+   "sprints": [
+    18
+   ],
+   "surfaces": [
+    {
+     "classification": "aligned_baseline",
+     "id": "aerodrome-slipstream-clfactory-team-3of7-s18",
+     "surface": "CLFactory owner, swap & unstaked fee managers = Protocol Team 3-of-7 Safe",
+     "targetContract": "0x5e7BB104d84c7CB9B682AaC2F3d509f5F406809A",
+     "targetLabel": "Slipstream CLFactory"
+    }
+   ],
+   "targetLabel": "Slipstream CLFactory",
+   "tokens": [
+    "AERO",
+    "Slipstream"
+   ],
+   "url": "https://pacta.wtf/protocols/aerodrome-slipstream-base/"
+  },
+  {
    "baseEasUids": [],
    "category": "Programmable Liquidity Vault",
    "chain": "ethereum",
@@ -430,6 +472,48 @@
   },
   {
    "baseEasUids": [
+    "0x105ea2849a5cd9ef601ae565e6b0adf288884771c8ac82c1c3d0a87aa789eb4f"
+   ],
+   "category": "On-chain Asset Management",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "protective_delta",
+   "controllerAddress": "0xC3DC853dD716bd5754f421ef94fdCbac3902ab32",
+   "controllerKind": "timelock",
+   "documentationComparison": "compared",
+   "documentedDelaySeconds": 0,
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "kind": "protocol",
+   "name": "Enzyme Finance",
+   "observedDelaySeconds": 604800,
+   "preflightArgs": {
+    "address": "0xC3DC853dD716bd5754f421ef94fdCbac3902ab32",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xC3DC853dD716bd5754f421ef94fdCbac3902ab32",
+   "slug": "enzyme-finance",
+   "sprints": [
+    18
+   ],
+   "surfaces": [
+    {
+     "classification": "protective_delta",
+     "id": "enzyme-dispatcher-7d-migration-timelock-s18",
+     "surface": "Dispatcher migration timelock = 7 days (specs: 'no longer used and is set to 0')",
+     "targetContract": "0xC3DC853dD716bd5754f421ef94fdCbac3902ab32",
+     "targetLabel": "Enzyme Dispatcher"
+    }
+   ],
+   "targetLabel": "Enzyme Dispatcher",
+   "tokens": [
+    "MLN",
+    "Enzyme"
+   ],
+   "url": "https://pacta.wtf/protocols/enzyme-finance/"
+  },
+  {
+   "baseEasUids": [
     "0x3e0e0e1b62de65b277b1399f9833cd70baf627e5ba69e17f1f4f76be30008779",
     "0x8965ae6e51a78132a77eb14c0ac1c6cd1be357d6f261253efff28869478ae5b8"
    ],
@@ -576,36 +660,41 @@
    "url": "https://pacta.wtf/protocols/ether-fi-liquid-veda-boringvault/"
   },
   {
-   "baseEasUids": [],
+   "baseEasUids": [
+    "0x105ea2849a5cd9ef601ae565e6b0adf288884771c8ac82c1c3d0a87aa789eb4f"
+   ],
    "category": "Modular Lending Vault Kit",
    "chain": "ethereum",
    "chainId": 1,
-   "classification": "rpc_observed",
-   "controllerAddress": "0x0C9a3dd6b8F28529d72d7f9cE918D493519EE383",
-   "controllerKind": "contract_controller",
-   "documentationComparison": "not_assessed",
+   "classification": "aligned_baseline",
+   "controllerAddress": "0xfb034c1C6c7F42171b2d1Cb8486E0f43ED07A968",
+   "controllerKind": "timelock",
+   "documentationComparison": "compared",
    "documentedDelaySeconds": null,
-   "easAttested": false,
-   "evidenceBasis": "rpc_observed",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
    "kind": "protocol",
-   "name": "Euler V2 (EVK & EVC)",
-   "observedDelaySeconds": null,
+   "name": "Euler V2 (EVK)",
+   "observedDelaySeconds": 345600,
    "preflightArgs": {
     "address": "0x29a56a1b8214D9Cf7c5561811750D5cBDb45CC8e",
     "chain": "ethereum"
    },
    "primaryContract": "0x29a56a1b8214D9Cf7c5561811750D5cBDb45CC8e",
    "slug": "euler-v2-evk",
+   "sprints": [
+    18
+   ],
    "surfaces": [
     {
-     "classification": "rpc_observed",
-     "id": "euler-v2-evk-control-plane",
-     "surface": "EulerEVaultFactory & EthereumVaultConnector Control Plane",
+     "classification": "aligned_baseline",
+     "id": "euler-v2-evk-factorygovernor-4d-timelock-s18",
+     "surface": "EVK factory upgradeAdmin = FactoryGovernor behind a 4d TimelockController (DAO 4-of-8 proposes)",
      "targetContract": "0x29a56a1b8214D9Cf7c5561811750D5cBDb45CC8e",
-     "targetLabel": "EulerEVaultFactory"
+     "targetLabel": "EulerEVaultFactory (GenericFactory)"
     }
    ],
-   "targetLabel": "EulerEVaultFactory",
+   "targetLabel": "EulerEVaultFactory (GenericFactory)",
    "tokens": [
     "EUL",
     "EVK",
@@ -1312,19 +1401,21 @@
    "url": "https://pacta.wtf/protocols/metamorpho-re7-weth-vs-re7-usdt/"
   },
   {
-   "baseEasUids": [],
+   "baseEasUids": [
+    "0x105ea2849a5cd9ef601ae565e6b0adf288884771c8ac82c1c3d0a87aa789eb4f"
+   ],
    "category": "Base Lending & Borrowing",
    "chain": "base",
    "chainId": 8453,
-   "classification": "rpc_observed",
-   "controllerAddress": "0x8b621804a7637b781e2BbD58e256a591F2dF7d51",
-   "controllerKind": "contract_controller",
-   "documentationComparison": "not_assessed",
+   "classification": "mixed",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
    "documentedDelaySeconds": null,
-   "easAttested": false,
-   "evidenceBasis": "rpc_observed",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
    "kind": "protocol",
-   "name": "Moonwell (Base)",
+   "name": "Moonwell Lending (Base)",
    "observedDelaySeconds": null,
    "preflightArgs": {
     "address": "0xfBb21d0380beE3312B33c4353c8936a0F13EF26C",
@@ -1332,16 +1423,26 @@
    },
    "primaryContract": "0xfBb21d0380beE3312B33c4353c8936a0F13EF26C",
    "slug": "moonwell-lending-base",
+   "sprints": [
+    18
+   ],
    "surfaces": [
     {
-     "classification": "rpc_observed",
-     "id": "moonwell-lending-base-control-plane",
-     "surface": "MoonwellUnitroller_Base · Admin Contract Owned by a 3-of-5 Safe",
+     "classification": "parameter_delta",
+     "id": "moonwell-pause-guardian-2of4-safe-s18",
+     "surface": "Comptroller pauseGuardian = 2-of-4 Safe (Constitution: pause = Security Council 3-of-5)",
      "targetContract": "0xfBb21d0380beE3312B33c4353c8936a0F13EF26C",
-     "targetLabel": "MoonwellUnitroller_Base"
+     "targetLabel": "Moonwell Unitroller (Comptroller proxy)"
+    },
+    {
+     "classification": "aligned_baseline",
+     "id": "moonwell-temporal-governor-24h-security-council-3of5-s18",
+     "surface": "Unitroller admin = TemporalGovernor (24h proposal delay), owned by the 3-of-5 Security Council",
+     "targetContract": "0xfBb21d0380beE3312B33c4353c8936a0F13EF26C",
+     "targetLabel": "Moonwell Unitroller (Comptroller proxy)"
     }
    ],
-   "targetLabel": "MoonwellUnitroller_Base",
+   "targetLabel": "Moonwell Unitroller (Comptroller proxy)",
    "tokens": [
     "WELL"
    ],
@@ -1387,6 +1488,49 @@
     "MORPHO"
    ],
    "url": "https://pacta.wtf/protocols/morpho-blue-core/"
+  },
+  {
+   "baseEasUids": [
+    "0x105ea2849a5cd9ef601ae565e6b0adf288884771c8ac82c1c3d0a87aa789eb4f"
+   ],
+   "category": "Discretionary Mutual / Cover",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "aligned_baseline",
+   "controllerAddress": "0xcafea6063d4Ec6b045d9676e58897C1f0882Ca32",
+   "controllerKind": "timelock",
+   "documentationComparison": "compared",
+   "documentedDelaySeconds": 86400,
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "kind": "protocol",
+   "name": "Nexus Mutual",
+   "observedDelaySeconds": 86400,
+   "preflightArgs": {
+    "address": "0xcafea6063d4Ec6b045d9676e58897C1f0882Ca32",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xcafea6063d4Ec6b045d9676e58897C1f0882Ca32",
+   "slug": "nexus-mutual",
+   "sprints": [
+    18
+   ],
+   "surfaces": [
+    {
+     "classification": "aligned_baseline",
+     "id": "nexus-mutual-governor-24h-timelock-s18",
+     "surface": "Governor: 3 Advisory Board votes + 24h timelock; Registry upgrades every module",
+     "targetContract": "0xcafea6063d4Ec6b045d9676e58897C1f0882Ca32",
+     "targetLabel": "Nexus Mutual Governor"
+    }
+   ],
+   "targetLabel": "Nexus Mutual Governor",
+   "tokens": [
+    "NXM",
+    "wNXM",
+    "Nexus Mutual"
+   ],
+   "url": "https://pacta.wtf/protocols/nexus-mutual/"
   },
   {
    "baseEasUids": [
@@ -1953,6 +2097,48 @@
     "SWISE"
    ],
    "url": "https://pacta.wtf/protocols/stakewise-v3-oseth/"
+  },
+  {
+   "baseEasUids": [
+    "0x105ea2849a5cd9ef601ae565e6b0adf288884771c8ac82c1c3d0a87aa789eb4f"
+   ],
+   "category": "Cross-chain Liquidity / Bridge",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "aligned_baseline",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
+   "documentedDelaySeconds": null,
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "kind": "protocol",
+   "name": "Stargate V2",
+   "observedDelaySeconds": null,
+   "preflightArgs": {
+    "address": "0xc026395860Db2d07ee33e05fE50ed7bD583189C7",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xc026395860Db2d07ee33e05fE50ed7bD583189C7",
+   "slug": "stargate-v2",
+   "sprints": [
+    18
+   ],
+   "surfaces": [
+    {
+     "classification": "aligned_baseline",
+     "id": "stargate-v2-onesig-5of7-owner-planner-fees-s18",
+     "surface": "V2 pool, TokenMessaging & Treasurer owner = 5-of-7 OneSig multisig; planner sets fees",
+     "targetContract": "0xc026395860Db2d07ee33e05fE50ed7bD583189C7",
+     "targetLabel": "StargatePoolUSDC"
+    }
+   ],
+   "targetLabel": "StargatePoolUSDC",
+   "tokens": [
+    "STG",
+    "Stargate"
+   ],
+   "url": "https://pacta.wtf/protocols/stargate-v2/"
   },
   {
    "baseEasUids": [
@@ -2669,9 +2855,9 @@
  ],
  "totals": {
   "briefs": 8,
-  "easAttestedProtocols": 38,
-  "items": 66,
-  "protocols": 58,
-  "rpcObservedProtocols": 20
+  "easAttestedProtocols": 44,
+  "items": 70,
+  "protocols": 62,
+  "rpcObservedProtocols": 18
  }
 }

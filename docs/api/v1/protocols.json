@@ -147,6 +147,56 @@
   },
   {
    "badge": {
+    "label": "Aligned · Base EAS",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/aerodrome-slipstream-base.svg",
+    "svg": "https://pacta.wtf/badges/aerodrome-slipstream-base.svg",
+    "tier": "aligned"
+   },
+   "baseEasUids": [
+    "0x105ea2849a5cd9ef601ae565e6b0adf288884771c8ac82c1c3d0a87aa789eb4f"
+   ],
+   "category": "Concentrated-Liquidity DEX",
+   "chain": "base",
+   "chainId": 8453,
+   "classification": "aligned_baseline",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "name": "Aerodrome Slipstream (Base)",
+   "preflightArgs": {
+    "address": "0x5e7BB104d84c7CB9B682AaC2F3d509f5F406809A",
+    "chain": "base"
+   },
+   "primaryContract": "0x5e7BB104d84c7CB9B682AaC2F3d509f5F406809A",
+   "slug": "aerodrome-slipstream-base",
+   "sprints": [
+    18
+   ],
+   "surfaces": [
+    {
+     "baseEasUid": "0x105ea2849a5cd9ef601ae565e6b0adf288884771c8ac82c1c3d0a87aa789eb4f",
+     "blockHash": "0x7ae27f2be8e931c33ac284c8d5c548c8fd7a68f08e18bb372c70e2ca3b4bd129",
+     "blockNumber": 57842915,
+     "chain": "base",
+     "classification": "aligned_baseline",
+     "id": "aerodrome-slipstream-clfactory-team-3of7-s18",
+     "sprint": 18,
+     "surface": "CLFactory owner, swap & unstaked fee managers = Protocol Team 3-of-7 Safe",
+     "targetContract": "0x5e7BB104d84c7CB9B682AaC2F3d509f5F406809A",
+     "targetLabel": "Slipstream CLFactory"
+    }
+   ],
+   "targetLabel": "Slipstream CLFactory",
+   "tokens": [
+    "AERO",
+    "Slipstream"
+   ],
+   "url": "https://pacta.wtf/protocols/aerodrome-slipstream-base/"
+  },
+  {
+   "badge": {
     "label": "RPC-Observed",
     "live": "https://pacta-x402.pacta.workers.dev/v1/badges/balancer-v2-vault-timelock.svg",
     "svg": "https://pacta.wtf/badges/balancer-v2-vault-timelock.svg",
@@ -529,6 +579,56 @@
   {
    "badge": {
     "label": "Parameter Delta",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/enzyme-finance.svg",
+    "svg": "https://pacta.wtf/badges/enzyme-finance.svg",
+    "tier": "parameter_delta"
+   },
+   "baseEasUids": [
+    "0x105ea2849a5cd9ef601ae565e6b0adf288884771c8ac82c1c3d0a87aa789eb4f"
+   ],
+   "category": "On-chain Asset Management",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "protective_delta",
+   "controllerAddress": "0xC3DC853dD716bd5754f421ef94fdCbac3902ab32",
+   "controllerKind": "timelock",
+   "documentationComparison": "compared",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "name": "Enzyme Finance",
+   "preflightArgs": {
+    "address": "0xC3DC853dD716bd5754f421ef94fdCbac3902ab32",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xC3DC853dD716bd5754f421ef94fdCbac3902ab32",
+   "slug": "enzyme-finance",
+   "sprints": [
+    18
+   ],
+   "surfaces": [
+    {
+     "baseEasUid": "0x105ea2849a5cd9ef601ae565e6b0adf288884771c8ac82c1c3d0a87aa789eb4f",
+     "blockHash": "0xfc2e93c53812cd390b29924a4e217bd4f75d77725bd2882968fb5b087a17150d",
+     "blockNumber": 26421541,
+     "chain": "ethereum",
+     "classification": "protective_delta",
+     "id": "enzyme-dispatcher-7d-migration-timelock-s18",
+     "sprint": 18,
+     "surface": "Dispatcher migration timelock = 7 days (specs: 'no longer used and is set to 0')",
+     "targetContract": "0xC3DC853dD716bd5754f421ef94fdCbac3902ab32",
+     "targetLabel": "Enzyme Dispatcher"
+    }
+   ],
+   "targetLabel": "Enzyme Dispatcher",
+   "tokens": [
+    "MLN",
+    "Enzyme"
+   ],
+   "url": "https://pacta.wtf/protocols/enzyme-finance/"
+  },
+  {
+   "badge": {
+    "label": "Parameter Delta",
     "live": "https://pacta-x402.pacta.workers.dev/v1/badges/ethena-usde-susde.svg",
     "svg": "https://pacta.wtf/badges/ethena-usde-susde.svg",
     "tier": "parameter_delta"
@@ -709,44 +809,48 @@
   },
   {
    "badge": {
-    "label": "RPC-Observed",
+    "label": "Aligned · Base EAS",
     "live": "https://pacta-x402.pacta.workers.dev/v1/badges/euler-v2-evk.svg",
     "svg": "https://pacta.wtf/badges/euler-v2-evk.svg",
-    "tier": "rpc_observed"
+    "tier": "aligned"
    },
-   "baseEasUids": [],
+   "baseEasUids": [
+    "0x105ea2849a5cd9ef601ae565e6b0adf288884771c8ac82c1c3d0a87aa789eb4f"
+   ],
    "category": "Modular Lending Vault Kit",
    "chain": "ethereum",
    "chainId": 1,
-   "classification": "rpc_observed",
-   "controllerAddress": "0x0C9a3dd6b8F28529d72d7f9cE918D493519EE383",
-   "controllerKind": "contract_controller",
-   "documentationComparison": "not_assessed",
-   "easAttested": false,
-   "evidenceBasis": "rpc_observed",
-   "name": "Euler V2 (EVK & EVC)",
+   "classification": "aligned_baseline",
+   "controllerAddress": "0xfb034c1C6c7F42171b2d1Cb8486E0f43ED07A968",
+   "controllerKind": "timelock",
+   "documentationComparison": "compared",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "name": "Euler V2 (EVK)",
    "preflightArgs": {
     "address": "0x29a56a1b8214D9Cf7c5561811750D5cBDb45CC8e",
     "chain": "ethereum"
    },
    "primaryContract": "0x29a56a1b8214D9Cf7c5561811750D5cBDb45CC8e",
    "slug": "euler-v2-evk",
-   "sprints": [],
+   "sprints": [
+    18
+   ],
    "surfaces": [
     {
-     "baseEasUid": null,
-     "blockHash": "0xb83fee0a1d10d5fb8510d87ee9e33b180acac3208a7d00162a6a6f97789c0978",
-     "blockNumber": 26414499,
+     "baseEasUid": "0x105ea2849a5cd9ef601ae565e6b0adf288884771c8ac82c1c3d0a87aa789eb4f",
+     "blockHash": "0xfc2e93c53812cd390b29924a4e217bd4f75d77725bd2882968fb5b087a17150d",
+     "blockNumber": 26421541,
      "chain": "ethereum",
-     "classification": "rpc_observed",
-     "id": "euler-v2-evk-control-plane",
-     "sprint": null,
-     "surface": "EulerEVaultFactory & EthereumVaultConnector Control Plane",
+     "classification": "aligned_baseline",
+     "id": "euler-v2-evk-factorygovernor-4d-timelock-s18",
+     "sprint": 18,
+     "surface": "EVK factory upgradeAdmin = FactoryGovernor behind a 4d TimelockController (DAO 4-of-8 proposes)",
      "targetContract": "0x29a56a1b8214D9Cf7c5561811750D5cBDb45CC8e",
-     "targetLabel": "EulerEVaultFactory"
+     "targetLabel": "EulerEVaultFactory (GenericFactory)"
     }
    ],
-   "targetLabel": "EulerEVaultFactory",
+   "targetLabel": "EulerEVaultFactory (GenericFactory)",
    "tokens": [
     "EUL",
     "EVK",
@@ -1604,44 +1708,60 @@
   },
   {
    "badge": {
-    "label": "RPC-Observed",
+    "label": "Parameter Delta",
     "live": "https://pacta-x402.pacta.workers.dev/v1/badges/moonwell-lending-base.svg",
     "svg": "https://pacta.wtf/badges/moonwell-lending-base.svg",
-    "tier": "rpc_observed"
+    "tier": "parameter_delta"
    },
-   "baseEasUids": [],
+   "baseEasUids": [
+    "0x105ea2849a5cd9ef601ae565e6b0adf288884771c8ac82c1c3d0a87aa789eb4f"
+   ],
    "category": "Base Lending & Borrowing",
    "chain": "base",
    "chainId": 8453,
-   "classification": "rpc_observed",
-   "controllerAddress": "0x8b621804a7637b781e2BbD58e256a591F2dF7d51",
-   "controllerKind": "contract_controller",
-   "documentationComparison": "not_assessed",
-   "easAttested": false,
-   "evidenceBasis": "rpc_observed",
-   "name": "Moonwell (Base)",
+   "classification": "mixed",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "name": "Moonwell Lending (Base)",
    "preflightArgs": {
     "address": "0xfBb21d0380beE3312B33c4353c8936a0F13EF26C",
     "chain": "base"
    },
    "primaryContract": "0xfBb21d0380beE3312B33c4353c8936a0F13EF26C",
    "slug": "moonwell-lending-base",
-   "sprints": [],
+   "sprints": [
+    18
+   ],
    "surfaces": [
     {
-     "baseEasUid": null,
-     "blockHash": "0x36147f7f0b6d2a0a94975e98b14c979034930dbe6f9905a5b0bcb2ab45ba35b0",
-     "blockNumber": 57421449,
+     "baseEasUid": "0x105ea2849a5cd9ef601ae565e6b0adf288884771c8ac82c1c3d0a87aa789eb4f",
+     "blockHash": "0x7ae27f2be8e931c33ac284c8d5c548c8fd7a68f08e18bb372c70e2ca3b4bd129",
+     "blockNumber": 57842915,
      "chain": "base",
-     "classification": "rpc_observed",
-     "id": "moonwell-lending-base-control-plane",
-     "sprint": null,
-     "surface": "MoonwellUnitroller_Base · Admin Contract Owned by a 3-of-5 Safe",
+     "classification": "parameter_delta",
+     "id": "moonwell-pause-guardian-2of4-safe-s18",
+     "sprint": 18,
+     "surface": "Comptroller pauseGuardian = 2-of-4 Safe (Constitution: pause = Security Council 3-of-5)",
      "targetContract": "0xfBb21d0380beE3312B33c4353c8936a0F13EF26C",
-     "targetLabel": "MoonwellUnitroller_Base"
+     "targetLabel": "Moonwell Unitroller (Comptroller proxy)"
+    },
+    {
+     "baseEasUid": "0x105ea2849a5cd9ef601ae565e6b0adf288884771c8ac82c1c3d0a87aa789eb4f",
+     "blockHash": "0x7ae27f2be8e931c33ac284c8d5c548c8fd7a68f08e18bb372c70e2ca3b4bd129",
+     "blockNumber": 57842915,
+     "chain": "base",
+     "classification": "aligned_baseline",
+     "id": "moonwell-temporal-governor-24h-security-council-3of5-s18",
+     "sprint": 18,
+     "surface": "Unitroller admin = TemporalGovernor (24h proposal delay), owned by the 3-of-5 Security Council",
+     "targetContract": "0xfBb21d0380beE3312B33c4353c8936a0F13EF26C",
+     "targetLabel": "Moonwell Unitroller (Comptroller proxy)"
     }
    ],
-   "targetLabel": "MoonwellUnitroller_Base",
+   "targetLabel": "Moonwell Unitroller (Comptroller proxy)",
    "tokens": [
     "WELL"
    ],
@@ -1695,6 +1815,57 @@
     "MORPHO"
    ],
    "url": "https://pacta.wtf/protocols/morpho-blue-core/"
+  },
+  {
+   "badge": {
+    "label": "Aligned · Base EAS",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/nexus-mutual.svg",
+    "svg": "https://pacta.wtf/badges/nexus-mutual.svg",
+    "tier": "aligned"
+   },
+   "baseEasUids": [
+    "0x105ea2849a5cd9ef601ae565e6b0adf288884771c8ac82c1c3d0a87aa789eb4f"
+   ],
+   "category": "Discretionary Mutual / Cover",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "aligned_baseline",
+   "controllerAddress": "0xcafea6063d4Ec6b045d9676e58897C1f0882Ca32",
+   "controllerKind": "timelock",
+   "documentationComparison": "compared",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "name": "Nexus Mutual",
+   "preflightArgs": {
+    "address": "0xcafea6063d4Ec6b045d9676e58897C1f0882Ca32",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xcafea6063d4Ec6b045d9676e58897C1f0882Ca32",
+   "slug": "nexus-mutual",
+   "sprints": [
+    18
+   ],
+   "surfaces": [
+    {
+     "baseEasUid": "0x105ea2849a5cd9ef601ae565e6b0adf288884771c8ac82c1c3d0a87aa789eb4f",
+     "blockHash": "0xfc2e93c53812cd390b29924a4e217bd4f75d77725bd2882968fb5b087a17150d",
+     "blockNumber": 26421541,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "nexus-mutual-governor-24h-timelock-s18",
+     "sprint": 18,
+     "surface": "Governor: 3 Advisory Board votes + 24h timelock; Registry upgrades every module",
+     "targetContract": "0xcafea6063d4Ec6b045d9676e58897C1f0882Ca32",
+     "targetLabel": "Nexus Mutual Governor"
+    }
+   ],
+   "targetLabel": "Nexus Mutual Governor",
+   "tokens": [
+    "NXM",
+    "wNXM",
+    "Nexus Mutual"
+   ],
+   "url": "https://pacta.wtf/protocols/nexus-mutual/"
   },
   {
    "badge": {
@@ -2389,6 +2560,56 @@
   {
    "badge": {
     "label": "Aligned · Base EAS",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/stargate-v2.svg",
+    "svg": "https://pacta.wtf/badges/stargate-v2.svg",
+    "tier": "aligned"
+   },
+   "baseEasUids": [
+    "0x105ea2849a5cd9ef601ae565e6b0adf288884771c8ac82c1c3d0a87aa789eb4f"
+   ],
+   "category": "Cross-chain Liquidity / Bridge",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "aligned_baseline",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "name": "Stargate V2",
+   "preflightArgs": {
+    "address": "0xc026395860Db2d07ee33e05fE50ed7bD583189C7",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xc026395860Db2d07ee33e05fE50ed7bD583189C7",
+   "slug": "stargate-v2",
+   "sprints": [
+    18
+   ],
+   "surfaces": [
+    {
+     "baseEasUid": "0x105ea2849a5cd9ef601ae565e6b0adf288884771c8ac82c1c3d0a87aa789eb4f",
+     "blockHash": "0xfc2e93c53812cd390b29924a4e217bd4f75d77725bd2882968fb5b087a17150d",
+     "blockNumber": 26421541,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "stargate-v2-onesig-5of7-owner-planner-fees-s18",
+     "sprint": 18,
+     "surface": "V2 pool, TokenMessaging & Treasurer owner = 5-of-7 OneSig multisig; planner sets fees",
+     "targetContract": "0xc026395860Db2d07ee33e05fE50ed7bD583189C7",
+     "targetLabel": "StargatePoolUSDC"
+    }
+   ],
+   "targetLabel": "StargatePoolUSDC",
+   "tokens": [
+    "STG",
+    "Stargate"
+   ],
+   "url": "https://pacta.wtf/protocols/stargate-v2/"
+  },
+  {
+   "badge": {
+    "label": "Aligned · Base EAS",
     "live": "https://pacta-x402.pacta.workers.dev/v1/badges/steakhouse-usdc-metamorpho-base.svg",
     "svg": "https://pacta.wtf/badges/steakhouse-usdc-metamorpho-base.svg",
     "tier": "aligned"
@@ -2950,13 +3171,13 @@
  },
  "totals": {
   "badgeTiers": {
-   "aligned": 21,
-   "parameter_delta": 17,
-   "rpc_observed": 20
+   "aligned": 25,
+   "parameter_delta": 19,
+   "rpc_observed": 18
   },
-  "easAttested": 38,
-  "protocols": 58,
-  "rpcObserved": 20,
-  "surfaces": 66
+  "easAttested": 44,
+  "protocols": 62,
+  "rpcObserved": 18,
+  "surfaces": 71
  }
 }

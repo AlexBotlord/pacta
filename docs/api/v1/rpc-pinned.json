@@ -1,7 +1,7 @@
 {
   "schema": "pacta.rpc_pinned_records.v1",
   "title": "Pacta RPC-pinned control-plane records",
-  "description": "Read-only control-plane observations of 20 protocols (12 Ethereum, 8 Base), each pinned to a canonical block number and block hash and reproducible with cast. These records are NOT EAS-attested: they have no sprint number, no summary document and no Base EAS UID. The Base-EAS-attested Sprint records are in /api/v1/index.json.",
+  "description": "Read-only control-plane observations of 18 protocols (11 Ethereum, 7 Base), each pinned to a canonical block number and block hash and reproducible with cast. These records are NOT EAS-attested: they have no sprint number, no summary document and no Base EAS UID. The Base-EAS-attested Sprint records are in /api/v1/index.json. Euler V2 (EVK) and Moonwell Lending (Base) were re-scanned in Sprint 18, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here.",
   "attestation": {
     "eas_attested": false,
     "base_eas_uid": null,
@@ -24,10 +24,10 @@
   },
   "verification": "Captured by one Pacta seat over public JSON-RPC and independently re-read at the same pinned blocks by a second seat (block hash, runtime bytecode size and keccak256, EIP-1967 implementation / admin slots, controller getter, Safe getThreshold / getOwners, timelock delay). Two records were corrected by the re-read (Moonwell admin contract, Uniswap V3 factory owner contract).",
   "summary": {
-    "protocols": 20,
-    "records": 20,
-    "ethereum": 12,
-    "base": 8
+    "protocols": 18,
+    "records": 18,
+    "ethereum": 11,
+    "base": 7
   },
   "source_pack_sha256": "857179d8c3024fae3b2204fcae4b542f96cba9b03777cfb6f56095a607f00950",
   "protocols": [
@@ -98,17 +98,6 @@
       ]
     },
     {
-      "slug": "euler-v2-evk",
-      "name": "Euler V2 (EVK & EVC)",
-      "family": "euler",
-      "category": "Modular Lending Vault Kit",
-      "chain": "ethereum",
-      "chain_label": "Ethereum",
-      "record_ids": [
-        "euler-v2-evk-control-plane"
-      ]
-    },
-    {
       "slug": "extra-finance-base",
       "name": "Extra Finance (Base)",
       "family": "extra",
@@ -128,17 +117,6 @@
       "chain_label": "Ethereum",
       "record_ids": [
         "frax-ether-sfrxeth-control-plane"
-      ]
-    },
-    {
-      "slug": "moonwell-lending-base",
-      "name": "Moonwell (Base)",
-      "family": "moonwell",
-      "category": "Base Lending & Borrowing",
-      "chain": "base",
-      "chain_label": "Base",
-      "record_ids": [
-        "moonwell-lending-base-control-plane"
       ]
     },
     {
@@ -555,51 +533,6 @@
       "documented_reference": "Centrifuge V3 Root (Base) documentation is linked for reference (https://github.com/centrifuge/liquidity-pools; governance: https://gov.centrifuge.io/). This RPC-pinned record does not compare documentation parameters with the on-chain state."
     },
     {
-      "id": "euler-v2-evk-control-plane",
-      "protocol": "Euler V2 (EVK & EVC)",
-      "slug": "euler-v2-evk",
-      "family": "euler",
-      "category": "Modular Lending Vault Kit",
-      "chain": "ethereum",
-      "chain_id": 1,
-      "caip2": "eip155:1",
-      "chain_label": "Ethereum",
-      "rpc_env_var": "$ETH_RPC_URL",
-      "provenance": "rpc_pinned",
-      "base_eas_uid": null,
-      "block_number": 26414499,
-      "block_hash": "0xb83fee0a1d10d5fb8510d87ee9e33b180acac3208a7d00162a6a6f97789c0978",
-      "classification": "rpc_observed",
-      "documentation_comparison": "not_assessed",
-      "surface": "EulerEVaultFactory & EthereumVaultConnector Control Plane",
-      "target_contract": "0x29a56a1b8214D9Cf7c5561811750D5cBDb45CC8e",
-      "target_label": "EulerEVaultFactory",
-      "bytecode_bytes": 5631,
-      "bytecode_keccak256": "0xeae381444da7aebe662b6ab22300b74f721b0e4fdabc514d0bcf88a484e552b2",
-      "is_eip1967_proxy": false,
-      "eip1967_implementation": null,
-      "eip1967_admin": null,
-      "controller_kind": "contract_controller",
-      "controller_address": "0x0C9a3dd6b8F28529d72d7f9cE918D493519EE383",
-      "upstream_controller": null,
-      "upstream_kind": null,
-      "safe_quorum": null,
-      "paired_contract": "0x0C9a3dd6b8F28529d72d7f9cE918D493519EE383",
-      "paired_label": "EthereumVaultConnector",
-      "check_type": "eth_getStorageAt",
-      "selector_or_slot": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
-      "call_signature": null,
-      "call_args": [],
-      "repro_calldata": null,
-      "extra_calls": [],
-      "onchain_observed": "EulerEVaultFactory (0x29a56a1b8214D9Cf7c5561811750D5cBDb45CC8e) verified on Ethereum Mainnet at canonical block #26,414,499 (5,631 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). Paired protocol control contract EthereumVaultConnector (0x0C9a3dd6b8F28529d72d7f9cE918D493519EE383, 21,989 bytes) verified live at the same block.",
-      "observed_delay_seconds": null,
-      "documented_delay_seconds": null,
-      "docs_url": "https://docs.euler.finance/",
-      "governance_url": "https://forum.euler.finance/",
-      "documented_reference": "Euler V2 (EVK & EVC) documentation is linked for reference (https://docs.euler.finance/; governance: https://forum.euler.finance/). This RPC-pinned record does not compare documentation parameters with the on-chain state."
-    },
-    {
       "id": "extra-finance-base-control-plane",
       "protocol": "Extra Finance (Base)",
       "slug": "extra-finance-base",
@@ -701,64 +634,6 @@
       "docs_url": "https://docs.frax.com/",
       "governance_url": "https://gov.frax.finance/",
       "documented_reference": "Frax Ether (frxETH / sfrxETH) documentation is linked for reference (https://docs.frax.com/; governance: https://gov.frax.finance/). This RPC-pinned record does not compare documentation parameters with the on-chain state."
-    },
-    {
-      "id": "moonwell-lending-base-control-plane",
-      "protocol": "Moonwell (Base)",
-      "slug": "moonwell-lending-base",
-      "family": "moonwell",
-      "category": "Base Lending & Borrowing",
-      "chain": "base",
-      "chain_id": 8453,
-      "caip2": "eip155:8453",
-      "chain_label": "Base",
-      "rpc_env_var": "$BASE_RPC_URL",
-      "provenance": "rpc_pinned",
-      "base_eas_uid": null,
-      "block_number": 57421449,
-      "block_hash": "0x36147f7f0b6d2a0a94975e98b14c979034930dbe6f9905a5b0bcb2ab45ba35b0",
-      "classification": "rpc_observed",
-      "documentation_comparison": "not_assessed",
-      "surface": "MoonwellUnitroller_Base · Admin Contract Owned by a 3-of-5 Safe",
-      "target_contract": "0xfBb21d0380beE3312B33c4353c8936a0F13EF26C",
-      "target_label": "MoonwellUnitroller_Base",
-      "bytecode_bytes": 1412,
-      "bytecode_keccak256": "0x86a2f6bebe3e171b8d4231544a9925e94e586139762d0164d37c34831a3d0240",
-      "is_eip1967_proxy": false,
-      "eip1967_implementation": null,
-      "eip1967_admin": null,
-      "controller_kind": "contract_controller",
-      "controller_address": "0x8b621804a7637b781e2BbD58e256a591F2dF7d51",
-      "upstream_controller": "0x446342AF4F3bCD374276891C6bb3411bf2F8779E",
-      "upstream_kind": "multisig_safe",
-      "safe_quorum": "3-of-5",
-      "paired_contract": null,
-      "paired_label": null,
-      "check_type": "eth_call",
-      "selector_or_slot": "0xf851a440",
-      "call_signature": "admin()",
-      "call_args": [],
-      "repro_calldata": "0xf851a440",
-      "extra_calls": [
-        {
-          "to": "0x8b621804a7637b781e2BbD58e256a591F2dF7d51",
-          "signature": "owner()(address)"
-        },
-        {
-          "to": "0x446342AF4F3bCD374276891C6bb3411bf2F8779E",
-          "signature": "getThreshold()(uint256)"
-        },
-        {
-          "to": "0x446342AF4F3bCD374276891C6bb3411bf2F8779E",
-          "signature": "getOwners()(address[])"
-        }
-      ],
-      "onchain_observed": "MoonwellUnitroller_Base (0xfBb21d0380beE3312B33c4353c8936a0F13EF26C) verified on Base Mainnet at canonical block #57,421,449 (1,412 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). Direct admin() returns contract 0x8b621804a7637b781e2BbD58e256a591F2dF7d51 (8,658 bytes runtime code; not a Safe: getThreshold() reverts). That contract's owner() is 0x446342AF4F3bCD374276891C6bb3411bf2F8779E, verified via getThreshold() and getOwners() as a 3-of-5 Safe multisig.",
-      "observed_delay_seconds": null,
-      "documented_delay_seconds": null,
-      "docs_url": "https://docs.moonwell.fi/",
-      "governance_url": "https://forum.moonwell.fi/",
-      "documented_reference": "Moonwell (Base) documentation is linked for reference (https://docs.moonwell.fi/; governance: https://forum.moonwell.fi/). This RPC-pinned record does not compare documentation parameters with the on-chain state."
     },
     {
       "id": "origin-superoeth-base-control-plane",

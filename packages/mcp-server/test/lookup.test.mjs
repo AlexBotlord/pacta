@@ -66,7 +66,7 @@ test("pacta_lookup_protocol without PACTA_X402_URL: answered from the embedded c
   assert.equal(r.gatewayFallback, undefined);
   const all = body(await call(srv, { ...CALLER }));
   assert.deepEqual([all.count, all.totalCatalog], [20, { ...PUBLISHED }]);
-  const mw = body(await call(srv, { ...CALLER, query: "pendle" })).results[0];
+  const mw = body(await call(srv, { ...CALLER, query: "puffer" })).results[0];
   assert.deepEqual([mw.evidenceBasis, mw.easAttested, mw.documentationComparison, mw.classification], ["rpc_observed", false, "not_assessed", "rpc_observed"]);
   assert.equal(f.calls.length, 0);
 });

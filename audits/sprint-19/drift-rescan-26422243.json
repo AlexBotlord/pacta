@@ -1,0 +1,358 @@
+{
+ "schema": "pacta.drift_rescan.v1",
+ "sprint": 19,
+ "pin": {
+  "chain_id": 1,
+  "block_number": 26422243,
+  "block_hash": "0xbbe80f9ef9966a9d04cea23db216847f8c8fcc8d66f87c215dc7f712f0743410",
+  "rpcs": [
+   "https://ethereum-rpc.publicnode.com",
+   "https://eth.drpc.org"
+  ]
+ },
+ "baselines": {
+  "sprint_4": {
+   "block_number": 26401312,
+   "block_hash": "0x95866ea3ef8f9a0567ce000bc8075f6dc5fb0f1e80cb4e9999ae624a2f0dc109"
+  },
+  "sprint_5": {
+   "block_number": 26401405,
+   "block_hash": "0x26e155e1569d436406a52ecee31c94d8d8ef2ca4c45d82211a84c8c802be1510"
+  }
+ },
+ "archive_rpcs": [
+  "https://eth.drpc.org",
+  "https://gateway.tenderly.co/public/mainnet"
+ ],
+ "method": "Each scored check is read at the protocol's original pinned block (before) and at the Sprint 19 pin (after) with eth_call pinned by EIP-1898 blockHash + requireCanonical on two endpoints that must agree.",
+ "protocols": [
+  "convex-finance",
+  "fluid-instadapp",
+  "mellow-protocol-lido-earn"
+ ],
+ "checks": [
+  {
+   "protocol": "convex-finance",
+   "check": "Booster owner()",
+   "to": "0xF403C135812408BFbE8713b5A23a04b3D48AAE31",
+   "signature": "owner()",
+   "calldata": "0x8da5cb5b",
+   "baseline_block": 26401312,
+   "baseline_hash": "0x95866ea3ef8f9a0567ce000bc8075f6dc5fb0f1e80cb4e9999ae624a2f0dc109",
+   "recorded": "0x3cE6408F923326f81A7D7929952947748180f1E6",
+   "before": "0x3ce6408f923326f81a7d7929952947748180f1e6",
+   "after": "0x3ce6408f923326f81a7d7929952947748180f1e6",
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "convex-finance",
+   "check": "Booster owner() hop 1: owner()",
+   "to": "0x3cE6408F923326f81A7D7929952947748180f1E6",
+   "signature": "owner()",
+   "calldata": "0x8da5cb5b",
+   "baseline_block": 26401312,
+   "baseline_hash": "0x95866ea3ef8f9a0567ce000bc8075f6dc5fb0f1e80cb4e9999ae624a2f0dc109",
+   "recorded": "0x256e1bbA846611C37CF89844a02435E6C098b86D",
+   "before": "0x256e1bba846611c37cf89844a02435e6c098b86d",
+   "after": "0x256e1bba846611c37cf89844a02435e6c098b86d",
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "convex-finance",
+   "check": "Booster owner() hop 2: owner()",
+   "to": "0x256e1bbA846611C37CF89844a02435E6C098b86D",
+   "signature": "owner()",
+   "calldata": "0x8da5cb5b",
+   "baseline_block": 26401312,
+   "baseline_hash": "0x95866ea3ef8f9a0567ce000bc8075f6dc5fb0f1e80cb4e9999ae624a2f0dc109",
+   "recorded": "0xa3C5A1e09150B75ff251c1a7815A07182c3de2FB",
+   "before": "0xa3c5a1e09150b75ff251c1a7815a07182c3de2fb",
+   "after": "0xa3c5a1e09150b75ff251c1a7815a07182c3de2fb",
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "convex-finance",
+   "check": "Booster feeManager()",
+   "to": "0xF403C135812408BFbE8713b5A23a04b3D48AAE31",
+   "signature": "feeManager()",
+   "calldata": "0xd0fb0203",
+   "baseline_block": 26401312,
+   "baseline_hash": "0x95866ea3ef8f9a0567ce000bc8075f6dc5fb0f1e80cb4e9999ae624a2f0dc109",
+   "recorded": "0xa3C5A1e09150B75ff251c1a7815A07182c3de2FB",
+   "before": "0xa3c5a1e09150b75ff251c1a7815a07182c3de2fb",
+   "after": "0xa3c5a1e09150b75ff251c1a7815a07182c3de2fb",
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "convex-finance",
+   "check": "DAO Multisig getThreshold()",
+   "to": "0xa3C5A1e09150B75ff251c1a7815A07182c3de2FB",
+   "signature": "getThreshold()",
+   "calldata": "0xe75235b8",
+   "baseline_block": 26401312,
+   "baseline_hash": "0x95866ea3ef8f9a0567ce000bc8075f6dc5fb0f1e80cb4e9999ae624a2f0dc109",
+   "recorded": 3,
+   "before": 3,
+   "after": 3,
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "convex-finance",
+   "check": "DAO Multisig getOwners().length",
+   "to": "0xa3C5A1e09150B75ff251c1a7815A07182c3de2FB",
+   "signature": "getOwners()",
+   "calldata": "0xa0e67e2b",
+   "baseline_block": 26401312,
+   "baseline_hash": "0x95866ea3ef8f9a0567ce000bc8075f6dc5fb0f1e80cb4e9999ae624a2f0dc109",
+   "recorded": 5,
+   "before": 5,
+   "after": 5,
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "mellow-protocol-lido-earn",
+   "check": "Curator Safe getThreshold()",
+   "to": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+   "signature": "getThreshold()",
+   "calldata": "0xe75235b8",
+   "baseline_block": 26401312,
+   "baseline_hash": "0x95866ea3ef8f9a0567ce000bc8075f6dc5fb0f1e80cb4e9999ae624a2f0dc109",
+   "recorded": 3,
+   "before": 3,
+   "after": 3,
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "mellow-protocol-lido-earn",
+   "check": "Curator Safe getOwners().length",
+   "to": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+   "signature": "getOwners()",
+   "calldata": "0xa0e67e2b",
+   "baseline_block": 26401312,
+   "baseline_hash": "0x95866ea3ef8f9a0567ce000bc8075f6dc5fb0f1e80cb4e9999ae624a2f0dc109",
+   "recorded": 5,
+   "before": 5,
+   "after": 5,
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "mellow-protocol-lido-earn",
+   "check": "earnETH hasRole(DEFAULT_ADMIN_ROLE, Lazy Vault Admin Safe)",
+   "to": "0x6a37725ca7f4CE81c004c955f7280d5C704a249e",
+   "signature": "hasRole(bytes32,address)",
+   "calldata": "0x91d1485400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000dd73341d6158a72b4d224541f1094188f57076e",
+   "baseline_block": 26401312,
+   "baseline_hash": "0x95866ea3ef8f9a0567ce000bc8075f6dc5fb0f1e80cb4e9999ae624a2f0dc109",
+   "recorded": true,
+   "before": true,
+   "after": true,
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "mellow-protocol-lido-earn",
+   "check": "earnUSD hasRole(DEFAULT_ADMIN_ROLE, Lazy Vault Admin Safe)",
+   "to": "0x014e6DA8F283C4aF65B2AA0f201438680A004452",
+   "signature": "hasRole(bytes32,address)",
+   "calldata": "0x91d1485400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000dd73341d6158a72b4d224541f1094188f57076e",
+   "baseline_block": 26401312,
+   "baseline_hash": "0x95866ea3ef8f9a0567ce000bc8075f6dc5fb0f1e80cb4e9999ae624a2f0dc109",
+   "recorded": true,
+   "before": true,
+   "after": true,
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "mellow-protocol-lido-earn",
+   "check": "Lazy Vault Admin Safe getThreshold()",
+   "to": "0x0Dd73341d6158a72b4D224541f1094188f57076E",
+   "signature": "getThreshold()",
+   "calldata": "0xe75235b8",
+   "baseline_block": 26401312,
+   "baseline_hash": "0x95866ea3ef8f9a0567ce000bc8075f6dc5fb0f1e80cb4e9999ae624a2f0dc109",
+   "recorded": 5,
+   "before": 5,
+   "after": 5,
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "mellow-protocol-lido-earn",
+   "check": "Lazy Vault Admin Safe getOwners().length",
+   "to": "0x0Dd73341d6158a72b4D224541f1094188f57076E",
+   "signature": "getOwners()",
+   "calldata": "0xa0e67e2b",
+   "baseline_block": 26401312,
+   "baseline_hash": "0x95866ea3ef8f9a0567ce000bc8075f6dc5fb0f1e80cb4e9999ae624a2f0dc109",
+   "recorded": 8,
+   "before": 8,
+   "after": 8,
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "mellow-protocol-lido-earn",
+   "check": "Lazy Vault Admin Timelock getMinDelay()",
+   "to": "0x363Ba8843d06BA5968f55C26aB055162eDd62189",
+   "signature": "getMinDelay()",
+   "calldata": "0xf27a0c92",
+   "baseline_block": 26401312,
+   "baseline_hash": "0x95866ea3ef8f9a0567ce000bc8075f6dc5fb0f1e80cb4e9999ae624a2f0dc109",
+   "recorded": 0,
+   "before": 0,
+   "after": 0,
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "fluid-instadapp",
+   "check": "VaultFactory isVaultAuth(Vault 76, Team Multisig)",
+   "to": "0x324c5Dc1fC42c7a4D43d92df1eBA58a54d13Bf2d",
+   "signature": "isVaultAuth(address,address)",
+   "calldata": "0xe04c8e5d0000000000000000000000007fe0b032cb5982af72498f96be3dd6566f7b7de80000000000000000000000004f6f977acdd1177dcd81ab83074855ecb9c2d49e",
+   "baseline_block": 26401405,
+   "baseline_hash": "0x26e155e1569d436406a52ecee31c94d8d8ef2ca4c45d82211a84c8c802be1510",
+   "recorded": true,
+   "before": true,
+   "after": true,
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "fluid-instadapp",
+   "check": "VaultFactory isVaultAuth(Vault 110, Team Multisig)",
+   "to": "0x324c5Dc1fC42c7a4D43d92df1eBA58a54d13Bf2d",
+   "signature": "isVaultAuth(address,address)",
+   "calldata": "0xe04c8e5d000000000000000000000000ee327311d8640156e87ec33ea55fcbf2309e0ce60000000000000000000000004f6f977acdd1177dcd81ab83074855ecb9c2d49e",
+   "baseline_block": 26401405,
+   "baseline_hash": "0x26e155e1569d436406a52ecee31c94d8d8ef2ca4c45d82211a84c8c802be1510",
+   "recorded": true,
+   "before": true,
+   "after": true,
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "fluid-instadapp",
+   "check": "VaultFactory isVaultAuth(Vault 111, Team Multisig)",
+   "to": "0x324c5Dc1fC42c7a4D43d92df1eBA58a54d13Bf2d",
+   "signature": "isVaultAuth(address,address)",
+   "calldata": "0xe04c8e5d000000000000000000000000984636a30ed2b4a61fb7150ced644096349275d30000000000000000000000004f6f977acdd1177dcd81ab83074855ecb9c2d49e",
+   "baseline_block": 26401405,
+   "baseline_hash": "0x26e155e1569d436406a52ecee31c94d8d8ef2ca4c45d82211a84c8c802be1510",
+   "recorded": true,
+   "before": true,
+   "after": true,
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "fluid-instadapp",
+   "check": "VaultFactory isVaultAuth(Vault 144, Team Multisig)",
+   "to": "0x324c5Dc1fC42c7a4D43d92df1eBA58a54d13Bf2d",
+   "signature": "isVaultAuth(address,address)",
+   "calldata": "0xe04c8e5d0000000000000000000000000e19b64f3a79feee12df1b6f239929c6ab6c7ed00000000000000000000000004f6f977acdd1177dcd81ab83074855ecb9c2d49e",
+   "baseline_block": 26401405,
+   "baseline_hash": "0x26e155e1569d436406a52ecee31c94d8d8ef2ca4c45d82211a84c8c802be1510",
+   "recorded": true,
+   "before": true,
+   "after": true,
+   "before_matches_record": true,
+   "drift": false
+  }
+ ],
+ "drifted_checks": 0,
+ "drifted_protocols": [],
+ "unscored": [
+  {
+   "protocol": "mellow-protocol-lido-earn",
+   "check": "Curator Safe owners all on the Lazy Vault Admin Safe (Sprint 4 recorded: all 5)",
+   "safe": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+   "before": [
+    "0x7a63a5cc7f6a6352d0ae1fe175d745bce5d75657",
+    "0x73b254db9cb71a129c4e73af087d71ac7d34a8d7",
+    "0x9777af8c6727d57f74f7d381ad47eb4a65f042ff",
+    "0x59d07dc34b135b17b87840a86bff7302039e7edf",
+    "0xf2374bcb265505002055942d070459a4d2011012"
+   ],
+   "after": [
+    "0x7a63a5cc7f6a6352d0ae1fe175d745bce5d75657",
+    "0x73b254db9cb71a129c4e73af087d71ac7d34a8d7",
+    "0x9777af8c6727d57f74f7d381ad47eb4a65f042ff",
+    "0x59d07dc34b135b17b87840a86bff7302039e7edf",
+    "0xf2374bcb265505002055942d070459a4d2011012"
+   ],
+   "same_set": true,
+   "subset_before": true,
+   "subset_after": true
+  },
+  {
+   "protocol": "convex-finance",
+   "check": "DAO Multisig owner set",
+   "safe": "0xa3C5A1e09150B75ff251c1a7815A07182c3de2FB",
+   "before": [
+    "0xbd0a74e51729a4d0b92742e67183c4cbc97bca92",
+    "0xf7bd34dd44b92fb2f9c3d2e31aaad06570a853a6",
+    "0xade9e51c9e23d64e538a7a38656b78ab6bcc349e",
+    "0xaac0aa431c237c2c0b5f041c8e59b3f1a43ac78f",
+    "0x4d1b56274c01481c0312fca332016d83512beee3"
+   ],
+   "after": [
+    "0xbd0a74e51729a4d0b92742e67183c4cbc97bca92",
+    "0xf7bd34dd44b92fb2f9c3d2e31aaad06570a853a6",
+    "0xade9e51c9e23d64e538a7a38656b78ab6bcc349e",
+    "0xaac0aa431c237c2c0b5f041c8e59b3f1a43ac78f",
+    "0x4d1b56274c01481c0312fca332016d83512beee3"
+   ],
+   "same_set": true
+  },
+  {
+   "protocol": "fluid-instadapp",
+   "check": "Team Multisig (Avocado Multisig) requiredSigners()",
+   "to": "0x4F6F977aCDD1177DCD81aB83074855EcB9C2D49e",
+   "signature": "requiredSigners()",
+   "before": 6,
+   "after": 6,
+   "same": true
+  },
+  {
+   "protocol": "fluid-instadapp",
+   "check": "Team Multisig (Avocado Multisig) signersCount()",
+   "to": "0x4F6F977aCDD1177DCD81aB83074855EcB9C2D49e",
+   "signature": "signersCount()",
+   "before": 12,
+   "after": 12,
+   "same": true
+  },
+  {
+   "protocol": "fluid-instadapp",
+   "check": "Team Multisig (Avocado Multisig) getThreshold() (Safe interface; Sprint 5 summary label)",
+   "to": "0x4F6F977aCDD1177DCD81aB83074855EcB9C2D49e",
+   "signature": "getThreshold()",
+   "before": {
+    "error": {
+     "code": 3,
+     "message": "execution reverted",
+     "data": "0x"
+    }
+   },
+   "after": {
+    "error": {
+     "code": 3,
+     "message": "execution reverted",
+     "data": "0x"
+    }
+   },
+   "same": true
+  }
+ ]
+}

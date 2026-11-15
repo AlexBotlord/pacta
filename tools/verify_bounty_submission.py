@@ -258,7 +258,7 @@ def self_test(verbose=False):
             ok = False
             print(f"self-test FAIL: valid fixture ({name}) -> {probs}")
     tok = "gh" + "p_" + "A" * 20
-    first = json.load(open(PROTOCOLS))["protocols"][0]
+    first = next(x for x in json.load(open(PROTOCOLS))["protocols"] if x["chain"] == "ethereum")   # the fixtures use chainId 1
     cases = [
         ("slot", {"slot": "5"}), ("issue", {"issue": "https://github.com/Fractal-Neurons/pacta/issues/99"}), ("chainId", {"chainId": "137"}),
         ("chainId", {"chainId": "8453"}), ("contractAddress", {"contractAddress": good["contractAddress"].lower()}),

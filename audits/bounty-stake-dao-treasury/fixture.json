@@ -1,0 +1,122 @@
+{
+  "schema": "pacta.bounty_evidence.v1",
+  "chainId": 1,
+  "protocol": "Stake DAO Yield",
+  "treasurySafe": "0xF930EBBd05eF8b25B1797b9b2109DDC9B0d43063",
+  "blockNumber": 26417900,
+  "blockHash": "0x7ab58787804ece150a72cb03e507d5d07cfeddb60cb48437bab2141de7c77bc0",
+  "documentationUrl": "https://docs.stakedao.org/treasury.md",
+  "documentationQuote": "All wallets use a 4-of-7 multisig structure.",
+  "tvlUrl": "https://api.llama.fi/protocol/stake-dao-yield",
+  "ethereumTvlUsdAtResearch": 110023153.35395,
+  "rpc": {
+    "https://ethereum-rpc.publicnode.com": {
+      "block_hash": "0x7ab58787804ece150a72cb03e507d5d07cfeddb60cb48437bab2141de7c77bc0",
+      "threshold_raw": "0x0000000000000000000000000000000000000000000000000000000000000003",
+      "owners_raw": "0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000005000000000000000000000000f2875cb91c35e0ddc9b76b15e2aae236d393efff000000000000000000000000e3268adb23043b3acc7083e96912aeeb4feb4df200000000000000000000000007c2d0e24530199e2c9a15bfed4496d8e37980030000000000000000000000004046b37ffc36b0c723d7fc64e0c763b698d81934000000000000000000000000eb9f416fa098697d95e70b20439f19097eb741ed"
+    },
+    "https://eth.drpc.org": {
+      "block_hash": "0x7ab58787804ece150a72cb03e507d5d07cfeddb60cb48437bab2141de7c77bc0",
+      "threshold_raw": "0x0000000000000000000000000000000000000000000000000000000000000003",
+      "owners_raw": "0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000005000000000000000000000000f2875cb91c35e0ddc9b76b15e2aae236d393efff000000000000000000000000e3268adb23043b3acc7083e96912aeeb4feb4df200000000000000000000000007c2d0e24530199e2c9a15bfed4496d8e37980030000000000000000000000004046b37ffc36b0c723d7fc64e0c763b698d81934000000000000000000000000eb9f416fa098697d95e70b20439f19097eb741ed"
+    }
+  },
+  "mcp": {
+    "pacta_lookup_protocol": {
+      "schema": "pacta.protocol_lookup.v1",
+      "query": "Stake DAO",
+      "filters": {
+        "chain": "ethereum",
+        "kind": "all",
+        "limit": 10
+      },
+      "totalCatalog": {
+        "protocols": 53,
+        "briefs": 8,
+        "easAttestedProtocols": 33,
+        "rpcObservedProtocols": 20
+      },
+      "totalMatches": 0,
+      "count": 0,
+      "results": [],
+      "catalog": "https://pacta.wtf/api/v1/lookup.json",
+      "nextStep": "Pass a result's preflightArgs ({chain, address}) to pacta_check_preflight (or pacta_scan_control_plane) for a live check.",
+      "note": "easAttested protocols are Base-EAS-anchored records that compare on-chain state with the protocol's documentation. rpc_observed protocols pin the on-chain control plane over archive JSON-RPC and do not assess the documentation (documentationComparison: not_assessed). Briefs are block-pinned verification briefs. preflightArgs re-read the contract live.",
+      "hint": "No match. Call again with an empty query to list what Pacta tracks, or pass a known 0x contract address straight to pacta_check_preflight."
+    },
+    "pacta_check_preflight": {
+      "schema": "pacta.preflight_check.v1",
+      "chain": "ethereum",
+      "chainId": 1,
+      "address": "0xF930EBBd05eF8b25B1797b9b2109DDC9B0d43063",
+      "pinnedBlock": 26417900,
+      "pinnedBlockHash": "0x7ab58787804ece150a72cb03e507d5d07cfeddb60cb48437bab2141de7c77bc0",
+      "blockTimestamp": 1794715607,
+      "verdict": "IMMUTABLE_NO_ADMIN",
+      "riskScore": 0,
+      "isContract": true,
+      "isProxy": false,
+      "proxyType": null,
+      "implementation": null,
+      "beacon": null,
+      "hasAdminSlot": false,
+      "canUpgradeZeroDelay": false,
+      "capabilities": {
+        "pause": false,
+        "blacklist": false,
+        "upgrade": false
+      },
+      "paused": null,
+      "controller": {
+        "address": null,
+        "kind": "none",
+        "safeThreshold": null,
+        "timelockDelaySec": null,
+        "source": null
+      },
+      "roleAdminMembers": null,
+      "codeBytes": 170,
+      "method": "Batched JSON-RPC reads pinned to the block hash (EIP-1898); EIP-1967 / EIP-1822 / beacon proxies; capabilities from PUSH4 selectors in proxy + implementation bytecode (heuristic).",
+      "summary": "No proxy (EIP-1967, EIP-1822 or beacon) and no owner(), admin(), authority() or AccessControl admin found: immutable as far as these standard surfaces show."
+    },
+    "pacta_scan_control_plane": {
+      "chain": "ethereum",
+      "address": "0xF930EBBd05eF8b25B1797b9b2109DDC9B0d43063",
+      "block": {
+        "number": 26417900,
+        "hash": "0x7ab58787804ece150a72cb03e507d5d07cfeddb60cb48437bab2141de7c77bc0",
+        "timestamp": 1794715607
+      },
+      "codeBytes": 170,
+      "eip1967": {
+        "implementation": null,
+        "admin": null,
+        "beacon": null
+      },
+      "owner": null,
+      "probedStatus": {
+        "eip1967Slots": "ok",
+        "owner": "reverted_or_absent",
+        "safeGetters": "ok"
+      },
+      "safe": {
+        "threshold": 3,
+        "owners": [
+          "0xF2875cB91c35e0DDc9b76B15E2Aae236d393efFf",
+          "0xE3268ADB23043b3Acc7083E96912aeeb4feB4DF2",
+          "0x07c2D0E24530199e2c9A15bfeD4496d8E3798003",
+          "0x4046B37Ffc36B0C723d7Fc64e0C763B698D81934",
+          "0xEb9F416fA098697D95E70B20439F19097EB741ED"
+        ],
+        "ownerCount": 5,
+        "guard": null
+      },
+      "upgradeAuthority": null,
+      "ownerPrincipal": null,
+      "riskFlags": [
+        "not_eip1967_upgradeable"
+      ],
+      "summary": "OBSERVED: No EIP-1967, Ownable, or Safe single-key control detected in probed standard slots/selectors (custom AccessControl/RolesAuthority not excluded)"
+    }
+  }
+}

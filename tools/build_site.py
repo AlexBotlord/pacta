@@ -1410,7 +1410,7 @@ def vault_factories_page(idx, sp):
                    f'<td class="num">{tiers.get(t, 0)}</td><td>{E(d)}</td></tr>'
                    for t, s_, d in (("aligned", "aave-v3-gho", "Every record is a Base-EAS-attested aligned baseline: on-chain state matches the documentation."),
                                     ("parameter_delta", "curve-finance-crvusd", "Base-EAS-attested; at least one surface differs from the documentation."),
-                                    ("rpc_observed", "moonwell-lending-base", "RPC-pinned only: control plane pinned at an archive block; documentation not assessed; not EAS-attested.")))
+                                    ("rpc_observed", "rocket-pool-reth", "RPC-pinned only: control plane pinned at an archive block; documentation not assessed; not EAS-attested.")))
     plat = "".join(f"<tr><td><b>{E(a)}</b></td><td><code>{E(b)}</code></td><td>{E(d)}</td></tr>" for a, b, d in (
         ("Morpho Vault V2", "checkMorphoV2AbsoluteCapIncrease(vault, collateral, idData, newCap)",
          "Before a curator submits increaseAbsoluteCap. Reads absoluteCap(keccak256(idData)); decreaseAbsoluteCap and sentinel revoke are never gated."),

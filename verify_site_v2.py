@@ -50,6 +50,7 @@ EXPECT = {
     "protocols": 58, "eas_protocols": 38, "rpc_protocols": 20,          # /protocols/ pages = EAS-attested + RPC-pinned; badges = protocols
     "briefs": 8, "badge_tiers": {"aligned": 21, "parameter_delta": 17, "rpc_observed": 20},
     "base_records": 1,                                                  # index.json records with chain "base" (Sprint 17 adds the first)
+    "rpc_by_chain": {"ethereum": 12, "base": 8},                         # rpc-pinned.json records per chain (sum = rpc_protocols)
     "multi_attest_txs": ["1–12", "13–16", "17"],                              # attestation_coverage.eas_multi_attest_txs keys
     "summaries": {"15": "61c0cc292cfa1fc3840277cf312383d24a6c81af56afac303afdbd84e7316cf6",
                   "16": "91b8e29301ef0e625c4ddc9eadaf5388115812f5958f90b6e0ed53a4808ba8ae",
@@ -859,9 +860,10 @@ def main():
         if ("not EAS-attested" not in pt or "/api/v1/rpc-pinned.json" not in pt or "· sprint" in pt or "easscan" in pt
                 or ld0["distribution"][0]["contentUrl"] != f"{BS.BASE_URL}/api/v1/rpc-pinned.json" or f'--rpc-url &quot;{e["rpc_env_var"]}&quot;' not in pt):
             pin_bad.append(f'{e["id"]}: page provenance')
-    check(f"rpc-pinned.json (pacta.rpc_pinned_records.v1): 20 records (12 Ethereum + 8 Base), NOT EAS-attested (attestation.eas_attested false, base_eas_uid null, no sprint / summary fields), every block = the chain's pinned head (number + hash), EIP-55 addresses, selector = keccak(signature), slugs disjoint from index.json; each page says not EAS-attested, links rpc-pinned.json (Dataset distribution too), uses the chain's RPC variable; index.json untouched ({X['records']} records)",
+    check(f"rpc-pinned.json (pacta.rpc_pinned_records.v1): {X['rpc_protocols']} records ({X['rpc_by_chain']['ethereum']} Ethereum + {X['rpc_by_chain']['base']} Base), NOT EAS-attested (attestation.eas_attested false, base_eas_uid null, no sprint / summary fields), every block = the chain's pinned head (number + hash), EIP-55 addresses, selector = keccak(signature), slugs disjoint from index.json; each page says not EAS-attested, links rpc-pinned.json (Dataset distribution too), uses the chain's RPC variable; index.json untouched ({X['records']} records)",
           pinned_.get("schema") == "pacta.rpc_pinned_records.v1" and pinned_.get("attestation", {}).get("eas_attested") is False
-          and pinned_.get("summary") == {"protocols": 20, "records": 20, "ethereum": 12, "base": 8} and len(pinned_.get("entries", [])) == 20
+          and pinned_.get("summary") == {"protocols": X["rpc_protocols"], "records": X["rpc_protocols"], **X["rpc_by_chain"]}
+          and len(pinned_.get("entries", [])) == X["rpc_protocols"] == sum(X["rpc_by_chain"].values())
           and not pin_bad and len(idx_["entries"]) == X["records"], f"bad {pin_bad[:4]}")
 
     pv_ = json.loads(read("docs/api/v1/rpc-pinned.json"))
@@ -869,7 +871,7 @@ def main():
     hub_ = read("docs/protocols/index.html")
     hub_rows = {sl: re.search(rf'<tr[^>]*><td><a href="{sl}/">.*?</tr>', hub_).group(0) for sl in w2_pages}
     f1_ok = {
-        "all 20 rpc_observed": [e["classification"] for e in pv_["entries"]] == ["rpc_observed"] * 20,
+        "all rpc_observed": [e["classification"] for e in pv_["entries"]] == ["rpc_observed"] * X["rpc_protocols"],
         "documentation not compared": all(e.get("documentation_comparison") == "not_assessed" and e["documented_delay_seconds"] is None
                                           and "publishes" not in e["documented_reference"] and "does not compare" in e["documented_reference"] for e in pv_["entries"]),
         "pages: RPC-observed badge only": all('<span class="badge observed">RPC-observed baseline</span>' in t and "Aligned baseline" not in t
@@ -882,7 +884,7 @@ def main():
                                          == json.loads(read("packages/mcp-server/package.json"))["version"],
         "llms-full names v0.1.4": "@pacta/mcp-server v0.1.4" in read("docs/llms-full.txt"),
     }
-    check("Codex F1: all 20 RPC-pinned records are classification rpc_observed with documentation linked but not compared (no 'publishes' claim, no documented delays); their pages and /protocols/ rows show only the neutral 'RPC-observed baseline' badge; rpc_observed defined in llms.txt + llms-full.txt; mcp.json packageVersion 0.1.4; llms-full names v0.1.4",
+    check(f"Codex F1: all {X['rpc_protocols']} RPC-pinned records are classification rpc_observed with documentation linked but not compared (no 'publishes' claim, no documented delays); their pages and /protocols/ rows show only the neutral 'RPC-observed baseline' badge; rpc_observed defined in llms.txt + llms-full.txt; mcp.json packageVersion 0.1.4; llms-full names v0.1.4",
           all(f1_ok.values()), str([k for k, v in f1_ok.items() if not v]))
     # free-tier MCP caller attribution (task-06d4550a8b0f): documented on every agent surface; the browser checker names itself
     roles_ = ["autonomous_agent", "defi_developer", "risk_curator_analyst", "security_researcher", "protocol_team", "institutional_allocator", "individual_user"]
@@ -1393,14 +1395,22 @@ def main():
         if (str(n_) in idx_mc["onchain_anchoring"]["sprint_eas_attestations"] or any(e["sprint"] == n_ for e in idx_mc["entries"])
                 or stg["summary_sha256"] != sha_ or any(r["summary_sha256"] != sha_ or r["summary_doc"] != stg["summary_doc"] for r in rs)
                 or stg["eas"] != {"chainId": 1, "blockNumber": pins_["ethereum"][0], "blockHash": pins_["ethereum"][1],
-                                  "verifiedCount": cl_.count("aligned_baseline") + cl_.count("protective_delta"), "driftCount": cl_.count("parameter_delta")}
+                                  "verifiedCount": cl_.count("aligned_baseline") + cl_.count("protective_delta"),
+                                  "driftCount": cl_.count("parameter_delta")}          # every Sprint: driftCount = parameter-delta records
+                or ("drift_rescans" in stg and not (                                  # optional post-snapshot re-scan of earlier Sprints
+                    stg["drift_rescans"]["block"] == pins_["ethereum"][0] and len(stg["drift_rescans"]["protocols"]) <= stg["drift_rescans"]["checks"]
+                    and 0 <= stg["drift_rescans"]["drifted"] <= len(stg["drift_rescans"]["protocols"])
+                    and f'{stg["drift_rescans"]["drifted"]} of {len(stg["drift_rescans"]["protocols"])}' in read(stg["summary_doc"])
+                    and f'`{stg["drift_rescans"]["checks"]}` checks' in read(stg["summary_doc"])))
+                or any(sl not in {e["slug"] for e in pinned_["entries"]} or BS.protocol_slug(nm) != sl or not any(r["protocol"] == nm for r in rs)
+                       for sl, nm in stg.get("converts_rpc_pinned", {}).items())
                 or any(r["base_eas_uid"] is not None or r["sprint"] != n_ or (r["block_number"], r["block_hash"]) != pins_[r["chain"]]
                        or r["rpc_env_var"] != BS.CHAINS[r["chain"]][2] or not eip55_ok(r["target_contract"])
                        or (r["check_type"] == "eth_call" and "0x" + keccak(r["call_signature"].encode()).hex()[:8] != r["selector_or_slot"]) for r in rs)
                 or len({r["id"] for r in rs} | {e["id"] for e in idx_mc["entries"]}) != len(rs) + len(idx_mc["entries"])
                 or str(pins_["ethereum"][0]) not in stg["summary_doc"] or not all(h_ in read(stg["summary_doc"]) for _, h_ in pins_.values())):
             st_bad.append(os.path.relpath(sp_path, ROOT))
-    check("staged Sprint bundles (not yet indexed): summary SHA-256, EAS verified / drift counts, per-chain pins (number + hash, also in the summary), "
+    check("staged Sprint bundles (not yet indexed): summary SHA-256, EAS verified / drift counts (drift = parameter deltas; optional re-scan block / count stated in the summary), per-chain pins (number + hash, also in the summary), "
           "RPC variable, EIP-55 targets, selector = keccak(signature), base_eas_uid null, ids disjoint from index.json",
           not st_bad, str(st_bad))
 

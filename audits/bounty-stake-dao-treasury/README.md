@@ -1,6 +1,6 @@
 # Stake DAO treasury: documented 4-of-7, observed 3-of-5
 
-Candidate for [bounty #21](https://github.com/Fractal-Neurons/pacta/issues/21); this is a documentation/state discrepancy, **not** an exploit claim. Maintainer acceptance, agent eligibility, payment and whether a treasury Safe qualifies as a protocol control-plane target remain unconfirmed. This Safe controls protocol-owned treasury assets; we have not established that it controls all protocol TVL or a vault admin.
+Candidate for [bounty #21](https://github.com/Fractal-Neurons/pacta/issues/21); this is a documentation/state discrepancy, **not** an exploit claim. The maintainer confirmed autonomous-agent eligibility under the same rules in [issue #23](https://github.com/Fractal-Neurons/pacta/issues/23). Acceptance, payment, and whether a treasury Safe qualifies as a protocol control-plane target remain unconfirmed. This Safe controls protocol-owned treasury assets; we have not established that it controls all protocol TVL or a vault admin.
 
 - Chain: Ethereum mainnet (chain ID 1). Safe: `0xF930EBBd05eF8b25B1797b9b2109DDC9B0d43063`.
 - Official [Treasury page](https://docs.stakedao.org/treasury.md), HTTP 200, identifies that address as the Ethereum treasury and states: “All wallets use a 4-of-7 multisig structure.”
@@ -11,10 +11,10 @@ Candidate for [bounty #21](https://github.com/Fractal-Neurons/pacta/issues/21); 
 
 ## Reproduce
 
-With Foundry `cast` 1.7.1, execute each command against both `https://ethereum.public.blockpi.network/v1/rpc/public` and `https://eth.drpc.org`, e.g. set `RPC` to each in turn:
+With Foundry `cast` 1.7.1, execute each command against both `https://eth-mainnet.public.blastapi.io` and `https://eth.drpc.org`, e.g. set `RPC` to each in turn:
 
 ```sh
-RPC=https://ethereum.public.blockpi.network/v1/rpc/public # repeat with https://eth.drpc.org
+RPC=https://eth-mainnet.public.blastapi.io # repeat with https://eth.drpc.org
 cast chain-id --rpc-url "$RPC"
 cast block 26417900 --field hash --rpc-url "$RPC"
 cast call 0xF930EBBd05eF8b25B1797b9b2109DDC9B0d43063 'getThreshold()(uint256)' --block 26417900 --rpc-url "$RPC"
@@ -23,7 +23,7 @@ cast call 0xF930EBBd05eF8b25B1797b9b2109DDC9B0d43063 'getOwners()(address[])' --
 
 Both RPCs returned `3` and the same five owner addresses; raw ABI outputs are in `fixture.json`. Verify finality independently. `python3 verify_fixture.py` checks the saved values offline; it does not prove live chain state or source authenticity. Run `python3 -m unittest discover -s audits/bounty-stake-dao-treasury -p "test_*.py" -v` from the repository root to exercise the valid fixture and tampering regressions.
 
-The original PublicNode replay worked initially but later returned an archive-access 403. BlockPI and dRPC were rechecked at the pinned block and their raw outputs replaced the original saved RPC records; availability can change.
+The original PublicNode replay later returned an archive-access 403; BlockPI subsequently reported unavailable historical state. At the latest replay, Blast and dRPC returned matching pinned raw outputs; public endpoint availability can change. Another endpoint (1RPC) intermittently returned unavailable historical state, so it is not used as a reproducibility prerequisite.
 
 ## Contribution grant
 

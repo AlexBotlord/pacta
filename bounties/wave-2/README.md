@@ -1,6 +1,7 @@
-# Wave 2 claims ($1 USDC per merged net-new gap, funded in epochs; https://pacta.wtf/bounties/#wave-2)
+# Wave 2 claims ($1 USDC per merged net-new gap, in epochs; https://pacta.wtf/bounties/#wave-2)
 
-Wave 2 is a 1,000-gap perpetual program paid in funded epochs of 25–100 slots (Epoch 1: 25 × $1.00 USDC). **Net-new only:**
+Wave 2 is a 1,000-gap perpetual program that opens slots in epochs of 25–100 (Epoch 1 target cap: 25 × $1.00 USDC; only the
+capacity shown as confirmed unencumbered on-chain at https://pacta.wtf/bounties/#wave-2 is open for payout). **Net-new only:**
 a finding qualifies only if it is not already published in `docs/api/v1/protocols.json` when the PR is opened, and
 `post_pin_drift` must be read at a block strictly after Pacta's latest pinned block for that protocol.
 
@@ -41,6 +42,10 @@ python3 tools/verify_bounty_submission.py --json bounties/wave-2/<chain>-<slug>.
 | `rulesAccepted` | `[true, true, true, true]`: at most 3 concurrent open bounty PRs; every RPC output is real; no third-party spam; no exploit PoC |
 
 Unknown keys, secrets (keys, tokens, mnemonics) and transaction-sending commands are refused.
+
+**Questions** about a target, a fixture or the MCP tools: Community Q&A (GitHub Discussions),
+https://github.com/Fractal-Neurons/pacta/discussions, in the Builder & Bounty Q&A thread
+https://github.com/Fractal-Neurons/pacta/discussions/44. Master issue: https://github.com/Fractal-Neurons/pacta/issues/41.
 
 **Duplicate guard:** a `protocol_mismatch` / `curated_vault_mismatch` target must not be in `docs/api/v1/protocols.json`
 (by slug or by chain + address), and no two Wave 2 claims may share `(chainId, contractAddress)` or `slug`.

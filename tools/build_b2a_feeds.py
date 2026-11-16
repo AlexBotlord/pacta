@@ -51,8 +51,11 @@ BOUNTIES_DOC = ("Bounties ($100): Pacta Chain-Feed Mismatch Challenge, 4 × $25 
 _W2 = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "bounty_wave2.json")))
 _W2_TVL = {k: f"${v['minTvlUsd'] // 1_000_000}M" for k, v in _W2["categories"].items() if v["minTvlUsd"]}
 LEADERBOARD_URL = "https://pacta.wtf/leaderboard/"
-WAVE2_DOC = (f"Bounties Wave 2: {_W2['program']}, funded in epochs (Epoch {_W2['currentEpoch']}: {_W2['activeEpochSlots']} × ${_W2['rewardUsdc']} USDC "
-             f"= ${_W2['activeEpochCapUsdc']} USDC active); one merged verified net-new control-plane mismatch per slot: an unindexed protocol (>= {_W2_TVL['protocol_mismatch']} TVL), a curated vault (>= "
+COMMUNITY_URL, COMMUNITY_QA_URL = _W2["communityUrl"], _W2["communityQaUrl"]
+COMMUNITY_DOC = (f"Community hub (GitHub Discussions): announcements and builder / bounty Q&A at {COMMUNITY_URL}; questions about targets, "
+                 f"fixtures or the MCP tools go to the Q&A thread {COMMUNITY_QA_URL}. Wave 2 master issue: {_W2['wave2IssueUrl']}")
+WAVE2_DOC = (f"Bounties Wave 2: {_W2['program']}, in epochs (Epoch {_W2['currentEpoch']} target cap: {_W2['activeEpochSlots']} × ${_W2['rewardUsdc']} USDC "
+             f"= ${_W2['activeEpochCapUsdc']} USDC; ${_W2['fundedUnencumberedUsdc']} USDC ({_W2['fundedUnencumberedSlots']} slots) confirmed unencumbered on-chain now); one merged verified net-new control-plane mismatch per slot: an unindexed protocol (>= {_W2_TVL['protocol_mismatch']} TVL), a curated vault (>= "
              f"{_W2_TVL['curated_vault_mismatch']} TVL), or post-snapshot drift on an indexed protocol; one JSON fixture per PR at "
              f"{_W2['fixtureDir']}/<chain>-<slug>.json, checked by CI; paid in USDC on Base within {_W2['settlement']['windowDays']} days of maintainer "
              f"merge in weekly batches to the fixture's basePayoutAddress (not pre-escrowed): {BOUNTIES_URL}#wave-2")
@@ -313,6 +316,7 @@ def llms_full(idx, radar, prop, onb, pinned=None):
          f"- {BOUNTIES_DOC}",
          f"- {WAVE2_DOC}",
          f"- {LEADERBOARD_DOC}",
+         f"- {COMMUNITY_DOC}",
          f"- Vault factories and curators: {BASE}/integrations/vault-factories/ (Control-Plane & Role Map tab from {BASE}/api/v1/protocols.json, status badges {BASE}/badges/<slug>.svg and {X402_URL}/v1/badges/<slug>.svg, and PactaSentinelGuard.sol: refuses cap increases without a healthy Pacta attestation, never blocks a decrease).",
          f"- Stdio tools ({STDIO_TOOLS_DOC}):"] + [f"  - {n} ({p}): {d}" for n, p, d in MCP_TOOLS] + [
          f"- Paid tools are disabled unless PACTA_X402_URL is set (opt-in: PACTA_X402_URL={X402_URL}); the client refuses any 402 challenge (v1 body or v2 "

@@ -1,6 +1,6 @@
 # [Wave 2 · Epoch 1: 25 × $1 USDC | 1,000-Slot Program] Continuous Agent & Researcher Control-Plane Mismatch Pool
 
-**1,000-Gap Perpetual Open-Discovery Program ($1.00 USDC / Merged Net-New Gap on Base).** The program pays out in funded epochs of 25–100 slots, opened one after another up to 1,000 slots in total. **Epoch 1 (active): 25 × $1.00 USDC = $25.00 USDC**, paid on Base Mainnet (chainId 8453, USDC `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913`). One fixture per PR, first valid merged PR per target wins; when an epoch fills, the next one opens once it is funded. Live counter: https://pacta.wtf/bounties/#wave-2 · Hunter leaderboard: https://pacta.wtf/leaderboard/
+**1,000-Gap Perpetual Open-Discovery Program ($1.00 USDC / Merged Net-New Gap on Base).** Slots open in epochs of 25–100, one after another, up to 1,000 slots in total. **Epoch 1 target cap: 25 × $1.00 USDC = $25.00 USDC.** Confirmed unencumbered on-chain now: **$2.00 USDC (2 slots)**; $25.00 USDC in the treasury is separately ring-fenced for open Wave 1 Slot #4 (Issue #24), until every timely submission is adjudicated and any winning payout is settled on Base, and the remaining $23.00 of Epoch 1 target capacity unlocks as confirmed Base USDC top-ups land. Paid on Base Mainnet (chainId 8453, USDC `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913`). One fixture per PR, first valid merged PR per target wins. Live counter: https://pacta.wtf/bounties/#wave-2 · Hunter leaderboard: https://pacta.wtf/leaderboard/
 
 **Net-new only.** A finding qualifies only if it is not already published in https://pacta.wtf/api/v1/protocols.json when the PR is opened; `post_pin_drift` must be read at a block strictly after Pacta's latest pinned block for that protocol.
 
@@ -23,6 +23,10 @@ Targets already in https://pacta.wtf/api/v1/protocols.json are only eligible as 
 ## Payout
 
 Paid in USDC on Base Mainnet in weekly batches, within 7 days of maintainer merge, from the Pacta treasury (0xcA4E2ff22B69A7284210c47BdeE21Aac1269da09, an externally owned account) directly to the basePayoutAddress committed in the merged bounties/wave-2 fixture: no post-merge comment needed. Funds are not pre-escrowed in an automated contract; zero automatic on-chain payouts.
+
+## Questions
+
+Ask in Community Q&A (GitHub Discussions): https://github.com/Fractal-Neurons/pacta/discussions. Questions about targets, fixtures or the MCP tools go to the Builder & Bounty Q&A thread: https://github.com/Fractal-Neurons/pacta/discussions/44
 
 ## Rules
 

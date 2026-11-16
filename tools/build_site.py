@@ -63,7 +63,7 @@ BRIEFS = {
                            "and installs a 5-of-7 Safe blacklister (ETA 2026-11-17 04:51 UTC).",
 }
 NAV = [("preflight", "Free API"), ("protocols/", "Protocols"), ("inspector", "Inspector"), ("radar", "Radar"), ("findings", "Findings"), ("index", "Index"), ("verify", "Verify"),
-       ("pricing", "Pricing"), ("bounties/", "Bounties ($100)"), ("faq", "FAQ")]
+       ("pricing", "Pricing"), ("bounties/", "Bounties"), ("faq", "FAQ")]
 # Brand / RAG disambiguation (receipt/1817): the exact line in llms.txt, llms-full.txt, /llms/ and the Organization JSON-LD.
 DISAMBIGUATION = B2A.DISAMBIGUATION
 BRAND = B2A.BRAND
@@ -241,9 +241,10 @@ def footer(count_line, reg, home=""):
     return (f'<footer class="ftr"><div class="wrap">'
             f'<span class="ftr-brand"><img class="ftr-logo" src="{home}favicon.svg" alt="" width="18" height="18">Pacta by Fractal Neurons · pacta.base.eth · {E(count_line)}</span>'
             f'<nav aria-label="Footer"><a href="{REPO}" target="_blank" rel="noopener">GitHub</a>'
+            f'<a href="{COMMUNITY_URL}" target="_blank" rel="noopener">Community</a>'
             f'<a href="{home}api/v1/index.json">JSON feed</a><a href="{home}llms.txt">llms.txt</a><a href="{home}llms/">llms (HTML)</a>'
             f'<a href="https://basescan.org/address/{E(reg)}" target="_blank" rel="noopener">Base registry</a>'
-            f'<a href="{home}bounties/">Bounties ($100)</a><a href="{home}leaderboard/">Leaderboard</a>'
+            f'<a href="{home}bounties/">Bounties</a><a href="{home}leaderboard/">Leaderboard</a>'
             f'<a href="{home}.well-known/security.txt">security.txt</a>'
             f'<a href="{home}{"#request" if home == "" else "request/"}">Contact</a></nav>'
             f'</div></footer>')
@@ -1658,11 +1659,12 @@ def bounties_page(idx, radar, bounties=None, claims=None, lb=None):
 <div class="crumbs"><a href="../">Pacta</a> / Bounties</div>
 <article class="memo">
 <header><span class="tier">Bounties · Wave 2 Epoch {CURRENT_EPOCH}: {ACTIVE_EPOCH_SLOTS} × ${E(REWARD_USDC)} USDC · Wave 1 Genesis Archive</span><h1>Pacta bounties: verified on-chain control-plane mismatches</h1>
-<p class="lede">Find a live on-chain control-plane fact that contradicts a protocol's official documentation: a proxy admin, timelock delay, multisig threshold, curator or guardian role that differs from what the docs say. <b>Wave 2</b> is a {PROGRAM_CAP_SLOTS:,}-gap perpetual program at <b>${E(REWARD_USDC)} USDC per merged net-new gap</b>, funded in epochs: <b>Epoch {CURRENT_EPOCH}</b> has {ACTIVE_EPOCH_SLOTS} active slots (${E(ACTIVE_EPOCH_CAP_USDC)} USDC). <b>Wave 1</b> (4 × $25 USDC, Nov 15 – Nov 22, 2026) is archived below with its settlement ledger. Every hunter is credited on the <a href="../leaderboard/">hunter leaderboard</a>.</p></header>
+<p class="lede">Find a live on-chain control-plane fact that contradicts a protocol's official documentation: a proxy admin, timelock delay, multisig threshold, curator or guardian role that differs from what the docs say. <b>Wave 2</b> is a {PROGRAM_CAP_SLOTS:,}-gap perpetual program at <b>${E(REWARD_USDC)} USDC per merged net-new gap</b>, opened in epochs: <b>Epoch {CURRENT_EPOCH}</b> has a target cap of {ACTIVE_EPOCH_SLOTS} slots (${E(ACTIVE_EPOCH_CAP_USDC)} USDC), of which ${E(FUNDED_UNENCUMBERED_USDC)} USDC ({FUNDED_UNENCUMBERED_SLOTS} slots) is confirmed unencumbered on-chain now. <b>Wave 1</b> (4 × $25 USDC, Nov 15 – Nov 22, 2026) is archived below with its settlement ledger. Every hunter is credited on the <a href="../leaderboard/">hunter leaderboard</a>.</p></header>
 {wave2_section_html(claims, n_protocols)}<section class="memo-sec" id="quickstart"><h2>1-line Remote MCP quickstart (free)</h2>
 <div class="qs-snip"><span class="qs-l">Claude Code</span><code class="mono">{E(claude)}</code>{copy_btn(claude)}</div>
 <p>Query <code>pacta_lookup_protocol</code> (confirm the target is unindexed: a miss carries <code>coverage_gap_hint</code>), <code>pacta_check_preflight</code> and <code>pacta_scan_control_plane</code>, then pin the reads with <code>cast</code> on two RPC endpoints. Indexed protocols: <a href="../api/v1/protocols.json">/api/v1/protocols.json</a>.</p></section>
 <section class="memo-sec" id="wave-1"><h2>Wave 1 Genesis Archive · {E(BOUNTY_TITLE)}</h2>
+<p class="s" data-wave1-snapshot><b>Historical Snapshot (Pinned at 53 Protocols on Nov 15)</b>: the Wave 1 terms below are archived verbatim and refer to Pacta&#x27;s index as it stood on Nov 15, 2026; Wave 2 targets the live index (<a href="../api/v1/protocols.json">/api/v1/protocols.json</a>).</p>
 <p>Find a live on-chain control-plane fact that contradicts a protocol's official documentation (<code>parameter_delta</code>). Four slots, <b>4 × $25 USDC = $100 USDC</b> in total, first valid merged PR per slot wins. Organizer: {E(pr["organizer"])}. Window: Nov 15 – Nov 22, 2026 ({bounty_hours(pr)}h).</p>
 <h3>Wave 1 Genesis Settlement Ledger</h3>
 {wave1_ledger_html(lb)}
@@ -1687,7 +1689,7 @@ def bounties_page(idx, radar, bounties=None, claims=None, lb=None):
 </body></html>
 """
     return head(f"Bounties · Wave 2 Epoch {CURRENT_EPOCH}: {ACTIVE_EPOCH_SLOTS} × ${REWARD_USDC} USDC · Pacta",
-                f"Wave 2: ${REWARD_USDC} USDC per merged net-new on-chain control-plane mismatch, paid in USDC on Base; Epoch {CURRENT_EPOCH} has {ACTIVE_EPOCH_SLOTS} funded slots of a {PROGRAM_CAP_SLOTS:,}-slot program. Wave 1 (4 × $25 USDC) archive and ledger.",
+                f"Wave 2: ${REWARD_USDC} USDC per merged net-new on-chain control-plane mismatch, paid in USDC on Base; Epoch {CURRENT_EPOCH} target cap {ACTIVE_EPOCH_SLOTS} slots of a {PROGRAM_CAP_SLOTS:,}-slot program; ${FUNDED_UNENCUMBERED_USDC} USDC confirmed unencumbered now. Wave 1 (4 × $25 USDC) archive and ledger.",
                 f"{BASE_URL}/bounties/", prefix="../", og_title=f"Pacta bounties · Wave 2 Epoch {CURRENT_EPOCH}: {ACTIVE_EPOCH_SLOTS} × ${REWARD_USDC} USDC") + "\n" + body
 
 
@@ -1699,20 +1701,29 @@ WAVE2 = json.load(open(WAVE2_SRC))
 REWARD_USDC = WAVE2["rewardUsdc"]                  # "1.00"
 REWARD_ATOMIC = WAVE2["rewardAtomic"]              # 1_000_000 (USDC has 6 decimals)
 PROGRAM_CAP_SLOTS = WAVE2["programCapSlots"]       # 1,000-gap perpetual program
-CURRENT_EPOCH = WAVE2["currentEpoch"]              # funded epochs of 25-100 slots, opened one after another
+CURRENT_EPOCH = WAVE2["currentEpoch"]              # epochs of 25-100 slots, opened one after another
 ACTIVE_EPOCH_SLOTS = WAVE2["activeEpochSlots"]     # 25 in Epoch 1
 ACTIVE_EPOCH_CAP_USDC = WAVE2["activeEpochCapUsdc"]  # "25.00"
 PRIOR_EPOCH_SLOTS = WAVE2["priorEpochSlots"]       # slots filled in completed epochs (0 during Epoch 1)
+# Public capacity claims follow confirmed, unencumbered on-chain USDC only (the epoch cap is a target, not a promise):
+FUNDED_UNENCUMBERED_SLOTS = WAVE2["fundedUnencumberedSlots"]   # 2 today
+FUNDED_UNENCUMBERED_USDC = WAVE2["fundedUnencumberedUsdc"]     # "2.00"
+RING_FENCED_USDC, RING_FENCED_FOR = WAVE2["ringFencedUsdc"], WAVE2["ringFencedFor"]
 PROGRAM_LABEL = WAVE2["program"]
 USDC_BASE = WAVE2["settlement"]["tokenAddress"]
 assert round(float(REWARD_USDC) * 10 ** WAVE2["settlement"]["decimals"]) == REWARD_ATOMIC
 assert f"{REWARD_ATOMIC * ACTIVE_EPOCH_SLOTS / 10 ** 6:.2f}" == ACTIVE_EPOCH_CAP_USDC
 assert 25 <= ACTIVE_EPOCH_SLOTS <= 100 and CURRENT_EPOCH >= 1 and 0 <= PRIOR_EPOCH_SLOTS
 assert PRIOR_EPOCH_SLOTS + ACTIVE_EPOCH_SLOTS <= PROGRAM_CAP_SLOTS == 1000
+assert 0 <= FUNDED_UNENCUMBERED_SLOTS <= ACTIVE_EPOCH_SLOTS and f"{REWARD_ATOMIC * FUNDED_UNENCUMBERED_SLOTS / 10 ** 6:.2f}" == FUNDED_UNENCUMBERED_USDC
+EPOCH_REMAINING_USDC = f"{REWARD_ATOMIC * (ACTIVE_EPOCH_SLOTS - FUNDED_UNENCUMBERED_SLOTS) / 10 ** 6:.2f}"
 assert WAVE2["settlement"]["chainId"] == 8453 and USDC_BASE == "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
 assert WAVE2["settlement"]["treasuryKind"] == "EOA"
 WAVE2_DIR = os.path.join(ROOT, *WAVE2["fixtureDir"].split("/"))
 WAVE2_ISSUE_URL = WAVE2.get("wave2IssueUrl") or f"{REPO}/issues"
+COMMUNITY_URL = WAVE2["communityUrl"]              # GitHub Discussions: announcements + builder / bounty Q&A
+COMMUNITY_QA_URL = WAVE2["communityQaUrl"]         # the Builder & Bounty Q&A thread
+assert COMMUNITY_URL == f"{REPO}/discussions" and COMMUNITY_QA_URL.startswith(COMMUNITY_URL + "/")
 WAVE2_MASTER_ISSUE = os.path.join(ROOT, "bounties", "WAVE2-MASTER-ISSUE.md")
 WAVE2_NAME_RE = re.compile(r"^(ethereum|base|arbitrum)-([a-z0-9]+(?:-[a-z0-9]+)*)\.json$")
 LEADERBOARD_SRC = os.path.join(ROOT, "bounties", "leaderboard.json")
@@ -1795,7 +1806,8 @@ def load_wave2_claims(path=None):
         assert f.get("category") in WAVE2["categories"] and GITHUB_USER_RE.match(str(f.get("hunter"))), name
         assert f.get("agentFramework") is None or FRAMEWORK_RE.match(f["agentFramework"]), name
         out.append({**f, "_file": name})
-    assert len(out) <= PRIOR_EPOCH_SLOTS + ACTIVE_EPOCH_SLOTS, "Wave 2 merged claims cannot exceed the funded epochs"
+    assert len(out) <= PRIOR_EPOCH_SLOTS + FUNDED_UNENCUMBERED_SLOTS, \
+        "Wave 2 merged claims cannot exceed the confirmed unencumbered on-chain capacity (raise fundedUnencumberedSlots after a confirmed top-up)"
     assert len({(c["chainId"], c["contractAddress"].lower()) for c in out}) == len(out) and len({c["slug"] for c in out}) == len(out)
     return out
 
@@ -1943,7 +1955,7 @@ def wave2_master_issue_md(n_protocols):
     rules = "\n".join(f"- {r}." for r in WAVE2["rules"])
     return f"""# {WAVE2['title']}
 
-**{PROGRAM_LABEL}.** The program pays out in funded epochs of 25–100 slots, opened one after another up to {PROGRAM_CAP_SLOTS:,} slots in total. **Epoch {CURRENT_EPOCH} (active): {ACTIVE_EPOCH_SLOTS} × ${REWARD_USDC} USDC = ${ACTIVE_EPOCH_CAP_USDC} USDC**, paid on {s['network']} (chainId {s['chainId']}, USDC `{USDC_BASE}`). One fixture per PR, first valid merged PR per target wins; when an epoch fills, the next one opens once it is funded. Live counter: https://pacta.wtf/bounties/#wave-2 · Hunter leaderboard: https://pacta.wtf/leaderboard/
+**{PROGRAM_LABEL}.** Slots open in epochs of 25–100, one after another, up to {PROGRAM_CAP_SLOTS:,} slots in total. **Epoch {CURRENT_EPOCH} target cap: {ACTIVE_EPOCH_SLOTS} × ${REWARD_USDC} USDC = ${ACTIVE_EPOCH_CAP_USDC} USDC.** Confirmed unencumbered on-chain now: **${FUNDED_UNENCUMBERED_USDC} USDC ({FUNDED_UNENCUMBERED_SLOTS} slots)**; ${RING_FENCED_USDC} USDC in the treasury is separately ring-fenced for {RING_FENCED_FOR}, and the remaining ${EPOCH_REMAINING_USDC} of Epoch {CURRENT_EPOCH} target capacity unlocks as confirmed Base USDC top-ups land. Paid on {s['network']} (chainId {s['chainId']}, USDC `{USDC_BASE}`). One fixture per PR, first valid merged PR per target wins. Live counter: https://pacta.wtf/bounties/#wave-2 · Hunter leaderboard: https://pacta.wtf/leaderboard/
 
 **Net-new only.** A finding qualifies only if it is not already published in https://pacta.wtf/api/v1/protocols.json when the PR is opened; `post_pin_drift` must be read at a block strictly after Pacta's latest pinned block for that protocol.
 
@@ -1964,6 +1976,10 @@ Targets already in https://pacta.wtf/api/v1/protocols.json are only eligible as 
 ## Payout
 
 {WAVE2_PAYOUT}
+
+## Questions
+
+Ask in Community Q&A (GitHub Discussions): {COMMUNITY_URL}. Questions about targets, fixtures or the MCP tools go to the Builder & Bounty Q&A thread: {COMMUNITY_QA_URL}
 
 ## Rules
 
@@ -1996,12 +2012,13 @@ def wave2_section_html(claims, n_protocols):
                    f'<td>{E(c.get("agentFramework") or "—")}</td></tr>' for i, c in enumerate(claims, 1))
     table = (f'<table class="ix" data-wave2-claims><thead><tr><th>Slot</th><th>Fixture</th><th>Target</th><th>Category</th><th>Hunter</th><th>Agent framework</th>'
              f'</tr></thead><tbody>{rows}</tbody></table>' if claims else '<p class="s" data-wave2-claims-empty>No Wave 2 slots claimed yet: the first merged fixture takes Slot #1.</p>')
-    issue_label = "Master issue ↗" if WAVE2_ISSUE_URL.rstrip("/") != f"{REPO}/issues" else "GitHub issues ↗"
+    m_issue = re.fullmatch(re.escape(REPO) + r"/issues/(\d+)", WAVE2_ISSUE_URL)
+    issue_label = f"Master issue #{m_issue.group(1)} ↗" if m_issue else "GitHub issues ↗"
     master = md_html(wave2_master_issue_md(n_protocols).split("\n", 2)[2])
     in_epoch = claimed - PRIOR_EPOCH_SLOTS
     return f"""<section class="memo-sec" id="wave-2"><h2>Wave 2 · Epoch {CURRENT_EPOCH}: {ACTIVE_EPOCH_SLOTS} × ${E(REWARD_USDC)} USDC · {PROGRAM_CAP_SLOTS:,}-slot program</h2>
-<p class="w2-counter" data-wave2-counter="{in_epoch}" data-wave2-program="{claimed}"><b>{in_epoch} / {ACTIVE_EPOCH_SLOTS} Epoch {CURRENT_EPOCH} Active Slots Claimed</b> · ${E(ACTIVE_EPOCH_CAP_USDC)} USDC funded this epoch<br>{PROGRAM_CAP_SLOTS:,}-Gap Perpetual Program · ${E(REWARD_USDC)} USDC / Merged Net-New Gap · {claimed} / {PROGRAM_CAP_SLOTS:,} program slots merged</p>
-<p data-wave2-epochs>Funded in sequential epochs of 25–100 slots up to {PROGRAM_CAP_SLOTS:,} in total; when Epoch {CURRENT_EPOCH} fills, the next epoch opens once it is funded. <b>Net-new only:</b> a finding qualifies only if it is not already published in <a href="../api/v1/protocols.json">/api/v1/protocols.json</a> when the PR is opened, and <code>post_pin_drift</code> must be read at a block strictly after Pacta&#x27;s latest pinned block for that protocol.</p>
+<p class="w2-counter" data-wave2-counter="{in_epoch}" data-wave2-program="{claimed}"><b>{in_epoch} / {ACTIVE_EPOCH_SLOTS} Epoch {CURRENT_EPOCH} Slots Claimed</b> · target cap ${E(ACTIVE_EPOCH_CAP_USDC)} USDC · <b>${E(FUNDED_UNENCUMBERED_USDC)} USDC ({FUNDED_UNENCUMBERED_SLOTS} slots) confirmed unencumbered on-chain now</b><br>{PROGRAM_CAP_SLOTS:,}-Gap Perpetual Program · ${E(REWARD_USDC)} USDC / Merged Net-New Gap · {claimed} / {PROGRAM_CAP_SLOTS:,} program slots merged</p>
+<p data-wave2-epochs>Slots open in epochs of 25–100, up to {PROGRAM_CAP_SLOTS:,} in total. Epoch {CURRENT_EPOCH} target cap: {ACTIVE_EPOCH_SLOTS} × ${E(REWARD_USDC)} USDC = ${E(ACTIVE_EPOCH_CAP_USDC)} USDC. <span data-wave2-capacity>${E(FUNDED_UNENCUMBERED_USDC)} USDC ({FUNDED_UNENCUMBERED_SLOTS} slots) is confirmed unencumbered on-chain now; ${E(RING_FENCED_USDC)} USDC in the treasury is separately ring-fenced for {E(RING_FENCED_FOR)}, and the remaining ${E(EPOCH_REMAINING_USDC)} of Epoch {CURRENT_EPOCH} target capacity unlocks as confirmed Base USDC top-ups land.</span> <b>Net-new only:</b> a finding qualifies only if it is not already published in <a href="../api/v1/protocols.json">/api/v1/protocols.json</a> when the PR is opened, and <code>post_pin_drift</code> must be read at a block strictly after Pacta&#x27;s latest pinned block for that protocol.</p>
 <p>One slot per merged, verified control-plane mismatch, in one of three categories:</p>
 <ol>{cats}</ol>
 <p>Targets already in <a href="../api/v1/protocols.json">/api/v1/protocols.json</a> qualify only as <code>post_pin_drift</code>; each target (chain + contract address, and slug) can be claimed once across the pool.</p>
@@ -2010,6 +2027,7 @@ def wave2_section_html(claims, n_protocols):
 <li data-wave2-payout>{E(WAVE2_PAYOUT)}</li></ul>
 <h3>Submit</h3>
 <p>Commit exactly one new file, <code data-wave2-fixture>{E(WAVE2["fixtureDir"])}/&lt;chain&gt;-&lt;slug&gt;.json</code> (<code>&lt;chain&gt;</code> = ethereum, base or arbitrum; schema: <a href="{E(REPO)}/blob/main/{E(WAVE2["fixtureDir"])}/README.md" target="_blank" rel="noopener">{E(WAVE2["fixtureDir"])}/README.md ↗</a>), with a live Pacta <code>/mcp</code> proof (<code>mcpProof</code>), a dual-RPC <code>cast</code> proof pinned with <code>--block</code>, the official docs quote and your EIP-55 <code>basePayoutAddress</code>. Check it offline with <code>python3 tools/verify_bounty_submission.py --json {E(WAVE2["fixtureDir"])}/&lt;chain&gt;-&lt;slug&gt;.json</code>. CI accepts only a PR that adds that single JSON file and runs the validator from the base branch. Rolling issue: <a href="{E(WAVE2_ISSUE_URL)}" target="_blank" rel="noopener" data-wave2-issue>{issue_label}</a> · ranked hunters: <a href="../leaderboard/">Hunter leaderboard →</a></p>
+<p data-community>Questions about a target, a fixture or the MCP tools? Ask in <a href="{E(COMMUNITY_URL)}" target="_blank" rel="noopener">Community Q&amp;A (Discussions) ↗</a>, in the <a href="{E(COMMUNITY_QA_URL)}" target="_blank" rel="noopener">Builder &amp; Bounty Q&amp;A thread ↗</a>.</p>
 <h3>Claimed slots</h3>
 {table}
 <details class="bounty-issue" id="wave-2-issue" data-wave2-issue-text><summary>{E(WAVE2["title"])}</summary><div class="md">{master}</div></details></section>
@@ -2056,6 +2074,7 @@ def leaderboard_page(idx, lb, claims):
 <table class="ix" data-frameworks><thead><tr><th>Framework</th><th>Hunters</th><th>Verified catches</th><th>Protocols covered</th><th>Settled Base USDC</th></tr></thead><tbody>{frows}</tbody></table>
 <p class="s">The framework is what the hunter declared (<code>agentFramework</code> in the Wave 2 fixture); "not stated" when none was given.</p></section>
 <section class="memo-sec" id="badges"><h2>README badges</h2>
+<p data-community>Questions or a catch to discuss: <a href="{E(COMMUNITY_URL)}" target="_blank" rel="noopener">Community Q&amp;A (Discussions) ↗</a> · <a href="{E(COMMUNITY_QA_URL)}" target="_blank" rel="noopener">Builder &amp; Bounty Q&amp;A thread ↗</a></p>
 <p>Each hunter has a static badge at <code>{E(BASE_URL)}/badges/hunters/&lt;handle&gt;.svg</code>, rebuilt with the site. <b>Copy badge Markdown</b> puts a linked badge in your clipboard for a GitHub README; <b>Share on X</b> opens a pre-filled post.</p></section>
 </article>
 <div class="memo-foot"><span>Governance and documentation mismatches only. Exploit-sensitive vulnerabilities are never published here; they go through Immunefi or Cantina bounty programmes.</span><a href="../bounties/">Bounties →</a></div>
@@ -2067,6 +2086,39 @@ def leaderboard_page(idx, lb, claims):
     return head("Hunter leaderboard · Pacta bounties", "Verified on-chain control-plane catches by hunter and agent framework, with settled Base USDC and README badges.",
                 f"{BASE_URL}/leaderboard/", prefix="../", og_title="Pacta hunter leaderboard") + "\n" + body
 
+
+def mcp_page(idx):
+    """docs/mcp/index.html (pacta.wtf/mcp/): a static landing page for people and tools that open /mcp on the site. The MCP
+    endpoint itself is the Streamable-HTTP JSON-RPC server on the Worker (MCP_URL); this page only documents it."""
+    count_line = coverage_line(idx)
+    reg = idx["onchain_anchoring"]["commitment_registry"]
+    claude = f"claude mcp add --transport http pacta {MCP_URL}"
+    cursor = json.dumps({"mcpServers": {"pacta": {"url": MCP_URL}}}, indent=2)
+    tools = "".join(f"<li><code>{E(t)}</code></li>" for t in B2A.REMOTE_TOOLS)
+    starter = "https://github.com/Fractal-Neurons/defi-control-plane-mcp"
+    body = f"""<body>
+{topbar("../")}
+<main id="main" class="memo-wrap">
+<div class="crumbs"><a href="../">Pacta</a> / MCP</div>
+<article class="memo">
+<header><span class="tier">Remote MCP · free · zero install</span><h1>Pacta MCP server</h1>
+<p class="lede">The live Model Context Protocol endpoint is <code data-mcp-endpoint>{E(MCP_URL)}</code>: Streamable HTTP, JSON-RPC 2.0, stateless (no session), <b>no API key and no wallet</b>, {E(RATE_LIMIT)}. This page on pacta.wtf only documents it; point your MCP client at the endpoint above.</p></header>
+<section class="memo-sec" id="install"><h2>Install</h2>
+<div class="qs-snip"><span class="qs-l">Claude Code</span><code class="mono">{E(claude)}</code>{copy_btn(claude)}</div>
+<div class="qs-snip"><span class="qs-l">Cursor (mcp.json)</span><code class="mono">{E(json.dumps({"mcpServers": {"pacta": {"url": MCP_URL}}}))}</code>{copy_btn(cursor, "Copy JSON")}</div>
+<p>Every free <code>tools/call</code> takes three non-personal fields: <code>caller_agent</code>, <code>requester_role</code> and <code>caller_purpose</code> (see <a href="../SKILL.md">SKILL.md</a>).</p></section>
+<section class="memo-sec" id="tools"><h2>Tools ({E(B2A.REMOTE_TOOLS_DOC)})</h2><ul>{tools}</ul>
+<p>Indexed protocols: <a href="../api/v1/protocols.json">/api/v1/protocols.json</a> · machine-readable server card: <a href="../.well-known/mcp.json">/.well-known/mcp.json</a> · REST twin and OpenAPI 3.1: <a href="{E(OPENAPI_URL)}" target="_blank" rel="noopener">openapi.json ↗</a></p></section>
+<section class="memo-sec" id="starter"><h2>Starter kit &amp; help</h2>
+<p>Ready-to-copy client configs and stdlib examples: <a href="{E(starter)}" target="_blank" rel="noopener">Fractal-Neurons/defi-control-plane-mcp ↗</a>. Questions: <a href="{E(COMMUNITY_QA_URL)}" target="_blank" rel="noopener">Community Q&amp;A (Discussions) ↗</a>.</p></section>
+</article>
+<div class="memo-foot"><span>Read-only on-chain analysis. Not investment advice.</span><a href="../#preflight">Try the free pre-flight check →</a></div>
+</main>
+{footer(count_line, reg, "../")}
+</body></html>
+"""
+    return head("Pacta MCP server · free remote MCP endpoint", "Free remote MCP server for DeFi control-plane checks: Streamable HTTP, no API key, no wallet.",
+                f"{BASE_URL}/mcp/", prefix="../", og_title="Pacta MCP server") + "\n" + body
 
 def llms(idx, radar):
     c = counts(idx)
@@ -2086,6 +2138,7 @@ def llms(idx, radar):
         f"- [{BASE_URL}/bounties/]({BASE_URL}/bounties/): {B2A.BOUNTIES_DOC}",
         f"- [{BASE_URL}/bounties/#wave-2]({BASE_URL}/bounties/#wave-2): {B2A.WAVE2_DOC}",
         f"- [{BASE_URL}/leaderboard/]({BASE_URL}/leaderboard/): {B2A.LEADERBOARD_DOC}",
+        f"- [{B2A.COMMUNITY_URL}]({B2A.COMMUNITY_URL}): {B2A.COMMUNITY_DOC}",
         f"- [{OPENAPI_URL}]({OPENAPI_URL}): OpenAPI 3.1 for ChatGPT Actions, LangChain and OpenAPI tools; every route takes GET query parameters or a POST JSON body. {RATE_LIMIT}; free during the launch (pricingMode free_launch), x402 v1 + v2 ready.",
         f"- [{BASE_URL}/protocols/]({BASE_URL}/protocols/): per-protocol control-plane safety records.",
         f"- [{BASE_URL}/integrations/vault-factories/]({BASE_URL}/integrations/vault-factories/): free building blocks for vault factories and curators (Morpho Vault V2, Euler EVK, Veda BoringVault, Lagoon, Upshift, Mellow): a Control-Plane & Role Map tab from /api/v1/protocols.json, status badges (/badges/<slug>.svg; live {API}/v1/badges/<slug>.svg), and PactaSentinelGuard.sol, a cap-increase tripwire that never blocks a decrease.", "",
@@ -2211,6 +2264,7 @@ def main():
     w("bounties/index.html", bounties_page(idx, radar, claims=claims))
     lb = load_leaderboard()
     w("leaderboard/index.html", leaderboard_page(idx, lb, claims))
+    w("mcp/index.html", mcp_page(idx))
     write_hunter_badges(hunter_stats(lb, claims))
     write_wave2_master_issue(idx)
     w("404.html", not_found_page(idx, sp))       # GitHub Pages serves it for any missing path
@@ -2218,7 +2272,7 @@ def main():
     urls = ["/", "/request/", "/llms.txt", "/api/v1/index.json", "/api/v1/radar.json"] + [f"/briefs/{k}/" for k in BRIEFS] + \
         [f"/briefs/{b['slug']}/" for b in load_onboarding()["briefs"]] + (["/api/v1/onboarding.json"] if load_onboarding()["briefs"] else []) + \
         ["/api/v1/proposals.json", "/api/v1/rpc-pinned.json", "/api/v1/lookup.json", "/api/v1/protocols.json", "/api/v1/graph-manifest.json", "/integrations/vault-factories/", "/llms/", "/llms-full.txt", "/SKILL.md", "/.well-known/agent.json", "/.well-known/mcp.json",
-         "/demos/swapio-x402/", "/bounties/", "/leaderboard/", "/protocols/"] + [f"/protocols/{v['slug']}/" for v in sp.values()]
+         "/demos/swapio-x402/", "/bounties/", "/leaderboard/", "/mcp/", "/protocols/"] + [f"/protocols/{v['slug']}/" for v in sp.values()]
     w("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
       + "".join(f"  <url><loc>{BASE_URL}{u}</loc><lastmod>{today}</lastmod></url>\n" for u in urls) + "</urlset>\n")
     w(".well-known/security.txt", f"Contact: mailto:{CONTACT}\nExpires: 2027-11-13T00:00:00.000Z\nPreferred-Languages: en\n"

@@ -9,6 +9,10 @@
   "currentEpoch": 1,
   "activeEpochSlots": 25,
   "activeEpochCapUsdc": "25.00",
+  "fundedUnencumberedSlots": 2,
+  "fundedUnencumberedUsdc": "2.00",
+  "ringFencedUsdc": "25.00",
+  "ringFencedFor": "open Wave 1 Slot #4 (Issue #24), until every timely submission is adjudicated and any winning payout is settled on Base",
   "priorEpochSlots": 0,
   "settlement": {
     "chainId": 8453,
@@ -20,7 +24,9 @@
     "treasuryKind": "EOA",
     "windowDays": 7
   },
-  "wave2IssueUrl": "https://github.com/Fractal-Neurons/pacta/issues",
+  "wave2IssueUrl": "https://github.com/Fractal-Neurons/pacta/issues/41",
+  "communityUrl": "https://github.com/Fractal-Neurons/pacta/discussions",
+  "communityQaUrl": "https://github.com/Fractal-Neurons/pacta/discussions/44",
   "maxOpenPrsPerContributor": 3,
   "fixtureDir": "bounties/wave-2",
   "chains": {

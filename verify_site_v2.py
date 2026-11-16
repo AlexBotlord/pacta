@@ -2050,7 +2050,7 @@ def main(argv=None):
         "quickstart + Apache-2.0 + rules": f"claude mcp add --transport http pacta {BS.MCP_URL}" in bounty and "Apache-2.0" in bounty
             and all(html.escape(k, quote=False) in bounty for k, _ in BS.BOUNTY_RULES) and len(BS.BOUNTY_PROOF) == 6,
         "linked: README, llms.txt, llms-full.txt, /llms/, sitemap, nav + footer": all("https://pacta.wtf/bounties/" in t for t in links.values())
-            and all('bounties/">Bounties ($100)</a>' in t for r, t in pages.items() if 'class="topbar"' in t and 'class="ftr"' in t),
+            and all('bounties/">Bounties</a>' in t for r, t in pages.items() if 'class="topbar"' in t and 'class="ftr"' in t),
         "robots.txt exact 4 lines / 63 B": read("docs/robots.txt") == BS.ROBOTS_TXT and len(read("docs/robots.txt").encode()) == 63 and len(read("docs/robots.txt").splitlines()) == 4,
         "PR template: 6 sections + Apache-2.0 box": all(h in tpl for h in ("## 1. chainId & contract address", "## 2. Pinned finalized block", "## 3. Deterministic dual-RPC cast proof",
                                                                        "## 4. Live official documentation claim (HTTP 200)", "## 5. Pacta MCP output",
@@ -2089,7 +2089,7 @@ def main(argv=None):
             == ("1.00", 1_000_000, 1000, 1, 25, "25.00", "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913")
             and w2cfg["program"] == "1,000-Gap Perpetual Open-Discovery Program ($1.00 USDC / Merged Net-New Gap on Base)" and "totalSlots" not in w2cfg
             and w2cfg["settlement"]["chainId"] == 8453 and w2cfg["settlement"]["treasuryKind"] == "EOA" and VBS.checksummed(treas)
-            and VBS.W2 == w2cfg and "funded in epochs (Epoch 1: 25 × $1.00 USDC = $25.00 USDC active)" in read("docs/llms.txt"),
+            and VBS.W2 == w2cfg and "in epochs (Epoch 1 target cap: 25 × $1.00 USDC = $25.00 USDC; $2.00 USDC (2 slots) confirmed unencumbered on-chain now)" in read("docs/llms.txt"),
         "Wave 1 archive source byte-identical (tools/bounty_issues.json 874df3fd...)":
             hashlib.sha256(read("tools/bounty_issues.json", "rb")).hexdigest() == "874df3fd179ad241e3f2e4a7e837e9aa07f462a8a842b25fb1803049a6b84954",
         "master issue: exact title, regenerates byte-identically, rendered verbatim on /bounties/":
@@ -2099,7 +2099,7 @@ def main(argv=None):
             and "python3 tools/verify_bounty_submission.py --json bounties/wave-2/<chain>-<slug>.json" in master and no_safe(master),
         f"live counters = merged bounties/wave-2/*.json ({n_claims - BS.PRIOR_EPOCH_SLOTS} / 25 Epoch 1 active; {n_claims} / 1,000 program)": n_claims == len(claims_)
             and f'data-wave2-counter="{n_claims - BS.PRIOR_EPOCH_SLOTS}" data-wave2-program="{n_claims}"' in bounty
-            and f"<b>{n_claims - BS.PRIOR_EPOCH_SLOTS} / 25 Epoch 1 Active Slots Claimed</b> · $25.00 USDC funded this epoch" in bounty
+            and f"<b>{n_claims - BS.PRIOR_EPOCH_SLOTS} / 25 Epoch 1 Slots Claimed</b> · target cap $25.00 USDC · <b>$2.00 USDC (2 slots) confirmed unencumbered on-chain now</b>" in bounty
             and f"1,000-Gap Perpetual Program · $1.00 USDC / Merged Net-New Gap · {n_claims} / 1,000 program slots merged" in bounty
             and "data-wave2-epochs" in bounty and "<b>Net-new only:</b>" in bounty
             and (n_claims > 0 or "No Wave 2 slots claimed yet" in bounty),
@@ -2280,6 +2280,53 @@ def main(argv=None):
           "Wave 1 Genesis Archive + settlement ledger (stamp tool, BaseScan links only with a real tx), /leaderboard/ + hunter SVG badges, validator v2, "
           "hardened pull_request CI gate (static + simulated), graph manifest unchanged",
           all(w2.values()), f"{[k[:60] for k, v in w2.items() if not v]} sim {sim_bad} badges {badge_bad} refused {len(xss_refused)}")
+
+    # ================= Community hub (GitHub Discussions) + Wave 2 master issue #41 =================
+    cu, cqa, iss = BS.COMMUNITY_URL, BS.COMMUNITY_QA_URL, BS.WAVE2_ISSUE_URL
+    ftr_pages = [r for r, t in pages.items() if 'class="ftr"' in t]
+    c1 = {
+        "config: communityUrl / communityQaUrl / wave2IssueUrl #41": (cu, cqa, iss) == ("https://github.com/Fractal-Neurons/pacta/discussions",
+                                                                           "https://github.com/Fractal-Neurons/pacta/discussions/44",
+                                                                           "https://github.com/Fractal-Neurons/pacta/issues/41"),
+        "README Community badge links the Discussions hub": f"[![Community](https://img.shields.io/badge/Community-GitHub_Discussions-f59e0b?style=for-the-badge&labelColor=000000)]({cu})" in read("README.md"),
+        f"footer Community link on all {len(ftr_pages)} footer pages": len(ftr_pages) >= 85
+            and all(f'<a href="{cu}" target="_blank" rel="noopener">Community</a>' in pages[r] for r in ftr_pages),
+        "/bounties/: Community Q&A (Discussions) + Q&A thread + Master issue #41": f'href="{cu}" target="_blank" rel="noopener">Community Q&amp;A (Discussions) ↗</a>' in bounty
+            and f'href="{cqa}"' in bounty and f'<a href="{iss}" target="_blank" rel="noopener" data-wave2-issue>Master issue #41 ↗</a>' in bounty,
+        "/leaderboard/: Community Q&A (Discussions)": f'href="{cu}" target="_blank" rel="noopener">Community Q&amp;A (Discussions) ↗</a>' in lbp and f'href="{cqa}"' in lbp,
+        "llms.txt, llms-full.txt, /llms/: community hub, Q&A thread, issue #41": all(cu in read(f_) and cqa in read(f_) and iss in read(f_)
+                                                                                  for f_ in ("docs/llms.txt", "docs/llms-full.txt", "docs/llms/index.html")),
+        "WAVE2-MASTER-ISSUE.md + bounties/wave-2/README.md: Questions -> Discussions": "## Questions" in master and cu in master and cqa in master
+            and cu in rd_ and cqa in rd_ and iss in rd_,
+        "/mcp/ landing page: endpoint, no key / wallet, rate limit, copy snippets, protocols.json, starter repo, Q&A #44, in the sitemap": os.path.exists(os.path.join(DOCS, "mcp", "index.html"))
+            and all(x in pages[os.path.join("mcp", "index.html")] for x in (f'data-mcp-endpoint>{BS.MCP_URL}</code>', "no API key and no wallet", BS.RATE_LIMIT,
+                    f'data-copy="claude mcp add --transport http pacta {BS.MCP_URL}"', 'href="../api/v1/protocols.json"',
+                    'https://github.com/Fractal-Neurons/defi-control-plane-mcp', f'href="{cqa}"'))
+            and f"<loc>{BS.BASE_URL}/mcp/</loc>" in read("docs/sitemap.xml") and len(pages) == 92,
+        "nav + footer say 'Bounties' (no '$100' label) on every page": not [r for r, t in pages.items() if 'Bounties ($100)</a>' in t]
+            and all('bounties/">Bounties</a>' in t for r, t in pages.items() if 'class="topbar"' in t),
+        "Wave 1 archive labelled 'Historical Snapshot (Pinned at 53 Protocols on Nov 15)'": "<b>Historical Snapshot (Pinned at 53 Protocols on Nov 15)</b>" in bounty
+            and bounty.index("data-wave1-snapshot") > bounty.index('id="wave-1"'),
+        "funded capacity = confirmed unencumbered USDC only (2 slots / $2.00; $25.00 ring-fenced for Slot #4; Epoch 1 cap is a target; build caps merged claims at it)":
+            (w2cfg["fundedUnencumberedSlots"], w2cfg["fundedUnencumberedUsdc"], w2cfg["ringFencedUsdc"]) == (2, "2.00", "25.00")
+            and (BS.FUNDED_UNENCUMBERED_SLOTS, BS.FUNDED_UNENCUMBERED_USDC, BS.EPOCH_REMAINING_USDC) == (2, "2.00", "23.00")
+            and "data-wave2-capacity" in bounty and "$25.00 USDC in the treasury is separately ring-fenced for open Wave 1 Slot #4 (Issue #24)" in bounty
+            and "Confirmed unencumbered on-chain now: **$2.00 USDC (2 slots)**" in master and "funded this epoch" not in bounty + master + read("docs/llms.txt")
+            and not re.search(r"\bfunded epochs?\b|pays out in funded", bounty + master + read("docs/llms.txt") + read("docs/llms-full.txt") + rd_)
+            and "PRIOR_EPOCH_SLOTS + FUNDED_UNENCUMBERED_SLOTS" in read("tools/build_site.py"),
+        "README: $75 settled shield (= the stamped Wave 1 ledger), @pacta/mcp-server 0.1.5, Master Issue #41, 62 EAS + 12 RPC protocols, Ethereum and Base block heights": (
+            sum(25 for s_ in lb_["wave1Settlements"] if s_["payoutTxHash"]) == 75
+            and "[![Bounties & Leaderboard](https://img.shields.io/badge/Bounties_%26_Leaderboard-%2475_USDC_Settled-10b981?style=for-the-badge&labelColor=000000)](https://pacta.wtf/leaderboard/)" in read("README.md")
+            and "`@pacta/mcp-server` 0.1.5" in read("README.md") and "0.1.4" not in read("README.md")
+            and json.loads(read("packages/mcp-server/package.json"))["version"] == "0.1.5"
+            and "[Master Issue #41](https://github.com/Fractal-Neurons/pacta/issues/41)" in read("README.md")
+            and f"**{X['protocols']} Indexed Protocols ({X['eas_protocols']} Base-EAS-Attested Protocols across {X['records']} Sprint Records in {X['sprints']} Sprints + {X['rpc_protocols']} RPC-Observed Protocols)**" in read("README.md")
+            and "Ethereum and Base Mainnet block heights" in read("README.md") and "Ethereum Mainnet block height" not in read("README.md")),
+        "graph manifest unchanged (f7ffddd5...)": hashlib.sha256(read("docs/api/v1/graph-manifest.json", "rb")).hexdigest()
+            == "f7ffddd52e75b328532d9a4de57352249d5abbe9da4b584a7b8ce3403ceb9da5",
+    }
+    check("C1: GitHub Discussions community hub + Wave 2 master issue #41 linked from README, every footer, /bounties/, /leaderboard/, llms.txt, llms-full.txt, /llms/ and the master issue text",
+          all(c1.values()), str([k for k, v in c1.items() if not v]))
 
     scope = [p for p in glob.glob(os.path.join(ROOT, "docs", "**", "*"), recursive=True) + glob.glob(os.path.join(ROOT, "audits", "**", "*"), recursive=True)
              + glob.glob(os.path.join(ROOT, "tools", "**", "*"), recursive=True) + [os.path.join(ROOT, "README.md"), os.path.abspath(__file__)]

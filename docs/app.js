@@ -139,6 +139,18 @@
       }, function () { LIVE_FAILED = true; freshness(); /* offline / blocked / timeout: keep the static state */ })
       .catch(function () { LIVE_FAILED = true; freshness(); /* malformed payload: keep the static state */ });
   }
+  // V01: the hero form drives the full #pf-form checker (same validation, timeout and states) and scrolls to the result
+  function initHeroCheck() {
+    var f = $("[data-hero-check]"), pf = $("#pf-form"); if (!f || !pf) return;
+    f.addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      var ch = $('select[name="chain"]', pf), ad = $('input[name="address"]', pf);
+      if (ch) ch.value = ($('select[name="chain"]', f) || {}).value === "base" ? "base" : "ethereum";
+      if (ad) ad.value = String(($('input[name="address"]', f) || {}).value || "").trim();
+      pf.dispatchEvent(new Event("submit", { cancelable: true }));
+      var box = $(".pf"); if (box) { try { box.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) { /* old browsers */ } }
+    });
+  }
   function initRefresh() {
     $$("[data-radar-refresh]").forEach(function (b) { b.addEventListener("click", function () { initLiveTimelocks(); initAges(); }); });
   }
@@ -395,7 +407,17 @@
   // ---- inspector workbench ---------------------------------------------------------------------------
   function initInspector() {
     var list = $("#insp-list"); if (!list) return;
-    var q = $("#insp-q"), count = $("#insp-count"), filt = "all", hydrated = false;
+    var q = $("#insp-q"), count = $("#insp-count"), filt = "all", hydrated = false, bkt = "all";
+    var bRules = {};
+    $$("[data-insp-basket]").forEach(function (b) {
+      var k = b.getAttribute("data-insp-basket"), rx = b.getAttribute("data-basket-re");
+      try { bRules[k] = { re: rx ? new RegExp(rx, "i") : null, chain: b.getAttribute("data-basket-chain") }; } catch (e) { /* skip */ }
+    });
+    function inBasket(e) {
+      if (bkt === "all") return true;
+      var r = bRules[bkt]; if (!r || !e) return false;
+      return !!((r.re && r.re.test(e.category || "")) || (r.chain && chainOf(e) === r.chain));
+    }
     var links = $$("a[data-id]", list);
     function inspItem(e) {
       var dc = (CLS[e.classification] || CLS.aligned_baseline)[0];
@@ -426,7 +448,8 @@
     }
     var panel = $("#insp-panel"), empty = null;
     function clearFilters() {
-      if (q) q.value = ""; filt = "all";
+      if (q) q.value = ""; filt = "all"; bkt = "all";
+      $$("[data-insp-basket]").forEach(function (o) { o.setAttribute("aria-pressed", String(o.getAttribute("data-insp-basket") === "all")); });
       $$(".bench-filter button").forEach(function (o) { o.setAttribute("aria-pressed", String(o.getAttribute("data-f") === "all")); });
       apply();
     }
@@ -447,7 +470,7 @@
       links.forEach(function (a) {
         var e = BYID[a.getAttribute("data-id")];
         var hay = e ? JSON.stringify(e).toLowerCase() : a.textContent.toLowerCase();
-        var ok = (filt === "all" || a.getAttribute("data-class") === filt) && (!t || hay.indexOf(t) >= 0);
+        var ok = (filt === "all" || a.getAttribute("data-class") === filt) && (!t || hay.indexOf(t) >= 0) && inBasket(e);
         a.parentNode.hidden = !ok; if (ok) shown++;
       });
       if (count) count.textContent = shown + " of " + links.length + " records";
@@ -483,6 +506,13 @@
       }));
     });
     $$("[data-insp-all]").forEach(function (b) { b.addEventListener("click", hydrated_(function () { apply(); })); });
+    $$("[data-insp-basket]").forEach(function (b) {
+      b.addEventListener("click", hydrated_(function () {
+        bkt = b.getAttribute("data-insp-basket") || "all";
+        $$("[data-insp-basket]").forEach(function (o) { o.setAttribute("aria-pressed", String(o === b)); });
+        apply();
+      }));
+    });
     document.addEventListener("click", function (ev) {
       var b = ev.target.closest("[data-inspect]"); if (!b || !DATA) return;
       ev.preventDefault(); select(b.getAttribute("data-inspect"), true);
@@ -896,7 +926,8 @@
     var root = $("[data-pfilter-root]"), q = $("#proto-q"), count = $("#proto-count");
     if (!root || !q) return;
     var rows = $$("#proto-table tbody tr"), sBtns = $$("[data-pfilter-status]", root), cBtns = $$("[data-pfilter-chain]", root);
-    var clear = $("#proto-clear"), active = $("#proto-active"), empty = $("#proto-empty"), st = "all", chn = "all";
+    var clear = $("#proto-clear"), active = $("#proto-active"), empty = $("#proto-empty"), st = "all", chn = "all", bkt = "all";
+    var bBtns = $$("[data-pfilter-basket]", root);
     function label(btns, attr, v) {
       var b = btns.filter(function (x) { return x.getAttribute(attr) === v; })[0];
       var n = b && $(".num", b);
@@ -907,17 +938,20 @@
       var w = words(), shown = 0;
       rows.forEach(function (tr) {
         var hay = tr.getAttribute("data-psearch") || "", ch = (tr.getAttribute("data-pchains") || "").split(" ");
-        var ok = (st === "all" || tr.getAttribute("data-ptier") === st) && (chn === "all" || ch.indexOf(chn) >= 0)
+        var bks = (tr.getAttribute("data-pbaskets") || "").split(" ");
+        var ok = (st === "all" || tr.getAttribute("data-ptier") === st) && (chn === "all" || ch.indexOf(chn) >= 0) && (bkt === "all" || bks.indexOf(bkt) >= 0)
           && w.every(function (x) { return hay.indexOf(x) >= 0; });
         tr.hidden = !ok;
         if (ok) shown++;
       });
       sBtns.forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-pfilter-status") === st)); });
       cBtns.forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-pfilter-chain") === chn)); });
+      bBtns.forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-pfilter-basket") === bkt)); });
       if (count) count.textContent = shown + " of " + rows.length + " protocols shown";
       var parts = [];
       if (st !== "all") parts.push("Status: " + label(sBtns, "data-pfilter-status", st));
       if (chn !== "all") parts.push("Chain: " + label(cBtns, "data-pfilter-chain", chn));
+      if (bkt !== "all") parts.push("Basket: " + label(bBtns, "data-pfilter-basket", bkt));
       if (q.value.trim()) parts.push("Search: “" + q.value.trim() + "”");
       if (active) active.textContent = parts.length ? "Active filters · " + parts.join(" · ") : "";
       if (clear) clear.hidden = !parts.length;
@@ -937,10 +971,12 @@
       if (what === "chain" || what === "all") chn = "all";
       if (what === "status" || what === "all") st = "all";
       if (what === "search" || what === "all") q.value = "";
+      if (what === "basket" || what === "all") bkt = "all";
       apply();
     }
     sBtns.forEach(function (b) { b.addEventListener("click", function () { st = b.getAttribute("data-pfilter-status") || "all"; apply(); }); });
     cBtns.forEach(function (b) { b.addEventListener("click", function () { chn = b.getAttribute("data-pfilter-chain") || "all"; apply(); }); });
+    bBtns.forEach(function (b) { b.addEventListener("click", function () { bkt = b.getAttribute("data-pfilter-basket") || "all"; apply(); }); });
     if (clear) clear.addEventListener("click", function () { reset("all"); });
     if (empty) empty.addEventListener("click", function (ev) {
       var t = ev.target && ev.target.closest ? ev.target.closest("[data-precover]") : null;
@@ -972,7 +1008,7 @@
 
   document.addEventListener("DOMContentLoaded", function () {
     initTheme(); initCopy(); initBeaconHooks(); tick(); setInterval(tick, 30000);
-    initIndex(); initRequest(); initInspector(); initPreflight(); initLiveTimelocks(); initProtocolFilter(); initAges(); initRefresh();
+    initIndex(); initRequest(); initInspector(); initPreflight(); initLiveTimelocks(); initProtocolFilter(); initAges(); initRefresh(); initHeroCheck();
     setInterval(initAges, 60000);
     if ($("#insp-list")) loadData().catch(function () { /* static sheet and drawer links keep working */ });
   });

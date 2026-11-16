@@ -186,6 +186,14 @@ ROBOTS_META = "index, follow, max-snippet:-1, max-image-preview:large"     # unr
 ROBOTS_META_404 = "noindex, follow, max-snippet:-1, max-image-preview:large"   # 404.html: never index the not-found page itself
 
 
+# S01: one policy for every generated page (meta CSP cannot carry frame-ancestors; send that as a response header at the edge)
+CSP = ("default-src 'self';script-src 'self';style-src 'self' 'unsafe-inline';img-src 'self' data:;"
+       "connect-src 'self' https://pacta-x402.pacta.workers.dev https://ethereum-rpc.publicnode.com https://base-rpc.publicnode.com "
+       "https://eth.drpc.org https://mainnet.base.org;object-src 'none';base-uri 'self'")
+THEME_JS = ('document.documentElement.className="js";try{if(localStorage.getItem("pacta-theme")==="slate")'
+            'document.documentElement.dataset.theme="slate"}catch(e){}\n')
+
+
 def head(title, desc, url, prefix="", og_title=OG_TITLE, og_type="website", image=f"{BASE_URL}/og-preview.png", extra="", robots=ROBOTS_META, rich=False):
     """Order matters: everything social/agent-relevant comes first and stays inside the first 1.2 KB.
     b.js is the first-party beacon (docs/b.js, < 1.5 KB): no cookies, no storage ids, no third parties, honours DNT."""
@@ -214,6 +222,7 @@ def head(title, desc, url, prefix="", og_title=OG_TITLE, og_type="website", imag
         f'<link rel="icon" href="{prefix}favicon.svg" type="image/svg+xml">',
         f'<link rel="icon" href="{prefix}favicon.png" type="image/png" sizes="32x32">',
         '<meta name="referrer" content="strict-origin-when-cross-origin">',
+        f'<meta http-equiv="Content-Security-Policy" content="{CSP}">',
     ] + ([   # homepage only (sub-pages keep <body> under 2.5 KB; browsers also fetch /favicon.ico and /apple-touch-icon.png from the root)
         f'<link rel="icon" href="{prefix}favicon.ico" sizes="any">',
         f'<link rel="apple-touch-icon" href="{prefix}apple-touch-icon.png">',
@@ -223,8 +232,7 @@ def head(title, desc, url, prefix="", og_title=OG_TITLE, og_type="website", imag
         f'<link rel="stylesheet" href="{prefix}styles.css">',
         f'<link rel="alternate" type="text/markdown" href="{prefix}llms.txt"' + (' title="llms.txt">' if rich else '>'),
         f'<link rel="alternate" type="text/html" href="{prefix}llms/"' + (' title="llms.txt (HTML mirror)">' if rich else '>'),
-        '<script>document.documentElement.className="js";try{if(localStorage.getItem("pacta-theme")==="slate")'
-        'document.documentElement.dataset.theme="slate"}catch(e){}</script>',
+        f'<script src="{prefix}theme.js"></script>',
         f'<script src="{prefix}app.js" defer></script>',
         f'<script src="{prefix}b.js" defer></script>',
         "</head>",
@@ -527,6 +535,32 @@ def sorted_entries(idx):
     return sorted(idx["entries"], key=lambda e: (-e["sprint"], e["protocol"].lower()))
 
 
+# Curator baskets: key -> (label, category regex (case-insensitive) or None, chain or None). A record / protocol joins every
+# basket whose category regex matches or whose chain matches. Used by /protocols/ and the homepage inspector (app.js reads the
+# same rules from the pills' data-basket-re / data-basket-chain attributes).
+BASKETS = [("stable_rwa", "Stablecoins & RWA", r"stable|rwa|dollar|credit|treasur|cdp|reinsur|borrowing", None),
+           ("eth_lst_lrt", "ETH LST / LRT", r"staking|restak|\blst\b|\blrt\b|validator", None),
+           ("lending_vaults", "Curated Lending & Vaults", r"lend|vault|curat|yield|allocator|market", None),
+           ("base", "Base Ecosystem", None, "base")]
+
+
+def baskets_of(category, chains):
+    out = []
+    for k, _, rx, ch in BASKETS:
+        if (rx and re.search(rx, category or "", re.I)) or (ch and ch in chains):
+            out.append(k)
+    return out
+
+
+def basket_pills(attr="data-basket", rules=False):
+    """All + the four baskets as a pill group; rules=True also carries the matching rule (for client-side hydrated records)."""
+    pills = [f'<button type="button" {attr}="all" aria-pressed="true">All</button>']
+    for k, lbl, rx, ch in BASKETS:
+        extra = ((f' data-basket-re="{E(rx)}"' if rx else "") + (f' data-basket-chain="{ch}"' if ch else "")) if rules else ""
+        pills.append(f'<button type="button" {attr}="{k}" aria-pressed="false"{extra}>{E(lbl)}</button>')
+    return f'<div class="seg basket" role="group" aria-label="Curator baskets"><span class="seg-l">Basket</span>{"".join(pills)}</div>'
+
+
 SAMPLE_SIZE = 12
 
 
@@ -567,6 +601,7 @@ def inspector(idx, c):
 <div class="bench">
 <div class="bench-side">
 <div class="bench-search"><input id="insp-q" type="search" placeholder="Search protocol, contract or 0x address" aria-label="Search {c["records"]} indexed records" autocomplete="off">
+{basket_pills("data-insp-basket", rules=True)}
 <div class="bench-filter" role="group" aria-label="Filter by classification"><button type="button" data-f="all" aria-pressed="true">All</button><button type="button" data-f="parameter_delta" aria-pressed="false">Deltas</button><button type="button" data-f="protective_delta" aria-pressed="false">Protective</button><button type="button" data-f="aligned_baseline" aria-pressed="false">Aligned</button></div></div>
 <ul class="bench-list" id="insp-list" data-sample="{len(ents)}">{items}</ul>
 <div class="bench-count"><span id="insp-count">{len(ents)} of {c["records"]} records (curated sample)</span> <button type="button" class="linkish" data-insp-all>Show all {c["records"]} records</button></div>
@@ -1447,7 +1482,8 @@ def protocols_index_page(idx, sp=None):
     def attrs(n, v):
         chains = " ".join(sorted({e.get("chain", "ethereum") for e in v["entries"]}))
         text = " ".join([n, v["slug"], v["entries"][0]["category"], chains] + [e["target_contract"] for e in v["entries"]]).lower()
-        return f' data-ptier="{tier(v)}" data-pchains="{E(chains)}" data-psearch="{E(text)}"'
+        bk = " ".join(baskets_of(v["entries"][0]["category"], chains.split()))
+        return f' data-ptier="{tier(v)}" data-pchains="{E(chains)}" data-pbaskets="{bk}" data-psearch="{E(text)}"'
 
     n_tier = {t: sum(tier(v) == t for v in sp.values()) for t in ("aligned", "parameter_delta", "rpc_observed")}
     n_chain = {ch: sum(any(e.get("chain", "ethereum") == ch for e in v["entries"]) for v in sp.values()) for ch in ("ethereum", "base")}
@@ -1460,6 +1496,7 @@ def protocols_index_page(idx, sp=None):
     # Visitor review P1 (discovery): Status x Chain x search, combinable; "Clear all" resets all three; 0 matches -> recovery prompt (app.js)
     tools = (f'<div class="ix-tools" data-pfilter-root><input id="proto-q" type="search" placeholder="Filter by name, token, category or 0x address" '
              f'aria-label="Filter protocols" autocomplete="off">{group("status", "Status", status)}{group("chain", "Chain", chain_pills)}'
+             f'{basket_pills("data-pfilter-basket")}'
              f'<button type="button" class="linkish" id="proto-clear" hidden>Clear all</button>'
              f'<span class="ix-count" id="proto-count" aria-live="polite">{len(sp)} of {len(sp)} protocols shown</span>'
              f'<p class="ix-active" id="proto-active" aria-live="polite"></p></div>'
@@ -1540,11 +1577,16 @@ def page(idx, radar):
 <section class="hero"><div class="wrap">
 <div class="eyebrow">For AI agents, agent builders, vault curators and risk teams</div>
 <h1>{E(H1)}</h1>
+<p class="statbar" data-statbar><b>{len(site_protocols(idx))}</b> protocols · <b>{c["records"]}</b> block-pinned checks · <b>{len({e["protocol"] for e in idx["entries"]})}</b> Base-EAS attested</p>
+<form class="hero-check" data-hero-check autocomplete="off"><label class="skip-l" for="hero-address">Contract address</label>
+<select name="chain" aria-label="Chain"><option value="ethereum">Ethereum</option><option value="base">Base</option></select>
+<input id="hero-address" name="address" type="text" inputmode="text" spellcheck="false" placeholder="0x… contract address" aria-label="Contract address">
+<button class="btn primary" type="submit">Run free check <span class="arr">→</span></button></form>
 <p class="lede">Before an agent approves, deposits into or calls a contract, one request tells it who can change that contract (an EOA, a Safe, a timelock, or nobody), how fast, and whether it can pause, blacklist or upgrade. Every answer is pinned to a block hash and reproducible with <code>cast</code>.</p>
 {hero_try(idx)}
 {quickstart_block()}
 <div class="ctas"><a class="btn primary" href="#preflight">Run a free check <span class="arr">→</span></a><a class="btn" href="protocols/">Protocol safety records</a><a class="btn" href="#inspector">Inspect a protocol</a></div>
-<div class="livebar" data-etas="{E(livebar_etas(radar))}"><span class="dot live"></span><b>{n_ops} timelock operations queued across {len(radar["items"])} protocols.</b> {f'<span class="opstate ready lb-ready">{n_ready} READY · EXECUTABLE NOW</span> ' if n_ready else ""}<span class="lb-next">Next: <span class="lb-p">{E(nxt["protocol"])}</span>, <span class="countdown" data-eta="{nxt["eta"]}">ETA {E(utc(nxt["eta"]))}</span></span> <small class="lb-asof">(pinned snapshot: radar block {r["block_number"]:,}, observed <time datetime="{E(utc_iso(r["block_timestamp"]))}" data-observed="{r["block_timestamp"]}">{E(r["block_time_utc"])}</time><span class="obs-age" data-age="{r["block_timestamp"]}"></span>)</small> · <a href="#radar">Radar →</a></div>
+<div class="livebar" data-etas="{E(livebar_etas(radar))}"><span class="dot live"></span><b>{E(radar_counts_text(radar))}.</b> {f'<span class="opstate ready lb-ready">{n_ready} READY · EXECUTABLE NOW</span> ' if n_ready else ""}<span class="lb-next">Next: <span class="lb-p">{E(nxt["protocol"])}</span>, <span class="countdown" data-eta="{nxt["eta"]}">ETA {E(utc(nxt["eta"]))}</span></span> <small class="lb-asof">(pinned snapshot: radar block {r["block_number"]:,}, observed <time datetime="{E(utc_iso(r["block_timestamp"]))}" data-observed="{r["block_timestamp"]}">{E(r["block_time_utc"])}</time><span class="obs-age" data-age="{r["block_timestamp"]}"></span>)</small> · <a href="#radar">Radar →</a></div>
 <div class="ledger">
 <div><b>{c["sprints"]}</b><span>Sprints completed</span><small>{E(c["chains"])} control-plane reviews</small></div>
 <div data-protocol-count><b>{len(site_protocols(idx))}</b><span>Indexed protocols</span><small>{E(B2A.protocols_line(idx, load_pinned()).split(": ", 1)[1])}</small></div>
@@ -2518,6 +2560,7 @@ def main():
     write_wave2_master_issue(idx)
     w("404.html", not_found_page(idx, sp))       # GitHub Pages serves it for any missing path
     w("robots.txt", ROBOTS_TXT)
+    w("theme.js", THEME_JS)                       # theme bootstrap (render-blocking, same origin): no inline JS anywhere
     w("feed.xml", atom_feed(idx, radar))
     w("api/v1/feed.json", json_feed(idx, radar))
     urls = ["/", "/request/", "/llms.txt", "/api/v1/index.json", "/api/v1/radar.json"] + [f"/briefs/{k}/" for k in BRIEFS] + \

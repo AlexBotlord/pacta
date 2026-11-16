@@ -153,7 +153,7 @@ function run(tree, app, loc) {
   const navigator = Object.assign({ sendBeacon: (url, body) => { beacons.push({ url, body }); return true; } }, loc.nav || {});
   const ctx = {
     window, document, location, navigator, URLSearchParams, URL, AbortController: loc.noAbort ? undefined : AbortController,
-    console, Promise, JSON, Date, Math,
+    console, Promise, JSON, Date, Math, Event: Event_,
     localStorage: { getItem: () => null, setItem: () => {} },
     setTimeout: () => 0, clearTimeout: () => {}, setInterval: () => 0,
     fetch: loc.fetch || (() => Promise.reject(new Error("network disabled in harness")))
@@ -651,6 +651,17 @@ function protocolFilterScenario() {
   res.pfilter_clear_all = shown().length === n && q.value === "" && pressed("status").join() === "all" && pressed("chain").join() === "all" && clear.hidden
     && d.getElementById("proto-active").textContent === "";
   res.pfilter_reset = shown().length === n;
+  // curator baskets: each basket shows exactly its tagged rows, combines with Chain, and Clear all resets it
+  const inB = (k) => (r) => (r.getAttribute("data-pbaskets") || "").split(" ").includes(k);
+  let bok = true;
+  for (const k of ["stable_rwa", "eth_lst_lrt", "lending_vaults", "base"]) {
+    click("basket", k);
+    if (!(shown().length === want(inB(k)) && shown().length > 0 && pressed("basket").join() === k)) bok = false;
+  }
+  click("basket", "stable_rwa"); click("chain", "base");
+  const comb = shown().length === want((r) => inB("stable_rwa")(r) && chainHas("base")(r)) && /Basket: Stablecoins & RWA/.test(d.getElementById("proto-active").textContent);
+  press(clear);
+  res.pp2_baskets_protocols = bok && comb && shown().length === n && pressed("basket").join() === "all";
 }
 
 // Visitor review P1 / P2 (homepage): live check first (hero button -> one preflight call), confidence framing + catalogMatch next to the
@@ -682,6 +693,12 @@ async function visitorScenario() {
   await flush(); await flush(); await flush();
   const t = out.textContent, link = out.querySelectorAll("a").find((a) => a.textContent === "Full record →");
   res.v_hero_click_fetches = calls.length === 1 && calls[0].includes("address=0xA35b1B31Ce002FBF2058D22F30f95D405200A15b");
+  // V01: the above-the-fold hero form drives the same checker
+  const hf = d.querySelector("[data-hero-check]"), hin = hf && hf.querySelector('input[name="address"]');
+  const before = calls.length;
+  if (hin) { hin.value = "0xA35b1B31Ce002FBF2058D22F30f95D405200A15b"; hf.dispatchEvent(new Event_("submit")); await flush(); await flush(); await flush(); }
+  res.pp2_hero_form_runs = !!hf && calls.length === before + 1 && calls[calls.length - 1].includes("address=0xA35b1B31Ce002FBF2058D22F30f95D405200A15b")
+    && /1\d\d block-pinned checks|\d+ block-pinned checks/.test(d.querySelector("[data-statbar]").textContent);
   res.v_assessment_next_to_score = t.includes("Risk 60/100") && t.includes("Confidence medium") && t.includes("Indexed & verified record")
     && t.includes("Limits: riskScore is a heuristic.");
   res.v_catalog_match = t.includes("Indexed by Pacta: Stader Labs (ETHx)") && t.includes("Changed: Safe threshold 3-of-6 observed vs 3-of-5 documented")
@@ -749,6 +766,12 @@ async function visitorScenario() {
     const all = d.querySelector('.bench-filter button[data-f="all"]'); if (all) all.dispatchEvent(new Event_("click"));
     await flush(); await flush();
   }
+  // curator baskets on the inspector (rules from the pills): Base Ecosystem shows only Base records
+  const bb = d.querySelector('[data-insp-basket="base"]');
+  if (bb) { bb.dispatchEvent(new Event_("click")); await flush(); await flush(); }
+  const visL = d.querySelectorAll("#insp-list a[data-id]").filter((a) => !a.parentNode.hidden);
+  res.pp2_baskets_inspector = !!bb && visL.length > 0 && visL.every((a) => (byId[a.getAttribute("data-id")] || {}).chain === "base");
+  const ba = d.querySelector('[data-insp-basket="all"]'); if (ba) { ba.dispatchEvent(new Event_("click")); await flush(); await flush(); }
   // F03: the radar header counts follow the row badges (executed never counted as queued)
   const rc = d.querySelector("[data-radar-counts]");
   res.pp2_radar_counts = !!rc && /^\d+ pending operations? across \d+ protocols? · \d+ recently executed$/.test(rc.textContent);

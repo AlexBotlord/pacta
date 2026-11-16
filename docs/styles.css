@@ -586,6 +586,21 @@ tr[hidden] { display: none; }
 .whatdiffers .wd-changed .obs { color: var(--amber); font-weight: 650; }
 .whatdiffers .wd-matched { color: var(--ink-2); }
 .sheet .whatdiffers { margin: 12px 0 14px; }
+.statbar { margin: 10px 0 0; font-size: 14px; color: var(--ink-2); }
+.statbar b { font: 650 15px/1 var(--mono); color: var(--ink); }
+.hero-check { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 6px; max-width: 720px; }
+.hero-check select { flex: none; height: 40px; }
+.hero-check input { flex: 1 1 220px; min-width: 0; height: 40px; font-family: var(--mono); font-size: 14px; }
+.hero-check .btn { height: 40px; }
+.skip-l { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+/* 390 px: the radar shows Protocol + Status, Window and Brief; /protocols/ shows Protocol, Chain and Status (no blind sideways scroll) */
+@media (max-width: 640px) {
+  #radar table th:nth-child(2), #radar table td:nth-child(2), #radar table th:nth-child(3), #radar table td:nth-child(3) { display: none; }
+  #proto-table th:nth-child(2), #proto-table td:nth-child(2), #proto-table th:nth-child(4), #proto-table td:nth-child(4),
+  #proto-table th:nth-child(6), #proto-table td:nth-child(6) { display: none; }
+  #radar table, #proto-table { display: table; width: 100%; overflow: visible; }
+}
+@media (max-width: 640px) { .hero h1 { font-size: 24px; line-height: 1.22; } .hero .lede { font-size: 15px; } .hero-check .btn { flex: 1 1 100%; justify-content: center; } }
 /* inline prose links are underlined (WCAG 1.4.1: not colour alone) */
 p a:not(.btn):not(.copy), dd a:not(.btn):not(.copy), li a:not(.btn):not(.copy) { text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px; }
 .sec-head h1 { margin: 0; font-size: 22px; line-height: 1.3; letter-spacing: -0.01em; }

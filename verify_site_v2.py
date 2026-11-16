@@ -1439,13 +1439,14 @@ def main(argv=None):
     # ---- prefill safety (static): the prefill code writes .value / .checked only; no inline scripts on the request surfaces
     pre = re.search(r"PREFILL-BEGIN(.*?)PREFILL-END", appjs, re.S)
     init_req = appjs[appjs.find("function initRequest()"): appjs.find("// ---- live pre-flight checker")]
-    # the only inline script allowed is the existing one-line theme bootstrap in <head> (build_site.head(), before CSS paints)
-    THEME_BOOT = re.search(r"<script>(document\.documentElement\.className=\"js\";.*?)</script>", read("docs/index.html"))
+    # no inline JS at all: the theme bootstrap is the same-origin, render-blocking docs/theme.js (CSP script-src 'self')
+    THEME_BOOT = read("docs/theme.js") if os.path.exists(os.path.join(DOCS, "theme.js")) else ""
     inline = [rel for rel in ("index.html", os.path.join("request", "index.html"))
-              if len(re.findall(r"<script(?![^>]*\bsrc=)(?![^>]*application/ld\+json)[^>]*>", pages.get(rel, ""))) != 1
-              or not THEME_BOOT or f"<script>{THEME_BOOT.group(1)}</script>" not in pages.get(rel, "") or "URLSearchParams" in THEME_BOOT.group(1)]
+              if len(re.findall(r"<script(?![^>]*\bsrc=)(?![^>]*application/ld\+json)[^>]*>", pages.get(rel, ""))) != 0
+              or 'theme.js"></script>' not in pages.get(rel, "") or not THEME_BOOT.startswith('document.documentElement.className="js";')
+              or "URLSearchParams" in THEME_BOOT or THEME_BOOT != BS.THEME_JS]
     check("/request/ prefill (tier / protocol / forum / settlement): closed enums via hasOwnProperty, text <= 80 chars, https forum <= 300 chars without credentials, "
-          "written with .value only (0 innerHTML / insertAdjacentHTML / document.write in the request builder); no inline <script> added on / or /request/ (only the existing theme bootstrap)",
+          "written with .value only (0 innerHTML / insertAdjacentHTML / document.write in the request builder); 0 inline <script> on / and /request/ (the theme bootstrap is docs/theme.js)",
           bool(pre) and "hasOwnProperty" in appjs and not re.search(r"innerHTML|outerHTML|insertAdjacentHTML|document\.write", pre.group(1) + init_req)
           and "slice(0, max)" in pre.group(1) and "s.length > 300" in pre.group(1) and 'u.protocol === "https:"' in pre.group(1)
           and not inline, f"inline {inline}")
@@ -1744,7 +1745,7 @@ def main(argv=None):
                 bad_inline.append(rel)
     check(f"beacon loaded (defer, in <head>) on every HTML page incl. 404.html ({len(pages)} pages); no third-party script/style/image hosts; inline scripts make no requests",
           not no_beacon and not third and not bad_inline and "404.html" in pages, f"missing beacon {no_beacon[:4]}; third-party {third[:4]}; inline {bad_inline[:4]}")
-    page_js = {"docs/app.js": appjs, "docs/b.js": bjs}
+    page_js = {"docs/app.js": appjs, "docs/b.js": bjs, "docs/theme.js": read("docs/theme.js")}
     ls_keys = set(re.findall(r'localStorage\.(?:getItem|setItem)\("([^"]+)"', appjs))
     js_bad = sorted(f for f, t in page_js.items() if re.search(r"document\.cookie|sessionStorage|indexedDB|XMLHttpRequest|new Image\b|WebSocket|EventSource|importScripts|createElement\(\s*\"script", t))
     data_api = set(re.findall(r'data-api="([^"]+)"', "".join(pages.values())))
@@ -2114,11 +2115,12 @@ def main(argv=None):
         "MCP recipes (Claude Code / OpenAI Agents SDK / LangChain, <= 10 lines) in README + SKILL.md": all(code in read("README.md") and code in read("docs/SKILL.md")
                                                                                                          and len(code.splitlines()) <= 10 for _, _, code in B2AV.MCP_RECIPES)
             and [t for t, _, _ in B2AV.MCP_RECIPES] == ["Claude Code", "OpenAI Agents SDK (Python)", "LangChain (langchain-mcp-adapters)"],
-        "/protocols/ filter: input + Status (4) and Chain (3) groups, Clear all, active state, empty-state slot, data attrs on every protocol row":
+        "/protocols/ filter: input + Status (4), Chain (3) and Basket (5) groups, Clear all, active state, empty-state slot, data attrs on every protocol row":
             all(f'data-pfilter-status="{k}"' in hub_ for k in ("all", "aligned", "parameter_delta", "rpc_observed"))
             and all(f'data-pfilter-chain="{k}"' in hub_ for k in ("all", "ethereum", "base"))
             and all(x in hub_ for x in ('id="proto-clear"', 'id="proto-active"', 'id="proto-empty"', 'data-pgroup="status"', 'data-pgroup="chain"'))
-            and 'id="proto-q"' in hub_ and len(re.findall(r'<tr data-ptier="(?:aligned|parameter_delta|rpc_observed)" data-pchains="[a-z ]+" data-psearch="[^"]*">', hub_)) == X["protocols"],
+            and 'id="proto-q"' in hub_ and len(re.findall(r'<tr data-ptier="(?:aligned|parameter_delta|rpc_observed)" data-pchains="[a-z ]+" data-pbaskets="[a-z_ ]*" data-psearch="[^"]*">', hub_)) == X["protocols"]
+            and all(f'data-pfilter-basket="{k}"' in hub_ for k in ["all"] + [b[0] for b in BS.BASKETS]),
         "/protocols/ filter: textContent / hidden only": (lambda m: bool(m) and not re.search(r"innerHTML|outerHTML|insertAdjacentHTML|document\.write|fetch\(", m.group(0)))(
             re.search(r"function initProtocolFilter\(\) \{.*?\n  \}\n", appjs, re.S)),
         "/protocols/ filter behaviour (harness): Status x Chain x search, Clear all, empty-state recovery": all(res.get(k) is True for k in (
@@ -2303,7 +2305,7 @@ def main(argv=None):
     probe_.feed('<form id="x" onsubmit="return false"><a href="#" ONCLICK=\'y()\'>z</a></form>')
     scanner_ok = len(probe_.hits) == 2
     extra_js = [r for r in ("bounties/index.html", "leaderboard/index.html")
-                if len(re.findall(r"<script(?![^>]*\bsrc=)(?![^>]*application/ld\+json)[^>]*>", read("docs/" + r))) != 1]
+                if len(re.findall(r"<script(?![^>]*\bsrc=)(?![^>]*application/ld\+json)[^>]*>", read("docs/" + r))) != 0]   # 0 inline JS (theme.js)
     w2[f"CSP-safe: 0 inline on* event handlers in ALL {len(all_html)} docs/**/*.html pages (the request form prevents submit from app.js); no new inline <script> on /bounties/ and /leaderboard/ (copy via data-copy, share via a plain link)"] = (
         not inline_on and scanner_ok and len(all_html) >= 90 and not extra_js and "javascript:" not in bounty + lbp
         and 'form.addEventListener("submit", function (e) { e.preventDefault(); })' in appjs)
@@ -2455,6 +2457,31 @@ def main(argv=None):
         len(home_p.encode()) < 160000 and n_el < 2200 and res.get("pp2_static_sample") is True and res.get("pp2_hydrated_index") is True
         and 'data-insp-all>Show all' in home_p and 'data-ix-all>Show all' in home_p and 'href="protocols/">Browse all' in home_p
         and len([r for r in pages if r.startswith("protocols" + os.sep) and r.count(os.sep) == 2]) == X["protocols"])
+    pp["Curator basket pills (All · Stablecoins & RWA · ETH LST / LRT · Curated Lending & Vaults · Base Ecosystem) on /protocols/ (combined with Status x Chain x search, Clear all resets) and the inspector (harness)"] = (
+        all(f'>{html.escape(lbl, quote=False)}</button>' in pages[os.path.join("protocols", "index.html")] and f'>{html.escape(lbl, quote=False)}</button>' in home_p
+            for _, lbl, _, _ in BS.BASKETS)
+        and res.get("pp2_baskets_protocols") is True and res.get("pp2_baskets_inspector") is True)
+    i_h1, i_hf, i_lede = home_p.find("<h1>"), home_p.find("data-hero-check"), home_p.find('<p class="lede">')
+    pp[f"V01: stat bar ({X['protocols']} protocols · {X['records']} block-pinned checks · {X['eas_protocols']} Base-EAS attested) + address input and 'Run free check' directly under the h1, before the lede (above the fold at 390 x 844); the hero form runs the checker (harness); the livebar never counts executed operations as queued"] = (
+        f"<b>{X['protocols']}</b> protocols · <b>{X['records']}</b> block-pinned checks · <b>{X['eas_protocols']}</b> Base-EAS attested" in home_p
+        and 0 < i_h1 < i_hf < i_lede and "Run free check" in home_p[i_hf:i_lede] and res.get("pp2_hero_form_runs") is True
+        and f"<b>{html.escape(BS.radar_counts_text(rad_p))}.</b>" in home_p and "timelock operations queued" not in home_p)
+    pp["V03: at <= 640 px the radar keeps Protocol + Status, Window and Brief and /protocols/ keeps Protocol, Chain and Status (other columns hidden, tables fit: no blind sideways scroll); table.ix self-scroll rule from 920 px unchanged"] = (
+        "#radar table th:nth-child(2), #radar table td:nth-child(2), #radar table th:nth-child(3), #radar table td:nth-child(3) { display: none; }" in css_p
+        and "#proto-table th:nth-child(6), #proto-table td:nth-child(6) { display: none; }" in css_p
+        and "@media (max-width: 920px) {\n  table.ix, .memo table {" in css_p
+        and "<th>Protocol</th><th>Category</th><th>Chain</th><th>Surfaces</th><th>Status</th><th>Provenance</th>" in pages[os.path.join("protocols", "index.html")])
+    csp_meta = f'<meta http-equiv="Content-Security-Policy" content="{BS.CSP}">'
+    gen_pages = {r: t for r, t in all_pages.items()}
+    csp_src = {d.split(" ")[0]: d.split(" ")[1:] for d in BS.CSP.split(";")}
+    js_hosts = set(re.findall(r'"(https://[a-z0-9.-]+)', read("docs/app.js") + read("docs/b.js") + read("docs/theme.js")))
+    js_hosts = {h for h in js_hosts if h not in ("https://pacta.wtf", "https://github.com", "https://base.easscan.org", "https://etherscan.io", "https://basescan.org", "https://x.com", "https://mail.google.com")}   # link targets, never fetched
+    pp["S01: meta Content-Security-Policy on every generated page (default/script 'self' only, no frame-ancestors, before any <script>); 0 inline JS (theme bootstrap = docs/theme.js); no eval / new Function; every HTTPS origin the page scripts fetch is in connect-src"] = (
+        "frame-ancestors" not in BS.CSP and csp_src.get("script-src") == ["'self'"] and csp_src.get("default-src") == ["'self'"]
+        and all(t.count(csp_meta) == 1 and t.find(csp_meta) < t.find("<script") for t in gen_pages.values())
+        and not [r for r, t in gen_pages.items() if re.search(r"<script(?![^>]*\bsrc=)(?![^>]*application/ld\+json)[^>]*>", t)]
+        and read("docs/theme.js") == BS.THEME_JS and not re.search(r"\beval\(|new Function\(", read("docs/app.js") + read("docs/b.js"))
+        and js_hosts <= set(csp_src.get("connect-src", [])))
     pp["F02: inspector selection follows filters; 0 matches -> empty state + working Clear filters (harness)"] = all(
         res.get(k) is True for k in ("pp2_insp_empty_state", "pp2_insp_clear_filters", "pp2_insp_selection_follows_filter"))
     pp["F04 + F06: ages re-run every 60 s; Snapshot pinned / Last live re-check / Refresh / pinned-snapshot fallback (> 15 min or failure); 10 s AbortController timeout + Retry + distinct timeout / 429 / network / validation states"] = (

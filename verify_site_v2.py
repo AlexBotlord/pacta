@@ -2415,7 +2415,9 @@ def main(argv=None):
     v1["P1 narrow screens (375 / 753 px): overflow-x clip safety net, wrapping header nav, Request coverage kept, wrapping filter groups, scrollable tables / pre"] = (
         "html, body { overflow-x: clip; }" in css_v and "@media (max-width: 640px)" in css_v
         and ".tools .btn, .tools .btn.sm { display: inline-flex;" in css_v and ".seg { display: flex; flex-wrap: wrap;" in css_v
-        and "table.ix, .memo table { display: block; max-width: 100%; overflow-x: auto;" in css_v
+        and "table.ix, .memo table { display: block; max-width: 100%; overflow-x: auto;" in css_v and "@media (max-width: 920px) {\n  table.ix, .memo table {" in css_v
+        and ".plans, .plans.two { grid-template-columns: minmax(0, 1fr); }" in css_v and ".req-form, .req-out { padding: 18px 16px 20px; }" in css_v
+        and ".plan .btn, .actions .btn, .convert-cta .btn { max-width: 100%; white-space: normal;" in css_v
         and ".nav { display: flex; order: 3; flex-basis: 100%;" in css_v and "pre { max-width: 100%; overflow-x: auto; }" in css_v)
     pl = B2AV1.protocols_line(idx_, json.loads(read("docs/api/v1/rpc-pinned.json")))
     v1["P2 template leak fixed + one protocol count everywhere (74 = 62 Base-EAS-attested / 98 Sprint records + 12 RPC-pinned)"] = (
@@ -2435,11 +2437,12 @@ def main(argv=None):
         i_ed = t.find("data-editorial-independence")
         i_paid = max(t.find("Request 24h Clearance"), t.find("callout"))
         last_rec = max(t.rfind(f'id="{html.escape(e["id"])}"') for e in v["entries"])
+        paid_at = [m_.start() for m_ in re.finditer(r"\$5,000|\$1,500|Request 24h Clearance|id=\"badge-status\"|id=\"issuer-clearance\"", t)]
         if not (0 < last_rec < i_ed and html.escape(BS.EDITORIAL_INDEPENDENCE, quote=False) in t and t.find("cast ") < i_ed
-                and (t.find('class="callout') == -1 or i_ed < t.find('class="callout'))):
+                and (t.find('class="callout') == -1 or i_ed < t.find('class="callout')) and paid_at and all(i_ed < p_ for p_ in paid_at)):
             ed_bad.append(v["slug"])
     pr_v = re.search(r'<section class="sec" id="pricing">.*?</section>', home_v, re.S)
-    v1["P2 editorial independence: the exact firewall sentence on every protocol page (after the free evidence + cast workflow, before any paid service) and on #pricing"] = (
+    v1["P2 editorial independence: the exact firewall sentence on every protocol page (after the free evidence + cast workflow, before the badge card and every paid-service / $ mention) and on #pricing"] = (
         not ed_bad and bool(pr_v) and html.escape(BS.EDITORIAL_INDEPENDENCE, quote=False) in pr_v.group(0)
         and BS.EDITORIAL_INDEPENDENCE == "Payment never alters a Pacta classification. A badge changes strictly when on-chain contract state or public documentation aligns and is verified at a new finalized block.")
     lk_v = json.loads(read("docs/api/v1/lookup.json"))

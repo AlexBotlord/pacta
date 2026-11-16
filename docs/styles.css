@@ -611,6 +611,9 @@ code, .mono, .hx, .addr { overflow-wrap: anywhere; }
   .nav { display: flex; order: 3; flex-basis: 100%; margin-right: 0; gap: 0; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
   .nav a, .nav a:nth-child(3), .nav a:nth-child(5) { display: inline-block; flex: none; white-space: nowrap; padding: 6px 8px; font-size: 13px; }
 }
+@media (max-width: 920px) {
+  table.ix, .memo table { display: block; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }   /* wide tables scroll inside themselves */
+}
 @media (max-width: 640px) {
   .tools { gap: 6px; }
   .tools .gh { display: none; }
@@ -619,9 +622,11 @@ code, .mono, .hx, .addr { overflow-wrap: anywhere; }
   .seg { display: flex; flex-wrap: wrap; gap: 6px; overflow: visible; border: 0; }
   .seg button, .seg .seg-l { height: 32px; border: 1px solid var(--line-2); border-radius: var(--r); }
   .seg .seg-l { border: 0; background: transparent; padding-left: 0; flex-basis: 100%; height: auto; }
-  table.ix, .memo table { display: block; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
   .kv, .memo-meta { grid-template-columns: minmax(0, 1fr); }
   .hero h1 { overflow-wrap: anywhere; }
   .hero-try { padding: 14px; }
   .try-actions .btn { white-space: normal; }
+  .plans, .plans.two { grid-template-columns: minmax(0, 1fr); }
+  .req-form, .req-out { padding: 18px 16px 20px; }
+  .plan .btn, .actions .btn, .convert-cta .btn { max-width: 100%; white-space: normal; height: auto; min-height: 38px; padding-top: 8px; padding-bottom: 8px; }
 }

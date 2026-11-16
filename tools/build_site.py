@@ -1300,7 +1300,7 @@ def protocol_page(name, entries, idx, radar, digest=None, slug=None):
 <p class="lede">{lede}</p></header>
 {what_differs_html(entries)}<section class="memo-sec"><h2>Check it live (free)</h2><p>The pre-flight API re-reads the controller, proxy and capabilities of a contract at the latest block. No key, no wallet.</p>
 {term(curl, "Live pre-flight check")}<p>MCP: <code class="mono">{E(MCP_URL)}</code> · tool <code>pacta_check_preflight</code>. {E(UA_NOTE)}</p></section>
-{provenance}{governance_section(name, digest)}{records}{ops}{badge_html}{editorial_box()}{callout}</article>
+{provenance}{governance_section(name, digest)}{records}{ops}{editorial_box()}{badge_html}{callout}</article>
 <div class="memo-foot"><span>Read-only on-chain analysis. Not investment advice. Exploit-sensitive vulnerabilities are never published here; they go through Immunefi or Cantina bounty programmes.</span>{foot}</div>
 </main>
 {footer(count_line, reg, "../../")}

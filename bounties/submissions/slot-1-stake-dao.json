@@ -1,0 +1,192 @@
+{
+  "slot": 1,
+  "issue": "https://github.com/Fractal-Neurons/pacta/issues/21",
+  "chainId": 1,
+  "contractAddress": "0xb27afc7844988948FBd6210AeF4E1362bC2d8E6a",
+  "protocol": "Stake DAO Yield",
+  "tvlReference": "https://api.llama.fi/protocol/stake-dao-yield",
+  "pactaSlug": null,
+  "blockNumber": 26417900,
+  "blockHash": "0x7ab58787804ece150a72cb03e507d5d07cfeddb60cb48437bab2141de7c77bc0",
+  "priorPin": null,
+  "castCommands": [
+    "cast call 0xb27afc7844988948FBd6210AeF4E1362bC2d8E6a 'getMinDelay()(uint256)' --block 26417900 --rpc-url https://eth-mainnet.public.blastapi.io",
+    "cast call 0xb27afc7844988948FBd6210AeF4E1362bC2d8E6a 'getMinDelay()(uint256)' --block 26417900 --rpc-url https://eth.drpc.org"
+  ],
+  "rpcOutputs": {
+    "a": "432000 [4.32e5]",
+    "b": "432000 [4.32e5]"
+  },
+  "docsUrl": "https://docs.stakedao.org/timelock.md",
+  "docsQuote": "Stake DAO's core contracts are protected by a governance timelock that enforces a **48-hour delay** on all protocol changes.",
+  "mcpOutput": {
+    "schema": "pacta.protocol_lookup.v1",
+    "query": "Stake DAO",
+    "filters": {
+      "chain": "ethereum",
+      "kind": "all",
+      "limit": 10
+    },
+    "totalCatalog": {
+      "protocols": 53,
+      "briefs": 8,
+      "easAttestedProtocols": 33,
+      "rpcObservedProtocols": 20
+    },
+    "totalMatches": 0,
+    "count": 0,
+    "results": [],
+    "catalog": "https://pacta.wtf/api/v1/lookup.json",
+    "nextStep": "Pass a result's preflightArgs ({chain, address}) to pacta_check_preflight (or pacta_scan_control_plane) for a live check.",
+    "note": "easAttested protocols are Base-EAS-anchored records that compare on-chain state with the protocol's documentation. rpc_observed protocols pin the on-chain control plane over archive JSON-RPC and do not assess the documentation (documentationComparison: not_assessed). Briefs are block-pinned verification briefs. preflightArgs re-read the contract live.",
+    "hint": "No match. Call again with an empty query to list what Pacta tracks, or pass a known 0x contract address straight to pacta_check_preflight."
+  },
+  "apacheGrant": true,
+  "rules": [
+    true,
+    true,
+    true,
+    true
+  ],
+  "evidence": {
+    "interpretation": "At the pinned block getMinDelay is 432000 seconds (120 hours, five days), not the documented 48 hours. This is longer, not a claim of an unsafe shorter delay, nor proof that all changes must follow the timelock. The docs also expressly identify immediate emergency guardian functions. VESDT admin is the governance Safe directly, not the protocol timelock. Role membership proves a proposer, not exclusive control or all roles. Treasury is a separate Safe, not established to be the protocol controller.",
+    "officialAddresses": "https://docs.stakedao.org/addresses.md",
+    "treasuryDocs": "https://docs.stakedao.org/treasury.md",
+    "treasuryQuote": "All wallets use a 4-of-7 multisig structure.",
+    "tvlCaveat": "DefiLlama reported Ethereum TVL $110,023,153.35 at 2026-11-15 04:53:13 UTC; protocol-wide third-party TVL, not the treasury balance or proof of the precise assets governed by these contracts.",
+    "mcpCaveat": "Lookup queried Stake DAO on Ethereum before this replay; zero name matches does not rule out aliases. It is not an assessment of the timelock.",
+    "rpcEvidence": {
+      "https://eth-mainnet.public.blastapi.io": {
+        "min_delay": {
+          "command": "cast call 0xb27afc7844988948FBd6210AeF4E1362bC2d8E6a 'getMinDelay()(uint256)' --block 26417900 --rpc-url https://eth-mainnet.public.blastapi.io",
+          "output": "432000 [4.32e5]"
+        },
+        "controller_owner": {
+          "command": "cast call 0x2d8BcE1FaE00a959354aCD9eBf9174337A64d4fb 'owner()(address)' --block 26417900 --rpc-url https://eth-mainnet.public.blastapi.io",
+          "output": "0xb27afc7844988948FBd6210AeF4E1362bC2d8E6a"
+        },
+        "vesdt_admin": {
+          "command": "cast call 0x0C30476f66034E11782938DF8e4384970B6c9e8a 'admin()(address)' --block 26417900 --rpc-url https://eth-mainnet.public.blastapi.io",
+          "output": "0xB0552b6860CE5C0202976Db056b5e3Cc4f9CC765"
+        },
+        "proposer": {
+          "command": "cast call 0xb27afc7844988948FBd6210AeF4E1362bC2d8E6a 'hasRole(bytes32,address)(bool)' 0xb09aa5aeb3702cfd50b6b62bc4532604938f21248a27a1d5ca736082b6819cc1 0xB0552b6860CE5C0202976Db056b5e3Cc4f9CC765 --block 26417900 --rpc-url https://eth-mainnet.public.blastapi.io",
+          "output": "true"
+        },
+        "governance_threshold": {
+          "command": "cast call 0xB0552b6860CE5C0202976Db056b5e3Cc4f9CC765 'getThreshold()(uint256)' --block 26417900 --rpc-url https://eth-mainnet.public.blastapi.io",
+          "output": "3"
+        },
+        "governance_owners": {
+          "command": "cast call 0xB0552b6860CE5C0202976Db056b5e3Cc4f9CC765 'getOwners()(address[])' --block 26417900 --rpc-url https://eth-mainnet.public.blastapi.io",
+          "output": "[0xF2875cB91c35e0DDc9b76B15E2Aae236d393efFf, 0xE3268ADB23043b3Acc7083E96912aeeb4feB4DF2, 0xEb9F416fA098697D95E70B20439F19097EB741ED, 0x4046B37Ffc36B0C723d7Fc64e0C763B698D81934, 0x07c2D0E24530199e2c9A15bfeD4496d8E3798003]"
+        },
+        "treasury_threshold": {
+          "command": "cast call 0xF930EBBd05eF8b25B1797b9b2109DDC9B0d43063 'getThreshold()(uint256)' --block 26417900 --rpc-url https://eth-mainnet.public.blastapi.io",
+          "output": "3"
+        },
+        "treasury_owners": {
+          "command": "cast call 0xF930EBBd05eF8b25B1797b9b2109DDC9B0d43063 'getOwners()(address[])' --block 26417900 --rpc-url https://eth-mainnet.public.blastapi.io",
+          "output": "[0xF2875cB91c35e0DDc9b76B15E2Aae236d393efFf, 0xE3268ADB23043b3Acc7083E96912aeeb4feB4DF2, 0x07c2D0E24530199e2c9A15bfeD4496d8E3798003, 0x4046B37Ffc36B0C723d7Fc64e0C763B698D81934, 0xEb9F416fA098697D95E70B20439F19097EB741ED]"
+        },
+        "block": {
+          "command": "cast block 26417900 --field hash --rpc-url https://eth-mainnet.public.blastapi.io",
+          "output": "0x7ab58787804ece150a72cb03e507d5d07cfeddb60cb48437bab2141de7c77bc0"
+        },
+        "finalized": {
+          "command": "cast block finalized --field number --rpc-url https://eth-mainnet.public.blastapi.io",
+          "output": "26418092"
+        },
+        "chain": {
+          "command": "cast chain-id --rpc-url https://eth-mainnet.public.blastapi.io",
+          "output": "1"
+        }
+      },
+      "https://eth.drpc.org": {
+        "min_delay": {
+          "command": "cast call 0xb27afc7844988948FBd6210AeF4E1362bC2d8E6a 'getMinDelay()(uint256)' --block 26417900 --rpc-url https://eth.drpc.org",
+          "output": "432000 [4.32e5]"
+        },
+        "controller_owner": {
+          "command": "cast call 0x2d8BcE1FaE00a959354aCD9eBf9174337A64d4fb 'owner()(address)' --block 26417900 --rpc-url https://eth.drpc.org",
+          "output": "0xb27afc7844988948FBd6210AeF4E1362bC2d8E6a"
+        },
+        "vesdt_admin": {
+          "command": "cast call 0x0C30476f66034E11782938DF8e4384970B6c9e8a 'admin()(address)' --block 26417900 --rpc-url https://eth.drpc.org",
+          "output": "0xB0552b6860CE5C0202976Db056b5e3Cc4f9CC765"
+        },
+        "proposer": {
+          "command": "cast call 0xb27afc7844988948FBd6210AeF4E1362bC2d8E6a 'hasRole(bytes32,address)(bool)' 0xb09aa5aeb3702cfd50b6b62bc4532604938f21248a27a1d5ca736082b6819cc1 0xB0552b6860CE5C0202976Db056b5e3Cc4f9CC765 --block 26417900 --rpc-url https://eth.drpc.org",
+          "output": "true"
+        },
+        "governance_threshold": {
+          "command": "cast call 0xB0552b6860CE5C0202976Db056b5e3Cc4f9CC765 'getThreshold()(uint256)' --block 26417900 --rpc-url https://eth.drpc.org",
+          "output": "3"
+        },
+        "governance_owners": {
+          "command": "cast call 0xB0552b6860CE5C0202976Db056b5e3Cc4f9CC765 'getOwners()(address[])' --block 26417900 --rpc-url https://eth.drpc.org",
+          "output": "[0xF2875cB91c35e0DDc9b76B15E2Aae236d393efFf, 0xE3268ADB23043b3Acc7083E96912aeeb4feB4DF2, 0xEb9F416fA098697D95E70B20439F19097EB741ED, 0x4046B37Ffc36B0C723d7Fc64e0C763B698D81934, 0x07c2D0E24530199e2c9A15bfeD4496d8E3798003]"
+        },
+        "treasury_threshold": {
+          "command": "cast call 0xF930EBBd05eF8b25B1797b9b2109DDC9B0d43063 'getThreshold()(uint256)' --block 26417900 --rpc-url https://eth.drpc.org",
+          "output": "3"
+        },
+        "treasury_owners": {
+          "command": "cast call 0xF930EBBd05eF8b25B1797b9b2109DDC9B0d43063 'getOwners()(address[])' --block 26417900 --rpc-url https://eth.drpc.org",
+          "output": "[0xF2875cB91c35e0DDc9b76B15E2Aae236d393efFf, 0xE3268ADB23043b3Acc7083E96912aeeb4feB4DF2, 0x07c2D0E24530199e2c9A15bfeD4496d8E3798003, 0x4046B37Ffc36B0C723d7Fc64e0C763B698D81934, 0xEb9F416fA098697D95E70B20439F19097EB741ED]"
+        },
+        "block": {
+          "command": "cast block 26417900 --field hash --rpc-url https://eth.drpc.org",
+          "output": "0x7ab58787804ece150a72cb03e507d5d07cfeddb60cb48437bab2141de7c77bc0"
+        },
+        "finalized": {
+          "command": "cast block finalized --field number --rpc-url https://eth.drpc.org",
+          "output": "26418092"
+        },
+        "chain": {
+          "command": "cast chain-id --rpc-url https://eth.drpc.org",
+          "output": "1"
+        }
+      }
+    },
+    "treasuryMcpScan": {
+      "chain": "ethereum",
+      "address": "0xF930EBBd05eF8b25B1797b9b2109DDC9B0d43063",
+      "block": {
+        "number": 26417900,
+        "hash": "0x7ab58787804ece150a72cb03e507d5d07cfeddb60cb48437bab2141de7c77bc0",
+        "timestamp": 1794715607
+      },
+      "codeBytes": 170,
+      "eip1967": {
+        "implementation": null,
+        "admin": null,
+        "beacon": null
+      },
+      "owner": null,
+      "probedStatus": {
+        "eip1967Slots": "ok",
+        "owner": "reverted_or_absent",
+        "safeGetters": "ok"
+      },
+      "safe": {
+        "threshold": 3,
+        "owners": [
+          "0xF2875cB91c35e0DDc9b76B15E2Aae236d393efFf",
+          "0xE3268ADB23043b3Acc7083E96912aeeb4feB4DF2",
+          "0x07c2D0E24530199e2c9A15bfeD4496d8E3798003",
+          "0x4046B37Ffc36B0C723d7Fc64e0C763B698D81934",
+          "0xEb9F416fA098697D95E70B20439F19097EB741ED"
+        ],
+        "ownerCount": 5,
+        "guard": null
+      },
+      "upgradeAuthority": null,
+      "ownerPrincipal": null,
+      "riskFlags": [
+        "not_eip1967_upgradeable"
+      ],
+      "summary": "OBSERVED: No EIP-1967, Ownable, or Safe single-key control detected in probed standard slots/selectors (custom AccessControl/RolesAuthority not excluded)"
+    }
+  }
+}

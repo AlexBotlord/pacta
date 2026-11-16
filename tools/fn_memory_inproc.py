@@ -27,6 +27,7 @@ import io
 import json
 import os
 import sys
+import tempfile
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -197,12 +198,14 @@ class InProcFnMemoryCentre:
             for k in [k for k in os.environ if k.startswith(_ENV_PREFIXES)]:
                 del os.environ[k]
             os.environ.update(self._env())
+            tempfile.tempdir = None              # re-read TMPDIR: tempfile caches the first one (maybe a removed centre's)
 
     def _restore_env(self):
         if self._saved_env is not None:
             os.environ.clear()
             os.environ.update(self._saved_env)
             self._saved_env = None
+            tempfile.tempdir = None
 
     # ------------------------------------------------------------ provisioning
     def provision(self, agent: str, path: str, display_name="pacta graph scratch") -> str:

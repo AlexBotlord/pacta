@@ -475,9 +475,12 @@ def build(root, controller_facts=None, protocols_override=None, use_minted=True)
         assert not SCRUB.looks_like_secret(raw), (e["edge_key"], SCRUB.secret_span(raw))
     by_kind = {k: sum(1 for n in node_list if n["kind"] == k) for k in NODE_KINDS}
     by_rel = {r: sum(1 for e in edge_list if e["relation"] == r) for r in RELATIONS}
-    src_sha = {name: sha256_hex(open(os.path.join(docs, name), "rb").read()) for name in ("protocols.json", "index.json", "rpc-pinned.json")}
+    def file_sha(path):
+        with open(path, "rb") as fh:
+            return sha256_hex(fh.read())
+    src_sha = {name: file_sha(os.path.join(docs, name)) for name in ("protocols.json", "index.json", "rpc-pinned.json")}
     for name in ("graph_dependencies.json", "graph_controller_facts.json"):
-        src_sha[name] = sha256_hex(open(os.path.join(root, "tools", name), "rb").read())
+        src_sha[name] = file_sha(os.path.join(root, "tools", name))
     manifest = {
         "schema": SCHEMA, "generated_at": idx["generated_at"], "observed_at": observed_at,
         "owning_principal": OWNING_PRINCIPAL, "source_agent": SOURCE_AGENT, "place": PLACE,

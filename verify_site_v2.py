@@ -266,23 +266,68 @@ def graph_distinctiveness(texts):
     return best
 
 
-class _VerifyMcp:
-    """Minimal outbound MCP (streamable HTTP) client for --verify-memory-centre (read-only memory_relation_list)."""
+def scrub_secret(text, secret):
+    """Remove a secret (raw and JSON-escaped) from the COMPLETE text. Callers truncate only the scrubbed result, so a secret
+    straddling a truncation boundary can never leave a fragment behind."""
+    text = str(text)
+    if secret:
+        for form in {secret, json.dumps(secret)[1:-1]}:
+            if form:
+                text = text.replace(form, "<token>")
+    return text
 
-    def __init__(self, url, bearer, opener=None):
+
+class _VerifyMcp:
+    """Minimal outbound MCP (streamable HTTP) client for --verify-memory-centre (read-only memory_relation_list / memory_inspect).
+    Requests are paced (min_interval_s; PACTA_VERIFY_MCP_MIN_INTERVAL_S, default 1.02 s over HTTP so a 20-token / 1-per-second
+    per-agent bucket never runs dry, 0 in process) and an HTTP 429 waits Retry-After (at least 1.1 s) and retries up to 8 attempts.
+    The bearer never appears in an error message."""
+
+    def __init__(self, url, bearer, opener=None, min_interval_s=None, sleep=None, clock=None):
         import urllib.request
         self.url, self._bearer, self.session, self._id = url, bearer, None, 0
         self.opener = opener or urllib.request.build_opener()
+        if min_interval_s is None:
+            min_interval_s = float(os.environ.get("PACTA_VERIFY_MCP_MIN_INTERVAL_S", "0.0" if url.startswith("inproc://") else "1.02"))
+        self.min_interval_s = float(min_interval_s)
+        import time as _time
+        self._sleep, self._clock, self._last = sleep or _time.sleep, clock or _time.monotonic, None
+        self.posts = self.retries_429 = 0
+
+    def _scrub(self, text):
+        return scrub_secret(text, self._bearer)
 
     def _post(self, body, notify=False):
+        import urllib.error
         import urllib.request
         headers = {"Content-Type": "application/json", "Accept": "application/json, text/event-stream", "Authorization": "Bearer " + self._bearer}
         if self.session:
             headers["Mcp-Session-Id"] = self.session
-        req = urllib.request.Request(self.url, data=json.dumps(body).encode(), headers=headers, method="POST")
-        with self.opener.open(req, timeout=20) as r:
-            self.session = r.headers.get("Mcp-Session-Id") or self.session
-            raw = r.read().decode("utf-8", "replace")
+        for attempt in range(8):
+            if self._last is not None and self.min_interval_s > 0:
+                wait = self._last + self.min_interval_s - self._clock()
+                if wait > 0:
+                    self._sleep(wait)
+            self._last = self._clock()
+            self.posts += 1
+            req = urllib.request.Request(self.url, data=json.dumps(body).encode(), headers=headers, method="POST")
+            try:
+                with self.opener.open(req, timeout=20) as r:
+                    self.session = r.headers.get("Mcp-Session-Id") or self.session
+                    raw = r.read().decode("utf-8", "replace")
+                break
+            except urllib.error.HTTPError as e:
+                if e.code == 429 and attempt < 7:
+                    self.retries_429 += 1
+                    try:
+                        ra = float((e.headers.get("Retry-After") if e.headers else None) or 1.1)
+                    except ValueError:
+                        ra = 1.1
+                    self._sleep(max(1.1, ra))
+                    continue
+                raise RuntimeError(self._scrub(f"HTTP {e.code} from the memory centre")) from None
+            except urllib.error.URLError as e:
+                raise RuntimeError(self._scrub(f"memory centre unreachable: {type(getattr(e, 'reason', e)).__name__}")) from None
         if notify:
             return None
         if raw.lstrip().startswith(("event:", "data:")):
@@ -300,16 +345,17 @@ class _VerifyMcp:
         msg = self._post({"jsonrpc": "2.0", "id": self._id, "method": "tools/call", "params": {"name": name, "arguments": args}})
         res = msg.get("result") or {}
         if msg.get("error") or res.get("isError"):
-            raise RuntimeError(f"{name}: {json.dumps(msg.get('error') or res)[:200]}")
+            raise RuntimeError(self._scrub(f"{name}: {json.dumps(msg.get('error') or res)}")[:220])    # scrub the whole text, then truncate
         if isinstance(res.get("structuredContent"), dict):
             return res["structuredContent"]
         return json.loads((res.get("content") or [{}])[0].get("text") or "{}")
 
 
-def live_graph_relations(url, bearer, owner):
-    """Every active relation the token can see on the centre (paged), as {(relation, source, target): row}.
-    url: an MCP URL, or inproc://<state dir> = the socketless in-process FN-Memory runtime (tools/fn_memory_inproc.py; needs
-    PACTA_FN_MEMORY_CHECKOUT / PACTA_FN_MEMORY_PYDEPS; the centre must not be open in another process)."""
+def live_graph_snapshot(url, bearer, owner, node_ids=(), opener=None):
+    """ONE MCP session (and, for inproc://<state dir>, ONE in-process FN-Memory runtime: tools/fn_memory_inproc.py, needs
+    PACTA_FN_MEMORY_CHECKOUT / PACTA_FN_MEMORY_PYDEPS and a centre not open in another process) reads every active relation
+    the token can see (paged memory_relation_list) and memory_inspect {"id"} for every node id (read-only).
+    -> ({(relation, source, target): [rows]}, rows, {node_id: inspect record})"""
     centre = None
     if url.startswith("inproc://"):
         sys.path.insert(0, os.path.join(ROOT, "tools"))
@@ -317,8 +363,8 @@ def live_graph_relations(url, bearer, owner):
         centre = fn_memory_inproc.InProcFnMemoryCentre.attach(url[len("inproc://"):]).start()
         mcp = _VerifyMcp(centre.url, bearer, opener=centre.opener())
     else:
-        mcp = _VerifyMcp(url, bearer)
-    rows, after = [], None
+        mcp = _VerifyMcp(url, bearer, opener=opener)
+    rows, after, inspected = [], None, {}
     try:
         for _ in range(600):                      # <= 60,000 rows; the per-centre cap is 50,000
             args = {"limit": 100}
@@ -329,6 +375,9 @@ def live_graph_relations(url, bearer, owner):
             after = page.get("next_after")
             if not after:
                 break
+        for nid in node_ids:
+            res = mcp.call("memory_inspect", {"id": nid})
+            inspected[nid] = res if isinstance(res, dict) else {}
     finally:
         if centre is not None:
             centre.close()
@@ -339,7 +388,36 @@ def live_graph_relations(url, bearer, owner):
         src = next((p["id"] for p in r.get("participants") or [] if p.get("side") == "source"), None)
         tgt = next((p["id"] for p in r.get("participants") or [] if p.get("side") == "target"), None)
         live.setdefault((r.get("relation"), src, tgt), []).append(r)
+    return live, rows, inspected
+
+
+def live_graph_relations(url, bearer, owner):
+    """Every active relation the token can see on the centre (paged), as {(relation, source, target): [rows]}."""
+    live, rows, _ = live_graph_snapshot(url, bearer, owner)
     return live, rows
+
+
+def node_parity(target_nodes, inspected, owner):
+    """Closure Note 3: every manifest node is held by the centre with its id, writer = the owning principal, not superseded,
+    not quarantined, and the SHA-256 of its text equals the manifest text's."""
+    id_ok = sha_ok = missing = mismatched = 0
+    for n in target_nodes:
+        res = inspected.get(n["id"]) or {}
+        want_sha = hashlib.sha256(n["text"].encode("utf-8")).hexdigest()
+        if res.get("found") is not True:
+            missing += 1
+            continue
+        meta_ok = (res.get("id") in (None, n["id"]) and res.get("superseded") is False and res.get("quarantined") is False
+                   and res.get("writer") == owner)
+        got_text = res.get("text")
+        got_sha = hashlib.sha256(got_text.encode("utf-8")).hexdigest() if isinstance(got_text, str) else None
+        if meta_ok:
+            id_ok += 1
+        if meta_ok and got_sha == want_sha:
+            sha_ok += 1
+        else:
+            mismatched += 1
+    return {"id_ok": id_ok, "sha_ok": sha_ok, "missing": missing, "mismatched": mismatched, "total": len(target_nodes)}
 
 
 def _memory_bearer(env_file):
@@ -486,61 +564,100 @@ def graph_manifest_checks(args):
           not lost and not rewritten and len(minted["nodes"]) >= 200 and len(minted["edges"]) >= 179,
           f"{len(minted['nodes'])} minted nodes, {len(minted['edges'])} minted edges; lost {lost[:4]}; rewritten {rewritten[:4]}")
     check("sitemap.xml lists /api/v1/graph-manifest.json", "/api/v1/graph-manifest.json</loc>" in read("docs/sitemap.xml"))
+    # The live checks compare against target_m: the working-tree manifest, or --manifest PATH (e.g. an earlier published
+    # manifest, to verify a backfill of it from a later checkout). A supplied manifest must itself be a valid graph manifest.
+    target_m = m
+    if getattr(args, "manifest", None):
+        try:
+            with open(args.manifest, encoding="utf-8") as fh:
+                target_m = json.load(fh)
+            t_edges = target_m.get("edges") or []
+            valid = (target_m.get("schema") == GM.SCHEMA and target_m.get("manifest_sha256") == GM.manifest_sha256(target_m)
+                     and all(e.get("content_hash") == GM.content_hash(e) for e in t_edges)
+                     and not any(SCRUB.looks_like_secret(n["text"]) for n in target_m.get("nodes") or [])
+                     and not any(SCRUB.looks_like_secret(SCRUB.relation_payload_text(e["relation"], e["direction"], e["participants"],
+                                                                                    e["observed_at"], e["evidence"])) for e in t_edges)
+                     and target_m.get("owning_principal") == "pacta@dri.network/gemini")
+            detail = (f"{os.path.basename(args.manifest)}: manifest_sha256 {str(target_m.get('manifest_sha256'))[:12]}, "
+                      f"{len(target_m.get('nodes') or [])} nodes, {len(t_edges)} edges, {(target_m.get('counts') or {}).get('protocols')} protocols")
+        except (OSError, ValueError, KeyError, TypeError) as e:
+            target_m, valid, detail = None, False, f"unreadable manifest: {type(e).__name__}"
+        check("--manifest: the target manifest is a valid pacta.graph_manifest.v1 (manifest_sha256, every edge content_hash, 0 FN-Memory "
+              "scrubber hits, owning principal pacta@dri.network/gemini)", valid, detail)
+        if not valid:
+            target_m = None
+    t_nodes = (target_m or {}).get("nodes") or []
+    t_edges = (target_m or {}).get("edges") or []
+    t_by_rel = {r: sum(1 for e in t_edges if e["relation"] == r) for r in GRAPH_RELATIONS}
+    t_protocols = ((target_m or {}).get("counts") or {}).get("protocols")
     if args.verify_sync_receipt:
         try:
             rc = json.load(open(args.verify_sync_receipt, encoding="utf-8"))
-            ok = (rc.get("status") == "SYNCED" and rc.get("writeEnabled") is True and rc.get("protocols_in_graph") == X["protocols"]
-                  and rc.get("protocols_indexed") == X["protocols"] and rc.get("edges_synced") == len(edges)
-                  and rc.get("manifest_sha256") == m["manifest_sha256"] and rc.get("failed_writes") == 0)
+            ok = (target_m is not None and rc.get("status") == "SYNCED" and rc.get("writeEnabled") is True
+                  and rc.get("protocols_in_graph") == t_protocols and rc.get("protocols_indexed") == t_protocols
+                  and rc.get("edges_synced") == len(t_edges) and rc.get("manifest_sha256") == target_m["manifest_sha256"]
+                  and rc.get("failed_writes") == 0)
             detail = (f"status {rc.get('status')}, writeEnabled {rc.get('writeEnabled')}, protocols {rc.get('protocols_in_graph')}/"
-                      f"{rc.get('protocols_indexed')}, edges_synced {rc.get('edges_synced')}/{len(edges)}, manifest "
+                      f"{rc.get('protocols_indexed')} of {t_protocols}, edges_synced {rc.get('edges_synced')}/{len(t_edges)}, manifest "
                       f"{str(rc.get('manifest_sha256'))[:12]}, failed_writes {rc.get('failed_writes')}")
         except (OSError, ValueError) as e:
             ok, detail = False, f"unreadable receipt: {type(e).__name__}"
-        check(f"--verify-sync-receipt: status SYNCED, writeEnabled true, protocols_in_graph {X['protocols']}, edges_synced = "
-              "the manifest edge count (live-verified), manifest_sha256 = graph-manifest.json, failed_writes 0", ok, detail)
+        check(f"--verify-sync-receipt: status SYNCED, writeEnabled true, protocols_in_graph = the target manifest's {t_protocols}, "
+              "edges_synced = its edge count (live-verified), manifest_sha256 = the target manifest, failed_writes 0", ok, detail)
     if args.verify_memory_centre:
+        names = ("--verify-memory-centre: live active relations by the 4 structural labels (creator = owning principal) equal the manifest "
+                 "label counts AND the exact (relation, source_id, target_id) edge set; no duplicates",
+                 "--verify-memory-centre: the canonical content_hash recomputed over every live edge (relation, direction, participants, "
+                 "evidence) equals the manifest content_hash, and every live evidence is canonically identical: 100%",
+                 "--verify-memory-centre: live node ids and text SHA-256 hashes held by the centre (writer = owning principal, not superseded, "
+                 "not quarantined) equal the manifest: 100%")
         bearer = _memory_bearer(args.memory_env_file)
-        if not bearer:
-            check("--verify-memory-centre: live relation parity", False, "no token (SN_MEMORY_TOKEN / PACTA_VERIFY_MEMORY_TOKEN / --memory-env-file)")
+        if target_m is None or not bearer:
+            why = "no valid target manifest" if target_m is None else "no token (SN_MEMORY_TOKEN / PACTA_VERIFY_MEMORY_TOKEN / --memory-env-file)"
+            for nm in names:
+                check(nm, False, why)
             return
         try:
-            live, rows = live_graph_relations(args.verify_memory_centre, bearer, m["owning_principal"])
+            live, rows, inspected = live_graph_snapshot(args.verify_memory_centre, bearer, target_m["owning_principal"], [n["id"] for n in t_nodes])
         except Exception as e:                    # report, never raise (a closed centre is a failed check, not a crash)
-            check("--verify-memory-centre: live relation parity", False, f"{type(e).__name__}: {str(e)[:160]}")
+            why = f"{type(e).__name__}: {scrub_secret(str(e), bearer)[:160]}"           # scrub the whole message, then truncate
+            for nm in names:
+                check(nm, False, why)
             return
-        want = {(e["relation"], e["participants"][0]["id"], e["participants"][1]["id"]) for e in edges}
+        want = {(e["relation"], e["participants"][0]["id"], e["participants"][1]["id"]) for e in t_edges}
         got = {k for k in live if k[0] in GRAPH_RELATIONS}
         live_counts = {r: sum(len(v) for k, v in live.items() if k[0] == r) for r in GRAPH_RELATIONS}
         dupes = sorted(k for k, v in live.items() if k[0] in GRAPH_RELATIONS and len(v) > 1)
-        check("--verify-memory-centre: live active relations by the 4 structural labels (creator = owning principal) equal the manifest "
-              "label counts AND the exact (relation, source_id, target_id) edge set; no duplicates",
-              live_counts == by_rel and got == want and not dupes,
-              f"live {live_counts} vs manifest {by_rel}; missing {len(want - got)}, extra {len(got - want)}, duplicates {len(dupes)}; "
+        check(names[0], live_counts == t_by_rel and got == want and not dupes,
+              f"live {live_counts} vs manifest {t_by_rel}; missing {len(want - got)}, extra {len(got - want)}, duplicates {len(dupes)}; "
               f"{len(rows)} rows paged")
         hash_ok = ev_ok = 0
-        for e in edges:
+        for e in t_edges:
             for row in live.get((e["relation"], e["participants"][0]["id"], e["participants"][1]["id"])) or []:
                 rebuilt = {"relation": row.get("relation"), "direction": row.get("direction"),
                            "participants": [{"id": p.get("id"), "role": p.get("role"), "side": p.get("side")} for p in row.get("participants") or []],
                            "evidence": row.get("evidence") or {}}
                 hash_ok += GM.content_hash(rebuilt) == e["content_hash"]
                 ev_ok += SCRUB.canonical(row.get("evidence") or {}) == SCRUB.canonical(e["evidence"])
-        check("--verify-memory-centre: the canonical content_hash recomputed over every live edge (relation, direction, participants, "
-              "evidence) equals the manifest content_hash, and every live evidence is canonically identical: 100%",
-              hash_ok == ev_ok == len(edges) and got == want and not dupes,
-              f"content_hash {hash_ok}/{len(edges)}, evidence {ev_ok}/{len(edges)}")
+        check(names[1], hash_ok == ev_ok == len(t_edges) and got == want and not dupes,
+              f"content_hash {hash_ok}/{len(t_edges)}, evidence {ev_ok}/{len(t_edges)}")
+        np_ = node_parity(t_nodes, inspected, target_m["owning_principal"])
+        check(names[2], np_["id_ok"] == np_["sha_ok"] == np_["total"] and np_["missing"] == 0 and np_["mismatched"] == 0,
+              f"node_ids {np_['id_ok']}/{np_['total']}, text_sha256 {np_['sha_ok']}/{np_['total']}, missing {np_['missing']}, "
+              f"mismatched {np_['mismatched']}")
 
 
 def parse_args(argv=None):
     import argparse
     ap = argparse.ArgumentParser(description="Offline checks for the Pacta static site (+ optional graph sync / live centre parity)")
-    ap.add_argument("--verify-sync-receipt", metavar="PATH", help="graph-sync-receipt.json: SYNCED, writeEnabled, 66 protocols, edges_synced = "
-                    "manifest edges, manifest_sha256 matches, failed_writes == 0")
+    ap.add_argument("--verify-sync-receipt", metavar="PATH", help="graph-sync-receipt.json: SYNCED, writeEnabled, every target-manifest "
+                    "protocol in the graph, edges_synced = its edges, manifest_sha256 matches, failed_writes == 0")
     ap.add_argument("--verify-memory-centre", metavar="MCP_URL", help="live sn-memory MCP URL, or inproc://<state dir> (socketless in-process "
                     "FN-Memory runtime, tools/fn_memory_inproc.py): label-count + edge parity + 100%% content_hash / evidence equality "
-                    "with the manifest (token from SN_MEMORY_TOKEN / PACTA_VERIFY_MEMORY_TOKEN or --memory-env-file)")
+                    "+ node id / text SHA-256 parity (memory_inspect) with the target manifest (token from SN_MEMORY_TOKEN / PACTA_VERIFY_MEMORY_TOKEN or --memory-env-file)")
     ap.add_argument("--memory-env-file", metavar="PATH", help="env file with SN_MEMORY_TOKEN (never printed)")
+    ap.add_argument("--manifest", metavar="PATH", help="target graph manifest for --verify-sync-receipt / --verify-memory-centre (default: "
+                    "the working-tree docs/api/v1/graph-manifest.json); validated before use")
     return ap.parse_args(argv)
 
 

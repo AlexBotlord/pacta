@@ -52,6 +52,7 @@ TOKENS = {
     "falcon-finance-usdf-susdf": ["USDf", "sUSDf"], "m0-protocol-m": ["M", "M0", "MToken"], "solv-protocol-solvbtc": ["SolvBTC", "SOLV"], "steakhouse-usdc-metamorpho-base": ["steakUSDC", "Steakhouse", "MetaMorpho"],
     "nexus-mutual": ["NXM", "wNXM", "Nexus Mutual"], "enzyme-finance": ["MLN", "Enzyme"], "stargate-v2": ["STG", "Stargate"], "aerodrome-slipstream-base": ["AERO", "Slipstream"],
     "aave-v3-base": ["AAVE", "Aave Base"], "compound-v3-base": ["COMP", "cUSDCv3"], "liquid-collective-lseth": ["LsETH", "Liquid Collective"], "ethena-usdtb": ["USDtb", "USDTB"],
+    "concrete": ["ctDeltaWeETH", "Concrete"], "cap": ["cUSD", "stcUSD", "CAP"], "infinifi": ["iUSD", "siUSD", "liUSD"], "stake-link": ["stLINK", "SDL"],
     # briefs
     "kerne-kusd-base": ["kUSD", "Kerne"], "efix-efixdi-base": ["efixDI+", "EFIXDI", "EFIX"], "circle-cirbtc-eth": ["cirBTC", "Circle"],
     "paxos-paxgy-eth": ["PAXGy", "Paxos"], "tether-usat-eth": ["USAT", "Tether"], "ethena-ops-0x0ca0-0x1fe5": ["USDe", "RLUSD", "USAT"],

@@ -395,6 +395,81 @@
   },
   {
    "badge": {
+    "label": "Parameter Delta",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/cap.svg",
+    "svg": "https://pacta.wtf/badges/cap.svg",
+    "tier": "parameter_delta"
+   },
+   "baseEasUids": [
+    "0xe712dd31d79ab492e2e64eb5847396651dee81daa9f895ead45548e97f1a2eb7"
+   ],
+   "category": "Stablecoin / Credit",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "mixed",
+   "controllerAddress": "0xD8236031d8279d82E615aF2BFab5FC0127A329ab",
+   "controllerKind": "timelock",
+   "documentationComparison": "compared",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "name": "Cap",
+   "preflightArgs": {
+    "address": "0xD8236031d8279d82E615aF2BFab5FC0127A329ab",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xD8236031d8279d82E615aF2BFab5FC0127A329ab",
+   "slug": "cap",
+   "sprints": [
+    20
+   ],
+   "surfaces": [
+    {
+     "baseEasUid": "0xe712dd31d79ab492e2e64eb5847396651dee81daa9f895ead45548e97f1a2eb7",
+     "blockHash": "0xfa22e277760f1df7134b0af20499d6305ee4e017219a917a61a78aa76e89382d",
+     "blockNumber": 26425374,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "cap-1d-timelock-min-delay-s20",
+     "sprint": 20,
+     "surface": "TimelockController minimum delay: 1 day",
+     "targetContract": "0xD8236031d8279d82E615aF2BFab5FC0127A329ab",
+     "targetLabel": "Cap TimelockController (Developer multisig proposer)"
+    },
+    {
+     "baseEasUid": "0xe712dd31d79ab492e2e64eb5847396651dee81daa9f895ead45548e97f1a2eb7",
+     "blockHash": "0xfa22e277760f1df7134b0af20499d6305ee4e017219a917a61a78aa76e89382d",
+     "blockNumber": 26425374,
+     "chain": "ethereum",
+     "classification": "protective_delta",
+     "id": "cap-access-control-admin-is-timelock-s20",
+     "sprint": 20,
+     "surface": "Access-control admin: the Timelock, not the multisig directly",
+     "targetContract": "0x7731129a10d51e18cDE607C5C115F26503D2c683",
+     "targetLabel": "Cap AccessControl registry"
+    },
+    {
+     "baseEasUid": "0xe712dd31d79ab492e2e64eb5847396651dee81daa9f895ead45548e97f1a2eb7",
+     "blockHash": "0xfa22e277760f1df7134b0af20499d6305ee4e017219a917a61a78aa76e89382d",
+     "blockNumber": 26425374,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "cap-cusd-upgrade-role-timelock-only-s20",
+     "sprint": 20,
+     "surface": "cUSD upgrade role (bytes4(0)) holder: the Timelock only",
+     "targetContract": "0x7731129a10d51e18cDE607C5C115F26503D2c683",
+     "targetLabel": "Cap AccessControl registry"
+    }
+   ],
+   "targetLabel": "Cap TimelockController (Developer multisig proposer)",
+   "tokens": [
+    "cUSD",
+    "stcUSD",
+    "CAP"
+   ],
+   "url": "https://pacta.wtf/protocols/cap/"
+  },
+  {
+   "badge": {
     "label": "RPC-Observed",
     "live": "https://pacta-x402.pacta.workers.dev/v1/badges/centrifuge-liquidity-pools-base.svg",
     "svg": "https://pacta.wtf/badges/centrifuge-liquidity-pools-base.svg",
@@ -550,6 +625,80 @@
     "Comet"
    ],
    "url": "https://pacta.wtf/protocols/compound-v3-comet/"
+  },
+  {
+   "badge": {
+    "label": "Parameter Delta",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/concrete.svg",
+    "svg": "https://pacta.wtf/badges/concrete.svg",
+    "tier": "parameter_delta"
+   },
+   "baseEasUids": [
+    "0xe712dd31d79ab492e2e64eb5847396651dee81daa9f895ead45548e97f1a2eb7"
+   ],
+   "category": "Yield Vaults (ERC-4626)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "mixed",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "name": "Concrete",
+   "preflightArgs": {
+    "address": "0xB9DC54c8261745CB97070CeFBE3D3d815aee8f20",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xB9DC54c8261745CB97070CeFBE3D3d815aee8f20",
+   "slug": "concrete",
+   "sprints": [
+    20
+   ],
+   "surfaces": [
+    {
+     "baseEasUid": "0xe712dd31d79ab492e2e64eb5847396651dee81daa9f895ead45548e97f1a2eb7",
+     "blockHash": "0xfa22e277760f1df7134b0af20499d6305ee4e017219a917a61a78aa76e89382d",
+     "blockNumber": 26425374,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "concrete-vault-default-admin-unassigned-s20",
+     "sprint": 20,
+     "surface": "Vault DEFAULT_ADMIN_ROLE: unassigned",
+     "targetContract": "0xB9DC54c8261745CB97070CeFBE3D3d815aee8f20",
+     "targetLabel": "Concrete ctDeltaWeETH vault (Concrete Delta WeETH)"
+    },
+    {
+     "baseEasUid": "0xe712dd31d79ab492e2e64eb5847396651dee81daa9f895ead45548e97f1a2eb7",
+     "blockHash": "0xfa22e277760f1df7134b0af20499d6305ee4e017219a917a61a78aa76e89382d",
+     "blockNumber": 26425374,
+     "chain": "ethereum",
+     "classification": "parameter_delta",
+     "id": "concrete-vault-owner-safe-1of2-s20",
+     "sprint": 20,
+     "surface": "Vault owner, VAULT_MANAGER and factory manager Safe threshold: 1-of-2",
+     "targetContract": "0x8F5f1d40243b259cEB7aB44bA421Ff191bCD3381",
+     "targetLabel": "Concrete Delta WeETH owner multisig"
+    },
+    {
+     "baseEasUid": "0xe712dd31d79ab492e2e64eb5847396651dee81daa9f895ead45548e97f1a2eb7",
+     "blockHash": "0xfa22e277760f1df7134b0af20499d6305ee4e017219a917a61a78aa76e89382d",
+     "blockNumber": 26425374,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "concrete-vault-proxy-admin-factory-s20",
+     "sprint": 20,
+     "surface": "Vault proxy admin: the factory",
+     "targetContract": "0xB9DC54c8261745CB97070CeFBE3D3d815aee8f20",
+     "targetLabel": "Concrete ctDeltaWeETH vault (Concrete Delta WeETH)"
+    }
+   ],
+   "targetLabel": "Concrete ctDeltaWeETH vault (Concrete Delta WeETH)",
+   "tokens": [
+    "ctDeltaWeETH",
+    "Concrete"
+   ],
+   "url": "https://pacta.wtf/protocols/concrete/"
   },
   {
    "badge": {
@@ -1241,21 +1390,23 @@
   },
   {
    "badge": {
-    "label": "RPC-Observed",
+    "label": "Aligned · Base EAS",
     "live": "https://pacta-x402.pacta.workers.dev/v1/badges/frax-ether-sfrxeth.svg",
     "svg": "https://pacta.wtf/badges/frax-ether-sfrxeth.svg",
-    "tier": "rpc_observed"
+    "tier": "aligned"
    },
-   "baseEasUids": [],
+   "baseEasUids": [
+    "0xe712dd31d79ab492e2e64eb5847396651dee81daa9f895ead45548e97f1a2eb7"
+   ],
    "category": "Liquid Staking & Monetary Infrastructure",
    "chain": "ethereum",
    "chainId": 1,
-   "classification": "rpc_observed",
+   "classification": "aligned_baseline",
    "controllerAddress": "0x8306300ffd616049FD7e4b0354a64Da835c1A81C",
    "controllerKind": "multisig_safe",
-   "documentationComparison": "not_assessed",
-   "easAttested": false,
-   "evidenceBasis": "rpc_observed",
+   "documentationComparison": "compared",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
    "name": "Frax Ether (frxETH / sfrxETH)",
    "preflightArgs": {
     "address": "0xbAFA44EFE7901E04E39Dad13167D089C559c1138",
@@ -1263,19 +1414,45 @@
    },
    "primaryContract": "0xbAFA44EFE7901E04E39Dad13167D089C559c1138",
    "slug": "frax-ether-sfrxeth",
-   "sprints": [],
+   "sprints": [
+    20
+   ],
    "surfaces": [
     {
-     "baseEasUid": null,
-     "blockHash": "0xb83fee0a1d10d5fb8510d87ee9e33b180acac3208a7d00162a6a6f97789c0978",
-     "blockNumber": 26414499,
+     "baseEasUid": "0xe712dd31d79ab492e2e64eb5847396651dee81daa9f895ead45548e97f1a2eb7",
+     "blockHash": "0xfa22e277760f1df7134b0af20499d6305ee4e017219a917a61a78aa76e89382d",
+     "blockNumber": 26425374,
      "chain": "ethereum",
-     "classification": "rpc_observed",
-     "id": "frax-ether-sfrxeth-control-plane",
-     "sprint": null,
-     "surface": "frxETHMinter · 4-of-7 Safe & 2d Governance Timelock",
+     "classification": "aligned_baseline",
+     "id": "frax-ether-comptroller-owns-frxethminter-s20",
+     "sprint": 20,
+     "surface": "frxETHMinter owner: the documented Comptroller",
      "targetContract": "0xbAFA44EFE7901E04E39Dad13167D089C559c1138",
      "targetLabel": "frxETHMinter"
+    },
+    {
+     "baseEasUid": "0xe712dd31d79ab492e2e64eb5847396651dee81daa9f895ead45548e97f1a2eb7",
+     "blockHash": "0xfa22e277760f1df7134b0af20499d6305ee4e017219a917a61a78aa76e89382d",
+     "blockNumber": 26425374,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "frax-ether-lockbox-multisig-3of5-s20",
+     "sprint": 20,
+     "surface": "Ethereum lockbox owner Safe threshold: 3-of-5",
+     "targetContract": "0xB1748C79709f4Ba2Dd82834B8c82D4a505003f27",
+     "targetLabel": "Frax Ethereum lockbox multisig (LayerZero delegate)"
+    },
+    {
+     "baseEasUid": "0xe712dd31d79ab492e2e64eb5847396651dee81daa9f895ead45548e97f1a2eb7",
+     "blockHash": "0xfa22e277760f1df7134b0af20499d6305ee4e017219a917a61a78aa76e89382d",
+     "blockNumber": 26425374,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "frax-ether-upgrade-timelock-24h-s20",
+     "sprint": 20,
+     "surface": "Ethereum upgrade Timelock delay: 24 hours",
+     "targetContract": "0xb898Ad2976b4d8f2E21521C9db16b7497825E503",
+     "targetLabel": "Frax Ethereum Admin Timelock (ProxyAdmin owner)"
     }
    ],
    "targetLabel": "frxETHMinter",
@@ -1334,6 +1511,81 @@
     "GEAR"
    ],
    "url": "https://pacta.wtf/protocols/gearbox-v3-v3-1/"
+  },
+  {
+   "badge": {
+    "label": "Parameter Delta",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/infinifi.svg",
+    "svg": "https://pacta.wtf/badges/infinifi.svg",
+    "tier": "parameter_delta"
+   },
+   "baseEasUids": [
+    "0xe712dd31d79ab492e2e64eb5847396651dee81daa9f895ead45548e97f1a2eb7"
+   ],
+   "category": "Yield-Bearing Stablecoin",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "mixed",
+   "controllerAddress": "0x3D18480CC32B6AB3B833dCabD80E76CfD41c48a9",
+   "controllerKind": "timelock",
+   "documentationComparison": "compared",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "name": "infiniFi",
+   "preflightArgs": {
+    "address": "0x3D18480CC32B6AB3B833dCabD80E76CfD41c48a9",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x3D18480CC32B6AB3B833dCabD80E76CfD41c48a9",
+   "slug": "infinifi",
+   "sprints": [
+    20
+   ],
+   "surfaces": [
+    {
+     "baseEasUid": "0xe712dd31d79ab492e2e64eb5847396651dee81daa9f895ead45548e97f1a2eb7",
+     "blockHash": "0xfa22e277760f1df7134b0af20499d6305ee4e017219a917a61a78aa76e89382d",
+     "blockNumber": 26425374,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "infinifi-long-timelock-7d-s20",
+     "sprint": 20,
+     "surface": "Long governance timelock delay: 7 days (Short timelock: 1 day)",
+     "targetContract": "0x3D18480CC32B6AB3B833dCabD80E76CfD41c48a9",
+     "targetLabel": "infiniFi Long Timelock (GOVERNOR)"
+    },
+    {
+     "baseEasUid": "0xe712dd31d79ab492e2e64eb5847396651dee81daa9f895ead45548e97f1a2eb7",
+     "blockHash": "0xfa22e277760f1df7134b0af20499d6305ee4e017219a917a61a78aa76e89382d",
+     "blockNumber": 26425374,
+     "chain": "ethereum",
+     "classification": "parameter_delta",
+     "id": "infinifi-pause-role-admin-minor-roles-s20",
+     "sprint": 20,
+     "surface": "PAUSE / UNPAUSE role admin: MINOR_ROLES_MANAGER, not GOVERNOR",
+     "targetContract": "0xF6d48735EcCf12bDC1DF2674b1ce3fcb3bD25490",
+     "targetLabel": "InfiniFiCore role registry"
+    },
+    {
+     "baseEasUid": "0xe712dd31d79ab492e2e64eb5847396651dee81daa9f895ead45548e97f1a2eb7",
+     "blockHash": "0xfa22e277760f1df7134b0af20499d6305ee4e017219a917a61a78aa76e89382d",
+     "blockNumber": 26425374,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "infinifi-team-multisig-4of7-s20",
+     "sprint": 20,
+     "surface": "Team Multisig threshold: 4-of-7",
+     "targetContract": "0x80608f852D152024c0a2087b16939235fEc2400c",
+     "targetLabel": "infiniFi Team Multisig (timelock proposer)"
+    }
+   ],
+   "targetLabel": "infiniFi Long Timelock (GOVERNOR)",
+   "tokens": [
+    "iUSD",
+    "siUSD",
+    "liUSD"
+   ],
+   "url": "https://pacta.wtf/protocols/infinifi/"
   },
   {
    "badge": {
@@ -2277,21 +2529,23 @@
   },
   {
    "badge": {
-    "label": "RPC-Observed",
+    "label": "Parameter Delta",
     "live": "https://pacta-x402.pacta.workers.dev/v1/badges/puffer-finance-pufeth.svg",
     "svg": "https://pacta.wtf/badges/puffer-finance-pufeth.svg",
-    "tier": "rpc_observed"
+    "tier": "parameter_delta"
    },
-   "baseEasUids": [],
+   "baseEasUids": [
+    "0xe712dd31d79ab492e2e64eb5847396651dee81daa9f895ead45548e97f1a2eb7"
+   ],
    "category": "Native Liquid Restaking",
    "chain": "ethereum",
    "chainId": 1,
-   "classification": "rpc_observed",
+   "classification": "mixed",
    "controllerAddress": "0x8c1686069474410E6243425f4a10177a94EBEE11",
    "controllerKind": "contract_controller",
-   "documentationComparison": "not_assessed",
-   "easAttested": false,
-   "evidenceBasis": "rpc_observed",
+   "documentationComparison": "compared",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
    "name": "Puffer Finance (pufETH)",
    "preflightArgs": {
     "address": "0xD9A442856C234a39a81a089C06451EBAa4306a72",
@@ -2299,22 +2553,48 @@
    },
    "primaryContract": "0xD9A442856C234a39a81a089C06451EBAa4306a72",
    "slug": "puffer-finance-pufeth",
-   "sprints": [],
+   "sprints": [
+    20
+   ],
    "surfaces": [
     {
-     "baseEasUid": null,
-     "blockHash": "0xb83fee0a1d10d5fb8510d87ee9e33b180acac3208a7d00162a6a6f97789c0978",
-     "blockNumber": 26414499,
+     "baseEasUid": "0xe712dd31d79ab492e2e64eb5847396651dee81daa9f895ead45548e97f1a2eb7",
+     "blockHash": "0xfa22e277760f1df7134b0af20499d6305ee4e017219a917a61a78aa76e89382d",
+     "blockNumber": 26425374,
      "chain": "ethereum",
-     "classification": "rpc_observed",
-     "id": "puffer-finance-pufeth-control-plane",
-     "sprint": null,
-     "surface": "PufferVaultV2 (pufETH) · EIP-1967 Proxy & Upgrade Authority",
-     "targetContract": "0xD9A442856C234a39a81a089C06451EBAa4306a72",
-     "targetLabel": "PufferVaultV2 (pufETH)"
+     "classification": "aligned_baseline",
+     "id": "puffer-7d-timelock-delay-s20",
+     "sprint": 20,
+     "surface": "Timelock delay: 7 days",
+     "targetContract": "0x3C28B7c7Ba1A1f55c9Ce66b263B33B204f2126eA",
+     "targetLabel": "Puffer Timelock (AccessManager admin role)"
+    },
+    {
+     "baseEasUid": "0xe712dd31d79ab492e2e64eb5847396651dee81daa9f895ead45548e97f1a2eb7",
+     "blockHash": "0xfa22e277760f1df7134b0af20499d6305ee4e017219a917a61a78aa76e89382d",
+     "blockNumber": 26425374,
+     "chain": "ethereum",
+     "classification": "parameter_delta",
+     "id": "puffer-community-multisig-3of7-s20",
+     "sprint": 20,
+     "surface": "Community Multisig threshold: 3-of-7",
+     "targetContract": "0x446d4d6b26815f9bA78B5D454E303315D586Cb2a",
+     "targetLabel": "Puffer Community Multisig (upgrader role)"
+    },
+    {
+     "baseEasUid": "0xe712dd31d79ab492e2e64eb5847396651dee81daa9f895ead45548e97f1a2eb7",
+     "blockHash": "0xfa22e277760f1df7134b0af20499d6305ee4e017219a917a61a78aa76e89382d",
+     "blockNumber": 26425374,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "puffer-operations-multisig-3of6-s20",
+     "sprint": 20,
+     "surface": "Operations Multisig threshold: 3-of-6",
+     "targetContract": "0xC0896ab1A8cae8c2C1d27d011eb955Cca955580d",
+     "targetLabel": "Puffer Operations Multisig (OPS / DAO roles)"
     }
    ],
-   "targetLabel": "PufferVaultV2 (pufETH)",
+   "targetLabel": "PufferVault (pufETH)",
    "tokens": [
     "pufETH",
     "PUFFER"
@@ -2798,6 +3078,80 @@
     "SD"
    ],
    "url": "https://pacta.wtf/protocols/stader-labs-ethx/"
+  },
+  {
+   "badge": {
+    "label": "Aligned · Base EAS",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/stake-link.svg",
+    "svg": "https://pacta.wtf/badges/stake-link.svg",
+    "tier": "aligned"
+   },
+   "baseEasUids": [
+    "0xe712dd31d79ab492e2e64eb5847396651dee81daa9f895ead45548e97f1a2eb7"
+   ],
+   "category": "Liquid Staking (LINK)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "aligned_baseline",
+   "controllerAddress": "0xb72d8F5213b3E52FAf13Aa074b03C4788e78349F",
+   "controllerKind": "timelock",
+   "documentationComparison": "compared",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "name": "stake.link",
+   "preflightArgs": {
+    "address": "0xb72d8F5213b3E52FAf13Aa074b03C4788e78349F",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xb72d8F5213b3E52FAf13Aa074b03C4788e78349F",
+   "slug": "stake-link",
+   "sprints": [
+    20
+   ],
+   "surfaces": [
+    {
+     "baseEasUid": "0xe712dd31d79ab492e2e64eb5847396651dee81daa9f895ead45548e97f1a2eb7",
+     "blockHash": "0xfa22e277760f1df7134b0af20499d6305ee4e017219a917a61a78aa76e89382d",
+     "blockNumber": 26425374,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "stake-link-governance-timelock-48h-s20",
+     "sprint": 20,
+     "surface": "GovernanceTimelock delay: 48 hours",
+     "targetContract": "0xb72d8F5213b3E52FAf13Aa074b03C4788e78349F",
+     "targetLabel": "stake.link GovernanceTimelock (owner of StakingPool, PriorityPool, WithdrawalPool)"
+    },
+    {
+     "baseEasUid": "0xe712dd31d79ab492e2e64eb5847396651dee81daa9f895ead45548e97f1a2eb7",
+     "blockHash": "0xfa22e277760f1df7134b0af20499d6305ee4e017219a917a61a78aa76e89382d",
+     "blockNumber": 26425374,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "stake-link-multisig-6of8-s20",
+     "sprint": 20,
+     "surface": "Gnosis Safe signer threshold: 6-of-8",
+     "targetContract": "0xB351EC0FEaF4B99FdFD36b484d9EC90D0422493D",
+     "targetLabel": "stake.link Gnosis Safe (timelock proposer / canceller, treasury)"
+    },
+    {
+     "baseEasUid": "0xe712dd31d79ab492e2e64eb5847396651dee81daa9f895ead45548e97f1a2eb7",
+     "blockHash": "0xfa22e277760f1df7134b0af20499d6305ee4e017219a917a61a78aa76e89382d",
+     "blockNumber": 26425374,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "stake-link-operator-strategy-fees-s20",
+     "sprint": 20,
+     "surface": "Node Operator strategy fees: SDL stakers 15%, node operators 5%",
+     "targetContract": "0x4852e48215A4785eE99B640CACED5378Cc39D2A4",
+     "targetLabel": "stake.link OperatorVCS (Node Operator Pool strategy)"
+    }
+   ],
+   "targetLabel": "stake.link GovernanceTimelock (owner of StakingPool, PriorityPool, WithdrawalPool)",
+   "tokens": [
+    "stLINK",
+    "SDL"
+   ],
+   "url": "https://pacta.wtf/protocols/stake-link/"
   },
   {
    "badge": {
@@ -3463,13 +3817,13 @@
  },
  "totals": {
   "badgeTiers": {
-   "aligned": 29,
-   "parameter_delta": 21,
-   "rpc_observed": 16
+   "aligned": 31,
+   "parameter_delta": 25,
+   "rpc_observed": 14
   },
-  "easAttested": 50,
-  "protocols": 66,
-  "rpcObserved": 16,
-  "surfaces": 82
+  "easAttested": 56,
+  "protocols": 70,
+  "rpcObserved": 14,
+  "surfaces": 98
  }
 }

@@ -1,7 +1,7 @@
 {
   "schema": "pacta.rpc_pinned_records.v1",
   "title": "Pacta RPC-pinned control-plane records",
-  "description": "Read-only control-plane observations of 16 protocols (9 Ethereum, 7 Base), each pinned to a canonical block number and block hash and reproducible with cast. These records are NOT EAS-attested: they have no sprint number, no summary document and no Base EAS UID. The Base-EAS-attested Sprint records are in /api/v1/index.json. Euler V2 (EVK) and Moonwell Lending (Base) were re-scanned in Sprint 18, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Pendle Finance V2 and Rocket Pool (rETH) were re-scanned in Sprint 19, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here.",
+  "description": "Read-only control-plane observations of 14 protocols (7 Ethereum, 7 Base), each pinned to a canonical block number and block hash and reproducible with cast. These records are NOT EAS-attested: they have no sprint number, no summary document and no Base EAS UID. The Base-EAS-attested Sprint records are in /api/v1/index.json. Euler V2 (EVK) and Moonwell Lending (Base) were re-scanned in Sprint 18, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Pendle Finance V2 and Rocket Pool (rETH) were re-scanned in Sprint 19, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Frax Ether (frxETH / sfrxETH) and Puffer Finance (pufETH) were re-scanned in Sprint 20, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here.",
   "attestation": {
     "eas_attested": false,
     "base_eas_uid": null,
@@ -24,9 +24,9 @@
   },
   "verification": "Captured by one Pacta seat over public JSON-RPC and independently re-read at the same pinned blocks by a second seat (block hash, runtime bytecode size and keccak256, EIP-1967 implementation / admin slots, controller getter, Safe getThreshold / getOwners, timelock delay). Two records were corrected by the re-read (Moonwell admin contract, Uniswap V3 factory owner contract).",
   "summary": {
-    "protocols": 16,
-    "records": 16,
-    "ethereum": 9,
+    "protocols": 14,
+    "records": 14,
+    "ethereum": 7,
     "base": 7
   },
   "source_pack_sha256": "857179d8c3024fae3b2204fcae4b542f96cba9b03777cfb6f56095a607f00950",
@@ -109,17 +109,6 @@
       ]
     },
     {
-      "slug": "frax-ether-sfrxeth",
-      "name": "Frax Ether (frxETH / sfrxETH)",
-      "family": "frax",
-      "category": "Liquid Staking & Monetary Infrastructure",
-      "chain": "ethereum",
-      "chain_label": "Ethereum",
-      "record_ids": [
-        "frax-ether-sfrxeth-control-plane"
-      ]
-    },
-    {
       "slug": "origin-superoeth-base",
       "name": "Origin Protocol (SuperOETHb Base)",
       "family": "origin",
@@ -128,17 +117,6 @@
       "chain_label": "Base",
       "record_ids": [
         "origin-superoeth-base-control-plane"
-      ]
-    },
-    {
-      "slug": "puffer-finance-pufeth",
-      "name": "Puffer Finance (pufETH)",
-      "family": "puffer",
-      "category": "Native Liquid Restaking",
-      "chain": "ethereum",
-      "chain_label": "Ethereum",
-      "record_ids": [
-        "puffer-finance-pufeth-control-plane"
       ]
     },
     {
@@ -556,64 +534,6 @@
       "documented_reference": "Extra Finance (Base) documentation is linked for reference (https://docs.extrafi.io/; governance: https://snapshot.org/#/extrafi.eth). This RPC-pinned record does not compare documentation parameters with the on-chain state."
     },
     {
-      "id": "frax-ether-sfrxeth-control-plane",
-      "protocol": "Frax Ether (frxETH / sfrxETH)",
-      "slug": "frax-ether-sfrxeth",
-      "family": "frax",
-      "category": "Liquid Staking & Monetary Infrastructure",
-      "chain": "ethereum",
-      "chain_id": 1,
-      "caip2": "eip155:1",
-      "chain_label": "Ethereum",
-      "rpc_env_var": "$ETH_RPC_URL",
-      "provenance": "rpc_pinned",
-      "base_eas_uid": null,
-      "block_number": 26414499,
-      "block_hash": "0xb83fee0a1d10d5fb8510d87ee9e33b180acac3208a7d00162a6a6f97789c0978",
-      "classification": "rpc_observed",
-      "documentation_comparison": "not_assessed",
-      "surface": "frxETHMinter · 4-of-7 Safe & 2d Governance Timelock",
-      "target_contract": "0xbAFA44EFE7901E04E39Dad13167D089C559c1138",
-      "target_label": "frxETHMinter",
-      "bytecode_bytes": 12312,
-      "bytecode_keccak256": "0xd5517d3be0b131ef314cd993db76434f602e97c316599bdfbc224d1f9683d24c",
-      "is_eip1967_proxy": false,
-      "eip1967_implementation": null,
-      "eip1967_admin": null,
-      "controller_kind": "multisig_safe",
-      "controller_address": "0x8306300ffd616049FD7e4b0354a64Da835c1A81C",
-      "upstream_controller": null,
-      "upstream_kind": null,
-      "safe_quorum": "4-of-7",
-      "paired_contract": "0x8412ebf45bAC1B340BbE8F318b928C466c4E39CA",
-      "paired_label": "FraxGovernanceTimelock",
-      "check_type": "eth_call",
-      "selector_or_slot": "0x8da5cb5b",
-      "call_signature": "owner()",
-      "call_args": [],
-      "repro_calldata": "0x8da5cb5b",
-      "extra_calls": [
-        {
-          "to": "0x8306300ffd616049FD7e4b0354a64Da835c1A81C",
-          "signature": "getThreshold()(uint256)"
-        },
-        {
-          "to": "0x8306300ffd616049FD7e4b0354a64Da835c1A81C",
-          "signature": "getOwners()(address[])"
-        },
-        {
-          "to": "0x8412ebf45bAC1B340BbE8F318b928C466c4E39CA",
-          "signature": "delay()(uint256)"
-        }
-      ],
-      "onchain_observed": "frxETHMinter (0xbAFA44EFE7901E04E39Dad13167D089C559c1138) verified on Ethereum Mainnet at canonical block #26,414,499 (12,312 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). Direct owner() returns 0x8306300ffd616049FD7e4b0354a64Da835c1A81C, verified via getThreshold() and getOwners() as a 4-of-7 Safe multisig. Companion timelock FraxGovernanceTimelock (0x8412ebf45bAC1B340BbE8F318b928C466c4E39CA) reports minimum delay 172,800s (2d).",
-      "observed_delay_seconds": 172800,
-      "documented_delay_seconds": null,
-      "docs_url": "https://docs.frax.com/",
-      "governance_url": "https://gov.frax.finance/",
-      "documented_reference": "Frax Ether (frxETH / sfrxETH) documentation is linked for reference (https://docs.frax.com/; governance: https://gov.frax.finance/). This RPC-pinned record does not compare documentation parameters with the on-chain state."
-    },
-    {
       "id": "origin-superoeth-base-control-plane",
       "protocol": "Origin Protocol (SuperOETHb Base)",
       "slug": "origin-superoeth-base",
@@ -662,51 +582,6 @@
       "docs_url": "https://docs.originprotocol.com/",
       "governance_url": "https://snapshot.org/#/ousdgov.eth",
       "documented_reference": "Origin Protocol (SuperOETHb Base) documentation is linked for reference (https://docs.originprotocol.com/; governance: https://snapshot.org/#/ousdgov.eth). This RPC-pinned record does not compare documentation parameters with the on-chain state."
-    },
-    {
-      "id": "puffer-finance-pufeth-control-plane",
-      "protocol": "Puffer Finance (pufETH)",
-      "slug": "puffer-finance-pufeth",
-      "family": "puffer",
-      "category": "Native Liquid Restaking",
-      "chain": "ethereum",
-      "chain_id": 1,
-      "caip2": "eip155:1",
-      "chain_label": "Ethereum",
-      "rpc_env_var": "$ETH_RPC_URL",
-      "provenance": "rpc_pinned",
-      "base_eas_uid": null,
-      "block_number": 26414499,
-      "block_hash": "0xb83fee0a1d10d5fb8510d87ee9e33b180acac3208a7d00162a6a6f97789c0978",
-      "classification": "rpc_observed",
-      "documentation_comparison": "not_assessed",
-      "surface": "PufferVaultV2 (pufETH) · EIP-1967 Proxy & Upgrade Authority",
-      "target_contract": "0xD9A442856C234a39a81a089C06451EBAa4306a72",
-      "target_label": "PufferVaultV2 (pufETH)",
-      "bytecode_bytes": 163,
-      "bytecode_keccak256": "0x4fa1494dbad31bb89ca5231b5a00971549aa3a4149a217cabb1c66f127da3cc5",
-      "is_eip1967_proxy": true,
-      "eip1967_implementation": "0x3b2fdFdEFE919dBcCE0bc5ac426097d5523B8AFA",
-      "eip1967_admin": null,
-      "controller_kind": "contract_controller",
-      "controller_address": "0x8c1686069474410E6243425f4a10177a94EBEE11",
-      "upstream_controller": null,
-      "upstream_kind": null,
-      "safe_quorum": null,
-      "paired_contract": null,
-      "paired_label": null,
-      "check_type": "eth_call",
-      "selector_or_slot": "0xbf7e214f",
-      "call_signature": "authority()",
-      "call_args": [],
-      "repro_calldata": "0xbf7e214f",
-      "extra_calls": [],
-      "onchain_observed": "PufferVaultV2 (pufETH) (0xD9A442856C234a39a81a089C06451EBAa4306a72) verified on Ethereum Mainnet at canonical block #26,414,499 (163 bytes runtime code). EIP-1967 implementation slot resolves to 0x3b2fdFdEFE919dBcCE0bc5ac426097d5523B8AFA, EIP-1967 admin slot = zero (UUPS / internal upgrade authority). Direct authority() returns governance controller contract 0x8c1686069474410E6243425f4a10177a94EBEE11.",
-      "observed_delay_seconds": null,
-      "documented_delay_seconds": null,
-      "docs_url": "https://docs.puffer.fi/",
-      "governance_url": "https://snapshot.org/#/pufferdao.eth",
-      "documented_reference": "Puffer Finance (pufETH) documentation is linked for reference (https://docs.puffer.fi/; governance: https://snapshot.org/#/pufferdao.eth). This RPC-pinned record does not compare documentation parameters with the on-chain state."
     },
     {
       "id": "reserve-protocol-rtoken-control-plane",

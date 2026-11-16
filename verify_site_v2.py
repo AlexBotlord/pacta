@@ -45,19 +45,20 @@ import xml.etree.ElementTree as ET
 ROOT = os.path.dirname(os.path.abspath(__file__))
 DOCS = os.path.join(ROOT, "docs")
 RESULTS = []
-# ---- EXPECT-BEGIN: the published numbers, in one place (tools/apply_sprint19_attestation.py rewrites this block when it stamps a Sprint)
+# ---- EXPECT-BEGIN: the published numbers, in one place (tools/apply_sprint20_attestation.py rewrites this block when it stamps a Sprint)
 EXPECT = {
-    "sprints": 19, "records": 66, "eas_attestations": 19,              # index.json sprints_completed / records_indexed; Base EAS sprint UIDs
-    "protocols": 66, "eas_protocols": 50, "rpc_protocols": 16,          # /protocols/ pages = EAS-attested + RPC-pinned; badges = protocols
-    "briefs": 8, "badge_tiers": {"aligned": 29, "parameter_delta": 21, "rpc_observed": 16},
+    "sprints": 20, "records": 84, "eas_attestations": 20,              # index.json sprints_completed / records_indexed; Base EAS sprint UIDs
+    "protocols": 70, "eas_protocols": 56, "rpc_protocols": 14,          # /protocols/ pages = EAS-attested + RPC-pinned; badges = protocols
+    "briefs": 8, "badge_tiers": {"aligned": 31, "parameter_delta": 25, "rpc_observed": 14},
     "base_records": 8,                                                  # index.json records with chain "base"
-    "rpc_by_chain": {"ethereum": 9, "base": 7},                         # rpc-pinned.json records per chain (sum = rpc_protocols)
-    "multi_attest_txs": ["1–12", "13–16", "17", "18", "19"],                              # attestation_coverage.eas_multi_attest_txs keys
+    "rpc_by_chain": {"ethereum": 7, "base": 7},                         # rpc-pinned.json records per chain (sum = rpc_protocols)
+    "multi_attest_txs": ["1–12", "13–16", "17", "18", "19", "20"],                              # attestation_coverage.eas_multi_attest_txs keys
     "summaries": {"15": "61c0cc292cfa1fc3840277cf312383d24a6c81af56afac303afdbd84e7316cf6",
                   "16": "91b8e29301ef0e625c4ddc9eadaf5388115812f5958f90b6e0ed53a4808ba8ae",
                   "17": "2fd7ab979c6dfc3aae44f6c46c8f0397959927874ff0358574043a056d3168ea",
                   "18": "fc2f39d1c8c9a0c301f1a664be5fcdee9391971598a24739dccd3fbd0364aeae",
-                  "19": "be0b41a158027fb99a3b54d5411d13790c08047e40a1c6804412f82b1f183968"},   # audits/sprint-<n>/ summary SHA-256 (attested)
+                  "19": "be0b41a158027fb99a3b54d5411d13790c08047e40a1c6804412f82b1f183968",
+                  "20": "ecf3ff31366c88541b265c13153f7dd3cd087d7f1f6ae7a801b63669d2fc94af"},   # audits/sprint-<n>/ summary SHA-256 (attested)
 }
 # ---- EXPECT-END
 X = EXPECT

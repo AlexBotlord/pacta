@@ -1,4 +1,7 @@
+<img src="docs/logo.svg" alt="Pacta" width="56" height="56" align="left">
+
 # Pacta by Fractal Neurons — Institutional Counterparty & On-Chain Commitment Index
+<br clear="left">
 
 [![Counterparty Index Portal](https://img.shields.io/badge/Live_Index-pacta.wtf-38bdf8?style=for-the-badge&labelColor=000000)](https://pacta.wtf/)
 [![JSON API v1](https://img.shields.io/badge/JSON_Feed-%2Fapi%2Fv1%2Findex.json-22c55e?style=for-the-badge&labelColor=000000)](https://pacta.wtf/api/v1/index.json)

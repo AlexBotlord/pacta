@@ -69,7 +69,7 @@ DISAMBIGUATION = B2A.DISAMBIGUATION
 BRAND = B2A.BRAND
 REMOTE_TOOLS_DOC, STDIO_TOOLS_DOC = B2A.REMOTE_TOOLS_DOC, B2A.STDIO_TOOLS_DOC
 ORG_LD = {"@context": "https://schema.org", "@type": "Organization", "name": "Pacta by Fractal Neurons", "alternateName": ["Pacta", "pacta.base.eth"],
-          "url": f"{BASE_URL}/", "logo": f"{BASE_URL}/favicon.png", "sameAs": [REPO, "https://fractalneurons.com", "https://basescan.org/name-lookup-search?id=pacta.base.eth"],
+          "url": f"{BASE_URL}/", "logo": f"{BASE_URL}/logo-512.png", "image": f"{BASE_URL}/logo.svg", "sameAs": [REPO, "https://fractalneurons.com", "https://basescan.org/name-lookup-search?id=pacta.base.eth"],
           "parentOrganization": {"@type": "Organization", "name": "Fractal Neurons", "url": "https://fractalneurons.com"},
           "disambiguatingDescription": DISAMBIGUATION}
 # Engagement tracks offered by the request builder (and linked from #pricing). key -> (title, price, unit, summary,
@@ -228,7 +228,7 @@ def topbar(home=""):
     req = "#request" if home == "" else f"{home}request/"
     return (f'<a class="skip" href="#main">Skip to content</a>\n'
             f'<header class="topbar"><div class="wrap">'
-            f'<a class="brand" href="{home or "./"}"><img src="{home}favicon.svg" alt="" width="22" height="22">PACTA<small>by Fractal Neurons</small></a>'
+            f'<a class="brand" href="{home or "./"}"><img src="{home}favicon.svg" alt="" width="24" height="24">PACTA<small>by Fractal Neurons</small></a>'
             f'<nav class="nav" aria-label="Sections">{links}</nav>'
             f'<div class="tools"><button class="tt" type="button" aria-label="Theme: Paper (switch to Slate)">'
             f'<span data-t="paper" class="on">Paper</span><span data-t="slate">Slate</span></button>'
@@ -239,7 +239,7 @@ def topbar(home=""):
 
 def footer(count_line, reg, home=""):
     return (f'<footer class="ftr"><div class="wrap">'
-            f'<span>Pacta by Fractal Neurons · pacta.base.eth · {E(count_line)}</span>'
+            f'<span class="ftr-brand"><img class="ftr-logo" src="{home}favicon.svg" alt="" width="18" height="18">Pacta by Fractal Neurons · pacta.base.eth · {E(count_line)}</span>'
             f'<nav aria-label="Footer"><a href="{REPO}" target="_blank" rel="noopener">GitHub</a>'
             f'<a href="{home}api/v1/index.json">JSON feed</a><a href="{home}llms.txt">llms.txt</a><a href="{home}llms/">llms (HTML)</a>'
             f'<a href="https://basescan.org/address/{E(reg)}" target="_blank" rel="noopener">Base registry</a>'

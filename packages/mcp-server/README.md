@@ -1,4 +1,7 @@
+<img src="https://pacta.wtf/logo.svg" alt="Pacta" width="48" height="48" align="left">
+
 # `@pacta/mcp-server`
+<br clear="left">
 
 Zero-dependency Node.js MCP stdio server (v0.1.5) for [Pacta by Fractal Neurons](https://pacta.wtf/) (`pacta.base.eth`) DeFi control-plane commitments and Base Mainnet EAS attestations, with live gateway tools (pre-flight check, control-plane / timelock / proposal scans) when `PACTA_X402_URL` is configured. The gateway is **free during the launch**: $0, no API key, no wallet, 60 requests / minute per caller. The x402 v1 + v2 Base USDC prices below apply only if metering is switched on.
 

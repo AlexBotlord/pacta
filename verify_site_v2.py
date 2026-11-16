@@ -826,6 +826,40 @@ def main(argv=None):
     except ET.ParseError:
         svg_ok = False
     check("favicon.svg is valid XML < 1 KB", svg_ok, f"{len(svg)} bytes")
+    # the official Pacta Bowen-knot logo (2026-11-16): exact SVG, its compact favicon twin, the 512 px raster and every brand slot
+    logo = read("docs/logo.svg", "rb")
+    check("logo.svg is the official Pacta Bowen-knot logo (1,533 B, sha256 ab8f8780…5cb5da)",
+          len(logo) == 1533 and hashlib.sha256(logo).hexdigest() == "ab8f87806925f7b8795f52be32a7847f822e678b5f27b6e02599bfdbb59cb5da",
+          f"{len(logo)} bytes")
+
+    def logo_geometry(raw):
+        out = []
+        for el in ET.fromstring(raw).iter():
+            a = {k: v.lower().replace("#000000", "#000").replace("#ffffff", "#fff") for k, v in el.attrib.items() if k not in ("width", "height")}
+            if "d" in a:
+                a["d"] = re.findall(r"[mhvcz]|-?\d+(?:\.\d+)?", a["d"])
+            out.append((el.tag, a))
+        return out
+    try:
+        fav_geo_ok = logo_geometry(svg) == logo_geometry(logo)
+    except ET.ParseError:
+        fav_geo_ok = False
+    check("favicon.svg = logo.svg geometry (4 double-tracked loops, mitered outer diamond, inner diamond, evenodd P; same elements, "
+          "coordinates, radii, strokes and fills) in < 1 KB", fav_geo_ok and len(svg) < 1024, f"{len(svg)} bytes")
+    l512 = read("docs/logo-512.png", "rb")
+    check("logo-512.png is a 512x512 RGBA PNG", l512[:8] == b"\x89PNG\r\n\x1a\n" and l512[12:16] == b"IHDR"
+          and struct.unpack(">II", l512[16:24]) == (512, 512) and l512[24:26] == bytes([8, 6]), f"{len(l512)} bytes")
+    brand_pages = [p_ for p_ in sorted(glob.glob(os.path.join(DOCS, "**", "*.html"), recursive=True)) if 'class="brand"' in read(p_)]
+    brand_bad = [os.path.relpath(p_, ROOT) for p_ in brand_pages
+                 if not re.search(r'<a class="brand" href="[^"]*"><img src="(?:/|(?:\.\./)*)favicon\.svg" alt="" width="24" height="24">PACTA', read(p_))
+                 or not re.search(r'<span class="ftr-brand"><img class="ftr-logo" src="(?:/|(?:\.\./)*)favicon\.svg" alt="" width="18" height="18">', read(p_))]
+    css_ = read("docs/styles.css")
+    check("logo in every page header (24x24, unclipped) and footer (18x18); Organization.logo = logo-512.png",
+          brand_pages and not brand_bad and ".brand img { display: block; border-radius: 0; }" in css_ and ".ftr-logo {" in css_
+          and f'"logo": "{base}/logo-512.png"' in page, f"{len(brand_pages)} pages; bad {brand_bad[:3]}")
+    check("README lockups: the logo above the H1 (README.md: docs/logo.svg; packages/mcp-server/README.md: https://pacta.wtf/logo.svg)",
+          read("README.md").startswith('<img src="docs/logo.svg" alt="Pacta" width="56" height="56" align="left">')
+          and read("packages/mcp-server/README.md").startswith('<img src="https://pacta.wtf/logo.svg" alt="Pacta" width="48" height="48" align="left">'))
 
     # discovery files
     llms = read("docs/llms.txt")

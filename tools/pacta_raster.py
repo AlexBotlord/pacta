@@ -367,15 +367,84 @@ def wrap(font: TTF, s: str, size, max_w) -> list:
 
 
 # ---------------------------------------------------------------------------------------------------------
+# The official Pacta Bowen-knot mark (docs/logo.svg, viewBox 0 0 1000 1000), drawn in the SVG's paint order:
+# 4 double-tracked loops (black stroke 38 under white stroke 18, r = 185), the white outer diamond with its 12-wide black
+# miter border, the black inner diamond, and the white "P" (cubic Beziers; the counter is wound the other way).
+LOGO_LOOPS = ((240, 240), (760, 240), (240, 760), (760, 760))
+LOGO_R = 185
+LOGO_P_OUTER = [("M", 380, 335), ("H", 535), ("C", 610, 335, 655, 378, 655, 442.5), ("C", 655, 507, 610, 550, 535, 550),
+                ("H", 458), ("V", 665), ("H", 380)]
+LOGO_P_HOLE = [("M", 458, 400), ("V", 485), ("H", 525), ("C", 560, 485, 578, 468, 578, 442.5), ("C", 578, 417, 560, 400, 525, 400)]
+
+
+def _logo_path(cmds, steps=24):
+    pts, cx, cy = [], 0.0, 0.0
+    for c in cmds:
+        if c[0] == "M":
+            cx, cy = c[1], c[2]; pts.append((cx, cy))
+        elif c[0] == "H":
+            cx = c[1]; pts.append((cx, cy))
+        elif c[0] == "V":
+            cy = c[1]; pts.append((cx, cy))
+        else:                                                    # cubic Bezier from the current point
+            x1, y1, x2, y2, x3, y3 = c[1:]
+            for i in range(1, steps + 1):
+                t = i / steps; u = 1 - t
+                pts.append((u ** 3 * cx + 3 * u * u * t * x1 + 3 * u * t * t * x2 + t ** 3 * x3,
+                            u ** 3 * cy + 3 * u * u * t * y1 + 3 * u * t * t * y2 + t ** 3 * y3))
+            cx, cy = x3, y3
+    return pts
+
+
+def _ring(cx, cy, r_out, r_in, n):
+    outer = [(cx + r_out * math.cos(2 * math.pi * i / n), cy + r_out * math.sin(2 * math.pi * i / n)) for i in range(n)]
+    inner = [(cx + r_in * math.cos(2 * math.pi * i / n), cy + r_in * math.sin(2 * math.pi * i / n)) for i in reversed(range(n))]
+    return [outer, inner]
+
+
+def _diamond(c, h):
+    return [(c, c - h), (c + h, c), (c, c + h), (c - h, c)]
+
+
+def draw_pacta_logo(cv: Canvas, x0, y0, size, ss=8):
+    """Draw the official Pacta mark into the square (x0, y0, size) on cv, anti-aliased (ss vertical sub-samples per pixel)."""
+    k = size / 1000.0
+    T = lambda pts: [(x0 + x * k, y0 + y * k) for x, y in pts]
+    n = max(64, min(256, int(size)))                             # circle segments: < 0.02 px from the true circle at any size
+    for cx, cy in LOGO_LOOPS:
+        cv.fill_polys([T(p) for p in _ring(cx, cy, LOGO_R + 19, LOGO_R - 19, n)], "#000000", ss=ss)    # stroke-width 38
+        cv.fill_polys([T(p) for p in _ring(cx, cy, LOGO_R + 9, LOGO_R - 9, n)], "#ffffff", ss=ss)      # stroke-width 18
+    m = 6 * math.sqrt(2)                                         # half of stroke-width 12 at a 90-degree miter vertex
+    cv.fill_polys([T(_diamond(500, 485 + m))], "#000000", ss=ss)                                     # border, outer edge
+    cv.fill_polys([T(_diamond(500, 485 - m))], "#ffffff", ss=ss)                                     # white fill, inside the border
+    cv.fill_polys([T(_diamond(500, 375))], "#000000", ss=ss)                                         # inner black diamond
+    cv.fill_polys([T(_logo_path(LOGO_P_OUTER)), T(_logo_path(LOGO_P_HOLE))], "#ffffff", ss=ss)        # "P" (evenodd)
+
+
+# ---------------------------------------------------------------------------------------------------------
+def _paeth(a, b, c):
+    p = a + b - c
+    pa, pb, pc = abs(p - a), abs(p - b), abs(p - c)
+    return a if pa <= pb and pa <= pc else (b if pb <= pc else c)
+
+
 def write_png(path: str, cv: Canvas):
     ch = cv.ch
     stride = cv.w * ch
     raw = bytearray()
     prev = bytes(stride)
-    for y in range(cv.h):
+    for y in range(cv.h):                                        # per row, the PNG filter with the smallest sum of |bytes|
         row = bytes(cv.px[y * stride:(y + 1) * stride])
-        sub = bytes((row[i] - (row[i - ch] if i >= ch else 0)) & 0xFF for i in range(stride))   # filter 1 (Sub)
-        raw += b"\x01" + sub
+        left = lambda i: row[i - ch] if i >= ch else 0
+        ul = lambda i: prev[i - ch] if i >= ch else 0
+        cands = (row,
+                 bytes((row[i] - left(i)) & 0xFF for i in range(stride)),
+                 bytes((row[i] - prev[i]) & 0xFF for i in range(stride)),
+                 bytes((row[i] - ((left(i) + prev[i]) >> 1)) & 0xFF for i in range(stride)),
+                 bytes((row[i] - _paeth(left(i), prev[i], ul(i))) & 0xFF for i in range(stride)))
+        cost = [sum(b if b < 128 else 256 - b for b in c) for c in cands]
+        f = cost.index(min(cost))
+        raw += bytes((f,)) + cands[f]
         prev = row
     def chunk(tag, data):
         return struct.pack(">I", len(data)) + tag + data + struct.pack(">I", zlib.crc32(tag + data) & 0xFFFFFFFF)

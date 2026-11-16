@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>TreasuryGuard - an x402 rebalancer on Swap.io (90s storyboard)</title>
 <meta name="description" content="A 90-second storyboard: an autonomous treasury rebalancer that pays per call with x402 - no API keys, no subscription.">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../../favicon.png" type="image/png" sizes="32x32">
 <style>
   :root { --bg:#0b0c0e; --panel:#121418; --line:#262a31; --ink:#e8eaed; --mute:#9aa1ac; --acc:#a3b8ec; --warn:#e3a540; --pay:#b7a6e8; --ok:#5cc394; --bad:#e5726b; }
   * { box-sizing:border-box; }
@@ -12,6 +14,7 @@
   #stage { position:absolute; inset:0; margin:auto; width:min(100vw,177.78vh); height:min(56.25vw,100vh); background:var(--bg); border-top:2px solid var(--acc); overflow:hidden; }
   .scene { position:absolute; inset:0; padding:5.5% 7%; opacity:0; transform:translateY(12px); transition:opacity .6s, transform .6s; pointer-events:none; }
   .scene.on { opacity:1; transform:none; pointer-events:auto; }
+  .mark { width:clamp(16px,2vw,26px); height:auto; vertical-align:-0.22em; margin-right:.55em; }
   .kicker { color:var(--acc); letter-spacing:.14em; text-transform:uppercase; font-size:clamp(10px,1.4vw,18px); font-weight:700; }
   h1 { font-size:clamp(22px,4.6vw,64px); line-height:1.05; margin:.25em 0 .2em; }
   h2 { font-size:clamp(18px,3.2vw,44px); margin:.2em 0 .5em; }
@@ -51,7 +54,7 @@
 <div id="stage">
   <!-- 1 -->
   <section class="scene" data-dur="8">
-    <div class="kicker">Swap.io Agent API · x402</div>
+    <div class="kicker"><img class="mark" src="../../favicon.svg" alt="Pacta" width="26" height="26">Swap.io Agent API · x402</div>
     <h1>TreasuryGuard</h1>
     <p style="font-size:clamp(14px,2.6vw,36px)" class="ink">An autonomous rebalancer that pays <b>per call</b> in USDC.<br>No API key. No subscription. It only pays when it actually trades.</p>
     <div class="foot">Storyboard / mockup. Prices are as listed at hermes.swap.io/v1/info on 2026-11-13; the safety-check price is illustrative.</div>

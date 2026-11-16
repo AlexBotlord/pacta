@@ -1,4 +1,5 @@
-"""Render docs/og-preview.png (1200x630 social card) and docs/favicon.png (32x32) with pacta_raster.
+"""Render docs/og-preview.png (1200x630 social card), docs/favicon.png (32x32) and docs/logo-512.png (512x512) with
+pacta_raster; the mark is the official Pacta logo (docs/logo.svg) drawn by pacta_raster.draw_pacta_logo.
 
   python3 tools/make_og.py --font-dir /path/to/ibm-plex-ttf [--out-dir docs]
 
@@ -11,7 +12,7 @@ import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from pacta_raster import TTF, Canvas, measure, wrap, write_png  # noqa: E402
+from pacta_raster import TTF, Canvas, draw_pacta_logo, measure, wrap, write_png  # noqa: E402
 
 import json  # noqa: E402
 
@@ -34,12 +35,10 @@ def og(fonts, path):
     W, H, X = 1200, 630, 72
     cv = Canvas(W, H, BG)
     cv.rect(0, 0, W, 5, ACCENT)                                 # restrained cobalt top rule
-    # brand row: mark + wordmark, domain on the right
-    cv.rounded(X, 54, X + 34, 88, 3, INK)
-    cv.text(sans_sb, "P", X + 9, 80, 24, BG)
-    cv.circle(X + 26, 80, 2.4, "#a3b8ec")
-    cv.text(sans_sb, "PACTA", X + 48, 79, 21, INK, tracking=2.2)
-    bx = X + 48 + measure(sans_sb, "PACTA", 21, 2.2) + 16
+    # brand row: the official mark + wordmark, domain on the right
+    draw_pacta_logo(cv, X, 51, 40, ss=8)
+    cv.text(sans_sb, "PACTA", X + 54, 79, 21, INK, tracking=2.2)
+    bx = X + 54 + measure(sans_sb, "PACTA", 21, 2.2) + 16
     cv.rect(bx, 60, bx + 1, 84, LINE2)
     cv.text(sans, "by Fractal Neurons", bx + 16, 79, 19, MUTED)
     dom = "pacta.wtf"
@@ -67,11 +66,14 @@ def og(fonts, path):
 
 
 def favicon(fonts, path):
-    sans_sb = fonts[0]
-    cv = Canvas(32, 32, BG, alpha=True)
-    cv.rounded(0, 0, 32, 32, 3, INK)
-    cv.text(sans_sb, "P", 8.4, 24.5, 22, BG)
-    cv.circle(24.2, 24.2, 2.2, "#a3b8ec")
+    cv = Canvas(32, 32, BG, alpha=True)                         # transparent background
+    draw_pacta_logo(cv, 0, 0, 32, ss=8)
+    return write_png(path, cv)
+
+
+def logo_512(path):
+    cv = Canvas(512, 512, BG, alpha=True)                       # transparent background (Organization.logo, directories, avatars)
+    draw_pacta_logo(cv, 0, 0, 512, ss=8)
     return write_png(path, cv)
 
 
@@ -84,6 +86,7 @@ def main():
     fonts = (f("IBMPlexSans-SemiBold.ttf"), f("IBMPlexSans-Regular.ttf"), f("IBMPlexMono-Medium.ttf"), f("IBMPlexMono-Regular.ttf"))
     print("og-preview.png bytes", og(fonts, os.path.join(a.out_dir, "og-preview.png")))
     print("favicon.png bytes", favicon(fonts, os.path.join(a.out_dir, "favicon.png")))
+    print("logo-512.png bytes", logo_512(os.path.join(a.out_dir, "logo-512.png")))
 
 
 if __name__ == "__main__":

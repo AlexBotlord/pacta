@@ -1,7 +1,7 @@
 {
   "schema": "pacta.rpc_pinned_records.v1",
   "title": "Pacta RPC-pinned control-plane records",
-  "description": "Read-only control-plane observations of 12 protocols (6 Ethereum, 6 Base), each pinned to a canonical block number and block hash and reproducible with cast. These records are NOT EAS-attested: they have no sprint number, no summary document and no Base EAS UID. The Base-EAS-attested Sprint records are in /api/v1/index.json. Euler V2 (EVK) and Moonwell Lending (Base) were re-scanned in Sprint 18, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Pendle Finance V2 and Rocket Pool (rETH) were re-scanned in Sprint 19, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Frax Ether (frxETH / sfrxETH) and Puffer Finance (pufETH) were re-scanned in Sprint 20, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Aerodrome Finance (Base) and Balancer V2 Vault & TimelockAuthorizer were re-scanned in Sprint 21, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here.",
+  "description": "Read-only control-plane observations of 10 protocols (5 Ethereum, 5 Base), each pinned to a canonical block number and block hash and reproducible with cast. These records are NOT EAS-attested: they have no sprint number, no summary document and no Base EAS UID. The Base-EAS-attested Sprint records are in /api/v1/index.json. Euler V2 (EVK) and Moonwell Lending (Base) were re-scanned in Sprint 18, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Pendle Finance V2 and Rocket Pool (rETH) were re-scanned in Sprint 19, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Frax Ether (frxETH / sfrxETH) and Puffer Finance (pufETH) were re-scanned in Sprint 20, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Aerodrome Finance (Base) and Balancer V2 Vault & TimelockAuthorizer were re-scanned in Sprint 21, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Across Protocol (HubPool) and Beefy Finance (Base) were re-scanned in Sprint 22, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here.",
   "attestation": {
     "eas_attested": false,
     "base_eas_uid": null,
@@ -24,24 +24,13 @@
   },
   "verification": "Captured by one Pacta seat over public JSON-RPC and independently re-read at the same pinned blocks by a second seat (block hash, runtime bytecode size and keccak256, EIP-1967 implementation / admin slots, controller getter, Safe getThreshold / getOwners, timelock delay). Two records were corrected by the re-read (Moonwell admin contract, Uniswap V3 factory owner contract).",
   "summary": {
-    "protocols": 12,
-    "records": 12,
-    "ethereum": 6,
-    "base": 6
+    "protocols": 10,
+    "records": 10,
+    "ethereum": 5,
+    "base": 5
   },
   "source_pack_sha256": "857179d8c3024fae3b2204fcae4b542f96cba9b03777cfb6f56095a607f00950",
   "protocols": [
-    {
-      "slug": "across-protocol-hubpool",
-      "name": "Across Protocol (HubPool)",
-      "family": "across",
-      "category": "Intent-Based Cross-Chain Settlement",
-      "chain": "ethereum",
-      "chain_label": "Ethereum",
-      "record_ids": [
-        "across-protocol-hubpool-control-plane"
-      ]
-    },
     {
       "slug": "bedrock-unieth",
       "name": "Bedrock (uniETH)",
@@ -51,17 +40,6 @@
       "chain_label": "Ethereum",
       "record_ids": [
         "bedrock-unieth-control-plane"
-      ]
-    },
-    {
-      "slug": "beefy-finance-base",
-      "name": "Beefy Finance (Base)",
-      "family": "beefy",
-      "category": "Automated Yield Vaults & CLM (Base)",
-      "chain": "base",
-      "chain_label": "Base",
-      "record_ids": [
-        "beefy-finance-base-control-plane"
       ]
     },
     {
@@ -166,60 +144,6 @@
   ],
   "entries": [
     {
-      "id": "across-protocol-hubpool-control-plane",
-      "protocol": "Across Protocol (HubPool)",
-      "slug": "across-protocol-hubpool",
-      "family": "across",
-      "category": "Intent-Based Cross-Chain Settlement",
-      "chain": "ethereum",
-      "chain_id": 1,
-      "caip2": "eip155:1",
-      "chain_label": "Ethereum",
-      "rpc_env_var": "$ETH_RPC_URL",
-      "provenance": "rpc_pinned",
-      "base_eas_uid": null,
-      "block_number": 26414499,
-      "block_hash": "0xb83fee0a1d10d5fb8510d87ee9e33b180acac3208a7d00162a6a6f97789c0978",
-      "classification": "rpc_observed",
-      "documentation_comparison": "not_assessed",
-      "surface": "AcrossHubPool · 3-of-5 Safe Control Plane",
-      "target_contract": "0xc186fA914353c44b2E33eBE05f21846F1048bEda",
-      "target_label": "AcrossHubPool",
-      "bytecode_bytes": 19572,
-      "bytecode_keccak256": "0x94885b3047c2c3d6eec8dcccf3379a111669958073f5caacb17a0eef5538ece6",
-      "is_eip1967_proxy": false,
-      "eip1967_implementation": null,
-      "eip1967_admin": null,
-      "controller_kind": "multisig_safe",
-      "controller_address": "0xB524735356985D2f267FA010D681f061DfF03715",
-      "upstream_controller": null,
-      "upstream_kind": null,
-      "safe_quorum": "3-of-5",
-      "paired_contract": null,
-      "paired_label": null,
-      "check_type": "eth_call",
-      "selector_or_slot": "0x8da5cb5b",
-      "call_signature": "owner()",
-      "call_args": [],
-      "repro_calldata": "0x8da5cb5b",
-      "extra_calls": [
-        {
-          "to": "0xB524735356985D2f267FA010D681f061DfF03715",
-          "signature": "getThreshold()(uint256)"
-        },
-        {
-          "to": "0xB524735356985D2f267FA010D681f061DfF03715",
-          "signature": "getOwners()(address[])"
-        }
-      ],
-      "onchain_observed": "AcrossHubPool (0xc186fA914353c44b2E33eBE05f21846F1048bEda) verified on Ethereum Mainnet at canonical block #26,414,499 (19,572 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). Direct owner() returns 0xB524735356985D2f267FA010D681f061DfF03715, verified via getThreshold() and getOwners() as a 3-of-5 Safe multisig.",
-      "observed_delay_seconds": null,
-      "documented_delay_seconds": null,
-      "docs_url": "https://docs.across.to/reference/contract-addresses/mainnet-chain-id-1",
-      "governance_url": "https://forum.across.to/",
-      "documented_reference": "Across Protocol (HubPool) documentation is linked for reference (https://docs.across.to/reference/contract-addresses/mainnet-chain-id-1; governance: https://forum.across.to/). This RPC-pinned record does not compare documentation parameters with the on-chain state."
-    },
-    {
       "id": "bedrock-unieth-control-plane",
       "protocol": "Bedrock (uniETH)",
       "slug": "bedrock-unieth",
@@ -272,64 +196,6 @@
       "docs_url": "https://docs.bedrock.technology/",
       "governance_url": "https://docs.bedrock.technology/",
       "documented_reference": "Bedrock (uniETH) documentation is linked for reference (https://docs.bedrock.technology/; governance: https://docs.bedrock.technology/). This RPC-pinned record does not compare documentation parameters with the on-chain state."
-    },
-    {
-      "id": "beefy-finance-base-control-plane",
-      "protocol": "Beefy Finance (Base)",
-      "slug": "beefy-finance-base",
-      "family": "beefy",
-      "category": "Automated Yield Vaults & CLM (Base)",
-      "chain": "base",
-      "chain_id": 8453,
-      "caip2": "eip155:8453",
-      "chain_label": "Base",
-      "rpc_env_var": "$BASE_RPC_URL",
-      "provenance": "rpc_pinned",
-      "base_eas_uid": null,
-      "block_number": 57421449,
-      "block_hash": "0x36147f7f0b6d2a0a94975e98b14c979034930dbe6f9905a5b0bcb2ab45ba35b0",
-      "classification": "rpc_observed",
-      "documentation_comparison": "not_assessed",
-      "surface": "BeefyFeeConfig_Base · 3-of-6 Safe Control Plane",
-      "target_contract": "0xfc69704cC3cAac545cC7577009Ea4AA04F1a61Eb",
-      "target_label": "BeefyFeeConfig_Base",
-      "bytecode_bytes": 2112,
-      "bytecode_keccak256": "0x6bec2bf64f7e824109f6ed55f77dd7665801d6195e461666ad6a5342a9f6daf5",
-      "is_eip1967_proxy": true,
-      "eip1967_implementation": "0xAb35d11199216c7F7368080Cf41beD8f3AbBc4E4",
-      "eip1967_admin": "0x2b0C9702A4724f2BFe7922DB92c4082098533c62",
-      "controller_kind": "multisig_safe",
-      "controller_address": "0x6FfaCA7C3B38Ec2d631D86e15f328ee6eF6C6226",
-      "upstream_controller": null,
-      "upstream_kind": null,
-      "safe_quorum": "3-of-6",
-      "paired_contract": "0x09D19184F46A32213DF06b981122e06882B61309",
-      "paired_label": "BeefyVaultOwnerTimelock_Base",
-      "check_type": "eth_call",
-      "selector_or_slot": "0x8da5cb5b",
-      "call_signature": "owner()",
-      "call_args": [],
-      "repro_calldata": "0x8da5cb5b",
-      "extra_calls": [
-        {
-          "to": "0x6FfaCA7C3B38Ec2d631D86e15f328ee6eF6C6226",
-          "signature": "getThreshold()(uint256)"
-        },
-        {
-          "to": "0x6FfaCA7C3B38Ec2d631D86e15f328ee6eF6C6226",
-          "signature": "getOwners()(address[])"
-        },
-        {
-          "to": "0x09D19184F46A32213DF06b981122e06882B61309",
-          "signature": "getMinDelay()(uint256)"
-        }
-      ],
-      "onchain_observed": "BeefyFeeConfig_Base (0xfc69704cC3cAac545cC7577009Ea4AA04F1a61Eb) verified on Base Mainnet at canonical block #57,421,449 (2,112 bytes runtime code). EIP-1967 implementation slot resolves to 0xAb35d11199216c7F7368080Cf41beD8f3AbBc4E4, EIP-1967 admin slot = ProxyAdmin (0x2b0C9702A4724f2BFe7922DB92c4082098533c62). Direct owner() returns 0x6FfaCA7C3B38Ec2d631D86e15f328ee6eF6C6226, verified via getThreshold() and getOwners() as a 3-of-6 Safe multisig. Companion timelock BeefyVaultOwnerTimelock_Base (0x09D19184F46A32213DF06b981122e06882B61309) reports minimum delay 0s (0s).",
-      "observed_delay_seconds": 0,
-      "documented_delay_seconds": null,
-      "docs_url": "https://docs.beefy.finance/safety/contracts-and-timelocks",
-      "governance_url": "https://vote.beefy.finance/",
-      "documented_reference": "Beefy Finance (Base) documentation is linked for reference (https://docs.beefy.finance/safety/contracts-and-timelocks; governance: https://vote.beefy.finance/). This RPC-pinned record does not compare documentation parameters with the on-chain state."
     },
     {
       "id": "centrifuge-liquidity-pools-base-control-plane",

@@ -56,5 +56,9 @@
     }
   ],
   "wave2Settlements": [],
-  "easAttestations": {}
+  "easAttestations": {
+    "kinshu7777": 1,
+    "scavenger-osan": 1,
+    "veriton-dev": 1
+  }
 }

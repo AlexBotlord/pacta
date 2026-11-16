@@ -111,34 +111,49 @@
    "whatDiffers": null
   },
   {
-   "baseEasUids": [],
+   "baseEasUids": [
+    "0x50058ab09e446a72e880df68ce0e0ef96bb891ccd689a99ad2cbfc7b469ae9f5"
+   ],
    "category": "Intent-Based Cross-Chain Settlement",
    "chain": "ethereum",
    "chainId": 1,
-   "classification": "rpc_observed",
+   "classification": "aligned_baseline",
    "controllerAddress": "0xB524735356985D2f267FA010D681f061DfF03715",
    "controllerKind": "multisig_safe",
-   "documentationComparison": "not_assessed",
+   "documentationComparison": "compared",
    "documentedDelaySeconds": null,
-   "easAttested": false,
-   "evidenceBasis": "rpc_observed",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
    "kind": "protocol",
    "name": "Across Protocol (HubPool)",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26414499,
+   "pinnedBlock": 26429396,
    "preflightArgs": {
     "address": "0xc186fA914353c44b2E33eBE05f21846F1048bEda",
     "chain": "ethereum"
    },
    "primaryContract": "0xc186fA914353c44b2E33eBE05f21846F1048bEda",
-   "relatedContracts": [],
+   "relatedContracts": [
+    "0xf7bAc63fc7CEaCf0589F25454Ecf5C2ce904997c"
+   ],
    "slug": "across-protocol-hubpool",
+   "sprints": [
+    22
+   ],
    "surfaces": [
     {
-     "blockNumber": 26414499,
-     "classification": "rpc_observed",
-     "id": "across-protocol-hubpool-control-plane",
-     "surface": "AcrossHubPool · 3-of-5 Safe Control Plane",
+     "blockNumber": 26429396,
+     "classification": "aligned_baseline",
+     "id": "across-protocol-hubpool-abt-proposer-allowlist-s22",
+     "surface": "Root-bundle proposals: only allow-listed ABT proposers",
+     "targetContract": "0xee1DC6BCF1Ee967a350e9aC6CaaAA236109002ea",
+     "targetLabel": "Across Bond Token (ABT)"
+    },
+    {
+     "blockNumber": 26429396,
+     "classification": "aligned_baseline",
+     "id": "across-protocol-hubpool-bond-045-abt-s22",
+     "surface": "Root-bundle bond: 0.45 ABT",
      "targetContract": "0xc186fA914353c44b2E33eBE05f21846F1048bEda",
      "targetLabel": "AcrossHubPool"
     }
@@ -379,40 +394,60 @@
    "whatDiffers": null
   },
   {
-   "baseEasUids": [],
+   "baseEasUids": [
+    "0x50058ab09e446a72e880df68ce0e0ef96bb891ccd689a99ad2cbfc7b469ae9f5"
+   ],
    "category": "Automated Yield Vaults & CLM (Base)",
    "chain": "base",
    "chainId": 8453,
-   "classification": "rpc_observed",
+   "classification": "mixed",
    "controllerAddress": "0x6FfaCA7C3B38Ec2d631D86e15f328ee6eF6C6226",
    "controllerKind": "multisig_safe",
-   "documentationComparison": "not_assessed",
+   "documentationComparison": "compared",
    "documentedDelaySeconds": null,
-   "easAttested": false,
-   "evidenceBasis": "rpc_observed",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
    "kind": "protocol",
    "name": "Beefy Finance (Base)",
-   "observedDelaySeconds": 0,
-   "pinnedBlock": 57421449,
+   "observedDelaySeconds": null,
+   "pinnedBlock": 58315414,
    "preflightArgs": {
     "address": "0xfc69704cC3cAac545cC7577009Ea4AA04F1a61Eb",
     "chain": "base"
    },
    "primaryContract": "0xfc69704cC3cAac545cC7577009Ea4AA04F1a61Eb",
    "relatedContracts": [
-    "0x09D19184F46A32213DF06b981122e06882B61309",
     "0xAb35d11199216c7F7368080Cf41beD8f3AbBc4E4",
     "0x2b0C9702A4724f2BFe7922DB92c4082098533c62"
    ],
    "slug": "beefy-finance-base",
+   "sprints": [
+    22
+   ],
    "surfaces": [
     {
-     "blockNumber": 57421449,
-     "classification": "rpc_observed",
-     "id": "beefy-finance-base-control-plane",
-     "surface": "BeefyFeeConfig_Base · 3-of-6 Safe Control Plane",
+     "blockNumber": 58315414,
+     "classification": "aligned_baseline",
+     "id": "beefy-finance-base-fee-config-owner-dev-multisig-s22",
+     "surface": "BeefyFeeConfig owner: the 3-of-6 dev multisig",
      "targetContract": "0xfc69704cC3cAac545cC7577009Ea4AA04F1a61Eb",
      "targetLabel": "BeefyFeeConfig_Base"
+    },
+    {
+     "blockNumber": 58315414,
+     "classification": "aligned_baseline",
+     "id": "beefy-finance-base-strategy-owner-timelock-6h-s22",
+     "surface": "Strategy owner and upgrades: 6-hour timelock",
+     "targetContract": "0x3B60F7f25b09E71356cdFFC6475c222A466a2AC9",
+     "targetLabel": "BeefyStrategyOwnerTimelock_Base"
+    },
+    {
+     "blockNumber": 58315414,
+     "classification": "parameter_delta",
+     "id": "beefy-finance-base-vault-owner-timelock-zero-delay-s22",
+     "surface": "Vault owner timelock: no delay (0 seconds)",
+     "targetContract": "0x09D19184F46A32213DF06b981122e06882B61309",
+     "targetLabel": "BeefyVaultOwnerTimelock_Base"
     }
    ],
    "targetLabel": "BeefyFeeConfig_Base",
@@ -420,7 +455,29 @@
     "BIFI"
    ],
    "url": "https://pacta.wtf/protocols/beefy-finance-base/",
-   "whatDiffers": null
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "parameter_delta",
+      "documented": "6 h",
+      "observed": "0 s (no delay)",
+      "parameter": "Timelock delay",
+      "recordId": "beefy-finance-base-vault-owner-timelock-zero-delay-s22"
+     }
+    ],
+    "matched": [
+     {
+      "parameter": "BeefyFeeConfig owner: the 3-of-6 dev multisig",
+      "recordId": "beefy-finance-base-fee-config-owner-dev-multisig-s22",
+      "value": "matches the documentation"
+     },
+     {
+      "parameter": "Strategy owner and upgrades: 6-hour timelock",
+      "recordId": "beefy-finance-base-strategy-owner-timelock-6h-s22",
+      "value": "matches the documentation"
+     }
+    ]
+   }
   },
   {
    "baseEasUids": [
@@ -2138,6 +2195,72 @@
   },
   {
    "baseEasUids": [
+    "0x50058ab09e446a72e880df68ce0e0ef96bb891ccd689a99ad2cbfc7b469ae9f5"
+   ],
+   "category": "Interest-Free ETH-Backed Borrowing",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "aligned_baseline",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
+   "documentedDelaySeconds": null,
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "kind": "protocol",
+   "name": "Liquity V1 (LUSD)",
+   "observedDelaySeconds": null,
+   "pinnedBlock": 26429396,
+   "preflightArgs": {
+    "address": "0xA39739EF8b0231DbFA0DcdA07d7e29faAbCf4bb2",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xA39739EF8b0231DbFA0DcdA07d7e29faAbCf4bb2",
+   "relatedContracts": [
+    "0x24179CD81c9e782A4096035f7eC97fB8B783e007",
+    "0x66017D22b0f8556afDd19FC67041899Eb65a21bb",
+    "0x5f98805A4E8be255a32880FDeC7F6728C6568bA0"
+   ],
+   "slug": "liquity-v1-lusd",
+   "sprints": [
+    22
+   ],
+   "surfaces": [
+    {
+     "blockNumber": 26429396,
+     "classification": "aligned_baseline",
+     "id": "liquity-v1-lusd-collateral-ratios-110-150-s22",
+     "surface": "Liquidation thresholds: 110% minimum, 150% in Recovery Mode",
+     "targetContract": "0xA39739EF8b0231DbFA0DcdA07d7e29faAbCf4bb2",
+     "targetLabel": "Liquity V1 TroveManager"
+    },
+    {
+     "blockNumber": 26429396,
+     "classification": "aligned_baseline",
+     "id": "liquity-v1-lusd-core-ownership-renounced-s22",
+     "surface": "No admin: ownership renounced on every core contract, no proxies",
+     "targetContract": "0xA39739EF8b0231DbFA0DcdA07d7e29faAbCf4bb2",
+     "targetLabel": "Liquity V1 TroveManager"
+    },
+    {
+     "blockNumber": 26429396,
+     "classification": "aligned_baseline",
+     "id": "liquity-v1-lusd-fee-floors-and-min-debt-s22",
+     "surface": "Fees: borrowing 0.5%-5%, redemption floor 0.5%; minimum debt 2,000 LUSD",
+     "targetContract": "0xA39739EF8b0231DbFA0DcdA07d7e29faAbCf4bb2",
+     "targetLabel": "Liquity V1 TroveManager"
+    }
+   ],
+   "targetLabel": "Liquity V1 TroveManager",
+   "tokens": [
+    "LUSD",
+    "LQTY"
+   ],
+   "url": "https://pacta.wtf/protocols/liquity-v1-lusd/",
+   "whatDiffers": null
+  },
+  {
+   "baseEasUids": [
     "0x749d96e1a3d214a4ab66c528ca12c84dce085fa138dc370dd0eb817d890f09fa"
    ],
    "category": "Immutable CDP Stablecoin",
@@ -3244,6 +3367,106 @@
   },
   {
    "baseEasUids": [
+    "0x50058ab09e446a72e880df68ce0e0ef96bb891ccd689a99ad2cbfc7b469ae9f5"
+   ],
+   "category": "CDP Stablecoin (reUSD) & Lending Markets",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "mixed",
+   "controllerAddress": "0x11111111063874cE8dC6232cb5C1C849359476E6",
+   "controllerKind": "timelock",
+   "documentationComparison": "compared",
+   "documentedDelaySeconds": 86400,
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "kind": "protocol",
+   "name": "Resupply",
+   "observedDelaySeconds": 86400,
+   "pinnedBlock": 26429396,
+   "preflightArgs": {
+    "address": "0xc07e000044F95655c11fda4cD37F70A94d7e0a7d",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xc07e000044F95655c11fda4cD37F70A94d7e0a7d",
+   "relatedContracts": [
+    "0x74C85620F1459862834A947dB9441911BCEBF066",
+    "0x4CF97a55d58Aad14C493A46C8151a0BFffb10403"
+   ],
+   "slug": "resupply",
+   "sprints": [
+    22
+   ],
+   "surfaces": [
+    {
+     "blockNumber": 26429396,
+     "classification": "aligned_baseline",
+     "id": "resupply-core-voter-execution-delay-1d-s22",
+     "surface": "On-chain governance: the Voter executes as Core after a 1-day delay",
+     "targetContract": "0xc07e000044F95655c11fda4cD37F70A94d7e0a7d",
+     "targetLabel": "Resupply Core"
+    },
+    {
+     "blockNumber": 26429396,
+     "classification": "aligned_baseline",
+     "id": "resupply-guardian-role-main-multisig-s22",
+     "surface": "Emergency guardian role: the main multisig, through a Core-owned operator proxy",
+     "targetContract": "0xA4745e0B1F40ab3DCFD98F381835De591a8974E3",
+     "targetLabel": "Resupply Guardian (operator proxy)"
+    },
+    {
+     "blockNumber": 26429396,
+     "classification": "parameter_delta",
+     "id": "resupply-main-multisig-3of5-s22",
+     "surface": "Main multisig: 3-of-5 signers",
+     "targetContract": "0xFE11a5009f2121622271e7dd0FD470264e076af6",
+     "targetLabel": "Resupply Main Multisig (Safe)"
+    },
+    {
+     "blockNumber": 26429396,
+     "classification": "aligned_baseline",
+     "id": "resupply-registry-owned-by-core-s22",
+     "surface": "Registry owner: Core (changes only through governance)",
+     "targetContract": "0x10101010E0C3171D894B71B3400668aF311e7D94",
+     "targetLabel": "Resupply Registry"
+    }
+   ],
+   "targetLabel": "Resupply Core",
+   "tokens": [
+    "RSUP",
+    "sreUSD"
+   ],
+   "url": "https://pacta.wtf/protocols/resupply/",
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "parameter_delta",
+      "documented": "3-of-4",
+      "observed": "3-of-5",
+      "parameter": "Safe threshold",
+      "recordId": "resupply-main-multisig-3of5-s22"
+     }
+    ],
+    "matched": [
+     {
+      "parameter": "On-chain governance: the Voter executes as Core after a 1-day delay",
+      "recordId": "resupply-core-voter-execution-delay-1d-s22",
+      "value": "matches the documentation"
+     },
+     {
+      "parameter": "Emergency guardian role: the main multisig, through a Core-owned operator proxy",
+      "recordId": "resupply-guardian-role-main-multisig-s22",
+      "value": "matches the documentation"
+     },
+     {
+      "parameter": "Registry owner: Core (changes only through governance)",
+      "recordId": "resupply-registry-owned-by-core-s22",
+      "value": "matches the documentation"
+     }
+    ]
+   }
+  },
+  {
+   "baseEasUids": [
     "0xa04d9c98873fce6fffb60fe535510092f22284f3afeeb78e36e4a0c25d5ea928"
    ],
    "category": "Decentralized Liquid Staking",
@@ -3657,6 +3880,109 @@
       "parameter": "Timelock delay",
       "recordId": "stader-ethx-manager-safe-and-timelock",
       "value": "7 d"
+     }
+    ]
+   }
+  },
+  {
+   "baseEasUids": [
+    "0x50058ab09e446a72e880df68ce0e0ef96bb891ccd689a99ad2cbfc7b469ae9f5"
+   ],
+   "category": "Liquid Lockers & Yield Strategies",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "mixed",
+   "controllerAddress": "0xb27afc7844988948FBd6210AeF4E1362bC2d8E6a",
+   "controllerKind": "timelock",
+   "documentationComparison": "compared",
+   "documentedDelaySeconds": 172800,
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "kind": "protocol",
+   "name": "Stake DAO",
+   "observedDelaySeconds": 432000,
+   "pinnedBlock": 26429396,
+   "preflightArgs": {
+    "address": "0xb27afc7844988948FBd6210AeF4E1362bC2d8E6a",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xb27afc7844988948FBd6210AeF4E1362bC2d8E6a",
+   "relatedContracts": [
+    "0xB0552b6860CE5C0202976Db056b5e3Cc4f9CC765"
+   ],
+   "slug": "stake-dao",
+   "sprints": [
+    22
+   ],
+   "surfaces": [
+    {
+     "blockNumber": 26429396,
+     "classification": "protective_delta",
+     "id": "stake-dao-protocol-timelock-min-delay-5d-s22",
+     "surface": "Protocol changes wait 5 days, longer than the documented 48 hours",
+     "targetContract": "0xb27afc7844988948FBd6210AeF4E1362bC2d8E6a",
+     "targetLabel": "Stake DAO ProtocolTimelock"
+    },
+    {
+     "blockNumber": 26429396,
+     "classification": "parameter_delta",
+     "id": "stake-dao-timelock-executor-permissioned-s22",
+     "surface": "Executing queued changes: permissioned (EXECUTOR_ROLE held by the governance multisig), not permissionless",
+     "targetContract": "0xb27afc7844988948FBd6210AeF4E1362bC2d8E6a",
+     "targetLabel": "Stake DAO ProtocolTimelock"
+    },
+    {
+     "blockNumber": 26429396,
+     "classification": "aligned_baseline",
+     "id": "stake-dao-timelock-owns-protocol-controller-s22",
+     "surface": "ProtocolController owner: the ProtocolTimelock",
+     "targetContract": "0x2d8BcE1FaE00a959354aCD9eBf9174337A64d4fb",
+     "targetLabel": "Stake DAO ProtocolController"
+    },
+    {
+     "blockNumber": 26429396,
+     "classification": "parameter_delta",
+     "id": "stake-dao-treasury-safe-3of5-s22",
+     "surface": "Treasury wallet (Ethereum): a 3-of-5 multisig",
+     "targetContract": "0xF930EBBd05eF8b25B1797b9b2109DDC9B0d43063",
+     "targetLabel": "Stake DAO Treasury Safe (Ethereum)"
+    }
+   ],
+   "targetLabel": "Stake DAO ProtocolTimelock",
+   "tokens": [
+    "SDT",
+    "veSDT"
+   ],
+   "url": "https://pacta.wtf/protocols/stake-dao/",
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "protective_delta",
+      "documented": "2 d",
+      "observed": "5 d",
+      "parameter": "Timelock delay",
+      "recordId": "stake-dao-protocol-timelock-min-delay-5d-s22"
+     },
+     {
+      "classification": "parameter_delta",
+      "documented": "docs.stakedao.org (timelock, role structure): Executor 'Can execute operations after delay (permissionless)';",
+      "observed": "ProtocolTimelock 0xb27afc7844988948FBd6210AeF4E1362bC2d8E6a: hasRole(EXECUTOR_ROLE, address(0)) = false, so execution is permissioned, not permissionless;",
+      "parameter": "Executing queued changes: permissioned (EXECUTOR_ROLE held by the governance multisig), not permissionless",
+      "recordId": "stake-dao-timelock-executor-permissioned-s22"
+     },
+     {
+      "classification": "parameter_delta",
+      "documented": "docs.stakedao.org (treasury): 'All wallets use a 4-of-7 multisig structure.' / 'Ethereum | `0xf930ebbd05ef8b25b1797b9b2109ddc9b0d43063`'",
+      "observed": "Treasury Safe 0xF930EBBd05eF8b25B1797b9b2109DDC9B0d43063: 3-of-5 (getThreshold() = 3, getOwners() = 5 owners;",
+      "parameter": "Treasury wallet (Ethereum): a 3-of-5 multisig",
+      "recordId": "stake-dao-treasury-safe-3of5-s22"
+     }
+    ],
+    "matched": [
+     {
+      "parameter": "ProtocolController owner: the ProtocolTimelock",
+      "recordId": "stake-dao-timelock-owns-protocol-controller-s22",
+      "value": "matches the documentation"
      }
     ]
    }
@@ -4393,6 +4719,97 @@
    }
   },
   {
+   "baseEasUids": [
+    "0x50058ab09e446a72e880df68ce0e0ef96bb891ccd689a99ad2cbfc7b469ae9f5"
+   ],
+   "category": "Cross-Chain Yield Optimizer Vaults",
+   "chain": "base",
+   "chainId": 8453,
+   "classification": "mixed",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
+   "documentedDelaySeconds": 172800,
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "kind": "protocol",
+   "name": "YO Protocol",
+   "observedDelaySeconds": 0,
+   "pinnedBlock": 58315414,
+   "preflightArgs": {
+    "address": "0xB4b3F5C964A360bBd7201f72a55D0c48B8aD7021",
+    "chain": "base"
+   },
+   "primaryContract": "0xB4b3F5C964A360bBd7201f72a55D0c48B8aD7021",
+   "relatedContracts": [
+    "0x67b6F699F1c8040414032a3C2C88a54db144FCd2",
+    "0x3A43AEC53490CB9Fa922847385D82fe25d0E9De7",
+    "0x0000000f2eB9f69274678c76222B35eEc7588a65",
+    "0x12E81209d180fF0b3FBFbfe8fA9fFdb5990e1073",
+    "0xc84a6E01BFF58996540F1ABC22355A9DFE0d78DC"
+   ],
+   "slug": "yo-protocol",
+   "sprints": [
+    22
+   ],
+   "surfaces": [
+    {
+     "blockNumber": 58315414,
+     "classification": "parameter_delta",
+     "id": "yo-protocol-approval-registry-owner-admin-safe-s22",
+     "surface": "Approval Registry owner: the Admin Multisig directly, not the 48-hour timelock",
+     "targetContract": "0xB4b3F5C964A360bBd7201f72a55D0c48B8aD7021",
+     "targetLabel": "YoApprovalRegistry"
+    },
+    {
+     "blockNumber": 58315414,
+     "classification": "aligned_baseline",
+     "id": "yo-protocol-timelock-48h-admin-multisig-s22",
+     "surface": "Upgrade timelock: 48 hours, scheduled by the 4-of-6 Admin Multisig",
+     "targetContract": "0x38cE5e45D0f5d03E83863bb19B3b1A272C186F48",
+     "targetLabel": "YO Timelock"
+    },
+    {
+     "blockNumber": 58315414,
+     "classification": "aligned_baseline",
+     "id": "yo-protocol-vault-upgrades-behind-timelock-s22",
+     "surface": "yoETH and yoUSD upgrades: ProxyAdmins owned by the YO Timelock",
+     "targetContract": "0xd460CF1f5D764acAD1c3276c549EE5f1BB671473",
+     "targetLabel": "yoETH ProxyAdmin"
+    }
+   ],
+   "targetLabel": "YoApprovalRegistry",
+   "tokens": [
+    "yoETH",
+    "yoUSD",
+    "YO"
+   ],
+   "url": "https://pacta.wtf/protocols/yo-protocol/",
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "parameter_delta",
+      "documented": "2 d",
+      "observed": "0 s (no delay)",
+      "parameter": "Timelock delay",
+      "recordId": "yo-protocol-approval-registry-owner-admin-safe-s22"
+     }
+    ],
+    "matched": [
+     {
+      "parameter": "Upgrade timelock: 48 hours, scheduled by the 4-of-6 Admin Multisig",
+      "recordId": "yo-protocol-timelock-48h-admin-multisig-s22",
+      "value": "matches the documentation"
+     },
+     {
+      "parameter": "yoETH and yoUSD upgrades: ProxyAdmins owned by the YO Timelock",
+      "recordId": "yo-protocol-vault-upgrades-behind-timelock-s22",
+      "value": "matches the documentation"
+     }
+    ]
+   }
+  },
+  {
    "baseEasUids": [],
    "category": "Collateral onboarding verification brief",
    "chain": "ethereum",
@@ -4651,9 +5068,9 @@
  ],
  "totals": {
   "briefs": 8,
-  "easAttestedProtocols": 62,
-  "items": 82,
-  "protocols": 74,
-  "rpcObservedProtocols": 12
+  "easAttestedProtocols": 68,
+  "items": 86,
+  "protocols": 78,
+  "rpcObservedProtocols": 10
  }
 }

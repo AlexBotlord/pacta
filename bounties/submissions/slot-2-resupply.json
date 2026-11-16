@@ -5,7 +5,7 @@
   "contractAddress": "0xFE11a5009f2121622271e7dd0FD470264e076af6",
   "protocol": "Resupply",
   "tvlReference": "https://api.llama.fi/protocol/resupply",
-  "pactaSlug": null,
+  "pactaSlug": "resupply",
   "blockNumber": 26418318,
   "blockHash": "0xc7b09992970509aead9300af1288d5c3eb82f6235cc00d4bccfc93898fe928e2",
   "priorPin": null,

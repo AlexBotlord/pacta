@@ -5,7 +5,7 @@
   "contractAddress": "0xB4b3F5C964A360bBd7201f72a55D0c48B8aD7021",
   "protocol": "YO Protocol",
   "tvlReference": "https://defillama.com/protocol/yo-protocol",
-  "pactaSlug": null,
+  "pactaSlug": "yo-protocol",
   "blockNumber": 57633770,
   "blockHash": "0xe0cb2838a3366c9d55dfde134eb42e6010afc5ff16f2eb6ee9fcd3ae41fa503f",
   "priorPin": null,

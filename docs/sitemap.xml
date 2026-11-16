@@ -65,6 +65,7 @@
   <url><loc>https://pacta.wtf/protocols/kelp-dao-rseth/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/lido-steth-dual-governance/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/liquid-collective-lseth/</loc><lastmod>2026-11-16</lastmod></url>
+  <url><loc>https://pacta.wtf/protocols/liquity-v1-lusd/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/liquity-v2-bold/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/lombard-lbtc/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/m0-protocol-m/</loc><lastmod>2026-11-16</lastmod></url>
@@ -83,6 +84,7 @@
   <url><loc>https://pacta.wtf/protocols/renzo-protocol-ezeth/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/reserve-protocol-rtoken/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/resolv-usr-rlp/</loc><lastmod>2026-11-16</lastmod></url>
+  <url><loc>https://pacta.wtf/protocols/resupply/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/rocket-pool-reth/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/safe-singleton-core/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/seamless-protocol-base/</loc><lastmod>2026-11-16</lastmod></url>
@@ -90,6 +92,7 @@
   <url><loc>https://pacta.wtf/protocols/spark-sky/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/ssv-network/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/stader-labs-ethx/</loc><lastmod>2026-11-16</lastmod></url>
+  <url><loc>https://pacta.wtf/protocols/stake-dao/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/stake-link/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/stakewise-v3-oseth/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/stargate-v2/</loc><lastmod>2026-11-16</lastmod></url>
@@ -104,4 +107,5 @@
   <url><loc>https://pacta.wtf/protocols/uniswap-governance-timelock/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/usual-money-usd0-usd0/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/yearn-v3/</loc><lastmod>2026-11-16</lastmod></url>
+  <url><loc>https://pacta.wtf/protocols/yo-protocol/</loc><lastmod>2026-11-16</lastmod></url>
 </urlset>

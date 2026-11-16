@@ -11,7 +11,7 @@
   --ink: #14161a;
   --ink-2: #353a42;
   --muted: #5f6570;
-  --faint: #8a8f98;
+  --faint: #686d76;
   --accent: #1d4ed8;
   --accent-ink: #1e3a8a;
   --accent-weak: #e9eefb;
@@ -46,7 +46,7 @@
   --ink: #e8eaed;
   --ink-2: #c4c8cf;
   --muted: #959ba6;
-  --faint: #6c727c;
+  --faint: #878d97;
   --accent: #a3b8ec;
   --accent-ink: #c9d6f5;
   --accent-weak: #161c2b;
@@ -103,7 +103,7 @@ button { font: inherit; color: inherit; }
 .linkish { background: none; border: 0; padding: 0; color: var(--accent); cursor: pointer; font-size: inherit; }
 .linkish:hover { text-decoration: underline; }
 .copy {
-  display: inline-flex; align-items: center; height: 22px; padding: 0 7px; margin-left: 6px;
+  display: inline-flex; align-items: center; min-height: 28px; height: auto; padding: 0 9px; margin-left: 6px;
   border: 1px solid var(--line-2); border-radius: 2px; background: transparent; color: var(--muted);
   font: 500 11px/1 var(--sans); letter-spacing: 0.02em; cursor: pointer; vertical-align: 1px;
 }
@@ -161,7 +161,7 @@ pre.llms { white-space: pre-wrap; word-break: break-word; font: 12.5px/1.55 var(
   background: var(--topbar-bg); -webkit-backdrop-filter: saturate(1.4) blur(8px); backdrop-filter: saturate(1.4) blur(8px);
 }
 .topbar .wrap { display: flex; align-items: center; height: 100%; gap: 28px; }
-.brand { display: inline-flex; align-items: center; gap: 9px; color: var(--ink); font-weight: 650; font-size: 15px; letter-spacing: 0.06em; }
+.brand { display: inline-flex; align-items: center; gap: 9px; color: var(--ink); font-weight: 650; font-size: 15px; letter-spacing: 0.06em; white-space: nowrap; flex: none; }
 .brand:hover { text-decoration: none; }
 .brand img { display: block; border-radius: 0; }
 .brand small { font-weight: 450; letter-spacing: 0; color: var(--muted); font-size: 12.5px; padding-left: 9px; border-left: 1px solid var(--line-2); }
@@ -462,7 +462,8 @@ legend { padding: 0; margin-bottom: 8px; font: 600 11px/1 var(--sans); letter-sp
 
 /* ---------- responsive ---------- */
 @media (max-width: 1080px) {
-  .nav a:nth-child(3), .nav a:nth-child(5) { display: none; }
+  .nav { overflow-x: auto; scrollbar-width: none; min-width: 0; }
+  .nav a { flex: none; white-space: nowrap; padding: 6px 7px; }
   .frow { grid-template-columns: 170px minmax(0, 1fr); }
   .frow .cmpcol { grid-column: 2; flex-direction: row; flex-wrap: wrap; align-items: center; margin-top: 12px; }
   .frow .cmpcol a { margin: 0 0 0 6px; }
@@ -585,6 +586,23 @@ tr[hidden] { display: none; }
 .whatdiffers .wd-changed .obs { color: var(--amber); font-weight: 650; }
 .whatdiffers .wd-matched { color: var(--ink-2); }
 .sheet .whatdiffers { margin: 12px 0 14px; }
+/* inline prose links are underlined (WCAG 1.4.1: not colour alone) */
+p a:not(.btn):not(.copy), dd a:not(.btn):not(.copy), li a:not(.btn):not(.copy) { text-decoration: underline; text-underline-offset: 2px; text-decoration-thickness: 1px; }
+.sec-head h1 { margin: 0; font-size: 22px; line-height: 1.3; letter-spacing: -0.01em; }
+.radar tr.is-executed td { color: var(--muted); }
+.prov [data-radar-refresh] { height: 28px; }
+.snap-fallback { color: var(--amber); font-weight: 600; }
+.snap-fallback[hidden], .insp-empty[hidden] { display: none; }
+.insp-empty { padding: 18px; border: 1px dashed var(--line-2); border-radius: var(--r); color: var(--muted); }
+.insp-empty p { margin: 0 0 10px; }
+.pf-timeout, .pf-network, .pf-ratelimit, .pf-http { color: var(--amber); }
+.pf-section { margin: 14px 0 4px; font: 600 11px/1.2 var(--sans); letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
+.pf-raw { margin: 10px 0; font-size: 13px; } .pf-raw summary { cursor: pointer; color: var(--ink-2); }
+.pf-json { max-height: 280px; overflow: auto; font: 12px/1.5 var(--mono); white-space: pre-wrap; overflow-wrap: anywhere; }
+.live-verify { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-top: 10px; }
+.live-verify-out { margin: 0; font: 12.5px/1.5 var(--mono); color: var(--ink-2); overflow-wrap: anywhere; }
+[data-pf-retry] { margin-top: 8px; }
+.radar tr.is-executed td b { font-weight: 550; }
 /* Long unbroken values (42-char addresses, hashes, URLs) in record prose and What differs wrap inside their box instead of widening
    the page on narrow screens (overflow-wrap is inherited; nowrap chips, badges and buttons keep their own rules; .term pre still scrolls) */
 .memo, .memo p, .memo li, .memo dd, .memo dt, .memo h1, .memo h2, .memo-foot { overflow-wrap: anywhere; }

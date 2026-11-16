@@ -30,6 +30,8 @@
   <url><loc>https://pacta.wtf/leaderboard/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/mcp/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/</loc><lastmod>2026-11-16</lastmod></url>
+  <url><loc>https://pacta.wtf/feed.xml</loc><lastmod>2026-11-16</lastmod></url>
+  <url><loc>https://pacta.wtf/api/v1/feed.json</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/aave-v3-base/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/aave-v3-gho/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/across-protocol-hubpool/</loc><lastmod>2026-11-16</lastmod></url>

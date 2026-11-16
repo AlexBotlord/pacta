@@ -934,7 +934,10 @@ def main(argv=None):
         check(f"count parity in {f}", line in t and nums_s <= {str(sprints)} and nums_r <= {str(n)} and set(re.findall(r"\b(\d+) RPC-Observed Records\b", t)) <= {str(n_pin)},
               f"sprints {sorted(nums_s)} records {sorted(nums_r)}")
     rows = len(re.findall(r'<tr data-class="', page))
-    check("homepage matrix renders every record", rows == n, f"{rows} rows")
+    sys.path.insert(0, os.path.join(ROOT, "tools"))
+    import build_site as BS
+    check(f"homepage index ships the curated {BS.SAMPLE_SIZE}-record sample (every record hydrates from /api/v1/index.json: harness)",
+          rows == BS.SAMPLE_SIZE == len(BS.curated_sample(idx)) and f'Show all {n} records' in page, f"{rows} rows")
     cat_ = f"{X['protocols']} protocols + {X['briefs']} briefs"
     stale_ = {f: sorted(set(re.findall(r"\b(\d+) protocols \+ (\d+) briefs\b", read(f))) - {(str(X["protocols"]), str(X["briefs"]))})
               for f in ("docs/SKILL.md", "docs/llms.txt", "docs/llms-full.txt", "packages/mcp-server/SKILL.md")}
@@ -1160,7 +1163,7 @@ def main(argv=None):
 
     # behaviour: run app.js against a synthetic DOM of the real /request/ and homepage markup
     beacon_js = read("docs/b.js") if os.path.exists(os.path.join(DOCS, "b.js")) else ""
-    res = app_behaviour(appjs, pages.get(os.path.join("request", "index.html"), ""), page, entries[0]["id"], beacon=beacon_js,
+    res = app_behaviour(appjs, pages.get(os.path.join("request", "index.html"), ""), page, BS.curated_sample(idx)[0]["id"], beacon=beacon_js,
                         protocol_html=pages.get(os.path.join("protocols", "aave-v3-gho", "index.html"), ""), protocol_slug="aave-v3-gho",
                         notfound_html=pages.get("404.html", ""),
                         clearance_html=pages.get(os.path.join("protocols", "synthetix-v3-core", "index.html"), ""), clearance_slug="synthetix-v3-core",
@@ -1352,7 +1355,8 @@ def main(argv=None):
         tollbooth_pricing[rel] = (len(plans) == 2 and "Curators, Risk Teams &amp; AI Agents" in plans[0] and "$0" in plans[0]
                                   and "Curators, risk analysts, and due-diligence agents never pay" in plans[0]
                                   and all(x in issuer for x in ("$5,000 USDC", "$1,500 USDC / month", "Base Mainnet EAS", "Curator Diligence Dossier", "reconciliation PR"))
-                                  and not re.search(r"req/min|requests / minute|\brpm\b|\bSLA\b|rate limit|high.volume|throughput", issuer, re.I)
+                                  and not re.search(r"req/min|requests / minute|\brpm\b|\bAPI SLA\b|dedicated SLA|rate limit|high.volume|throughput", issuer, re.I)
+                                  and "Verification &amp; Reconciliation Dossier" in issuer and "24h SLA" in issuer
                                   and f'href="{req_}{q("clearance")}" data-tier="clearance"' in issuer and f'href="{req_}{q("continuous")}" data-tier="continuous"' in issuer
                                   and bool(bar) and "&gt; 60 req/min or a dedicated SLA" in bar.group(1) and "x402 metered endpoints" in bar.group(1)
                                   and f'href="{req_}{q("api_sla")}" data-tier="api_sla"' in bar.group(1) and "request an Enterprise API key" in bar.group(1))
@@ -1362,16 +1366,19 @@ def main(argv=None):
     # ---- issuer conversion callouts: 8 briefs + every protocol page (aligned -> maintenance only; delta / RPC-observed -> clearance)
     import html as _html
     import urllib.parse as _up
-    CLR_H = "Reconcile &amp; Anchor 24h Institutional Clearance"
+    CLR_H = "Verify and reconcile the record"
     MNT_H = "Maintain Continuous Aligned Status"
 
     def callout_ok(pg, kind, name, slug, forum=None):
         q = f"tier={kind}&amp;protocol={slug}" + (f"&amp;forum={_up.quote(forum, safe='')}" if forum else "")
         if kind == "clearance":
-            return (f"<h2>Issuing {_html.escape(name)}? {CLR_H}</h2>" in pg and pg.count('id="issuer-clearance"') == 1
-                    and f'<a class="btn primary" href="../../request/?{q}" data-cta="clearance">Request 24h Clearance ($5,000 USDC) <span class="arr">→</span></a>' in pg
-                    and f'<a class="btn" href="../../request/?{q}&amp;settlement=invoice" data-cta="clearance_invoice">Request Commercial Invoice (PDF)</a>' in pg
-                    and "anchor a Base EAS Aligned Attestation + Curator Diligence Dossier within 24 hours" in pg and MNT_H not in pg)
+            qf = q.replace("tier=clearance", "tier=community")
+            return (f"<h2>Maintaining {_html.escape(name)}? {CLR_H}</h2>" in pg and pg.count('id="issuer-clearance"') == 1
+                    and f'<a class="btn" href="../../request/?{qf}" data-cta="free_notify">{_html.escape(BS.FREE_NOTIFY_CTA)} <span class="arr">→</span></a>' in pg
+                    and f'<a class="btn" href="../../request/?{q}" data-cta="clearance">{_html.escape(BS.DOSSIER_CTA)} <span class="arr">→</span></a>' in pg
+                    and f'<a href="../../request/?{q}&amp;settlement=invoice" data-cta="clearance_invoice">Request a commercial invoice (PDF)</a>' in pg
+                    and "only changes when the on-chain state or the documentation aligns at a new finalized block" in pg
+                    and "within 24 hours" not in pg and "Clear findings" not in pg and "Request 24h Clearance" not in pg and MNT_H not in pg)
         return (f"<h2>Operating {_html.escape(name)}? {MNT_H}</h2>" in pg and "issuer-clearance" not in pg and CLR_H not in pg
                 and "Request 24h Clearance" not in pg and "Clear findings" not in pg
                 and f'<a href="../../request/?{q}" data-cta="continuous">Request Continuous Aligned Maintenance ($1,500/mo) →</a>' in pg
@@ -1386,7 +1393,7 @@ def main(argv=None):
         pg = pages.get(os.path.join("briefs", b["slug"], "index.html"), "")
         if not callout_ok(pg, "clearance", b["asset"], b["slug"], b["forum"]["url"]):
             brief_bad.append(b["slug"])
-    check("8 brief pages carry the 'Issuing <issuer>? Reconcile & Anchor 24h Institutional Clearance' callout: Request 24h Clearance ($5,000 USDC) -> /request/?tier=clearance&protocol=<slug>[&forum=<encoded>] + Request Commercial Invoice (PDF) (&settlement=invoice), both data-cta",
+    check("8 brief pages carry the 'Maintaining <issuer>? Verify and reconcile the record' callout: a free public doc-update notification (tier=community) with equal weight next to 'Request Verification & Reconciliation Dossier (24h SLA — resulting classification strictly follows verified on-chain & documentation evidence)' (tier=clearance) + invoice link, all data-cta; no 'within 24 hours' / 'Clear findings' / 'Request 24h Clearance' copy",
           len(BS.BRIEFS) + len(onb["briefs"]) == 8 and not brief_bad, str(brief_bad))
     sp_ = BS.site_protocols(json.loads(read("docs/api/v1/index.json")))
     proto_bad, n_al, n_cl = [], 0, 0
@@ -1742,9 +1749,13 @@ def main(argv=None):
     js_bad = sorted(f for f, t in page_js.items() if re.search(r"document\.cookie|sessionStorage|indexedDB|XMLHttpRequest|new Image\b|WebSocket|EventSource|importScripts|createElement\(\s*\"script", t))
     data_api = set(re.findall(r'data-api="([^"]+)"', "".join(pages.values())))
     app_fetch = len(re.findall(r"\bfetch\(", appjs))
-    check("no cookies, no storage identifiers, no third-party requests in page scripts: localStorage only for the theme preference; app.js fetches only this site's JSON, the first-party API (data-api) and the first-party /v1/briefs/live-timelocks (data-live-timelocks)",
+    check("no cookies, no storage identifiers, no third-party requests in page scripts: localStorage only for the theme preference; app.js fetches only this site's JSON, the first-party API (data-api), the first-party /v1/briefs/live-timelocks (data-live-timelocks) and, on an explicit Verify-live-on-RPC click, the four allow-listed public RPCs",
           not js_bad and ls_keys == {"pacta-theme"} and appjs.count("localStorage") == 2 and data_api <= {API_}
-          and app_fetch == 3 and 'fetch(document.documentElement.getAttribute("data-api") || "api/v1/index.json")' in appjs
+          and app_fetch == 4 and 'fetch(document.documentElement.getAttribute("data-api") || "api/v1/index.json")' in appjs
+          # the 4th fetch: the user-initiated "Verify live on RPC" button, POSTing JSON-RPC only to the four allow-listed public RPCs
+          and "      return fetch(url, opts).then(function (res) { return res.json(); })" in appjs
+          and re.search(r'var LIVE_RPCS = \{ ethereum: \["https://ethereum-rpc\.publicnode\.com", "https://eth\.drpc\.org"\],\s*base: \["https://base-rpc\.publicnode\.com", "https://mainnet\.base\.org"\] \};', appjs) is not None
+          and appjs.count("rpcCall(") == 4 and 'btn.addEventListener("click", function () {' in appjs[appjs.index("function liveVerifyBtn"):appjs.index("function pfRow")]
           and "    fetch(url, init)\n" in appjs and "if (!LIVE_TL_RE.test(url)) return;" in appjs
           and set(re.findall(r'data-live-timelocks="([^"]+)"', "".join(pages.values()))) == {html.escape(BS.LIVE_TIMELOCKS_URL)}
           and BS.LIVE_TIMELOCKS_URL.startswith(API_ + "/v1/briefs/live-timelocks?")
@@ -2010,7 +2021,8 @@ def main(argv=None):
         pg = pages.get(os.path.join("protocols", slug_of[e["id"]], "index.html"), "")
         if not (f'{xurl}/block/{e["block_number"]}"' in pg and f'{xurl}/address/{e["target_contract"]}"' in pg and f"--block {e['block_number']} --rpc-url &quot;{rpc_}&quot;" in pg):
             mc_bad.append(f'{e["id"]}: protocol page chain')
-        if f'{xurl}/block/{e["block_number"]}"' not in home or ("chain" in e and e["rpc_env_var"] != rpc_):
+        in_sample = f'id="r-{e["id"]}"' in home       # static sample drawers; hydrated drawers are checked in the harness (pp2_hydrated_index)
+        if (in_sample and f'{xurl}/block/{e["block_number"]}"' not in home) or ("chain" in e and e["rpc_env_var"] != rpc_):
             mc_bad.append(f'{e["id"]}: homepage drawer / rpc_env_var')
     for v in sp_mc.values():
         if not v["pinned"]:
@@ -2422,6 +2434,82 @@ def main(argv=None):
     check("C1: GitHub Discussions community hub + Wave 2 master issue #41 linked from README, every footer, /bounties/, /leaderboard/, llms.txt, llms-full.txt, /llms/ and the master issue text",
           all(c1.values()), str([k for k, v in c1.items() if not v]))
 
+    # ================= Website, accessibility & trust polish pack v2 (Groups 2-4: copy, radar truth, freshness, a11y, nav, feeds, meta) =================
+    import xml.etree.ElementTree as ETP
+    pp = {}
+    home_p = read("docs/index.html")
+    css_p = read("docs/styles.css")
+    app_p = read("docs/app.js")
+    all_pages = {r: t for r, t in pages.items() if not r.startswith("demos" + os.sep)}
+    pp["V06: no 'within 24 hours' / 'Clear findings' / 'Request 24h Clearance' / Aligned-attestation-for-payment copy on any page; every delta / RPC-observed protocol page offers the free notification next to the Verification & Reconciliation Dossier"] = (
+        not [r for r, t in all_pages.items() if re.search(r"within 24 hours|Clear findings|Request 24h Clearance|Aligned Attestation \+ Curator", t)]
+        and all('data-cta="free_notify"' in t and html.escape(BS.DOSSIER_CTA, quote=False) in t
+                for r, t in all_pages.items() if r.startswith("protocols" + os.sep) and 'id="issuer-clearance"' in t))
+    rad_p = json.loads(read("docs/api/v1/radar.json"))
+    pp["F03: radar header = pending vs executed counts (executed ops never counted as queued); executed rows badged and de-emphasised (+ harness)"] = (
+        f"<span data-radar-counts>{html.escape(BS.radar_counts_text(rad_p))}</span>" in home_p
+        and home_p.count('data-radar-row="executed"') == sum(1 for it in rad_p["items"] if all(o.get("done") for o in it["operations"]))
+        and res.get("pp2_radar_counts") is True)
+    n_el = len(re.findall(r"<[a-zA-Z]", home_p))
+    pp[f"V04: slim homepage: {len(home_p.encode())} bytes < 160,000 and {n_el} elements < 2,200; static curated sample (12) in the inspector and the index; full {X['records']}-record list + table hydrate from /api/v1/index.json on Show all / search / filter (every hydrated drawer links its own chain explorer: harness); all {X['protocols']} /protocols/<slug>/ pages static"] = (
+        len(home_p.encode()) < 160000 and n_el < 2200 and res.get("pp2_static_sample") is True and res.get("pp2_hydrated_index") is True
+        and 'data-insp-all>Show all' in home_p and 'data-ix-all>Show all' in home_p and 'href="protocols/">Browse all' in home_p
+        and len([r for r in pages if r.startswith("protocols" + os.sep) and r.count(os.sep) == 2]) == X["protocols"])
+    pp["F02: inspector selection follows filters; 0 matches -> empty state + working Clear filters (harness)"] = all(
+        res.get(k) is True for k in ("pp2_insp_empty_state", "pp2_insp_clear_filters", "pp2_insp_selection_follows_filter"))
+    pp["F04 + F06: ages re-run every 60 s; Snapshot pinned / Last live re-check / Refresh / pinned-snapshot fallback (> 15 min or failure); 10 s AbortController timeout + Retry + distinct timeout / 429 / network / validation states"] = (
+        "setInterval(initAges, 60000)" in app_p and "STALE_S = 15 * 60" in app_p and "PF_TIMEOUT_MS = 10000" in app_p
+        and all(f'data-pf-state' in app_p and k in app_p for k in ('"timeout"', '"ratelimit"', '"network"', '"validation"'))
+        and all(x in home_p for x in ("data-snapshot-pinned>Snapshot pinned at", "data-last-recheck>Last live re-check", "data-radar-refresh>Refresh",
+                                      "data-snapshot-fallback>Showing pinned historical snapshot"))
+        and res.get("pf_http_error_reported") is True)
+    pp["F05 + V05: cast block hash check + getOwners() next to getThreshold() in the repro; plain-English verdict + heuristic framing + raw enum / JSON; live check vs pinned comparison; 1-click 'Verify live on RPC' (publicnode with drpc / mainnet.base.org fallback, latency) in pre-flight and inspector (harness)"] = (
+        '"cast block " + r.pinnedBlock + " --field hash' in app_p and '"getOwners()(address[])"' in app_p
+        and all(u in app_p for u in ("https://ethereum-rpc.publicnode.com", "https://eth.drpc.org", "https://base-rpc.publicnode.com", "https://mainnet.base.org"))
+        and 'UNCLASSIFIED_CONTRACT_CONTROLLER: "Controller needs further review"' in app_p
+        and res.get("pp2_verdict_plain") is True and res.get("pp2_inspector_live_verify") is True)
+    pp["S02 + V07: 'The contract check runs only when you press Run' + aggregate-pageview note; /bounties/ pill leads with funded slots open now"] = (
+        "The contract check runs only when you press Run" in home_p and "anonymous first-party aggregate pageviews" in home_p
+        and f'data-bounty-pill>{BS.FUNDED_UNENCUMBERED_SLOTS} Funded Slots Open Now · ${BS.REWARD_USDC} USDC / Merged Finding</span>' in read("docs/bounties/index.html")
+        and "ring-fenced for Wave 1 Slot #4" in read("docs/bounties/index.html"))
+    def lum_(h):
+        c = [int(h[i:i + 2], 16) / 255 for i in (1, 3, 5)]
+        c = [x / 12.92 if x <= 0.03928 else ((x + 0.055) / 1.055) ** 2.4 for x in c]
+        return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
+    cr_ = lambda a, b: (max(lum_(a), lum_(b)) + 0.05) / (min(lum_(a), lum_(b)) + 0.05)
+    themes = {"paper": css_p[css_p.index(":root {"):css_p.index("}", css_p.index(":root {"))],
+              "slate": css_p[css_p.index('[data-theme="slate"] {'):css_p.index("}", css_p.index('[data-theme="slate"] {'))]}
+    tok = lambda blk, k: re.search(rf"--{k}: (#[0-9a-f]{{6}});", blk).group(1)
+    contrast = {th: min(cr_(tok(b, k), tok(b, bg)) for k in ("faint", "muted") for bg in ("bg", "surface")) for th, b in themes.items()}
+    pp["A01: --faint / --muted >= 4.6:1 on bg and surface in Paper and Slate; Copy buttons >= 28 px with contextual aria-label; inline prose links underlined; h1 on /protocols/ and /request/"] = (
+        all(v >= 4.6 for v in contrast.values()) and "min-height: 28px" in css_p[css_p.index(".copy {"):css_p.index("}", css_p.index(".copy {"))]
+        and not [r for r, t in all_pages.items() for m_ in re.finditer(r'<button class="copy"[^>]*>', t) if "aria-label=" not in m_.group(0)]
+        and "p a:not(.btn):not(.copy), dd a:not(.btn):not(.copy)" in css_p
+        and "<h1>Protocol safety records</h1>" in pages[os.path.join("protocols", "index.html")] and "<h1>Request coverage</h1>" in pages[os.path.join("request", "index.html")])
+    ico_ = open(os.path.join(DOCS, "favicon.ico"), "rb").read() if os.path.exists(os.path.join(DOCS, "favicon.ico")) else b""
+    atp_ = open(os.path.join(DOCS, "apple-touch-icon.png"), "rb").read() if os.path.exists(os.path.join(DOCS, "apple-touch-icon.png")) else b""
+    pp["V02 + assets: MCP link in every header and footer, no nth-child nav hiding, brand never wraps; valid favicon.ico (16 + 32 px) and 180 px apple-touch-icon.png; referrer meta on every page"] = (
+        all('mcp/">MCP</a>' in t for r, t in all_pages.items() if 'class="topbar"' in t) and all('mcp/">MCP</a><a href=' in t for t in all_pages.values() if 'class="ftr"' in t)
+        and ".nav a:nth-child(3), .nav a:nth-child(5) { display: none; }" not in css_p and "white-space: nowrap; flex: none; }" in css_p
+        and ico_[:4] == b"\x00\x00\x01\x00" and struct.unpack("<H", ico_[4:6])[0] == 2 and atp_[:8] == b"\x89PNG\r\n\x1a\n"
+        and struct.unpack(">II", atp_[16:24]) == (180, 180)
+        and all('<meta name="referrer" content="strict-origin-when-cross-origin">' in t for t in all_pages.values()))
+    try:
+        atom_ = ETP.fromstring(read("docs/feed.xml"))
+        n_atom = len(atom_.findall("{http://www.w3.org/2005/Atom}entry"))
+    except ETP.ParseError:
+        n_atom = -1
+    jf_ = json.loads(read("docs/api/v1/feed.json"))
+    n_items = X["sprints"] + len(rad_p["items"])
+    pp["Feeds + SEO: Atom 1.0 /feed.xml and JSON Feed 1.1 /api/v1/feed.json (one entry per Sprint attestation + radar item), discoverable in the home <head>, Subscribe link in the radar header; SoftwareApplication JSON-LD; Swap.io demo canonical + OG"] = (
+        n_atom == n_items and jf_.get("version") == "https://jsonfeed.org/version/1.1" and len(jf_.get("items") or []) == n_items
+        and 'type="application/atom+xml" href="feed.xml"' in home_p and 'type="application/feed+json" href="api/v1/feed.json"' in home_p
+        and 'data-feed-subscribe>Subscribe (RSS / JSON Feed — Slack compatible)</a>' in home_p and '"@type": "SoftwareApplication"' in home_p
+        and '<link rel="canonical" href="https://pacta.wtf/demos/swapio-x402/">' in read("docs/demos/swapio-x402/index.html")
+        and '<meta property="og:title"' in read("docs/demos/swapio-x402/index.html"))
+    check("PP2: website, accessibility & trust polish v2 (V06 dossier + free path, F03 radar truth, F02 inspector sync, F04/F06 freshness + timeout, F05 repro, S02, V07, A01 contrast / copy / h1 / links, V02 nav + MCP, icons, referrer, feeds, JSON-LD)",
+          all(pp.values()), str([k[:60] for k, v in pp.items() if not v]))
+
     # ================= Visitor review P1 + P2 (first success, understanding, discovery, narrow screens, provenance, editorial independence) =================
     import control_diff as CDV1
     import build_b2a_feeds as B2AV1
@@ -2493,9 +2581,9 @@ def main(argv=None):
     for v in sp_v.values():
         t = pages[os.path.join("protocols", v["slug"], "index.html")]
         i_ed = t.find("data-editorial-independence")
-        i_paid = max(t.find("Request 24h Clearance"), t.find("callout"))
+        i_paid = max(t.find("Reconciliation Dossier"), t.find("callout"))
         last_rec = max(t.rfind(f'id="{html.escape(e["id"])}"') for e in v["entries"])
-        paid_at = [m_.start() for m_ in re.finditer(r"\$5,000|\$1,500|Request 24h Clearance|id=\"badge-status\"|id=\"issuer-clearance\"", t)]
+        paid_at = [m_.start() for m_ in re.finditer(r"\$5,000|\$1,500|Reconciliation Dossier|id=\"badge-status\"|id=\"issuer-clearance\"", t)]
         if not (0 < last_rec < i_ed and html.escape(BS.EDITORIAL_INDEPENDENCE, quote=False) in t and t.find("cast ") < i_ed
                 and (t.find('class="callout') == -1 or i_ed < t.find('class="callout')) and paid_at and all(i_ed < p_ for p_ in paid_at)):
             ed_bad.append(v["slug"])

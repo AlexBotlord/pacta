@@ -103,11 +103,25 @@
           + "; the finalized-block reading below is superseded)";
       }
     });
+    if (updated) radarCounts();
     if (updated && blk !== null) {
       $$("[data-live-line]").forEach(function (n) {
         n.textContent = "Live re-check at the latest block #" + blk.toLocaleString("en-US") + " via the free /v1/briefs/live-timelocks.";
       });
     }
+  }
+  // Radar header counts follow the badges: executed operations are never counted as queued (re-derived after a live re-check).
+  function radarCounts() {
+    var out = $("[data-radar-counts]"); if (!out) return;
+    var pend = 0, exec = 0, protos = {};
+    $$("#radar tr[data-radar-row]").forEach(function (tr) {
+      var b = $("[data-ops]", tr), n = b ? (b.getAttribute("data-ops") || "").split(/\s+/).filter(Boolean).length : 0;
+      var st = b ? b.getAttribute("data-opstate") : tr.getAttribute("data-radar-row");
+      if (st === "executed") { exec += n; tr.setAttribute("data-radar-row", "executed"); tr.classList.add("is-executed"); }
+      else { pend += n; if (n) protos[$("b", tr) ? $("b", tr).textContent : ""] = 1; tr.setAttribute("data-radar-row", "pending"); tr.classList.remove("is-executed"); }
+    });
+    var np = Object.keys(protos).length;
+    out.textContent = pend + " pending operation" + (pend === 1 ? "" : "s") + " across " + np + " protocol" + (np === 1 ? "" : "s") + " · " + exec + " recently executed";
   }
   function initLiveTimelocks() {
     var host = $("[data-live-timelocks]");
@@ -118,8 +132,15 @@
     try { if (typeof AbortSignal !== "undefined" && typeof AbortSignal.timeout === "function") init.signal = AbortSignal.timeout(8000); } catch (e) { /* no timeout */ }
     fetch(url, init)
       .then(function (r) { return r && r.status === 200 ? r.json() : null; })
-      .then(applyLiveTimelocks, function () { /* offline / blocked / timeout: keep the static state */ })
-      .catch(function () { /* malformed payload: keep the static state */ });
+      .then(function (j) {
+        if (j && typeof j === "object" && Array.isArray(j.operations)) { applyLiveTimelocks(j); LIVE_OK_AT = Math.floor(Date.now() / 1000); LIVE_FAILED = false; }
+        else LIVE_FAILED = true;
+        freshness();
+      }, function () { LIVE_FAILED = true; freshness(); /* offline / blocked / timeout: keep the static state */ })
+      .catch(function () { LIVE_FAILED = true; freshness(); /* malformed payload: keep the static state */ });
+  }
+  function initRefresh() {
+    $$("[data-radar-refresh]").forEach(function (b) { b.addEventListener("click", function () { initLiveTimelocks(); initAges(); }); });
   }
 
   // ---- first-party beacon hooks: b.js defines window.pactaBeacon (and applies DNT / https / redaction); without it
@@ -177,6 +198,51 @@
       .then(function (d) { DATA = d; d.entries.forEach(function (e) { BYID[e.id] = e; }); return d; });
   }
 
+  // ---- homepage hydration (V04): the static page ships a curated sample; the full record set comes from /api/v1/index.json on
+  //      interaction (search, filter, basket, Show all, a #r- link, Open in inspector). Mirrors index_rows() in build_site.py.
+  var EXPL = { ethereum: ["Etherscan", "https://etherscan.io"], base: ["Basescan", "https://basescan.org"] };
+  var CHAIN_LABEL = { ethereum: "Ethereum Mainnet (chain id 1)", base: "Base Mainnet (chain id 8453)" };
+  function ensureData() { return DATA ? Promise.resolve(DATA) : loadData(); }
+  function sortedEntries(d) {
+    return d.entries.map(function (e, i) { return [e, i]; }).sort(function (x, y) {
+      var a = x[0], b = y[0], pa = a.protocol.toLowerCase(), pb = b.protocol.toLowerCase();
+      return (b.sprint - a.sprint) || (pa < pb ? -1 : pa > pb ? 1 : 0) || (x[1] - y[1]);
+    }).map(function (x) { return x[0]; });
+  }
+  function explorerLink(e) {
+    var x = EXPL[chainOf(e)];
+    return el("a", { href: x[1] + "/block/" + e.block_number, target: "_blank", rel: "noopener", text: x[0] + " ↗" });
+  }
+  function searchText(e) {
+    return ["protocol", "category", "surface", "target_contract", "target_label", "onchain_observed", "classification", "sprint"]
+      .map(function (k) { return e[k] === undefined || e[k] === null ? "" : String(e[k]); }).join(" ").toLowerCase();
+  }
+  function indexRow(e) {
+    var proofEl = e.base_eas_uid ? el("a", { href: "https://base.easscan.org/attestation/view/" + e.base_eas_uid, target: "_blank", rel: "noopener", text: "EAS ↗" })
+      : el("span", { "class": "muted", text: "Hash-pinned" });
+    var row = el("tr", { "data-class": e.classification, "class": "rec", "data-id": e.id, "data-search": searchText(e) }, [
+      el("td", {}, [el("b", { "class": "ell", text: e.protocol }), el("span", { "class": "sub ell", text: e.category })]),
+      el("td", { "class": "hide-s" }, [el("span", { "class": "ell", text: e.target_label }), el("span", { "class": "sub" }, hexref(e.target_contract))]),
+      el("td", {}, [badge(e.classification)]),
+      el("td", { "class": "hide-m num nowrap" }, [secs(e.observed_delay_seconds) + " ", el("span", { "class": "muted", text: "/ " + secs(e.documented_delay_seconds) })]),
+      el("td", { "class": "hide-m nowrap" }, [el("span", { "class": "num", text: "S" + e.sprint + " · #" + num(e.block_number) }), el("span", { "class": "sub" }, [proofEl])]),
+      el("td", { "class": "x" }, [el("a", { "class": "inspect-btn", href: "#r-" + e.id, "aria-expanded": "false", "aria-controls": "r-" + e.id, text: "Details" })])]);
+    var repo = "https://github.com/Fractal-Neurons/pacta/blob/main/";
+    var kv = el("dl", { "class": "kv" }, [
+      el("dt", { text: "Pinned block" }), el("dd", {}, [CHAIN_LABEL[chainOf(e)] + " ", el("span", { "class": "num", text: "#" + num(e.block_number) }), " · ", explorerLink(e), " · "].concat(hexref(e.block_hash, 8, 6))),
+      el("dt", { text: "Delay" }), el("dd", {}, [delayCmp(e)]),
+      el("dt", { text: "Summary" }), el("dd", {}, [el("a", { href: repo + e.summary_doc, target: "_blank", rel: "noopener", text: "Sprint " + e.sprint + " summary ↗" })]),
+      el("dt", { text: "SHA-256" }), el("dd", {}, hexref(e.summary_sha256, 10, 6)),
+      el("dt", { text: "Proof" }), el("dd", {}, [proof(e)])]);
+    var drawer = el("tr", { "class": "drawer", id: "r-" + e.id }, [el("td", { colspan: "6" }, [el("div", { "class": "drawer-in" }, [
+      el("div", {}, [el("p", { "class": "drawer-title", text: e.surface }), el("span", { "class": "label", text: "On-chain observation" }),
+        el("p", { "class": "obs-text" }, prose(e.onchain_observed || "")),
+        el("p", { "class": "obs-text" }, [el("span", { "class": "label", text: "Documented" }), el("br")].concat(prose(e.documented_reference || ""))),
+        el("p", { "class": "obs-text" }, [el("button", { "class": "linkish", type: "button", "data-inspect": e.id, text: "Open in inspector ↑" })])]),
+      el("div", {}, [kv, term(castCmd(e))])])])]);
+    return [row, drawer];
+  }
+
   // ---- record rendering (mirrors sheet() in tools/build_site.py) -------------------------------------
   var CLS = { parameter_delta: ["delta", "Parameter delta"], protective_delta: ["protect", "Protective delta"], aligned_baseline: ["", "Aligned baseline"] };
   function badge(c, text, extra) { var k = CLS[c] || CLS.aligned_baseline; return el("span", { "class": ("badge " + (extra || k[0])).trim(), text: text || k[1] }); }
@@ -189,7 +255,7 @@
     });
     return parts.join(" ") || "0s";
   }
-  function copyBtn(v, label) { return el("button", { "class": "copy", type: "button", "data-copy": v, text: label || "Copy" }); }
+  function copyBtn(v, label) { return el("button", { "class": "copy", type: "button", "data-copy": v, "aria-label": "Copy " + String(v), text: label || "Copy" }); }
   function hexref(v, a, b) { return [el("span", { "class": "addr", title: v, text: short(v, a || 6, b || 4) }), copyBtn(v)]; }
   function delayCmp(e) {
     var o = e.observed_delay_seconds, d = e.documented_delay_seconds;
@@ -222,7 +288,7 @@
   function term(cmd, title) {
     return el("div", { "class": "term" }, [
       el("div", { "class": "term-h" }, [el("span", { text: title || "Reproduce on any archive node" }),
-        el("button", { "class": "copy", type: "button", "data-copy-term": "", text: "Copy command" })]),
+        el("button", { "class": "copy", type: "button", "data-copy-term": "", "aria-label": "Copy command: " + (title || "command"), text: "Copy command" })]),
       el("pre", { text: cmd })]);
   }
   function proof(e) {
@@ -315,19 +381,66 @@
     panel.appendChild(dl);
     panel.appendChild(el("p", { "class": "obs-text" }, prose(obs)));
     panel.appendChild(term(castCmd(e)));
+    panel.appendChild(el("p", { "class": "pf-section", text: "Pinned documentation comparison above; replay the same read live:" }));
+    panel.appendChild(liveVerifyBtn("Verify live on RPC", function () {
+      var ch = chainOf(e), slot = e.check_type === "eth_getStorageAt";
+      var call = slot ? rpcCall(ch, "eth_getStorageAt", [e.target_contract, e.selector_or_slot, "latest"])
+        : rpcCall(ch, "eth_call", [{ to: e.target_contract, data: e.repro_calldata || e.selector_or_slot }, "latest"]);
+      return call.then(function (x) {
+        return "Live " + (slot ? "slot " : (e.call_signature || "call") + " ") + "at the latest block: " + short(String(x.result), 12, 8) + " · " + x.rpc + " · " + x.ms + " ms";
+      });
+    }));
   }
 
   // ---- inspector workbench ---------------------------------------------------------------------------
   function initInspector() {
     var list = $("#insp-list"); if (!list) return;
-    var q = $("#insp-q"), count = $("#insp-count"), filt = "all";
+    var q = $("#insp-q"), count = $("#insp-count"), filt = "all", hydrated = false;
     var links = $$("a[data-id]", list);
+    function inspItem(e) {
+      var dc = (CLS[e.classification] || CLS.aligned_baseline)[0];
+      return el("li", {}, [el("a", { href: "#r-" + e.id, "data-id": e.id, "data-class": e.classification }, [
+        el("span", { "class": ("dot " + dc).trim() }), el("span", { "class": "p", text: e.protocol }), el("span", { "class": "sp", text: "S" + e.sprint }),
+        el("span", { "class": "s", text: e.surface })])]);
+    }
+    function hydrate() {
+      if (hydrated) return Promise.resolve();
+      return ensureData().then(function (d) {
+        if (hydrated) return;
+        hydrated = true;
+        var cur = links.filter(function (a) { return a.getAttribute("aria-current") === "true"; })[0];
+        var curId = cur ? cur.getAttribute("data-id") : null;
+        list.textContent = "";
+        sortedEntries(d).forEach(function (e) { list.appendChild(inspItem(e)); });
+        links = $$("a[data-id]", list);
+        links.forEach(function (a) { a.setAttribute("aria-current", String(a.getAttribute("data-id") === curId)); });
+        $$("[data-insp-all]").forEach(function (b) { b.hidden = true; });
+      });
+    }
     function select(id, scroll) {
       var e = BYID[id]; if (!e) return false;
       links.forEach(function (a) { a.setAttribute("aria-current", String(a.getAttribute("data-id") === id)); });
       renderSheet(e);
       if (scroll) $("#inspector").scrollIntoView({ behavior: "smooth", block: "start" });
       return true;
+    }
+    var panel = $("#insp-panel"), empty = null;
+    function clearFilters() {
+      if (q) q.value = ""; filt = "all";
+      $$(".bench-filter button").forEach(function (o) { o.setAttribute("aria-pressed", String(o.getAttribute("data-f") === "all")); });
+      apply();
+    }
+    function showEmpty(on) {
+      if (!panel) return;
+      if (on && !empty) {
+        empty = el("div", { "class": "insp-empty", "data-insp-empty": "" }, [el("p", { text: "No record matches these filters." })]);
+        var btn = el("button", { type: "button", "class": "btn sm", "data-insp-clear": "", text: "Clear filters" });
+        btn.addEventListener("click", clearFilters);
+        empty.appendChild(btn);
+        panel.parentNode.appendChild(empty);
+      }
+      if (empty) empty.hidden = !on;
+      panel.hidden = !!on;
     }
     function apply() {
       var t = (q && q.value || "").trim().toLowerCase(), shown = 0;
@@ -338,6 +451,10 @@
         a.parentNode.hidden = !ok; if (ok) shown++;
       });
       if (count) count.textContent = shown + " of " + links.length + " records";
+      var vis = links.filter(function (a) { return !a.parentNode.hidden; });
+      showEmpty(vis.length === 0);
+      var cur = links.filter(function (a) { return a.getAttribute("aria-current") === "true"; })[0];
+      if (vis.length && (!cur || cur.parentNode.hidden)) select(vis[0].getAttribute("data-id"), false);
     }
     list.addEventListener("click", function (ev) {
       var a = ev.target.closest("a[data-id]"); if (!a || !DATA) return;   // without data, the link opens the index drawer
@@ -349,18 +466,23 @@
       if (i < 0) return; ev.preventDefault();
       var n = vis[Math.max(0, Math.min(vis.length - 1, i + (ev.key === "ArrowDown" ? 1 : -1)))]; n.focus(); select(n.getAttribute("data-id"), false);
     });
-    if (q) q.addEventListener("input", function () {
-      apply();
-      var first = links.filter(function (a) { return !a.parentNode.hidden; })[0];
-      if (first && q.value.trim()) select(first.getAttribute("data-id"), false);
-    });
+    function hydrated_(fn) { return function () { var self = this, args = arguments; hydrate().then(function () { fn.apply(self, args); }, function () { fn.apply(self, args); }); }; }
+    if (q) {
+      q.addEventListener("focus", function () { hydrate().catch(function () { /* the sample keeps working */ }); });
+      q.addEventListener("input", hydrated_(function () {
+        apply();
+        var first = links.filter(function (a) { return !a.parentNode.hidden; })[0];
+        if (first && q.value.trim()) select(first.getAttribute("data-id"), false);
+      }));
+    }
     $$(".bench-filter button").forEach(function (b) {
-      b.addEventListener("click", function () {
+      b.addEventListener("click", hydrated_(function () {
         filt = b.getAttribute("data-f");
         $$(".bench-filter button").forEach(function (o) { o.setAttribute("aria-pressed", String(o === b)); });
         apply();
-      });
+      }));
     });
+    $$("[data-insp-all]").forEach(function (b) { b.addEventListener("click", hydrated_(function () { apply(); })); });
     document.addEventListener("click", function (ev) {
       var b = ev.target.closest("[data-inspect]"); if (!b || !DATA) return;
       ev.preventDefault(); select(b.getAttribute("data-inspect"), true);
@@ -369,8 +491,19 @@
 
   // ---- public index: filter + inline drawers ---------------------------------------------------------
   function initIndex() {
-    var rows = $$("#matrix tbody tr.rec"); if (!rows.length) return;
-    var q = $("#matrix-q"), count = $("#matrix-count"), cls = "all";
+    var tbody = $("#matrix tbody"), rows = $$("#matrix tbody tr.rec"); if (!rows.length || !tbody) return;
+    var q = $("#matrix-q"), count = $("#matrix-count"), cls = "all", hydrated = false;
+    function hydrate() {
+      if (hydrated) return Promise.resolve();
+      return ensureData().then(function (d) {
+        if (hydrated) return;
+        hydrated = true;
+        tbody.textContent = "";
+        sortedEntries(d).forEach(function (e) { indexRow(e).forEach(function (n) { tbody.appendChild(n); }); });
+        rows = $$("#matrix tbody tr.rec");
+        $$("[data-ix-all]").forEach(function (b) { b.hidden = true; });
+      });
+    }
     function drawer(r) { return document.getElementById("r-" + r.getAttribute("data-id")); }
     function toggle(r, open) {
       var d = drawer(r); if (!d) return;
@@ -386,32 +519,37 @@
       });
       if (count) count.textContent = shown + " of " + rows.length + " records shown";
     }
-    rows.forEach(function (r) {
-      r.addEventListener("click", function (ev) {
-        if (ev.target.closest("a:not(.inspect-btn),button")) return;
-        ev.preventDefault(); toggle(r);
-      });
+    tbody.addEventListener("click", function (ev) {
+      var r = ev.target.closest("tr.rec"); if (!r) return;
+      if (ev.target.closest("a:not(.inspect-btn),button")) return;
+      ev.preventDefault(); toggle(r);
     });
-    if (q) q.addEventListener("input", apply);
+    function after(fn) { return function () { var a = arguments; hydrate().then(function () { fn.apply(null, a); }, function () { fn.apply(null, a); }); }; }
+    if (q) q.addEventListener("input", after(apply));
     $$("#index .seg button").forEach(function (b) {
-      b.addEventListener("click", function () {
+      b.addEventListener("click", after(function () {
         cls = b.getAttribute("data-class");
         $$("#index .seg button").forEach(function (o) { o.setAttribute("aria-pressed", String(o === b)); });
         apply();
-      });
+      }));
     });
+    $$("[data-ix-all]").forEach(function (b) { b.addEventListener("click", after(apply)); });
+    function openRow(id, smooth) {
+      var r = rows.filter(function (x) { return x.getAttribute("data-id") === id; })[0];   // no selector parsing
+      if (r) { r.hidden = false; toggle(r, true); r.scrollIntoView(smooth ? { behavior: "smooth", block: "center" } : { block: "center" }); return; }
+      if (hydrated) return;
+      hydrate().then(function () { if (rows.some(function (x) { return x.getAttribute("data-id") === id; })) openRow(id, smooth); }, function () { /* sample only */ });
+    }
     function openFromHash() {
       var m = location.hash.match(/^#r-(.+)$/); if (!m) return;
       var id = m[1];
       try { id = decodeURIComponent(id); } catch (e) { /* keep the raw fragment */ }
-      var r = rows.filter(function (x) { return x.getAttribute("data-id") === id; })[0]; if (!r) return;   // no selector parsing
-      r.hidden = false; toggle(r, true); r.scrollIntoView({ block: "center" });
+      openRow(id, false);
     }
     document.addEventListener("click", function (ev) {
       var a = ev.target.closest("a[data-open]"); if (!a) return;
       ev.preventDefault();
-      var oid = a.getAttribute("data-open"), r = rows.filter(function (x) { return x.getAttribute("data-id") === oid; })[0]; if (!r) return;
-      r.hidden = false; toggle(r, true); r.scrollIntoView({ behavior: "smooth", block: "center" });
+      openRow(a.getAttribute("data-open"), true);
     });
     window.addEventListener("hashchange", openFromHash);
     openFromHash();
@@ -557,6 +695,7 @@
     INSTANT_EOA_ADMIN_RISK: "delta", UNCLASSIFIED_CONTRACT_CONTROLLER: "delta", UNDEPLOYED_OR_EOA: "" };
   function pfCasts(r) {
     var rpc = r.chain === "base" ? "$BASE_RPC_URL" : "$ETH_RPC_URL", b = " --block " + r.pinnedBlock + " --rpc-url " + rpc, c = [];
+    c.push("cast block " + r.pinnedBlock + " --field hash --rpc-url " + rpc + (/^0x[0-9a-f]{64}$/.test(String(r.pinnedBlockHash || "")) ? "   # expect " + r.pinnedBlockHash : ""));
     c.push("cast code " + r.address + b);
     c.push("cast storage " + r.address + " " + (r.proxyType === "eip1822" ? SLOT_PROXIABLE : r.proxyType === "eip1967_beacon" ? SLOT_BEACON : SLOT_IMPL) + b);
     if (r.proxyType === "eip1967_beacon" && ADDR_RE.test(String(r.beacon || ""))) {
@@ -565,9 +704,51 @@
     }
     c.push("cast call " + r.address + ' "owner()(address)"' + b);
     var k = r.controller || {};
-    if (k.address && k.kind === "multisig_safe") c.push("cast call " + k.address + ' "getThreshold()(uint256)"' + b);
+    if (k.address && k.kind === "multisig_safe") {
+      c.push("cast call " + k.address + ' "getThreshold()(uint256)"' + b);
+      c.push("cast call " + k.address + ' "getOwners()(address[])"' + b);
+    }
     if (k.address && k.kind === "timelock") c.push("cast call " + k.address + ' "getMinDelay()(uint256)"' + b);
     return c;
+  }
+  // Plain-English verdicts (the raw enum stays one click away, with the full JSON)
+  var VERDICT_TEXT = { IMMUTABLE_NO_ADMIN: "No admin: the contract cannot be changed", TIMELOCK_PROTECTED: "Changes wait behind a timelock",
+    ZERO_DELAY_TIMELOCK_RISK: "Timelock with a zero delay: changes can land instantly", MULTISIG_NO_TIMELOCK: "A multisig can change it with no delay",
+    INSTANT_EOA_ADMIN_RISK: "A single key can change it instantly", UNCLASSIFIED_CONTRACT_CONTROLLER: "Controller needs further review",
+    UNDEPLOYED_OR_EOA: "No contract code at this address (EOA or not deployed)" };
+  function verdictText(v) { return VERDICT_TEXT[v] || String(v); }
+  function rawDetails(r) {
+    var d = el("details", { "class": "pf-raw", "data-pf-raw": "" }, [el("summary", { text: "Raw verdict and JSON" }),
+      el("p", {}, [el("code", { text: String(r.verdict) })]), el("pre", { "class": "pf-json", text: JSON.stringify(r, null, 2) })]);
+    return d;
+  }
+  // ---- one-click "Verify live on RPC": CORS public endpoints, first answer wins (fallback on error), latency in ms; text only
+  var LIVE_RPCS = { ethereum: ["https://ethereum-rpc.publicnode.com", "https://eth.drpc.org"],
+    base: ["https://base-rpc.publicnode.com", "https://mainnet.base.org"] };
+  function rpcCall(chain, method, params) {
+    var urls = LIVE_RPCS[chain === "base" ? "base" : "ethereum"], i = 0;
+    function attempt() {
+      var url = urls[i], t0 = Date.now();
+      var opts = { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: method, params: params }) };
+      if (typeof AbortSignal !== "undefined" && typeof AbortSignal.timeout === "function") { try { opts.signal = AbortSignal.timeout(8000); } catch (e) { /* none */ } }
+      return fetch(url, opts).then(function (res) { return res.json(); }).then(function (j) {
+        if (!j || j.error || j.result === undefined) throw new Error(j && j.error ? String(j.error.message || "rpc error") : "no result");
+        return { result: j.result, ms: Date.now() - t0, rpc: url.replace(/^https:\/\//, "") };
+      }).catch(function (e) { i++; if (i < urls.length) return attempt(); throw e; });
+    }
+    return attempt();
+  }
+  function liveVerifyBtn(label, job) {
+    var wrap = el("div", { "class": "live-verify", "data-live-verify": "" });
+    var btn = el("button", { type: "button", "class": "btn sm", "data-live-verify-btn": "", text: label });
+    var res = el("p", { "class": "live-verify-out", "data-live-verify-out": "", "aria-live": "polite" });
+    btn.addEventListener("click", function () {
+      if (typeof fetch !== "function") { res.textContent = "This browser cannot call an RPC; use the cast commands."; return; }
+      res.textContent = "Calling a public RPC…";
+      job().then(function (t) { res.textContent = t; }, function (e) { res.textContent = "Live RPC check failed (" + String(e && e.message || e) + "); use the cast commands."; });
+    });
+    wrap.appendChild(btn); wrap.appendChild(res);
+    return wrap;
   }
   function pfRow(k, v) { return el("div", {}, [el("dt", { text: k }), el("dd", {}, [v])]); }
   function pfAddr(v) { return ADDR_RE.test(String(v || "")) ? el("span", {}, hexref(v, 8, 6)) : "none"; }
@@ -608,7 +789,9 @@
     if (typeof k.safeThreshold === "number") ctl += " (" + k.safeThreshold + "-of-" + (typeof k.safeOwnerCount === "number" ? k.safeOwnerCount : "?") + ")";
     if (typeof k.timelockDelaySec === "number") ctl += " (" + secs(k.timelockDelaySec) + " delay)";
     if (typeof k.roleAdminCount === "number") ctl += " (" + k.roleAdminCount + " DEFAULT_ADMIN_ROLE members)";
-    out.appendChild(el("p", { "class": "pf-verdict" }, [badge(null, String(r.verdict), VERDICT_CLASS[r.verdict] || "delta"), " Risk " + risk]));
+    out.appendChild(el("p", { "class": "pf-section", text: "Live contract check (latest block)" }));
+    out.appendChild(el("p", { "class": "pf-verdict" }, [badge(null, verdictText(r.verdict), VERDICT_CLASS[r.verdict] || "delta"),
+      " Heuristic score · Risk " + risk + " (0 = no admin power seen, 100 = instant single-key control)"]));
     pfAssess(out, r);
     out.appendChild(el("p", { text: String(r.summary || "") }));
     pfMatch(out, r.catalogMatch);
@@ -620,41 +803,81 @@
       pfRow("Controller", ADDR_RE.test(String(k.address || "")) ? el("span", {}, [ctl + " ", pfAddr(k.address)]) : ctl),
       pfRow("Zero-delay upgrade", r.canUpgradeZeroDelay === true ? "yes" : r.canUpgradeZeroDelay === false ? "no" : "unknown"),
       pfRow("Capabilities", capList.length ? capList.join(", ") : "none seen"),
-      pfRow("Paused", r.paused === true ? "yes" : r.paused === false ? "no" : "n/a")]));
+      pfRow("Paused", r.paused === true ? "yes" : r.paused === false ? "no" : "n/a"),
+      pfRow("Pinned block hash", /^0x[0-9a-f]{64}$/.test(String(r.pinnedBlockHash || "")) ? el("span", {}, hexref(r.pinnedBlockHash, 10, 6)) : "n/a"),
+      pfRow("Checked at (UTC)", typeof r.checkedAt === "string" ? r.checkedAt : (typeof r.blockTimestamp === "number" ? new Date(r.blockTimestamp * 1000).toISOString() : "n/a"))]));
+    out.appendChild(rawDetails(r));
     if (r.isContract !== false && ADDR_RE.test(String(r.address)) && /^\d+$/.test(String(r.pinnedBlock)))
       out.appendChild(term(pfCasts(r).join("\n"), "Verify it yourself (Foundry cast, pinned block)"));
+    if (/^\d+$/.test(String(r.pinnedBlock)))
+      out.appendChild(liveVerifyBtn("Verify live on RPC", function () {
+        return rpcCall(r.chain, "eth_getBlockByNumber", ["0x" + Number(r.pinnedBlock).toString(16), false]).then(function (x) {
+          var h = x.result && x.result.hash, want = String(r.pinnedBlockHash || "");
+          return "Block #" + num(r.pinnedBlock) + " hash " + short(String(h), 10, 6) + (want ? (String(h).toLowerCase() === want.toLowerCase() ? " = pinned hash ✓" : " ≠ pinned hash") : "")
+            + " · " + x.rpc + " · " + x.ms + " ms";
+        });
+      }));
   }
   function initPreflight() {
     var box = $(".pf"), form = $("#pf-form"), out = $("#pf-out");
     if (!box || !form || !out) return;
     var api = box.getAttribute("data-api") || "", chainSel = $('select[name="chain"]', form), addr = $('input[name="address"]', form);
     if (!chainSel || !addr || !/^https:\/\//.test(api)) return;
-    var seq = 0, ctl = null;
-    function msg(t) { out.textContent = ""; out.appendChild(el("p", { "class": "note", text: t })); }
+    var seq = 0, ctl = null, timer = null, PF_TIMEOUT_MS = 10000;
+    if (!addr.getAttribute("id")) addr.setAttribute("id", "pf-address");
+    function msg(t, kind) {
+      out.textContent = "";
+      var p = el("p", { "class": "note" + (kind ? " pf-" + kind : ""), id: "pf-msg", text: t });
+      if (kind) p.setAttribute("data-pf-state", kind);
+      out.appendChild(p);
+      if (kind && kind !== "validation") {
+        var retry = el("button", { type: "button", "class": "btn sm", "data-pf-retry": "", text: "Retry" });
+        retry.addEventListener("click", function () { run(); });
+        out.appendChild(retry);
+      }
+    }
+    function invalid(on) {
+      if (on) { addr.setAttribute("aria-invalid", "true"); addr.setAttribute("aria-describedby", "pf-msg"); }
+      else { addr.removeAttribute("aria-invalid"); addr.removeAttribute("aria-describedby"); }
+    }
     function run() {
       // Every submit (valid or not) supersedes the previous one: bump seq and abort any in-flight request BEFORE the
       // input checks, so a stale response can never overwrite a later validation message.
       var my = ++seq;
       if (ctl) { try { ctl.abort(); } catch (e) { /* already settled */ } ctl = null; }
+      if (timer) { clearTimeout(timer); timer = null; }
       var a = String(addr.value || "").trim(), ch = chainSel.value === "base" ? "base" : "ethereum";
-      if (!ADDR_RE.test(a)) { msg("Enter a 0x-prefixed, 40-hex-character contract address."); return; }
+      if (!ADDR_RE.test(a)) { msg("Enter a 0x-prefixed, 40-hex-character contract address.", "validation"); invalid(true); return; }
+      invalid(false);
       if (typeof fetch !== "function") { msg("This browser cannot call the API; use the curl command above."); return; }
       // First-party beacon hook (docs/b.js); optional: the checker works the same without it.
       if (typeof window.pactaBeacon === "function") { try { window.pactaBeacon("live_checker_submit", ch + ":" + a.toLowerCase()); } catch (e) { /* ignore */ } }
-      var opts = { headers: { Accept: "application/json" } };
-      if (typeof AbortController === "function") { ctl = new AbortController(); opts.signal = ctl.signal; }
+      var opts = { headers: { Accept: "application/json" } }, timedOut = false;
+      if (typeof AbortController === "function") {
+        ctl = new AbortController(); opts.signal = ctl.signal;
+        var mine = ctl;
+        timer = setTimeout(function () { timedOut = true; try { mine.abort(); } catch (e) { /* settled */ } }, PF_TIMEOUT_MS);
+      }
       msg("Checking " + short(a, 6, 4) + " on " + ch + " at the latest block…");
       // optional free-tier attribution (non-personal): the browser demo names itself; no location, no personal data
       fetch(api + "/v1/check/preflight?chain=" + ch + "&address=" + a + "&caller_agent=pacta-wtf-checker&requester_role=individual_user&caller_purpose=general_research", opts)
         .then(function (res) { return res.json().then(function (b) { return { status: res.status, body: b }; }); })
         .then(function (x) {
           if (my !== seq) return;
+          if (timer) { clearTimeout(timer); timer = null; }
           var b = x.body || {}, r = b.verdict ? b : (b.result && b.result.verdict ? b.result : null);
           if (x.status === 200 && b.source === "pinned_catalog_fallback") pfFallback(out, b);
           else if (x.status === 200 && r) pfRender(out, r);
-          else msg("The API answered HTTP " + x.status + (b.error ? " (" + String(b.error) + ")" : "") + (b.detail ? ": " + String(b.detail) : "."));
+          else if (x.status === 429) msg("Rate limited: HTTP 429" + (b.error ? " (" + String(b.error) + ")" : "") + (b.detail ? ": " + String(b.detail) : "") + ". Wait a minute, then retry.", "ratelimit");
+          else if (x.status === 400) { msg("The API rejected the input (HTTP 400)" + (b.detail ? ": " + String(b.detail) : "."), "validation"); invalid(true); }
+          else msg("The API answered HTTP " + x.status + (b.error ? " (" + String(b.error) + ")" : "") + (b.detail ? ": " + String(b.detail) : "."), "http");
         })
-        .catch(function () { if (my === seq) msg("Could not reach the API. Try again, or use the curl command above."); });
+        .catch(function () {
+          if (my !== seq) return;
+          if (timer) { clearTimeout(timer); timer = null; }
+          if (timedOut) msg("The check timed out after " + (PF_TIMEOUT_MS / 1000) + " s. The address is kept; retry, or use the curl command above.", "timeout");
+          else msg("Network error: could not reach the API. Retry, or use the curl command above.", "network");
+        });
     }
     form.addEventListener("submit", function (ev) { ev.preventDefault(); run(); });
     $$("[data-pf-address]").forEach(function (b) {
@@ -734,11 +957,23 @@
       var t = parseInt(n.getAttribute("data-age"), 10);
       n.textContent = t && t <= now + 300 ? " (" + fmt(Math.max(0, now - t)) + " ago)" : "";
     });
+    freshness();
+  }
+  // Freshness honesty: "Last live re-check" shows when the free live re-check last succeeded; when it has failed, or is older
+  // than 15 minutes, the visible fallback says the page is showing the pinned historical snapshot.
+  var LIVE_OK_AT = 0, LIVE_FAILED = false, STALE_S = 15 * 60;
+  function freshness() {
+    var now = Math.floor(Date.now() / 1000), stale = LIVE_FAILED || !LIVE_OK_AT || now - LIVE_OK_AT > STALE_S;
+    $$("[data-last-recheck]").forEach(function (n) {
+      n.textContent = LIVE_OK_AT ? "Last live re-check: " + fmt(Math.max(0, now - LIVE_OK_AT)) + " ago" : (LIVE_FAILED ? "Last live re-check: failed" : "Last live re-check: not yet");
+    });
+    $$("[data-snapshot-fallback]").forEach(function (n) { n.hidden = !stale; });
   }
 
   document.addEventListener("DOMContentLoaded", function () {
     initTheme(); initCopy(); initBeaconHooks(); tick(); setInterval(tick, 30000);
-    initIndex(); initRequest(); initInspector(); initPreflight(); initLiveTimelocks(); initProtocolFilter(); initAges();
+    initIndex(); initRequest(); initInspector(); initPreflight(); initLiveTimelocks(); initProtocolFilter(); initAges(); initRefresh();
+    setInterval(initAges, 60000);
     if ($("#insp-list")) loadData().catch(function () { /* static sheet and drawer links keep working */ });
   });
 })();

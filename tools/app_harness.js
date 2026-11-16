@@ -369,6 +369,10 @@ async function preflightScenario() {
   res.pf_preset_fetches_once = calls.length === 1 && calls[0] === want;
   const txt = out.textContent;
   res.pf_renders_verdict = txt.includes("MULTISIG_NO_TIMELOCK") && txt.includes("Risk 60/100") && txt.includes("multisig_safe (3-of-5)") && txt.includes("pause, upgrade");
+  // V05 + F05: plain-English verdict with the raw enum / JSON one click away; live contract check vs pinned comparison; 1-click RPC verify
+  res.pp2_verdict_plain = txt.includes("A multisig can change it with no delay") && txt.includes("Heuristic score") && !!out.querySelector("[data-pf-raw]")
+    && out.querySelector("[data-pf-raw]").textContent.includes("MULTISIG_NO_TIMELOCK") && txt.includes("Live contract check")
+    && !!out.querySelector("[data-live-verify-btn]") && txt.includes('"getOwners()(address[])"') && txt.includes("--field hash");
   res.pf_text_only = out.querySelectorAll("img").length === 0 && txt.includes("<img src=x onerror=alert(1)>");
   res.pf_cast_commands = txt.includes("cast storage " + PF_EXAMPLE.address + " 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc --block 23800000")
     && txt.includes('"getThreshold()(uint256)" --block 23800000') && txt.includes("--rpc-url $BASE_RPC_URL");
@@ -379,7 +383,8 @@ async function preflightScenario() {
   reply = { status: 429, body: { error: "rate_limited", detail: "60 requests / minute" } };
   addr.value = PF_EXAMPLE.address; form.dispatchEvent(new Event_("submit"));
   await flush(); await flush(); await flush();
-  res.pf_http_error_reported = calls.length === 2 && /HTTP 429 \(rate_limited\)/.test(out.textContent);
+  res.pf_http_error_reported = calls.length === 2 && /HTTP 429 \(rate_limited\)/.test(out.textContent)
+    && !!out.querySelector('[data-pf-state="ratelimit"]') && !!out.querySelector("[data-pf-retry]");
 }
 // (j) Codex F1 regression: a valid check is in flight, then an invalid address is submitted; the stale HTTP 200 resolves
 // afterwards and must not overwrite the input error. The superseded request is aborted (AbortController).
@@ -474,11 +479,11 @@ async function beaconScenario() {
     res.b_cta_aligned_maintenance = same(al.kinds, ["continuous", "continuous_invoice"]) && same(al.events, ["cta_click", "cta_click"]);
     if (input.clearanceProtocol) {
       const cl = ctaClicks(input.clearanceProtocol, "/protocols/" + input.clearanceSlug + "/");
-      res.b_cta_clearance_protocol = same(cl.kinds, ["clearance", "clearance_invoice"]) && same(cl.events, ["cta_click", "cta_click"]);
+      res.b_cta_clearance_protocol = same(cl.kinds, ["free_notify", "clearance", "clearance_invoice"]) && same(cl.events, ["cta_click", "cta_click", "cta_click"]);
     }
     if (input.brief) {
       const br = ctaClicks(input.brief, "/briefs/" + input.briefSlug + "/");
-      res.b_cta_clearance_brief = same(br.kinds, ["clearance", "clearance_invoice"]) && same(br.events, ["cta_click", "cta_click"]);
+      res.b_cta_clearance_brief = same(br.kinds, ["free_notify", "clearance", "clearance_invoice"]) && same(br.events, ["cta_click", "cta_click", "cta_click"]);
     }
     const hp = ctaClicks(input.index, "/");
     res.b_cta_pricing = same(hp.kinds, ["pricing_clearance", "pricing_continuous", "pricing_api_sla"]) && same(hp.events, ["cta_click", "cta_click", "cta_click"]);
@@ -694,6 +699,21 @@ async function visitorScenario() {
     && out.textContent.includes("Indexed by Pacta: Stader Labs (ETHx)") && !/HTTP 200/.test(out.textContent);
   const ages = d.querySelectorAll("[data-age]");
   res.v_ages = ages.length >= 2 && ages.every((a) => / \(\d+d \d+h \d+m ago\)$| \(\d+h \d+m ago\)$/.test(a.textContent));
+  // V04: the static homepage ships a curated sample; "Show all" hydrates the full inspector list and index from /api/v1/index.json
+  const nAll = (input.indexJson && input.indexJson.entries || []).length;
+  res.pp2_static_sample = d.querySelectorAll("#insp-list a[data-id]").length === 12 && d.querySelectorAll("#matrix tbody tr.rec").length === 12;
+  const ia = d.querySelector("[data-insp-all]"); if (ia) ia.dispatchEvent(new Event_("click"));
+  const xa = d.querySelector("[data-ix-all]"); if (xa) xa.dispatchEvent(new Event_("click"));
+  await flush(); await flush(); await flush();
+  const hRows = d.querySelectorAll("#matrix tbody tr.rec");
+  const EXP = { ethereum: "https://etherscan.io", base: "https://basescan.org" };
+  const byId = {}; (input.indexJson.entries || []).forEach((e) => { byId[e.id] = e; });
+  res.pp2_hydrated_index = nAll > 12 && hRows.length === nAll && d.querySelectorAll("#insp-list a[data-id]").length === nAll
+    && hRows.every((r) => {
+      const e = byId[r.getAttribute("data-id")], dr = d.getElementById("r-" + r.getAttribute("data-id"));
+      const href = EXP[e && e.chain === "base" ? "base" : "ethereum"] + "/block/" + (e && e.block_number);
+      return !!e && !!dr && dr.querySelectorAll("a").some((a) => a.getAttribute("href") === href) && dr.textContent.includes(e.block_hash ? e.block_hash.slice(0, 8) : "");
+    }) && ia.hidden === true && xa.hidden === true;
   // inspector parity: every flagged record's What differs (app.js) equals the Python extractor's lines
   let parity = true, n = 0;
   const links = d.querySelectorAll("a[data-id]");
@@ -708,6 +728,30 @@ async function visitorScenario() {
   const aligned = links.find((x) => x.getAttribute("data-class") === "aligned_baseline");
   if (aligned) { const ev = new Event_("click"); ev.target = aligned; d.getElementById("insp-list").dispatchEvent(ev); }
   res.v_inspector_what_differs = parity && n >= 20 && !!aligned && !d.getElementById("insp-panel").querySelector("[data-what-differs]");
+  res.pp2_inspector_live_verify = !!d.getElementById("insp-panel").querySelector("[data-live-verify-btn]");
+  // F02: a filter that hides the selected record selects the first visible one; 0 matches -> empty state + working Clear filters
+  const iq = d.getElementById("insp-q"), panel = d.getElementById("insp-panel");
+  if (iq) {
+    iq.value = "zzz-no-such-protocol"; iq.dispatchEvent(new Event_("input"));
+    await flush(); await flush();
+    const emp = d.querySelector("[data-insp-empty]");
+    res.pp2_insp_empty_state = !!emp && emp.hidden === false && panel.hidden === true;
+    const clr = emp && emp.querySelector("[data-insp-clear]");
+    if (clr) clr.dispatchEvent(new Event_("click"));
+    await flush(); await flush();
+    res.pp2_insp_clear_filters = iq.value === "" && panel.hidden === false && !!emp && emp.hidden === true
+      && links.filter((x) => !x.parentNode.hidden).length === links.length;
+    const dl = d.querySelector('.bench-filter button[data-f="aligned_baseline"]');
+    if (dl) dl.dispatchEvent(new Event_("click"));
+    await flush(); await flush();
+    const cur = links.find((x) => x.getAttribute("aria-current") === "true");
+    res.pp2_insp_selection_follows_filter = !!cur && !cur.parentNode.hidden && cur.getAttribute("data-class") === "aligned_baseline";
+    const all = d.querySelector('.bench-filter button[data-f="all"]'); if (all) all.dispatchEvent(new Event_("click"));
+    await flush(); await flush();
+  }
+  // F03: the radar header counts follow the row badges (executed never counted as queued)
+  const rc = d.querySelector("[data-radar-counts]");
+  res.pp2_radar_counts = !!rc && /^\d+ pending operations? across \d+ protocols? · \d+ recently executed$/.test(rc.textContent);
 }
 
 (async () => {

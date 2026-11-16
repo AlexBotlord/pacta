@@ -17,7 +17,7 @@ def short(h, a=6, b=4):
 
 def hexref(v, a=6, b=4):
     return (f'<span class="addr" title="{E(v)}">{E(short(v, a, b))}</span>'
-            f'<button class="copy" type="button" data-copy="{E(v)}">Copy</button>')
+            f'<button class="copy" type="button" data-copy="{E(v)}" aria-label="Copy address {E(v)}">Copy</button>')
 
 
 def by_id(b):

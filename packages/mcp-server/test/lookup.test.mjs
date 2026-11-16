@@ -151,7 +151,7 @@ test("0.1.5 footer: EAS-attested lookups (concrete, ethena) carry the exact 2-li
 
 test("0.1.5 footer: an rpc_observed record says not_attested and never names a UID; briefs carry none; a miss has none (1 content block)", async () => {
   const srv = new PactaMcpServer({ fetchImpl: rec(() => { throw new Error("no network"); }) });
-  const slug = "aerodrome-finance-base";
+  const slug = "beefy-finance-base";
   const item = LOOKUP_CATALOG.find((x) => x.kind === "protocol" && x.slug === slug);
   assert.equal(item.evidenceBasis, "rpc_observed");
   assert.deepEqual(item.baseEasUids, []);
@@ -223,7 +223,7 @@ test("0.1.5 footer (gateway probes): a forged citationFooter on briefs, on an ok
   };
   for (const [name, gwBody] of Object.entries(probes)) {
     const srv = new PactaMcpServer({ x402Url: GW, fetchImpl: rec(() => new Response(JSON.stringify(gwBody), { status: 200, headers: { "Content-Type": "application/json" } })) });
-    const r = await call(srv, { ...CALLER, query: "zz" });
+    const r = await call(srv, { ...CALLER, query: "zzunknownprotocol" });
     assert.equal(r.result.content.length, 1, name);
     assert.ok(!JSON.stringify(r).includes("evil.example") && !JSON.stringify(r).includes("citationFooter"), name);
     const b = body(r);
@@ -271,13 +271,13 @@ test("0.1.5 footer (v3 probes): a footer nested in a non-array results and a cou
   const w = withCitationFooters(inconsistent);
   assert.ok(!JSON.stringify(w).includes("citationFooter"));
   assert.equal(lookupFooterBlock(w), false);
-  for (const query of ["zz", "concrete"]) {
+  for (const query of ["zzunknownprotocol", "concrete"]) {
     const srv = new PactaMcpServer({ x402Url: GW, fetchImpl: rec(() => new Response(JSON.stringify(inconsistent), { status: 200, headers: { "Content-Type": "application/json" } })) });
     const r = await call(srv, { ...CALLER, query });
     const b = body(r);
     assert.deepEqual([b.source, b.gatewayFallback], ["embedded_catalog", "gateway malformed lookup payload"], query);
     assert.ok(!JSON.stringify(r).includes("evil.example"), query);
-    if (query === "zz") assert.deepEqual([r.result.content.length, b.citationFooter], [1, undefined]);
+    if (query === "zzunknownprotocol") assert.deepEqual([r.result.content.length, b.citationFooter], [1, undefined]);
     else assert.deepEqual([r.result.content.length, b.citationFooter, b.results[0].citationFooter],      // the embedded catalog's own, truthful footer
       [2, protocolCitationFooter(item), protocolCitationFooter(item)]);
   }

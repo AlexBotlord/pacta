@@ -77,6 +77,11 @@ CONVERTED_CONTINUITY = {
                            "controllerAddress": "0x8306300ffd616049FD7e4b0354a64Da835c1A81C", "controllerKind": "multisig_safe"},
     "puffer-finance-pufeth": {"primaryContract": "0xD9A442856C234a39a81a089C06451EBAa4306a72", "targetLabel": "PufferVault (pufETH)",
                               "controllerAddress": "0x8c1686069474410E6243425f4a10177a94EBEE11", "controllerKind": "contract_controller"},
+    # Sprint 21 conversions (values from the published RPC-pinned records)
+    "aerodrome-finance-base": {"primaryContract": "0x420DD381b31aEf6683db6B902084cB0FFECe40Da", "targetLabel": "AerodromePoolFactory",
+                               "controllerAddress": "0x16613524e02ad97eDfeF371bC883F2F5d6C480A5", "controllerKind": "contract_controller"},
+    "balancer-v2-vault-timelock": {"primaryContract": "0xBA12222222228d8Ba445958a75a0704d566BF2C8", "targetLabel": "BalancerV2Vault",
+                                   "controllerAddress": "0x6048A8c631Fb7e77EcA533Cf9C29784e482391e7", "controllerKind": "contract_controller"},
 }
 
 

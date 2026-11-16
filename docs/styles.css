@@ -109,6 +109,12 @@ button { font: inherit; color: inherit; }
 }
 .copy:hover { color: var(--ink); border-color: var(--ink-2); }
 .copy.done { color: var(--green); border-color: var(--green-line); }
+a.copy { text-decoration: none; }
+/* bounties: Wave 2 counter + hunter leaderboard (hairline, no cards) */
+.w2-counter { margin: 4px 0 14px; padding: 10px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); font: 500 14px/1.4 var(--mono); }
+[data-leaderboard] .cp-badge { display: block; height: 20px; width: auto; }
+.lb-share { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.lb-share .copy { margin-left: 0; }
 input[type="search"], input[type="text"], input[type="email"], input[type="url"], textarea, select {
   width: 100%; height: 36px; padding: 0 11px; border: 1px solid var(--line-2); border-radius: var(--r);
   background: var(--surface); color: var(--ink); font: 14px var(--sans);

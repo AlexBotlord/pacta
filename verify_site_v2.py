@@ -662,6 +662,100 @@ def parse_args(argv=None):
     return ap.parse_args(argv)
 
 
+def workflow_run_blocks(text):
+    """The `run: |` scripts of a workflow, in order (enough YAML for verify-bounty-pr.yml; no PyYAML dependency)."""
+    lines, out, i = text.split("\n"), [], 0
+    while i < len(lines):
+        m = re.match(r"^(\s*)run: \|\s*$", lines[i])
+        if not m:
+            i += 1
+            continue
+        ind, body, i = len(m.group(1)), [], i + 1
+        while i < len(lines) and (not lines[i].strip() or len(lines[i]) - len(lines[i].lstrip()) > ind):
+            body.append(lines[i])
+            i += 1
+        cut = min((len(b) - len(b.lstrip()) for b in body if b.strip()), default=0)
+        out.append("\n".join(b[cut:] for b in body).strip("\n") + "\n")
+    return out
+
+
+def bounty_gate_simulation():
+    """Run the two run: scripts of .github/workflows/verify-bounty-pr.yml against throw-away git repos built from this checkout:
+    a base commit (tools/, protocols.json, bounties/ + one already merged Wave 2 claim) and one PR commit per case.
+    -> {case: (gate exit, validate exit or None)}. Nothing outside the scratch directory is touched; no network."""
+    import tempfile
+    sys.path.insert(0, os.path.join(ROOT, "tools"))
+    import verify_bounty_submission as VBS2
+    blocks = workflow_run_blocks(read(".github/workflows/verify-bounty-pr.yml"))
+    if len(blocks) != 2 or not shutil.which("git") or not shutil.which("bash"):
+        return {"setup": ("workflow / git / bash missing", None, "")}
+    first = next(x for x in json.load(open(os.path.join(DOCS, "api", "v1", "protocols.json")))["protocols"] if x["chain"] == "ethereum")
+    good = VBS2.valid_fixture_wave2("protocol_mismatch", first)
+    merged = {**good, "slug": "merged-claim", "contractAddress": "0xD1220A0cf47c7B9Be7A2E6BA89F429762e7b9aDb",
+              "castCommands": [c.replace(good["contractAddress"], "0xD1220A0cf47c7B9Be7A2E6BA89F429762e7b9aDb") for c in good["castCommands"]],
+              "mcpProof": {"tool": "pacta_lookup_protocol", "arguments": {"query": "merged-claim"}, "result": {"totalMatches": 0, "query": "merged-claim"}}}
+    env0 = {k: v for k, v in os.environ.items() if not k.startswith("GIT_")}
+    env0.update(GIT_AUTHOR_NAME="sim", GIT_AUTHOR_EMAIL="sim@example.invalid", GIT_COMMITTER_NAME="sim", GIT_COMMITTER_EMAIL="sim@example.invalid",
+                GIT_CONFIG_GLOBAL=os.devnull, GIT_CONFIG_NOSYSTEM="1", PYTHONDONTWRITEBYTECODE="1")
+    res = {}
+    with tempfile.TemporaryDirectory(prefix="bounty-gate-") as tmp:
+        repo = os.path.join(tmp, "repo")
+        g = lambda *a: subprocess.run(["git", "-C", repo, *a], env=env0, capture_output=True, text=True, timeout=60)
+        os.makedirs(repo)
+        g("init", "-q", "-b", "main")
+        shutil.copytree(os.path.join(ROOT, "tools"), os.path.join(repo, "tools"), ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
+        shutil.copytree(os.path.join(ROOT, "bounties"), os.path.join(repo, "bounties"))
+        for f_ in glob.glob(os.path.join(repo, "bounties", "wave-2", "*.json")):     # this checkout's merged claims are not part of the cases
+            os.remove(f_)
+        shutil.copytree(os.path.join(ROOT, ".github"), os.path.join(repo, ".github"))
+        shutil.copytree(os.path.join(DOCS, "api", "v1"), os.path.join(repo, "docs", "api", "v1"))
+        with open(os.path.join(repo, "bounties", "wave-2", "ethereum-merged-claim.json"), "w") as fh:
+            json.dump(merged, fh)
+        g("add", "-A")
+        g("commit", "-q", "-m", "base")
+        base = g("rev-parse", "HEAD").stdout.strip()
+
+        def case(name, files, symlink=None):
+            g("checkout", "-q", "-B", "pr-" + name, base)
+            for rel, content in files.items():
+                path = os.path.join(repo, rel)
+                os.makedirs(os.path.dirname(path), exist_ok=True)
+                with open(path, "w") as fh:
+                    fh.write(content)
+            if symlink:
+                os.symlink(symlink[1], os.path.join(repo, symlink[0]))
+            g("add", "-A")
+            g("commit", "-q", "-m", name)
+            head_ = g("rev-parse", "HEAD").stdout.strip()
+            out_ = os.path.join(tmp, name + ".out")
+            open(out_, "w").close()
+            rt = os.path.join(tmp, "runner-" + name)
+            os.makedirs(rt)
+            e = dict(env0, BASE_SHA=base, HEAD_SHA=head_, GITHUB_OUTPUT=out_, RUNNER_TEMP=rt)
+            r1 = subprocess.run(["bash", "-e", "-c", blocks[0]], cwd=repo, env=e, capture_output=True, text=True, timeout=120)
+            if r1.returncode:
+                res[name] = (r1.returncode, None, r1.stdout)
+                return
+            f_ = dict(l.split("=", 1) for l in open(out_).read().split("\n") if "=" in l).get("file", "")
+            r2 = subprocess.run(["bash", "-e", "-c", blocks[1]], cwd=repo, env=dict(e, FILE=f_), capture_output=True, text=True, timeout=300)
+            res[name] = (0, r2.returncode, r2.stdout + r2.stderr)
+        ok_json = json.dumps(good, indent=2)
+        case("valid", {"bounties/wave-2/ethereum-example-lending.json": ok_json})
+        case("invalid_tvl", {"bounties/wave-2/ethereum-example-lending.json": json.dumps({**good, "tvlUsd": 1})})
+        case("duplicate_of_merged", {"bounties/wave-2/ethereum-example-lending.json": json.dumps({**good, "contractAddress": merged["contractAddress"],
+                                                                                                  "castCommands": merged["castCommands"]})})
+        case("plus_validator_edit", {"bounties/wave-2/ethereum-example-lending.json": ok_json,
+                                     "tools/verify_bounty_submission.py": "import sys\nsys.exit(0)\n"})
+        case("validator_only", {"tools/verify_bounty_submission.py": "import sys\nsys.exit(0)\n"})
+        case("workflow_edit", {"bounties/wave-2/ethereum-example-lending.json": ok_json, ".github/workflows/verify-bounty-pr.yml": "name: x\n"})
+        case("wrong_path", {"bounties/wave-2/polygon-example-lending.json": ok_json})
+        case("modify_existing", {"bounties/wave-2/ethereum-merged-claim.json": ok_json})
+        case("symlink", {}, symlink=("bounties/wave-2/ethereum-example-lending.json", "../../tools/verify_bounty_submission.py"))
+        case("chain_mismatch", {"bounties/wave-2/base-example-lending.json": ok_json})
+        case("wave1_fixture", {"bounties/submissions/slot-1-example-vault.json": json.dumps(VBS2.valid_fixture())})
+    return res
+
+
 def main(argv=None):
     cli = parse_args(argv)
     base = re.search(r'^BASE_URL = "([^"]+)"', read("tools/build_site.py"), re.M).group(1)
@@ -1974,6 +2068,179 @@ def main(argv=None):
     check("E1: pacta.wtf/bounties/ ($100 USDC hard cap = 4 x $25 USDC, Nov 15 – Nov 22, 2026, issues #21-#24, issue text verbatim, truthful post-merge Base USDC payout "
           "from the Pacta treasury EOA, Apache-2.0, rules), linked everywhere; PR template + deterministic validator (self-test); robots.txt 63 B",
           all(e1.values()), str([k for k, v in e1.items() if not v]))
+
+    # ================= Wave 2: 100 x $1 USDC pool + Wave 1 Genesis ledger + /leaderboard/ + hunter badges + CI gate =================
+    import stamp_wave1_payouts as SWP
+    from xml.sax.saxutils import escape as xesc
+    w2cfg = json.loads(read("tools/bounty_wave2.json"))
+    lb_ = BS.load_leaderboard()
+    claims_ = BS.load_wave2_claims()
+    n_claims = len([f_ for f_ in os.listdir(os.path.join(ROOT, "bounties", "wave-2")) if f_.endswith(".json")])
+    n_prot = len(json.loads(read("docs/api/v1/protocols.json"))["protocols"])
+    lbp = read("docs/leaderboard/index.html")
+    master = read("bounties/WAVE2-MASTER-ISSUE.md")
+    wf = read(".github/workflows/verify-bounty-pr.yml")
+    treas = w2cfg["settlement"]["treasuryAddress"]
+    no_safe = lambda t: not re.search(re.escape(treas) + r".{0,160}\b(?:Safe|multisig)\b", t, re.S | re.I)
+    hunters_ = BS.hunter_stats(lb_, claims_)
+    w2 = {
+        "single-sourced config (REWARD_USDC 1.00 = 1,000,000 atomic Base USDC, 100 slots, $100.00 cap, chain 8453, EOA treasury)":
+            (BS.REWARD_USDC, BS.REWARD_ATOMIC, BS.TOTAL_SLOTS, BS.TOTAL_CAP_USDC, BS.USDC_BASE) == ("1.00", 1_000_000, 100, "100.00", "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913")
+            and w2cfg["settlement"]["chainId"] == 8453 and w2cfg["settlement"]["treasuryKind"] == "EOA" and VBS.checksummed(treas)
+            and VBS.W2 == w2cfg and "100 × $1.00 USDC rolling pool ($100.00 USDC cap)" in read("docs/llms.txt"),
+        "Wave 1 archive source byte-identical (tools/bounty_issues.json 874df3fd...)":
+            hashlib.sha256(read("tools/bounty_issues.json", "rb")).hexdigest() == "874df3fd179ad241e3f2e4a7e837e9aa07f462a8a842b25fb1803049a6b84954",
+        "master issue: exact title, regenerates byte-identically, rendered verbatim on /bounties/":
+            master.split("\n", 1)[0] == "# [Wave 2 · 100 × $1 USDC] Continuous Agent & Researcher Control-Plane Mismatch Pool"
+            and master == BS.wave2_master_issue_md(n_prot) and BS.md_html(master.split("\n", 2)[2]) in bounty
+            and "python3 tools/verify_bounty_submission.py --json bounties/wave-2/<chain>-<slug>.json" in master and no_safe(master),
+        f"live counter = merged bounties/wave-2/*.json ({n_claims} / 100)": n_claims == len(claims_) and f'data-wave2-counter="{n_claims}"' in bounty
+            and f"<b>{n_claims} / 100 Slots Claimed</b> · $1.00 USDC / Merged Gap · $100.00 USDC Cap" in bounty
+            and (n_claims > 0 or "No Wave 2 slots claimed yet" in bounty),
+        "3 categories (>= $10M unindexed / >= $5M curated vault on 8 platforms / post-pin drift), 3 open PRs, 7-day weekly Base USDC to basePayoutAddress, EOA, not escrowed":
+            all(f'data-wave2-category="{c}"' in bounty for c in ("protocol_mismatch", "curated_vault_mismatch", "post_pin_drift"))
+            and "≥ $10M TVL" in bounty and "≥ $5M TVL" in bounty and f"any of Pacta&#x27;s {n_prot} indexed protocols" in bounty
+            and all(x in bounty for x in ("Morpho (MetaMorpho)", "Euler V2 (EVK)", "Concrete", "Veda / BoringVault", "Yearn V3", "Pendle", "Maple", "Centrifuge"))
+            and "3 concurrent open CI-passing PRs per contributor" in bounty and html.escape(BS.WAVE2_PAYOUT) in bounty
+            and "within 7 days of maintainer merge" in BS.WAVE2_PAYOUT and "an externally owned account" in BS.WAVE2_PAYOUT
+            and "basePayoutAddress" in BS.WAVE2_PAYOUT and "not pre-escrowed" in BS.WAVE2_PAYOUT and no_safe(bounty),
+        "Wave 1 Genesis Settlement Ledger (4 slots: PR #27 / #31 / #29 verified, Issue #24 in review; settled only with a real tx)":
+            [s_["slot"] for s_ in lb_["wave1Settlements"]] == [1, 2, 3, 4]
+            and [(s_["pr"], s_["hunter"], s_["protocol"]) for s_ in lb_["wave1Settlements"]] == [(27, "veriton-dev", "Stake DAO"), (31, "scavenger-osan", "Resupply"),
+                                                                                             (29, "kinshu7777", "YO Protocol"), (None, None, None)]
+            and all(f'data-w1-slot="{n}"' in bounty for n in (1, 2, 3, 4)) and all(f'/pull/{n}"' in bounty for n in (27, 31, 29))
+            and "In review through Nov 22, 2026" in bounty and bounty.count('data-settled="pending"') == sum(1 for s_ in lb_["wave1Settlements"]
+                                                                                                         if s_["status"] == "verified" and not s_["payoutTxHash"])
+            and bounty.count("data-basescan-tx") == sum(1 for s_ in lb_["wave1Settlements"] if s_["payoutTxHash"]),
+    }
+    # settlement truthfulness: stamp in memory -> BaseScan link + $25.00; malformed hashes refused by the stamp tool and the loader
+    fake = "0x" + "ab" * 32
+    lb0 = {**lb_, "wave1Settlements": [{**s_, "payoutTxHash": None} for s_ in lb_["wave1Settlements"]]}     # unstamped baseline
+    st_lb, st_changes = SWP.stamp(lb0, {1: fake})
+    led = BS.wave1_ledger_html(st_lb)
+    row1 = re.search(r'<tr data-w1-slot="1">.*?</tr>', led, re.S).group(0)
+    row2 = re.search(r'<tr data-w1-slot="2">.*?</tr>', led, re.S).group(0)
+    refused = []
+    for bad_tx, slot_ in (("0x123", 1), ("0x" + "00" * 32, 1), ("0x" + "zz" * 32, 2), (fake, 4)):
+        try:
+            SWP.stamp(lb0, {slot_: bad_tx})
+        except ValueError:
+            refused.append(slot_)
+    tmpd = os.environ.get("TMPDIR") or ROOT
+    bad_lb = os.path.join(tmpd, "w2-bad-leaderboard.json")
+    with open(bad_lb, "w") as fh:
+        fh.write(SWP.dump({**lb_, "wave1Settlements": [{**lb_["wave1Settlements"][0], "payoutTxHash": "0xdeadbeef"}] + lb_["wave1Settlements"][1:]}))
+    try:
+        BS.load_leaderboard(bad_lb)
+        loader_refuses = False
+    except AssertionError:
+        loader_refuses = True
+    os.remove(bad_lb)
+    copy_lb = os.path.join(tmpd, "w2-copy-leaderboard.json")
+    with open(copy_lb, "w") as fh:
+        fh.write(SWP.dump(lb0))
+    dry_rc = SWP.main(["--slot1-tx", fake, "--dry-run", "--leaderboard", copy_lb])
+    dry_same = open(copy_lb).read() == SWP.dump(lb0)
+    real_rc = SWP.main(["--slot1-tx", fake.upper().replace("0X", "0x"), "--slot2-tx", fake, "--leaderboard", copy_lb])
+    stamped = json.load(open(copy_lb))
+    again_rc = SWP.main(["--slot1-tx", "0x" + "cd" * 32, "--leaderboard", copy_lb])
+    os.remove(copy_lb)
+    st_rows = {h_["handle"]: h_ for h_ in BS.hunter_stats(st_lb, claims_)}
+    w2["stamp_wave1_payouts.py: 1-command stamp -> BaseScan tx link + $25.00 USDC; pending elsewhere; bad / zero hashes, unverified slot, silent overwrite refused"] = (
+        f'href="https://basescan.org/tx/{fake}"' in row1 and "$25.00 USDC" in row1 and "Settled on Base" in row1 and "$0.00 (pending settlement)" in row2
+        and len(st_changes) == 1 and refused == [1, 1, 2, 4] and loader_refuses and dry_rc == 0 and dry_same and real_rc == 0
+        and [s_["payoutTxHash"] for s_ in stamped["wave1Settlements"]] == [fake, fake, None, None] and again_rc == 2
+        and st_rows["veriton-dev"]["settled"] == 25_000_000 and st_rows["kinshu7777"]["settled"] == 0
+        and SWP.dump(lb_) == read("bounties/leaderboard.json"))
+    paid_ = [s_ for s_ in lb_["wave1Settlements"] if s_["payoutTxHash"]]
+    w2["Wave 1 settlements stamped: each recorded payout hash is a real 0x + 64-hex tx, linked to BaseScan with $25.00 USDC on /bounties/ and credited on /leaderboard/"] = (
+        all(BS.tx_ok(s_["payoutTxHash"]) and s_["status"] == "verified" for s_ in paid_)
+        and all(f'href="https://basescan.org/tx/{s_["payoutTxHash"]}"' in re.search(rf'<tr data-w1-slot="{s_["slot"]}">.*?</tr>', bounty, re.S).group(0)
+                and "Settled on Base" in re.search(rf'<tr data-w1-slot="{s_["slot"]}">.*?</tr>', bounty, re.S).group(0) for s_ in paid_)
+        and all(f'href="https://basescan.org/tx/{s_["payoutTxHash"]}"' in lbp for s_ in paid_))
+    # /leaderboard/
+    lb_rows = re.findall(r'<tr id="hunter-([a-z0-9-]+)" data-hunter="([^"]+)"><td class="num">(\d+)</td>', lbp)
+    w2["/leaderboard/: hunters ranked (verified catches > protocols > EAS > settled), frameworks, copy-badge Markdown + Share on X per hunter, settled only with tx; linked from /bounties/, footer, sitemap, llms.txt, llms-full.txt, /llms/"] = (
+        [h_ for _, h_, _ in lb_rows] == [h_["handle"] for h_ in hunters_] and len(lb_rows) == len(hunters_) >= 3
+        and [int(r_) for _, _, r_ in lb_rows] == [h_["rank"] for h_ in hunters_]
+        and all(f'data-copy="{html.escape(BS.badge_markdown(h_["handle"]))}"' in lbp and html.escape(BS.share_x_href(h_)) in lbp
+                and f'src="../badges/hunters/{h_["handle"]}.svg"' in lbp for h_ in hunters_)
+        and lbp.count("data-share-x") == len(hunters_) and all(u.startswith("https://x.com/intent/tweet?") for u in re.findall(r'href="([^"]+)"[^>]*data-share-x', lbp))
+        and lbp.count('data-settled="pending"') == sum(1 for h_ in hunters_ if not h_["txs"])
+        and lbp.count("data-basescan-tx") == sum(len(set(h_["txs"])) for h_ in hunters_)
+        and all(f'<b data-settled="{h_["settled"]}">{BS.usdc(h_["settled"])} USDC</b>' in lbp for h_ in hunters_ if h_["txs"])
+        and 'data-frameworks' in lbp and 'data-framework="openclaw"' in lbp and 'data-framework="not stated"' in lbp
+        and 'href="../leaderboard/"' in bounty and f"<loc>{BS.BASE_URL}/leaderboard/</loc>" in read("docs/sitemap.xml")
+        and all(f"{BS.BASE_URL}/leaderboard/" in read(f_) for f_ in ("docs/llms.txt", "docs/llms-full.txt", "docs/llms/index.html"))
+        and all('leaderboard/">Leaderboard</a>' in t for r, t in pages.items() if 'class="ftr"' in t)
+        and not any('leaderboard/">' in re.search(r'<nav class="nav".*?</nav>', t, re.S).group(0) for t in pages.values() if '<nav class="nav"' in t))
+    inline_on = [r for r in ("bounties/index.html", "leaderboard/index.html") if re.search(r"<[^>]+\son[a-z]+\s*=", read("docs/" + r))]
+    extra_js = [r for r in ("bounties/index.html", "leaderboard/index.html")
+                if len(re.findall(r"<script(?![^>]*\bsrc=)(?![^>]*application/ld\+json)[^>]*>", read("docs/" + r))) != 1]
+    w2["CSP-safe: 0 inline event handlers, no new inline <script> on /bounties/ and /leaderboard/ (copy via data-copy in app.js, share via a plain link)"] = (
+        not inline_on and not extra_js and "javascript:" not in bounty + lbp)
+    # hunter badges
+    bdir = os.path.join(DOCS, "badges", "hunters")
+    bfiles = sorted(os.listdir(bdir))
+    badge_bad = []
+    for h_ in hunters_:
+        raw_ = read(f"docs/badges/hunters/{h_['handle']}.svg")
+        try:
+            ET.fromstring(raw_)
+            inner_raw = re.search(r'<svg x="4" y="2" width="16" height="16" viewBox="0 0 1000 1000">.*?</svg>', raw_, re.S).group(0)
+            geo_ok = logo_geometry(inner_raw.replace('<svg x="4" y="2" width="16" height="16" viewBox', '<svg xmlns="http://www.w3.org/2000/svg" viewBox')) \
+                == logo_geometry(read("docs/logo.svg"))
+        except (ET.ParseError, AttributeError):
+            geo_ok = False
+        if not (geo_ok and raw_ == BS.hunter_badge_svg(h_["handle"], len(h_["catches"])) and "<script" not in raw_ and not re.search(r"\son[a-z]+=|href=", raw_)
+                and f"{h_['handle']} · {len(h_['catches'])} verified" in raw_):
+            badge_bad.append(h_["handle"])
+    xss_refused = []
+    for evil in ('<script>alert(1)</script>', "../../index", "a/b", "x" * 40, "", "dot.name", 'q"onload="x'):
+        try:
+            BS.hunter_badge_svg(evil, 1)
+        except ValueError:
+            try:
+                BS.hunter_badge_path(evil)
+            except ValueError:
+                xss_refused.append(evil)
+    ok_svg = BS.hunter_badge_svg("a_b-C9", 2)
+    w2["hunter SVG badges: one per hunter (strict [A-Za-z0-9_-]{1,39} names, realpath containment), valid XML, official mark embedded, escaped text, 0 script / handlers / links; traversal + markup handles refused"] = (
+        bfiles == sorted(f"{h_['handle']}.svg" for h_ in hunters_) and not badge_bad and len(xss_refused) == 7
+        and ET.fromstring(ok_svg) is not None and "a_b-C9 · 2 verified" in ok_svg and xesc("<&>") == "&lt;&amp;&gt;"
+        and os.path.dirname(BS.hunter_badge_path("ok-name")) == os.path.realpath(bdir))
+    # Wave 2 validator v2 + README schema
+    rd_ = read("bounties/wave-2/README.md")
+    ex = json.loads(re.search(r"```json\n(.*?)```", rd_, re.S).group(1))
+    w2["validator v2: Wave 1 cases unchanged + Wave 2 self-test (3 categories, negatives), README example valid, every FIELDS_WAVE2 key documented, auto-detect by wave/path"] = (
+        VBS.self_test() and VBS.self_test_wave2(VBS.indexed()) and VBS.validate_wave2(ex) == []
+        and VBS.wave2_name_problems("bounties/wave-2/ethereum-example-lending.json", ex) == [] and all(f"`{k}`" in rd_ for k in VBS.FIELDS_WAVE2)
+        and VBS.is_wave2("bounties/wave-2/x.json", {}) and not VBS.is_wave2("bounties/submissions/slot-1-x.json", {"slot": 1}))
+    # CI gate: static invariants + behaviour in throw-away repos
+    runs = workflow_run_blocks(wf)
+    w2["workflow static security: pull_request only (paths bounties/**), permissions contents: read, persist-credentials: false, SHAs via env only, validator from BASE_SHA"] = (
+        "pull_request_target" not in re.sub(r"(?m)^\s*#.*$", "", wf) and re.search(r"^on:\n  pull_request:\n    paths: \[\"bounties/\*\*\"\]\n", wf, re.M) is not None
+        and re.search(r"^permissions:\n  contents: read\n", wf, re.M) is not None and "write" not in re.sub(r"#.*", "", wf).split("jobs:")[0].replace("GITHUB_OUTPUT", "")
+        and "persist-credentials: false" in wf and "fetch-depth: 0" in wf and "secrets." not in wf
+        and len(runs) == 2 and not any("${{" in r_ for r_ in runs)
+        and wf.count("BASE_SHA: ${{ github.event.pull_request.base.sha }}") == 2 and wf.count("HEAD_SHA: ${{ github.event.pull_request.head.sha }}") == 2
+        and 'git show "$BASE_SHA:tools/verify_bounty_submission.py"' in runs[1] and "python3 -I tools/verify_bounty_submission.py" in runs[1]
+        and r"^bounties/wave-2/(ethereum|base|arbitrum)-[a-z0-9]+(-[a-z0-9]+)*\.json$" in runs[0] and "100644" in runs[0] and "--no-renames" in runs[0])
+    sim = bounty_gate_simulation()
+    want = {"valid": (0, 0), "invalid_tvl": (0, 1), "duplicate_of_merged": (0, 1), "plus_validator_edit": (1, None), "validator_only": (1, None),
+            "workflow_edit": (1, None), "wrong_path": (1, None), "modify_existing": (1, None), "symlink": (1, None), "chain_mismatch": (0, 1),
+            "wave1_fixture": (0, 0)}
+    sim_bad = {k: v[:2] for k, v in sim.items() if want.get(k) != v[:2]}
+    w2["CI gate behaviour (bash + git, throw-away repos): valid fixture passes; bad TVL / duplicate of a merged claim / chain-name mismatch fail validation; validator or workflow edits, a 2nd file, a modified file, a symlink or a wrong path fail BEFORE any Python"] = (
+        set(sim) == set(want) and not sim_bad and "duplicate:" in sim["duplicate_of_merged"][2])
+    m_ = json.loads(read("docs/api/v1/graph-manifest.json"))
+    w2["graph manifest byte-identical with 0 merged Wave 2 fixtures (f7ffddd5...; Wave 2 never feeds tools/graph_manifest.py)"] = (
+        hashlib.sha256(read("docs/api/v1/graph-manifest.json", "rb")).hexdigest() == "f7ffddd52e75b328532d9a4de57352249d5abbe9da4b584a7b8ce3403ceb9da5"
+        and (m_.get("sources") or {}).get("bounty_submissions") == [] and "wave-2" not in read("tools/graph_manifest.py"))
+    check("W2: Wave 2 rolling pool (100 x $1.00 USDC = $100.00 cap, live counter, 3 categories, weekly Base USDC to the fixture's basePayoutAddress from the EOA), "
+          "Wave 1 Genesis Archive + settlement ledger (stamp tool, BaseScan links only with a real tx), /leaderboard/ + hunter SVG badges, validator v2, "
+          "hardened pull_request CI gate (static + simulated), graph manifest unchanged",
+          all(w2.values()), f"{[k[:60] for k, v in w2.items() if not v]} sim {sim_bad} badges {badge_bad} refused {len(xss_refused)}")
 
     scope = [p for p in glob.glob(os.path.join(ROOT, "docs", "**", "*"), recursive=True) + glob.glob(os.path.join(ROOT, "audits", "**", "*"), recursive=True)
              + glob.glob(os.path.join(ROOT, "tools", "**", "*"), recursive=True) + [os.path.join(ROOT, "README.md"), os.path.abspath(__file__)]

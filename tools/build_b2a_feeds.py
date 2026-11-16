@@ -48,6 +48,16 @@ BOUNTIES_URL = "https://pacta.wtf/bounties/"
 BOUNTIES_DOC = ("Bounties ($100): Pacta Chain-Feed Mismatch Challenge, 4 × $25 USDC = $100 USDC hard cap, 7-day sprint Nov 15 – Nov 22, 2026: "
                 "a verified on-chain control-plane parameter_delta on an unindexed protocol, or live drift on an indexed one, submitted as a PR to "
                 "Fractal-Neurons/pacta. Paid in USDC on Base Mainnet after maintainer merge (not pre-escrowed): " + BOUNTIES_URL)
+_W2 = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "bounty_wave2.json")))
+_W2_TVL = {k: f"${v['minTvlUsd'] // 1_000_000}M" for k, v in _W2["categories"].items() if v["minTvlUsd"]}
+LEADERBOARD_URL = "https://pacta.wtf/leaderboard/"
+WAVE2_DOC = (f"Bounties Wave 2: {_W2['totalSlots']} × ${_W2['rewardUsdc']} USDC rolling pool (${_W2['totalCapUsdc']} USDC cap), one merged verified "
+             f"control-plane mismatch per slot: an unindexed protocol (>= {_W2_TVL['protocol_mismatch']} TVL), a curated vault (>= "
+             f"{_W2_TVL['curated_vault_mismatch']} TVL), or post-snapshot drift on an indexed protocol; one JSON fixture per PR at "
+             f"{_W2['fixtureDir']}/<chain>-<slug>.json, checked by CI; paid in USDC on Base within {_W2['settlement']['windowDays']} days of maintainer "
+             f"merge in weekly batches to the fixture's basePayoutAddress (not pre-escrowed): {BOUNTIES_URL}#wave-2")
+LEADERBOARD_DOC = ("Hunter leaderboard: verified catches, protocols covered, Base EAS attestations and settled Base USDC per hunter and agent "
+                   "framework (settled only with a BaseScan payout tx), with README badges at /badges/hunters/<handle>.svg: " + LEADERBOARD_URL)
 REQUEST_DOC = ("Opt-in demand intake: when a result carries coverage_gap_hint (lookup miss, unindexed or unclassified pre-flight target, unsupported chain), "
                "ask the user, then call pacta_submit_request (or POST " + REQUESTS_URL + ") with the three caller fields, request_type "
                "(missing_protocol | unsupported_chain | missing_check_surface | doc_or_data_discrepancy | mcp_or_api_feature), target_subject, "
@@ -301,6 +311,8 @@ def llms_full(idx, radar, prop, onb, pinned=None):
          f"- {LOOKUP_DOC}",
          f"- {REQUEST_DOC}",
          f"- {BOUNTIES_DOC}",
+         f"- {WAVE2_DOC}",
+         f"- {LEADERBOARD_DOC}",
          f"- Vault factories and curators: {BASE}/integrations/vault-factories/ (Control-Plane & Role Map tab from {BASE}/api/v1/protocols.json, status badges {BASE}/badges/<slug>.svg and {X402_URL}/v1/badges/<slug>.svg, and PactaSentinelGuard.sol: refuses cap increases without a healthy Pacta attestation, never blocks a decrease).",
          f"- Stdio tools ({STDIO_TOOLS_DOC}):"] + [f"  - {n} ({p}): {d}" for n, p, d in MCP_TOOLS] + [
          f"- Paid tools are disabled unless PACTA_X402_URL is set (opt-in: PACTA_X402_URL={X402_URL}); the client refuses any 402 challenge (v1 body or v2 "

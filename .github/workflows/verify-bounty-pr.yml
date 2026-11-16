@@ -1,0 +1,87 @@
+# Pre-review gate for bounty PRs (https://pacta.wtf/bounties/). Security model:
+# - trigger is pull_request (never pull_request_target): fork PRs get a read-only token and no secrets;
+# - top-level permissions: contents: read; checkout with persist-credentials: false;
+# - the PR SHAs reach the shell only through env: (never ${{ }} inside run:);
+# - before any Python runs, the diff must be exactly ONE added regular file (mode 100644, <= 64 KiB) matching
+#   bounties/wave-2/<chain>-<slug>.json (or a Wave 1 bounties/submissions/slot-<1-4>-<slug>.json);
+# - that JSON is validated with tools/verify_bounty_submission.py from the trusted BASE commit (git show "$BASE_SHA:..."),
+#   so no code from the PR is ever executed. The PR only contributes data.
+name: verify-bounty-pr
+
+on:
+  pull_request:
+    paths: ["bounties/**"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-bounty-pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Gate - exactly one added bounty fixture
+        id: gate
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          for s in "$BASE_SHA" "$HEAD_SHA"; do
+            [[ "$s" =~ ^[0-9a-f]{40}$ ]] || { echo "::error::unexpected commit id"; exit 1; }
+          done
+          MB="$(git merge-base "$BASE_SHA" "$HEAD_SHA")"
+          mapfile -t CHANGES < <(git diff --no-renames --no-ext-diff --name-status "$MB" "$HEAD_SHA")
+          if [ "${#CHANGES[@]}" -ne 1 ]; then
+            echo "::error::a bounty PR must change exactly 1 file (found ${#CHANGES[@]}); do not touch tools/, docs/ or .github/"
+            printf '%s\n' "${CHANGES[@]}"
+            exit 1
+          fi
+          STATUS="${CHANGES[0]%%$'\t'*}"
+          FILE="${CHANGES[0]#*$'\t'}"
+          if [ "$STATUS" != "A" ]; then
+            echo "::error::the bounty fixture must be a newly added file (git status $STATUS)"; exit 1
+          fi
+          if [[ "$FILE" =~ ^bounties/wave-2/(ethereum|base|arbitrum)-[a-z0-9]+(-[a-z0-9]+)*\.json$ ]]; then
+            :
+          elif [[ "$FILE" =~ ^bounties/submissions/slot-[1-4]-[a-z0-9]+(-[a-z0-9]+)*\.json$ ]]; then
+            :
+          else
+            echo "::error::unexpected path; Wave 2 fixtures go to bounties/wave-2/<chain>-<slug>.json"; exit 1
+          fi
+          MODE="$(git ls-tree "$HEAD_SHA" -- "$FILE" | cut -d' ' -f1)"
+          TYPE="$(git ls-tree "$HEAD_SHA" -- "$FILE" | cut -d' ' -f2)"
+          if [ "$MODE" != "100644" ] || [ "$TYPE" != "blob" ]; then
+            echo "::error::the fixture must be a regular file (mode 100644), not a symlink or executable (got $MODE $TYPE)"; exit 1
+          fi
+          SIZE="$(git cat-file -s "$HEAD_SHA:$FILE")"
+          if [ "$SIZE" -gt 65536 ]; then
+            echo "::error::the fixture is larger than 64 KiB"; exit 1
+          fi
+          echo "file=$FILE" >> "$GITHUB_OUTPUT"
+
+      - name: Validate with the base-branch validator (no PR code runs)
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          FILE: ${{ steps.gate.outputs.file }}
+        run: |
+          set -euo pipefail
+          TRUSTED="$RUNNER_TEMP/trusted"
+          rm -rf "$TRUSTED" && mkdir -p "$TRUSTED"
+          # the validator, its imports and their data (docs/api/v1), and the already merged claims, all from the base commit
+          git archive "$BASE_SHA" tools docs/api/v1 bounties .github/PULL_REQUEST_TEMPLATE | tar -x -C "$TRUSTED"
+          git show "$BASE_SHA:tools/verify_bounty_submission.py" > "$TRUSTED/tools/verify_bounty_submission.py"
+          mkdir -p "$TRUSTED/$(dirname "$FILE")"
+          git show "$HEAD_SHA:$FILE" > "$TRUSTED/$FILE"       # the PR's only contribution: one JSON data file
+          cd "$TRUSTED"
+          python3 -I tools/verify_bounty_submission.py --json "$FILE"

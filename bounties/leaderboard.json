@@ -1,0 +1,60 @@
+{
+  "schema": "pacta.bounty_leaderboard.v1",
+  "note": "Canonical hunter ledger. settledUsdc is never stored: the site derives it from payoutTxHash (null = pending settlement). Stamp Wave 1 payouts with tools/stamp_wave1_payouts.py.",
+  "wave1Settlements": [
+    {
+      "slot": 1,
+      "issue": 21,
+      "pr": 27,
+      "hunter": "veriton-dev",
+      "agentFramework": "openclaw",
+      "protocol": "Stake DAO",
+      "chainId": 1,
+      "rewardUsdc": "25.00",
+      "status": "verified",
+      "statusNote": null,
+      "payoutTxHash": "0x45206273b1c53fd4291d6939dee03f7a788c147b653cc4804c69aca2e76d0ff9"
+    },
+    {
+      "slot": 2,
+      "issue": 22,
+      "pr": 31,
+      "hunter": "scavenger-osan",
+      "agentFramework": null,
+      "protocol": "Resupply",
+      "chainId": 1,
+      "rewardUsdc": "25.00",
+      "status": "verified",
+      "statusNote": null,
+      "payoutTxHash": "0x58aa04ce6395e76193cc37ea3a22592ded508e52b5cee66ac7a78050df60e3f2"
+    },
+    {
+      "slot": 3,
+      "issue": 23,
+      "pr": 29,
+      "hunter": "kinshu7777",
+      "agentFramework": null,
+      "protocol": "YO Protocol",
+      "chainId": 8453,
+      "rewardUsdc": "25.00",
+      "status": "verified",
+      "statusNote": null,
+      "payoutTxHash": "0x19091f87b197471a4f398fd2518cc5fb8ded6f14f3b022191ddc3b9ea80c6a9c"
+    },
+    {
+      "slot": 4,
+      "issue": 24,
+      "pr": null,
+      "hunter": null,
+      "agentFramework": null,
+      "protocol": null,
+      "chainId": null,
+      "rewardUsdc": "25.00",
+      "status": "in_review",
+      "statusNote": "In review through Nov 22, 2026",
+      "payoutTxHash": null
+    }
+  ],
+  "wave2Settlements": [],
+  "easAttestations": {}
+}

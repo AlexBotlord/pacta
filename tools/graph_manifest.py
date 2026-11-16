@@ -165,6 +165,9 @@ def build(root, controller_facts=None, protocols_override=None, use_minted=True)
     slugs = [p["slug"] for p in protocols]
     assert len(slugs) == len(set(slugs)), "duplicate protocol slugs"
     by_slug = {p["slug"]: p for p in protocols}
+    # merged bounty fixtures join the graph only once their protocol is published (pactaSlug in protocols.json); unindexed Wave 1
+    # catches (pactaSlug null) stay out until a sprint indexes them, so the manifest does not change when they are merged
+    subs = [p for p in subs if _load(p).get("pactaSlug") in by_slug]
     anc = idx["onchain_anchoring"]
     uids = {int(k): v for k, v in anc["sprint_eas_attestations"].items()}
     txs = anc["attestation_coverage"]["eas_multi_attest_txs"]

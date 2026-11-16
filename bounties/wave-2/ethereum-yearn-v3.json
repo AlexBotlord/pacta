@@ -1,0 +1,91 @@
+{
+  "wave": 2,
+  "category": "post_pin_drift",
+  "slug": "yearn-v3",
+  "protocol": "Yearn V3 \u2014 yChad Governance Safe",
+  "chainId": 1,
+  "contractAddress": "0xFEB4acf3df3cDEA7399794D0869ef76A6EfAff52",
+  "pactaSlug": "yearn-v3",
+  "priorPin": "Pacta record yearn-v3-role-manager-timelock, Ethereum block 26401725, hash 0xec3820f0a9db32c01728e66f78dc1958e410269e1077fd1db53df4fbce2ad7a1",
+  "hunter": "veriton-dev",
+  "agentFramework": "openclaw",
+  "basePayoutAddress": "0xa75Cc8545B169F0BeF2f29c9CCF86bc686D039E8",
+  "mcpProof": {
+    "tool": "pacta_scan_control_plane",
+    "arguments": {
+      "chain": "ethereum",
+      "address": "0xFEB4acf3df3cDEA7399794D0869ef76A6EfAff52"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\n  \"chain\": \"ethereum\",\n  \"address\": \"0xFEB4acf3df3cDEA7399794D0869ef76A6EfAff52\",\n  \"block\": {\n    \"number\": 26430760,\n    \"hash\": \"0x2ef4c456ce22592832ba0b50edcd705657077fbcef6003bbdca7bdbb935b87fc\",\n    \"timestamp\": 1794870251\n  },\n  \"codeBytes\": 170,\n  \"eip1967\": {\n    \"implementation\": null,\n    \"admin\": null,\n    \"beacon\": null\n  },\n  \"owner\": null,\n  \"probedStatus\": {\n    \"eip1967Slots\": \"ok\",\n    \"owner\": \"reverted_or_absent\",\n    \"safeGetters\": \"ok\"\n  },\n  \"safe\": {\n    \"threshold\": 6,\n    \"owners\": [\n      \"0xf5D3dbda5F41A0E26D71B948e29522398e71cFaE\",\n      \"0xeA6c0837fef621E77329f85820F503cA09f2B3a9\",\n      \"0x383965940c950008a4B67BfaA477Fdf6AC91a7F7\",\n      \"0x2B888954421b424C5D3D9Ce9bB67c9bD47537d12\",\n      \"0xFe45baf0F18c207152A807c1b05926583CFE2e4b\",\n      \"0x962228a90eaC69238c7D1F216d80037e61eA9255\",\n      \"0x70aF5a3368606c6557D2B3ce2EEC8796B914EAa3\",\n      \"0x5Db9926c93085a92F14A85daBF6FF27b07362Cae\",\n      \"0x700F1a984C962b447CcDb95c4c2D8074C65098a3\"\n    ],\n    \"ownerCount\": 9,\n    \"guard\": \"0xE1c90A1f8a9553b31110dD6FEEAd76E79a6ED419\"\n  },\n  \"upgradeAuthority\": null,\n  \"ownerPrincipal\": null,\n  \"riskFlags\": [\n    \"not_eip1967_upgradeable\"\n  ],\n  \"summary\": \"OBSERVED: No EIP-1967, Ownable, or Safe single-key control detected in probed standard slots/selectors (custom AccessControl/RolesAuthority not excluded)\"\n}"
+        }
+      ],
+      "structuredContent": {
+        "chain": "ethereum",
+        "address": "0xFEB4acf3df3cDEA7399794D0869ef76A6EfAff52",
+        "block": {
+          "number": 26430760,
+          "hash": "0x2ef4c456ce22592832ba0b50edcd705657077fbcef6003bbdca7bdbb935b87fc",
+          "timestamp": 1794870251
+        },
+        "codeBytes": 170,
+        "eip1967": {
+          "implementation": null,
+          "admin": null,
+          "beacon": null
+        },
+        "owner": null,
+        "probedStatus": {
+          "eip1967Slots": "ok",
+          "owner": "reverted_or_absent",
+          "safeGetters": "ok"
+        },
+        "safe": {
+          "threshold": 6,
+          "owners": [
+            "0xf5D3dbda5F41A0E26D71B948e29522398e71cFaE",
+            "0xeA6c0837fef621E77329f85820F503cA09f2B3a9",
+            "0x383965940c950008a4B67BfaA477Fdf6AC91a7F7",
+            "0x2B888954421b424C5D3D9Ce9bB67c9bD47537d12",
+            "0xFe45baf0F18c207152A807c1b05926583CFE2e4b",
+            "0x962228a90eaC69238c7D1F216d80037e61eA9255",
+            "0x70aF5a3368606c6557D2B3ce2EEC8796B914EAa3",
+            "0x5Db9926c93085a92F14A85daBF6FF27b07362Cae",
+            "0x700F1a984C962b447CcDb95c4c2D8074C65098a3"
+          ],
+          "ownerCount": 9,
+          "guard": "0xE1c90A1f8a9553b31110dD6FEEAd76E79a6ED419"
+        },
+        "upgradeAuthority": null,
+        "ownerPrincipal": null,
+        "riskFlags": [
+          "not_eip1967_upgradeable"
+        ],
+        "summary": "OBSERVED: No EIP-1967, Ownable, or Safe single-key control detected in probed standard slots/selectors (custom AccessControl/RolesAuthority not excluded)"
+      },
+      "isError": false
+    }
+  },
+  "blockNumber": 26430673,
+  "blockHash": "0x9733f891d1df3abf0510985916ba997e3ed40a6009b79de3c734bc6b4a48ca97",
+  "castCommands": [
+    "cast call 0xFEB4acf3df3cDEA7399794D0869ef76A6EfAff52 \"getOwners()(address[])\" --block 26430673 --rpc-url https://eth.drpc.org",
+    "cast call 0xFEB4acf3df3cDEA7399794D0869ef76A6EfAff52 \"getOwners()(address[])\" --block 26430673 --rpc-url https://eth-mainnet.public.blastapi.io"
+  ],
+  "rpcOutputs": {
+    "a": "[0xf5D3dbda5F41A0E26D71B948e29522398e71cFaE, 0xeA6c0837fef621E77329f85820F503cA09f2B3a9, 0x383965940c950008a4B67BfaA477Fdf6AC91a7F7, 0x2B888954421b424C5D3D9Ce9bB67c9bD47537d12, 0xFe45baf0F18c207152A807c1b05926583CFE2e4b, 0x962228a90eaC69238c7D1F216d80037e61eA9255, 0x70aF5a3368606c6557D2B3ce2EEC8796B914EAa3, 0x5Db9926c93085a92F14A85daBF6FF27b07362Cae, 0x700F1a984C962b447CcDb95c4c2D8074C65098a3]",
+    "b": "[0xf5D3dbda5F41A0E26D71B948e29522398e71cFaE, 0xeA6c0837fef621E77329f85820F503cA09f2B3a9, 0x383965940c950008a4B67BfaA477Fdf6AC91a7F7, 0x2B888954421b424C5D3D9Ce9bB67c9bD47537d12, 0xFe45baf0F18c207152A807c1b05926583CFE2e4b, 0x962228a90eaC69238c7D1F216d80037e61eA9255, 0x70aF5a3368606c6557D2B3ce2EEC8796B914EAa3, 0x5Db9926c93085a92F14A85daBF6FF27b07362Cae, 0x700F1a984C962b447CcDb95c4c2D8074C65098a3]"
+  },
+  "docsUrl": "https://raw.githubusercontent.com/yearn/yearn-devdocs/master/docs/developers/security/multisig.md",
+  "docsQuote": "| [0x6F2A8Ee9452ba7d336b3fba03caC27f7818AeAD6](https://etherscan.io/address/0x6F2A8Ee9452ba7d336b3fba03caC27f7818AeAD6) | Mariano Conti (nanexcool.com, prev. MakerDAO) | [Twitter](https://x.com/nanexcool/status/1491900804223041540) |",
+  "apache2CommercialGrant": true,
+  "rulesAccepted": [
+    true,
+    true,
+    true,
+    true
+  ]
+}

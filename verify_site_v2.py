@@ -36,6 +36,7 @@ import html
 import json
 import os
 import re
+import base64
 import shutil
 import struct
 import subprocess
@@ -1756,7 +1757,9 @@ def main(argv=None):
           # the 4th fetch: the user-initiated "Verify live on RPC" button, POSTing JSON-RPC only to the four allow-listed public RPCs
           and "      return fetch(url, opts).then(function (res) { return res.json(); })" in appjs
           and re.search(r'var LIVE_RPCS = \{ ethereum: \["https://ethereum-rpc\.publicnode\.com", "https://eth\.drpc\.org"\],\s*base: \["https://base-rpc\.publicnode\.com", "https://mainnet\.base\.org"\] \};', appjs) is not None
-          and appjs.count("rpcCall(") == 4 and 'btn.addEventListener("click", function () {' in appjs[appjs.index("function liveVerifyBtn"):appjs.index("function pfRow")]
+          and appjs.count("rpcCall(") == 8 and len(re.findall(r'rpcCall\([a-z.]+, "(\w+)"', appjs)) == 7
+          and set(re.findall(r'rpcCall\([a-z.]+, "(\w+)"', appjs)) == {"eth_blockNumber", "eth_call", "eth_getStorageAt", "eth_getBlockByNumber", "eth_getCode"}
+          and 'btn.addEventListener("click", function () {' in appjs[appjs.index("function liveVerifyBtn"):appjs.index("function pfRow")]
           and "    fetch(url, init)\n" in appjs and "if (!LIVE_TL_RE.test(url)) return;" in appjs
           and set(re.findall(r'data-live-timelocks="([^"]+)"', "".join(pages.values()))) == {html.escape(BS.LIVE_TIMELOCKS_URL)}
           and BS.LIVE_TIMELOCKS_URL.startswith(API_ + "/v1/briefs/live-timelocks?")
@@ -2490,11 +2493,14 @@ def main(argv=None):
         and all(x in home_p for x in ("data-snapshot-pinned>Snapshot pinned at", "data-last-recheck>Last live re-check", "data-radar-refresh>Refresh",
                                       "data-snapshot-fallback>Showing pinned historical snapshot"))
         and res.get("pf_http_error_reported") is True)
-    pp["F05 + V05: cast block hash check + getOwners() next to getThreshold() in the repro; plain-English verdict + heuristic framing + raw enum / JSON; live check vs pinned comparison; 1-click 'Verify live on RPC' (publicnode with drpc / mainnet.base.org fallback, latency) in pre-flight and inspector (harness)"] = (
+    pp["F05 + V05: cast block hash check + getOwners() next to getThreshold() in the repro; plain-English verdict + heuristic framing + raw enum / JSON (IMMUTABLE_NO_ADMIN = 'No standard upgrade or admin authority detected'); live check vs pinned comparison; 1-click 'Verify live on RPC' (publicnode with drpc / mainnet.base.org fallback): eth_blockNumber first, then reads pinned to that hex block, full hex + decoded value + live block # + host + ms; pre-flight = pinned block hash match + live eth_getCode and owner() / EIP-1967 admin slot (harness click tests, mocked JSON-RPC)"] = (
         '"cast block " + r.pinnedBlock + " --field hash' in app_p and '"getOwners()(address[])"' in app_p
         and all(u in app_p for u in ("https://ethereum-rpc.publicnode.com", "https://eth.drpc.org", "https://base-rpc.publicnode.com", "https://mainnet.base.org"))
         and 'UNCLASSIFIED_CONTRACT_CONTROLLER: "Controller needs further review"' in app_p
-        and res.get("pp2_verdict_plain") is True and res.get("pp2_inspector_live_verify") is True)
+        and 'IMMUTABLE_NO_ADMIN: "No standard upgrade or admin authority detected"' in app_p and "cannot be changed" not in app_p
+        and res.get("pp2_verdict_plain") is True
+        and all(res.get(k) is True for k in ("pp3_inspector_live_rpc", "pp3_preflight_live_rpc_proxy", "pp3_immutable_headline",
+                                             "pp3_preflight_live_rpc_owner", "pp3_live_rpc_failure")))
     pp["S02 + V07: 'The contract check runs only when you press Run' + aggregate-pageview note; /bounties/ pill leads with funded slots open now"] = (
         "The contract check runs only when you press Run" in home_p and "anonymous first-party aggregate pageviews" in home_p
         and f'data-bounty-pill>{BS.FUNDED_UNENCUMBERED_SLOTS} Funded Slots Open Now · ${BS.REWARD_USDC} USDC / Merged Finding</span>' in read("docs/bounties/index.html")
@@ -2507,9 +2513,9 @@ def main(argv=None):
     themes = {"paper": css_p[css_p.index(":root {"):css_p.index("}", css_p.index(":root {"))],
               "slate": css_p[css_p.index('[data-theme="slate"] {'):css_p.index("}", css_p.index('[data-theme="slate"] {'))]}
     tok = lambda blk, k: re.search(rf"--{k}: (#[0-9a-f]{{6}});", blk).group(1)
-    contrast = {th: min(cr_(tok(b, k), tok(b, bg)) for k in ("faint", "muted") for bg in ("bg", "surface")) for th, b in themes.items()}
-    pp["A01: --faint / --muted >= 4.6:1 on bg and surface in Paper and Slate; Copy buttons >= 28 px with contextual aria-label; inline prose links underlined; h1 on /protocols/ and /request/"] = (
-        all(v >= 4.6 for v in contrast.values()) and "min-height: 28px" in css_p[css_p.index(".copy {"):css_p.index("}", css_p.index(".copy {"))]
+    contrast = {th: min(cr_(tok(b, k), tok(b, bg)) for k in ("faint", "muted") for bg in ("bg", "surface", "sunken")) for th, b in themes.items()}
+    pp["A01: --faint / --muted >= 4.8:1 on bg, surface and sunken in Paper and Slate; Copy buttons >= 28 px with contextual aria-label; inline prose links underlined; h1 on /protocols/ and /request/"] = (
+        all(v >= 4.8 for v in contrast.values()) and "min-height: 28px" in css_p[css_p.index(".copy {"):css_p.index("}", css_p.index(".copy {"))]
         and not [r for r, t in all_pages.items() for m_ in re.finditer(r'<button class="copy"[^>]*>', t) if "aria-label=" not in m_.group(0)]
         and "p a:not(.btn):not(.copy), dd a:not(.btn):not(.copy)" in css_p
         and "<h1>Protocol safety records</h1>" in pages[os.path.join("protocols", "index.html")] and "<h1>Request coverage</h1>" in pages[os.path.join("request", "index.html")])
@@ -2534,6 +2540,16 @@ def main(argv=None):
         and 'data-feed-subscribe>Subscribe (RSS / JSON Feed — Slack compatible)</a>' in home_p and '"@type": "SoftwareApplication"' in home_p
         and '<link rel="canonical" href="https://pacta.wtf/demos/swapio-x402/">' in read("docs/demos/swapio-x402/index.html")
         and '<meta property="og:title"' in read("docs/demos/swapio-x402/index.html"))
+    demo_ = read("docs/demos/swapio-x402/index.html")
+    demo_inl = re.findall(r"<script>(.*?)</script>", demo_, re.S)
+    demo_csp = re.search(r'<meta http-equiv="Content-Security-Policy" content="([^"]+)">', demo_)
+    demo_src = {d.split(" ")[0]: d.split(" ")[1:] for d in demo_csp.group(1).split(";")} if demo_csp else {}
+    pp["S01 (demo): /demos/swapio-x402/ meta CSP before any <script>: script-src 'self' + the sha256 of its single inline script (recomputed here), style-src 'unsafe-inline' (inline style attributes), connect-src self + the first-party beacon Worker; no frame-ancestors"] = (
+        len(demo_inl) == 1 and demo_.count('http-equiv="Content-Security-Policy"') == 1 and demo_.find(demo_csp.group(0)) < demo_.find("<script")
+        and demo_src.get("script-src") == ["'self'", "'sha256-" + base64.b64encode(hashlib.sha256(demo_inl[0].encode("utf-8")).digest()).decode() + "'"]
+        and demo_src.get("default-src") == ["'self'"] and demo_src.get("connect-src") == ["'self'", "https://pacta-x402.pacta.workers.dev"]
+        and demo_src.get("object-src") == ["'none'"] and "frame-ancestors" not in demo_csp.group(1)
+        and not re.search(r'<[^>]+\son[a-z]+=', demo_) and not re.search(r'(?:src|href)="(?:https?:)?//(?!pacta\.wtf)[^"]*"[^>]*>', re.sub(r"<a\b[^>]*>", "", demo_.split("<body")[0])))
     check("PP2: website, accessibility & trust polish v2 (V06 dossier + free path, F03 radar truth, F02 inspector sync, F04/F06 freshness + timeout, F05 repro, S02, V07, A01 contrast / copy / h1 / links, V02 nav + MCP, icons, referrer, feeds, JSON-LD)",
           all(pp.values()), str([k[:60] for k, v in pp.items() if not v]))
 

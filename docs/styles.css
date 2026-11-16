@@ -11,7 +11,7 @@
   --ink: #14161a;
   --ink-2: #353a42;
   --muted: #5f6570;
-  --faint: #686d76;
+  --faint: #555d69;
   --accent: #1d4ed8;
   --accent-ink: #1e3a8a;
   --accent-weak: #e9eefb;
@@ -616,6 +616,7 @@ p a:not(.btn):not(.copy), dd a:not(.btn):not(.copy), li a:not(.btn):not(.copy) {
 .pf-json { max-height: 280px; overflow: auto; font: 12px/1.5 var(--mono); white-space: pre-wrap; overflow-wrap: anywhere; }
 .live-verify { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-top: 10px; }
 .live-verify-out { margin: 0; font: 12.5px/1.5 var(--mono); color: var(--ink-2); overflow-wrap: anywhere; }
+.live-verify-out .lv-line { display: block; }
 [data-pf-retry] { margin-top: 8px; }
 .radar tr.is-executed td b { font-weight: 550; }
 /* Long unbroken values (42-char addresses, hashes, URLs) in record prose and What differs wrap inside their box instead of widening

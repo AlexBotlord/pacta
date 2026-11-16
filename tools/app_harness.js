@@ -745,7 +745,6 @@ async function visitorScenario() {
   const aligned = links.find((x) => x.getAttribute("data-class") === "aligned_baseline");
   if (aligned) { const ev = new Event_("click"); ev.target = aligned; d.getElementById("insp-list").dispatchEvent(ev); }
   res.v_inspector_what_differs = parity && n >= 20 && !!aligned && !d.getElementById("insp-panel").querySelector("[data-what-differs]");
-  res.pp2_inspector_live_verify = !!d.getElementById("insp-panel").querySelector("[data-live-verify-btn]");
   // F02: a filter that hides the selected record selects the first visible one; 0 matches -> empty state + working Clear filters
   const iq = d.getElementById("insp-q"), panel = d.getElementById("insp-panel");
   if (iq) {
@@ -777,6 +776,87 @@ async function visitorScenario() {
   res.pp2_radar_counts = !!rc && /^\d+ pending operations? across \d+ protocols? · \d+ recently executed$/.test(rc.textContent);
 }
 
+// F05 "Verify live on RPC" (behavioural): a mocked JSON-RPC responder for the four public RPCs records every call, so the test asserts
+// eth_blockNumber comes first and the read is pinned to that exact hex block; the rendered text carries the decimal live block
+// number, the full hex word, the decoded value, the RPC host and the latency in ms. Also D1 (IMMUTABLE_NO_ADMIN headline).
+const LIVE_N = 26430123, LIVE_HEX = "0x" + LIVE_N.toString(16);
+const RPC_HOST_RE = /^https:\/\/(ethereum-rpc\.publicnode\.com|eth\.drpc\.org|base-rpc\.publicnode\.com|mainnet\.base\.org)$/;
+const W_ADDR = "0x000000000000000000000000" + "3333333333333333333333333333333333333333";
+const W_UINT = "0x" + "0".repeat(63) + "3";
+const ADMIN_SLOT = "0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103";
+async function liveRpcScenario() {
+  const log = []; let reply = PF_EXAMPLE, rpcFail = false;
+  const fetchMock = (url, init) => {
+    const u = String(url);
+    if (RPC_HOST_RE.test(u)) {
+      const q = JSON.parse(init.body); log.push({ url: u, method: q.method, params: q.params });
+      if (rpcFail) return Promise.resolve({ status: 200, json: () => Promise.resolve({ jsonrpc: "2.0", id: 1, error: { code: -32000, message: "upstream down" } }) });
+      let result = null;
+      if (q.method === "eth_blockNumber") result = LIVE_HEX;
+      else if (q.method === "eth_getBlockByNumber") result = { number: q.params[0], hash: "0x" + "ab".repeat(32) };
+      else if (q.method === "eth_getCode") result = "0x6080604052";
+      else if (q.method === "eth_getStorageAt") result = W_ADDR;
+      else if (q.method === "eth_call") result = q.params[0].data === "0x8da5cb5b" ? W_ADDR : W_UINT;
+      return Promise.resolve({ status: 200, json: () => Promise.resolve({ jsonrpc: "2.0", id: 1, result }) });
+    }
+    if (/\/v1\/check\/preflight/.test(u)) return Promise.resolve({ status: 200, json: () => Promise.resolve(reply) });
+    if (/api\/v1\/index\.json/.test(u) && input.indexJson) return Promise.resolve({ status: 200, json: () => Promise.resolve(input.indexJson) });
+    return Promise.reject(new Error("not needed"));
+  };
+  const p = run(input.index, input.app, { path: "/", fetch: fetchMock });
+  const d = p.document, out = d.getElementById("pf-out"), panel = d.getElementById("insp-panel");
+  for (let i = 0; i < 4; i++) await flush();
+  const clickLive = async (root) => {
+    const b = root.querySelector("[data-live-verify-btn]"); if (!b) return null;
+    b.dispatchEvent(new Event_("click")); for (let i = 0; i < 10; i++) await flush();
+    return root.querySelector("[data-live-verify-out]").textContent;
+  };
+  const tail = (q) => q.params[q.params.length - 1];
+  // (1) inspector: select the first sample record (renders the sheet + button), then the record's own eth_call / slot at the fresh block
+  const first = d.querySelector("#insp-list a[data-id]");
+  if (first) { const ev = new Event_("click"); ev.target = first; d.getElementById("insp-list").dispatchEvent(ev); await flush(); }
+  log.length = 0;
+  const it = await clickLive(panel);
+  res.pp3_inspector_live_rpc = !!it && log.length === 2 && log[0].method === "eth_blockNumber" && ["eth_call", "eth_getStorageAt"].includes(log[1].method)
+    && tail(log[1]) === LIVE_HEX && it.includes("Live at block #" + LIVE_N + " (" + LIVE_HEX + ")")
+    && ((it.includes("Raw: " + W_UINT) && it.includes("Decoded: uint256 3")) || (it.includes("Raw: " + W_ADDR) && it.includes("= address 0x3333333333333333333333333333333333333333")))
+    && /(ethereum-rpc|base-rpc)\.publicnode\.com · \d+ ms$/.test(it) && panel.querySelectorAll(".lv-line").length === 4;
+  // (2) pre-flight on a proxy: pinned block hash match + live block, eth_getCode and the EIP-1967 admin slot at that block
+  const form = d.getElementById("pf-form");
+  const submit = async (body) => {
+    reply = body; form.querySelector('select[name="chain"]').value = "base"; form.querySelector('input[name="address"]').value = PF_EXAMPLE.address;
+    form.dispatchEvent(new Event_("submit")); for (let i = 0; i < 4; i++) await flush();
+  };
+  await submit(PF_EXAMPLE);
+  log.length = 0;
+  const pt = await clickLive(out);
+  const m = (k) => log.filter((q) => q.method === k);
+  res.pp3_preflight_live_rpc_proxy = !!pt && m("eth_getBlockByNumber").length === 1 && m("eth_getBlockByNumber")[0].params[0] === "0x" + (23800000).toString(16)
+    && m("eth_blockNumber").length === 1 && m("eth_getCode").length === 1 && tail(m("eth_getCode")[0]) === LIVE_HEX
+    && m("eth_getStorageAt").length === 1 && m("eth_getStorageAt")[0].params[1] === ADMIN_SLOT && tail(m("eth_getStorageAt")[0]) === LIVE_HEX
+    && log.indexOf(m("eth_blockNumber")[0]) < log.indexOf(m("eth_getCode")[0]) && log.every((q) => /base/.test(q.url))
+    && pt.includes("Pinned block #23800000 hash 0x" + "ab".repeat(32) + " = pinned hash ✓")
+    && pt.includes("Live at block #" + LIVE_N + " (" + LIVE_HEX + "): eth_getCode 5 bytes") && pt.includes("EIP-1967 admin slot: " + W_ADDR)
+    && pt.includes("Decoded: uint256 ") && pt.includes("= address 0x3333333333333333333333333333333333333333")
+    && (pt.match(/base-rpc\.publicnode\.com · \d+ ms/g) || []).length === 2;
+  // (3) D1 + non-proxy: IMMUTABLE_NO_ADMIN renders the exact headline (heuristic caveat kept); the live read is owner() at the fresh block
+  await submit({ ...PF_EXAMPLE, verdict: "IMMUTABLE_NO_ADMIN", riskScore: 0, isProxy: false, implementation: null, hasAdminSlot: false,
+    controller: { address: null, kind: "none" }, capabilities: {}, summary: "No admin surface found." });
+  const vt = out.querySelector(".pf-verdict"), vb = vt && vt.querySelector(".badge");
+  res.pp3_immutable_headline = !!vt && (vb ? vb.textContent === "No standard upgrade or admin authority detected" : vt.textContent.startsWith("No standard upgrade or admin authority detected"))
+    && vt.textContent.includes("Heuristic score") && !out.textContent.includes("cannot be changed");
+  log.length = 0;
+  const ot = await clickLive(out);
+  res.pp3_preflight_live_rpc_owner = !!ot && m("eth_call").length === 1 && m("eth_call")[0].params[0].data === "0x8da5cb5b"
+    && m("eth_call")[0].params[0].to === PF_EXAMPLE.address && tail(m("eth_call")[0]) === LIVE_HEX && m("eth_getStorageAt").length === 0
+    && ot.includes("owner(): " + W_ADDR) && ot.includes("= address 0x3333333333333333333333333333333333333333") && ot.includes("#" + LIVE_N) && /\d+ ms$/.test(ot);
+  // (4) both public RPCs fail: each endpoint is tried once and the failure is reported (no throw, no stale value)
+  rpcFail = true; log.length = 0;
+  const ft = await clickLive(panel);
+  res.pp3_live_rpc_failure = !!ft && ft.startsWith("Live RPC check failed (upstream down)") && log.length === 2 && log[0].url !== log[1].url
+    && log.every((q) => q.method === "eth_blockNumber");
+}
+
 (async () => {
   try { protocolFilterScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await preflightScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
@@ -784,5 +864,6 @@ async function visitorScenario() {
   try { await beaconScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await liveTimelockScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await visitorScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
+  try { await liveRpcScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   process.stdout.write(JSON.stringify(res));
 })();

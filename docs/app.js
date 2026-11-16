@@ -396,10 +396,13 @@
     panel.appendChild(el("p", { "class": "pf-section", text: "Pinned documentation comparison above; replay the same read live:" }));
     panel.appendChild(liveVerifyBtn("Verify live on RPC", function () {
       var ch = chainOf(e), slot = e.check_type === "eth_getStorageAt";
-      var call = slot ? rpcCall(ch, "eth_getStorageAt", [e.target_contract, e.selector_or_slot, "latest"])
-        : rpcCall(ch, "eth_call", [{ to: e.target_contract, data: e.repro_calldata || e.selector_or_slot }, "latest"]);
-      return call.then(function (x) {
-        return "Live " + (slot ? "slot " : (e.call_signature || "call") + " ") + "at the latest block: " + short(String(x.result), 12, 8) + " · " + x.rpc + " · " + x.ms + " ms";
+      return liveBlock(ch).then(function (b) {
+        var call = slot ? rpcCall(ch, "eth_getStorageAt", [e.target_contract, e.selector_or_slot, b.hex])
+          : rpcCall(ch, "eth_call", [{ to: e.target_contract, data: e.repro_calldata || e.selector_or_slot }, b.hex]);
+        return call.then(function (x) {
+          return ["Live at block #" + b.n + " (" + b.hex + "): " + (slot ? "slot " + e.selector_or_slot : (e.call_signature || "call")),
+            "Raw: " + String(x.result), "Decoded: " + decodeWord(x.result), hosts(b, x) + " · " + (b.ms + x.ms) + " ms"];
+        });
       });
     }));
   }
@@ -742,7 +745,7 @@
     return c;
   }
   // Plain-English verdicts (the raw enum stays one click away, with the full JSON)
-  var VERDICT_TEXT = { IMMUTABLE_NO_ADMIN: "No admin: the contract cannot be changed", TIMELOCK_PROTECTED: "Changes wait behind a timelock",
+  var VERDICT_TEXT = { IMMUTABLE_NO_ADMIN: "No standard upgrade or admin authority detected", TIMELOCK_PROTECTED: "Changes wait behind a timelock",
     ZERO_DELAY_TIMELOCK_RISK: "Timelock with a zero delay: changes can land instantly", MULTISIG_NO_TIMELOCK: "A multisig can change it with no delay",
     INSTANT_EOA_ADMIN_RISK: "A single key can change it instantly", UNCLASSIFIED_CONTRACT_CONTROLLER: "Controller needs further review",
     UNDEPLOYED_OR_EOA: "No contract code at this address (EOA or not deployed)" };
@@ -768,6 +771,28 @@
     }
     return attempt();
   }
+  // every live read is pinned to one fresh block: eth_blockNumber first, then the read(s) at that exact hex block number
+  var EIP1967_ADMIN_SLOT = "0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103";
+  function liveBlock(chain) {
+    return rpcCall(chain, "eth_blockNumber", []).then(function (x) {
+      var hx = String(x.result).toLowerCase();
+      if (!/^0x[0-9a-f]{1,16}$/.test(hx)) throw new Error("bad eth_blockNumber");
+      return { hex: hx, n: parseInt(hx, 16), rpc: x.rpc, ms: x.ms };
+    });
+  }
+  function hosts(a, b) { return a.rpc === b.rpc ? a.rpc : a.rpc + " + " + b.rpc; }
+  // first 32-byte ABI word as uint256 (decimal) and, when it is a left-padded 20-byte value, as an address
+  function decodeWord(hex) {
+    var h = String(hex || "").replace(/^0x/i, "").toLowerCase();
+    if (!/^[0-9a-f]*$/.test(h)) return "not hex";
+    if (!h.length) return "empty (0 bytes)";
+    var w = h.length >= 64 ? h.slice(0, 64) : (new Array(65 - h.length).join("0") + h);
+    var dec = typeof BigInt === "function" ? BigInt("0x" + w).toString() : (/^0{51}/.test(w) ? String(parseInt(w, 16)) : "n/a");
+    var t = "uint256 " + dec;
+    if (/^0{24}/.test(w) && !/^0{32}/.test(w)) t += " = address 0x" + w.slice(24);
+    if (h.length > 64) t += " (first of " + Math.ceil(h.length / 64) + " words)";
+    return t;
+  }
   function liveVerifyBtn(label, job) {
     var wrap = el("div", { "class": "live-verify", "data-live-verify": "" });
     var btn = el("button", { type: "button", "class": "btn sm", "data-live-verify-btn": "", text: label });
@@ -775,7 +800,10 @@
     btn.addEventListener("click", function () {
       if (typeof fetch !== "function") { res.textContent = "This browser cannot call an RPC; use the cast commands."; return; }
       res.textContent = "Calling a public RPC…";
-      job().then(function (t) { res.textContent = t; }, function (e) { res.textContent = "Live RPC check failed (" + String(e && e.message || e) + "); use the cast commands."; });
+      job().then(function (t) {
+        res.textContent = "";
+        [].concat(t).forEach(function (line) { res.appendChild(el("span", { "class": "lv-line", text: String(line) })); });
+      }, function (e) { res.textContent = "Live RPC check failed (" + String(e && e.message || e) + "); use the cast commands."; });
     });
     wrap.appendChild(btn); wrap.appendChild(res);
     return wrap;
@@ -841,11 +869,27 @@
       out.appendChild(term(pfCasts(r).join("\n"), "Verify it yourself (Foundry cast, pinned block)"));
     if (/^\d+$/.test(String(r.pinnedBlock)))
       out.appendChild(liveVerifyBtn("Verify live on RPC", function () {
-        return rpcCall(r.chain, "eth_getBlockByNumber", ["0x" + Number(r.pinnedBlock).toString(16), false]).then(function (x) {
-          var h = x.result && x.result.hash, want = String(r.pinnedBlockHash || "");
-          return "Block #" + num(r.pinnedBlock) + " hash " + short(String(h), 10, 6) + (want ? (String(h).toLowerCase() === want.toLowerCase() ? " = pinned hash ✓" : " ≠ pinned hash") : "")
+        var ch = r.chain === "base" ? "base" : "ethereum", want = String(r.pinnedBlockHash || "").toLowerCase();
+        function fail(what) { return function (e) { return what + " failed (" + String(e && e.message || e) + ")"; }; }
+        var pinned = rpcCall(ch, "eth_getBlockByNumber", ["0x" + Number(r.pinnedBlock).toString(16), false]).then(function (x) {
+          var h = String(x.result && x.result.hash).toLowerCase();
+          return "Pinned block #" + r.pinnedBlock + " hash " + h + (want ? (h === want ? " = pinned hash ✓" : " ≠ pinned hash " + want) : "")
             + " · " + x.rpc + " · " + x.ms + " ms";
-        });
+        }, fail("Pinned block check"));
+        var live = !ADDR_RE.test(String(r.address)) ? Promise.resolve("Live read skipped: no contract address") : liveBlock(ch).then(function (b) {
+          return rpcCall(ch, "eth_getCode", [r.address, b.hex]).then(function (c) {
+            var bytes = Math.max(0, String(c.result).length - 2) / 2, ms = b.ms + c.ms;
+            var head = "Live at block #" + b.n + " (" + b.hex + "): eth_getCode " + bytes + " bytes";
+            if (!bytes) return [head + " (no contract code)", hosts(b, c) + " · " + ms + " ms"];
+            var what = r.isProxy ? "EIP-1967 admin slot" : "owner()";
+            var read = r.isProxy ? rpcCall(ch, "eth_getStorageAt", [r.address, EIP1967_ADMIN_SLOT, b.hex])
+              : rpcCall(ch, "eth_call", [{ to: r.address, data: "0x8da5cb5b" }, b.hex]);
+            return read.then(function (y) {
+              return [head, what + ": " + String(y.result), "Decoded: " + decodeWord(y.result), hosts(b, y) + " · " + (ms + y.ms) + " ms"];
+            }, function (e) { return [head, what + ": no answer (" + String(e && e.message || e) + ")", hosts(b, c) + " · " + ms + " ms"]; });
+          });
+        }, fail("Live block read"));
+        return Promise.all([pinned, live]).then(function (a) { return [].concat(a[0], a[1]); });
       }));
   }
   function initPreflight() {

@@ -224,6 +224,53 @@ def app_behaviour(appjs, request_html, index_html, row_id, beacon="", protocol_h
         return {"harness_error": (out.stderr or out.stdout)[-400:]}
 
 
+NOWRAP_CLASSES = {"hx", "addr", "btn", "badge", "chip", "countdown", "opstate", "nowrap"}
+
+
+def unwrappable_runs(pages, min_len=30):
+    """Narrow-screen guard without a browser: every unbroken text run of min_len+ chars (a 42-char address is wider than the 319 px
+    content box at 375 px) on a /protocols/<slug>/ page must sit inside .memo-wrap (where overflow-wrap: anywhere is inherited) or in a
+    self-scrolling .term pre, and never inside a white-space: nowrap element. Returns the offending (page, run) pairs."""
+    import html.parser as HP
+    bad = []
+
+    class Scan(HP.HTMLParser):
+        def __init__(self, page):
+            super().__init__(convert_charrefs=True)
+            self.page, self.stack, self.skip = page, [], 0
+
+        def handle_starttag(self, tag, attrs):
+            if tag in ("area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "track", "wbr"):
+                return
+            self.stack.append((tag, set((dict(attrs).get("class") or "").split())))
+            self.skip += tag in ("script", "style", "head")
+
+        def handle_endtag(self, tag):
+            for i in range(len(self.stack) - 1, -1, -1):
+                if self.stack[i][0] == tag:
+                    self.skip -= sum(t in ("script", "style", "head") for t, _ in self.stack[i:])
+                    del self.stack[i:]
+                    break
+
+        def handle_data(self, data):
+            if self.skip:
+                return
+            for tok in re.split(r"[\s\u00a0]+", data):
+                for part in re.split(r"(?<=-)", tok):
+                    if len(part) < min_len:
+                        continue
+                    cls = [c for _, cs in self.stack for c in cs]
+                    in_term_pre = any(t == "pre" for t, _ in self.stack) and "term" in cls
+                    wraps = "memo-wrap" in cls and not NOWRAP_CLASSES & set(cls)
+                    if not (in_term_pre or wraps):
+                        bad.append((self.page, part[:50]))
+
+    for r, t in pages.items():
+        if r.startswith("protocols" + os.sep) and r.count(os.sep) == 2:
+            Scan(r).feed(t)
+    return bad
+
+
 def inspector_what_differs():
     """{record id: {"changed": [li text], "matched": [li text]}} for every flagged index.json record, from tools/control_diff.py: the
     inspector's app.js port must render exactly these lines."""
@@ -2425,8 +2472,11 @@ def main(argv=None):
         and ".tools .btn, .tools .btn.sm { display: inline-flex;" in css_v and ".seg { display: flex; flex-wrap: wrap;" in css_v
         and "table.ix, .memo table { display: block; max-width: 100%; overflow-x: auto;" in css_v and "@media (max-width: 920px) {\n  table.ix, .memo table {" in css_v
         and ".plans, .plans.two { grid-template-columns: minmax(0, 1fr); }" in css_v and ".req-form, .req-out { padding: 18px 16px 20px; }" in css_v
-        and ".plan .btn, .actions .btn, .convert-cta .btn { max-width: 100%; white-space: normal;" in css_v
-        and ".nav { display: flex; order: 3; flex-basis: 100%;" in css_v and "pre { max-width: 100%; overflow-x: auto; }" in css_v)
+        and ".plan .btn, .actions .btn, .convert-cta .btn, .memo .btn { max-width: 100%; white-space: normal;" in css_v
+        and ".nav { display: flex; order: 3; flex-basis: 100%;" in css_v and "pre { max-width: 100%; overflow-x: auto; }" in css_v
+        and ".memo, .memo p, .memo li, .memo dd, .memo dt, .memo h1, .memo h2, .memo-foot { overflow-wrap: anywhere; }" in css_v
+        and ".whatdiffers, .whatdiffers li, .whatdiffers .obs, .whatdiffers .doc { overflow-wrap: anywhere; min-width: 0; max-width: 100%; }" in css_v
+        and not unwrappable_runs(pages))
     pl = B2AV1.protocols_line(idx_, json.loads(read("docs/api/v1/rpc-pinned.json")))
     v1["P2 template leak fixed + one protocol count everywhere (74 = 62 Base-EAS-attested / 98 Sprint records + 12 RPC-pinned)"] = (
         not any("{counts(" in read(f) or "counts(idx)" in read(f) for f in ("docs/llms.txt", "docs/llms-full.txt", "docs/llms/index.html", "docs/index.html"))

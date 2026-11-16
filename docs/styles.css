@@ -585,6 +585,11 @@ tr[hidden] { display: none; }
 .whatdiffers .wd-changed .obs { color: var(--amber); font-weight: 650; }
 .whatdiffers .wd-matched { color: var(--ink-2); }
 .sheet .whatdiffers { margin: 12px 0 14px; }
+/* Long unbroken values (42-char addresses, hashes, URLs) in record prose and What differs wrap inside their box instead of widening
+   the page on narrow screens (overflow-wrap is inherited; nowrap chips, badges and buttons keep their own rules; .term pre still scrolls) */
+.memo, .memo p, .memo li, .memo dd, .memo dt, .memo h1, .memo h2, .memo-foot { overflow-wrap: anywhere; }
+.memo, .memo-sec { min-width: 0; max-width: 100%; }
+.whatdiffers, .whatdiffers li, .whatdiffers .obs, .whatdiffers .doc { overflow-wrap: anywhere; min-width: 0; max-width: 100%; }
 .editorial { margin: 26px 0 0; padding: 14px 16px; border: 1px solid var(--line-2); border-radius: var(--r); background: var(--surface); }
 .editorial h2 { margin: 0; font-size: 15px; }
 .editorial p { margin-top: 6px; font-size: 14px; line-height: 1.55; }
@@ -628,5 +633,5 @@ code, .mono, .hx, .addr { overflow-wrap: anywhere; }
   .try-actions .btn { white-space: normal; }
   .plans, .plans.two { grid-template-columns: minmax(0, 1fr); }
   .req-form, .req-out { padding: 18px 16px 20px; }
-  .plan .btn, .actions .btn, .convert-cta .btn { max-width: 100%; white-space: normal; height: auto; min-height: 38px; padding-top: 8px; padding-bottom: 8px; }
+  .plan .btn, .actions .btn, .convert-cta .btn, .memo .btn { max-width: 100%; white-space: normal; height: auto; min-height: 38px; padding-top: 8px; padding-bottom: 8px; }
 }

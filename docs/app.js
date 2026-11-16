@@ -415,6 +415,7 @@
   // PREFILL-END
   function initRequest() {
     var form = $("#req-form"); if (!form) return;
+    form.addEventListener("submit", function (e) { e.preventDefault(); });   // the brief is built client-side; never navigate (no inline onsubmit: CSP-safe)
     var out = $("#req-brief"), gh = $("#req-gh"), gm = $("#req-gmail"), st = $("#req-status"), pay = $("#req-pay");
     var txField = $("#req-tx-field"), txHint = $("#req-tx-hint"), txIn = $("#req-tx"), sum = $("#req-pay-sum"), direct = $("#req-direct");
     var treasury = form.getAttribute("data-treasury") || "";

@@ -782,7 +782,7 @@ def request_builder(idx, home=""):
                      for n in protocol_options(idx))
     gh = f"{REPO}/issues/new?template=request-scan.yml&title=" + urllib.parse.quote("[Pacta Scope] ")
     gm = "https://mail.google.com/mail/?view=cm&fs=1&to=" + urllib.parse.quote(CONTACT) + "&su=" + urllib.parse.quote("Pacta 24h clearance request")
-    return f"""<form class="req" id="req-form" autocomplete="off" onsubmit="return false" data-treasury="{idx["onchain_anchoring"]["treasury_admin"]}">
+    return f"""<form class="req" id="req-form" autocomplete="off" data-treasury="{idx["onchain_anchoring"]["treasury_admin"]}">
 <div class="req-form">
 <fieldset><legend>Track</legend><div class="opts one">{tiers}</div></fieldset>
 <fieldset><legend>Protocols in scope <span class="legend-note">· {len(protocol_options(idx))} indexed; add others below</span></legend><div class="opts scroll" id="req-protocols">{protos}</div></fieldset>

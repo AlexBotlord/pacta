@@ -1092,7 +1092,7 @@ def main(argv=None):
                 "prefill_homepage_request", "homepage_plan_button_preselects",
                 "hash_ok #r-[unclosed", "hash_ok #r-x\\", 'hash_ok #r-"]', "hash_ok #r-%E0%A4%A", "valid_hash_opens_drawer", "livebar_skips_elapsed_etas",
                 "pf_present", "pf_no_fetch_on_load", "pf_preset_fetches_once", "pf_renders_verdict", "pf_text_only", "pf_cast_commands",
-                "pf_invalid_address_no_fetch", "pf_http_error_reported"]
+                "pf_invalid_address_no_fetch", "pf_http_error_reported", "req_form_submit_prevented"]
     failed_b = [k for k in expected if res.get(k) is not True] + (["harness_error: " + res["harness_error"][:200]] if "harness_error" in res else [])
     check("app.js behaviour: clearance / continuous / API SLA / community tracks, Option A invoice (default) vs Option B direct settlement, tx-hash + forum flow; malformed #hash never throws; live pre-flight checker (explicit click only, text-only render, cast repro, errors)", not failed_b,
           f"{len(expected) - len([k for k in expected if res.get(k) is not True])}/{len(expected)} assertions; failed {failed_b[:4]}")
@@ -2180,11 +2180,30 @@ def main(argv=None):
         and all(f"{BS.BASE_URL}/leaderboard/" in read(f_) for f_ in ("docs/llms.txt", "docs/llms-full.txt", "docs/llms/index.html"))
         and all('leaderboard/">Leaderboard</a>' in t for r, t in pages.items() if 'class="ftr"' in t)
         and not any('leaderboard/">' in re.search(r'<nav class="nav".*?</nav>', t, re.S).group(0) for t in pages.values() if '<nav class="nav"' in t))
-    inline_on = [r for r in ("bounties/index.html", "leaderboard/index.html") if re.search(r"<[^>]+\son[a-z]+\s*=", read("docs/" + r))]
+    class _OnAttrs(html.parser.HTMLParser):          # attribute names as the browser sees them (values never match by accident)
+        def __init__(self):
+            super().__init__(convert_charrefs=True)
+            self.hits = []
+
+        def handle_starttag(self, tag, attrs):
+            self.hits += [f"<{tag} {k}>" for k, _ in attrs if re.fullmatch(r"on[a-z]+", k or "")]
+        handle_startendtag = handle_starttag
+    all_html = sorted(glob.glob(os.path.join(DOCS, "**", "*.html"), recursive=True))
+    inline_on = []
+    for p_ in all_html:
+        sc_ = _OnAttrs()
+        sc_.feed(read(p_))
+        inline_on += [f"{os.path.relpath(p_, DOCS)}: {h_}" for h_ in sc_.hits]
+    inline_on += [os.path.relpath(p_, DOCS) for p_ in all_html if re.search(r"<[a-zA-Z][^>]*\son[a-z]+\s*=", re.sub(r'"[^"]*"|\'[^\']*\'', '""', read(p_)))]
+    # the scanner itself must catch an inline handler (guards against a vacuous check)
+    probe_ = _OnAttrs()
+    probe_.feed('<form id="x" onsubmit="return false"><a href="#" ONCLICK=\'y()\'>z</a></form>')
+    scanner_ok = len(probe_.hits) == 2
     extra_js = [r for r in ("bounties/index.html", "leaderboard/index.html")
                 if len(re.findall(r"<script(?![^>]*\bsrc=)(?![^>]*application/ld\+json)[^>]*>", read("docs/" + r))) != 1]
-    w2["CSP-safe: 0 inline event handlers, no new inline <script> on /bounties/ and /leaderboard/ (copy via data-copy in app.js, share via a plain link)"] = (
-        not inline_on and not extra_js and "javascript:" not in bounty + lbp)
+    w2[f"CSP-safe: 0 inline on* event handlers in ALL {len(all_html)} docs/**/*.html pages (the request form prevents submit from app.js); no new inline <script> on /bounties/ and /leaderboard/ (copy via data-copy, share via a plain link)"] = (
+        not inline_on and scanner_ok and len(all_html) >= 90 and not extra_js and "javascript:" not in bounty + lbp
+        and 'form.addEventListener("submit", function (e) { e.preventDefault(); })' in appjs)
     # hunter badges
     bdir = os.path.join(DOCS, "badges", "hunters")
     bfiles = sorted(os.listdir(bdir))

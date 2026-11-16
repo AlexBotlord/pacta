@@ -208,6 +208,9 @@ try {
   let p = run(input.request, input.app, { path: "/request/" });
   const d = p.document, treasury = d.getElementById("req-form").getAttribute("data-treasury");
   res.default_is_clearance = checked(d) === "clearance";
+  const sub = new Event_("submit");
+  res.req_form_submit_prevented = d.getElementById("req-form").dispatchEvent(sub) === false && sub.defaultPrevented === true
+    && !d.getElementById("req-form").hasAttribute("onsubmit");
   res.default_settlement_is_invoice = settled(d) === "invoice";
   res.clearance_pay_panel_shown = d.getElementById("req-pay").hidden === false;
   res.invoice_hides_tx_and_direct = d.getElementById("req-tx-field").hidden === true && d.getElementById("req-direct").hidden === true;

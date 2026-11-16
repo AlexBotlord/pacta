@@ -1647,7 +1647,7 @@ def bounties_page(idx, radar, bounties=None, claims=None, lb=None):
     issues = "".join(f'<details class="bounty-issue" id="slot-{i["slot"]}" data-bounty-issue="{i["slot"]}"><summary>{E(i["title"])}</summary>'
                      f'<p class="s">GitHub: <a href="{E(BOUNTY_ISSUE_URLS[i["slot"]])}" target="_blank" rel="noopener">{E(BOUNTY_ISSUE_URLS[i["slot"]])} ↗</a> · labels: '
                      f'{E(", ".join(i["labels"]))}</p><div class="md">{md_html(i["body"])}</div></details>' for i in d["issues"])
-    ld = {"@context": "https://schema.org", "@type": "WebPage", "name": f"Pacta bounties · Wave 2: {TOTAL_SLOTS} × ${REWARD_USDC} USDC · Wave 1 Genesis Archive",
+    ld = {"@context": "https://schema.org", "@type": "WebPage", "name": f"Pacta bounties · Wave 2 Epoch {CURRENT_EPOCH}: {ACTIVE_EPOCH_SLOTS} × ${REWARD_USDC} USDC · Wave 1 Genesis Archive",
           "url": f"{BASE_URL}/bounties/",
           "isPartOf": {"@type": "WebSite", "name": "Pacta by Fractal Neurons", "url": f"{BASE_URL}/"},
           "about": "Capped USDC bounty for verified on-chain control-plane mismatch records", "publisher": ORG_LD}
@@ -1657,8 +1657,8 @@ def bounties_page(idx, radar, bounties=None, claims=None, lb=None):
 <main id="main" class="memo-wrap">
 <div class="crumbs"><a href="../">Pacta</a> / Bounties</div>
 <article class="memo">
-<header><span class="tier">Bounties · Wave 2: {TOTAL_SLOTS} × ${E(REWARD_USDC)} USDC · Wave 1 Genesis Archive</span><h1>Pacta bounties: verified on-chain control-plane mismatches</h1>
-<p class="lede">Find a live on-chain control-plane fact that contradicts a protocol's official documentation: a proxy admin, timelock delay, multisig threshold, curator or guardian role that differs from what the docs say. <b>Wave 2</b> is a rolling pool of <b>{TOTAL_SLOTS} × ${E(REWARD_USDC)} USDC</b> (${E(TOTAL_CAP_USDC)} USDC cap), one slot per merged verified gap. <b>Wave 1</b> (4 × $25 USDC, Nov 15 – Nov 22, 2026) is archived below with its settlement ledger. Every hunter is credited on the <a href="../leaderboard/">hunter leaderboard</a>.</p></header>
+<header><span class="tier">Bounties · Wave 2 Epoch {CURRENT_EPOCH}: {ACTIVE_EPOCH_SLOTS} × ${E(REWARD_USDC)} USDC · Wave 1 Genesis Archive</span><h1>Pacta bounties: verified on-chain control-plane mismatches</h1>
+<p class="lede">Find a live on-chain control-plane fact that contradicts a protocol's official documentation: a proxy admin, timelock delay, multisig threshold, curator or guardian role that differs from what the docs say. <b>Wave 2</b> is a {PROGRAM_CAP_SLOTS:,}-gap perpetual program at <b>${E(REWARD_USDC)} USDC per merged net-new gap</b>, funded in epochs: <b>Epoch {CURRENT_EPOCH}</b> has {ACTIVE_EPOCH_SLOTS} active slots (${E(ACTIVE_EPOCH_CAP_USDC)} USDC). <b>Wave 1</b> (4 × $25 USDC, Nov 15 – Nov 22, 2026) is archived below with its settlement ledger. Every hunter is credited on the <a href="../leaderboard/">hunter leaderboard</a>.</p></header>
 {wave2_section_html(claims, n_protocols)}<section class="memo-sec" id="quickstart"><h2>1-line Remote MCP quickstart (free)</h2>
 <div class="qs-snip"><span class="qs-l">Claude Code</span><code class="mono">{E(claude)}</code>{copy_btn(claude)}</div>
 <p>Query <code>pacta_lookup_protocol</code> (confirm the target is unindexed: a miss carries <code>coverage_gap_hint</code>), <code>pacta_check_preflight</code> and <code>pacta_scan_control_plane</code>, then pin the reads with <code>cast</code> on two RPC endpoints. Indexed protocols: <a href="../api/v1/protocols.json">/api/v1/protocols.json</a>.</p></section>
@@ -1686,8 +1686,9 @@ def bounties_page(idx, radar, bounties=None, claims=None, lb=None):
 <script type="application/ld+json">{ld_json}</script>
 </body></html>
 """
-    return head(f"Bounties · Wave 2: {TOTAL_SLOTS} × ${REWARD_USDC} USDC · Pacta", f"Wave 2: {TOTAL_SLOTS} × ${REWARD_USDC} USDC per merged verified on-chain control-plane mismatch, paid in USDC on Base. Wave 1 (4 × $25 USDC) archive and ledger.",
-                f"{BASE_URL}/bounties/", prefix="../", og_title=f"Pacta bounties · Wave 2: {TOTAL_SLOTS} × ${REWARD_USDC} USDC") + "\n" + body
+    return head(f"Bounties · Wave 2 Epoch {CURRENT_EPOCH}: {ACTIVE_EPOCH_SLOTS} × ${REWARD_USDC} USDC · Pacta",
+                f"Wave 2: ${REWARD_USDC} USDC per merged net-new on-chain control-plane mismatch, paid in USDC on Base; Epoch {CURRENT_EPOCH} has {ACTIVE_EPOCH_SLOTS} funded slots of a {PROGRAM_CAP_SLOTS:,}-slot program. Wave 1 (4 × $25 USDC) archive and ledger.",
+                f"{BASE_URL}/bounties/", prefix="../", og_title=f"Pacta bounties · Wave 2 Epoch {CURRENT_EPOCH}: {ACTIVE_EPOCH_SLOTS} × ${REWARD_USDC} USDC") + "\n" + body
 
 
 # ---- Wave 2: 100 x $1 USDC rolling pool, Wave 1 Genesis ledger, /leaderboard/ and hunter badges ------------------------------
@@ -1697,11 +1698,17 @@ WAVE2_SRC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "bounty_wav
 WAVE2 = json.load(open(WAVE2_SRC))
 REWARD_USDC = WAVE2["rewardUsdc"]                  # "1.00"
 REWARD_ATOMIC = WAVE2["rewardAtomic"]              # 1_000_000 (USDC has 6 decimals)
-TOTAL_SLOTS = WAVE2["totalSlots"]                  # 100
-TOTAL_CAP_USDC = WAVE2["totalCapUsdc"]             # "100.00"
+PROGRAM_CAP_SLOTS = WAVE2["programCapSlots"]       # 1,000-gap perpetual program
+CURRENT_EPOCH = WAVE2["currentEpoch"]              # funded epochs of 25-100 slots, opened one after another
+ACTIVE_EPOCH_SLOTS = WAVE2["activeEpochSlots"]     # 25 in Epoch 1
+ACTIVE_EPOCH_CAP_USDC = WAVE2["activeEpochCapUsdc"]  # "25.00"
+PRIOR_EPOCH_SLOTS = WAVE2["priorEpochSlots"]       # slots filled in completed epochs (0 during Epoch 1)
+PROGRAM_LABEL = WAVE2["program"]
 USDC_BASE = WAVE2["settlement"]["tokenAddress"]
 assert round(float(REWARD_USDC) * 10 ** WAVE2["settlement"]["decimals"]) == REWARD_ATOMIC
-assert f"{REWARD_ATOMIC * TOTAL_SLOTS / 10 ** 6:.2f}" == TOTAL_CAP_USDC
+assert f"{REWARD_ATOMIC * ACTIVE_EPOCH_SLOTS / 10 ** 6:.2f}" == ACTIVE_EPOCH_CAP_USDC
+assert 25 <= ACTIVE_EPOCH_SLOTS <= 100 and CURRENT_EPOCH >= 1 and 0 <= PRIOR_EPOCH_SLOTS
+assert PRIOR_EPOCH_SLOTS + ACTIVE_EPOCH_SLOTS <= PROGRAM_CAP_SLOTS == 1000
 assert WAVE2["settlement"]["chainId"] == 8453 and USDC_BASE == "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
 assert WAVE2["settlement"]["treasuryKind"] == "EOA"
 WAVE2_DIR = os.path.join(ROOT, *WAVE2["fixtureDir"].split("/"))
@@ -1788,7 +1795,7 @@ def load_wave2_claims(path=None):
         assert f.get("category") in WAVE2["categories"] and GITHUB_USER_RE.match(str(f.get("hunter"))), name
         assert f.get("agentFramework") is None or FRAMEWORK_RE.match(f["agentFramework"]), name
         out.append({**f, "_file": name})
-    assert len(out) <= TOTAL_SLOTS, "Wave 2 is capped at TOTAL_SLOTS merged claims"
+    assert len(out) <= PRIOR_EPOCH_SLOTS + ACTIVE_EPOCH_SLOTS, "Wave 2 merged claims cannot exceed the funded epochs"
     assert len({(c["chainId"], c["contractAddress"].lower()) for c in out}) == len(out) and len({c["slug"] for c in out}) == len(out)
     return out
 
@@ -1936,7 +1943,9 @@ def wave2_master_issue_md(n_protocols):
     rules = "\n".join(f"- {r}." for r in WAVE2["rules"])
     return f"""# {WAVE2['title']}
 
-**{TOTAL_SLOTS} slots × ${REWARD_USDC} USDC per merged verified gap = ${TOTAL_CAP_USDC} USDC hard cap**, paid on {s['network']} (chainId {s['chainId']}, USDC `{USDC_BASE}`). One rolling pool, one fixture per PR, first valid merged PR per target wins. Live counter: https://pacta.wtf/bounties/#wave-2 · Hunter leaderboard: https://pacta.wtf/leaderboard/
+**{PROGRAM_LABEL}.** The program pays out in funded epochs of 25–100 slots, opened one after another up to {PROGRAM_CAP_SLOTS:,} slots in total. **Epoch {CURRENT_EPOCH} (active): {ACTIVE_EPOCH_SLOTS} × ${REWARD_USDC} USDC = ${ACTIVE_EPOCH_CAP_USDC} USDC**, paid on {s['network']} (chainId {s['chainId']}, USDC `{USDC_BASE}`). One fixture per PR, first valid merged PR per target wins; when an epoch fills, the next one opens once it is funded. Live counter: https://pacta.wtf/bounties/#wave-2 · Hunter leaderboard: https://pacta.wtf/leaderboard/
+
+**Net-new only.** A finding qualifies only if it is not already published in https://pacta.wtf/api/v1/protocols.json when the PR is opened; `post_pin_drift` must be read at a block strictly after Pacta's latest pinned block for that protocol.
 
 ## What counts (one of three categories)
 
@@ -1989,8 +1998,10 @@ def wave2_section_html(claims, n_protocols):
              f'</tr></thead><tbody>{rows}</tbody></table>' if claims else '<p class="s" data-wave2-claims-empty>No Wave 2 slots claimed yet: the first merged fixture takes Slot #1.</p>')
     issue_label = "Master issue ↗" if WAVE2_ISSUE_URL.rstrip("/") != f"{REPO}/issues" else "GitHub issues ↗"
     master = md_html(wave2_master_issue_md(n_protocols).split("\n", 2)[2])
-    return f"""<section class="memo-sec" id="wave-2"><h2>Wave 2 · rolling pool ({TOTAL_SLOTS} × ${E(REWARD_USDC)} USDC)</h2>
-<p class="w2-counter" data-wave2-counter="{claimed}"><b>{claimed} / {TOTAL_SLOTS} Slots Claimed</b> · ${E(REWARD_USDC)} USDC / Merged Gap · ${E(TOTAL_CAP_USDC)} USDC Cap</p>
+    in_epoch = claimed - PRIOR_EPOCH_SLOTS
+    return f"""<section class="memo-sec" id="wave-2"><h2>Wave 2 · Epoch {CURRENT_EPOCH}: {ACTIVE_EPOCH_SLOTS} × ${E(REWARD_USDC)} USDC · {PROGRAM_CAP_SLOTS:,}-slot program</h2>
+<p class="w2-counter" data-wave2-counter="{in_epoch}" data-wave2-program="{claimed}"><b>{in_epoch} / {ACTIVE_EPOCH_SLOTS} Epoch {CURRENT_EPOCH} Active Slots Claimed</b> · ${E(ACTIVE_EPOCH_CAP_USDC)} USDC funded this epoch<br>{PROGRAM_CAP_SLOTS:,}-Gap Perpetual Program · ${E(REWARD_USDC)} USDC / Merged Net-New Gap · {claimed} / {PROGRAM_CAP_SLOTS:,} program slots merged</p>
+<p data-wave2-epochs>Funded in sequential epochs of 25–100 slots up to {PROGRAM_CAP_SLOTS:,} in total; when Epoch {CURRENT_EPOCH} fills, the next epoch opens once it is funded. <b>Net-new only:</b> a finding qualifies only if it is not already published in <a href="../api/v1/protocols.json">/api/v1/protocols.json</a> when the PR is opened, and <code>post_pin_drift</code> must be read at a block strictly after Pacta&#x27;s latest pinned block for that protocol.</p>
 <p>One slot per merged, verified control-plane mismatch, in one of three categories:</p>
 <ol>{cats}</ol>
 <p>Targets already in <a href="../api/v1/protocols.json">/api/v1/protocols.json</a> qualify only as <code>post_pin_drift</code>; each target (chain + contract address, and slug) can be claimed once across the pool.</p>

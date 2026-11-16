@@ -51,8 +51,8 @@ BOUNTIES_DOC = ("Bounties ($100): Pacta Chain-Feed Mismatch Challenge, 4 × $25 
 _W2 = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "bounty_wave2.json")))
 _W2_TVL = {k: f"${v['minTvlUsd'] // 1_000_000}M" for k, v in _W2["categories"].items() if v["minTvlUsd"]}
 LEADERBOARD_URL = "https://pacta.wtf/leaderboard/"
-WAVE2_DOC = (f"Bounties Wave 2: {_W2['totalSlots']} × ${_W2['rewardUsdc']} USDC rolling pool (${_W2['totalCapUsdc']} USDC cap), one merged verified "
-             f"control-plane mismatch per slot: an unindexed protocol (>= {_W2_TVL['protocol_mismatch']} TVL), a curated vault (>= "
+WAVE2_DOC = (f"Bounties Wave 2: {_W2['program']}, funded in epochs (Epoch {_W2['currentEpoch']}: {_W2['activeEpochSlots']} × ${_W2['rewardUsdc']} USDC "
+             f"= ${_W2['activeEpochCapUsdc']} USDC active); one merged verified net-new control-plane mismatch per slot: an unindexed protocol (>= {_W2_TVL['protocol_mismatch']} TVL), a curated vault (>= "
              f"{_W2_TVL['curated_vault_mismatch']} TVL), or post-snapshot drift on an indexed protocol; one JSON fixture per PR at "
              f"{_W2['fixtureDir']}/<chain>-<slug>.json, checked by CI; paid in USDC on Base within {_W2['settlement']['windowDays']} days of maintainer "
              f"merge in weekly batches to the fixture's basePayoutAddress (not pre-escrowed): {BOUNTIES_URL}#wave-2")

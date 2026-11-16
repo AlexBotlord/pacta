@@ -2084,18 +2084,24 @@ def main(argv=None):
     no_safe = lambda t: not re.search(re.escape(treas) + r".{0,160}\b(?:Safe|multisig)\b", t, re.S | re.I)
     hunters_ = BS.hunter_stats(lb_, claims_)
     w2 = {
-        "single-sourced config (REWARD_USDC 1.00 = 1,000,000 atomic Base USDC, 100 slots, $100.00 cap, chain 8453, EOA treasury)":
-            (BS.REWARD_USDC, BS.REWARD_ATOMIC, BS.TOTAL_SLOTS, BS.TOTAL_CAP_USDC, BS.USDC_BASE) == ("1.00", 1_000_000, 100, "100.00", "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913")
+        "single-sourced epoch config (REWARD_USDC 1.00 = 1,000,000 atomic Base USDC; 1,000-slot program; Epoch 1 = 25 slots / $25.00; chain 8453, EOA treasury)":
+            (BS.REWARD_USDC, BS.REWARD_ATOMIC, BS.PROGRAM_CAP_SLOTS, BS.CURRENT_EPOCH, BS.ACTIVE_EPOCH_SLOTS, BS.ACTIVE_EPOCH_CAP_USDC, BS.USDC_BASE)
+            == ("1.00", 1_000_000, 1000, 1, 25, "25.00", "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913")
+            and w2cfg["program"] == "1,000-Gap Perpetual Open-Discovery Program ($1.00 USDC / Merged Net-New Gap on Base)" and "totalSlots" not in w2cfg
             and w2cfg["settlement"]["chainId"] == 8453 and w2cfg["settlement"]["treasuryKind"] == "EOA" and VBS.checksummed(treas)
-            and VBS.W2 == w2cfg and "100 × $1.00 USDC rolling pool ($100.00 USDC cap)" in read("docs/llms.txt"),
+            and VBS.W2 == w2cfg and "funded in epochs (Epoch 1: 25 × $1.00 USDC = $25.00 USDC active)" in read("docs/llms.txt"),
         "Wave 1 archive source byte-identical (tools/bounty_issues.json 874df3fd...)":
             hashlib.sha256(read("tools/bounty_issues.json", "rb")).hexdigest() == "874df3fd179ad241e3f2e4a7e837e9aa07f462a8a842b25fb1803049a6b84954",
         "master issue: exact title, regenerates byte-identically, rendered verbatim on /bounties/":
-            master.split("\n", 1)[0] == "# [Wave 2 · 100 × $1 USDC] Continuous Agent & Researcher Control-Plane Mismatch Pool"
+            master.split("\n", 1)[0] == "# [Wave 2 · Epoch 1: 25 × $1 USDC | 1,000-Slot Program] Continuous Agent & Researcher Control-Plane Mismatch Pool"
+            and "**Net-new only.**" in master and "strictly after Pacta's latest pinned block" in master
             and master == BS.wave2_master_issue_md(n_prot) and BS.md_html(master.split("\n", 2)[2]) in bounty
             and "python3 tools/verify_bounty_submission.py --json bounties/wave-2/<chain>-<slug>.json" in master and no_safe(master),
-        f"live counter = merged bounties/wave-2/*.json ({n_claims} / 100)": n_claims == len(claims_) and f'data-wave2-counter="{n_claims}"' in bounty
-            and f"<b>{n_claims} / 100 Slots Claimed</b> · $1.00 USDC / Merged Gap · $100.00 USDC Cap" in bounty
+        f"live counters = merged bounties/wave-2/*.json ({n_claims - BS.PRIOR_EPOCH_SLOTS} / 25 Epoch 1 active; {n_claims} / 1,000 program)": n_claims == len(claims_)
+            and f'data-wave2-counter="{n_claims - BS.PRIOR_EPOCH_SLOTS}" data-wave2-program="{n_claims}"' in bounty
+            and f"<b>{n_claims - BS.PRIOR_EPOCH_SLOTS} / 25 Epoch 1 Active Slots Claimed</b> · $25.00 USDC funded this epoch" in bounty
+            and f"1,000-Gap Perpetual Program · $1.00 USDC / Merged Net-New Gap · {n_claims} / 1,000 program slots merged" in bounty
+            and "data-wave2-epochs" in bounty and "<b>Net-new only:</b>" in bounty
             and (n_claims > 0 or "No Wave 2 slots claimed yet" in bounty),
         "3 categories (>= $10M unindexed / >= $5M curated vault on 8 platforms / post-pin drift), 3 open PRs, 7-day weekly Base USDC to basePayoutAddress, EOA, not escrowed":
             all(f'data-wave2-category="{c}"' in bounty for c in ("protocol_mismatch", "curated_vault_mismatch", "post_pin_drift"))
@@ -2211,9 +2217,23 @@ def main(argv=None):
         and os.path.dirname(BS.hunter_badge_path("ok-name")) == os.path.realpath(bdir))
     # Wave 2 validator v2 + README schema
     rd_ = read("bounties/wave-2/README.md")
+    # adversarial review findings stay closed + net-new drift rule: each named bypass is refused for the right reason
+    first_ = next(x for x in json.loads(read("docs/api/v1/protocols.json"))["protocols"] if x["chain"] == "ethereum")
+    g_, d_ = VBS.valid_fixture_wave2("protocol_mismatch", first_), VBS.valid_fixture_wave2("post_pin_drift", first_)
+    pin_ = VBS.max_pinned_block(first_["slug"])
+    bypasses = {
+        "contractAddress": {**g_, "contractAddress": VBS.TREASURY, "castCommands": [c.replace(g_["contractAddress"], VBS.TREASURY) for c in g_["castCommands"]]},
+        "mcpProof": {**g_, "mcpProof": {"tool": "pacta_check_preflight", "arguments": {"address": g_["contractAddress"]},
+                                        "result": {"schema": "pacta.preflight_check.v1", "verdict": "SAFE", "address": "0x" + "12" * 20}}},
+        "castCommands": {**g_, "castCommands": [g_["castCommands"][0], g_["castCommands"][1].replace(g_["contractAddress"], g_["basePayoutAddress"])]},
+        "tvlUsd": {**g_, "tvlUsd": float("inf")},
+        "blockNumber": {**d_, "blockNumber": pin_, "castCommands": [c.replace(f"--block {d_['blockNumber']}", f"--block {pin_}") for c in d_["castCommands"]]},
+    }
+    bypass_ok = all(any(p_.startswith(k_ + ":") for p_ in VBS.validate_wave2(f_)) for k_, f_ in bypasses.items()) \
+        and VBS.validate_wave2({**g_, "mcpProof": {**g_["mcpProof"], "arguments": {}}}) != [] and VBS.validate_wave2(d_) == [] and pin_ and d_["blockNumber"] > pin_
     ex = json.loads(re.search(r"```json\n(.*?)```", rd_, re.S).group(1))
     w2["validator v2: Wave 1 cases unchanged + Wave 2 self-test (3 categories, negatives), README example valid, every FIELDS_WAVE2 key documented, auto-detect by wave/path"] = (
-        VBS.self_test() and VBS.self_test_wave2(VBS.indexed()) and VBS.validate_wave2(ex) == []
+        VBS.self_test() and VBS.self_test_wave2(VBS.indexed()) and VBS.validate_wave2(ex) == [] and bypass_ok
         and VBS.wave2_name_problems("bounties/wave-2/ethereum-example-lending.json", ex) == [] and all(f"`{k}`" in rd_ for k in VBS.FIELDS_WAVE2)
         and VBS.is_wave2("bounties/wave-2/x.json", {}) and not VBS.is_wave2("bounties/submissions/slot-1-x.json", {"slot": 1}))
     # CI gate: static invariants + behaviour in throw-away repos

@@ -1,4 +1,8 @@
-# Wave 2 claims (100 × $1 USDC rolling pool, https://pacta.wtf/bounties/#wave-2)
+# Wave 2 claims ($1 USDC per merged net-new gap, funded in epochs; https://pacta.wtf/bounties/#wave-2)
+
+Wave 2 is a 1,000-gap perpetual program paid in funded epochs of 25–100 slots (Epoch 1: 25 × $1.00 USDC). **Net-new only:**
+a finding qualifies only if it is not already published in `docs/api/v1/protocols.json` when the PR is opened, and
+`post_pin_drift` must be read at a block strictly after Pacta's latest pinned block for that protocol.
 
 Each Wave 2 PR adds exactly **one** new file in this directory, `bounties/wave-2/<chain>-<slug>.json`:
 
@@ -21,18 +25,18 @@ python3 tools/verify_bounty_submission.py --json bounties/wave-2/<chain>-<slug>.
 | `slug` | lowercase kebab-case target slug (= the file name slug) |
 | `protocol` | protocol or vault name |
 | `chainId` | integer 1, 8453 or 42161 |
-| `contractAddress` | mixed-case EIP-55 address that the cast commands read |
+| `contractAddress` | mixed-case EIP-55 address that every cast command reads; not the zero address, a precompile (<= `0xffff`) or the Pacta treasury |
 | `vaultPlatform` | `curated_vault_mismatch` only: `morpho`, `euler-v2`, `concrete`, `veda-boringvault`, `yearn-v3`, `pendle`, `maple` or `centrifuge` |
-| `pactaSlug`, `priorPin` | `post_pin_drift` only: a slug from https://pacta.wtf/api/v1/protocols.json and the prior pinned Pacta block / tx |
+| `pactaSlug`, `priorPin` | `post_pin_drift` only: a slug from https://pacta.wtf/api/v1/protocols.json and the prior pinned Pacta block / tx; `blockNumber` must be greater than Pacta's highest pinned block for that slug (protocols.json, index.json, rpc-pinned.json) |
 | `hunter` | your GitHub user name (1–39 letters, digits or inner hyphens) |
 | `agentFramework` | optional, e.g. `hermes`, `openclaw`, `claude-code`, `agno`, `human-researcher` (`^[a-z0-9][a-z0-9._-]{0,39}$`) |
-| `basePayoutAddress` | your mixed-case EIP-55 Base address; not the zero address, a precompile (<= `0xffff`) or `contractAddress` |
-| `mcpProof` | `{"tool": "pacta_lookup_protocol" \| "pacta_check_preflight" \| "pacta_scan_control_plane", "arguments": {...}, "result": {...}}` from the live Pacta `/mcp` server; the JSON must mention `contractAddress` or the slug / `pactaSlug` |
+| `basePayoutAddress` | your mixed-case EIP-55 Base address; not the zero address, a precompile (<= `0xffff`), `contractAddress` or the Pacta treasury |
+| `mcpProof` | `{"tool": "pacta_lookup_protocol" \| "pacta_check_preflight" \| "pacta_scan_control_plane", "arguments": {non-empty}, "result": {non-empty}}` from the live Pacta `/mcp` server: the raw tool JSON or the `tools/call` result (`content` / `structuredContent`). The **result** (not the arguments) must contain `contractAddress` (for `post_pin_drift`, `contractAddress` or `pactaSlug`): run `pacta_check_preflight` / `pacta_scan_control_plane` on the target, or `pacta_lookup_protocol` with the address as the query |
 | `blockNumber`, `blockHash` | the finalized block (integer) and its 32-byte hash |
-| `castCommands` | >= 2 `cast call` / `cast storage` commands, each with `--block <blockNumber>`, on >= 2 distinct `--rpc-url`s, reading `contractAddress` |
+| `castCommands` | >= 2 commands, all the **same read**: `cast call <contractAddress> <signature> [args]` or `cast storage <contractAddress> <slot>`, each with `--block <blockNumber>` and `--rpc-url https://<host>` (no other options), on >= 2 distinct RPC hosts |
 | `rpcOutputs` | `{"a": ..., "b": ...}`: identical, non-empty raw outputs |
 | `docsUrl`, `docsQuote` | the official documentation page (https://, answering HTTP 200) and the verbatim sentence (>= 10 characters) |
-| `tvlUsd`, `tvlReference` | not for `post_pin_drift`: TVL in USD (number) and an https:// source |
+| `tvlUsd`, `tvlReference` | not for `post_pin_drift`: TVL in USD (a finite number up to $1T; `NaN` / `Infinity` are refused) and an https:// source |
 | `apache2CommercialGrant` | `true`: Pacta by Fractal Neurons may ingest, Base EAS-attest, publish on pacta.wtf and commercialize the merged record under Apache-2.0 |
 | `rulesAccepted` | `[true, true, true, true]`: at most 3 concurrent open bounty PRs; every RPC output is real; no third-party spam; no exploit PoC |
 
@@ -61,8 +65,9 @@ validates that JSON with `tools/verify_bounty_submission.py` taken from the PR's
   "hunter": "example-hunter",
   "agentFramework": "claude-code",
   "basePayoutAddress": "0xdbF03B407c01E7cD3CBea99509d93f8DDDC8C6FB",
-  "mcpProof": {"tool": "pacta_lookup_protocol", "arguments": {"query": "example-lending"},
-               "result": {"schema": "pacta.lookup.v1", "totalMatches": 0, "coverage_gap_hint": {"query": "example-lending"}}},
+  "mcpProof": {"tool": "pacta_lookup_protocol", "arguments": {"query": "0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359"},
+               "result": {"schema": "pacta.protocol_lookup.v1", "query": "0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359",
+                          "totalMatches": 0, "count": 0, "results": []}},
   "blockNumber": 23800000,
   "blockHash": "0x4e4e4e4e4e4e4e4e4e4e4e4e4e4e4e4e4e4e4e4e4e4e4e4e4e4e4e4e4e4e4e4e",
   "castCommands": [

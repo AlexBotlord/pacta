@@ -1,11 +1,15 @@
 {
   "schema": "pacta.bounty_wave2.v1",
   "wave": 2,
-  "title": "[Wave 2 · 100 × $1 USDC] Continuous Agent & Researcher Control-Plane Mismatch Pool",
+  "title": "[Wave 2 · Epoch 1: 25 × $1 USDC | 1,000-Slot Program] Continuous Agent & Researcher Control-Plane Mismatch Pool",
+  "program": "1,000-Gap Perpetual Open-Discovery Program ($1.00 USDC / Merged Net-New Gap on Base)",
   "rewardUsdc": "1.00",
   "rewardAtomic": 1000000,
-  "totalSlots": 100,
-  "totalCapUsdc": "100.00",
+  "programCapSlots": 1000,
+  "currentEpoch": 1,
+  "activeEpochSlots": 25,
+  "activeEpochCapUsdc": "25.00",
+  "priorEpochSlots": 0,
   "settlement": {
     "chainId": 8453,
     "network": "Base Mainnet",
@@ -19,14 +23,40 @@
   "wave2IssueUrl": "https://github.com/Fractal-Neurons/pacta/issues",
   "maxOpenPrsPerContributor": 3,
   "fixtureDir": "bounties/wave-2",
-  "chains": {"1": "ethereum", "8453": "base", "42161": "arbitrum"},
-  "categories": {
-    "protocol_mismatch": {"minTvlUsd": 10000000, "label": "Unindexed protocol control-plane mismatch"},
-    "curated_vault_mismatch": {"minTvlUsd": 5000000, "label": "Curated vault / isolated market mismatch"},
-    "post_pin_drift": {"minTvlUsd": null, "label": "Post-snapshot live control-plane drift"}
+  "chains": {
+    "1": "ethereum",
+    "8453": "base",
+    "42161": "arbitrum"
   },
-  "vaultPlatforms": ["morpho", "euler-v2", "concrete", "veda-boringvault", "yearn-v3", "pendle", "maple", "centrifuge"],
-  "mcpTools": ["pacta_lookup_protocol", "pacta_check_preflight", "pacta_scan_control_plane"],
+  "categories": {
+    "protocol_mismatch": {
+      "minTvlUsd": 10000000,
+      "label": "Unindexed protocol control-plane mismatch"
+    },
+    "curated_vault_mismatch": {
+      "minTvlUsd": 5000000,
+      "label": "Curated vault / isolated market mismatch"
+    },
+    "post_pin_drift": {
+      "minTvlUsd": null,
+      "label": "Post-snapshot live control-plane drift"
+    }
+  },
+  "vaultPlatforms": [
+    "morpho",
+    "euler-v2",
+    "concrete",
+    "veda-boringvault",
+    "yearn-v3",
+    "pendle",
+    "maple",
+    "centrifuge"
+  ],
+  "mcpTools": [
+    "pacta_lookup_protocol",
+    "pacta_check_preflight",
+    "pacta_scan_control_plane"
+  ],
   "rules": [
     "At most 3 concurrent open bounty PRs per contributor",
     "Every RPC output in this fixture is real and reproducible at the pinned block",

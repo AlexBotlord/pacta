@@ -16,9 +16,12 @@ documentation URL answers HTTP 200 before a merge. Exit 0 = valid, 1 = problems 
 
 import argparse
 import json
+import math
 import os
 import re
+import shlex
 import sys
+import urllib.parse
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from build_site import BOUNTY_ISSUE_URLS  # noqa: E402  (single source of the #21-#24 issue numbers)
@@ -320,6 +323,70 @@ FIELDS_WAVE2 = ["wave", "category", "slug", "protocol", "chainId", "contractAddr
                 "agentFramework", "basePayoutAddress", "mcpProof", "blockNumber", "blockHash", "castCommands", "rpcOutputs", "docsUrl", "docsQuote",
                 "tvlUsd", "tvlReference", "apache2CommercialGrant", "rulesAccepted"]
 WAVE2_OPTIONAL = {"vaultPlatform", "pactaSlug", "priorPin", "agentFramework", "tvlUsd", "tvlReference"}
+TREASURY = W2["settlement"]["treasuryAddress"]
+MAX_TVL_USD = 1_000_000_000_000                 # $1T: anything above is a typo or an attack on the TVL floor
+# real tool output keys: pacta_check_preflight {"schema": "pacta.preflight_check.v1", "chain", "address", "verdict", ...};
+# pacta_scan_control_plane {"chain", "address", "block", "codeBytes", ...} (no schema key); or the tools/call envelope (content / structuredContent)
+PREFLIGHT_KEYSETS = ({"schema", "verdict"}, {"schema", "chain", "address"}, {"chain", "address", "block"})
+CAST_VALUE_OPTS = {"--block": "block", "-b": "block", "--rpc-url": "rpc", "-r": "rpc"}
+
+
+def _reject_constant(c):
+    raise ValueError(f"non-standard JSON constant {c} (NaN / Infinity are not allowed)")
+
+
+def load_fixture(path):
+    """json.load that refuses NaN / Infinity / -Infinity (they are not JSON and would slip past numeric floors)."""
+    with open(path, encoding="utf-8") as fh:
+        return json.load(fh, parse_constant=_reject_constant)
+
+
+def max_pinned_block(slug, docs=None):
+    """Highest block Pacta has pinned for a published protocol, across protocols.json (surfaces), index.json (EAS records, by
+    protocol name and surface id) and rpc-pinned.json (by slug). None when the slug is not published."""
+    d = docs or os.path.join(ROOT, "docs", "api", "v1")
+    prot = {x["slug"]: x for x in json.load(open(os.path.join(d, "protocols.json")))["protocols"]}
+    if slug not in prot:
+        return None
+    p = prot[slug]
+    ids = {s.get("id") for s in p.get("surfaces") or []}
+    blocks = [s.get("blockNumber") for s in p.get("surfaces") or []]
+    blocks += [e.get("block_number") for e in json.load(open(os.path.join(d, "index.json")))["entries"] if e.get("protocol") == p["name"] or e.get("id") in ids]
+    blocks += [e.get("block_number") for e in json.load(open(os.path.join(d, "rpc-pinned.json")))["entries"] if e.get("slug") == slug or e.get("id") in ids]
+    nums = [int(b) for b in blocks if isinstance(b, int) or (isinstance(b, str) and b.isdigit())]
+    return max(nums) if nums else None
+
+
+def parse_cast(cmd):
+    """'cast call|storage <address> <positional...> --block N --rpc-url URL' -> (sub, address, positionals, block, rpc) or a problem string.
+    Only --block / -b and --rpc-url / -r options are accepted (each exactly once), so every command is a pinned, comparable read."""
+    try:
+        toks = shlex.split(cmd)
+    except ValueError as e:
+        return f"unparseable ({e})"
+    if len(toks) < 3 or toks[0] != "cast" or toks[1] not in ("call", "storage"):
+        return "must start with 'cast call' or 'cast storage'"
+    pos, opts, i = [], {}, 2
+    while i < len(toks):
+        t = toks[i]
+        if t.startswith("-"):
+            k, _, v = t.partition("=")
+            if k not in CAST_VALUE_OPTS:
+                return f"option {k} is not allowed (only --block and --rpc-url)"
+            if not v:
+                i += 1
+                if i >= len(toks):
+                    return f"option {k} needs a value"
+                v = toks[i]
+            if CAST_VALUE_OPTS[k] in opts:
+                return f"option {k} given twice"
+            opts[CAST_VALUE_OPTS[k]] = v
+        else:
+            pos.append(t)
+        i += 1
+    if not pos:
+        return "missing the target address"
+    return toks[1], pos[0], tuple(pos[1:]), opts.get("block"), opts.get("rpc")
 
 
 def is_wave2(path, f):
@@ -355,14 +422,14 @@ def wave2_siblings(path):
         if not p.endswith(".json") or os.path.realpath(q) == me:
             continue
         try:
-            g = json.load(open(q))
+            g = load_fixture(q)
             out.append((int(str(g.get("chainId")).strip()), str(g.get("contractAddress", "")).lower(), g.get("slug")))
         except (OSError, ValueError, TypeError, AttributeError):
             continue
     return out
 
 
-def validate_wave2(f, idx=None, siblings=()):
+def validate_wave2(f, idx=None, siblings=(), docs=None):
     """Wave 2 fixture -> list of problems (empty = valid). siblings: [(chainId, lowercase address, slug)] of the other merged claims."""
     probs = []
     bad = probs.append
@@ -390,6 +457,10 @@ def validate_wave2(f, idx=None, siblings=()):
     addr = f.get("contractAddress")
     if not checksummed(addr):
         bad("contractAddress: a mixed-case EIP-55 checksummed 0x address is required")
+    elif int(addr, 16) <= 0xFFFF:
+        bad("contractAddress: the zero address and precompiles (<= 0xffff) are not protocol contracts")
+    elif addr.lower() == TREASURY.lower():
+        bad("contractAddress: the Pacta treasury is not a bounty target")
     pay = f.get("basePayoutAddress")
     if not checksummed(pay):
         bad("basePayoutAddress: your mixed-case EIP-55 checksummed Base 0x address (USDC is paid there)")
@@ -397,6 +468,8 @@ def validate_wave2(f, idx=None, siblings=()):
         bad("basePayoutAddress: the zero address and precompiles (<= 0xffff) cannot receive the payout")
     elif isinstance(addr, str) and pay.lower() == addr.lower():
         bad("basePayoutAddress: must differ from contractAddress")
+    elif pay.lower() == TREASURY.lower():
+        bad("basePayoutAddress: must not be the Pacta treasury")
     hunter = f.get("hunter")
     if not (isinstance(hunter, str) and HUNTER_RE.fullmatch(hunter)):
         bad("hunter: your GitHub user name (1-39 letters, digits or inner hyphens)")
@@ -409,11 +482,15 @@ def validate_wave2(f, idx=None, siblings=()):
             bad("pactaSlug: post_pin_drift needs a published slug from https://pacta.wtf/api/v1/protocols.json")
         if not _filled(f.get("priorPin")):
             bad("priorPin: post_pin_drift needs the prior pinned Pacta block / tx")
+        pinned = max_pinned_block(psl, docs) if psl in slugs else None
+        bn_ = f.get("blockNumber")
+        if pinned is not None and isinstance(bn_, int) and not isinstance(bn_, bool) and bn_ <= pinned:
+            bad(f"blockNumber: post_pin_drift must be read after Pacta's latest pin for {psl} (block {pinned}); got {bn_}")
     elif cat in W2["categories"]:
         need = W2["categories"][cat]["minTvlUsd"]
         tvl = f.get("tvlUsd")
-        if not (isinstance(tvl, (int, float)) and not isinstance(tvl, bool) and tvl >= need):
-            bad(f"tvlUsd: {cat} needs a TVL of at least ${need:,} (a number in USD)")
+        if not (isinstance(tvl, (int, float)) and not isinstance(tvl, bool) and math.isfinite(tvl) and need <= tvl <= MAX_TVL_USD):
+            bad(f"tvlUsd: {cat} needs a finite TVL between ${need:,} and ${MAX_TVL_USD:,} (a number in USD)")
         ref = f.get("tvlReference")
         if not (isinstance(ref, str) and re.match(r"^https://[^\s/@]+\.[^\s/@]+/\S*$", ref)):
             bad("tvlReference: an https:// link to a verifiable TVL source")
@@ -428,13 +505,26 @@ def validate_wave2(f, idx=None, siblings=()):
     if isinstance(slug, str) and any(s == slug for _, _, s in siblings):
         bad("duplicate: another bounties/wave-2 claim already uses this slug")
     mp = f.get("mcpProof")
-    if not (isinstance(mp, dict) and mp.get("tool") in W2["mcpTools"] and isinstance(mp.get("result"), dict) and mp["result"]):
-        bad("mcpProof: {\"tool\": pacta_lookup_protocol | pacta_check_preflight | pacta_scan_control_plane, \"arguments\": {...}, \"result\": {non-empty JSON}}")
+    if not (isinstance(mp, dict) and mp.get("tool") in W2["mcpTools"] and isinstance(mp.get("arguments"), dict) and mp["arguments"]
+            and isinstance(mp.get("result"), dict) and mp["result"]):
+        bad("mcpProof: {\"tool\": pacta_lookup_protocol | pacta_check_preflight | pacta_scan_control_plane, \"arguments\": {non-empty}, \"result\": {non-empty}}")
     else:
-        ser = json.dumps(mp, sort_keys=True).lower()
-        refs = [x.lower() for x in (addr if isinstance(addr, str) else None, slug, psl) if isinstance(x, str) and x]
+        res = mp["result"]
+        keys = set(res)
+        envelope = isinstance(res.get("content"), list) or isinstance(res.get("structuredContent"), dict)
+        if mp["tool"] == "pacta_lookup_protocol":
+            shaped = envelope or bool(keys & {"schema", "results"})
+        else:
+            shaped = envelope or any(ks <= keys for ks in PREFLIGHT_KEYSETS)
+        if not shaped:
+            bad(f"mcpProof: result is not a {mp['tool']} output (raw tool JSON with its schema keys, or the tools/call content / structuredContent)")
+        ser = json.dumps(res, sort_keys=True).lower()             # provenance from the RESULT only, never from arguments
+        refs = [addr.lower()] if isinstance(addr, str) and addr else []
+        if cat == "post_pin_drift" and isinstance(psl, str) and psl:
+            refs.append(psl.lower())
         if not any(r in ser for r in refs):
-            bad("mcpProof: the live Pacta /mcp output must reference the contractAddress or the target slug / pactaSlug")
+            bad("mcpProof: the result must contain the contractAddress" + (" or the pactaSlug" if cat == "post_pin_drift" else "")
+                + " (run pacta_check_preflight / pacta_scan_control_plane on the target; a lookup miss does not name the contract)")
     bn = f.get("blockNumber")
     bn = bn if isinstance(bn, int) and not isinstance(bn, bool) and 0 < bn < 10 ** 16 else None
     if bn is None:
@@ -442,16 +532,27 @@ def validate_wave2(f, idx=None, siblings=()):
     bh = f.get("blockHash")
     if not (isinstance(bh, str) and re.fullmatch(r"0x[0-9a-fA-F]{64}", bh)) or (isinstance(bh, str) and int(bh, 16) == 0):
         bad("blockHash: the exact 32-byte 0x block hash")
-    cmds = f.get("castCommands")
-    cmds = [c for c in cmds if isinstance(c, str)] if isinstance(cmds, list) else []
-    if len(cmds) < 2 or not all(re.match(r"^cast (?:call|storage) ", c) for c in cmds):
-        bad("castCommands: at least 2 'cast call' / 'cast storage' commands (one per RPC endpoint)")
-    if bn is not None and any(not re.search(rf"--block[ =]{bn}(?:\s|$)", c) for c in cmds):
-        bad("castCommands: every command must pin --block <blockNumber>")
-    if len({m.group(1) for c in cmds for m in [re.search(r"--rpc-url[ =](\S+)", c)] if m}) < 2:
-        bad("castCommands: 2 independent RPC endpoints (distinct --rpc-url values)")
-    if checksummed(addr) and not any(addr.lower() in c.lower() for c in cmds):
-        bad("castCommands: at least one command must read the contract address")
+    raw_cmds = f.get("castCommands")
+    cmds = raw_cmds if isinstance(raw_cmds, list) and all(isinstance(c, str) for c in raw_cmds) else []
+    parsed = [parse_cast(c) for c in cmds]
+    errs = [f"#{i + 1}: {p}" for i, p in enumerate(parsed) if isinstance(p, str)]
+    if len(cmds) < 2 or errs:
+        bad("castCommands: at least 2 'cast call' / 'cast storage' commands (one per RPC endpoint)" + (f"; {'; '.join(errs)}" if errs else ""))
+    else:
+        if bn is not None and any(p[3] != str(bn) for p in parsed):
+            bad("castCommands: every command must pin --block <blockNumber>")
+        if checksummed(addr) and any(p[1].lower() != addr.lower() for p in parsed):
+            bad("castCommands: every command must read contractAddress (the first positional argument)")
+        if len({(p[0], p[2]) for p in parsed}) != 1:
+            bad("castCommands: every command must be the same read (same call / storage and the same signature, arguments or slot)")
+        hosts = []
+        for p in parsed:
+            u = urllib.parse.urlsplit(p[4] or "")
+            hosts.append(u.hostname if u.scheme == "https" and u.hostname and "." in u.hostname else None)
+        if None in hosts:
+            bad("castCommands: every command needs --rpc-url https://<public host>")
+        elif len(set(hosts)) < 2:
+            bad("castCommands: 2 independent RPC endpoints (distinct --rpc-url hosts)")
     outs = f.get("rpcOutputs") if isinstance(f.get("rpcOutputs"), dict) else {}
     a, b = _filled(outs.get("a")), _filled(outs.get("b"))
     if not a or not b:
@@ -482,8 +583,9 @@ def valid_fixture_wave2(category="protocol_mismatch", first=None):
     pay = "0xdbF03B407c01E7cD3CBea99509d93f8DDDC8C6FB"              # EIP-55 test vector
     f = {"wave": 2, "category": category, "slug": "example-lending", "protocol": "Example Lending", "chainId": 1, "contractAddress": addr,
          "hunter": "example-hunter", "agentFramework": "claude-code", "basePayoutAddress": pay,
-         "mcpProof": {"tool": "pacta_lookup_protocol", "arguments": {"query": "example-lending"},
-                      "result": {"schema": "pacta.lookup.v1", "totalMatches": 0, "coverage_gap_hint": {"query": "example-lending", "address": addr.lower()}}},
+         "mcpProof": {"tool": "pacta_lookup_protocol", "arguments": {"query": addr},
+                      "result": {"schema": "pacta.protocol_lookup.v1", "query": addr, "totalMatches": 0, "count": 0, "results": [],
+                                 "coverage_gap_hint": {"reason": "unindexed"}}},
          "blockNumber": 23800000, "blockHash": "0x" + "4e" * 32,
          "castCommands": [f'cast call {addr} "owner()(address)" --block 23800000 --rpc-url https://eth.example-rpc-a.org',
                           f'cast call {addr} "owner()(address)" --block 23800000 --rpc-url https://eth.example-rpc-b.org'],
@@ -494,12 +596,16 @@ def valid_fixture_wave2(category="protocol_mismatch", first=None):
         f.update(slug="example-curated-vault", protocol="Example Curated Vault", vaultPlatform="morpho", tvlUsd=6000000, chainId=8453,
                  castCommands=[c.replace("eth.example", "base.example") for c in f["castCommands"]],
                  mcpProof={"tool": "pacta_check_preflight", "arguments": {"chain": "base", "address": addr},
-                           "result": {"schema": "pacta.preflight_check.v1", "verdict": "INSTANT_EOA_ADMIN_RISK", "address": addr.lower()}})
+                           "result": {"schema": "pacta.preflight_check.v1", "chain": "base", "chainId": 8453, "address": addr,
+                                      "verdict": "INSTANT_EOA_ADMIN_RISK"}})
     if category == "post_pin_drift":
         first = first or {"slug": "example", "chain": "ethereum"}
-        f.update(slug=first["slug"], protocol="Drifted protocol", pactaSlug=first["slug"], priorPin="Pacta pinned block 23700000",
-                 mcpProof={"tool": "pacta_scan_control_plane", "arguments": {"protocol": first["slug"]},
-                           "result": {"schema": "pacta.control_plane_scan.v1", "protocol": first["slug"], "surfaces": 3}})
+        pin = max_pinned_block(first["slug"]) or 23700000
+        bn = pin + 1000                                               # read strictly after Pacta's latest pin
+        f.update(slug=first["slug"], protocol="Drifted protocol", pactaSlug=first["slug"], priorPin=f"Pacta pinned block {pin}", blockNumber=bn,
+                 castCommands=[c.replace("--block 23800000", f"--block {bn}") for c in f["castCommands"]],
+                 mcpProof={"tool": "pacta_scan_control_plane", "arguments": {"chain": "ethereum", "address": addr},
+                           "result": {"chain": "ethereum", "address": addr, "block": {"number": bn}, "codeBytes": 4096}})
         f.pop("tvlUsd")
         f.pop("tvlReference")
     return f
@@ -544,6 +650,35 @@ def self_test_wave2(idx, verbose=False):
         ("secrets", good, {"docsQuote": "token " + tok + " in the docs"}),
         ("secrets", good, {"castCommands": [c + " --private-key 0xabc" for c in good["castCommands"]]}),
         ("exploit", good, {"docsQuote": "then cast send the drain tx to the vault"}),
+        # adversarial review findings, one case each: contract guards, mcpProof arguments + result provenance, every cast reads the target, finite TVL
+        ("contractAddress", good, {"contractAddress": "0x000000000000000000000000000000000000aB01",
+                                   "castCommands": [c.replace(good["contractAddress"], "0x000000000000000000000000000000000000aB01") for c in good["castCommands"]]}),
+        ("contractAddress", good, {"contractAddress": TREASURY, "castCommands": [c.replace(good["contractAddress"], TREASURY) for c in good["castCommands"]]}),
+        ("basePayoutAddress", good, {"basePayoutAddress": TREASURY}),
+        ("mcpProof", good, {"mcpProof": {**good["mcpProof"], "arguments": {}}}),
+        ("mcpProof", good, {"mcpProof": {k: v for k, v in good["mcpProof"].items() if k != "arguments"}}),
+        ("mcpProof", good, {"mcpProof": {**good["mcpProof"], "arguments": "query"}}),
+        ("mcpProof", good, {"mcpProof": {"tool": "pacta_check_preflight", "arguments": {"address": good["contractAddress"]},
+                                         "result": {"schema": "pacta.preflight_check.v1", "verdict": "IMMUTABLE_NO_ADMIN", "address": "0x" + "12" * 20}}}),
+        ("mcpProof", good, {"mcpProof": {"tool": "pacta_lookup_protocol", "arguments": {"query": good["contractAddress"]},
+                                         "result": {"schema": "pacta.protocol_lookup.v1", "query": "example lending", "totalMatches": 0}}}),
+        ("mcpProof", good, {"mcpProof": {"tool": "pacta_check_preflight", "arguments": {"address": good["contractAddress"]},
+                                         "result": {"note": good["contractAddress"]}}}),
+        ("castCommands", good, {"castCommands": [good["castCommands"][0], good["castCommands"][1].replace(good["contractAddress"], good["basePayoutAddress"])]}),
+        ("castCommands", good, {"castCommands": [good["castCommands"][0], good["castCommands"][1].replace('"owner()(address)"', '"admin()(address)"')]}),
+        ("castCommands", good, {"castCommands": [good["castCommands"][0],
+                                                 f'cast storage {good["contractAddress"]} 0x0 --block 23800000 --rpc-url https://eth.example-rpc-b.org']}),
+        ("castCommands", good, {"castCommands": [c + " --private" for c in good["castCommands"]]}),
+        ("castCommands", good, {"castCommands": [c.replace("https://", "http://") for c in good["castCommands"]]}),
+        ("castCommands", good, {"castCommands": [good["castCommands"][0], good["castCommands"][1].replace("eth.example-rpc-b.org", "eth.example-rpc-a.org/v2")]}),
+        ("castCommands", good, {"castCommands": [good["castCommands"][0] + ' "unterminated']}),
+        ("tvlUsd", good, {"tvlUsd": float("inf")}), ("tvlUsd", good, {"tvlUsd": float("nan")}), ("tvlUsd", good, {"tvlUsd": -float("inf")}),
+        ("tvlUsd", good, {"tvlUsd": 2_000_000_000_000}), ("tvlUsd", good, {"tvlUsd": True}),
+        # net-new only: drift must be read strictly after Pacta's latest pin for the protocol
+        ("blockNumber", drift, {"blockNumber": max_pinned_block(first["slug"]),
+                                "castCommands": [c.replace(f"--block {drift['blockNumber']}", f"--block {max_pinned_block(first['slug'])}") for c in drift["castCommands"]]}),
+        ("blockNumber", drift, {"blockNumber": max_pinned_block(first["slug"]) - 5,
+                                "castCommands": [c.replace(f"--block {drift['blockNumber']}", f"--block {max_pinned_block(first['slug']) - 5}") for c in drift["castCommands"]]}),
     ]
     for want, base, patch in cases:
         probs = validate_wave2({**base, **patch}, idx)
@@ -552,6 +687,20 @@ def self_test_wave2(idx, verbose=False):
             print(f"self-test FAIL: wave 2 {patch} -> expected '{want}', got {probs}")
         elif verbose:
             print(f"self-test ok: wave 2 {want}")
+    env_ok = {**good, "mcpProof": {"tool": "pacta_check_preflight", "arguments": {"chain": "ethereum", "address": good["contractAddress"]},
+                                     "result": {"content": [{"type": "text", "text": json.dumps({"schema": "pacta.preflight_check.v1", "chain": "ethereum",
+                                                                                                  "address": good["contractAddress"], "verdict": "TIMELOCK_PROTECTED"})}],
+                                                "isError": False}}}
+    if validate_wave2(env_ok, idx):
+        ok = False
+        print(f"self-test FAIL: wave 2 tools/call envelope proof refused -> {validate_wave2(env_ok, idx)}")
+    for bad_json in ('{"tvlUsd": NaN}', '{"tvlUsd": Infinity}', '{"tvlUsd": -Infinity}'):
+        try:
+            json.loads(bad_json, parse_constant=_reject_constant)
+            ok = False
+            print(f"self-test FAIL: {bad_json} parsed")
+        except ValueError:
+            pass
     for want, sibs in (("duplicate", sib), ("duplicate", [(8453, "0x" + "1" * 40, good["slug"])])):
         if not any(p.startswith(want + ":") for p in validate_wave2(good, idx, sibs)):
             ok = False
@@ -586,7 +735,15 @@ def main(argv=None):
         ok = self_test(verbose=False)
         print("self-test ok" if ok else "self-test FAILED")
         return 0 if ok else 1
-    f = parse_body(open(a.body).read()) if a.body else json.load(open(a.json))
+    if a.body:
+        f = parse_body(open(a.body).read())
+    else:
+        try:
+            f = load_fixture(a.json)
+        except ValueError as e:
+            print(f"FAIL json: {e}")
+            print("1 problem(s)")
+            return 1
     if a.json and is_wave2(a.json, f):
         probs = validate_wave2(f, siblings=wave2_siblings(a.json)) + wave2_name_problems(a.json, f)
     else:

@@ -1,6 +1,8 @@
-# [Wave 2 · 100 × $1 USDC] Continuous Agent & Researcher Control-Plane Mismatch Pool
+# [Wave 2 · Epoch 1: 25 × $1 USDC | 1,000-Slot Program] Continuous Agent & Researcher Control-Plane Mismatch Pool
 
-**100 slots × $1.00 USDC per merged verified gap = $100.00 USDC hard cap**, paid on Base Mainnet (chainId 8453, USDC `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913`). One rolling pool, one fixture per PR, first valid merged PR per target wins. Live counter: https://pacta.wtf/bounties/#wave-2 · Hunter leaderboard: https://pacta.wtf/leaderboard/
+**1,000-Gap Perpetual Open-Discovery Program ($1.00 USDC / Merged Net-New Gap on Base).** The program pays out in funded epochs of 25–100 slots, opened one after another up to 1,000 slots in total. **Epoch 1 (active): 25 × $1.00 USDC = $25.00 USDC**, paid on Base Mainnet (chainId 8453, USDC `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913`). One fixture per PR, first valid merged PR per target wins; when an epoch fills, the next one opens once it is funded. Live counter: https://pacta.wtf/bounties/#wave-2 · Hunter leaderboard: https://pacta.wtf/leaderboard/
+
+**Net-new only.** A finding qualifies only if it is not already published in https://pacta.wtf/api/v1/protocols.json when the PR is opened; `post_pin_drift` must be read at a block strictly after Pacta's latest pinned block for that protocol.
 
 ## What counts (one of three categories)
 

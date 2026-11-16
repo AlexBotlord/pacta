@@ -18,7 +18,7 @@
    "index.json": "8fd46376ee87fb41bc24691d6a84a7bc58469bc538169b469f9a58d4540d1435",
    "rpc-pinned.json": "ec9fcc95e25ed1d38a0f0a1e06cc2f4ed3732da943e5bda989919e6ff2eec24a",
    "graph_dependencies.json": "c32f718b692f497f33bd8e50e300b883ae1ce3316215fb5e2d01f2c235bff4fa",
-   "graph_controller_facts.json": "afa45a3d82d328d29a18817e9b21109e07a3ac1cc259a97c8570dfcfd780a6d8"
+   "graph_controller_facts.json": "4c040062b35ab00e041a19d6adf011999eb982a63b061139fbfc682141a43f22"
   },
   "bounty_submissions": []
  },
@@ -10210,5 +10210,5 @@
    "content_hash": "499cc430c4be2c13e8009435cf926cd3389f8d457b0e74727eb8412e99a79c42"
   }
  ],
- "manifest_sha256": "1eac70054361e926ffc511fbb83b338cf2a8e0b98f9c417d5560cf94b09f3e49"
+ "manifest_sha256": "7c73400453c80f8761029d5ff0c55b2f74927473dcba601eae2113d23868443d"
 }

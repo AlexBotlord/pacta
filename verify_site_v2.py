@@ -63,6 +63,10 @@ EXPECT = {
 }
 # ---- EXPECT-END
 X = EXPECT
+# sha256 of docs/api/v1/graph-manifest.json: changes only through a deliberate re-pin (a Sprint stage / stamp rewrites it after the
+# rebuild); a merged Wave 2 claim or any site-only change must leave it as is
+GRAPH_MANIFEST_SHA256 = "c8e5efcbc04126dedbe52fddd9f906190317aca2240ac741cd603c10db6dbe0e"
+NON_PROTOCOL_PAGES = 18                                                  # docs/**/*.html pages that are not /protocols/<slug>/
 
 
 def check(name, ok, detail=""):
@@ -1111,7 +1115,7 @@ def main(argv=None):
     res = app_behaviour(appjs, pages.get(os.path.join("request", "index.html"), ""), page, entries[0]["id"], beacon=beacon_js,
                         protocol_html=pages.get(os.path.join("protocols", "aave-v3-gho", "index.html"), ""), protocol_slug="aave-v3-gho",
                         notfound_html=pages.get("404.html", ""),
-                        clearance_html=pages.get(os.path.join("protocols", "across-protocol-hubpool", "index.html"), ""), clearance_slug="across-protocol-hubpool",
+                        clearance_html=pages.get(os.path.join("protocols", "synthetix-v3-core", "index.html"), ""), clearance_slug="synthetix-v3-core",
                         brief_html=pages.get(os.path.join("briefs", "kerne-kusd-base", "index.html"), ""), brief_slug="kerne-kusd-base",
                         prefill_slug="across-protocol-hubpool",
                         timelock_brief_html=ready_fixture_brief(json.loads(read("docs/api/v1/index.json"))),
@@ -2312,9 +2316,12 @@ def main(argv=None):
     w2["CI gate behaviour (bash + git, throw-away repos): valid fixture passes; bad TVL / duplicate of a merged claim / chain-name mismatch fail validation; validator or workflow edits, a 2nd file, a modified file, a symlink or a wrong path fail BEFORE any Python"] = (
         set(sim) == set(want) and not sim_bad and "duplicate:" in sim["duplicate_of_merged"][2])
     m_ = json.loads(read("docs/api/v1/graph-manifest.json"))
-    w2["graph manifest byte-identical with 0 merged Wave 2 fixtures (f7ffddd5...; Wave 2 never feeds tools/graph_manifest.py)"] = (
-        hashlib.sha256(read("docs/api/v1/graph-manifest.json", "rb")).hexdigest() == "f7ffddd52e75b328532d9a4de57352249d5abbe9da4b584a7b8ce3403ceb9da5"
-        and (m_.get("sources") or {}).get("bounty_submissions") == [] and "wave-2" not in read("tools/graph_manifest.py"))
+    pub_slugs_ = {p_["slug"] for p_ in json.loads(read("docs/api/v1/protocols.json"))["protocols"]}
+    sub_files_ = sorted(os.path.join("bounties", "submissions", f_) for f_ in os.listdir(os.path.join(ROOT, "bounties", "submissions")) if f_.endswith(".json"))
+    w2[f"graph manifest = the pinned {GRAPH_MANIFEST_SHA256[:8]}... (Wave 2 never feeds tools/graph_manifest.py; only merged Wave 1 fixtures whose pactaSlug is published)"] = (
+        hashlib.sha256(read("docs/api/v1/graph-manifest.json", "rb")).hexdigest() == GRAPH_MANIFEST_SHA256
+        and (m_.get("sources") or {}).get("bounty_submissions") == [f_ for f_ in sub_files_ if json.loads(read(f_)).get("pactaSlug") in pub_slugs_]
+        and "wave-2" not in read("tools/graph_manifest.py"))
     check("W2: Wave 2 rolling pool (100 x $1.00 USDC = $100.00 cap, live counter, 3 categories, weekly Base USDC to the fixture's basePayoutAddress from the EOA), "
           "Wave 1 Genesis Archive + settlement ledger (stamp tool, BaseScan links only with a real tx), /leaderboard/ + hunter SVG badges, validator v2, "
           "hardened pull_request CI gate (static + simulated), graph manifest unchanged",
@@ -2341,7 +2348,7 @@ def main(argv=None):
             and all(x in pages[os.path.join("mcp", "index.html")] for x in (f'data-mcp-endpoint>{BS.MCP_URL}</code>', "no API key and no wallet", BS.RATE_LIMIT,
                     f'data-copy="claude mcp add --transport http pacta {BS.MCP_URL}"', 'href="../api/v1/protocols.json"',
                     'https://github.com/Fractal-Neurons/defi-control-plane-mcp', f'href="{cqa}"'))
-            and f"<loc>{BS.BASE_URL}/mcp/</loc>" in read("docs/sitemap.xml") and len(pages) == 92,
+            and f"<loc>{BS.BASE_URL}/mcp/</loc>" in read("docs/sitemap.xml") and len(pages) == X["protocols"] + NON_PROTOCOL_PAGES,
         "nav + footer say 'Bounties' (no '$100' label) on every page": not [r for r, t in pages.items() if 'Bounties ($100)</a>' in t]
             and all('bounties/">Bounties</a>' in t for r, t in pages.items() if 'class="topbar"' in t),
         "Wave 1 archive labelled 'Historical Snapshot (Pinned at 53 Protocols on Nov 15)'": "<b>Historical Snapshot (Pinned at 53 Protocols on Nov 15)</b>" in bounty
@@ -2361,8 +2368,8 @@ def main(argv=None):
             and "[Master Issue #41](https://github.com/Fractal-Neurons/pacta/issues/41)" in read("README.md")
             and f"**{X['protocols']} Indexed Protocols ({X['eas_protocols']} Base-EAS-Attested Protocols across {X['records']} Sprint Records in {X['sprints']} Sprints + {X['rpc_protocols']} RPC-Observed Protocols)**" in read("README.md")
             and "Ethereum and Base Mainnet block heights" in read("README.md") and "Ethereum Mainnet block height" not in read("README.md")),
-        "graph manifest unchanged (f7ffddd5...)": hashlib.sha256(read("docs/api/v1/graph-manifest.json", "rb")).hexdigest()
-            == "f7ffddd52e75b328532d9a4de57352249d5abbe9da4b584a7b8ce3403ceb9da5",
+        f"graph manifest = the pinned {GRAPH_MANIFEST_SHA256[:8]}...": hashlib.sha256(read("docs/api/v1/graph-manifest.json", "rb")).hexdigest()
+            == GRAPH_MANIFEST_SHA256,
     }
     check("C1: GitHub Discussions community hub + Wave 2 master issue #41 linked from README, every footer, /bounties/, /leaderboard/, llms.txt, llms-full.txt, /llms/ and the master issue text",
           all(c1.values()), str([k for k, v in c1.items() if not v]))

@@ -1,0 +1,322 @@
+{
+ "schema": "pacta.drift_rescan.v1",
+ "sprint": 22,
+ "pin": {
+  "chain_id": 1,
+  "block_number": 26429396,
+  "block_hash": "0x3fb83aa053c26ac6b98d634858da1b3c23bb65bae7a12f8f14d72d8273e16d71",
+  "rpcs": [
+   "https://gateway.tenderly.co/public/mainnet",
+   "https://rpc.mevblocker.io"
+  ]
+ },
+ "baselines": {
+  "sprint_4": {
+   "block_number": 26401312,
+   "block_hash": "0x95866ea3ef8f9a0567ce000bc8075f6dc5fb0f1e80cb4e9999ae624a2f0dc109"
+  },
+  "sprint_5": {
+   "block_number": 26401405,
+   "block_hash": "0x26e155e1569d436406a52ecee31c94d8d8ef2ca4c45d82211a84c8c802be1510"
+  },
+  "sprint_6": {
+   "block_number": 26401540,
+   "block_hash": "0x49324aaf84b0ffd4e21026c5345272788bff377f0f86fcdb74280cdfc32a9641"
+  }
+ },
+ "archive_rpcs": [
+  "https://gateway.tenderly.co/public/mainnet",
+  "https://eth.drpc.org"
+ ],
+ "scope": "Ethereum mainnet only. Sampled getters, role checks, Safe parameters and proxy slots named in each original record.",
+ "method": "Each scored check is read at the protocol's original pinned block (before) and at the Sprint 22 pin (after) with eth_call / eth_getStorageAt pinned by EIP-1898 blockHash + requireCanonical on two endpoints that must agree.",
+ "protocols": [
+  "fluid-instadapp",
+  "liquity-v2-bold",
+  "mellow-protocol-lido-earn"
+ ],
+ "checks": [
+  {
+   "protocol": "mellow-protocol-lido-earn",
+   "check": "Curator Safe getThreshold()",
+   "method": "eth_call",
+   "to": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+   "signature": "getThreshold()",
+   "slot": null,
+   "calldata": "0xe75235b8",
+   "baseline_block": 26401312,
+   "baseline_hash": "0x95866ea3ef8f9a0567ce000bc8075f6dc5fb0f1e80cb4e9999ae624a2f0dc109",
+   "recorded": 3,
+   "before": 3,
+   "after": 3,
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "mellow-protocol-lido-earn",
+   "check": "Curator Safe getOwners().length",
+   "method": "eth_call",
+   "to": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+   "signature": "getOwners()",
+   "slot": null,
+   "calldata": "0xa0e67e2b",
+   "baseline_block": 26401312,
+   "baseline_hash": "0x95866ea3ef8f9a0567ce000bc8075f6dc5fb0f1e80cb4e9999ae624a2f0dc109",
+   "recorded": 5,
+   "before": 5,
+   "after": 5,
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "mellow-protocol-lido-earn",
+   "check": "earnETH hasRole(DEFAULT_ADMIN_ROLE, Lazy Vault Admin Safe)",
+   "method": "eth_call",
+   "to": "0x6a37725ca7f4CE81c004c955f7280d5C704a249e",
+   "signature": "hasRole(bytes32,address)",
+   "slot": null,
+   "calldata": "0x91d1485400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000dd73341d6158a72b4d224541f1094188f57076e",
+   "baseline_block": 26401312,
+   "baseline_hash": "0x95866ea3ef8f9a0567ce000bc8075f6dc5fb0f1e80cb4e9999ae624a2f0dc109",
+   "recorded": 1,
+   "before": 1,
+   "after": 1,
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "mellow-protocol-lido-earn",
+   "check": "earnUSD hasRole(DEFAULT_ADMIN_ROLE, Lazy Vault Admin Safe)",
+   "method": "eth_call",
+   "to": "0x014e6DA8F283C4aF65B2AA0f201438680A004452",
+   "signature": "hasRole(bytes32,address)",
+   "slot": null,
+   "calldata": "0x91d1485400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000dd73341d6158a72b4d224541f1094188f57076e",
+   "baseline_block": 26401312,
+   "baseline_hash": "0x95866ea3ef8f9a0567ce000bc8075f6dc5fb0f1e80cb4e9999ae624a2f0dc109",
+   "recorded": 1,
+   "before": 1,
+   "after": 1,
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "mellow-protocol-lido-earn",
+   "check": "Lazy Vault Admin Safe getThreshold()",
+   "method": "eth_call",
+   "to": "0x0Dd73341d6158a72b4D224541f1094188f57076E",
+   "signature": "getThreshold()",
+   "slot": null,
+   "calldata": "0xe75235b8",
+   "baseline_block": 26401312,
+   "baseline_hash": "0x95866ea3ef8f9a0567ce000bc8075f6dc5fb0f1e80cb4e9999ae624a2f0dc109",
+   "recorded": 5,
+   "before": 5,
+   "after": 5,
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "mellow-protocol-lido-earn",
+   "check": "Lazy Vault Admin Safe getOwners().length",
+   "method": "eth_call",
+   "to": "0x0Dd73341d6158a72b4D224541f1094188f57076E",
+   "signature": "getOwners()",
+   "slot": null,
+   "calldata": "0xa0e67e2b",
+   "baseline_block": 26401312,
+   "baseline_hash": "0x95866ea3ef8f9a0567ce000bc8075f6dc5fb0f1e80cb4e9999ae624a2f0dc109",
+   "recorded": 8,
+   "before": 8,
+   "after": 8,
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "mellow-protocol-lido-earn",
+   "check": "Timelock getMinDelay()",
+   "method": "eth_call",
+   "to": "0x363Ba8843d06BA5968f55C26aB055162eDd62189",
+   "signature": "getMinDelay()",
+   "slot": null,
+   "calldata": "0xf27a0c92",
+   "baseline_block": 26401312,
+   "baseline_hash": "0x95866ea3ef8f9a0567ce000bc8075f6dc5fb0f1e80cb4e9999ae624a2f0dc109",
+   "recorded": 0,
+   "before": 0,
+   "after": 0,
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "fluid-instadapp",
+   "check": "VaultFactory isVaultAuth(Vault 76, 0x4F6F..D49e)",
+   "method": "eth_call",
+   "to": "0x324c5Dc1fC42c7a4D43d92df1eBA58a54d13Bf2d",
+   "signature": "isVaultAuth(address,address)",
+   "slot": null,
+   "calldata": "0xe04c8e5d0000000000000000000000007fe0b032cb5982af72498f96be3dd6566f7b7de80000000000000000000000004f6f977acdd1177dcd81ab83074855ecb9c2d49e",
+   "baseline_block": 26401405,
+   "baseline_hash": "0x26e155e1569d436406a52ecee31c94d8d8ef2ca4c45d82211a84c8c802be1510",
+   "recorded": 1,
+   "before": 1,
+   "after": 1,
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "fluid-instadapp",
+   "check": "VaultFactory isVaultAuth(Vault 110, 0x4F6F..D49e)",
+   "method": "eth_call",
+   "to": "0x324c5Dc1fC42c7a4D43d92df1eBA58a54d13Bf2d",
+   "signature": "isVaultAuth(address,address)",
+   "slot": null,
+   "calldata": "0xe04c8e5d000000000000000000000000ee327311d8640156e87ec33ea55fcbf2309e0ce60000000000000000000000004f6f977acdd1177dcd81ab83074855ecb9c2d49e",
+   "baseline_block": 26401405,
+   "baseline_hash": "0x26e155e1569d436406a52ecee31c94d8d8ef2ca4c45d82211a84c8c802be1510",
+   "recorded": 1,
+   "before": 1,
+   "after": 1,
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "fluid-instadapp",
+   "check": "VaultFactory isVaultAuth(Vault 111, 0x4F6F..D49e)",
+   "method": "eth_call",
+   "to": "0x324c5Dc1fC42c7a4D43d92df1eBA58a54d13Bf2d",
+   "signature": "isVaultAuth(address,address)",
+   "slot": null,
+   "calldata": "0xe04c8e5d000000000000000000000000984636a30ed2b4a61fb7150ced644096349275d30000000000000000000000004f6f977acdd1177dcd81ab83074855ecb9c2d49e",
+   "baseline_block": 26401405,
+   "baseline_hash": "0x26e155e1569d436406a52ecee31c94d8d8ef2ca4c45d82211a84c8c802be1510",
+   "recorded": 1,
+   "before": 1,
+   "after": 1,
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "fluid-instadapp",
+   "check": "VaultFactory isVaultAuth(Vault 144, 0x4F6F..D49e)",
+   "method": "eth_call",
+   "to": "0x324c5Dc1fC42c7a4D43d92df1eBA58a54d13Bf2d",
+   "signature": "isVaultAuth(address,address)",
+   "slot": null,
+   "calldata": "0xe04c8e5d0000000000000000000000000e19b64f3a79feee12df1b6f239929c6ab6c7ed00000000000000000000000004f6f977acdd1177dcd81ab83074855ecb9c2d49e",
+   "baseline_block": 26401405,
+   "baseline_hash": "0x26e155e1569d436406a52ecee31c94d8d8ef2ca4c45d82211a84c8c802be1510",
+   "recorded": 1,
+   "before": 1,
+   "after": 1,
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "liquity-v2-bold",
+   "check": "BOLD owner()",
+   "method": "eth_call",
+   "to": "0x6440f144b7e50D6a8439336510312d2F54beB01D",
+   "signature": "owner()",
+   "slot": null,
+   "calldata": "0x8da5cb5b",
+   "baseline_block": 26401540,
+   "baseline_hash": "0x49324aaf84b0ffd4e21026c5345272788bff377f0f86fcdb74280cdfc32a9641",
+   "recorded": "0x0000000000000000000000000000000000000000",
+   "before": "0x0000000000000000000000000000000000000000",
+   "after": "0x0000000000000000000000000000000000000000",
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "liquity-v2-bold",
+   "check": "Governance owner()",
+   "method": "eth_call",
+   "to": "0x807DEf5E7d057DF05C796F4bc75C3Fe82Bd6EeE1",
+   "signature": "owner()",
+   "slot": null,
+   "calldata": "0x8da5cb5b",
+   "baseline_block": 26401540,
+   "baseline_hash": "0x49324aaf84b0ffd4e21026c5345272788bff377f0f86fcdb74280cdfc32a9641",
+   "recorded": "0x0000000000000000000000000000000000000000",
+   "before": "0x0000000000000000000000000000000000000000",
+   "after": "0x0000000000000000000000000000000000000000",
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "liquity-v2-bold",
+   "check": "CollateralRegistry EIP-1967 implementation slot",
+   "method": "eth_getStorageAt",
+   "to": "0xf949982B91C8c61e952B3bA942cbbfaef5386684",
+   "signature": null,
+   "slot": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+   "calldata": null,
+   "baseline_block": 26401540,
+   "baseline_hash": "0x49324aaf84b0ffd4e21026c5345272788bff377f0f86fcdb74280cdfc32a9641",
+   "recorded": "0x0000000000000000000000000000000000000000000000000000000000000000",
+   "before": "0x0000000000000000000000000000000000000000000000000000000000000000",
+   "after": "0x0000000000000000000000000000000000000000000000000000000000000000",
+   "before_matches_record": true,
+   "drift": false
+  }
+ ],
+ "drifted_checks": 0,
+ "drifted_protocols": [],
+ "unscored": [
+  {
+   "protocol": "mellow-protocol-lido-earn",
+   "check": "Curator Safe owner set",
+   "to": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+   "before": [
+    "0x59d07dc34b135b17b87840a86bff7302039e7edf",
+    "0x73b254db9cb71a129c4e73af087d71ac7d34a8d7",
+    "0x7a63a5cc7f6a6352d0ae1fe175d745bce5d75657",
+    "0x9777af8c6727d57f74f7d381ad47eb4a65f042ff",
+    "0xf2374bcb265505002055942d070459a4d2011012"
+   ],
+   "after": [
+    "0x59d07dc34b135b17b87840a86bff7302039e7edf",
+    "0x73b254db9cb71a129c4e73af087d71ac7d34a8d7",
+    "0x7a63a5cc7f6a6352d0ae1fe175d745bce5d75657",
+    "0x9777af8c6727d57f74f7d381ad47eb4a65f042ff",
+    "0xf2374bcb265505002055942d070459a4d2011012"
+   ],
+   "same": true
+  },
+  {
+   "protocol": "mellow-protocol-lido-earn",
+   "check": "Lazy Vault Admin Safe owner set",
+   "to": "0x0Dd73341d6158a72b4D224541f1094188f57076E",
+   "before": [
+    "0x59d07dc34b135b17b87840a86bff7302039e7edf",
+    "0x59f8d74fe49d5ebeac069e3baf07eb4b614bd5a7",
+    "0x73b254db9cb71a129c4e73af087d71ac7d34a8d7",
+    "0x7a63a5cc7f6a6352d0ae1fe175d745bce5d75657",
+    "0x912e21cda3d7012146da4df33309d860a9eb0beb",
+    "0x9777af8c6727d57f74f7d381ad47eb4a65f042ff",
+    "0xf2374bcb265505002055942d070459a4d2011012",
+    "0xfb864c1127ff77215d0a8e652bb632f526a4a89f"
+   ],
+   "after": [
+    "0x59d07dc34b135b17b87840a86bff7302039e7edf",
+    "0x59f8d74fe49d5ebeac069e3baf07eb4b614bd5a7",
+    "0x73b254db9cb71a129c4e73af087d71ac7d34a8d7",
+    "0x7a63a5cc7f6a6352d0ae1fe175d745bce5d75657",
+    "0x912e21cda3d7012146da4df33309d860a9eb0beb",
+    "0x9777af8c6727d57f74f7d381ad47eb4a65f042ff",
+    "0xf2374bcb265505002055942d070459a4d2011012",
+    "0xfb864c1127ff77215d0a8e652bb632f526a4a89f"
+   ],
+   "same": true
+  },
+  {
+   "protocol": "mellow-protocol-lido-earn",
+   "check": "earnETH hasRole(DEFAULT_ADMIN_ROLE, Timelock)",
+   "to": "0x6a37725ca7f4CE81c004c955f7280d5C704a249e",
+   "before": 0,
+   "after": 0,
+   "same": true
+  }
+ ]
+}

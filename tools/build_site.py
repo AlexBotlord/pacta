@@ -1207,6 +1207,44 @@ def badge_section(name, slug, tier):
     return ""
 
 
+BOUNTY_SUBMISSIONS_DIR = os.path.join(ROOT, "bounties", "submissions")
+
+
+def bounty_credit(slug, lb=None, sub_dir=None):
+    """The merged Wave 1 catch whose fixture names this published protocol (pactaSlug), with its hunter / PR / payout from the
+    settlement ledger; None when no merged fixture points here. A fixture's pactaSlug is set only once a Sprint indexes the protocol
+    (tools/apply_sprint<N>_attestation.py), so the credit appears together with the attested records."""
+    d = sub_dir or BOUNTY_SUBMISSIONS_DIR
+    hits = []
+    for f_name in sorted(os.listdir(d)) if os.path.isdir(d) else []:
+        if f_name.startswith("slot-") and f_name.endswith(".json"):
+            f = json.load(open(os.path.join(d, f_name), encoding="utf-8"))
+            if f.get("pactaSlug") == slug:
+                hits.append(f)
+    if not hits:
+        return None
+    assert len(hits) == 1, f"{slug}: {len(hits)} merged Wave 1 fixtures name this protocol"
+    lb = lb or load_leaderboard()
+    s = next(x for x in lb["wave1Settlements"] if x["slot"] == hits[0]["slot"])
+    assert s["status"] == "verified" and hits[0].get("apacheGrant") is True, f"{slug}: credit needs a verified, Apache-2.0-granted catch"
+    return {"slot": s["slot"], "hunter": s["hunter"], "pr": s["pr"], "payoutTxHash": s["payoutTxHash"] if tx_ok(s["payoutTxHash"]) else None}
+
+
+def research_credit_html(slug, credit):
+    """Provenance section crediting the researcher (EAS-attested pages only; the records stay Pacta's own pinned re-reads)."""
+    if not credit:
+        return ""
+    h, pr, slot, tx = credit["hunter"], credit["pr"], credit["slot"], credit["payoutTxHash"]
+    paid = (f' and paid $25.00 USDC (<a href="https://basescan.org/tx/{E(tx)}" target="_blank" rel="noopener" data-basescan-tx>tx {E(short(tx, 6, 4))} ↗</a>)'
+            if tx else "")
+    return (f'<section class="memo-sec" id="provenance" data-research-credit="{E(h)}"><h2>Provenance · research credit</h2>'
+            f'<p>First reported by <a href="https://github.com/{E(h)}" target="_blank" rel="noopener">@{E(h)}</a> through the Pacta Wave 1 bounty '
+            f'(<a href="{E(REPO)}/pull/{int(pr)}" target="_blank" rel="noopener">Slot #{int(slot)}, PR #{int(pr)}</a>), merged under the Apache-2.0 '
+            f'grant{paid}. Pacta then re-read every value below on two independent RPCs at its own Sprint pin and compared it with the '
+            f'documentation; the classifications and the Base EAS attestation are Pacta\'s. '
+            f'See <a href="../../leaderboard/">the leaderboard</a>.</p></section>\n')
+
+
 def protocol_page(name, entries, idx, radar, digest=None, slug=None):
     """Static, deterministic protocol safety record (no wall-clock time): every indexed surface with its pinned block.
     index.json Sprint records (Base-EAS-anchored) and RPC-pinned records (not EAS-attested) are labelled as such."""
@@ -1254,6 +1292,8 @@ def protocol_page(name, entries, idx, radar, digest=None, slug=None):
                       f'protocol\'s documented parameters is <b>not assessed</b> here (the documentation is linked for reference). '
                       f'Machine-readable: <a href="../../api/v1/rpc-pinned.json">/api/v1/rpc-pinned.json</a>. The Base-EAS-attested Sprint records '
                       f'are in <a href="../../api/v1/index.json">/api/v1/index.json</a>.</p></section>\n')
+    else:
+        provenance = research_credit_html(slug, bounty_credit(slug))
     curl = f'{CURL} "{API}/v1/check/preflight?chain={first.get("chain", "ethereum")}&address={first["target_contract"]}"'
     surfaces = f'{n} indexed {"surface" if n == 1 else "surfaces"}'
     data_url = f"{BASE_URL}/api/v1/rpc-pinned.json" if pinned else f"{BASE_URL}/api/v1/index.json"

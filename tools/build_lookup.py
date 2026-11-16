@@ -102,6 +102,11 @@ CONVERTED_CONTINUITY = {
                                "controllerAddress": "0x16613524e02ad97eDfeF371bC883F2F5d6C480A5", "controllerKind": "contract_controller"},
     "balancer-v2-vault-timelock": {"primaryContract": "0xBA12222222228d8Ba445958a75a0704d566BF2C8", "targetLabel": "BalancerV2Vault",
                                    "controllerAddress": "0x6048A8c631Fb7e77EcA533Cf9C29784e482391e7", "controllerKind": "contract_controller"},
+    # Sprint 22 conversions (values from the published RPC-pinned records)
+    "across-protocol-hubpool": {"primaryContract": "0xc186fA914353c44b2E33eBE05f21846F1048bEda", "targetLabel": "AcrossHubPool",
+                                "controllerAddress": "0xB524735356985D2f267FA010D681f061DfF03715", "controllerKind": "multisig_safe"},
+    "beefy-finance-base": {"primaryContract": "0xfc69704cC3cAac545cC7577009Ea4AA04F1a61Eb", "targetLabel": "BeefyFeeConfig_Base",
+                           "controllerAddress": "0x6FfaCA7C3B38Ec2d631D86e15f328ee6eF6C6226", "controllerKind": "multisig_safe"},
 }
 
 

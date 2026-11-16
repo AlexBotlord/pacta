@@ -152,7 +152,7 @@ test("0.1.5 footer: EAS-attested lookups (concrete, ethena) carry the exact 2-li
 
 test("0.1.5 footer: an rpc_observed record says not_attested and never names a UID; briefs carry none; a miss has none (1 content block)", async () => {
   const srv = new PactaMcpServer({ fetchImpl: rec(() => { throw new Error("no network"); }) });
-  const slug = "beefy-finance-base";
+  const slug = "synthetix-v3-core";
   const item = LOOKUP_CATALOG.find((x) => x.kind === "protocol" && x.slug === slug);
   assert.equal(item.evidenceBasis, "rpc_observed");
   assert.deepEqual(item.baseEasUids, []);

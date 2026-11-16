@@ -1,0 +1,75 @@
+{
+  "wave": 2,
+  "category": "protocol_mismatch",
+  "slug": "upshift-axis-origin",
+  "protocol": "Upshift",
+  "chainId": 1,
+  "contractAddress": "0x101E583EE2F83a8BD0bBa202938bbadC6b8795c0",
+  "hunter": "Zhauxxx23",
+  "basePayoutAddress": "0x589304C62b6ad7f29a9a797182feDAF160a5bD3A",
+  "mcpProof": {
+    "tool": "pacta_scan_control_plane",
+    "arguments": {
+      "chain": "ethereum",
+      "address": "0x101E583EE2F83a8BD0bBa202938bbadC6b8795c0"
+    },
+    "result": {
+      "chain": "ethereum",
+      "address": "0x101E583EE2F83a8BD0bBa202938bbadC6b8795c0",
+      "block": {
+        "number": 26429852,
+        "hash": "0x2cf55dfb1a642bd753020b24b2c8b3af89a7041215aea0f65619659059e39493",
+        "timestamp": 1794859343
+      },
+      "codeBytes": 171,
+      "eip1967": {
+        "implementation": null,
+        "admin": null,
+        "beacon": null
+      },
+      "owner": null,
+      "probedStatus": {
+        "eip1967Slots": "ok",
+        "owner": "reverted_or_absent",
+        "safeGetters": "ok"
+      },
+      "safe": {
+        "threshold": 1,
+        "owners": [
+          "0x3fc6ABc9041bf99F9C393a726feD7690d1825e42",
+          "0x4EA4987211EbE22E83aAAFc1b38aaa6127C101eF",
+          "0x5524EBe33D9C00d7c56b609072c5D84BD7cefFD9"
+        ],
+        "ownerCount": 3,
+        "guard": null
+      },
+      "upgradeAuthority": null,
+      "ownerPrincipal": null,
+      "riskFlags": [
+        "not_eip1967_upgradeable"
+      ],
+      "summary": "OBSERVED: No EIP-1967, Ownable, or Safe single-key control detected in probed standard slots/selectors (custom AccessControl/RolesAuthority not excluded)"
+    }
+  },
+  "blockNumber": 26429778,
+  "blockHash": "0xdaaaf0da1b05eb73f18eba0a5a037f0ae82bada8a004902607d61a5a7ed728e5",
+  "castCommands": [
+    "cast call 0x101E583EE2F83a8BD0bBa202938bbadC6b8795c0 \"getThreshold()(uint256)\" --block 26429778 --rpc-url https://ethereum-rpc.publicnode.com",
+    "cast call 0x101E583EE2F83a8BD0bBa202938bbadC6b8795c0 \"getThreshold()(uint256)\" --block 26429778 --rpc-url https://eth.drpc.org"
+  ],
+  "rpcOutputs": {
+    "a": "1",
+    "b": "1"
+  },
+  "docsUrl": "https://docs.upshift.finance/vault-architecture/risk-controls",
+  "docsQuote": "It is generally a 4 of 6 Gnosis Safe with two signers each from the asset issuer, Upshift and the curator, so no single party can upgrade a vault alone.",
+  "tvlUsd": 282490672,
+  "tvlReference": "https://defillama.com/protocol/upshift",
+  "apache2CommercialGrant": true,
+  "rulesAccepted": [
+    true,
+    true,
+    true,
+    true
+  ]
+}

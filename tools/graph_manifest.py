@@ -142,10 +142,11 @@ def _check_evidence(ev, where):
     assert len(canonical(ev)) <= MAX_EVIDENCE_BYTES, f"{where}: evidence {len(canonical(ev))} bytes"
 
 
-def build(root, controller_facts=None, protocols_override=None):
+def build(root, controller_facts=None, protocols_override=None, use_minted=True):
     """controller_facts: optional replacement for tools/graph_controller_facts.json (verify_site_v2 perturbs the mutable facts to
     prove pacta-ctrl-* node text never depends on them). protocols_override: optional replacement for docs/api/v1/protocols.json
-    (verify_site_v2 perturbs every changing protocol fact to prove pacta-proto-* node text never depends on them)."""
+    (verify_site_v2 perturbs every changing protocol fact to prove pacta-proto-* node text never depends on them). use_minted:
+    re-emit tools/graph_minted.json texts and refuse to drop a minted node / edge (False = the pure template)."""
     docs = os.path.join(root, "docs", "api", "v1")
     prot = protocols_override or _load(os.path.join(docs, "protocols.json"))
     idx = _load(os.path.join(docs, "index.json"))
@@ -153,6 +154,9 @@ def build(root, controller_facts=None, protocols_override=None):
     deps = _load(os.path.join(root, "tools", "graph_dependencies.json"))
     cfacts_doc = controller_facts or _load(os.path.join(root, "tools", "graph_controller_facts.json"))
     cfacts, cfacts_pins = cfacts_doc["contracts"], cfacts_doc["pins"]
+    # use_minted=False builds the pure template (verify_site_v2 compares template builds when it perturbs facts)
+    minted_path = os.path.join(root, "tools", "graph_minted.json")
+    minted = _load(minted_path) if use_minted and os.path.exists(minted_path) else {"nodes": {}, "edges": []}
     subs = sorted(glob.glob(os.path.join(root, "bounties", "submissions", "*.json")))
     observed_at = epoch(idx["generated_at"])
     records = {e["id"]: e for e in idx["entries"]}
@@ -172,6 +176,7 @@ def build(root, controller_facts=None, protocols_override=None):
 
     def add_node(nid, kind, text):
         assert nid not in nodes, f"duplicate node {nid}"
+        text = minted["nodes"].get(nid, text)     # a published anchor keeps its first text forever (monotonic graph)
         assert len(text) <= MAX_TEXT_CHARS, f"{nid}: text {len(text)} chars"
         nodes[nid] = {"id": nid, "kind": kind, "text": text}
 
@@ -304,7 +309,7 @@ def build(root, controller_facts=None, protocols_override=None):
         f = cfacts.get(f"{ch}:{a[2:]}")
         if not f:
             return None
-        pin = cfacts_pins.get(ch) or {}
+        pin = cfacts_pins.get(f.get("pin") or ch) or {}      # a contract read at a later sprint pin names that pin ("ethereum@sprint-20")
         out = {"facts_block_number": pin.get("block_number"), "code_bytes": f.get("code_bytes"), "code_keccak_hex": f.get("code_keccak_hex")}
         if f.get("safe_threshold"):
             owners = sorted(f.get("safe_owner_hex") or [])
@@ -455,6 +460,11 @@ def build(root, controller_facts=None, protocols_override=None):
     for e in edges.values():                      # every endpoint exists
         for part in e["participants"]:
             assert part["id"] in nodes, f"{e['edge_key']}: missing node {part['id']}"
+    # monotonic: every node and edge ever published (tools/graph_minted.json) is still here; the sync never removes relations, so a
+    # dropped edge would linger live as an orphan and a changed anchor text would be refused (id_exists)
+    gone_nodes = sorted(set(minted["nodes"]) - set(nodes))
+    gone_edges = sorted(set(minted["edges"]) - set(edges))
+    assert not gone_nodes and not gone_edges, f"minted graph entries would disappear: nodes {gone_nodes[:5]} edges {gone_edges[:5]}"
     node_list = [nodes[k] for k in sorted(nodes)]
     edge_list = [edges[k] for k in sorted(edges)]
     for n in node_list:                           # FN-Memory pre-write scrubber (memory_store text)
@@ -491,6 +501,26 @@ def render(manifest):
     return json.dumps(manifest, indent=1, ensure_ascii=False, sort_keys=False) + "\n"
 
 
+def mint(root):
+    """Record every node text and edge key of the current build in tools/graph_minted.json (new ids only; minted entries are
+    never edited). Run after a sprint's records are published (the attestation stamper does)."""
+    path = os.path.join(root, "tools", "graph_minted.json")
+    reg = _load(path) if os.path.exists(path) else {"schema": "pacta.graph_minted.v1", "nodes": {}, "edges": []}
+    reg["description"] = ("Every pacta-* graph node text and edge key ever published in docs/api/v1/graph-manifest.json. tools/graph_manifest.py "
+                          "re-emits a minted node with its first text and refuses a build that would drop a minted node or edge, so a sprint "
+                          "upgrade only adds nodes / edges or updates edge evidence in place (sn-memory anchors are immutable and relations are "
+                          "never removed).")
+    m = build(root)
+    added = [n["id"] for n in m["nodes"] if n["id"] not in reg["nodes"]]
+    for n in m["nodes"]:
+        reg["nodes"].setdefault(n["id"], n["text"])
+    reg["edges"] = sorted(set(reg["edges"]) | {e["edge_key"] for e in m["edges"]})
+    reg["nodes"] = dict(sorted(reg["nodes"].items()))
+    with open(path, "w", encoding="utf-8") as fh:
+        fh.write(json.dumps(reg, indent=1, ensure_ascii=False) + "\n")
+    return added
+
+
 def write(root, docs_dir=None):
     m = build(root)
     out = os.path.join(docs_dir or os.path.join(root, "docs"), "api", "v1", "graph-manifest.json")
@@ -500,5 +530,7 @@ def write(root, docs_dir=None):
 
 
 if __name__ == "__main__":
+    if "--mint" in sys.argv:
+        print("minted", len(mint(os.path.dirname(HERE))), "new nodes")
     m = write(os.path.dirname(HERE))
     print(json.dumps(m["counts"]), m["manifest_sha256"])

@@ -68,6 +68,17 @@ def _addr(a):
     return c
 
 
+# RPC-pinned protocols converted in place to EAS-attested keep the primary contract, its label and the controller their
+# RPC-pinned page published (values copied from that record), so the protocol page, the lookup preflight and the durable graph
+# (pacta-proto-* anchor, its pacta-ctrl-* nodes and governed_by_controller edges) never lose an anchor on conversion.
+CONVERTED_CONTINUITY = {
+    "frax-ether-sfrxeth": {"primaryContract": "0xbAFA44EFE7901E04E39Dad13167D089C559c1138", "targetLabel": "frxETHMinter",
+                           "controllerAddress": "0x8306300ffd616049FD7e4b0354a64Da835c1A81C", "controllerKind": "multisig_safe"},
+    "puffer-finance-pufeth": {"primaryContract": "0xD9A442856C234a39a81a089C06451EBAa4306a72", "targetLabel": "PufferVault (pufETH)",
+                              "controllerAddress": "0x8c1686069474410E6243425f4a10177a94EBEE11", "controllerKind": "contract_controller"},
+}
+
+
 def _protocol_item(name, v):
     es, first = v["entries"], v["entries"][0]
     pinned = v["pinned"]
@@ -87,9 +98,13 @@ def _protocol_item(name, v):
         assert "rpc_observed" not in classes, name
         basis = {"classification": classes[0] if len(classes) == 1 else "mixed", "evidenceBasis": "eas_attested", "easAttested": True,
                  "baseEasUids": uids, "documentationComparison": "compared", "sprints": sorted({int(e["sprint"]) for e in es})}
-    primary = _addr(first["target_contract"])
+    primary, label = _addr(first["target_contract"]), first["target_label"]
+    keep = CONVERTED_CONTINUITY.get(v["slug"]) if not pinned else None
+    if keep:
+        primary, label, ctrl, ctrl_kind = (_addr(keep["primaryContract"]), keep["targetLabel"], _addr(keep["controllerAddress"]),
+                                           keep["controllerKind"])
     return {"kind": "protocol", "slug": v["slug"], "name": name, "tokens": TOKENS[v["slug"]], "category": first["category"],
-            "chain": chain, "chainId": CHAIN_IDS[chain], "primaryContract": primary, "targetLabel": first["target_label"],
+            "chain": chain, "chainId": CHAIN_IDS[chain], "primaryContract": primary, "targetLabel": label,
             "controllerAddress": ctrl, "controllerKind": ctrl_kind,
             "observedDelaySeconds": first.get("observed_delay_seconds"), "documentedDelaySeconds": first.get("documented_delay_seconds"),
             **basis,

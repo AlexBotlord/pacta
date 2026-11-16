@@ -434,8 +434,9 @@ def graph_manifest_checks(args):
             f["timelock_min_delay"] += 3600
         if f.get("code_keccak_hex"):
             f["code_keccak_hex"] = "0" * 64
-    alt = GM.build(ROOT, controller_facts=moved)
-    texts = {n["id"]: n["text"] for n in nodes}
+    base_t = GM.build(ROOT, use_minted=False)           # the pure template on the real data (perturbed builds are compared to it)
+    alt = GM.build(ROOT, controller_facts=moved, use_minted=False)
+    texts = {n["id"]: n["text"] for n in base_t["nodes"]}
     alt_hash = {e["edge_key"]: e["content_hash"] for e in alt["edges"]}
     observed = [e for e in edges if e["relation"] == "governed_by_controller" and e["evidence"].get("observed_controller")]
     changed_text = [n["id"] for n in alt["nodes"] if texts.get(n["id"]) != n["text"]]
@@ -443,7 +444,7 @@ def graph_manifest_checks(args):
           "nonce, timelock delay, code hash) rewrites 0 node texts and changes the content_hash of every governed_by_controller edge "
           "that carries observed_controller evidence (updated in place, never a node rewrite)",
           not changed_text and observed and all(alt_hash.get(e["edge_key"]) != e["content_hash"] for e in observed)
-          and [n["id"] for n in alt["nodes"]] == ids,
+          and [n["id"] for n in alt["nodes"]] == [n["id"] for n in base_t["nodes"]],
           f"{len(changed_text)} node texts changed {changed_text[:3]}; {len(observed)} edges with observed_controller evidence")
     prot_doc = json.loads(read("docs/api/v1/protocols.json"))
     flip = {"aligned_baseline": "protective_delta", "protective_delta": "aligned_baseline", "parameter_delta": "protective_delta",
@@ -465,7 +466,7 @@ def graph_manifest_checks(args):
             su["classification"] = flip.get(su.get("classification"), "aligned_baseline")
             su["sprint"] = (su.get("sprint") or 0) + 100
             su["baseEasUid"] = "0x" + "cd" * 32
-    alt_p = GM.build(ROOT, protocols_override=moved_p)
+    alt_p = GM.build(ROOT, protocols_override=moved_p, use_minted=False)
     proto_text = {n["id"]: n["text"] for n in alt_p["nodes"] if n["id"].startswith("pacta-proto-")}
     changed_p = [i for i in ids if i.startswith("pacta-proto-") and proto_text.get(i) != texts[i]]
     n_proto = sum(1 for i in ids if i.startswith("pacta-proto-"))
@@ -475,6 +476,14 @@ def graph_manifest_checks(args):
           f"0 of {n_proto} protocol node texts",
           not changed_p and n_proto == len(slugs) and len(proto_text) == n_proto,
           f"{len(changed_p)}/{n_proto} protocol texts changed {changed_p[:3]}")
+    minted = json.loads(read("tools/graph_minted.json"))
+    m_nodes = {n["id"]: n["text"] for n in nodes}
+    lost = sorted(set(minted["nodes"]) - set(m_nodes)) + sorted(set(minted["edges"]) - {e["edge_key"] for e in edges})
+    rewritten = sorted(k for k, t in minted["nodes"].items() if k in m_nodes and m_nodes[k] != t)
+    check("monotonic graph (tools/graph_minted.json): every node and edge ever published is still in the manifest and every published "
+          "anchor text is byte-identical (an upgrade only adds nodes / edges or updates edge evidence in place; relations are never removed)",
+          not lost and not rewritten and len(minted["nodes"]) >= 200 and len(minted["edges"]) >= 179,
+          f"{len(minted['nodes'])} minted nodes, {len(minted['edges'])} minted edges; lost {lost[:4]}; rewritten {rewritten[:4]}")
     check("sitemap.xml lists /api/v1/graph-manifest.json", "/api/v1/graph-manifest.json</loc>" in read("docs/sitemap.xml"))
     if args.verify_sync_receipt:
         try:
@@ -1688,7 +1697,8 @@ def main(argv=None):
     a0 = appjs.index("  // A record's chain (index.json records without one are Ethereum Mainnet)")
     a1 = appjs.index("  function term(cmd, title)", a0)
     js_cast = ("const recs = " + json.dumps(sample) + ";\n" + appjs[a0:a1] + "\nprocess.stdout.write(JSON.stringify(recs.map(castCmd)));")
-    rc_ = subprocess.run([node_, "--input-type=module", "-e", js_cast], capture_output=True, text=True, timeout=60) if node_ else None
+    # the script embeds every record: fed on stdin (a single -e argument would exceed the 128 KiB per-argument limit, E2BIG)
+    rc_ = subprocess.run([node_, "--input-type=module"], input=js_cast, capture_output=True, text=True, timeout=60) if node_ else None
     js_out = json.loads(rc_.stdout) if rc_ and rc_.returncode == 0 else None
     cast_ok = js_out == [BS.cast_line(e) for e in sample] and all("$BASE_RPC_URL" in c and "$ETH_RPC_URL" not in c for c in js_out[-3:])
     n_base = sum(BS.chain_of(e) == "base" for e in idx_mc["entries"])

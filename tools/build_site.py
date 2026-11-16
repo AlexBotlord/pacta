@@ -898,8 +898,13 @@ def preflight_section():
 </div></section>"""
 
 
+# A protocol whose published name does not slug to its published slug (an RPC-pinned page converted to EAS-attested keeps
+# both its name and its /protocols/ slug, so its graph anchor and page never change).
+SLUG_OVERRIDES = {"Frax Ether (frxETH / sfrxETH)": "frax-ether-sfrxeth"}
+
+
 def protocol_slug(name):
-    return re.sub(r"-{2,}", "-", re.sub(r"[^a-z0-9]+", "-", name.lower())).strip("-")
+    return SLUG_OVERRIDES.get(name) or re.sub(r"-{2,}", "-", re.sub(r"[^a-z0-9]+", "-", name.lower())).strip("-")
 
 
 def protocol_groups(idx):
@@ -1411,7 +1416,7 @@ def vault_factories_page(idx, sp):
                    f'<td class="num">{tiers.get(t, 0)}</td><td>{E(d)}</td></tr>'
                    for t, s_, d in (("aligned", "aave-v3-gho", "Every record is a Base-EAS-attested aligned baseline: on-chain state matches the documentation."),
                                     ("parameter_delta", "curve-finance-crvusd", "Base-EAS-attested; at least one surface differs from the documentation."),
-                                    ("rpc_observed", "puffer-finance-pufeth", "RPC-pinned only: control plane pinned at an archive block; documentation not assessed; not EAS-attested.")))
+                                    ("rpc_observed", "bedrock-unieth", "RPC-pinned only: control plane pinned at an archive block; documentation not assessed; not EAS-attested.")))
     plat = "".join(f"<tr><td><b>{E(a)}</b></td><td><code>{E(b)}</code></td><td>{E(d)}</td></tr>" for a, b, d in (
         ("Morpho Vault V2", "checkMorphoV2AbsoluteCapIncrease(vault, collateral, idData, newCap)",
          "Before a curator submits increaseAbsoluteCap. Reads absoluteCap(keccak256(idData)); decreaseAbsoluteCap and sentinel revoke are never gated."),

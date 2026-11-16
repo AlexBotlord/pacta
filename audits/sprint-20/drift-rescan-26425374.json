@@ -1,0 +1,354 @@
+{
+ "schema": "pacta.drift_rescan.v1",
+ "sprint": 20,
+ "pin": {
+  "chain_id": 1,
+  "block_number": 26425374,
+  "block_hash": "0xfa22e277760f1df7134b0af20499d6305ee4e017219a917a61a78aa76e89382d",
+  "rpcs": [
+   "https://ethereum-rpc.publicnode.com",
+   "https://eth.drpc.org"
+  ]
+ },
+ "baselines": {
+  "sprint_5": {
+   "block_number": 26401405,
+   "block_hash": "0x26e155e1569d436406a52ecee31c94d8d8ef2ca4c45d82211a84c8c802be1510"
+  },
+  "sprint_6": {
+   "block_number": 26401540,
+   "block_hash": "0x49324aaf84b0ffd4e21026c5345272788bff377f0f86fcdb74280cdfc32a9641"
+  }
+ },
+ "archive_rpcs": [
+  "https://eth.drpc.org",
+  "https://gateway.tenderly.co/public/mainnet"
+ ],
+ "method": "Each scored check is read at the protocol's original pinned block (before) and at the Sprint 20 pin (after) with eth_call / eth_getStorageAt pinned by EIP-1898 blockHash + requireCanonical on two endpoints that must agree.",
+ "protocols": [
+  "liquity-v2-bold",
+  "maple-finance-v2-syrup",
+  "metamorpho-re7-weth-vs-re7-usdt"
+ ],
+ "checks": [
+  {
+   "protocol": "metamorpho-re7-weth-vs-re7-usdt",
+   "check": "Re7 WETH owner()",
+   "method": "eth_call",
+   "to": "0x78Fc2c2eD1A4cDb5402365934aE5648aDAd094d0",
+   "signature": "owner()",
+   "calldata": "0x8da5cb5b",
+   "baseline_block": 26401405,
+   "baseline_hash": "0x26e155e1569d436406a52ecee31c94d8d8ef2ca4c45d82211a84c8c802be1510",
+   "recorded": "0xE86399fE6d7007FdEcb08A2ee1434Ee677a04433",
+   "before": "0xe86399fe6d7007fdecb08a2ee1434ee677a04433",
+   "after": "0xe86399fe6d7007fdecb08a2ee1434ee677a04433",
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "metamorpho-re7-weth-vs-re7-usdt",
+   "check": "Re7 WETH owner Safe getThreshold()",
+   "method": "eth_call",
+   "to": "0xE86399fE6d7007FdEcb08A2ee1434Ee677a04433",
+   "signature": "getThreshold()",
+   "calldata": "0xe75235b8",
+   "baseline_block": 26401405,
+   "baseline_hash": "0x26e155e1569d436406a52ecee31c94d8d8ef2ca4c45d82211a84c8c802be1510",
+   "recorded": 2,
+   "before": 2,
+   "after": 2,
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "metamorpho-re7-weth-vs-re7-usdt",
+   "check": "Re7 WETH owner Safe getOwners().length",
+   "method": "eth_call",
+   "to": "0xE86399fE6d7007FdEcb08A2ee1434Ee677a04433",
+   "signature": "getOwners()",
+   "calldata": "0xa0e67e2b",
+   "baseline_block": 26401405,
+   "baseline_hash": "0x26e155e1569d436406a52ecee31c94d8d8ef2ca4c45d82211a84c8c802be1510",
+   "recorded": 4,
+   "before": 4,
+   "after": 4,
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "metamorpho-re7-weth-vs-re7-usdt",
+   "check": "Re7 WETH timelock()",
+   "method": "eth_call",
+   "to": "0x78Fc2c2eD1A4cDb5402365934aE5648aDAd094d0",
+   "signature": "timelock()",
+   "calldata": "0xd33219b4",
+   "baseline_block": 26401405,
+   "baseline_hash": "0x26e155e1569d436406a52ecee31c94d8d8ef2ca4c45d82211a84c8c802be1510",
+   "recorded": 259200,
+   "before": 259200,
+   "after": 259200,
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "metamorpho-re7-weth-vs-re7-usdt",
+   "check": "Re7 WETH guardian()",
+   "method": "eth_call",
+   "to": "0x78Fc2c2eD1A4cDb5402365934aE5648aDAd094d0",
+   "signature": "guardian()",
+   "calldata": "0x452a9320",
+   "baseline_block": 26401405,
+   "baseline_hash": "0x26e155e1569d436406a52ecee31c94d8d8ef2ca4c45d82211a84c8c802be1510",
+   "recorded": "0x0000000000000000000000000000000000000000",
+   "before": "0x0000000000000000000000000000000000000000",
+   "after": "0x0000000000000000000000000000000000000000",
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "metamorpho-re7-weth-vs-re7-usdt",
+   "check": "Re7 WETH pendingGuardian() (value, validAt)",
+   "method": "eth_call",
+   "to": "0x78Fc2c2eD1A4cDb5402365934aE5648aDAd094d0",
+   "signature": "pendingGuardian()",
+   "calldata": "0x762c31ba",
+   "baseline_block": 26401405,
+   "baseline_hash": "0x26e155e1569d436406a52ecee31c94d8d8ef2ca4c45d82211a84c8c802be1510",
+   "recorded": "0,0",
+   "before": "0,0",
+   "after": "0,0",
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "metamorpho-re7-weth-vs-re7-usdt",
+   "check": "Re7 USDT (peer) guardian()",
+   "method": "eth_call",
+   "to": "0x95EeF579155cd2C5510F312c8fA39208c3Be01a8",
+   "signature": "guardian()",
+   "calldata": "0x452a9320",
+   "baseline_block": 26401405,
+   "baseline_hash": "0x26e155e1569d436406a52ecee31c94d8d8ef2ca4c45d82211a84c8c802be1510",
+   "recorded": "0x2F80ba89362f86a9acC71BFfE5EcF4997F52BDd4",
+   "before": "0x2f80ba89362f86a9acc71bffe5ecf4997f52bdd4",
+   "after": "0x2f80ba89362f86a9acc71bffe5ecf4997f52bdd4",
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "liquity-v2-bold",
+   "check": "BOLD owner()",
+   "method": "eth_call",
+   "to": "0x6440f144b7e50D6a8439336510312d2F54beB01D",
+   "signature": "owner()",
+   "calldata": "0x8da5cb5b",
+   "baseline_block": 26401540,
+   "baseline_hash": "0x49324aaf84b0ffd4e21026c5345272788bff377f0f86fcdb74280cdfc32a9641",
+   "recorded": "0x0000000000000000000000000000000000000000",
+   "before": "0x0000000000000000000000000000000000000000",
+   "after": "0x0000000000000000000000000000000000000000",
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "liquity-v2-bold",
+   "check": "Governance owner()",
+   "method": "eth_call",
+   "to": "0x807DEf5E7d057DF05C796F4bc75C3Fe82Bd6EeE1",
+   "signature": "owner()",
+   "calldata": "0x8da5cb5b",
+   "baseline_block": 26401540,
+   "baseline_hash": "0x49324aaf84b0ffd4e21026c5345272788bff377f0f86fcdb74280cdfc32a9641",
+   "recorded": "0x0000000000000000000000000000000000000000",
+   "before": "0x0000000000000000000000000000000000000000",
+   "after": "0x0000000000000000000000000000000000000000",
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "liquity-v2-bold",
+   "check": "CollateralRegistry EIP-1967 implementation slot",
+   "method": "eth_getStorageAt",
+   "to": "0xf949982B91C8c61e952B3bA942cbbfaef5386684",
+   "slot": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+   "calldata": null,
+   "baseline_block": 26401540,
+   "baseline_hash": "0x49324aaf84b0ffd4e21026c5345272788bff377f0f86fcdb74280cdfc32a9641",
+   "recorded": "0x0000000000000000000000000000000000000000",
+   "before": "0x0000000000000000000000000000000000000000",
+   "after": "0x0000000000000000000000000000000000000000",
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "maple-finance-v2-syrup",
+   "check": "PoolPermissionManager EIP-1967 admin slot",
+   "method": "eth_getStorageAt",
+   "to": "0xBe10aDcE8B6E3E02Db384E7FaDA5395DD113D8b3",
+   "slot": "0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103",
+   "calldata": null,
+   "baseline_block": 26401540,
+   "baseline_hash": "0x49324aaf84b0ffd4e21026c5345272788bff377f0f86fcdb74280cdfc32a9641",
+   "recorded": "0xd6d4Bcde6c816F17889f1Dd3000aF0261B03a196",
+   "before": "0xd6d4bcde6c816f17889f1dd3000af0261b03a196",
+   "after": "0xd6d4bcde6c816f17889f1dd3000af0261b03a196",
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "maple-finance-v2-syrup",
+   "check": "Maple DAO Safe getThreshold()",
+   "method": "eth_call",
+   "to": "0xd6d4Bcde6c816F17889f1Dd3000aF0261B03a196",
+   "signature": "getThreshold()",
+   "calldata": "0xe75235b8",
+   "baseline_block": 26401540,
+   "baseline_hash": "0x49324aaf84b0ffd4e21026c5345272788bff377f0f86fcdb74280cdfc32a9641",
+   "recorded": 4,
+   "before": 4,
+   "after": 4,
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "maple-finance-v2-syrup",
+   "check": "Maple DAO Safe getOwners().length",
+   "method": "eth_call",
+   "to": "0xd6d4Bcde6c816F17889f1Dd3000aF0261B03a196",
+   "signature": "getOwners()",
+   "calldata": "0xa0e67e2b",
+   "baseline_block": 26401540,
+   "baseline_hash": "0x49324aaf84b0ffd4e21026c5345272788bff377f0f86fcdb74280cdfc32a9641",
+   "recorded": 7,
+   "before": 7,
+   "after": 7,
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "maple-finance-v2-syrup",
+   "check": "Globals governor()",
+   "method": "eth_call",
+   "to": "0x804a6F5F667170F545Bf14e5DDB48C70B788390C",
+   "signature": "governor()",
+   "calldata": "0x0c340a24",
+   "baseline_block": 26401540,
+   "baseline_hash": "0x49324aaf84b0ffd4e21026c5345272788bff377f0f86fcdb74280cdfc32a9641",
+   "recorded": "0x2eFFf88747EB5a3FF00d4d8d0f0800E306C0426b",
+   "before": "0x2efff88747eb5a3ff00d4d8d0f0800e306c0426b",
+   "after": "0x2efff88747eb5a3ff00d4d8d0f0800e306c0426b",
+   "before_matches_record": true,
+   "drift": false
+  },
+  {
+   "protocol": "maple-finance-v2-syrup",
+   "check": "GovernorTimelock defaultTimelockParameters().delay (record: getMinDelay)",
+   "method": "eth_call",
+   "to": "0x2eFFf88747EB5a3FF00d4d8d0f0800E306C0426b",
+   "signature": "defaultTimelockParameters()",
+   "calldata": "0x3ccfc95c",
+   "baseline_block": 26401540,
+   "baseline_hash": "0x49324aaf84b0ffd4e21026c5345272788bff377f0f86fcdb74280cdfc32a9641",
+   "recorded": 259200,
+   "before": 259200,
+   "after": 259200,
+   "before_matches_record": true,
+   "drift": false
+  }
+ ],
+ "drifted_checks": 0,
+ "drifted_protocols": [],
+ "unscored": [
+  {
+   "protocol": "metamorpho-re7-weth-vs-re7-usdt",
+   "check": "Re7 WETH curator()",
+   "to": "0x78Fc2c2eD1A4cDb5402365934aE5648aDAd094d0",
+   "before": "0x0000000000000000000000000000000000000000",
+   "after": "0x0000000000000000000000000000000000000000",
+   "same": true
+  },
+  {
+   "protocol": "metamorpho-re7-weth-vs-re7-usdt",
+   "check": "Re7 WETH owner Safe owner set",
+   "to": "0xE86399fE6d7007FdEcb08A2ee1434Ee677a04433",
+   "before": [
+    "0x187620a61f4f00cb629b38e1b38bee8ea60d2b8d",
+    "0x93db2e90f8b2b073010b425f9350202330bd923e",
+    "0xa4ca8db5ab76108d4ad3385056d056e53bf82039",
+    "0xa563feea4028fada193f1c1f454d446eeaa6cfd7"
+   ],
+   "after": [
+    "0x187620a61f4f00cb629b38e1b38bee8ea60d2b8d",
+    "0x93db2e90f8b2b073010b425f9350202330bd923e",
+    "0xa4ca8db5ab76108d4ad3385056d056e53bf82039",
+    "0xa563feea4028fada193f1c1f454d446eeaa6cfd7"
+   ],
+   "same": true
+  },
+  {
+   "protocol": "liquity-v2-bold",
+   "check": "BOLD EIP-1967 implementation slot",
+   "to": "0x6440f144b7e50D6a8439336510312d2F54beB01D",
+   "before": "0x0000000000000000000000000000000000000000",
+   "after": "0x0000000000000000000000000000000000000000",
+   "same": true
+  },
+  {
+   "protocol": "liquity-v2-bold",
+   "check": "BOLD code size",
+   "to": "0x6440f144b7e50D6a8439336510312d2F54beB01D",
+   "before": 6591,
+   "after": 6591,
+   "same": true
+  },
+  {
+   "protocol": "maple-finance-v2-syrup",
+   "check": "PoolPermissionManager EIP-1967 implementation slot",
+   "to": "0xBe10aDcE8B6E3E02Db384E7FaDA5395DD113D8b3",
+   "before": "0xc3530358e54bc81efce4a2e12a898e996b091753",
+   "after": "0xc3530358e54bc81efce4a2e12a898e996b091753",
+   "same": true
+  },
+  {
+   "protocol": "maple-finance-v2-syrup",
+   "check": "Maple DAO Safe owner set",
+   "to": "0xd6d4Bcde6c816F17889f1Dd3000aF0261B03a196",
+   "before": [
+    "0x04ebb8201bc767bd96932d33b12bd2eaa661e918",
+    "0x0f4430f1cec6b976a9358effa95399ee8fc8bd40",
+    "0x588c6eb6e68f3cb03243835c1c67864c84df85bd",
+    "0x96481cb0fcd7673254ebccc42dce9b92da10ea04",
+    "0xa16abf89ab821f5abfa0b6f83cf3544693e3e72c",
+    "0xf3869ff0c3c3c6b246c75da983b192a4a6218eac",
+    "0xf4b33586ee31dc6db89da7fb64b853e99f984b7f"
+   ],
+   "after": [
+    "0x04ebb8201bc767bd96932d33b12bd2eaa661e918",
+    "0x0f4430f1cec6b976a9358effa95399ee8fc8bd40",
+    "0x588c6eb6e68f3cb03243835c1c67864c84df85bd",
+    "0x96481cb0fcd7673254ebccc42dce9b92da10ea04",
+    "0xa16abf89ab821f5abfa0b6f83cf3544693e3e72c",
+    "0xf3869ff0c3c3c6b246c75da983b192a4a6218eac",
+    "0xf4b33586ee31dc6db89da7fb64b853e99f984b7f"
+   ],
+   "same": true
+  },
+  {
+   "protocol": "maple-finance-v2-syrup",
+   "check": "GovernorTimelock defaultTimelockParameters().executionWindow",
+   "to": "0x2eFFf88747EB5a3FF00d4d8d0f0800E306C0426b",
+   "before": 172800,
+   "after": 172800,
+   "same": true
+  },
+  {
+   "protocol": "maple-finance-v2-syrup",
+   "check": "GovernorTimelock MIN_DELAY()",
+   "to": "0x2eFFf88747EB5a3FF00d4d8d0f0800E306C0426b",
+   "before": 86400,
+   "after": 86400,
+   "same": true
+  }
+ ]
+}

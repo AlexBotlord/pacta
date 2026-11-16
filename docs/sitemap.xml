@@ -38,6 +38,7 @@
   <url><loc>https://pacta.wtf/protocols/beefy-finance-base/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/cap/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/centrifuge-liquidity-pools-base/</loc><lastmod>2026-11-16</lastmod></url>
+  <url><loc>https://pacta.wtf/protocols/coinbase-wrapped-staked-eth/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/compound-v3-base/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/compound-v3-comet/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/concrete/</loc><lastmod>2026-11-16</lastmod></url>
@@ -56,6 +57,7 @@
   <url><loc>https://pacta.wtf/protocols/fluid-instadapp/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/frax-ether-sfrxeth/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/gearbox-v3-v3-1/</loc><lastmod>2026-11-16</lastmod></url>
+  <url><loc>https://pacta.wtf/protocols/grove-finance/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/infinifi/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/inverse-finance-firm/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/kelp-dao-rseth/</loc><lastmod>2026-11-16</lastmod></url>
@@ -75,6 +77,7 @@
   <url><loc>https://pacta.wtf/protocols/origin-superoeth-base/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/pendle-finance-v2/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/puffer-finance-pufeth/</loc><lastmod>2026-11-16</lastmod></url>
+  <url><loc>https://pacta.wtf/protocols/re/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/renzo-protocol-ezeth/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/reserve-protocol-rtoken/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/resolv-usr-rlp/</loc><lastmod>2026-11-16</lastmod></url>
@@ -83,6 +86,7 @@
   <url><loc>https://pacta.wtf/protocols/seamless-protocol-base/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/solv-protocol-solvbtc/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/spark-sky/</loc><lastmod>2026-11-16</lastmod></url>
+  <url><loc>https://pacta.wtf/protocols/ssv-network/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/stader-labs-ethx/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/stake-link/</loc><lastmod>2026-11-16</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/stakewise-v3-oseth/</loc><lastmod>2026-11-16</lastmod></url>

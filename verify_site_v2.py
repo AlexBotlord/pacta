@@ -2485,6 +2485,23 @@ def main(argv=None):
         and not [r for r, t in gen_pages.items() if re.search(r"<script(?![^>]*\bsrc=)(?![^>]*application/ld\+json)[^>]*>", t)]
         and read("docs/theme.js") == BS.THEME_JS and not re.search(r"\beval\(|new Function\(", read("docs/app.js") + read("docs/b.js"))
         and js_hosts <= set(csp_src.get("connect-src", [])))
+    def top_level(css, rule):   # True when `rule` exists exactly once and sits outside every @media block
+        i = css.find(rule)
+        return css.count(rule) == 1 and css[:i].count("{") == css[:i].count("}")
+    m1320 = css_p[css_p.index("@media (max-width: 1320px) {"):css_p.index("\n}", css_p.index("@media (max-width: 1320px) {"))] if "@media (max-width: 1320px) {" in css_p else ""
+    m640p = css_p[css_p.index("#proto-table { table-layout: fixed; }") - 600:css_p.index("#proto-table { table-layout: fixed; }") + 600] if "#proto-table { table-layout: fixed; }" in css_p else ""
+    ths_ = re.findall(r"<th>([^<]+)</th>", pages[os.path.join("protocols", "index.html")].split('id="proto-table"')[1].split("</thead>")[0])
+    hidden_ = {int(x) for x in re.findall(r"#proto-table td:nth-child\((\d)\)", m640p)}
+    pp["Browser QA layout: long CTA buttons wrap at every width (rule outside @media); top bar nav shrinks / scrolls inside itself (tools never pushed off-screen), two-row header <= 1320 px, tagline hidden < 1520 px; /protocols/ <= 640 px = Protocol / Chain / Status in a fixed, wrapping layout; hero input mirrors aria-invalid (harness)"] = (
+        top_level(css_p, ".try-actions .btn, .plan .btn, .actions .btn, .convert-cta .btn, .memo .btn { max-width: 100%; white-space: normal; height: auto;")
+        and top_level(css_p, ".nav { display: flex; gap: 1px; margin-right: auto; min-width: 0; overflow-x: auto; scrollbar-width: none; }")
+        and top_level(css_p, ".tools { display: flex; align-items: center; gap: 8px; flex: none; }")
+        and "@media (max-width: 1520px) { .brand small { display: none; } }" in css_p
+        and "order: 3; flex-basis: 100%;" in m1320 and ".tools { margin-left: auto; }" in m1320
+        and "@media (max-width: 860px) {\n  html { scroll-padding-top: 104px; }" not in css_p
+        and [ths_[i - 1] for i in range(1, len(ths_) + 1) if i not in hidden_] == ["Protocol", "Chain", "Status"]
+        and "overflow-wrap: anywhere;" in m640p and "#proto-table .badge { white-space: normal;" in m640p
+        and res.get("pp4_hero_aria_invalid") is True)
     pp["F02: inspector selection follows filters; 0 matches -> empty state + working Clear filters (harness)"] = all(
         res.get(k) is True for k in ("pp2_insp_empty_state", "pp2_insp_clear_filters", "pp2_insp_selection_follows_filter"))
     pp["F04 + F06: ages re-run every 60 s; Snapshot pinned / Last live re-check / Refresh / pinned-snapshot fallback (> 15 min or failure); 10 s AbortController timeout + Retry + distinct timeout / 429 / network / validation states"] = (

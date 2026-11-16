@@ -148,6 +148,9 @@
       if (ch) ch.value = ($('select[name="chain"]', f) || {}).value === "base" ? "base" : "ethereum";
       if (ad) ad.value = String(($('input[name="address"]', f) || {}).value || "").trim();
       pf.dispatchEvent(new Event("submit", { cancelable: true }));
+      var hin = $('input[name="address"]', f);   // the checker validates synchronously: mirror its aria state onto the hero input
+      if (hin && ad && ad.getAttribute("aria-invalid") === "true") { hin.setAttribute("aria-invalid", "true"); hin.setAttribute("aria-describedby", "pf-msg"); }
+      else if (hin) { hin.removeAttribute("aria-invalid"); hin.removeAttribute("aria-describedby"); }
       var box = $(".pf"); if (box) { try { box.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) { /* old browsers */ } }
     });
   }

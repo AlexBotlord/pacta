@@ -699,6 +699,13 @@ async function visitorScenario() {
   if (hin) { hin.value = "0xA35b1B31Ce002FBF2058D22F30f95D405200A15b"; hf.dispatchEvent(new Event_("submit")); await flush(); await flush(); await flush(); }
   res.pp2_hero_form_runs = !!hf && calls.length === before + 1 && calls[calls.length - 1].includes("address=0xA35b1B31Ce002FBF2058D22F30f95D405200A15b")
     && /1\d\d block-pinned checks|\d+ block-pinned checks/.test(d.querySelector("[data-statbar]").textContent);
+  // hero input mirrors aria-invalid / aria-describedby on a malformed address and clears them on a valid one
+  if (hin) {
+    hin.value = "0x123"; hf.dispatchEvent(new Event_("submit")); await flush();
+    const bad = hin.getAttribute("aria-invalid") === "true" && hin.getAttribute("aria-describedby") === "pf-msg" && !!d.getElementById("pf-msg");
+    hin.value = "0xA35b1B31Ce002FBF2058D22F30f95D405200A15b"; hf.dispatchEvent(new Event_("submit")); await flush(); await flush(); await flush();
+    res.pp4_hero_aria_invalid = bad && hin.getAttribute("aria-invalid") === null && hin.getAttribute("aria-describedby") === null;
+  }
   res.v_assessment_next_to_score = t.includes("Risk 60/100") && t.includes("Confidence medium") && t.includes("Indexed & verified record")
     && t.includes("Limits: riskScore is a heuristic.");
   res.v_catalog_match = t.includes("Indexed by Pacta: Stader Labs (ETHx)") && t.includes("Changed: Safe threshold 3-of-6 observed vs 3-of-5 documented")

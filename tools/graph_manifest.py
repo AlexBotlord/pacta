@@ -142,11 +142,12 @@ def _check_evidence(ev, where):
     assert len(canonical(ev)) <= MAX_EVIDENCE_BYTES, f"{where}: evidence {len(canonical(ev))} bytes"
 
 
-def build(root, controller_facts=None):
+def build(root, controller_facts=None, protocols_override=None):
     """controller_facts: optional replacement for tools/graph_controller_facts.json (verify_site_v2 perturbs the mutable facts to
-    prove pacta-ctrl-* node text never depends on them)."""
+    prove pacta-ctrl-* node text never depends on them). protocols_override: optional replacement for docs/api/v1/protocols.json
+    (verify_site_v2 perturbs every changing protocol fact to prove pacta-proto-* node text never depends on them)."""
     docs = os.path.join(root, "docs", "api", "v1")
-    prot = _load(os.path.join(docs, "protocols.json"))
+    prot = protocols_override or _load(os.path.join(docs, "protocols.json"))
     idx = _load(os.path.join(docs, "index.json"))
     pinned = _load(os.path.join(docs, "rpc-pinned.json"))
     deps = _load(os.path.join(root, "tools", "graph_dependencies.json"))
@@ -361,23 +362,22 @@ def build(root, controller_facts=None):
                 + (f" ({', '.join(assets)})" if assets else "") + ".")
         add_node(eas_id(n), "eas_attestation", prose(text, MAX_TEXT_CHARS))
 
-    # ---- protocols
+    # ---- protocols: immutable identity only (name, slug, category, chain, assets, abbreviated primary contract). Badge tier, sprints,
+    # EAS / RPC-pinned basis, classifications and the controller pointer change over time; they live in the edges, never here. Repetition
+    # is removed case-insensitively: the slug is shown only when it adds a word the name lacks (it is also the node id), an asset only
+    # when the name does not already list it in parentheses, the chain only when the name does not already say it.
+    def words(x):
+        return set(re.findall(r"[a-z0-9]+", x.lower()))
+
     for p in protocols:
         ch = p["chain"]
-        surf = [s for s in p.get("surfaces") or []]
-        basis = (f"EAS Sprint {', '.join(str(n) for n in p['sprints'])}" if p.get("easAttested") else "RPC-pinned")
-        kind = (p.get("controllerKind") or "").replace("_", " ")
-        ctrl_part = f"; controller {kind + ' ' if kind else ''}{short(p['controllerAddress'])}" if p.get("controllerAddress") else ""
         cat = re.sub(r"\s*\((?:Base|Ethereum)\)\s*$", "", p["category"])
-        chain_part = f"chainId {p['chainId']}" if CHAIN_LABEL[ch].lower() in p["name"].lower() else f"{CHAIN_LABEL[ch]} chainId {p['chainId']}"
-        cls = {}
-        for s_ in surf:
-            cls[s_["classification"]] = cls.get(s_["classification"], 0) + 1
-        mix = ", ".join(f"{v} {k.replace('_', ' ')}" for k, v in sorted(cls.items()) if k != "rpc_observed")
-        text = (f"{p['name']} [{p['slug']}]: {cat}; {chain_part}"
-                + (f"; assets {', '.join(p.get('tokens') or [])}" if p.get("tokens") else "")
-                + f"; primary {short(p['primaryContract'])}{ctrl_part}; {basis}; tier {p['badge']['tier']}"
-                + (f" ({mix})" if mix else "") + ".")
+        listed = words(" ".join(re.findall(r"\(([^)]*)\)", p["name"])))
+        assets = [t for t in p.get("tokens") or [] if not words(t) <= listed]
+        slug = "" if words(p["slug"]) <= words(p["name"]) else f" [{p['slug']}]"
+        chain = "" if CHAIN_LABEL[ch].lower() in p["name"].lower() else f"; chain {CHAIN_LABEL[ch]}" + (" mainnet" if ch == "ethereum" else "")
+        text = (f"Protocol {p['name']}{slug}: category {cat}{chain}" + (f"; assets {', '.join(assets)}" if assets else "")
+                + f"; {short(p['primaryContract'])}.")
         add_node(proto_id(p["slug"]), "protocol", prose(text, MAX_TEXT_CHARS))
 
     # ---- gaps: one per parameter_delta surface

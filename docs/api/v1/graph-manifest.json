@@ -783,332 +783,332 @@
   {
    "id": "pacta-proto-aave-v3-base",
    "kind": "protocol",
-   "text": "Aave V3 (Base) [aave-v3-base]: Lending Market; chainId 8453; assets AAVE, Aave Base; primary 0x56C1..2968; EAS Sprint 19; tier aligned (2 aligned baseline)."
+   "text": "Protocol Aave V3 (Base): category Lending Market; assets AAVE, Aave Base; 0x56C1..2968."
   },
   {
    "id": "pacta-proto-aave-v3-gho",
    "kind": "protocol",
-   "text": "Aave V3 / GHO [aave-v3-gho]: Blue-Chip Lending & Decentralized Stablecoin; Ethereum chainId 1; assets GHO, AAVE; primary 0xc2aa..85b0; EAS Sprint 9; tier aligned (1 aligned baseline)."
+   "text": "Protocol Aave V3 / GHO: category Blue-Chip Lending & Decentralized Stablecoin; chain Ethereum mainnet; assets GHO, AAVE; 0xc2aa..85b0."
   },
   {
    "id": "pacta-proto-across-protocol-hubpool",
    "kind": "protocol",
-   "text": "Across Protocol (HubPool) [across-protocol-hubpool]: Intent-Based Cross-Chain Settlement; Ethereum chainId 1; assets ACX; primary 0xc186..bEda; controller multisig safe 0xB524..3715; RPC-pinned; tier rpc_observed."
+   "text": "Protocol Across Protocol (HubPool): category Intent-Based Cross-Chain Settlement; chain Ethereum mainnet; assets ACX; 0xc186..bEda."
   },
   {
    "id": "pacta-proto-aerodrome-finance-base",
    "kind": "protocol",
-   "text": "Aerodrome Finance (Base) [aerodrome-finance-base]: Base Liquidity Hub & ve(3,3) DEX; chainId 8453; assets AERO, veAERO; primary 0x420D..40Da; controller contract controller 0x1661..80A5; RPC-pinned; tier rpc_observed."
+   "text": "Protocol Aerodrome Finance (Base): category Base Liquidity Hub & ve(3,3) DEX; assets AERO, veAERO; 0x420D..40Da."
   },
   {
    "id": "pacta-proto-aerodrome-slipstream-base",
    "kind": "protocol",
-   "text": "Aerodrome Slipstream (Base) [aerodrome-slipstream-base]: Concentrated-Liquidity DEX; chainId 8453; assets AERO, Slipstream; primary 0x5e7B..809A; EAS Sprint 18; tier aligned (1 aligned baseline)."
+   "text": "Protocol Aerodrome Slipstream (Base): category Concentrated-Liquidity DEX; assets AERO, Slipstream; 0x5e7B..809A."
   },
   {
    "id": "pacta-proto-balancer-v2-vault-timelock",
    "kind": "protocol",
-   "text": "Balancer V2 Vault & TimelockAuthorizer [balancer-v2-vault-timelock]: Programmable Liquidity Vault; Ethereum chainId 1; assets BAL, veBAL; primary 0xBA12..F2C8; controller contract controller 0x6048..91e7; RPC-pinned; tier rpc_observed."
+   "text": "Protocol Balancer V2 Vault & TimelockAuthorizer [balancer-v2-vault-timelock]: category Programmable Liquidity Vault; chain Ethereum mainnet; assets BAL, veBAL; 0xBA12..F2C8."
   },
   {
    "id": "pacta-proto-bedrock-unieth",
    "kind": "protocol",
-   "text": "Bedrock (uniETH) [bedrock-unieth]: Liquid Restaking; Ethereum chainId 1; assets uniETH; primary 0xF137..51F4; controller multisig safe 0xAeE0..721A; RPC-pinned; tier rpc_observed."
+   "text": "Protocol Bedrock (uniETH): category Liquid Restaking; chain Ethereum mainnet; 0xF137..51F4."
   },
   {
    "id": "pacta-proto-beefy-finance-base",
    "kind": "protocol",
-   "text": "Beefy Finance (Base) [beefy-finance-base]: Automated Yield Vaults & CLM; chainId 8453; assets BIFI; primary 0xfc69..61Eb; controller multisig safe 0x6Ffa..6226; RPC-pinned; tier rpc_observed."
+   "text": "Protocol Beefy Finance (Base): category Automated Yield Vaults & CLM; assets BIFI; 0xfc69..61Eb."
   },
   {
    "id": "pacta-proto-centrifuge-liquidity-pools-base",
    "kind": "protocol",
-   "text": "Centrifuge V3 Root (Base) [centrifuge-liquidity-pools-base]: Institutional RWA Liquidity Pools; chainId 8453; assets CFG; primary 0x7Ed4..368f; RPC-pinned; tier rpc_observed."
+   "text": "Protocol Centrifuge V3 Root (Base) [centrifuge-liquidity-pools-base]: category Institutional RWA Liquidity Pools; assets CFG; 0x7Ed4..368f."
   },
   {
    "id": "pacta-proto-compound-v3-base",
    "kind": "protocol",
-   "text": "Compound V3 (Base) [compound-v3-base]: Lending Market; chainId 8453; assets COMP, cUSDCv3; primary 0x1828..468A; controller timelock 0xCC3E..4a02; EAS Sprint 19; tier aligned (2 aligned baseline)."
+   "text": "Protocol Compound V3 (Base): category Lending Market; assets COMP, cUSDCv3; 0x1828..468A."
   },
   {
    "id": "pacta-proto-compound-v3-comet",
    "kind": "protocol",
-   "text": "Compound V3 (Comet) [compound-v3-comet]: Blue-Chip Lending; Ethereum chainId 1; assets COMP, cUSDCv3, Comet; primary 0xc3d6..cdc3; controller timelock 0x6d90..3925; EAS Sprint 9; tier aligned (1 aligned baseline)."
+   "text": "Protocol Compound V3 (Comet): category Blue-Chip Lending; chain Ethereum mainnet; assets COMP, cUSDCv3; 0xc3d6..cdc3."
   },
   {
    "id": "pacta-proto-convex-finance",
    "kind": "protocol",
-   "text": "Convex Finance [convex-finance]: Curve Governance Aggregation; Ethereum chainId 1; assets CVX, cvxCRV; primary 0xF403..AE31; EAS Sprint 4; tier aligned (1 aligned baseline)."
+   "text": "Protocol Convex Finance: category Curve Governance Aggregation; chain Ethereum mainnet; assets CVX, cvxCRV; 0xF403..AE31."
   },
   {
    "id": "pacta-proto-curve-finance-crvusd",
    "kind": "protocol",
-   "text": "Curve Finance (crvUSD) [curve-finance-crvusd]: Decentralized Stablecoin & Lending; Ethereum chainId 1; assets crvUSD, CRV; primary 0xC933..38BC; EAS Sprint 11; tier parameter_delta (1 parameter delta)."
+   "text": "Protocol Curve Finance (crvUSD): category Decentralized Stablecoin & Lending; chain Ethereum mainnet; assets CRV; 0xC933..38BC."
   },
   {
    "id": "pacta-proto-eigenlayer-core",
    "kind": "protocol",
-   "text": "EigenLayer Core [eigenlayer-core]: Restaking Infrastructure; Ethereum chainId 1; assets EIGEN; primary 0xC06F..Aa2d; controller timelock 0xC06F..Aa2d; EAS Sprint 9; tier aligned (1 aligned baseline)."
+   "text": "Protocol EigenLayer Core: category Restaking Infrastructure; chain Ethereum mainnet; assets EIGEN; 0xC06F..Aa2d."
   },
   {
    "id": "pacta-proto-enzyme-finance",
    "kind": "protocol",
-   "text": "Enzyme Finance [enzyme-finance]: On-chain Asset Management; Ethereum chainId 1; assets MLN, Enzyme; primary 0xC3DC..ab32; controller timelock 0xC3DC..ab32; EAS Sprint 18; tier parameter_delta (1 protective delta)."
+   "text": "Protocol Enzyme Finance: category On-chain Asset Management; chain Ethereum mainnet; assets MLN, Enzyme; 0xC3DC..ab32."
   },
   {
    "id": "pacta-proto-ethena-usde-susde",
    "kind": "protocol",
-   "text": "Ethena (USDe / sUSDe) [ethena-usde-susde]: Synthetic Dollar / Basis Collateral; Ethereum chainId 1; assets USDe, sUSDe, ENA; primary 0xE8Dc..7c94; controller timelock 0xE8Dc..7c94; EAS Sprint 7, 14; tier parameter_delta (2 parameter delta)."
+   "text": "Protocol Ethena (USDe / sUSDe): category Synthetic Dollar / Basis Collateral; chain Ethereum mainnet; assets ENA; 0xE8Dc..7c94."
   },
   {
    "id": "pacta-proto-ethena-usdtb",
    "kind": "protocol",
-   "text": "Ethena USDtb [ethena-usdtb]: RWA-Backed Stablecoin; Ethereum chainId 1; assets USDtb, USDTB; primary 0x73E3..3728; controller timelock 0xE8Dc..7c94; EAS Sprint 19; tier parameter_delta (1 aligned baseline, 1 protective delta)."
+   "text": "Protocol Ethena USDtb: category RWA-Backed Stablecoin; chain Ethereum mainnet; assets USDtb, USDTB; 0x73E3..3728."
   },
   {
    "id": "pacta-proto-ether-fi-core-eeth-weeth",
    "kind": "protocol",
-   "text": "ether.fi Core (eETH / weETH) [ether-fi-core-eeth-weeth]: Liquid Staking & Restaking; Ethereum chainId 1; assets eETH, weETH, ETHFI; primary 0x9f26..0761; controller timelock 0x9f26..0761; EAS Sprint 7, 13; tier parameter_delta (1 aligned baseline, 1 protective delta)."
+   "text": "Protocol ether.fi Core (eETH / weETH): category Liquid Staking & Restaking; chain Ethereum mainnet; assets ETHFI; 0x9f26..0761."
   },
   {
    "id": "pacta-proto-ether-fi-liquid-veda-boringvault",
    "kind": "protocol",
-   "text": "ether.fi Liquid / Veda BoringVault [ether-fi-liquid-veda-boringvault]: Curated Restaking Vaults; Ethereum chainId 1; assets Liquid, Veda, BoringVault; primary 0x485B..8122; controller timelock 0xD829..2C89; EAS Sprint 3; tier aligned (1 aligned baseline)."
+   "text": "Protocol ether.fi Liquid / Veda BoringVault: category Curated Restaking Vaults; chain Ethereum mainnet; assets Liquid, Veda, BoringVault; 0x485B..8122."
   },
   {
    "id": "pacta-proto-euler-v2-evk",
    "kind": "protocol",
-   "text": "Euler V2 (EVK) [euler-v2-evk]: Modular Lending Vault Kit; Ethereum chainId 1; assets EUL, EVK, EVC; primary 0x29a5..CC8e; controller timelock 0xfb03..A968; EAS Sprint 18; tier aligned (1 aligned baseline)."
+   "text": "Protocol Euler V2 (EVK): category Modular Lending Vault Kit; chain Ethereum mainnet; assets EUL, EVC; 0x29a5..CC8e."
   },
   {
    "id": "pacta-proto-extra-finance-base",
    "kind": "protocol",
-   "text": "Extra Finance (Base) [extra-finance-base]: Leveraged Yield & Lending; chainId 8453; assets EXTRA; primary 0xBB50..1cbD; controller contract controller 0x5a70..5113; RPC-pinned; tier rpc_observed."
+   "text": "Protocol Extra Finance (Base): category Leveraged Yield & Lending; assets EXTRA; 0xBB50..1cbD."
   },
   {
    "id": "pacta-proto-f-x-protocol-v2",
    "kind": "protocol",
-   "text": "f(x) Protocol v2 [f-x-protocol-v2]: Leveraged ETH / Stablecoin; Ethereum chainId 1; assets fxUSD, FXN; primary 0x3235..CdA6; EAS Sprint 2; tier parameter_delta (1 parameter delta)."
+   "text": "Protocol f(x) Protocol v2: category Leveraged ETH / Stablecoin; chain Ethereum mainnet; assets fxUSD, FXN; 0x3235..CdA6."
   },
   {
    "id": "pacta-proto-falcon-finance-usdf-susdf",
    "kind": "protocol",
-   "text": "Falcon Finance (USDf / sUSDf) [falcon-finance-usdf-susdf]: Synthetic Dollar; Ethereum chainId 1; assets USDf, sUSDf; primary 0xc8CF..a4B0; controller timelock 0xc8CF..a4B0; EAS Sprint 17; tier aligned (1 aligned baseline)."
+   "text": "Protocol Falcon Finance (USDf / sUSDf): category Synthetic Dollar; chain Ethereum mainnet; 0xc8CF..a4B0."
   },
   {
    "id": "pacta-proto-fluid-instadapp",
    "kind": "protocol",
-   "text": "Fluid / Instadapp [fluid-instadapp]: Modular Lending & DEX Vaults; Ethereum chainId 1; assets FLUID, INST; primary 0x324c..Bf2d; EAS Sprint 5; tier parameter_delta (1 parameter delta)."
+   "text": "Protocol Fluid / Instadapp: category Modular Lending & DEX Vaults; chain Ethereum mainnet; assets FLUID, INST; 0x324c..Bf2d."
   },
   {
    "id": "pacta-proto-frax-ether-sfrxeth",
    "kind": "protocol",
-   "text": "Frax Ether (frxETH / sfrxETH) [frax-ether-sfrxeth]: Liquid Staking & Monetary Infrastructure; Ethereum chainId 1; assets frxETH, sfrxETH, FXS; primary 0xbAFA..1138; controller multisig safe 0x8306..A81C; RPC-pinned; tier rpc_observed."
+   "text": "Protocol Frax Ether (frxETH / sfrxETH): category Liquid Staking & Monetary Infrastructure; chain Ethereum mainnet; assets FXS; 0xbAFA..1138."
   },
   {
    "id": "pacta-proto-gearbox-v3-v3-1",
    "kind": "protocol",
-   "text": "Gearbox V3 / V3.1 [gearbox-v3-v3-1]: Leveraged Credit & Curated Lending; Ethereum chainId 1; assets GEAR; primary 0xa133..f23b; controller timelock 0xa133..f23b; EAS Sprint 11; tier parameter_delta (1 parameter delta)."
+   "text": "Protocol Gearbox V3 / V3.1: category Leveraged Credit & Curated Lending; chain Ethereum mainnet; assets GEAR; 0xa133..f23b."
   },
   {
    "id": "pacta-proto-inverse-finance-firm",
    "kind": "protocol",
-   "text": "Inverse Finance (FiRM) [inverse-finance-firm]: Fixed-Rate Lending; Ethereum chainId 1; assets DOLA, INV, FiRM; primary 0x4b6c..F1B7; controller timelock 0x926d..9D5B; EAS Sprint 1, 14; tier parameter_delta (1 parameter delta, 1 protective delta)."
+   "text": "Protocol Inverse Finance (FiRM): category Fixed-Rate Lending; chain Ethereum mainnet; assets DOLA, INV; 0x4b6c..F1B7."
   },
   {
    "id": "pacta-proto-kelp-dao-rseth",
    "kind": "protocol",
-   "text": "Kelp DAO (rsETH) [kelp-dao-rseth]: Liquid Restaking; Ethereum chainId 1; assets rsETH; primary 0x49bD..35B1; controller timelock 0x49bD..35B1; EAS Sprint 9, 14; tier aligned (2 aligned baseline)."
+   "text": "Protocol Kelp DAO (rsETH): category Liquid Restaking; chain Ethereum mainnet; 0x49bD..35B1."
   },
   {
    "id": "pacta-proto-lido-steth-dual-governance",
    "kind": "protocol",
-   "text": "Lido (stETH / Dual Governance) [lido-steth-dual-governance]: Blue-Chip Liquid Staking; Ethereum chainId 1; assets stETH, wstETH, LDO; primary 0xCE04..2316; controller timelock 0xCE04..2316; EAS Sprint 10; tier aligned (1 aligned baseline)."
+   "text": "Protocol Lido (stETH / Dual Governance): category Blue-Chip Liquid Staking; chain Ethereum mainnet; assets wstETH, LDO; 0xCE04..2316."
   },
   {
    "id": "pacta-proto-liquid-collective-lseth",
    "kind": "protocol",
-   "text": "Liquid Collective (LsETH) [liquid-collective-lseth]: Institutional Liquid Staking; Ethereum chainId 1; assets LsETH, Liquid Collective; primary 0x8c1B..6549; EAS Sprint 19; tier aligned (2 aligned baseline)."
+   "text": "Protocol Liquid Collective (LsETH): category Institutional Liquid Staking; chain Ethereum mainnet; assets Liquid Collective; 0x8c1B..6549."
   },
   {
    "id": "pacta-proto-liquity-v2-bold",
    "kind": "protocol",
-   "text": "Liquity V2 (BOLD) [liquity-v2-bold]: Immutable CDP Stablecoin; Ethereum chainId 1; assets BOLD, LQTY; primary 0x6440..B01D; EAS Sprint 6; tier aligned (1 aligned baseline)."
+   "text": "Protocol Liquity V2 (BOLD): category Immutable CDP Stablecoin; chain Ethereum mainnet; assets LQTY; 0x6440..B01D."
   },
   {
    "id": "pacta-proto-lombard-lbtc",
    "kind": "protocol",
-   "text": "Lombard (LBTC) [lombard-lbtc]: Institutional BTCfi / Liquid Staked Bitcoin; Ethereum chainId 1; assets LBTC; primary 0x055E..7e59; controller timelock 0x055E..7e59; EAS Sprint 11, 16; tier aligned (2 aligned baseline)."
+   "text": "Protocol Lombard (LBTC): category Institutional BTCfi / Liquid Staked Bitcoin; chain Ethereum mainnet; 0x055E..7e59."
   },
   {
    "id": "pacta-proto-m0-protocol-m",
    "kind": "protocol",
-   "text": "M0 Protocol ($M) [m0-protocol-m]: Stablecoin Infrastructure; Ethereum chainId 1; assets M, M0, MToken; primary 0x866A..be1b; EAS Sprint 17; tier aligned (2 aligned baseline)."
+   "text": "Protocol M0 Protocol ($M): category Stablecoin Infrastructure; chain Ethereum mainnet; assets M0, MToken; 0x866A..be1b."
   },
   {
    "id": "pacta-proto-mantle-liquid-staking-meth-cmeth",
    "kind": "protocol",
-   "text": "Mantle Liquid Staking (mETH / cmETH) [mantle-liquid-staking-meth-cmeth]: Liquid Staking & Restaking; Ethereum chainId 1; assets mETH, cmETH; primary 0xc260..aCE2; controller timelock 0xc260..aCE2; EAS Sprint 10; tier parameter_delta (1 protective delta)."
+   "text": "Protocol Mantle Liquid Staking (mETH / cmETH): category Liquid Staking & Restaking; chain Ethereum mainnet; 0xc260..aCE2."
   },
   {
    "id": "pacta-proto-maple-finance-v2-syrup",
    "kind": "protocol",
-   "text": "Maple Finance V2 / Syrup [maple-finance-v2-syrup]: Institutional Credit / RWA; Ethereum chainId 1; assets SYRUP, syrupUSDC, syrupUSDT; primary 0xBe10..D8b3; EAS Sprint 6; tier parameter_delta (1 parameter delta)."
+   "text": "Protocol Maple Finance V2 / Syrup: category Institutional Credit / RWA; chain Ethereum mainnet; assets SYRUP, syrupUSDC, syrupUSDT; 0xBe10..D8b3."
   },
   {
    "id": "pacta-proto-mellow-protocol-lido-earn",
    "kind": "protocol",
-   "text": "Mellow Protocol / Lido Earn [mellow-protocol-lido-earn]: Liquid Restaking / Curated Vaults; Ethereum chainId 1; assets Mellow, Lido Earn; primary 0xe5ab..769d; controller timelock 0x363B..2189; EAS Sprint 4; tier parameter_delta (1 parameter delta)."
+   "text": "Protocol Mellow Protocol / Lido Earn: category Liquid Restaking / Curated Vaults; chain Ethereum mainnet; assets Mellow, Lido Earn; 0xe5ab..769d."
   },
   {
    "id": "pacta-proto-metamorpho-re7-weth-vs-re7-usdt",
    "kind": "protocol",
-   "text": "MetaMorpho (Re7 WETH vs. Re7 USDT) [metamorpho-re7-weth-vs-re7-usdt]: Curated Lending Vaults; Ethereum chainId 1; assets Re7WETH, Re7USDT, MetaMorpho; primary 0x78Fc..94d0; controller timelock 0x78Fc..94d0; EAS Sprint 5; tier parameter_delta (1 parameter delta)."
+   "text": "Protocol MetaMorpho (Re7 WETH vs. Re7 USDT): category Curated Lending Vaults; chain Ethereum mainnet; assets Re7WETH, Re7USDT, MetaMorpho; 0x78Fc..94d0."
   },
   {
    "id": "pacta-proto-moonwell-lending-base",
    "kind": "protocol",
-   "text": "Moonwell Lending (Base) [moonwell-lending-base]: Base Lending & Borrowing; chainId 8453; assets WELL; primary 0xfBb2..F26C; EAS Sprint 18; tier parameter_delta (1 aligned baseline, 1 parameter delta)."
+   "text": "Protocol Moonwell Lending (Base): category Base Lending & Borrowing; assets WELL; 0xfBb2..F26C."
   },
   {
    "id": "pacta-proto-morpho-blue-core",
    "kind": "protocol",
-   "text": "Morpho Blue Core [morpho-blue-core]: Base Lending Infrastructure; Ethereum chainId 1; assets MORPHO; primary 0xBBBB..FFCb; EAS Sprint 3; tier aligned (1 aligned baseline)."
+   "text": "Protocol Morpho Blue Core: category Base Lending Infrastructure; chain Ethereum mainnet; assets MORPHO; 0xBBBB..FFCb."
   },
   {
    "id": "pacta-proto-nexus-mutual",
    "kind": "protocol",
-   "text": "Nexus Mutual [nexus-mutual]: Discretionary Mutual / Cover; Ethereum chainId 1; assets NXM, wNXM, Nexus Mutual; primary 0xcafe..Ca32; controller timelock 0xcafe..Ca32; EAS Sprint 18; tier aligned (1 aligned baseline)."
+   "text": "Protocol Nexus Mutual: category Discretionary Mutual / Cover; chain Ethereum mainnet; assets NXM, wNXM, Nexus Mutual; 0xcafe..Ca32."
   },
   {
    "id": "pacta-proto-ondo-finance-ousg-flux-finance",
    "kind": "protocol",
-   "text": "Ondo Finance (OUSG & Flux Finance) [ondo-finance-ousg-flux-finance]: Institutional RWA / Tokenized Treasuries; Ethereum chainId 1; assets OUSG, ONDO, Flux; primary 0x98Db..003c; controller timelock 0x2c58..8d9c; EAS Sprint 10; tier parameter_delta (1 parameter delta)."
+   "text": "Protocol Ondo Finance (OUSG & Flux Finance): category Institutional RWA / Tokenized Treasuries; chain Ethereum mainnet; assets ONDO; 0x98Db..003c."
   },
   {
    "id": "pacta-proto-origin-superoeth-base",
    "kind": "protocol",
-   "text": "Origin Protocol (SuperOETHb Base) [origin-superoeth-base]: Supercharged Liquid Staking; chainId 8453; assets superOETHb, OETH, OGN; primary 0xDBFe..60A3; controller timelock 0xf817..464f; RPC-pinned; tier rpc_observed."
+   "text": "Protocol Origin Protocol (SuperOETHb Base) [origin-superoeth-base]: category Supercharged Liquid Staking; assets OETH, OGN; 0xDBFe..60A3."
   },
   {
    "id": "pacta-proto-pendle-finance-v2",
    "kind": "protocol",
-   "text": "Pendle Finance V2 [pendle-finance-v2]: Yield Tokenization & AMM; Ethereum chainId 1; assets PENDLE, vePENDLE; primary 0x6d24..9A9f; EAS Sprint 19; tier aligned (2 aligned baseline)."
+   "text": "Protocol Pendle Finance V2: category Yield Tokenization & AMM; chain Ethereum mainnet; assets PENDLE, vePENDLE; 0x6d24..9A9f."
   },
   {
    "id": "pacta-proto-puffer-finance-pufeth",
    "kind": "protocol",
-   "text": "Puffer Finance (pufETH) [puffer-finance-pufeth]: Native Liquid Restaking; Ethereum chainId 1; assets pufETH, PUFFER; primary 0xD9A4..6a72; controller contract controller 0x8c16..EE11; RPC-pinned; tier rpc_observed."
+   "text": "Protocol Puffer Finance (pufETH): category Native Liquid Restaking; chain Ethereum mainnet; assets PUFFER; 0xD9A4..6a72."
   },
   {
    "id": "pacta-proto-renzo-protocol-ezeth",
    "kind": "protocol",
-   "text": "Renzo Protocol (ezETH) [renzo-protocol-ezeth]: Liquid Restaking; Ethereum chainId 1; assets ezETH, REZ; primary 0xf2F3..0d60; EAS Sprint 8; tier parameter_delta (1 parameter delta)."
+   "text": "Protocol Renzo Protocol (ezETH): category Liquid Restaking; chain Ethereum mainnet; assets REZ; 0xf2F3..0d60."
   },
   {
    "id": "pacta-proto-reserve-protocol-rtoken",
    "kind": "protocol",
-   "text": "Reserve Protocol (eUSD RToken) [reserve-protocol-rtoken]: Asset-Backed RToken Infrastructure; Ethereum chainId 1; assets eUSD, RSR; primary 0xA0d6..482F; RPC-pinned; tier rpc_observed."
+   "text": "Protocol Reserve Protocol (eUSD RToken): category Asset-Backed RToken Infrastructure; chain Ethereum mainnet; assets RSR; 0xA0d6..482F."
   },
   {
    "id": "pacta-proto-resolv-usr-rlp",
    "kind": "protocol",
-   "text": "Resolv (USR / RLP) [resolv-usr-rlp]: Delta-Neutral Synthetic Dollar; Ethereum chainId 1; assets USR, RLP, wstUSR, RESOLV; primary 0x66a1..e110; controller timelock 0x66a1..e110; EAS Sprint 11; tier aligned (1 aligned baseline)."
+   "text": "Protocol Resolv (USR / RLP): category Delta-Neutral Synthetic Dollar; chain Ethereum mainnet; assets wstUSR, RESOLV; 0x66a1..e110."
   },
   {
    "id": "pacta-proto-rocket-pool-reth",
    "kind": "protocol",
-   "text": "Rocket Pool (rETH) [rocket-pool-reth]: Decentralized Liquid Staking; Ethereum chainId 1; assets rETH, RPL; primary 0xdA1A..0D01; EAS Sprint 19; tier parameter_delta (2 aligned baseline, 1 parameter delta)."
+   "text": "Protocol Rocket Pool (rETH): category Decentralized Liquid Staking; chain Ethereum mainnet; assets RPL; 0xdA1A..0D01."
   },
   {
    "id": "pacta-proto-safe-singleton-core",
    "kind": "protocol",
-   "text": "Safe Smart Account (v1.4.1 Singleton) [safe-singleton-core]: Smart Account & Multisig Custody Core; Ethereum chainId 1; assets SAFE; primary 0x4167..461a; controller contract controller 0x4e1D..ec67; RPC-pinned; tier rpc_observed."
+   "text": "Protocol Safe Smart Account (v1.4.1 Singleton) [safe-singleton-core]: category Smart Account & Multisig Custody Core; chain Ethereum mainnet; assets SAFE; 0x4167..461a."
   },
   {
    "id": "pacta-proto-seamless-protocol-base",
    "kind": "protocol",
-   "text": "Seamless Protocol (Base) [seamless-protocol-base]: Base Lending & Integrated Liquidity; chainId 8453; assets SEAM; primary 0x0E02..f3a0; RPC-pinned; tier rpc_observed."
+   "text": "Protocol Seamless Protocol (Base): category Base Lending & Integrated Liquidity; assets SEAM; 0x0E02..f3a0."
   },
   {
    "id": "pacta-proto-solv-protocol-solvbtc",
    "kind": "protocol",
-   "text": "Solv Protocol (SolvBTC) [solv-protocol-solvbtc]: Bitcoin Reserve / Wrapped BTC; Ethereum chainId 1; assets SolvBTC, SOLV; primary 0x7A56..2F97; EAS Sprint 17; tier parameter_delta (1 aligned baseline, 1 protective delta)."
+   "text": "Protocol Solv Protocol (SolvBTC): category Bitcoin Reserve / Wrapped BTC; chain Ethereum mainnet; assets SOLV; 0x7A56..2F97."
   },
   {
    "id": "pacta-proto-spark-sky",
    "kind": "protocol",
-   "text": "Spark / Sky [spark-sky]: Decentralized Credit & Liquidity; Ethereum chainId 1; assets USDS, sUSDS, DAI, SKY, MKR, SPK; primary 0xbE28..38f3; controller timelock 0xbE28..38f3; EAS Sprint 7; tier aligned (1 aligned baseline)."
+   "text": "Protocol Spark / Sky: category Decentralized Credit & Liquidity; chain Ethereum mainnet; assets USDS, sUSDS, DAI, SKY, MKR, SPK; 0xbE28..38f3."
   },
   {
    "id": "pacta-proto-stader-labs-ethx",
    "kind": "protocol",
-   "text": "Stader Labs (ETHx) [stader-labs-ethx]: Liquid Staking; Ethereum chainId 1; assets ETHx, SD; primary 0xAAfb..07AF; controller timelock 0x1112..68B9; EAS Sprint 12; tier parameter_delta (1 parameter delta)."
+   "text": "Protocol Stader Labs (ETHx): category Liquid Staking; chain Ethereum mainnet; assets SD; 0xAAfb..07AF."
   },
   {
    "id": "pacta-proto-stakewise-v3-oseth",
    "kind": "protocol",
-   "text": "StakeWise V3 (osETH) [stakewise-v3-oseth]: Liquid Staking Infrastructure; Ethereum chainId 1; assets osETH, SWISE; primary 0x6B58..87b5; EAS Sprint 12; tier aligned (1 aligned baseline)."
+   "text": "Protocol StakeWise V3 (osETH): category Liquid Staking Infrastructure; chain Ethereum mainnet; assets SWISE; 0x6B58..87b5."
   },
   {
    "id": "pacta-proto-stargate-v2",
    "kind": "protocol",
-   "text": "Stargate V2 [stargate-v2]: Cross-chain Liquidity / Bridge; Ethereum chainId 1; assets STG, Stargate; primary 0xc026..89C7; EAS Sprint 18; tier aligned (1 aligned baseline)."
+   "text": "Protocol Stargate V2: category Cross-chain Liquidity / Bridge; chain Ethereum mainnet; assets STG, Stargate; 0xc026..89C7."
   },
   {
    "id": "pacta-proto-steakhouse-usdc-metamorpho-base",
    "kind": "protocol",
-   "text": "Steakhouse USDC MetaMorpho (Base) [steakhouse-usdc-metamorpho-base]: Curated Lending Vault (MetaMorpho); chainId 8453; assets steakUSDC, Steakhouse, MetaMorpho; primary 0xbeeF..8183; controller timelock 0xbeeF..8183; EAS Sprint 17; tier aligned (1 aligned baseline)."
+   "text": "Protocol Steakhouse USDC MetaMorpho (Base): category Curated Lending Vault (MetaMorpho); assets steakUSDC, Steakhouse, MetaMorpho; 0xbeeF..8183."
   },
   {
    "id": "pacta-proto-superform-v2-base",
    "kind": "protocol",
-   "text": "Superform Core v2 (Base) [superform-v2-base]: Omnichain ERC-7579 Vault & Yield Infrastructure; chainId 8453; assets Superform, SuperVaults; primary 0xB539..74d4; controller contract controller 0x10AC..4698; RPC-pinned; tier rpc_observed."
+   "text": "Protocol Superform Core v2 (Base): category Omnichain ERC-7579 Vault & Yield Infrastructure; assets Superform, SuperVaults; 0xB539..74d4."
   },
   {
    "id": "pacta-proto-superstate-ustb-uscc",
    "kind": "protocol",
-   "text": "Superstate (USTB / USCC) [superstate-ustb-uscc]: Institutional RWA / Tokenized Funds; Ethereum chainId 1; assets USTB, USCC; primary 0x4341..1C4e; EAS Sprint 12; tier aligned (1 aligned baseline)."
+   "text": "Protocol Superstate (USTB / USCC): category Institutional RWA / Tokenized Funds; chain Ethereum mainnet; 0x4341..1C4e."
   },
   {
    "id": "pacta-proto-swell-sweth-rsweth",
    "kind": "protocol",
-   "text": "Swell (swETH / rswETH) [swell-sweth-rsweth]: Liquid Staking & Restaking; Ethereum chainId 1; assets swETH, rswETH, SWELL; primary 0xbA82..073b; controller timelock 0xbA82..073b; EAS Sprint 12; tier aligned (1 aligned baseline)."
+   "text": "Protocol Swell (swETH / rswETH): category Liquid Staking & Restaking; chain Ethereum mainnet; assets SWELL; 0xbA82..073b."
   },
   {
    "id": "pacta-proto-symbiotic-core",
    "kind": "protocol",
-   "text": "Symbiotic Core [symbiotic-core]: Restaking Infrastructure; Ethereum chainId 1; assets Symbiotic; primary 0xAEb6..a346; EAS Sprint 10; tier aligned (1 aligned baseline)."
+   "text": "Protocol Symbiotic Core: category Restaking Infrastructure; chain Ethereum mainnet; assets Symbiotic; 0xAEb6..a346."
   },
   {
    "id": "pacta-proto-synthetix-v3-core",
    "kind": "protocol",
-   "text": "Synthetix V3 Core [synthetix-v3-core]: Derivatives Liquidity Infrastructure; Ethereum chainId 1; assets SNX, sUSD; primary 0xffff..5847; controller multisig safe 0xEb31..7769; RPC-pinned; tier rpc_observed."
+   "text": "Protocol Synthetix V3 Core: category Derivatives Liquidity Infrastructure; chain Ethereum mainnet; assets SNX, sUSD; 0xffff..5847."
   },
   {
    "id": "pacta-proto-threshold-network-tbtc",
    "kind": "protocol",
-   "text": "Threshold Network (tBTC) [threshold-network-tbtc]: Decentralized Bitcoin Bridge; Ethereum chainId 1; assets tBTC, T; primary 0x92f2..913D; controller timelock 0x92f2..913D; EAS Sprint 15; tier aligned (1 aligned baseline)."
+   "text": "Protocol Threshold Network (tBTC): category Decentralized Bitcoin Bridge; chain Ethereum mainnet; assets T; 0x92f2..913D."
   },
   {
    "id": "pacta-proto-treehouse-tree-teth",
    "kind": "protocol",
-   "text": "Treehouse (TREE / tETH) [treehouse-tree-teth]: Fixed Income / LST; Ethereum chainId 1; assets tETH, TREE; primary 0x2225..467e; controller timelock 0x2225..467e; EAS Sprint 14, 16; tier aligned (2 aligned baseline)."
+   "text": "Protocol Treehouse (TREE / tETH): category Fixed Income / LST; chain Ethereum mainnet; 0x2225..467e."
   },
   {
    "id": "pacta-proto-uniswap-governance-timelock",
    "kind": "protocol",
-   "text": "Uniswap V3 & Governance Timelock [uniswap-governance-timelock]: Blue-Chip DEX & Governance; Ethereum chainId 1; assets UNI; primary 0x1F98..F984; controller contract controller 0xf237..Bf5A; RPC-pinned; tier rpc_observed."
+   "text": "Protocol Uniswap V3 & Governance Timelock: category Blue-Chip DEX & Governance; chain Ethereum mainnet; assets UNI; 0x1F98..F984."
   },
   {
    "id": "pacta-proto-usual-money-usd0-usd0",
    "kind": "protocol",
-   "text": "Usual Money (USD0 / USD0++) [usual-money-usd0-usd0]: RWA Stablecoin; Ethereum chainId 1; assets USD0, USD0++, USUAL; primary 0x0D37..bb56; controller timelock 0x0D37..bb56; EAS Sprint 8; tier parameter_delta (1 parameter delta)."
+   "text": "Protocol Usual Money (USD0 / USD0++): category RWA Stablecoin; chain Ethereum mainnet; assets USUAL; 0x0D37..bb56."
   },
   {
    "id": "pacta-proto-yearn-v3",
    "kind": "protocol",
-   "text": "Yearn V3 [yearn-v3]: Yield Aggregation Vaults; Ethereum chainId 1; assets YFI; primary 0xb3bd..9a41; controller timelock 0x88Ba..BF73; EAS Sprint 8; tier parameter_delta (1 protective delta)."
+   "text": "Protocol Yearn V3: category Yield Aggregation Vaults; chain Ethereum mainnet; assets YFI; 0xb3bd..9a41."
   }
  ],
  "edges": [
@@ -8337,5 +8337,5 @@
    "content_hash": "499cc430c4be2c13e8009435cf926cd3389f8d457b0e74727eb8412e99a79c42"
   }
  ],
- "manifest_sha256": "d696c093cbe024bc023f5b6012c5eebb947c1cb7cd059c32fcb548747a6c2da8"
+ "manifest_sha256": "95b486d8d8143de9585ad8f7416b7add531d081d984af4d61cca6853b57f4722"
 }

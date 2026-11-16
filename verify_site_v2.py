@@ -445,6 +445,36 @@ def graph_manifest_checks(args):
           not changed_text and observed and all(alt_hash.get(e["edge_key"]) != e["content_hash"] for e in observed)
           and [n["id"] for n in alt["nodes"]] == ids,
           f"{len(changed_text)} node texts changed {changed_text[:3]}; {len(observed)} edges with observed_controller evidence")
+    prot_doc = json.loads(read("docs/api/v1/protocols.json"))
+    flip = {"aligned_baseline": "protective_delta", "protective_delta": "aligned_baseline", "parameter_delta": "protective_delta",
+            "rpc_observed": "aligned_baseline", "mixed": "aligned_baseline"}
+    tiers = ["aligned", "parameter_delta", "rpc_observed"]
+    moved_p = json.loads(json.dumps(prot_doc))
+    for q in moved_p["protocols"]:                  # every changing protocol fact moves (an rpc_observed <-> EAS conversion and more)
+        q["badge"] = {**(q.get("badge") or {}), "tier": tiers[(tiers.index((q.get("badge") or {}).get("tier", "aligned")) + 1) % 3]}
+        q["easAttested"] = not q.get("easAttested")
+        q["evidenceBasis"] = "eas_attested" if q.get("evidenceBasis") == "rpc_observed" else "rpc_observed"
+        q["classification"] = flip.get(q.get("classification"), "aligned_baseline")
+        q["documentationComparison"] = "not_assessed" if q.get("documentationComparison") == "compared" else "compared"
+        q["sprints"] = sorted(set(q.get("sprints") or []) | {1})
+        q["baseEasUids"] = sorted(set(q.get("baseEasUids") or []) | {"0x" + "ab" * 32})
+        q["controllerAddress"] = None if q.get("controllerAddress") else q["primaryContract"]
+        q["controllerKind"] = None if q.get("controllerKind") else "timelock"
+        q["targetLabel"] = (q.get("targetLabel") or "") + " (relabelled)"
+        for su in q.get("surfaces") or []:
+            su["classification"] = flip.get(su.get("classification"), "aligned_baseline")
+            su["sprint"] = (su.get("sprint") or 0) + 100
+            su["baseEasUid"] = "0x" + "cd" * 32
+    alt_p = GM.build(ROOT, protocols_override=moved_p)
+    proto_text = {n["id"]: n["text"] for n in alt_p["nodes"] if n["id"].startswith("pacta-proto-")}
+    changed_p = [i for i in ids if i.startswith("pacta-proto-") and proto_text.get(i) != texts[i]]
+    n_proto = sum(1 for i in ids if i.startswith("pacta-proto-"))
+    check(f"pacta-proto-* node text is immutable identity (name, slug, category, chain, assets, abbreviated primary contract): perturbing every "
+          "changing protocol fact of every protocol (badge tier, sprints, Base EAS UIDs, easAttested, evidenceBasis rpc_observed <-> eas_attested, "
+          "classification, surface classification / sprint / UID, controller address / kind, documentationComparison, targetLabel) rewrites "
+          f"0 of {n_proto} protocol node texts",
+          not changed_p and n_proto == len(slugs) and len(proto_text) == n_proto,
+          f"{len(changed_p)}/{n_proto} protocol texts changed {changed_p[:3]}")
     check("sitemap.xml lists /api/v1/graph-manifest.json", "/api/v1/graph-manifest.json</loc>" in read("docs/sitemap.xml"))
     if args.verify_sync_receipt:
         try:

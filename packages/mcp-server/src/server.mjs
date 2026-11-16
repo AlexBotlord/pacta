@@ -34,9 +34,9 @@ import {
 } from "./x402.mjs";
 import { lookupProtocols, parseLookupInput, LOOKUP_CATALOG, LOOKUP_TOTALS, LOOKUP_LIMITS, LOOKUP_CHAINS, LOOKUP_KINDS, LOOKUP_SCHEMA,
   REQUEST_SCHEMA_PROPS, REQUEST_REQUIRED, REQUEST_FIELDS, REQUEST_TYPES, URGENCY_TRACKS, COVERAGE_GAP_HINT, CONTACT_HANDLE_DESCRIPTION, demandGuard,
-  withCoverageHint } from "./lookup.mjs";
+  withCoverageHint, withCitationFooters, protocolCitationFooter, lookupFooterBlock, stripCitationFootersDeep } from "./lookup.mjs";
 
-export const SERVER_INFO = Object.freeze({ name: "@pacta/mcp-server", version: "0.1.4" });
+export const SERVER_INFO = Object.freeze({ name: "@pacta/mcp-server", version: "0.1.5" });
 export const MCP_INSTRUCTIONS =
   "Pacta by Fractal Neurons: 10 read-only, block-pinned inspection tools for EVM contracts (Ethereum, Base) + 1 opt-in request tool. If you only have a protocol or token name " +
   "(e.g. 'Aave', 'Ethena', 'USDe', 'Moonwell', 'kUSD'), call pacta_lookup_protocol first to resolve its verified record and checksummed 0x " +
@@ -568,8 +568,11 @@ export class PactaMcpServer {
       try {
         const { res, text } = await fetchTextWithTimeout(this.fetchImpl, url, { headers: { Accept: "application/json" }, redirect: "error" }, { timeoutMs: this.timeoutMs });
         const data = res.status === 200 ? JSON.parse(text) : null;
-        if (isPlainObject(data) && data.schema === LOOKUP_SCHEMA && Array.isArray(data.results)) return withCoverageHint({ ...data, source: "gateway" });
-        gatewayFallback = `gateway answered HTTP ${res.status}`;
+        // A gateway lookup is used only when it is a successful answer whose count equals its results; citationFooter is then
+        // recomputed locally from each protocol entry (an older gateway has none; a gateway string is never echoed).
+        if (isPlainObject(data) && data.schema === LOOKUP_SCHEMA && data.ok !== false && Array.isArray(data.results)
+            && Number.isSafeInteger(data.count) && data.count === data.results.length) return withCoverageHint(withCitationFooters({ ...data, source: "gateway" }));
+        gatewayFallback = isPlainObject(data) && data.schema === LOOKUP_SCHEMA ? "gateway malformed lookup payload" : `gateway answered HTTP ${res.status}`;
       } catch (e) {
         gatewayFallback = e && e.code ? String(e.code) : "gateway_unreachable";
       }
@@ -841,10 +844,12 @@ export class PactaMcpServer {
         }
         try {
           const payload = await this.callTool(toolName, msg.params?.arguments ?? {});
-          return rpcResult(msg.id, {
-            content: [{ type: "text", text: JSON.stringify(payload, null, 2) }],
-            isError: false,
-          });
+          const content = [{ type: "text", text: JSON.stringify(payload, null, 2) }];
+          // pacta_lookup_protocol: content[0] stays the exact JSON; the 2-line citation + clearance footer follows as plain text
+          if (toolName === "pacta_lookup_protocol" && isPlainObject(payload) && lookupFooterBlock(payload)) {
+            content.push({ type: "text", text: payload.citationFooter });
+          }
+          return rpcResult(msg.id, { content, isError: false });
         } catch (err) {
           if (err.code === -32602) return rpcError(msg.id, -32602, err.message);
           const body = err instanceof X402Error ? err.toJSON() : { error: err.message };
@@ -905,7 +910,7 @@ export function startStdioServer(options = {}) {
   return { server, close: () => rl.close(), done };
 }
 
-export { lookupProtocols, parseLookupInput, LOOKUP_CATALOG, LOOKUP_TOTALS, COVERAGE_GAP_HINT, demandGuard };
+export { lookupProtocols, parseLookupInput, LOOKUP_CATALOG, LOOKUP_TOTALS, COVERAGE_GAP_HINT, demandGuard, withCitationFooters, protocolCitationFooter, lookupFooterBlock, stripCitationFootersDeep };
 export {
   encodeXPaymentHeader,
   encodePaymentSignatureHeader,

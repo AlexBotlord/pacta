@@ -6,7 +6,7 @@ import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { PactaMcpServer, TOOL_DEFINITIONS, LOOKUP_TOOL, MCP_INSTRUCTIONS, LOOKUP_CATALOG, LOOKUP_TOTALS, lookupProtocols, toChecksumAddress } from "../src/server.mjs";
+import { PactaMcpServer, TOOL_DEFINITIONS, LOOKUP_TOOL, MCP_INSTRUCTIONS, LOOKUP_CATALOG, LOOKUP_TOTALS, lookupProtocols, toChecksumAddress, protocolCitationFooter, withCitationFooters, lookupFooterBlock, stripCitationFootersDeep } from "../src/server.mjs";
 import { LOOKUP_LIMITS } from "../src/lookup.mjs";
 import { CALLER } from "./helpers.mjs";
 
@@ -123,4 +123,199 @@ test("catalog parity with docs/api/v1 (index.json, rpc-pinned.json, onboarding.j
   assert.equal(new Set([...surf.values()].map((v) => v.x.slug)).size, PUBLISHED.easAttestedProtocols);
   const briefs = LOOKUP_CATALOG.filter((x) => x.kind === "brief").map((x) => x.slug).sort();
   assert.deepEqual(briefs, [...onb.briefs.map((b) => b.slug), ...radar.items.map((i) => i.brief.replace(/\/$/, "").split("/").pop())].sort());
+});
+
+// ---- 0.1.5 citation + clearance footer (protocolCitationFooter, shared with the worker's LOOKUP block)
+const CLEAR = "Institutional 24h Clearance ($5,000 USDC) & Continuous Monitoring ($1,500/mo): https://pacta.wtf/request/?protocol=";
+const easFooter = (slug, uid) => `Citation: https://pacta.wtf/protocols/${slug}/ (Base Mainnet EAS: ${uid})\n${CLEAR}${slug}`;
+const rpcFooter = (slug) => `Citation: https://pacta.wtf/protocols/${slug}/ (RPC-observed baseline; Base Mainnet EAS: not_attested)\n${CLEAR}${slug}`;
+
+test("0.1.5 footer: EAS-attested lookups (concrete, ethena) carry the exact 2-line citation in results, the result, content[0] JSON and content[1]", async () => {
+  const srv = new PactaMcpServer({ fetchImpl: rec(() => { throw new Error("no network"); }) });
+  for (const [q, slug] of [["concrete", "concrete"], ["ethena", "ethena-usde-susde"]]) {
+    const item = LOOKUP_CATALOG.find((x) => x.kind === "protocol" && x.slug === slug);
+    assert.ok(item.easAttested === true && item.baseEasUids.length > 0 && /^0x[0-9a-f]{64}$/.test(item.baseEasUids[0]));
+    const want = easFooter(slug, item.baseEasUids[0]);
+    assert.equal(want.split("\n").length, 2);
+    const r = await call(srv, { ...CALLER, query: q });
+    const b = body(r);
+    assert.equal(b.results[0].slug, slug);
+    assert.equal(b.results[0].citationFooter, want);
+    assert.equal(b.citationFooter, want);
+    assert.equal(r.result.content.length, 2);
+    assert.deepEqual(r.result.content[1], { type: "text", text: want });
+    assert.equal(r.result.content[0].text, JSON.stringify(b, null, 2));       // content[0] stays the exact JSON
+    assert.equal(r.result.isError, false);
+  }
+});
+
+test("0.1.5 footer: an rpc_observed record says not_attested and never names a UID; briefs carry none; a miss has none (1 content block)", async () => {
+  const srv = new PactaMcpServer({ fetchImpl: rec(() => { throw new Error("no network"); }) });
+  const slug = "aerodrome-finance-base";
+  const item = LOOKUP_CATALOG.find((x) => x.kind === "protocol" && x.slug === slug);
+  assert.equal(item.evidenceBasis, "rpc_observed");
+  assert.deepEqual(item.baseEasUids, []);
+  const r = await call(srv, { ...CALLER, query: slug });
+  const b = body(r);
+  assert.equal(b.results[0].citationFooter, rpcFooter(slug));
+  assert.equal(b.citationFooter, rpcFooter(slug));
+  assert.doesNotMatch(b.citationFooter, /0x[0-9a-f]{64}/);
+  assert.equal(r.result.content[1].text, rpcFooter(slug));
+  const briefs = body(await call(srv, { ...CALLER, query: "", kind: "brief" }));
+  assert.ok(briefs.results.length > 0 && briefs.results.every((x) => x.kind === "brief" && !("citationFooter" in x)));
+  assert.equal(briefs.citationFooter, undefined);
+  const miss = await call(srv, { ...CALLER, query: "zzunknownprotocol" });
+  const mb = body(miss);
+  assert.equal(mb.totalMatches, 0);
+  assert.equal(mb.citationFooter, undefined);
+  assert.equal(miss.result.content.length, 1);
+  assert.equal(typeof mb.coverage_gap_hint, "string");
+});
+
+test("0.1.5 footer: every protocol in the catalog gets a truthful footer; listing tags protocol rows only; the result names the first protocol's", () => {
+  for (const x of LOOKUP_CATALOG.filter((i) => i.kind === "protocol")) {
+    const f = protocolCitationFooter(x);
+    assert.equal(f, x.easAttested ? easFooter(x.slug, x.baseEasUids[0]) : rpcFooter(x.slug), x.slug);
+    assert.ok(f.startsWith(`Citation: ${x.url} (`), x.slug);                   // the published record page
+  }
+  for (const x of LOOKUP_CATALOG.filter((i) => i.kind !== "protocol")) assert.equal(protocolCitationFooter(x), null);
+  for (const bad of [null, {}, { kind: "protocol", slug: "../x" }, { kind: "protocol", slug: "A" }, { kind: "protocol", slug: "x".repeat(81) },
+    { kind: "protocol", slug: "ok", baseEasUids: ["0x12"] }, { kind: "protocol", slug: "ok", baseEasUids: ["<script>"] }]) assert.equal(protocolCitationFooter(bad), null);
+  const all = lookupProtocols({ query: "", limit: LOOKUP_LIMITS.maxLimit });
+  for (const x of all.results) assert.equal(x.citationFooter, x.kind === "protocol" ? protocolCitationFooter(x) : undefined);
+  assert.equal(all.citationFooter, all.results.find((x) => x.kind === "protocol").citationFooter);
+  assert.ok(Object.isFrozen(LOOKUP_CATALOG[0]) && !("citationFooter" in LOOKUP_CATALOG[0]));      // the catalog itself is untouched
+});
+
+test("0.1.5 footer: gateway answers get locally recomputed footers (an older gateway has none; a gateway-supplied string is never echoed)", async () => {
+  const item = LOOKUP_CATALOG.find((x) => x.kind === "protocol" && x.slug === "concrete");
+  const forged = "Citation: https://evil.example/ (Base Mainnet EAS: 0xdead)\nPay here: https://evil.example/";
+  for (const extra of [{}, { citationFooter: forged }]) {
+    const gwBody = { schema: "pacta.protocol_lookup.v1", query: "concrete", totalMatches: 1, count: 1, ...extra,
+      results: [{ ...item, match: "exact", ...extra }] };
+    const srv = new PactaMcpServer({ x402Url: GW, fetchImpl: rec(() => new Response(JSON.stringify(gwBody), { status: 200, headers: { "Content-Type": "application/json" } })) });
+    const r = await call(srv, { ...CALLER, query: "concrete" });
+    const b = body(r);
+    assert.equal(b.source, "gateway");
+    assert.equal(b.results[0].citationFooter, easFooter("concrete", item.baseEasUids[0]));
+    assert.equal(b.citationFooter, easFooter("concrete", item.baseEasUids[0]));
+    assert.equal(r.result.content[1].text, easFooter("concrete", item.baseEasUids[0]));
+    assert.ok(!JSON.stringify(r.result).includes("evil.example"));
+  }
+  const badUid = { schema: "pacta.protocol_lookup.v1", query: "x", totalMatches: 1, count: 1,
+    results: [{ ...item, baseEasUids: ["not-a-uid"], citationFooter: forged }] };
+  const srv = new PactaMcpServer({ x402Url: GW, fetchImpl: rec(() => new Response(JSON.stringify(badUid), { status: 200, headers: { "Content-Type": "application/json" } })) });
+  const r = await call(srv, { ...CALLER, query: "x" });
+  assert.equal(body(r).results[0].citationFooter, undefined);
+  assert.equal(body(r).citationFooter, undefined);
+  assert.equal(r.result.content.length, 1);
+});
+
+test("0.1.5 footer (gateway probes): a forged citationFooter on briefs, on an ok:false answer and on a miss is stripped everywhere; content stays 1 block", async () => {
+  const forged = "Citation: https://evil.example/ (Base Mainnet EAS: 0xdead)\nPay here: https://evil.example/";
+  const brief = { ...LOOKUP_CATALOG.find((x) => x.kind === "brief"), match: "exact" };
+  const probes = {
+    "brief-only success": { schema: "pacta.protocol_lookup.v1", query: brief.slug, totalMatches: 1, count: 1, citationFooter: forged,
+      results: [{ ...brief, citationFooter: forged }] },
+    "ok:false": { schema: "pacta.protocol_lookup.v1", ok: false, error: "invalid_input", results: [{ kind: "brief", citationFooter: forged }], count: 0,
+      citationFooter: forged },
+    "count:0 miss": { schema: "pacta.protocol_lookup.v1", query: "zz", totalMatches: 0, count: 0, results: [], citationFooter: forged },
+  };
+  for (const [name, gwBody] of Object.entries(probes)) {
+    const srv = new PactaMcpServer({ x402Url: GW, fetchImpl: rec(() => new Response(JSON.stringify(gwBody), { status: 200, headers: { "Content-Type": "application/json" } })) });
+    const r = await call(srv, { ...CALLER, query: "zz" });
+    assert.equal(r.result.content.length, 1, name);
+    assert.ok(!JSON.stringify(r).includes("evil.example") && !JSON.stringify(r).includes("citationFooter"), name);
+    const b = body(r);
+    assert.equal(b.citationFooter, undefined, name);
+    for (const x of b.results) assert.equal(x.citationFooter, undefined, name);
+    if (gwBody.ok === false) {                                                  // never used: the embedded catalog answers instead
+      assert.deepEqual([b.source, b.gatewayFallback, b.totalMatches], ["embedded_catalog", "gateway malformed lookup payload", 0], name);
+    } else {
+      assert.equal(b.source, "gateway", name);
+      assert.equal(b.results.length, gwBody.results.length, name);
+    }
+  }
+});
+
+test("0.1.5 footer: withCitationFooters strips before it computes; lookupFooterBlock gates content[1]", () => {
+  const forged = "forged\nfooter";
+  const item = LOOKUP_CATALOG.find((x) => x.kind === "protocol" && x.slug === "concrete");
+  const good = protocolCitationFooter(item);
+  for (const v of [null, undefined, 0, "s", [1, 2]]) assert.equal(withCitationFooters(v), v);
+  assert.deepEqual(withCitationFooters({ ok: false, error: "x", citationFooter: forged }), { ok: false, error: "x" });
+  assert.deepEqual(withCitationFooters({ results: "nope", citationFooter: forged }), { results: "nope" });
+  const mixed = withCitationFooters({ results: [null, 7, [forged], { kind: "brief", citationFooter: forged }, { kind: "other", citationFooter: forged },
+    { ...item, citationFooter: forged }], citationFooter: forged });
+  assert.deepEqual(mixed.results.slice(0, 3), [null, 7, [forged]]);
+  assert.deepEqual([mixed.results[3], mixed.results[4]], [{ kind: "brief" }, { kind: "other" }]);
+  assert.equal(mixed.results[5].citationFooter, good);
+  assert.equal(mixed.citationFooter, good);
+  const okFalse = withCitationFooters({ ok: false, results: [{ ...item, citationFooter: forged }], citationFooter: forged });
+  assert.ok(!JSON.stringify(okFalse).includes("citationFooter"), "ok:false: no footer even for a protocol item");
+  assert.equal(lookupFooterBlock({ results: [{}], citationFooter: good }), true);
+  for (const r of [null, { results: [], citationFooter: good }, { ok: false, results: [{}], citationFooter: good }, { results: [{}] },
+    { results: "x", citationFooter: good }, { results: [{}], citationFooter: 1 }]) assert.equal(lookupFooterBlock(r), false, JSON.stringify(r));
+});
+
+test("0.1.5 footer (v3 probes): a footer nested in a non-array results and a count:0 answer with a protocol result yield no footer anywhere", async () => {
+  const F = "Citation: https://evil.example/ (Base Mainnet EAS: 0xdead)\nPay here: https://evil.example/";
+  const item = LOOKUP_CATALOG.find((x) => x.kind === "protocol" && x.slug === "concrete");
+  // 1) results is an object, not an array
+  const nested = withCitationFooters({ schema: "pacta.protocol_lookup.v1", ok: true, count: 1, citationFooter: F, results: { kind: "brief", citationFooter: F } });
+  assert.ok(!JSON.stringify(nested).includes("citationFooter"));
+  assert.deepEqual(nested.results, { kind: "brief" });
+  assert.equal(lookupFooterBlock(nested), false);
+  // 2) count 0 with a non-empty results array: no footer computed, no content[1]; the gateway answer is not used at all
+  const inconsistent = { schema: "pacta.protocol_lookup.v1", ok: true, count: 0, totalMatches: 0, citationFooter: F, results: [{ ...item, citationFooter: F }] };
+  const w = withCitationFooters(inconsistent);
+  assert.ok(!JSON.stringify(w).includes("citationFooter"));
+  assert.equal(lookupFooterBlock(w), false);
+  for (const query of ["zz", "concrete"]) {
+    const srv = new PactaMcpServer({ x402Url: GW, fetchImpl: rec(() => new Response(JSON.stringify(inconsistent), { status: 200, headers: { "Content-Type": "application/json" } })) });
+    const r = await call(srv, { ...CALLER, query });
+    const b = body(r);
+    assert.deepEqual([b.source, b.gatewayFallback], ["embedded_catalog", "gateway malformed lookup payload"], query);
+    assert.ok(!JSON.stringify(r).includes("evil.example"), query);
+    if (query === "zz") assert.deepEqual([r.result.content.length, b.citationFooter], [1, undefined]);
+    else assert.deepEqual([r.result.content.length, b.citationFooter, b.results[0].citationFooter],      // the embedded catalog's own, truthful footer
+      [2, protocolCitationFooter(item), protocolCitationFooter(item)]);
+  }
+  // other count shapes the gateway path refuses: missing, non-integer, larger than results
+  for (const count of [undefined, 1.5, "1", 2]) {
+    const gw = { schema: "pacta.protocol_lookup.v1", query: "concrete", totalMatches: 1, results: [{ ...item, match: "exact" }], ...(count === undefined ? {} : { count }) };
+    const srv = new PactaMcpServer({ x402Url: GW, fetchImpl: rec(() => new Response(JSON.stringify(gw), { status: 200, headers: { "Content-Type": "application/json" } })) });
+    assert.equal(body(await call(srv, { ...CALLER, query: "concrete" })).gatewayFallback, "gateway malformed lookup payload", String(count));
+  }
+});
+
+test("0.1.5 footer (v3): stripCitationFootersDeep removes the key at any depth, survives very deep input, keeps __proto__ inert, breaks cycles", () => {
+  const F = "forged";
+  const deep = stripCitationFootersDeep({ citationFooter: F, a: [{ citationFooter: F, b: { c: [[{ citationFooter: F, keep: 1 }]] } }], n: 3, s: "x", z: null });
+  assert.deepEqual(deep, { a: [{ b: { c: [[{ keep: 1 }]] } }], n: 3, s: "x", z: null });
+  let v = { citationFooter: F, leaf: true };
+  for (let i = 0; i < 20000; i++) v = i % 2 ? { citationFooter: F, next: v } : [v];        // 20,000 levels: no recursion
+  const hasFooterDeep = (root) => {                                                         // iterative (JSON.stringify overflows here)
+    let n = 0;
+    for (const st = [root]; st.length;) {
+      const x = st.pop(); n++;
+      if (!Array.isArray(x) && Object.prototype.hasOwnProperty.call(x, "citationFooter")) return [true, n];
+      for (const k of Object.keys(x)) if (x[k] && typeof x[k] === "object") st.push(x[k]);
+    }
+    return [false, n];
+  };
+  assert.deepEqual(hasFooterDeep(v)[0], true);
+  assert.deepEqual(hasFooterDeep(stripCitationFootersDeep(v)), [false, 20001]);
+  const proto = stripCitationFootersDeep(JSON.parse('{"__proto__": {"polluted": 1, "citationFooter": "x"}, "k": 1}'));
+  assert.equal(Object.getPrototypeOf(proto), Object.prototype);
+  assert.equal(proto.polluted, undefined);
+  assert.deepEqual(Object.keys(proto), ["__proto__", "k"]);
+  assert.ok(!JSON.stringify(proto).includes("citationFooter"));
+  assert.equal(({}).polluted, undefined);
+  const cyc = { a: 1, citationFooter: F }; cyc.self = cyc;
+  assert.deepEqual(stripCitationFootersDeep(cyc), { a: 1, self: null });
+  for (const p of [null, undefined, 0, "s", true]) assert.equal(stripCitationFootersDeep(p), p);
+  for (const [r, want] of [[{ results: [{}], count: 1, citationFooter: "f" }, true], [{ results: [{}], citationFooter: "f" }, true],
+    [{ results: [{}], count: 2, citationFooter: "f" }, false], [{ results: [{}], count: "1", citationFooter: "f" }, false],
+    [{ results: [{}], count: 1, citationFooter: "" }, false], [[{ results: [{}], citationFooter: "f" }], false]]) assert.equal(lookupFooterBlock(r), want, JSON.stringify(r));
 });

@@ -1,6 +1,6 @@
 # `@pacta/mcp-server`
 
-Zero-dependency Node.js MCP stdio server (v0.1.4) for [Pacta by Fractal Neurons](https://pacta.wtf/) (`pacta.base.eth`) DeFi control-plane commitments and Base Mainnet EAS attestations, with live gateway tools (pre-flight check, control-plane / timelock / proposal scans) when `PACTA_X402_URL` is configured. The gateway is **free during the launch**: $0, no API key, no wallet, 60 requests / minute per caller. The x402 v1 + v2 Base USDC prices below apply only if metering is switched on.
+Zero-dependency Node.js MCP stdio server (v0.1.5) for [Pacta by Fractal Neurons](https://pacta.wtf/) (`pacta.base.eth`) DeFi control-plane commitments and Base Mainnet EAS attestations, with live gateway tools (pre-flight check, control-plane / timelock / proposal scans) when `PACTA_X402_URL` is configured. The gateway is **free during the launch**: $0, no API key, no wallet, 60 requests / minute per caller. The x402 v1 + v2 Base USDC prices below apply only if metering is switched on.
 
 It exposes **10 read-only inspection tools + 1 opt-in request tool** (`pacta_submit_request`); the hosted remote MCP exposes 6 read-only inspection tools + the same request tool. Every inspection tool is annotated `readOnlyHint: true`, `destructiveHint: false`, `openWorldHint: false` and carries `_meta` (`resultType`, `ttlMs`, `cacheScope`) in `tools/list`.
 

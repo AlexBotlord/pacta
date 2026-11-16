@@ -4,7 +4,7 @@
 import "./no-network.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { SERVER_INFO, TOOL_DEFINITIONS } from "../src/server.mjs";
@@ -191,5 +191,45 @@ test("server.json advertises the live remote MCP endpoint; server.remote.json is
   subset(REMOTE, SERVER_KEYS, "server.remote.json");
   assert.equal(REMOTE.packages, undefined);
   assert.deepEqual(REMOTE.remotes, SERVER.remotes);
-  for (const k of ["$schema", "name", "title", "description", "repository", "version", "websiteUrl"]) assert.deepEqual(REMOTE[k], SERVER[k], k);
+  for (const k of ["$schema", "name", "title", "description", "repository", "version", "websiteUrl", "icons"]) assert.deepEqual(REMOTE[k], SERVER[k], k);
+});
+
+// definitions.Icon of the 2025-10-17 server.schema.json (src: https URI, maxLength 255, required; mimeType / sizes / theme optional).
+const ICON_KEYS = ["src", "mimeType", "sizes", "theme"];
+const ICON_MIME = ["image/png", "image/jpeg", "image/jpg", "image/svg+xml", "image/webp"];
+const ICON_SIZE = /^(\d+x\d+|any)$/;
+test("0.1.5 icons: server.json and server.remote.json carry the same schema-valid https://pacta.wtf/ icons (PNG 32x32 + SVG any)", () => {
+  const REMOTE = JSON.parse(read("server.remote.json"));
+  assert.deepEqual(REMOTE.icons, SERVER.icons);
+  assert.deepEqual(SERVER.icons, [
+    { src: "https://pacta.wtf/favicon.png", mimeType: "image/png", sizes: ["32x32"] },
+    { src: "https://pacta.wtf/favicon.svg", mimeType: "image/svg+xml", sizes: ["any"] },
+  ]);
+  for (const doc of [SERVER, REMOTE]) {
+    assert.ok(Array.isArray(doc.icons) && doc.icons.length > 0);
+    for (const icon of doc.icons) {
+      subset(icon, ICON_KEYS, "icon");
+      assert.equal(typeof icon.src, "string");
+      assert.ok(icon.src.length <= 255 && icon.src.startsWith("https://pacta.wtf/"), icon.src);
+      assert.equal(new URL(icon.src).protocol, "https:");
+      assert.ok(ICON_MIME.includes(icon.mimeType), icon.mimeType);
+      assert.ok(Array.isArray(icon.sizes) && icon.sizes.length > 0 && icon.sizes.every((z) => typeof z === "string" && ICON_SIZE.test(z)), String(icon.sizes));
+      if ("theme" in icon) assert.ok(["light", "dark"].includes(icon.theme));
+    }
+    // ServerDetail: required name / description / version, description <= 100, a pinned (not ranged) version
+    for (const k of ["name", "description", "version"]) assert.equal(typeof doc[k], "string", k);
+    assert.ok(doc.description.length <= 100);
+    assert.doesNotMatch(doc.version, VERSION_RANGE);
+  }
+  assert.equal(SERVER.version, "0.1.5");
+  assert.equal(REMOTE.version, "0.1.5");
+  assert.equal(SERVER.packages[0].version, "0.1.5");
+  // pacta-github-repo: the icon files are the site's own (32x32 PNG, SVG); skipped where the site docs are absent
+  const DOCS = join(ROOT, "..", "..", "docs");
+  if (existsSync(join(DOCS, "favicon.png"))) {
+    const png = readFileSync(join(DOCS, "favicon.png"));
+    assert.equal(png.subarray(0, 8).toString("hex"), "89504e470d0a1a0a");
+    assert.deepEqual([png.readUInt32BE(16), png.readUInt32BE(20)], [32, 32]);
+    assert.match(readFileSync(join(DOCS, "favicon.svg"), "utf8"), /^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg"/);
+  }
 });

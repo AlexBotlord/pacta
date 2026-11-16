@@ -163,6 +163,72 @@ function lookupRank(e, q) {
   return terms.length && terms.every((t) => e.hay.includes(t)) ? 3 : 0;
 }
 const LOOKUP_MATCH = ["listing", "exact", "prefix", "substring"];
+// ---- citation + clearance footer: a deterministic 2-line text per protocol record. Line 1 cites the record page and names a Base
+// Mainnet EAS UID ONLY for an EAS-attested record (an rpc_observed record says not_attested); line 2 is the issuer clearance /
+// monitoring intake (/request/ pre-fills the protocol from ?protocol=<slug>).
+export const CITATION_BASE_URL = "https://pacta.wtf/protocols/";
+export const CLEARANCE_LINE = "Institutional 24h Clearance ($5,000 USDC) & Continuous Monitoring ($1,500/mo): https://pacta.wtf/request/?protocol=";
+const CITATION_SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const CITATION_UID_RE = /^0x[0-9a-fA-F]{64}$/;
+/** The 2-line footer for a protocol item; null for anything else (a brief, a malformed slug or UID: never a fabricated citation). */
+export function protocolCitationFooter(item) {
+  if (!item || item.kind !== "protocol" || typeof item.slug !== "string" || item.slug.length > 80 || !CITATION_SLUG_RE.test(item.slug)) return null;
+  const uids = Array.isArray(item.baseEasUids) ? item.baseEasUids : [];
+  if (uids.length && !CITATION_UID_RE.test(uids[0])) return null;
+  const line1 = uids.length
+    ? `Citation: ${CITATION_BASE_URL}${item.slug}/ (Base Mainnet EAS: ${uids[0]})`
+    : `Citation: ${CITATION_BASE_URL}${item.slug}/ (RPC-observed baseline; Base Mainnet EAS: not_attested)`;
+  return `${line1}\n${CLEARANCE_LINE}${item.slug}`;
+}
+/** A copy of v with every "citationFooter" key removed from every plain object at any depth (arrays and objects are walked
+ * iteratively: no recursion limit, no stack overflow on deep JSON, a repeated reference becomes null). Keys are defined, never
+ * assigned, so a "__proto__" key stays an ordinary property. Primitives are returned as they are. */
+export function stripCitationFootersDeep(v) {
+  if (!v || typeof v !== "object") return v;
+  const put = (o, k, x) => Object.defineProperty(o, k, { value: x, enumerable: true, writable: true, configurable: true });
+  const root = Array.isArray(v) ? [] : {};
+  const seen = new WeakSet([v]);
+  const stack = [[v, root]];
+  while (stack.length) {
+    const [src, dst] = stack.pop();
+    const arr = Array.isArray(src);
+    for (const k of Object.keys(src)) {
+      if (!arr && k === "citationFooter") continue;
+      const x = src[k];
+      if (x && typeof x === "object") {
+        if (seen.has(x)) { put(dst, k, null); continue; }
+        seen.add(x);
+        const c = Array.isArray(x) ? [] : {};
+        put(dst, k, c);
+        stack.push([x, c]);
+      } else put(dst, k, x);
+    }
+  }
+  return root;
+}
+/** count, when present, must be a safe integer equal to results.length. */
+const lookupCountConsistent = (o) => o.count === undefined || (Number.isSafeInteger(o.count) && o.count === o.results.length);
+/** Lookup result -> a deep copy with every incoming citationFooter removed (at any depth), then, only for a successful answer whose
+ * results are a non-empty array consistent with count, citationFooter recomputed on protocol entries and the first protocol entry's
+ * on the result. Never echoes a footer it did not compute. */
+export function withCitationFooters(r) {
+  if (!r || typeof r !== "object" || Array.isArray(r)) return r;
+  const base = stripCitationFootersDeep(r);
+  if (base.ok === false || !Array.isArray(base.results) || base.results.length === 0 || !lookupCountConsistent(base)) return base;
+  const results = base.results.map((x) => {
+    if (!x || typeof x !== "object" || Array.isArray(x) || x.kind !== "protocol") return x;
+    const f = protocolCitationFooter(x);
+    return f ? { ...x, citationFooter: f } : x;
+  });
+  const top = results.find((x) => x && x.kind === "protocol" && typeof x.citationFooter === "string");
+  return top ? { ...base, results, citationFooter: top.citationFooter } : { ...base, results };
+}
+/** True when an MCP lookup answer should carry its footer as a second text block: a successful answer with non-empty results
+ * consistent with count and a non-empty footer. */
+export function lookupFooterBlock(r) {
+  return !!r && typeof r === "object" && !Array.isArray(r) && r.ok !== false && Array.isArray(r.results) && r.results.length > 0
+    && lookupCountConsistent(r) && typeof r.citationFooter === "string" && r.citationFooter.length > 0;
+}
 
 /** Search the catalog. -> the pacta.protocol_lookup.v1 result, or {ok: false, error, detail} for invalid input. */
 export function lookupProtocols(raw = {}) {
@@ -183,7 +249,7 @@ export function lookupProtocols(raw = {}) {
   if (!results.length) {
     out.hint = "No match. Call again with an empty query to list what Pacta tracks, or pass a known 0x contract address straight to pacta_check_preflight.";
   }
-  return out;
+  return withCitationFooters(out);
 }
 // ---- control-plane status badges (GET /v1/badges/<slug>.svg on the worker, docs/badges/<slug>.svg on the site).
 // Three truthful tiers per protocol page: "aligned" (every record an EAS-attested aligned_baseline), "parameter_delta"

@@ -8,8 +8,20 @@
     "source": "github",
     "subfolder": "packages/mcp-server"
   },
-  "version": "0.1.4",
+  "version": "0.1.5",
   "websiteUrl": "https://pacta.wtf/",
+  "icons": [
+    {
+      "src": "https://pacta.wtf/favicon.png",
+      "mimeType": "image/png",
+      "sizes": ["32x32"]
+    },
+    {
+      "src": "https://pacta.wtf/favicon.svg",
+      "mimeType": "image/svg+xml",
+      "sizes": ["any"]
+    }
+  ],
   "remotes": [
     {
       "type": "streamable-http",

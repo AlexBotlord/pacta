@@ -117,7 +117,7 @@ TREASURY_USE = ("Pacta treasury (direct settlement EOA): Option B direct on-chai
                 "(Option A is a formal commercial invoice). An externally owned account, not a smart-contract wallet; not the x402 payTo.")
 MCP_NAME = "io.github.Fractal-Neurons/pacta"
 MCP_PACKAGE = "@pacta/mcp-server"
-MCP_VERSION = "0.1.4"
+MCP_VERSION = "0.1.5"
 CALLER_FIELDS_DOC = 'Free MCP tier: every tools/call takes three required, non-personal fields: caller_agent (a lowercase slug naming the calling agent, IDE or framework, e.g. claude-code, cursor, coinbase-agentkit; never a name, e-mail, IP, URL, address or secret), requester_role (autonomous_agent | defi_developer | risk_curator_analyst | security_researcher | protocol_team | institutional_allocator | individual_user) and caller_purpose (pre_trade_safety | collateral_due_diligence | yield_allocation | security_audit | governance_monitoring | integration_testing | general_research). Missing or invalid values get JSON-RPC -32602 listing what is allowed. Over REST they are optional query parameters. Location is never asked: only the Cloudflare edge country is counted; no IP is stored.'                                            # @pacta/mcp-server package.json version (SKILL.md is shipped in it)
 MCP_ENV = [("PACTA_INDEX_PATH", "Local snapshot of /api/v1/index.json (offline use)"),
            ("PACTA_PROPOSALS_PATH", "Local snapshot of /api/v1/proposals.json"),

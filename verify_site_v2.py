@@ -1320,11 +1320,11 @@ def main(argv=None):
         "defined in llms.txt + llms-full.txt": all("rpc_observed (on-chain control plane pinned at an archive block height" in read(f) or
                                                    "Classification rpc_observed: on-chain control plane pinned at an archive block height" in read(f)
                                                    for f in ("docs/llms.txt", "docs/llms-full.txt")),
-        "mcp.json packageVersion 0.1.4": json.loads(read("docs/.well-known/mcp.json")).get("packageVersion") == "0.1.4"
+        "mcp.json packageVersion 0.1.5": json.loads(read("docs/.well-known/mcp.json")).get("packageVersion") == "0.1.5"
                                          == json.loads(read("packages/mcp-server/package.json"))["version"],
-        "llms-full names v0.1.4": "@pacta/mcp-server v0.1.4" in read("docs/llms-full.txt"),
+        "llms-full names v0.1.5": "@pacta/mcp-server v0.1.5" in read("docs/llms-full.txt"),
     }
-    check(f"Codex F1: all {X['rpc_protocols']} RPC-pinned records are classification rpc_observed with documentation linked but not compared (no 'publishes' claim, no documented delays); their pages and /protocols/ rows show only the neutral 'RPC-observed baseline' badge; rpc_observed defined in llms.txt + llms-full.txt; mcp.json packageVersion 0.1.4; llms-full names v0.1.4",
+    check(f"Codex F1: all {X['rpc_protocols']} RPC-pinned records are classification rpc_observed with documentation linked but not compared (no 'publishes' claim, no documented delays); their pages and /protocols/ rows show only the neutral 'RPC-observed baseline' badge; rpc_observed defined in llms.txt + llms-full.txt; mcp.json packageVersion 0.1.5; llms-full names v0.1.5",
           all(f1_ok.values()), str([k for k, v in f1_ok.items() if not v]))
     # free-tier MCP caller attribution (task-06d4550a8b0f): documented on every agent surface; the browser checker names itself
     roles_ = ["autonomous_agent", "defi_developer", "risk_curator_analyst", "security_researcher", "protocol_team", "institutional_allocator", "individual_user"]
@@ -1467,14 +1467,14 @@ def main(argv=None):
                                                  for f in ("docs/SKILL.md", "docs/llms.txt", "docs/llms-full.txt"))
             and card_["endpoints"].get("lookup") == API_ + "/v1/protocols/lookup" and man_.get("lookup", {}).get("tool") == "pacta_lookup_protocol"
             and "pacta_lookup_protocol" in read("docs/llms/index.html") and f"{BS.BASE_URL}/api/v1/lookup.json" in read("docs/sitemap.xml"),
-        "@pacta/mcp-server 0.1.4 everywhere": {json.loads(read("packages/mcp-server/package.json"))["version"], json.loads(read("packages/mcp-server/server.json"))["version"],
+        "@pacta/mcp-server 0.1.5 everywhere": {json.loads(read("packages/mcp-server/package.json"))["version"], json.loads(read("packages/mcp-server/server.json"))["version"],
                                                json.loads(read("packages/mcp-server/server.json"))["packages"][0]["version"], json.loads(read("packages/mcp-server/server.remote.json"))["version"],
-                                               man_.get("packageVersion")} == {"0.1.4"}
-            and 'version: "0.1.4"' in read("docs/SKILL.md") and 'version: "0.1.4"' in read("packages/mcp-server/src/server.mjs"),
+                                               man_.get("packageVersion")} == {"0.1.5"}
+            and 'version: "0.1.5"' in read("docs/SKILL.md") and 'version: "0.1.5"' in read("packages/mcp-server/src/server.mjs"),
     }
     check(f"protocol / token lookup: docs/api/v1/lookup.json ({X['protocols']} protocols + {X['briefs']} briefs; {X['eas_protocols']} EAS-attested, {X['rpc_protocols']} rpc_observed / not_assessed) regenerates byte-identically, "
           "equals packages/mcp-server/src/lookup.mjs, matches index.json / rpc-pinned.json / onboarding.json / radar.json record by record; search probes "
-          "(ethena, usde, aave, moonwell, kusd, uniswap, listing, chain=base, overlong); documented on SKILL.md / llms / agent.json / mcp.json / sitemap; @pacta/mcp-server 0.1.4",
+          "(ethena, usde, aave, moonwell, kusd, uniswap, listing, chain=base, overlong); documented on SKILL.md / llms / agent.json / mcp.json / sitemap; @pacta/mcp-server 0.1.5",
           all(lk_ok.values()), str([k for k, v in lk_ok.items() if not v]))
 
     # ---- Phase C: first-party beacon, 404, governance forum digest, MCP Registry workflow, root Dockerfile ----

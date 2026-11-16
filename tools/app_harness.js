@@ -598,36 +598,116 @@ async function liveTimelockScenario() {
   x = await runWith(input.request, "/request/", { status: 200, body: { operations: [] } });
   res.live_no_fetch_elsewhere = x.calls.length === 0;
 }
-// /protocols/ (Batch D3): text search + status / chain pills only toggle the hidden attribute and the count text
+// /protocols/ (visitor review P1): Status x Chain x search combine (intersection); "Clear all" resets all three; 0 matches renders a
+// one-click recovery prompt (textContent + data-precover buttons, no inline handlers); rows only toggle the hidden attribute.
 function protocolFilterScenario() {
   if (!input.protocolsIndex) return;
   const x = run(input.protocolsIndex, input.app, { path: "/protocols/" }), d = x.document;
   const rows = d.querySelectorAll("#proto-table tbody tr"), shown = () => rows.filter((r) => !r.hidden);
   const count = () => d.getElementById("proto-count").textContent, q = d.getElementById("proto-q");
-  const pill = (k) => d.querySelectorAll("[data-pfilter]").find((b) => b.getAttribute("data-pfilter") === k);
-  const click = (k) => { const ev = new Event_("click"); ev.target = pill(k); pill(k).dispatchEvent(ev); };
+  const btn = (kind, k) => d.querySelectorAll(`[data-pfilter-${kind}]`).find((b) => b.getAttribute(`data-pfilter-${kind}`) === k);
+  const press = (b) => { const ev = new Event_("click"); ev.target = b; b.dispatchEvent(ev); };
+  const click = (kind, k) => press(btn(kind, k));
   const type = (v) => { q.value = v; const ev = new Event_("input"); ev.target = q; q.dispatchEvent(ev); };
-  const n = rows.length, want = (pred) => rows.filter(pred).length;
-  res.pfilter_initial_all = n === input.expectProtocols && shown().length === n && count() === n + " of " + n + " protocols shown";
+  const pressed = (kind) => d.querySelectorAll(`[data-pfilter-${kind}][aria-pressed="true"]`).map((b) => b.getAttribute(`data-pfilter-${kind}`));
+  const tierIs = (t) => (r) => r.getAttribute("data-ptier") === t, chainHas = (c) => (r) => r.getAttribute("data-pchains").split(" ").includes(c);
+  const n = rows.length, want = (pred) => rows.filter(pred).length, empty = d.getElementById("proto-empty"), clear = d.getElementById("proto-clear");
+  res.pfilter_initial_all = n === input.expectProtocols && shown().length === n && count() === n + " of " + n + " protocols shown" && empty.hidden && clear.hidden;
   let ok = true;
-  for (const [k, pred] of [["aligned", (r) => r.getAttribute("data-ptier") === "aligned"], ["parameter_delta", (r) => r.getAttribute("data-ptier") === "parameter_delta"],
-    ["rpc_observed", (r) => r.getAttribute("data-ptier") === "rpc_observed"], ["ethereum", (r) => r.getAttribute("data-pchains").split(" ").includes("ethereum")],
-    ["base", (r) => r.getAttribute("data-pchains").split(" ").includes("base")]]) {
-    click(k);
-    const label = (pill(k).querySelector(".num") || { textContent: "" }).textContent;
-    ok = ok && shown().length === want(pred) && shown().every(pred) && String(want(pred)) === label && pill(k).getAttribute("aria-pressed") === "true"
-      && d.querySelectorAll('[data-pfilter][aria-pressed="true"]').length === 1 && count() === want(pred) + " of " + n + " protocols shown";
+  for (const [kind, k, pred] of [["status", "aligned", tierIs("aligned")], ["status", "parameter_delta", tierIs("parameter_delta")], ["status", "rpc_observed", tierIs("rpc_observed")],
+    ["chain", "ethereum", chainHas("ethereum")], ["chain", "base", chainHas("base")]]) {
+    click("status", "all"); click("chain", "all"); click(kind, k);
+    const label = (btn(kind, k).querySelector(".num") || { textContent: "" }).textContent;
+    ok = ok && shown().length === want(pred) && shown().every(pred) && String(want(pred)) === label && pressed(kind).join() === k
+      && count() === want(pred) + " of " + n + " protocols shown";
   }
   res.pfilter_pills_exact = ok;
-  click("all"); type("ethena");
-  res.pfilter_text_search = shown().length >= 1 && shown().every((r) => r.textContent.toLowerCase().includes("ethena") || (r.getAttribute("data-psearch") || "").includes("ethena"))
-    && shown().length < n;
-  click("base"); type("ethena");
-  res.pfilter_combined = shown().length === 0 && count() === "0 of " + n + " protocols shown";
+  // independent groups intersect: Status Parameter Delta x Chain Base = rows that are both
+  click("status", "parameter_delta"); click("chain", "base");
+  const both = (r) => tierIs("parameter_delta")(r) && chainHas("base")(r);
+  res.pfilter_status_x_chain = pressed("status").join() === "parameter_delta" && pressed("chain").join() === "base" && shown().length === want(both)
+    && shown().every(both) && want(both) < want(tierIs("parameter_delta"))
+    && d.getElementById("proto-active").textContent.includes("Status: Parameter Delta") && d.getElementById("proto-active").textContent.includes("Chain: Base") && !clear.hidden;
+  click("status", "all"); click("chain", "all"); type("ethena");
+  res.pfilter_text_search = shown().length >= 1 && shown().every((r) => (r.getAttribute("data-psearch") || "").includes("ethena")) && shown().length < n;
+  // 0 matches: recovery prompt names the active filters and offers one-click fixes
+  click("chain", "base"); type("stader");
+  const recover = (k) => empty.querySelectorAll("[data-precover]").find((b) => b.getAttribute("data-precover") === k);
+  res.pfilter_empty_prompt = shown().length === 0 && !empty.hidden && empty.textContent.includes("No Base protocols match “stader”")
+    && !!recover("chain") && !!recover("search") && !recover("status") && count() === "0 of " + n + " protocols shown";
+  press(recover("chain"));
+  res.pfilter_recover_chain = shown().length >= 1 && shown().every((r) => (r.getAttribute("data-psearch") || "").includes("stader")) && pressed("chain").join() === "all"
+    && empty.hidden && q.value === "stader";
   type("<img src=x onerror=alert(1)>");
-  res.pfilter_inert = shown().length === 0 && d.querySelectorAll("img").every((i) => i.getAttribute("onerror") === null) && count() === "0 of " + n + " protocols shown";
-  click("all"); type("");
+  res.pfilter_inert = shown().length === 0 && d.querySelectorAll("img").every((i) => i.getAttribute("onerror") === null) && !empty.hidden
+    && empty.querySelectorAll("img").length === 0;
+  click("status", "aligned"); click("chain", "ethereum"); type("aave");
+  press(clear);
+  res.pfilter_clear_all = shown().length === n && q.value === "" && pressed("status").join() === "all" && pressed("chain").join() === "all" && clear.hidden
+    && d.getElementById("proto-active").textContent === "";
   res.pfilter_reset = shown().length === n;
+}
+
+// Visitor review P1 / P2 (homepage): live check first (hero button -> one preflight call), confidence framing + catalogMatch next to the
+// score, the pinned-catalog fallback, pinned-snapshot ages, and the inspector "What differs" (JS) == tools/control_diff.py for every
+// flagged record. Everything is rendered with textContent; a catalogMatch URL that is not a pacta.wtf record page is never linked.
+async function visitorScenario() {
+  const calls = [];
+  let reply = { status: 200, body: PF_EXAMPLE };
+  const fetchMock = (url) => {
+    const u = String(url);
+    if (/api\/v1\/index\.json/.test(u) && input.indexJson) return Promise.resolve({ status: 200, json: () => Promise.resolve(input.indexJson) });
+    if (!/\/v1\/check\/preflight/.test(u)) return Promise.reject(new Error("not needed"));
+    calls.push(u); const r = reply; return Promise.resolve({ status: r.status, json: () => Promise.resolve(r.body) });
+  };
+  const p = run(input.index, input.app, { path: "/", fetch: fetchMock });
+  const d = p.document, out = d.getElementById("pf-out");
+  await flush(); await flush(); await flush();
+  const hero = d.querySelector(".hero-try"), go = hero && hero.querySelector("[data-pf-scroll]");
+  res.v_hero_try = !!hero && /1 · See a live check first/.test(hero.textContent) && /What this tells you:/.test(hero.textContent)
+    && !!go && go.getAttribute("data-pf-address") === "0xA35b1B31Ce002FBF2058D22F30f95D405200A15b";
+  const conn = d.getElementById("connect");
+  res.v_connect_after = !!conn && /2 · Connect your agent \(MCP \/ REST\)/.test(conn.textContent) && conn.textContent.includes('curl -s -A "my-agent/1.0"');
+  reply = { status: 200, body: { ...PF_EXAMPLE, verdict: "UNCLASSIFIED_CONTRACT_CONTROLLER", riskScore: 60, source: "live_rpc",
+    assessment: { coverage: "indexed_verified", confidence: "medium", method: "Live bytecode + storage heuristic", limits: ["riskScore is a heuristic."] },
+    catalogMatch: { slug: "stader-labs-ethx", name: "Stader Labs (ETHx)", url: "https://pacta.wtf/protocols/stader-labs-ethx/", classification: "parameter_delta",
+      pinnedBlock: 26403676, whatDiffers: { changed: [{ parameter: "Safe threshold", observed: "3-of-6", documented: "3-of-5" }],
+        matched: [{ parameter: "Timelock delay", value: "7 d" }] } } } };
+  go.dispatchEvent(new Event_("click"));
+  await flush(); await flush(); await flush();
+  const t = out.textContent, link = out.querySelectorAll("a").find((a) => a.textContent === "Full record →");
+  res.v_hero_click_fetches = calls.length === 1 && calls[0].includes("address=0xA35b1B31Ce002FBF2058D22F30f95D405200A15b");
+  res.v_assessment_next_to_score = t.includes("Risk 60/100") && t.includes("Confidence medium") && t.includes("Indexed & verified record")
+    && t.includes("Limits: riskScore is a heuristic.");
+  res.v_catalog_match = t.includes("Indexed by Pacta: Stader Labs (ETHx)") && t.includes("Changed: Safe threshold 3-of-6 observed vs 3-of-5 documented")
+    && t.includes("Matched: Timelock delay: 7 d") && !!link && link.getAttribute("href") === "https://pacta.wtf/protocols/stader-labs-ethx/";
+  reply = { status: 200, body: { ...reply.body, catalogMatch: { ...reply.body.catalogMatch, url: "javascript:alert(1)", name: "<img src=x onerror=alert(1)>" } } };
+  go.dispatchEvent(new Event_("click"));
+  await flush(); await flush(); await flush();
+  res.v_catalog_url_guard = !out.querySelectorAll("a").some((a) => /javascript:/i.test(a.getAttribute("href") || "")) && out.querySelectorAll("img").length === 0;
+  reply = { status: 200, body: { schema: "pacta.preflight_catalog_fallback.v1", source: "pinned_catalog_fallback", verdict: null, riskScore: null,
+    summary: "Live RPC unavailable; Stader Labs (ETHx) is indexed by Pacta.", assessment: { coverage: "indexed_verified", confidence: "medium", method: "No live read", limits: [] },
+    catalogMatch: { slug: "stader-labs-ethx", name: "Stader Labs (ETHx)", url: "https://pacta.wtf/protocols/stader-labs-ethx/", classification: "parameter_delta", pinnedBlock: 26403676 } } };
+  go.dispatchEvent(new Event_("click"));
+  await flush(); await flush(); await flush();
+  res.v_fallback_rendered = out.textContent.includes("PINNED CATALOG RECORD") && out.textContent.includes("Live RPC unavailable")
+    && out.textContent.includes("Indexed by Pacta: Stader Labs (ETHx)") && !/HTTP 200/.test(out.textContent);
+  const ages = d.querySelectorAll("[data-age]");
+  res.v_ages = ages.length >= 2 && ages.every((a) => / \(\d+d \d+h \d+m ago\)$| \(\d+h \d+m ago\)$/.test(a.textContent));
+  // inspector parity: every flagged record's What differs (app.js) equals the Python extractor's lines
+  let parity = true, n = 0;
+  const links = d.querySelectorAll("a[data-id]");
+  for (const [id, want] of Object.entries(input.whatDiffers || {})) {
+    const a = links.find((x) => x.getAttribute("data-id") === id); if (!a) { parity = false; continue; }
+    const ev = new Event_("click"); ev.target = a; d.getElementById("insp-list").dispatchEvent(ev);
+    const box = d.getElementById("insp-panel").querySelector("[data-what-differs]");
+    const got = box ? { changed: box.querySelectorAll("[data-wd-changed]").map((x) => x.textContent), matched: box.querySelectorAll("[data-wd-matched]").map((x) => x.textContent) } : null;
+    if (!got || JSON.stringify(got) !== JSON.stringify(want)) { parity = false; res.v_parity_first_diff = res.v_parity_first_diff || { id, got, want }; }
+    n++;
+  }
+  const aligned = links.find((x) => x.getAttribute("data-class") === "aligned_baseline");
+  if (aligned) { const ev = new Event_("click"); ev.target = aligned; d.getElementById("insp-list").dispatchEvent(ev); }
+  res.v_inspector_what_differs = parity && n >= 20 && !!aligned && !d.getElementById("insp-panel").querySelector("[data-what-differs]");
 }
 
 (async () => {
@@ -636,5 +716,6 @@ function protocolFilterScenario() {
   try { await staleResponseScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await beaconScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await liveTimelockScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
+  try { await visitorScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   process.stdout.write(JSON.stringify(res));
 })();

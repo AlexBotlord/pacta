@@ -24,9 +24,10 @@ const rec = (reply) => {
 const call = (srv, args, id = 1) => srv.handleMessage({ jsonrpc: "2.0", id, method: "tools/call", params: { name: "pacta_lookup_protocol", arguments: args } });
 const body = (r) => JSON.parse(r.result.content[0].text);
 
-test("pacta_lookup_protocol is listed first in both modes, query optional, caller fields required; initialize names it", async () => {
+test("pacta_lookup_protocol is listed first in both modes, query and caller fields optional; initialize names it", async () => {
   assert.equal(TOOL_DEFINITIONS[0], LOOKUP_TOOL);
-  assert.deepEqual(LOOKUP_TOOL.inputSchema.required, ["caller_agent", "requester_role", "caller_purpose"]);
+  assert.deepEqual(LOOKUP_TOOL.inputSchema.required, []);
+  assert.ok(["caller_agent", "requester_role", "caller_purpose"].every((f) => LOOKUP_TOOL.inputSchema.properties[f]), "caller fields stay documented (optional)");
   assert.deepEqual(LOOKUP_TOOL.annotations, { title: "Lookup Protocol or Token by Name", readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false });
   const local = new PactaMcpServer({ fetchImpl: rec(() => { throw new Error("no network"); }) });
   const gw = new PactaMcpServer({ x402Url: GW, fetchImpl: rec(() => { throw new Error("no network"); }) });
@@ -39,12 +40,12 @@ test("pacta_lookup_protocol is listed first in both modes, query optional, calle
   assert.match(MCP_INSTRUCTIONS, /call pacta_lookup_protocol first/);
 });
 
-test("pacta_lookup_protocol: -32602 without valid caller fields (JWT, e-mail); invalid input is a tool error; nothing is sent", async () => {
+test("pacta_lookup_protocol: omitted caller fields are fine; INVALID ones (JWT, e-mail) -> -32602; invalid input is a tool error; nothing is sent", async () => {
   const f = rec(() => { throw new Error("must not be called"); });
+  const local = new PactaMcpServer({ fetchImpl: f });
+  const none = await call(local, { query: "ethena" });
+  assert.deepEqual([none.error, none.result.isError], [undefined, false], "no first-call rejection without attribution");
   const srv = new PactaMcpServer({ x402Url: GW, fetchImpl: f });
-  const none = await call(srv, { query: "ethena" });
-  assert.equal(none.error.code, -32602);
-  assert.match(none.error.message, /caller_agent \(missing\)/);
   const jwt = "ey" + "JhbGciOiJIUzI1NiJ9.e30.sig";
   for (const a of [jwt, jwt.toLowerCase(), "alice@example.com"]) {
     const r = await call(srv, { ...CALLER, caller_agent: a, query: "ethena" });

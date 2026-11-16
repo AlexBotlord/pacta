@@ -61,6 +61,8 @@ WAVE2_DOC = (f"Bounties Wave 2: {_W2['program']}, in epochs (Epoch {_W2['current
              f"merge in weekly batches to the fixture's basePayoutAddress (not pre-escrowed): {BOUNTIES_URL}#wave-2")
 LEADERBOARD_DOC = ("Hunter leaderboard: verified catches, protocols covered, Base EAS attestations and settled Base USDC per hunter and agent "
                    "framework (settled only with a BaseScan payout tx), with README badges at /badges/hunters/<handle>.svg: " + LEADERBOARD_URL)
+UA_DOC = ('HTTP clients: send a User-Agent (curl -A "my-agent/1.0", or urllib.request.Request(url, headers={"User-Agent": "my-agent/1.0"}) '
+          'in Python): Cloudflare\'s edge refuses some default library agents with error 1010 before the API answers.')
 REQUEST_DOC = ("Opt-in demand intake: when a result carries coverage_gap_hint (lookup miss, unindexed or unclassified pre-flight target, unsupported chain), "
                "ask the user, then call pacta_submit_request (or POST " + REQUESTS_URL + ") with the three caller fields, request_type "
                "(missing_protocol | unsupported_chain | missing_check_surface | doc_or_data_discrepancy | mcp_or_api_feature), target_subject, "
@@ -131,7 +133,7 @@ TREASURY_USE = ("Pacta treasury (direct settlement EOA): Option B direct on-chai
 MCP_NAME = "io.github.Fractal-Neurons/pacta"
 MCP_PACKAGE = "@pacta/mcp-server"
 MCP_VERSION = "0.1.5"
-CALLER_FIELDS_DOC = 'Free MCP tier: every tools/call takes three required, non-personal fields: caller_agent (a lowercase slug naming the calling agent, IDE or framework, e.g. claude-code, cursor, coinbase-agentkit; never a name, e-mail, IP, URL, address or secret), requester_role (autonomous_agent | defi_developer | risk_curator_analyst | security_researcher | protocol_team | institutional_allocator | individual_user) and caller_purpose (pre_trade_safety | collateral_due_diligence | yield_allocation | security_audit | governance_monitoring | integration_testing | general_research). Missing or invalid values get JSON-RPC -32602 listing what is allowed. Over REST they are optional query parameters. Location is never asked: only the Cloudflare edge country is counted; no IP is stored.'                                            # @pacta/mcp-server package.json version (SKILL.md is shipped in it)
+CALLER_FIELDS_DOC = 'Free MCP tier: tools/call takes three OPTIONAL, non-personal attribution fields: caller_agent (a lowercase slug naming the calling agent, IDE or framework, e.g. claude-code, cursor, coinbase-agentkit; never a name, e-mail, IP, URL, address or secret), requester_role (autonomous_agent | defi_developer | risk_curator_analyst | security_researcher | protocol_team | institutional_allocator | individual_user) and caller_purpose (pre_trade_safety | collateral_due_diligence | yield_allocation | security_audit | governance_monitoring | integration_testing | general_research). Omitted or blank fields never block a call (they count as unspecified); a non-blank invalid value gets JSON-RPC -32602 listing what is allowed. Over REST they are optional query parameters. Location is never asked: only the Cloudflare edge country is counted; no IP is stored.'                                            # @pacta/mcp-server package.json version (SKILL.md is shipped in it)
 MCP_ENV = [("PACTA_INDEX_PATH", "Local snapshot of /api/v1/index.json (offline use)"),
            ("PACTA_PROPOSALS_PATH", "Local snapshot of /api/v1/proposals.json"),
            ("PACTA_SPEC_PATH", "Local spec JSON (anchoring overrides, local index fallback)"),
@@ -291,6 +293,14 @@ MCP_STATUS = (f"publication_pending: @pacta/mcp-server is not yet published to n
               f"(no install): {MCP_REMOTE_URL}. The stdio server runs from a clone of the repository: {STDIO_FROM_SOURCE}.")
 
 
+def protocols_line(idx, pinned):
+    """The single protocol count sentence (homepage ledger, llms.txt, llms-full.txt): EAS-attested + RPC-pinned = indexed."""
+    eas = len({e["protocol"] for e in idx["entries"]})
+    rpc = len({e["protocol"] for e in (pinned or {}).get("entries", [])})
+    return (f"{eas + rpc} indexed protocols: {eas} Base-EAS-attested protocols ({idx['summary_metrics']['records_indexed']} Sprint records across "
+            f"{idx['summary_metrics']['sprints_completed']} Sprints) + {rpc} RPC-pinned protocols (not EAS-attested).")
+
+
 def llms_full(idx, radar, prop, onb, pinned=None):
     a, m = idx["onchain_anchoring"], idx["summary_metrics"]
     L = ["# Pacta by Fractal Neurons — full agent reference (llms-full.txt)", "",
@@ -311,6 +321,12 @@ def llms_full(idx, radar, prop, onb, pinned=None):
          f"MCP client config: {{\"mcpServers\": {{\"pacta\": {{\"url\": \"{MCP_REMOTE_URL}\"}}}}}} · remote tools ({REMOTE_TOOLS_DOC}): {', '.join(REMOTE_TOOLS)}.",
          f"- Local stdio server (from a clone; npm publication pending): `{STDIO_FROM_SOURCE}`. OpenAPI 3.1: {OPENAPI_URL}.",
          f"- {CALLER_FIELDS_DOC}",
+         f"- One call: `curl -s -A \"my-agent/1.0\" \"{X402_URL}/v1/check/preflight?chain=ethereum&address=0x...\"`. {UA_DOC} Every response carries "
+         "`assessment` (coverage indexed_verified | unindexed_bytecode_heuristic, confidence high | medium | low, method, limits) next to the 0-100 "
+         "`riskScore`, plus `catalogMatch` (slug, classification, Base EAS UIDs, pinned block, whatDiffers) when the address is an indexed protocol "
+         "contract; if live RPC is unavailable for an indexed address, the answer is the pinned catalog record (`source: pinned_catalog_fallback`) "
+         "instead of a 502.",
+         f"- {protocols_line(idx, pinned)}",
          f"- {LOOKUP_DOC}",
          f"- {REQUEST_DOC}",
          f"- {BOUNTIES_DOC}",
@@ -490,7 +506,7 @@ or a live collateral onboarding proposal. Pacta publishes {m['records_indexed']}
 - {REQUEST_DOC}
 - {BOUNTIES_DOC}
 - {CALLER_FIELDS_DOC}
-- One call: `curl -s "{X402_URL}/v1/check/preflight?chain=ethereum&address=0x..."` returns `verdict`, `riskScore` (0-100), proxy /
+- One call: `curl -s -A "my-agent/1.0" "{X402_URL}/v1/check/preflight?chain=ethereum&address=0x..."` ({UA_DOC}) returns `verdict`, `riskScore` (0-100), proxy /
   implementation (EIP-1967, EIP-1822 or beacon), `controller` (eoa, multisig_safe, timelock, contract,
   access_control_enumerable, access_control or none), `canUpgradeZeroDelay`, `capabilities` (pause, blacklist, upgrade) and
   `pinnedBlock` + `pinnedBlockHash`. Verdicts: `IMMUTABLE_NO_ADMIN`, `TIMELOCK_PROTECTED`, `ZERO_DELAY_TIMELOCK_RISK` (0 s

@@ -190,7 +190,7 @@ export function normalizeCallerAgent(v) {
 /** {fields (valid, normalized), problems: [{field, reason: "missing" | "invalid"}]}. */
 export function callerContext(src) {
   const o = src && typeof src === "object" ? src : {}, fields = {}, problems = [];
-  const has = (k) => o[k] !== undefined && o[k] !== null && o[k] !== "";
+  const has = (k) => o[k] !== undefined && o[k] !== null && !(typeof o[k] === "string" && o[k].trim() === "");   // blank = omitted
   if (!has("caller_agent")) problems.push({ field: "caller_agent", reason: "missing" });
   else { const a = normalizeCallerAgent(o.caller_agent); if (a) fields.caller_agent = a; else problems.push({ field: "caller_agent", reason: "invalid" }); }
   for (const [k, set] of [["requester_role", REQUESTER_ROLES], ["caller_purpose", CALLER_PURPOSES]]) {
@@ -208,18 +208,20 @@ const CALLER_HINT = {
 const CALLER_PROPS = {
   caller_agent: {
     type: "string", pattern: CALLER_AGENT_RE.source, maxLength: 48,
-    description: "Identifier of the calling AI agent, IDE, or framework (e.g. 'claude-code', 'cursor', 'windsurf', 'coinbase-agentkit', 'elizaos', 'langchain', 'chatgpt', 'gemini', 'custom-agent'). Required on the free MCP tier. Lowercase slug only; never include personal names, emails, or secrets.",
+    description: "Identifier of the calling AI agent, IDE, or framework (e.g. 'claude-code', 'cursor', 'windsurf', 'coinbase-agentkit', 'elizaos', 'langchain', 'chatgpt', 'gemini', 'custom-agent'). Optional attribution (omitted = 'unspecified'). Lowercase slug only; never include personal names, emails, or secrets.",
   },
-  requester_role: { type: "string", enum: [...REQUESTER_ROLES], description: "High-level role category of the requester or system running this check (closed enum; no personal data)." },
-  caller_purpose: { type: "string", enum: [...CALLER_PURPOSES], description: "Operational workflow context for this pre-execution check (closed enum)." },
+  requester_role: { type: "string", enum: [...REQUESTER_ROLES], description: "Optional: high-level role category of the requester or system running this check (closed enum; no personal data)." },
+  caller_purpose: { type: "string", enum: [...CALLER_PURPOSES], description: "Optional: operational workflow context for this pre-execution check (closed enum)." },
 };
-/** -32602 naming each missing / invalid caller field with what is allowed, so an agent can fix the call and retry. */
+/** Only a non-blank INVALID caller field is an error; omitted / blank ones are fine (they default to "unspecified"). */
+const invalidCaller = (cc) => cc.problems.filter((p) => p.reason === "invalid");
+/** -32602 naming each invalid caller field with what is allowed, so an agent can fix the call and retry. */
 function callerError(problems) {
   const lines = problems.map((p) => `${p.field} (${p.reason}): ${CALLER_HINT[p.field]}`);
-  return Object.assign(new Error("The free Pacta tier needs three non-personal caller fields in the tool arguments. " + lines.join("; ")
+  return Object.assign(new Error("Invalid caller attribution field(s) in the tool arguments (they are optional: omit them or use an allowed value). " + lines.join("; ")
     + `. Retry with e.g. ${JSON.stringify(CALLER_EXAMPLE)} added to the arguments.`), { code: -32602 });
 }
-const gatewaySchema = (properties, required = []) => objSchema({ ...properties, ...CALLER_PROPS }, [...required, ...CALLER_FIELDS]);
+const gatewaySchema = (properties, required = []) => objSchema({ ...properties, ...CALLER_PROPS }, [...required]);   // caller fields: optional
 
 /** MCP tool annotations: every inspection tool is read-only, non-destructive and closed-world. */
 export const readOnlyAnnotations = (title) => Object.freeze({ title, readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false });
@@ -358,7 +360,7 @@ export const LOOKUP_TOOL = Object.freeze({
       limit: { type: "integer", minimum: 1, maximum: LOOKUP_LIMITS.maxLimit, description: "Default 10 (20 when listing)." },
       ...CALLER_PROPS,
     },
-    [...CALLER_FIELDS]
+    []
   ),
   annotations: readOnlyAnnotations("Lookup Protocol or Token by Name"),
   _meta: TOOL_META.pacta_lookup_protocol,
@@ -527,8 +529,9 @@ export class PactaMcpServer {
       const paying = Boolean(args.xPaymentHeader || args.paymentSignatureHeader);
       const cc = callerContext(args);
       if (!paying) {
-        if (cc.problems.length) throw callerError(cc.problems);
-        query = { ...query, ...cc.fields };                         // forwarded as optional REST query params
+        const bad = invalidCaller(cc);
+        if (bad.length) throw callerError(bad);
+        query = { ...query, ...cc.fields };                         // valid values forwarded as optional REST query params; omitted ones stay omitted
       }
     }
     return callX402Resource({
@@ -550,7 +553,8 @@ export class PactaMcpServer {
 
   async _lookup(args) {
     const cc = callerContext(args);
-    if (cc.problems.length) throw callerError(cc.problems);
+    const bad = invalidCaller(cc);
+    if (bad.length) throw callerError(bad);
     const unknown = Object.keys(args).filter((k) => !CALLER_FIELDS.includes(k) && !["query", "chain", "kind", "limit"].includes(k));
     if (unknown.length) throw new X402Error("invalid_input", `Unknown argument ${String(unknown[0]).slice(0, 40)}; allowed: query, chain, kind, limit.`);
     const input = { query: args.query, chain: args.chain, kind: args.kind, limit: args.limit };

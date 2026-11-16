@@ -208,6 +208,7 @@ def app_behaviour(appjs, request_html, index_html, row_id, beacon="", protocol_h
                           "brief": dom_tree(brief_html) if brief_html else None, "briefSlug": brief_slug, "prefillSlug": prefill_slug,
                           "timelockBrief": dom_tree(timelock_brief_html) if timelock_brief_html else None,
                           "protocolsIndex": dom_tree(protocols_index_html) if protocols_index_html else None,
+                          "indexJson": json.loads(read("docs/api/v1/index.json")), "whatDiffers": inspector_what_differs(),
                           # every published protocol slug (+ wave-2 shapes) must survive the beacon's client-side path redaction
                           "expectProtocols": X["protocols"],
                           "protocolSlugs": sorted(d for d in os.listdir(os.path.join(DOCS, "protocols")) if os.path.isdir(os.path.join(DOCS, "protocols", d)))})
@@ -216,6 +217,20 @@ def app_behaviour(appjs, request_html, index_html, row_id, beacon="", protocol_h
         return json.loads(out.stdout)
     except ValueError:
         return {"harness_error": (out.stderr or out.stdout)[-400:]}
+
+
+def inspector_what_differs():
+    """{record id: {"changed": [li text], "matched": [li text]}} for every flagged index.json record, from tools/control_diff.py: the
+    inspector's app.js port must render exactly these lines."""
+    sys.path.insert(0, os.path.join(ROOT, "tools"))
+    import control_diff as CDV
+    out = {}
+    for e in json.loads(read("docs/api/v1/index.json"))["entries"]:
+        wd = CDV.what_differs([e])
+        if wd:
+            out[e["id"]] = {"changed": [f'{c["parameter"]}: {c["observed"]} observed vs {c["documented"]} documented' for c in wd["changed"]],
+                            "matched": [f'{m["parameter"]}: {m["value"]}' for m in wd["matched"]]}
+    return out
 
 
 def urllib_host(u):
@@ -756,6 +771,22 @@ def bounty_gate_simulation():
     return res
 
 
+def ready_fixture_brief(idx):
+    """The Ethena timelock brief rendered from a copy of radar.json with both operations READY (delay elapsed, unexecuted), so
+    the live re-check behaviour (READY -> EXECUTED / MIXED / kept) is tested whatever the live chain state is today."""
+    rad = json.loads(read("docs/api/v1/radar.json"))
+    ts = rad["refreshed_at"]["block_timestamp"]
+    for it in rad["items"]:
+        if it["brief"].endswith("ethena-ops-0x0ca0-0x1fe5/"):
+            it["eta"] = ts - 3600
+            for o in it["operations"]:
+                o.update(pending=True, ready=True, done=False, eta=ts - 3600)
+    sys.path.insert(0, os.path.join(ROOT, "tools"))
+    import build_site as BSR
+    slug = "ethena-ops-0x0ca0-0x1fe5"
+    return BSR.brief_page(slug, BSR.BRIEFS[slug], idx, rad)
+
+
 def main(argv=None):
     cli = parse_args(argv)
     base = re.search(r'^BASE_URL = "([^"]+)"', read("tools/build_site.py"), re.M).group(1)
@@ -996,11 +1027,15 @@ def main(argv=None):
 
     # radar
     radar = json.loads(read("docs/api/v1/radar.json"))
-    etas = {str(i["eta"]) for i in radar["items"]}
+    etas = {str(i["eta"]) for i in radar["items"] if i.get("eta")}         # an executed item has no ETA (isOperationDone): shown as Executed
     shown = set(re.findall(r'data-eta="(\d+)"', page))
+    check("executed radar items (eta null) render 'Executed' with isOperationDone, never an ETA",
+          all(f'isOperationDone = true at block #{radar["refreshed_at"]["block_number"]:,}' in page for i in radar["items"] if not i.get("eta"))
+          and all(o.get("done") for i in radar["items"] if not i.get("eta") for o in i["operations"]))
     r = radar["refreshed_at"]
     check("radar ETAs on the page match radar.json", etas == shown, f"{sorted(etas)} vs {sorted(shown)}")
-    check("radar freshness badge states block and time", f"#{r['block_number']:,}" in page and r["block_time_utc"] in page and "Last refreshed" in page)
+    check("radar freshness badge states block and time (pinned snapshot, UTC observation + relative age slot)", f"#{r['block_number']:,}" in page and r["block_time_utc"] in page
+          and "Pinned snapshot · observed" in page and f'data-age="{r["block_timestamp"]}"' in page)
 
     # html structure
     for f in ["docs/index.html"] + [os.path.relpath(p, ROOT) for p in glob.glob(os.path.join(DOCS, "briefs", "*", "index.html"))]:
@@ -1079,7 +1114,7 @@ def main(argv=None):
                         clearance_html=pages.get(os.path.join("protocols", "across-protocol-hubpool", "index.html"), ""), clearance_slug="across-protocol-hubpool",
                         brief_html=pages.get(os.path.join("briefs", "kerne-kusd-base", "index.html"), ""), brief_slug="kerne-kusd-base",
                         prefill_slug="across-protocol-hubpool",
-                        timelock_brief_html=pages.get(os.path.join("briefs", "ethena-ops-0x0ca0-0x1fe5", "index.html"), ""),
+                        timelock_brief_html=ready_fixture_brief(json.loads(read("docs/api/v1/index.json"))),
                         protocols_index_html=pages.get(os.path.join("protocols", "index.html"), ""))
     expected = ["default_is_clearance", "default_settlement_is_invoice", "clearance_pay_panel_shown", "invoice_hides_tx_and_direct",
                 "clearance_github_href", "clearance_github_tier_exact", "clearance_brief_has_price_and_invoice", "pay_summary_tracks_tier",
@@ -1238,7 +1273,7 @@ def main(argv=None):
     hero_ok = (BS.H1.replace("&", "&amp;") in hero
                and f'<code class="mono">claude mcp add --transport http pacta {MCP_}</code>' in hero
                and "&quot;url&quot;: &quot;" + MCP_ + "&quot;" in hero
-               and re.search(r'<code class="mono">curl -s &quot;' + re.escape(API_) + r'/v1/check/preflight\?chain=', hero) is not None
+               and re.search(r'<code class="mono">curl -s -A &quot;my-agent/1\.0&quot; &quot;' + re.escape(API_) + r'/v1/check/preflight\?chain=', hero) is not None
                and all(f'href="{h}"' in hero for h in (API_ + "/openapi.json", "SKILL.md", "llms.txt", ".well-known/agent.json")))
     pf = re.search(r'<section class="sec" id="preflight">.*?</section>', home, re.S)
     pf_ok = bool(pf) and f'data-api="{API_}"' in pf.group(0) and 'id="pf-form"' in pf.group(0) and 'id="pf-out"' in pf.group(0) \
@@ -2015,12 +2050,16 @@ def main(argv=None):
         "MCP recipes (Claude Code / OpenAI Agents SDK / LangChain, <= 10 lines) in README + SKILL.md": all(code in read("README.md") and code in read("docs/SKILL.md")
                                                                                                          and len(code.splitlines()) <= 10 for _, _, code in B2AV.MCP_RECIPES)
             and [t for t, _, _ in B2AV.MCP_RECIPES] == ["Claude Code", "OpenAI Agents SDK (Python)", "LangChain (langchain-mcp-adapters)"],
-        "/protocols/ filter: input + 6 pills, data attrs on every protocol row": all(f'data-pfilter="{k}"' in hub_ for k in ("all", "aligned", "parameter_delta", "rpc_observed", "ethereum", "base"))
+        "/protocols/ filter: input + Status (4) and Chain (3) groups, Clear all, active state, empty-state slot, data attrs on every protocol row":
+            all(f'data-pfilter-status="{k}"' in hub_ for k in ("all", "aligned", "parameter_delta", "rpc_observed"))
+            and all(f'data-pfilter-chain="{k}"' in hub_ for k in ("all", "ethereum", "base"))
+            and all(x in hub_ for x in ('id="proto-clear"', 'id="proto-active"', 'id="proto-empty"', 'data-pgroup="status"', 'data-pgroup="chain"'))
             and 'id="proto-q"' in hub_ and len(re.findall(r'<tr data-ptier="(?:aligned|parameter_delta|rpc_observed)" data-pchains="[a-z ]+" data-psearch="[^"]*">', hub_)) == X["protocols"],
         "/protocols/ filter: textContent / hidden only": (lambda m: bool(m) and not re.search(r"innerHTML|outerHTML|insertAdjacentHTML|document\.write|fetch\(", m.group(0)))(
             re.search(r"function initProtocolFilter\(\) \{.*?\n  \}\n", appjs, re.S)),
-        "/protocols/ filter behaviour (harness)": all(res.get(k) is True for k in ("pfilter_initial_all", "pfilter_pills_exact", "pfilter_text_search",
-                                                                                   "pfilter_combined", "pfilter_inert", "pfilter_reset")),
+        "/protocols/ filter behaviour (harness): Status x Chain x search, Clear all, empty-state recovery": all(res.get(k) is True for k in (
+            "pfilter_initial_all", "pfilter_pills_exact", "pfilter_status_x_chain", "pfilter_text_search", "pfilter_empty_prompt", "pfilter_recover_chain",
+            "pfilter_inert", "pfilter_clear_all", "pfilter_reset")),
     }
     check("D3: v0.1.4 brand / RAG disambiguation (0 'Pacta Protocol', exact disambiguation line, Organization JSON-LD), data-derived coverage line, 6 + 1 / 10 + 1 tools, "
           "#radar live-mainnet note with Etherscan links, GitHub link in the header, MCP recipes, /protocols/ client-side filter (text only)",
@@ -2327,6 +2366,94 @@ def main(argv=None):
     }
     check("C1: GitHub Discussions community hub + Wave 2 master issue #41 linked from README, every footer, /bounties/, /leaderboard/, llms.txt, llms-full.txt, /llms/ and the master issue text",
           all(c1.values()), str([k for k, v in c1.items() if not v]))
+
+    # ================= Visitor review P1 + P2 (first success, understanding, discovery, narrow screens, provenance, editorial independence) =================
+    import control_diff as CDV1
+    import build_b2a_feeds as B2AV1
+    home_v = read("docs/index.html")
+    sp_v = BS.site_protocols(idx_)
+    v1 = {}
+    i_try, i_conn, i_pf = home_v.find('class="hero-try"'), home_v.find('id="connect"'), home_v.find('id="preflight"')
+    st_v = next(v for v in sp_v.values() if v["slug"] == "stader-labs-ethx")
+    st_wd = CDV1.what_differs(st_v["entries"])
+    v1["P1 first success: '1 · See a live check first' (real pinned finding + What this tells you + 1-click live check) precedes '2 · Connect your agent (MCP / REST)'"] = (
+        0 < i_try < i_conn < i_pf and "1 · See a live check first" in home_v and "2 · Connect your agent (MCP / REST)" in home_v
+        and "What this tells you:" in home_v and 'data-pf-address="0xA35b1B31Ce002FBF2058D22F30f95D405200A15b" data-pf-scroll' in home_v
+        and (st_wd["changed"][0]["observed"], st_wd["changed"][0]["documented"]) == ("3-of-6", "3-of-5")
+        and "the docs say 3-of-5, the chain says 3-of-6" in home_v)
+    ua_files = {f: read(f) for f in ("docs/index.html", "docs/mcp/index.html", "README.md", "docs/llms.txt", "docs/llms-full.txt", "docs/SKILL.md")}
+    bare_curl = [f for f, t in ua_files.items() if re.search(r"curl -s (?!-A )[\"'&]", t)]
+    bare_curl += [r for r, t in pages.items() if r.startswith("protocols" + os.sep) and re.search(r"curl -s (?!-A )&quot;", t)]
+    v1["P1 User-Agent in every HTTP quickstart (curl -A / urllib headers) on /, /mcp/, protocol pages, README, llms.txt, llms-full.txt, SKILL.md"] = (
+        not bare_curl and all('my-agent/1.0' in t for t in ua_files.values())
+        and all('&quot;User-Agent&quot;: &quot;my-agent/1.0&quot;' in read(f) for f in ("docs/index.html", "docs/mcp/index.html"))
+        and "error 1010" in read("docs/llms.txt") and "error 1010" in read("docs/llms-full.txt"))
+    v1["P1 attribution never blocks a first call: CALLER_FIELDS_DOC / SKILL.md / MCP README say optional (omitted = unspecified, invalid = -32602)"] = (
+        "OPTIONAL" in B2AV1.CALLER_FIELDS_DOC and "never block a call" in B2AV1.CALLER_FIELDS_DOC and B2AV1.CALLER_FIELDS_DOC in read("docs/SKILL.md")
+        and read("docs/SKILL.md") == read("packages/mcp-server/SKILL.md") and "Free-tier caller fields (optional attribution)" in read("packages/mcp-server/README.md")
+        and "required on every gateway tool" not in read("packages/mcp-server/README.md"))
+    wd_bad = []
+    for name_v, v in sp_v.items():
+        t = pages[os.path.join("protocols", v["slug"], "index.html")]
+        wd = CDV1.what_differs(v["entries"])
+        if not wd:
+            if "data-what-differs" in t:
+                wd_bad.append(v["slug"] + ": unexpected")
+            continue
+        want = [f'<li data-wd-changed><b>{html.escape(c["parameter"])}</b>: <span class="obs">{html.escape(c["observed"])}</span> observed vs '
+                f'<span class="doc">{html.escape(c["documented"])}</span> documented</li>' for c in wd["changed"]]
+        if not (all(w in t for w in want) and t.find("</header>") < t.find("data-what-differs") < t.find("Check it live (free)")):
+            wd_bad.append(v["slug"])
+    n_flagged = sum(1 for v in sp_v.values() if CDV1.what_differs(v["entries"]))
+    v1[f"P1 What differs: every flagged protocol page ({n_flagged}) leads with Changed / discrepant then Matched, right under the title; == tools/control_diff.py; inspector sheet + app.js port agree (harness)"] = (
+        not wd_bad and n_flagged >= 20
+        and all(("data-what-differs" in BS.sheet(e)) == bool(CDV1.what_differs([e])) for e in idx_["entries"])
+        and all(res.get(k) is True for k in ("v_inspector_what_differs",)))
+    v1["P1 discovery: Status x Chain x search filters, Clear all, empty-state recovery (harness)"] = all(res.get(k) is True for k in (
+        "pfilter_status_x_chain", "pfilter_empty_prompt", "pfilter_recover_chain", "pfilter_clear_all"))
+    css_v = read("docs/styles.css")
+    v1["P1 narrow screens (375 / 753 px): overflow-x clip safety net, wrapping header nav, Request coverage kept, wrapping filter groups, scrollable tables / pre"] = (
+        "html, body { overflow-x: clip; }" in css_v and "@media (max-width: 640px)" in css_v
+        and ".tools .btn, .tools .btn.sm { display: inline-flex;" in css_v and ".seg { display: flex; flex-wrap: wrap;" in css_v
+        and "table.ix, .memo table { display: block; max-width: 100%; overflow-x: auto;" in css_v
+        and ".nav { display: flex; order: 3; flex-basis: 100%;" in css_v and "pre { max-width: 100%; overflow-x: auto; }" in css_v)
+    pl = B2AV1.protocols_line(idx_, json.loads(read("docs/api/v1/rpc-pinned.json")))
+    v1["P2 template leak fixed + one protocol count everywhere (74 = 62 Base-EAS-attested / 98 Sprint records + 12 RPC-pinned)"] = (
+        not any("{counts(" in read(f) or "counts(idx)" in read(f) for f in ("docs/llms.txt", "docs/llms-full.txt", "docs/llms/index.html", "docs/index.html"))
+        and pl.startswith(f"{X['protocols']} indexed protocols: {X['eas_protocols']} Base-EAS-attested protocols ({X['records']} Sprint records")
+        and f"+ {X['rpc_protocols']} RPC-pinned protocols" in pl
+        and pl in read("docs/llms.txt") and pl in read("docs/llms-full.txt") and html.escape(pl, quote=False) in read("docs/llms/index.html")
+        and re.search(r'<div data-protocol-count><b>' + str(X["protocols"]) + r'</b><span>Indexed protocols</span>', home_v) is not None)
+    rad_v = json.loads(read("docs/api/v1/radar.json"))
+    v1["P2 provenance: radar refreshed from live RPC (finalized block, 2 RPCs), UTC observation + relative age, pinned snapshot label; executed only via isOperationDone"] = (
+        rad_v["refreshed_at"]["block_time_utc"].startswith("2026-11-16") and rad_v["refreshed_at"]["rpcs_cross_checked"] == 2
+        and home_v.count(f'data-age="{rad_v["refreshed_at"]["block_timestamp"]}"') >= 2 and "pinned snapshot: radar block" in home_v
+        and all(o["done"] for it in rad_v["items"] if not it.get("eta") for o in it["operations"]) and res.get("v_ages") is True)
+    ed_bad = []
+    for v in sp_v.values():
+        t = pages[os.path.join("protocols", v["slug"], "index.html")]
+        i_ed = t.find("data-editorial-independence")
+        i_paid = max(t.find("Request 24h Clearance"), t.find("callout"))
+        last_rec = max(t.rfind(f'id="{html.escape(e["id"])}"') for e in v["entries"])
+        if not (0 < last_rec < i_ed and html.escape(BS.EDITORIAL_INDEPENDENCE, quote=False) in t and t.find("cast ") < i_ed
+                and (t.find('class="callout') == -1 or i_ed < t.find('class="callout'))):
+            ed_bad.append(v["slug"])
+    pr_v = re.search(r'<section class="sec" id="pricing">.*?</section>', home_v, re.S)
+    v1["P2 editorial independence: the exact firewall sentence on every protocol page (after the free evidence + cast workflow, before any paid service) and on #pricing"] = (
+        not ed_bad and bool(pr_v) and html.escape(BS.EDITORIAL_INDEPENDENCE, quote=False) in pr_v.group(0)
+        and BS.EDITORIAL_INDEPENDENCE == "Payment never alters a Pacta classification. A badge changes strictly when on-chain contract state or public documentation aligns and is verified at a new finalized block.")
+    lk_v = json.loads(read("docs/api/v1/lookup.json"))
+    st_item = next(x for x in lk_v["items"] if x.get("slug") == "stader-labs-ethx")
+    v1["P1 catalog for the Worker / MCP: lookup items carry whatDiffers (== control_diff), pinnedBlock and relatedContracts (the ETHx token links Stader)"] = (
+        "0xA35b1B31Ce002FBF2058D22F30f95D405200A15b" in st_item["relatedContracts"] and st_item["pinnedBlock"] == 26403676
+        and st_item["whatDiffers"] == CDV1.what_differs(st_v["entries"])
+        and all(x.get("whatDiffers") == CDV1.what_differs(next(v for v in sp_v.values() if v["slug"] == x["slug"])["entries"])
+                for x in lk_v["items"] if x["kind"] == "protocol"))
+    v1["P1 live checker shows confidence + catalogMatch next to the score, guards catalog URLs, renders the pinned fallback (harness)"] = all(res.get(k) is True for k in (
+        "v_hero_try", "v_connect_after", "v_hero_click_fetches", "v_assessment_next_to_score", "v_catalog_match", "v_catalog_url_guard", "v_fallback_rendered"))
+    v1["0 Discord links anywhere on the site or in the README"] = not any(re.search(r"discord\.(gg|com)", t, re.I) for t in list(pages.values()) + [read("README.md")])
+    check("V1: visitor review P1 + P2 (live check first, User-Agent quickstarts, optional attribution, What differs, Status x Chain filters, 375 px layout, "
+          "template leak + counts, radar provenance, editorial independence, catalog cross-link)", all(v1.values()), str([k[:70] for k, v in v1.items() if not v]))
 
     scope = [p for p in glob.glob(os.path.join(ROOT, "docs", "**", "*"), recursive=True) + glob.glob(os.path.join(ROOT, "audits", "**", "*"), recursive=True)
              + glob.glob(os.path.join(ROOT, "tools", "**", "*"), recursive=True) + [os.path.join(ROOT, "README.md"), os.path.abspath(__file__)]

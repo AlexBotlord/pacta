@@ -215,7 +215,8 @@ test("callX402Resource v2: 402 -> PAYMENT-SIGNATURE template; paid call forwards
 test("pacta_scan_proposal_diff: listed with the Worker contract, GET /v1/scan/proposal-diff?forum=&topicId=, $0.15 challenge, v2 payment", async () => {
   const tool = PAID_TOOLS.find((t) => t.name === "pacta_scan_proposal_diff");
   assert.ok(tool && /\$0\.15/.test(tool.description));
-  assert.deepEqual(tool.inputSchema.required, ["forum", "topicId", ...CALLER_REQ]);
+  assert.deepEqual(tool.inputSchema.required, ["forum", "topicId"]);
+  assert.ok(CALLER_REQ.every((f) => tool.inputSchema.properties[f]), "caller fields documented as optional");
   assert.deepEqual(tool.inputSchema.properties.forum.enum, ["aave", "euler", "morpho", "sky"]);
   assert.ok(tool.inputSchema.properties.paymentSignatureHeader && tool.inputSchema.properties.xPaymentHeader);
   const R = PAID_ROUTES.scanProposalDiff, URL_ = `${BASE_URL}${R.path}`;
@@ -244,7 +245,8 @@ test("pacta_check_preflight: Worker contract GET /v1/check/preflight?chain=&addr
   const tool = PAID_TOOLS.find((t) => t.name === "pacta_check_preflight");
   assert.ok(tool && /\$0\.01/.test(tool.description) && /Free during the launch/.test(tool.description));
   assert.equal(PAID_TOOLS[0].name, "pacta_check_preflight");
-  assert.deepEqual(tool.inputSchema.required, ["chain", "address", ...CALLER_REQ]);
+  assert.deepEqual(tool.inputSchema.required, ["chain", "address"]);
+  assert.ok(CALLER_REQ.every((f) => tool.inputSchema.properties[f]), "caller fields documented as optional");
   assert.deepEqual(tool.inputSchema.properties.chain.enum, ["ethereum", "base"]);
   const R = PAID_ROUTES.checkPreflight, URL_ = `${BASE_URL}${R.path}`;
   assert.deepEqual([R.path, R.priceUsdc, R.maxAmountRequired], ["/v1/check/preflight", "0.01", "10000"]);
@@ -299,9 +301,9 @@ test("tool alias: pacta_get_live_timelocks (the remote MCP name) runs pacta_live
   assert.equal(bad.error.code, -32602);
 });
 
-test("free-tier caller attribution (stdio): gateway tools require caller_agent / requester_role / caller_purpose; unpaid calls without valid values get -32602 (nothing sent upstream); paid calls and local tools are unaffected", async () => {
+test("free-tier caller attribution (stdio): gateway tools document caller_agent / requester_role / caller_purpose as OPTIONAL; omitted fields are forwarded as nothing; INVALID values get -32602 (nothing sent upstream); paid calls and local tools are unaffected", async () => {
   for (const t of PAID_TOOLS) {
-    assert.deepEqual(t.inputSchema.required.slice(-3), ["caller_agent", "requester_role", "caller_purpose"], t.name);
+    assert.ok(["caller_agent", "requester_role", "caller_purpose"].every((f) => !t.inputSchema.required.includes(f) && t.inputSchema.properties[f]), t.name);
     assert.deepEqual([t.inputSchema.properties.requester_role.enum, t.inputSchema.properties.caller_purpose.enum], [[...REQUESTER_ROLES], [...CALLER_PURPOSES]]);
     assert.ok(!/\b(?:country|location|city|latitude|longitude|geo)\b/i.test(JSON.stringify(t.inputSchema.properties)), "never asks for location");
   }
@@ -309,9 +311,10 @@ test("free-tier caller attribution (stdio): gateway tools require caller_agent /
   const f = recordingFetch(() => mockRes(200, { ok: true }));
   const srv = new PactaMcpServer({ x402Url: BASE_URL, fetchImpl: f, nowSeconds: NOW });
   const call = (args, id = 1) => srv.handleMessage({ jsonrpc: "2.0", id, method: "tools/call", params: { name: "pacta_check_preflight", arguments: { chain: "base", address: FROM, ...args } } });
-  const none = await call({});
-  assert.equal(none.error.code, -32602);
-  for (const v of ["caller_agent (missing)", "requester_role (missing)", "caller_purpose (missing)", ...REQUESTER_ROLES, ...CALLER_PURPOSES, "claude-code"]) assert.ok(none.error.message.includes(v), v);
+  const badRole = await call({ requester_role: "ceo" });
+  assert.equal(badRole.error.code, -32602);
+  for (const v of ["requester_role (invalid)", ...REQUESTER_ROLES, "claude-code", "optional"]) assert.ok(badRole.error.message.includes(v), v);
+  assert.ok(!badRole.error.message.includes("(missing)"), "omitted fields are never named as problems");
   const tok = (p) => p + "abcdefghijklmnop0123456789";
   const jwt = "ey" + "JhbGciOiJIUzI1NiJ9.e30.sig";   // JWT: mixed case and already lowercased (Codex task-344fc12c4e24)
   for (const a of ["alice@example.com", "my agent", "0x" + "ab".repeat(20), "https://evil.example.com", "10.0.0.7", tok("sk" + "-"), tok("gh" + "p_"), "a", "x".repeat(49),
@@ -324,6 +327,8 @@ test("free-tier caller attribution (stdio): gateway tools require caller_agent /
   assert.equal(f.calls.length, 0, "a rejected call never reaches the gateway");
   assert.equal((await call({ ...CALLER, caller_agent: "Cursor" })).result.isError, false);
   assert.equal(f.calls[0].url, `${BASE_URL}/v1/check/preflight?chain=base&address=${FROM}&caller_agent=cursor&requester_role=defi_developer&caller_purpose=integration_testing`);
+  assert.equal((await call({ caller_agent: "  ", requester_role: "" })).result.isError, false, "omitted / blank attribution: dispatched");
+  assert.equal(f.calls[1].url, `${BASE_URL}/v1/check/preflight?chain=base&address=${FROM}`, "nothing is invented for omitted fields");
   assert.deepEqual([normalizeCallerAgent(" Claude-Code "), normalizeCallerAgent("user@example.com"), normalizeCallerAgent(jwt), normalizeCallerAgent("eyeglass-agent")],
     ["claude-code", null, null, "eyeglass-agent"]);
   // paying: never rejected for missing caller fields, and the request carries no attribution (x402 resource unchanged)

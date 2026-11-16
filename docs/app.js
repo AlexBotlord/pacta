@@ -240,6 +240,57 @@
     out.push(text.slice(last));
     return out;
   }
+  // "What differs" (mirrors tools/control_diff.py for one record): Safe thresholds paired by k (then n), timelock delays compared;
+  // a flagged record with no structured pair lists its surface with the first observed / documented sentence. Text only.
+  function thresholds(t) {
+    var out = [], re = /\b(\d{1,2})\s*-?\s*of\s*-?\s*(\d{1,2})\b/gi, m;
+    while ((m = re.exec(t || ""))) { var k = +m[1], n = +m[2], key = k + "-of-" + n; if (k <= n && out.indexOf(key) < 0) out.push(key); }
+    return out;
+  }
+  function fmtDelay(s) {
+    if (typeof s !== "number") return null;
+    if (s === 0) return "0 s (no delay)";
+    var u = [["d", 86400], ["h", 3600], ["min", 60]];
+    for (var i = 0; i < u.length; i++) if (s % u[i][1] === 0) return (s / u[i][1]) + " " + u[i][0];
+    return s + " s";
+  }
+  function firstSentence(t) {
+    t = String(t || "").replace(/\s+/g, " ").trim();
+    var m = t.match(/^(.+?[.;])(?:\s|$)/); t = m ? m[1] : t;
+    return t.length <= 220 ? t : t.slice(0, 219).replace(/\s+$/, "") + "…";
+  }
+  function whatDiffers(e) {
+    if (e.classification !== "parameter_delta" && e.classification !== "protective_delta") return null;
+    var changed = [], matched = [], paired = false, obs = thresholds(e.onchain_observed), doc = thresholds(e.documented_reference);
+    doc.forEach(function (d) {
+      if (obs.indexOf(d) >= 0) { matched.push(["Safe threshold", d]); return; }
+      var dk = d.split("-of-"), o = obs.filter(function (x) { return x.split("-of-")[0] === dk[0] && doc.indexOf(x) < 0; })[0]
+        || obs.filter(function (x) { return x.split("-of-")[1] === dk[1] && doc.indexOf(x) < 0; })[0];
+      if (o) { changed.push(["Safe threshold", o, d]); paired = true; }
+    });
+    var od = fmtDelay(e.observed_delay_seconds), dd = fmtDelay(e.documented_delay_seconds);
+    if (od && dd) { if (e.observed_delay_seconds === e.documented_delay_seconds) matched.push(["Timelock delay", od]); else { changed.push(["Timelock delay", od, dd]); paired = true; } }
+    if (!paired) changed.push([e.surface || e.id, firstSentence(e.onchain_observed), firstSentence(e.documented_reference)]);
+    return { changed: changed, matched: matched };
+  }
+  function whatDiffersBox(e) {
+    var wd = whatDiffers(e); if (!wd) return null;
+    var box = el("div", { "class": "whatdiffers", "data-what-differs": "" }, [el("h2", { "class": "wd-h", text: "What differs" }),
+      el("p", { "class": "wd-l", text: "Changed / discrepant" })]);
+    var ul = el("ul", { "class": "wd-changed" });
+    wd.changed.forEach(function (c) {
+      ul.appendChild(el("li", { "data-wd-changed": "" }, [el("b", { text: c[0] }), ": ", el("span", { "class": "obs", text: c[1] }), " observed vs ",
+        el("span", { "class": "doc", text: c[2] }), " documented"]));
+    });
+    box.appendChild(ul);
+    if (wd.matched.length) {
+      box.appendChild(el("p", { "class": "wd-l", text: "Matched" }));
+      var um = el("ul", { "class": "wd-matched" });
+      wd.matched.forEach(function (m) { um.appendChild(el("li", { "data-wd-matched": "", text: m[0] + ": " + m[1] })); });
+      box.appendChild(um);
+    }
+    return box;
+  }
   function renderSheet(e) {
     var panel = $("#insp-panel"); if (!panel || !e) return;
     var obs = e.onchain_observed || "", ms = multisig(obs), pa = proxyAdmin(obs);
@@ -260,6 +311,7 @@
     panel.textContent = "";
     panel.appendChild(el("div", { "class": "sheet-h" }, [el("h3", { text: e.protocol }), badge(e.classification)]));
     panel.appendChild(el("p", { "class": "sheet-sub", text: e.surface }));
+    var wdb = whatDiffersBox(e); if (wdb) panel.appendChild(wdb);
     panel.appendChild(dl);
     panel.appendChild(el("p", { "class": "obs-text" }, prose(obs)));
     panel.appendChild(term(castCmd(e)));
@@ -519,6 +571,34 @@
   }
   function pfRow(k, v) { return el("div", {}, [el("dt", { text: k }), el("dd", {}, [v])]); }
   function pfAddr(v) { return ADDR_RE.test(String(v || "")) ? el("span", {}, hexref(v, 8, 6)) : "none"; }
+  // confidence framing next to the score: coverage (indexed_verified / unindexed_bytecode_heuristic), confidence, method, limits
+  function pfAssess(out, r) {
+    var a = r && r.assessment; if (!a || typeof a !== "object") return;
+    var cov = a.coverage === "indexed_verified" ? "Indexed & verified record" : "Unindexed: bytecode heuristic only";
+    out.appendChild(el("p", { "class": "pf-assess", "data-pf-assess": "" }, [el("b", { text: "Confidence " + String(a.confidence || "n/a") }),
+      " · " + cov + (a.method ? " · " + String(a.method) : "")]));
+    if (Array.isArray(a.limits) && a.limits.length) out.appendChild(el("p", { "class": "pf-assess", text: "Limits: " + a.limits.map(String).join(" ") }));
+  }
+  function pfMatch(out, m) {
+    if (!m || typeof m !== "object" || !/^https:\/\/pacta\.wtf\/protocols\/[a-z0-9-]+\/$/.test(String(m.url || ""))) return;
+    var box = el("div", { "class": "pf-match", "data-pf-match": "" }, [el("p", {}, [el("b", { text: "Indexed by Pacta: " + String(m.name || m.slug) }),
+      " · " + String(m.classification || "") + (m.pinnedBlock ? " · pinned block " + num(m.pinnedBlock) : "") + " · ",
+      el("a", { href: String(m.url), text: "Full record →" })])]);
+    var wd = m.whatDiffers;
+    if (wd && Array.isArray(wd.changed)) {
+      wd.changed.forEach(function (c) { box.appendChild(el("p", { text: "Changed: " + String(c.parameter) + " " + String(c.observed) + " observed vs " + String(c.documented) + " documented" })); });
+      (wd.matched || []).forEach(function (c) { box.appendChild(el("p", { text: "Matched: " + String(c.parameter) + ": " + String(c.value) })); });
+    }
+    out.appendChild(box);
+  }
+  // live RPC unavailable for an indexed target: the Worker answers from the pinned catalog record (never a dead end)
+  function pfFallback(out, b) {
+    out.textContent = "";
+    out.appendChild(el("p", { "class": "pf-verdict" }, [badge(null, "PINNED CATALOG RECORD", "plain"), " Live RPC unavailable: showing the block-pinned record"]));
+    pfAssess(out, b);
+    out.appendChild(el("p", { text: String(b.summary || "") }));
+    pfMatch(out, b.catalogMatch);
+  }
   function pfRender(out, r) {
     out.textContent = "";
     var caps = r.capabilities || {}, k = r.controller || {};
@@ -529,7 +609,9 @@
     if (typeof k.timelockDelaySec === "number") ctl += " (" + secs(k.timelockDelaySec) + " delay)";
     if (typeof k.roleAdminCount === "number") ctl += " (" + k.roleAdminCount + " DEFAULT_ADMIN_ROLE members)";
     out.appendChild(el("p", { "class": "pf-verdict" }, [badge(null, String(r.verdict), VERDICT_CLASS[r.verdict] || "delta"), " Risk " + risk]));
+    pfAssess(out, r);
     out.appendChild(el("p", { text: String(r.summary || "") }));
+    pfMatch(out, r.catalogMatch);
     out.appendChild(el("dl", { "class": "pf-dl" }, [
       pfRow("Chain / block", String(r.chain) + " · block " + num(r.pinnedBlock)),
       pfRow("Contract", pfAddr(r.address)),
@@ -568,7 +650,8 @@
         .then(function (x) {
           if (my !== seq) return;
           var b = x.body || {}, r = b.verdict ? b : (b.result && b.result.verdict ? b.result : null);
-          if (x.status === 200 && r) pfRender(out, r);
+          if (x.status === 200 && b.source === "pinned_catalog_fallback") pfFallback(out, b);
+          else if (x.status === 200 && r) pfRender(out, r);
           else msg("The API answered HTTP " + x.status + (b.error ? " (" + String(b.error) + ")" : "") + (b.detail ? ": " + String(b.detail) : "."));
         })
         .catch(function () { if (my === seq) msg("Could not reach the API. Try again, or use the curl command above."); });
@@ -579,44 +662,83 @@
         chainSel.value = b.getAttribute("data-pf-chain") === "base" ? "base" : "ethereum";
         addr.value = b.getAttribute("data-pf-address") || "";
         run();
+        if (b.hasAttribute("data-pf-scroll")) { try { box.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) { /* old browsers */ } }
       });
     });
   }
 
-  // /protocols/: text search + one status / chain pill. Rows are only shown or hidden (hidden attribute); text via textContent.
+  // /protocols/: two independent, combinable filter groups (Status x Chain) intersected with the text search; "Clear all" resets
+  // the three; 0 matches renders a one-click recovery prompt. Rows are only shown / hidden; every label is textContent.
   function initProtocolFilter() {
     var root = $("[data-pfilter-root]"), q = $("#proto-q"), count = $("#proto-count");
     if (!root || !q) return;
-    var rows = $$("#proto-table tbody tr"), pills = $$("[data-pfilter]", root), active = "all";
-    function match(tr) {
-      var t = tr.getAttribute("data-ptier"), ch = (tr.getAttribute("data-pchains") || "").split(" ");
-      if (active === "ethereum" || active === "base") return ch.indexOf(active) >= 0;
-      return active === "all" || t === active;
+    var rows = $$("#proto-table tbody tr"), sBtns = $$("[data-pfilter-status]", root), cBtns = $$("[data-pfilter-chain]", root);
+    var clear = $("#proto-clear"), active = $("#proto-active"), empty = $("#proto-empty"), st = "all", chn = "all";
+    function label(btns, attr, v) {
+      var b = btns.filter(function (x) { return x.getAttribute(attr) === v; })[0];
+      var n = b && $(".num", b);
+      return b ? String(b.textContent).slice(0, b.textContent.length - (n ? n.textContent.length : 0)) : v;
     }
+    function words() { return q.value.toLowerCase().split(" ").filter(Boolean); }
     function apply() {
-      var words = q.value.toLowerCase().split(" ").filter(Boolean), shown = 0;
+      var w = words(), shown = 0;
       rows.forEach(function (tr) {
-        var hay = tr.getAttribute("data-psearch") || "";
-        var ok = match(tr) && words.every(function (w) { return hay.indexOf(w) >= 0; });
+        var hay = tr.getAttribute("data-psearch") || "", ch = (tr.getAttribute("data-pchains") || "").split(" ");
+        var ok = (st === "all" || tr.getAttribute("data-ptier") === st) && (chn === "all" || ch.indexOf(chn) >= 0)
+          && w.every(function (x) { return hay.indexOf(x) >= 0; });
         tr.hidden = !ok;
         if (ok) shown++;
       });
+      sBtns.forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-pfilter-status") === st)); });
+      cBtns.forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-pfilter-chain") === chn)); });
       if (count) count.textContent = shown + " of " + rows.length + " protocols shown";
+      var parts = [];
+      if (st !== "all") parts.push("Status: " + label(sBtns, "data-pfilter-status", st));
+      if (chn !== "all") parts.push("Chain: " + label(cBtns, "data-pfilter-chain", chn));
+      if (q.value.trim()) parts.push("Search: “" + q.value.trim() + "”");
+      if (active) active.textContent = parts.length ? "Active filters · " + parts.join(" · ") : "";
+      if (clear) clear.hidden = !parts.length;
+      if (empty) {
+        empty.textContent = "";
+        empty.hidden = shown !== 0;
+        if (!shown) {
+          var who = (chn !== "all" ? label(cBtns, "data-pfilter-chain", chn) + " " : "") + (st !== "all" ? label(sBtns, "data-pfilter-status", st) + " " : "") + "protocols";
+          empty.appendChild(el("span", { text: "No " + who + (q.value.trim() ? " match “" + q.value.trim() + "”" : " match these filters") + " —" }));
+          if (chn !== "all") empty.appendChild(el("button", { type: "button", "class": "linkish", "data-precover": "chain", text: "Switch to All chains" }));
+          if (st !== "all") empty.appendChild(el("button", { type: "button", "class": "linkish", "data-precover": "status", text: "All statuses" }));
+          if (q.value.trim()) empty.appendChild(el("button", { type: "button", "class": "linkish", "data-precover": "search", text: "Clear search" }));
+        }
+      }
     }
-    pills.forEach(function (b) {
-      b.addEventListener("click", function () {
-        active = b.getAttribute("data-pfilter") || "all";
-        pills.forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
-        apply();
-      });
+    function reset(what) {
+      if (what === "chain" || what === "all") chn = "all";
+      if (what === "status" || what === "all") st = "all";
+      if (what === "search" || what === "all") q.value = "";
+      apply();
+    }
+    sBtns.forEach(function (b) { b.addEventListener("click", function () { st = b.getAttribute("data-pfilter-status") || "all"; apply(); }); });
+    cBtns.forEach(function (b) { b.addEventListener("click", function () { chn = b.getAttribute("data-pfilter-chain") || "all"; apply(); }); });
+    if (clear) clear.addEventListener("click", function () { reset("all"); });
+    if (empty) empty.addEventListener("click", function (ev) {
+      var t = ev.target && ev.target.closest ? ev.target.closest("[data-precover]") : null;
+      if (t) reset(t.getAttribute("data-precover"));
     });
     q.addEventListener("input", apply);
     apply();
   }
 
+  // pinned-snapshot ages: fills the empty [data-age="<unix ts>"] next to every observed UTC timestamp with "(Xh Ym ago)"
+  function initAges() {
+    var now = Math.floor(Date.now() / 1000);
+    $$("[data-age]").forEach(function (n) {
+      var t = parseInt(n.getAttribute("data-age"), 10);
+      n.textContent = t && t <= now + 300 ? " (" + fmt(Math.max(0, now - t)) + " ago)" : "";
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     initTheme(); initCopy(); initBeaconHooks(); tick(); setInterval(tick, 30000);
-    initIndex(); initRequest(); initInspector(); initPreflight(); initLiveTimelocks(); initProtocolFilter();
+    initIndex(); initRequest(); initInspector(); initPreflight(); initLiveTimelocks(); initProtocolFilter(); initAges();
     if ($("#insp-list")) loadData().catch(function () { /* static sheet and drawer links keep working */ });
   });
 })();

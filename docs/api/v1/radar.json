@@ -2,10 +2,10 @@
   "schema": "pacta.radar.v1",
   "chain_id": 1,
   "refreshed_at": {
-    "block_number": 26415856,
-    "block_hash": "0xb503243be78194e83226cb378d0c2cb16e83b5f5819f929a5c4c6042ba85c628",
-    "block_timestamp": 1794691031,
-    "block_time_utc": "2026-11-14 21:17 UTC",
+    "block_number": 26429140,
+    "block_hash": "0x83a6cc0a445318c3be9b0802bb4e8199d83b363a3d76cadcdb6175dd3d64f1f9",
+    "block_timestamp": 1794850775,
+    "block_time_utc": "2026-11-16 17:39 UTC",
     "tag": "finalized",
     "rpcs_cross_checked": 2
   },
@@ -20,20 +20,20 @@
       "operations": [
         {
           "op_id": "0x1fe5e3e892708310bbfcf50efc03a1b8e21e0d0042035d7e8315e0cd5f26d85b",
-          "eta": 1794651635,
-          "pending": true,
-          "done": false,
-          "ready": true
+          "eta": null,
+          "pending": false,
+          "done": true,
+          "ready": false
         },
         {
           "op_id": "0x0ca0fcc4856b87f3df9a74532bd60db58d1310c27c17e7d9bfa8a56846f57a90",
-          "eta": 1794651743,
-          "pending": true,
-          "done": false,
-          "ready": true
+          "eta": null,
+          "pending": false,
+          "done": true,
+          "ready": false
         }
       ],
-      "eta": 1794651635
+      "eta": null
     },
     {
       "protocol": "Treehouse",

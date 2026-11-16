@@ -568,3 +568,60 @@ tr[hidden] { display: none; }
 .bounty-issue .md h4 { font-size: 14px; margin: 14px 0 6px; }
 .bounty-issue .md hr { border: 0; border-top: 1px solid var(--line); margin: 14px 0; }
 .bounty-issue pre.term-pre { margin: 8px 0; padding: 10px 12px; border: 1px solid var(--term-line); border-radius: var(--r); background: var(--term-bg); color: var(--term-ink); overflow-x: auto; font: 12.5px/1.6 var(--mono); }
+
+/* ---------- visitor review P1 / P2: live check first, What differs, editorial independence, Status x Chain filters ---------- */
+.hero-try { margin-top: 24px; padding: 16px 18px 18px; border: 1px solid var(--line-2); border-radius: var(--r); background: var(--surface); max-width: 880px; }
+.hero-try .try-h { margin-top: 8px; font-size: 18px; line-height: 1.35; font-weight: 650; }
+.hero-try p { margin-top: 8px; font-size: 14px; line-height: 1.55; color: var(--ink-2); }
+.hero-try .try-explain b, .hero-try .try-finding b { color: var(--ink); }
+.try-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.qs-connect { margin-top: 26px; }
+.qs-connect .qs-h { margin: 0; font-size: inherit; font-weight: inherit; line-height: 1; }
+.qs-connect .qs { margin-top: 10px; }
+.whatdiffers { margin: 18px 0 0; padding: 12px 14px 12px 16px; border: 1px solid var(--amber-line); border-left-width: 3px; border-radius: var(--r); background: var(--amber-bg); }
+.whatdiffers .wd-h { margin: 0; font-size: 15px; }
+.whatdiffers .wd-l { margin: 10px 0 4px; font: 600 11px/1.2 var(--sans); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.whatdiffers ul { margin: 0; padding-left: 18px; font-size: 14px; line-height: 1.55; }
+.whatdiffers .wd-changed .obs { color: var(--amber); font-weight: 650; }
+.whatdiffers .wd-matched { color: var(--ink-2); }
+.sheet .whatdiffers { margin: 12px 0 14px; }
+.editorial { margin: 26px 0 0; padding: 14px 16px; border: 1px solid var(--line-2); border-radius: var(--r); background: var(--surface); }
+.editorial h2 { margin: 0; font-size: 15px; }
+.editorial p { margin-top: 6px; font-size: 14px; line-height: 1.55; }
+.seg-l { display: inline-flex; align-items: center; padding: 0 10px; font: 600 11px/1 var(--sans); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); background: var(--sunken); }
+.ix-active { flex-basis: 100%; margin: 0; font-size: 12.5px; color: var(--muted); }
+.ix-active:empty { display: none; }
+.ix-empty { padding: 18px 0; border-bottom: 1px solid var(--line); font-size: 14px; color: var(--ink-2); }
+.ix-empty button { margin-left: 8px; }
+.pf-assess { margin-top: 6px; font-size: 13px; color: var(--muted); }
+.pf-assess b { color: var(--ink-2); }
+.pf-match { margin-top: 12px; padding: 10px 12px; border: 1px solid var(--line-2); border-radius: var(--r); }
+.obs-age { color: var(--muted); }
+
+/* ---------- narrow screens (375-753 px): no page-level horizontal overflow ---------- */
+html, body { overflow-x: clip; }             /* safety net; clip keeps position: sticky working (no scroll container) */
+img, svg, video, canvas { max-width: 100%; height: auto; }
+pre { max-width: 100%; overflow-x: auto; }
+code, .mono, .hx, .addr { overflow-wrap: anywhere; }
+.term, .qs-snip, .pf, .sheet, .memo, .bench, .plan { min-width: 0; max-width: 100%; }
+@media (max-width: 860px) {
+  html { scroll-padding-top: 104px; }
+  .topbar { height: auto; }
+  .topbar .wrap { flex-wrap: wrap; height: auto; gap: 4px 12px; padding-top: 8px; padding-bottom: 6px; }
+  .nav { display: flex; order: 3; flex-basis: 100%; margin-right: 0; gap: 0; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .nav a, .nav a:nth-child(3), .nav a:nth-child(5) { display: inline-block; flex: none; white-space: nowrap; padding: 6px 8px; font-size: 13px; }
+}
+@media (max-width: 640px) {
+  .tools { gap: 6px; }
+  .tools .gh { display: none; }
+  .tools .btn, .tools .btn.sm { display: inline-flex; height: 28px; padding: 0 9px; font-size: 12px; white-space: nowrap; }   /* Request coverage stays visible */
+  .ix-tools input { width: 100%; max-width: 100%; }
+  .seg { display: flex; flex-wrap: wrap; gap: 6px; overflow: visible; border: 0; }
+  .seg button, .seg .seg-l { height: 32px; border: 1px solid var(--line-2); border-radius: var(--r); }
+  .seg .seg-l { border: 0; background: transparent; padding-left: 0; flex-basis: 100%; height: auto; }
+  table.ix, .memo table { display: block; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .kv, .memo-meta { grid-template-columns: minmax(0, 1fr); }
+  .hero h1 { overflow-wrap: anywhere; }
+  .hero-try { padding: 14px; }
+  .try-actions .btn { white-space: normal; }
+}

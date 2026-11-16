@@ -28,6 +28,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import onboarding_render as OR  # noqa: E402
 import build_b2a_feeds as B2A  # noqa: E402
 import build_lookup as LK  # noqa: E402
+import control_diff as CD  # noqa: E402  "What differs": changed vs matched parameters of flagged records
 import graph_manifest as GM  # noqa: E402  docs/api/v1/graph-manifest.json (pacta.graph_manifest.v1)
 
 BASE_URL = "https://pacta.wtf"   # cutover: "https://pacta.fractalneurons.com"
@@ -50,6 +51,15 @@ H1 = "Free Pre-Execution Contract & Governance Safety API for AI Agents — Zero
 API = "https://pacta-x402.pacta.workers.dev"          # live Cloudflare Worker (free launch: $0, no key, no wallet)
 MCP_URL, OPENAPI_URL = API + "/mcp", API + "/openapi.json"
 RATE_LIMIT = "60 requests / minute per caller"
+# Visitor review P1: send an explicit User-Agent. Cloudflare's edge refuses some default library agents (error 1010) before
+# the Worker runs, so every HTTP quickstart names one.
+UA = "my-agent/1.0"
+CURL = f'curl -s -A "{UA}"'
+UA_NOTE = ("Send a User-Agent (curl -A, or headers={\"User-Agent\": ...} in Python): Cloudflare's edge refuses some default "
+           "library agents with error 1010 before the API answers.")
+EDITORIAL_INDEPENDENCE = ("Payment never alters a Pacta classification. A badge changes strictly when on-chain contract state or public "
+                          "documentation aligns and is verified at a new finalized block.")
+HERO_EXAMPLE = ("stader-labs-ethx", "ethereum", "0xA35b1B31Ce002FBF2058D22F30f95D405200A15b")   # (record slug, chain, ETHx token)
 # Live checker presets: (label, chain, address). Public contracts; the ETHx token is an indexed record (Stader, sprint 12).
 PREFLIGHT_PRESETS = [("USDC on Base", "base", "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"),
                      ("USDC on Ethereum", "ethereum", "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"),
@@ -427,6 +437,31 @@ def delay_cmp(e):
             f'<span class="vs">vs</span><span class="chip"><i>Docs</i><b>{secs(d)}</b></span></span>')
 
 
+def utc_iso(ts):
+    return dt.datetime.fromtimestamp(int(ts), dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def what_differs_html(entries, compact=False):
+    """Visitor review P1 (understanding): the "What differs" callout, right under the title / badge of every page (or inspector
+    sheet) with a parameter_delta / protective_delta record: discrepant parameters first (the headline), matched ones below."""
+    wd = CD.what_differs(entries)
+    if not wd:
+        return ""
+    ch = "".join(f'<li data-wd-changed><b>{E(c["parameter"])}</b>: <span class="obs">{E(c["observed"])}</span> observed vs '
+                 f'<span class="doc">{E(c["documented"])}</span> documented</li>' for c in wd["changed"])
+    mt = "".join(f'<li data-wd-matched>{E(m["parameter"])}: {E(m["value"])}</li>' for m in wd["matched"])
+    tag = "div" if compact else "section"
+    return (f'<{tag} class="{"memo-sec " if not compact else ""}whatdiffers" data-what-differs><h2 class="wd-h">What differs</h2>'
+            f'<p class="wd-l">Changed / discrepant</p><ul class="wd-changed">{ch}</ul>'
+            + (f'<p class="wd-l">Matched</p><ul class="wd-matched">{mt}</ul>' if mt else "") + f'</{tag}>\n')
+
+
+def editorial_box():
+    """Visitor review P2: the editorial-independence firewall, shown before any paid issuer service."""
+    return (f'<aside class="editorial" data-editorial-independence><h2>Editorial Independence &amp; Alignment Criteria</h2>'
+            f'<p>{E(EDITORIAL_INDEPENDENCE)}</p><p class="s">Paid issuer services (24h clearance {E(CLEARANCE_PRICE)}, continuous maintenance '
+            f'{E(MONITORING_PRICE)}) fund the verification work; the evidence, the free API and every classification above are the same for everyone.</p></aside>\n')
+
 def sheet(e):
     """Specification sheet for one record (server-rendered default; docs/app.js renders the same structure)."""
     ms, pa = multisig(e["onchain_observed"]), proxy_admin(e["onchain_observed"])
@@ -446,6 +481,7 @@ def sheet(e):
     kv = "".join(f"<dt>{k}</dt><dd>{v}</dd>" for k, v in rows)
     return (f'<div class="sheet-h"><h3>{E(e["protocol"])}</h3>{badge(e["classification"])}</div>'
             f'<p class="sheet-sub">{E(e["surface"])}</p>'
+            + what_differs_html([e], compact=True) +
             f'<dl class="kv">{kv}</dl>'
             f'<p class="obs-text">{prose(e["onchain_observed"])}</p>'
             + term(cast_line(e)))
@@ -600,9 +636,10 @@ def radar_section(radar):
             f'<td><span class="op">{E(it["title"])}</span><span class="sub">{E(it["summary"])}</span>'
             f'<span class="meta">Timelock {hexref(it["timelock"])} · Operation{"s" if len(it["operations"]) > 1 else ""} {ops}</span></td>'
             f'<td class="nowrap num hide-m">{secs(it["min_delay_seconds"])}</td>'
-            f'<td class="nowrap"><span class="countdown" data-eta="{it["eta"]}">ETA {E(utc(it["eta"]))}</span><span class="sub">{E(utc(it["eta"]))}</span></td>'
+            + (f'<td class="nowrap"><span class="countdown" data-eta="{it["eta"]}">ETA {E(utc(it["eta"]))}</span><span class="sub">{E(utc(it["eta"]))}</span></td>' if it.get("eta") else
+               f'<td class="nowrap"><span class="opstate executed">Executed</span><span class="sub">isOperationDone = true at block #{r["block_number"]:,}</span></td>') +
             f'<td class="r nowrap"><a href="{E(it["brief"])}">Read brief →</a></td></tr>')
-    fresh = f'Last refreshed: {r["block_time_utc"]} (Mainnet finalized block #{r["block_number"]:,})'
+    fresh = f'Pinned snapshot · observed {r["block_time_utc"]} (Mainnet finalized block #{r["block_number"]:,})'
     tls = "".join(f' · <a href="https://etherscan.io/address/{E(it["timelock"])}" target="_blank" rel="noopener">{E(it["protocol"])} timelock ↗</a>'
                   for it in radar["items"])
     live_note = (f'<p class="radar-live" data-radar-live><b>All queued operations are live Ethereum Mainnet timelock reads (zero demo data)</b>: '
@@ -613,7 +650,7 @@ def radar_section(radar):
 {live_note}
 <div class="tbl-wrap"><table class="tbl radar"><thead><tr><th>Protocol</th><th>Queued operation</th><th class="hide-m">Delay</th><th>Execution window</th><th class="r">Brief</th></tr></thead>
 <tbody>{"".join(rows)}</tbody></table></div>
-<div class="prov"><span class="badge final">Scanner-pinned (L1 finalized)</span><span>{E(fresh)}</span><span>State and ETAs read at that block on {r.get("rpcs_cross_checked", 2)} independent RPCs; READY means the delay has elapsed and the operation is still unexecuted. Countdowns run in your browser from each on-chain ETA.</span><span class="live-line" data-live-line></span></div>
+<div class="prov"><span class="badge final">Scanner-pinned (L1 finalized)</span><span>{E(fresh)}<span class="obs-age" data-age="{r["block_timestamp"]}"></span></span><span>State and ETAs read at that block on {r.get("rpcs_cross_checked", 2)} independent RPCs; READY means the delay has elapsed and the operation is still unexecuted. Countdowns run in your browser from each on-chain ETA.</span><span class="live-line" data-live-line></span></div>
 </div></section>"""
 
 
@@ -741,6 +778,7 @@ def pricing_section(idx, home=""):
 <div class="sec-head"><span class="n">07</span><h2>Pricing</h2><span class="aside">The API, MCP server and all public data are free. Paid work is for collateral and protocol issuers only.</span></div>
 <div class="plans two">{free_plan}{issuer_plan}</div>
 {bar}
+{editorial_box()}
 <p class="note">{E(VULN_ROUTE)}</p>
 </div></section>"""
 
@@ -869,18 +907,45 @@ def quickstart_block():
     """Above-the-fold, copyable agent quickstarts. Remote MCP and curl come first: the npm package is not published yet."""
     claude = f"claude mcp add --transport http pacta {MCP_URL}"
     cursor = '{"mcpServers": {"pacta": {"url": "' + MCP_URL + '"}}}'
-    curl = f'curl -s "{API}/v1/check/preflight?chain=ethereum&address=0xA35b1B31Ce002FBF2058D22F30f95D405200A15b"'
+    curl = f'{CURL} "{API}/v1/check/preflight?chain=ethereum&address=0xA35b1B31Ce002FBF2058D22F30f95D405200A15b"'
+    py = ('import json, urllib.request as u; r = u.Request("' + API + '/v1/check/preflight?chain=ethereum&address=0xA35b1B31Ce002FBF2058D22F30f95D405200A15b", '
+          'headers={"User-Agent": "' + UA + '"}); print(json.load(u.urlopen(r))["verdict"])')
     snippet = lambda label, value: (f'<div class="qs-snip"><span class="qs-l">{label}</span><code class="mono">{E(value)}</code>{copy_btn(value)}</div>')
-    return (f'<div class="qs" aria-label="Agent quickstarts">'
-            f'<div class="qs-item"><span class="tier">1 · Remote MCP, zero install</span><h3>Claude Code, Cursor, any MCP client</h3>'
+    return (f'<div class="qs-connect" id="connect"><h2 class="qs-h"><span class="tier">2 · Connect your agent (MCP / REST)</span></h2>'
+            f'<div class="qs" aria-label="Agent quickstarts">'
+            f'<div class="qs-item"><span class="tier">MCP · zero install</span><h3>Claude Code, Cursor, any MCP client</h3>'
             f'{snippet("Claude Code", claude)}{snippet("Cursor mcp.json", cursor)}{snippet("Any MCP client (Streamable HTTP)", MCP_URL)}</div>'
-            f'<div class="qs-item"><span class="tier">2 · One curl</span><h3>Pre-flight check</h3>{snippet("Shell", curl)}'
-            f'<p class="note">Returns a verdict, a 0–100 risk score, proxy / admin / timelock breakdown and the pinned block.</p></div>'
-            f'<div class="qs-item"><span class="tier">3 · OpenAPI, Actions &amp; skills</span><h3>ChatGPT Actions, LangChain, skills</h3>'
+            f'<div class="qs-item"><span class="tier">REST · one call</span><h3>Pre-flight check</h3>{snippet("Shell", curl)}{snippet("Python (stdlib)", py)}'
+            f'<p class="note">Returns a verdict, a 0–100 risk score with its confidence, proxy / admin / timelock breakdown and the pinned block. {E(UA_NOTE)}</p></div>'
+            f'<div class="qs-item"><span class="tier">OpenAPI, Actions &amp; skills</span><h3>ChatGPT Actions, LangChain, skills</h3>'
             f'<p class="qs-links"><a href="{OPENAPI_URL}">openapi.json (3.1)</a><a href="SKILL.md">SKILL.md</a><a href="llms.txt">llms.txt</a>'
             f'<a href=".well-known/agent.json">agent.json</a><a href=".well-known/mcp.json">mcp.json</a></p>'
             f'<p class="note">$0 during the launch: no API key, no wallet, {E(RATE_LIMIT)}.</p></div>'
-            f'</div>')
+            f'</div></div>')
+
+
+def hero_try(idx):
+    """Visitor review P1 (first success): "1 · See a live check first" above the fold: a real pinned finding, a plain-English
+    'What this tells you' and a one-click live check of the same protocol (the ETHx token; the free API cross-links the record)."""
+    slug, chain, addr = HERO_EXAMPLE
+    sp = site_protocols(idx)
+    name, v = next((n, x) for n, x in sp.items() if x["slug"] == slug)
+    wd = CD.what_differs(v["entries"])
+    e = v["entries"][0]
+    ch = wd["changed"][0]
+    matched = "; ".join(f'{m["parameter"]} {m["value"]}' for m in wd["matched"][:2])
+    head = f'{name}: the docs say {ch["documented"]}, the chain says {ch["observed"]}'
+    explain = (f'Pacta read {name}\'s control plane at {CHAINS[chain][0]} block #{int(e["block_number"]):,} and compared it with the protocol\'s own '
+               f'documentation. The {ch["parameter"].lower()} on-chain ({ch["observed"]}) differs from what the docs promise ({ch["documented"]})'
+               + (f', while {matched.lower()} still matches' if matched else "") + '. An agent that trusts the docs alone would act on the wrong '
+               f'assumption about who can change the protocol. The record is attested on Base (EAS) and every value is reproducible with cast.')
+    return (f'<div class="hero-try" id="try" aria-label="See a live check first"><span class="tier">1 · See a live check first</span>'
+            f'<h2 class="try-h">{E(head)}</h2>'
+            f'<p class="try-finding"><span class="badge delta">Parameter delta</span> <b>Changed:</b> {E(ch["parameter"])} {E(ch["observed"])} observed vs '
+            f'{E(ch["documented"])} documented' + (f' · <b>Matched:</b> {E(matched)}' if matched else "") + f' · pinned at block <span class="num">#{int(e["block_number"]):,}</span></p>'
+            f'<p class="try-explain"><b>What this tells you:</b> {E(explain)}</p>'
+            f'<p class="try-actions"><button class="btn primary" type="button" data-pf-chain="{chain}" data-pf-address="{addr}" data-pf-scroll>Run this check live (free, 1 click)</button>'
+            f'<a class="btn" href="protocols/{slug}/">Full record →</a></p></div>')
 
 
 def preflight_section():
@@ -1175,7 +1240,7 @@ def protocol_page(name, entries, idx, radar, digest=None, slug=None):
                     f'{term(cast_line(e))}</article>\n')
     ops = ""
     for it in radar_for(name, radar):
-        lis = "".join(f'<li><code class="mono">{E(o["op_id"])}</code> · ETA {E(utc(o["eta"], True))} · {state_badge(op_state(o), [o])}</li>'
+        lis = "".join(f'<li><code class="mono">{E(o["op_id"])}</code> · {"ETA " + E(utc(o["eta"], True)) if o.get("eta") else "executed on-chain (isOperationDone = true)"} · {state_badge(op_state(o), [o])}</li>'
                       for o in it["operations"])
         ops += (f'<article class="memo-sec"><h2>Queued timelock operations</h2><p>{E(it["title"])}. {E(it["summary"])}</p>'
                 f'<p>Timelock {hexref(it["timelock"])} · {secs(it["min_delay_seconds"])} minimum delay · <a href="../../{E(it["brief"])}">Pre-execution brief →</a></p>'
@@ -1189,7 +1254,7 @@ def protocol_page(name, entries, idx, radar, digest=None, slug=None):
                       f'protocol\'s documented parameters is <b>not assessed</b> here (the documentation is linked for reference). '
                       f'Machine-readable: <a href="../../api/v1/rpc-pinned.json">/api/v1/rpc-pinned.json</a>. The Base-EAS-attested Sprint records '
                       f'are in <a href="../../api/v1/index.json">/api/v1/index.json</a>.</p></section>\n')
-    curl = f'curl -s "{API}/v1/check/preflight?chain={first.get("chain", "ethereum")}&address={first["target_contract"]}"'
+    curl = f'{CURL} "{API}/v1/check/preflight?chain={first.get("chain", "ethereum")}&address={first["target_contract"]}"'
     surfaces = f'{n} indexed {"surface" if n == 1 else "surfaces"}'
     data_url = f"{BASE_URL}/api/v1/rpc-pinned.json" if pinned else f"{BASE_URL}/api/v1/index.json"
     ld = {"@context": "https://schema.org", "@type": "Dataset", "name": f"{name} control-plane safety record",
@@ -1233,9 +1298,9 @@ def protocol_page(name, entries, idx, radar, digest=None, slug=None):
 <article class="memo">
 <header><span class="tier">{E(cat)}</span><h1>{E(title)}</h1>
 <p class="lede">{lede}</p></header>
-<section class="memo-sec"><h2>Check it live (free)</h2><p>The pre-flight API re-reads the controller, proxy and capabilities of a contract at the latest block. No key, no wallet.</p>
-{term(curl, "Live pre-flight check")}<p>MCP: <code class="mono">{E(MCP_URL)}</code> · tool <code>pacta_check_preflight</code>.</p></section>
-{provenance}{governance_section(name, digest)}{records}{badge_html}{callout}{ops}</article>
+{what_differs_html(entries)}<section class="memo-sec"><h2>Check it live (free)</h2><p>The pre-flight API re-reads the controller, proxy and capabilities of a contract at the latest block. No key, no wallet.</p>
+{term(curl, "Live pre-flight check")}<p>MCP: <code class="mono">{E(MCP_URL)}</code> · tool <code>pacta_check_preflight</code>. {E(UA_NOTE)}</p></section>
+{provenance}{governance_section(name, digest)}{records}{ops}{badge_html}{editorial_box()}{callout}</article>
 <div class="memo-foot"><span>Read-only on-chain analysis. Not investment advice. Exploit-sensitive vulnerabilities are never published here; they go through Immunefi or Cantina bounty programmes.</span>{foot}</div>
 </main>
 {footer(count_line, reg, "../../")}
@@ -1271,13 +1336,19 @@ def protocols_index_page(idx, sp=None):
 
     n_tier = {t: sum(tier(v) == t for v in sp.values()) for t in ("aligned", "parameter_delta", "rpc_observed")}
     n_chain = {ch: sum(any(e.get("chain", "ethereum") == ch for e in v["entries"]) for v in sp.values()) for ch in ("ethereum", "base")}
-    pills = [("all", "All", len(sp)), ("aligned", "Aligned", n_tier["aligned"]), ("parameter_delta", "Parameter Delta", n_tier["parameter_delta"]),
-             ("rpc_observed", "RPC-Observed", n_tier["rpc_observed"]), ("ethereum", "Ethereum", n_chain["ethereum"]), ("base", "Base", n_chain["base"])]
+    status = [("all", "All", len(sp)), ("aligned", "Aligned", n_tier["aligned"]), ("parameter_delta", "Parameter Delta", n_tier["parameter_delta"]),
+              ("rpc_observed", "RPC-Observed", n_tier["rpc_observed"])]
+    chain_pills = [("all", "All chains", len(sp)), ("ethereum", "Ethereum", n_chain["ethereum"]), ("base", "Base", n_chain["base"])]
+    group = lambda kind, label, pills: (f'<div class="seg" role="group" aria-label="{label}" data-pgroup="{kind}"><span class="seg-l">{label}</span>'
+                                        + "".join(f'<button type="button" data-pfilter-{kind}="{k}" aria-pressed="{"true" if k == "all" else "false"}">{E(lbl)}'
+                                                  f'<span class="num">{cnt}</span></button>' for k, lbl, cnt in pills) + '</div>')
+    # Visitor review P1 (discovery): Status x Chain x search, combinable; "Clear all" resets all three; 0 matches -> recovery prompt (app.js)
     tools = (f'<div class="ix-tools" data-pfilter-root><input id="proto-q" type="search" placeholder="Filter by name, token, category or 0x address" '
-             f'aria-label="Filter protocols" autocomplete="off"><div class="seg" role="group" aria-label="Filter by status or chain">'
-             + "".join(f'<button type="button" data-pfilter="{k}" aria-pressed="{"true" if k == "all" else "false"}">{lbl}<span class="num">{n}</span></button>'
-                       for k, lbl, n in pills)
-             + f'</div><span class="ix-count" id="proto-count" aria-live="polite">{len(sp)} of {len(sp)} protocols shown</span></div>')
+             f'aria-label="Filter protocols" autocomplete="off">{group("status", "Status", status)}{group("chain", "Chain", chain_pills)}'
+             f'<button type="button" class="linkish" id="proto-clear" hidden>Clear all</button>'
+             f'<span class="ix-count" id="proto-count" aria-live="polite">{len(sp)} of {len(sp)} protocols shown</span>'
+             f'<p class="ix-active" id="proto-active" aria-live="polite"></p></div>'
+             f'<div class="ix-empty" id="proto-empty" hidden></div>')
     rows = "".join(f'<tr{attrs(n, v)}><td><a href="{v["slug"]}/">{E(n)}</a></td><td>{E(v["entries"][0]["category"])}</td>'
                    f'<td>{" · ".join(sorted({CHAINS[e.get("chain", "ethereum")][0] for e in v["entries"]}))}</td><td class="num">{len(v["entries"])}</td>'
                    f'<td>{" ".join(badge(cl) for cl in sorted({e["classification"] for e in v["entries"]}))}</td><td>{prov(v)}</td></tr>' for n, v in sp.items())
@@ -1345,7 +1416,7 @@ def page(idx, radar):
     count_line = coverage_line(idx)
     reg = idx["onchain_anchoring"]["commitment_registry"]
     later = [it for it in radar["items"] if it["eta"] and it["eta"] > r["block_timestamp"]]
-    nxt = min(later or radar["items"], key=lambda it: it["eta"])
+    nxt = min(later or [it for it in radar["items"] if it.get("eta")] or radar["items"], key=lambda it: it.get("eta") or 0)
     n_ops = sum(len(it["operations"]) for it in radar["items"])
     n_ready = sum(op_state(o) == "ready" for it in radar["items"] for o in it["operations"])
     body = f"""<body>
@@ -1355,12 +1426,13 @@ def page(idx, radar):
 <div class="eyebrow">For AI agents, agent builders, vault curators and risk teams</div>
 <h1>{E(H1)}</h1>
 <p class="lede">Before an agent approves, deposits into or calls a contract, one request tells it who can change that contract (an EOA, a Safe, a timelock, or nobody), how fast, and whether it can pause, blacklist or upgrade. Every answer is pinned to a block hash and reproducible with <code>cast</code>.</p>
+{hero_try(idx)}
 {quickstart_block()}
 <div class="ctas"><a class="btn primary" href="#preflight">Run a free check <span class="arr">→</span></a><a class="btn" href="protocols/">Protocol safety records</a><a class="btn" href="#inspector">Inspect a protocol</a></div>
-<div class="livebar" data-etas="{E(livebar_etas(radar))}"><span class="dot live"></span><b>{n_ops} timelock operations queued across {len(radar["items"])} protocols.</b> {f'<span class="opstate ready lb-ready">{n_ready} READY · EXECUTABLE NOW</span> ' if n_ready else ""}<span class="lb-next">Next: <span class="lb-p">{E(nxt["protocol"])}</span>, <span class="countdown" data-eta="{nxt["eta"]}">ETA {E(utc(nxt["eta"]))}</span></span> <small class="lb-asof">(as of radar block {r["block_number"]:,})</small> · <a href="#radar">Radar →</a></div>
+<div class="livebar" data-etas="{E(livebar_etas(radar))}"><span class="dot live"></span><b>{n_ops} timelock operations queued across {len(radar["items"])} protocols.</b> {f'<span class="opstate ready lb-ready">{n_ready} READY · EXECUTABLE NOW</span> ' if n_ready else ""}<span class="lb-next">Next: <span class="lb-p">{E(nxt["protocol"])}</span>, <span class="countdown" data-eta="{nxt["eta"]}">ETA {E(utc(nxt["eta"]))}</span></span> <small class="lb-asof">(pinned snapshot: radar block {r["block_number"]:,}, observed <time datetime="{E(utc_iso(r["block_timestamp"]))}" data-observed="{r["block_timestamp"]}">{E(r["block_time_utc"])}</time><span class="obs-age" data-age="{r["block_timestamp"]}"></span>)</small> · <a href="#radar">Radar →</a></div>
 <div class="ledger">
 <div><b>{c["sprints"]}</b><span>Sprints completed</span><small>{E(c["chains"])} control-plane reviews</small></div>
-<div><b>{c["records"]}</b><span>Verified surfaces</span><small>Each pinned to a canonical block hash</small></div>
+<div data-protocol-count><b>{len(site_protocols(idx))}</b><span>Indexed protocols</span><small>{E(B2A.protocols_line(idx, load_pinned()).split(": ", 1)[1])}</small></div>
 <div><b>{c["eas_n"]}</b><span>Base EAS attestations</span><small>Sprints {c["eas_from"]}–{c["eas_to"]}{"; " + c["pending"] + " hash-pinned" if c["pending"] else ""}{"; " + c["later"] + " records after review" if c["later"] else ""}</small></div>
 <div><b>$0</b><span>Free launch API</span><small>{E(RATE_LIMIT)} · no key · no wallet</small></div>
 </div>
@@ -1494,7 +1566,8 @@ def brief_page(slug, desc, idx, radar):
                 f'<dt>Protocol</dt><dd>{E(item["protocol"])}</dd>'
                 f'<dt>Timelock</dt><dd>{hexref(item["timelock"])} · {secs(item["min_delay_seconds"])} minimum delay</dd>'
                 f'<dt>Operation{"s" if len(item["operations"]) > 1 else ""}</dt><dd>{ops}</dd>'
-                f'<dt>Execution window</dt><dd><span class="countdown" data-eta="{item["eta"]}">ETA {E(utc(item["eta"]))}</span> · {E(utc(item["eta"], True))}</dd>'
+                + (f'<dt>Execution window</dt><dd><span class="countdown" data-eta="{item["eta"]}">ETA {E(utc(item["eta"]))}</span> · {E(utc(item["eta"], True))}</dd>' if item.get("eta") else
+                   f'<dt>Execution</dt><dd>Executed on-chain: isOperationDone = true at finalized block <span class="num">#{r["block_number"]:,}</span></dd>') +
                 f'<dt>State</dt><dd>{state_badge(item_state(item), item["operations"])} at finalized block <span class="num">#{r["block_number"]:,}</span> ({E(r["block_time_utc"])}) '
                 f'<span class="badge final">Scanner-pinned (L1 finalized)</span></dd></dl>')
     content = content.replace("</header>", "</header>\n" + meta, 1)
@@ -2096,6 +2169,9 @@ def mcp_page(idx):
     cursor = json.dumps({"mcpServers": {"pacta": {"url": MCP_URL}}}, indent=2)
     tools = "".join(f"<li><code>{E(t)}</code></li>" for t in B2A.REMOTE_TOOLS)
     starter = "https://github.com/Fractal-Neurons/defi-control-plane-mcp"
+    rest = f'{CURL} "{API}/v1/check/preflight?chain=base&address=0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"'
+    py = ('import json, urllib.request as u; r = u.Request("' + API + '/v1/check/preflight?chain=base&address=0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", '
+          'headers={"User-Agent": "' + UA + '"}); print(json.load(u.urlopen(r))["verdict"])')
     body = f"""<body>
 {topbar("../")}
 <main id="main" class="memo-wrap">
@@ -2106,7 +2182,10 @@ def mcp_page(idx):
 <section class="memo-sec" id="install"><h2>Install</h2>
 <div class="qs-snip"><span class="qs-l">Claude Code</span><code class="mono">{E(claude)}</code>{copy_btn(claude)}</div>
 <div class="qs-snip"><span class="qs-l">Cursor (mcp.json)</span><code class="mono">{E(json.dumps({"mcpServers": {"pacta": {"url": MCP_URL}}}))}</code>{copy_btn(cursor, "Copy JSON")}</div>
-<p>Every free <code>tools/call</code> takes three non-personal fields: <code>caller_agent</code>, <code>requester_role</code> and <code>caller_purpose</code> (see <a href="../SKILL.md">SKILL.md</a>).</p></section>
+<p>Optional attribution: <code>caller_agent</code>, <code>requester_role</code> and <code>caller_purpose</code> (non-personal; omitted fields never block a call; see <a href="../SKILL.md">SKILL.md</a>).</p>
+<div class="qs-snip"><span class="qs-l">REST (curl)</span><code class="mono">{E(rest)}</code>{copy_btn(rest)}</div>
+<div class="qs-snip"><span class="qs-l">Python (stdlib)</span><code class="mono">{E(py)}</code>{copy_btn(py)}</div>
+<p class="s">{E(UA_NOTE)}</p></section>
 <section class="memo-sec" id="tools"><h2>Tools ({E(B2A.REMOTE_TOOLS_DOC)})</h2><ul>{tools}</ul>
 <p>Indexed protocols: <a href="../api/v1/protocols.json">/api/v1/protocols.json</a> · machine-readable server card: <a href="../.well-known/mcp.json">/.well-known/mcp.json</a> · REST twin and OpenAPI 3.1: <a href="{E(OPENAPI_URL)}" target="_blank" rel="noopener">openapi.json ↗</a></p></section>
 <section class="memo-sec" id="starter"><h2>Starter kit &amp; help</h2>
@@ -2128,11 +2207,12 @@ def llms(idx, radar):
         "# Pacta by Fractal Neurons", "",
         DISAMBIGUATION, "",
         f"> {BRAND}: free pre-execution contract and governance safety API for AI agents (launch: $0, no API key, no wallet), plus block-pinned DeFi control-plane snapshots and timelock alerts. {coverage_line(idx)}.", "",
-        "Pacta checks who can change the rules of DeFi protocols (proxy admins, timelock delays, Safe quorums, roles) and compares that with what the protocols document. Every record is a read-only on-chain observation pinned to a block number and canonical block hash on its chain ({counts(idx)['chains']}).", "",
+        "Pacta checks who can change the rules of DeFi protocols (proxy admins, timelock delays, Safe quorums, roles) and compares that with what the protocols document. Every record is a read-only on-chain observation pinned to a block number and canonical block hash on its chain (" + counts(idx)["chains"] + ").", "",
         "## Free API for agents (launch: $0, no API key, no wallet)",
         f"- Remote MCP (Streamable HTTP, zero install): {MCP_URL} · Claude Code: `claude mcp add --transport http pacta {MCP_URL}` · Cursor: `{{\"mcpServers\": {{\"pacta\": {{\"url\": \"{MCP_URL}\"}}}}}}`. Tools ({REMOTE_TOOLS_DOC}): {', '.join(B2A.REMOTE_TOOLS)}. Local stdio server: {STDIO_TOOLS_DOC}.",
         "- " + B2A.CALLER_FIELDS_DOC,
-        f"- One call: `curl -s \"{API}/v1/check/preflight?chain=ethereum&address=0x...\"` returns a verdict (IMMUTABLE_NO_ADMIN, TIMELOCK_PROTECTED, ZERO_DELAY_TIMELOCK_RISK, MULTISIG_NO_TIMELOCK, INSTANT_EOA_ADMIN_RISK, UNDEPLOYED_OR_EOA, UNCLASSIFIED_CONTRACT_CONTROLLER), a 0-100 risk score, proxy / admin / timelock breakdown and pause / blacklist / upgrade capabilities, pinned to a block hash.",
+        "- " + B2A.protocols_line(idx, load_pinned()),
+        f"- One call: `{CURL} \"{API}/v1/check/preflight?chain=ethereum&address=0x...\"` ({UA_NOTE}) returns a verdict (IMMUTABLE_NO_ADMIN, TIMELOCK_PROTECTED, ZERO_DELAY_TIMELOCK_RISK, MULTISIG_NO_TIMELOCK, INSTANT_EOA_ADMIN_RISK, UNDEPLOYED_OR_EOA, UNCLASSIFIED_CONTRACT_CONTROLLER), a 0-100 risk score, proxy / admin / timelock breakdown and pause / blacklist / upgrade capabilities, pinned to a block hash.",
         f"- [{B2A.LOOKUP_URL}?q=ethena]({B2A.LOOKUP_URL}?q=ethena): free protocol / token name lookup (MCP tool pacta_lookup_protocol). {B2A.LOOKUP_DOC}",
         f"- {B2A.REQUEST_DOC}",
         f"- [{BASE_URL}/bounties/]({BASE_URL}/bounties/): {B2A.BOUNTIES_DOC}",

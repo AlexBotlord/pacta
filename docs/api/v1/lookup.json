@@ -17,17 +17,25 @@
    "kind": "protocol",
    "name": "Aave V3 (Base)",
    "observedDelaySeconds": null,
+   "pinnedBlock": 57886975,
    "preflightArgs": {
     "address": "0x56C1a4b54921DEA9A344967a8693C7E661D72968",
     "chain": "base"
    },
    "primaryContract": "0x56C1a4b54921DEA9A344967a8693C7E661D72968",
+   "relatedContracts": [
+    "0x43955b0899Ab7232E3a454cf84AedD22Ad46FD33",
+    "0x9390B1735def18560c509E2d0bc090E9d6BA257a",
+    "0x9AEE0B04504CeF83A65AC3f0e838D0593BCb2BC7",
+    "0xe20fCBdBfFC4Dd138cE8b2E6FBb6CB49777ad64D"
+   ],
    "slug": "aave-v3-base",
    "sprints": [
     19
    ],
    "surfaces": [
     {
+     "blockNumber": 57886975,
      "classification": "aligned_baseline",
      "id": "aave-v3-base-emergency-admin-protocol-guardian-4of7-s19",
      "surface": "EMERGENCY_ADMIN (pause / unpause) = Aave Protocol Guardian 4-of-7 Safe",
@@ -35,6 +43,7 @@
      "targetLabel": "Aave Protocol Guardian Safe (Base)"
     },
     {
+     "blockNumber": 57886975,
      "classification": "aligned_baseline",
      "id": "aave-v3-base-payloads-level1-1d-delay-s19",
      "surface": "Level-1 governance payloads execute on Base through ExecutorLvl1 after a 1-day delay",
@@ -47,7 +56,8 @@
     "AAVE",
     "Aave Base"
    ],
-   "url": "https://pacta.wtf/protocols/aave-v3-base/"
+   "url": "https://pacta.wtf/protocols/aave-v3-base/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -66,17 +76,25 @@
    "kind": "protocol",
    "name": "Aave V3 / GHO",
    "observedDelaySeconds": null,
+   "pinnedBlock": 26402160,
    "preflightArgs": {
     "address": "0xc2aaCf6553D20d1e9d78E365AAba8032af9c85b0",
     "chain": "ethereum"
    },
    "primaryContract": "0xc2aaCf6553D20d1e9d78E365AAba8032af9c85b0",
+   "relatedContracts": [
+    "0x5300A1a15135EA4dc7aD5a167152C01EFc9b192A",
+    "0xdAbad81aF85554E9ae636395611C58F7eC1aAEc5",
+    "0x2CFe3ec4d5a6811f4B8067F0DE7e47DfA938Aa30",
+    "0x40D16FC0246aD3160Ccc09B8D0D3A2cD28aE6C2f"
+   ],
    "slug": "aave-v3-gho",
    "sprints": [
     9
    ],
    "surfaces": [
     {
+     "blockNumber": 26402160,
      "classification": "aligned_baseline",
      "id": "aave-v3-gho-acl-manager-and-executor-lvl1",
      "surface": "ACLManager Admin Role, Executor Lvl1 Delay & Guardian Safe",
@@ -89,7 +107,8 @@
     "GHO",
     "AAVE"
    ],
-   "url": "https://pacta.wtf/protocols/aave-v3-gho/"
+   "url": "https://pacta.wtf/protocols/aave-v3-gho/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [],
@@ -106,14 +125,17 @@
    "kind": "protocol",
    "name": "Across Protocol (HubPool)",
    "observedDelaySeconds": null,
+   "pinnedBlock": 26414499,
    "preflightArgs": {
     "address": "0xc186fA914353c44b2E33eBE05f21846F1048bEda",
     "chain": "ethereum"
    },
    "primaryContract": "0xc186fA914353c44b2E33eBE05f21846F1048bEda",
+   "relatedContracts": [],
    "slug": "across-protocol-hubpool",
    "surfaces": [
     {
+     "blockNumber": 26414499,
      "classification": "rpc_observed",
      "id": "across-protocol-hubpool-control-plane",
      "surface": "AcrossHubPool · 3-of-5 Safe Control Plane",
@@ -125,7 +147,8 @@
    "tokens": [
     "ACX"
    ],
-   "url": "https://pacta.wtf/protocols/across-protocol-hubpool/"
+   "url": "https://pacta.wtf/protocols/across-protocol-hubpool/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -144,17 +167,25 @@
    "kind": "protocol",
    "name": "Aerodrome Finance (Base)",
    "observedDelaySeconds": null,
+   "pinnedBlock": 58203774,
    "preflightArgs": {
     "address": "0x420DD381b31aEf6683db6B902084cB0FFECe40Da",
     "chain": "base"
    },
    "primaryContract": "0x420DD381b31aEf6683db6B902084cB0FFECe40Da",
+   "relatedContracts": [
+    "0x22a2F7340a3fB4C7C389D91eE954766B12476721",
+    "0x42255e3C2d0b71a0b006243148fdF1a71d054cE0",
+    "0xE6A41fE61E7a1996B59d508661e3f524d6A32075",
+    "0x5C3F18F06CC09CA1910767A34a20F771039E37C0"
+   ],
    "slug": "aerodrome-finance-base",
    "sprints": [
     21
    ],
    "surfaces": [
     {
+     "blockNumber": 58203774,
      "classification": "parameter_delta",
      "id": "aerodrome-finance-base-emergency-council-migration-s21",
      "surface": "Voter emergency council and epoch governor: the AerodromeMigration contract",
@@ -162,6 +193,7 @@
      "targetLabel": "AerodromeVoter"
     },
     {
+     "blockNumber": 58203774,
      "classification": "aligned_baseline",
      "id": "aerodrome-finance-base-poolfactory-max-fee-3pct-s21",
      "surface": "Custom pool fee cap: 3%; pauser and fee manager: the 3-of-7 Safe",
@@ -174,7 +206,25 @@
     "AERO",
     "veAERO"
    ],
-   "url": "https://pacta.wtf/protocols/aerodrome-finance-base/"
+   "url": "https://pacta.wtf/protocols/aerodrome-finance-base/",
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "parameter_delta",
+      "documented": "github.com/aerodrome-finance/contracts (README): 'EpochGovernor.sol A simple epoch-based governance contract used exclusively for adjusting emissions.' / SPECIFICATION.md: 'Managed NFTs can be deactivated, a process whi…",
+      "observed": "Voter 0x16613524e02ad97eDfeF371bC883F2F5d6C480A5: emergencyCouncil() = epochGovernor() = AerodromeMigration 0x22a2F7340a3fB4C7C389D91eE954766B12476721 (Sourcify match;",
+      "parameter": "Voter emergency council and epoch governor: the AerodromeMigration contract",
+      "recordId": "aerodrome-finance-base-emergency-council-migration-s21"
+     }
+    ],
+    "matched": [
+     {
+      "parameter": "Custom pool fee cap: 3%; pauser and fee manager: the 3-of-7 Safe",
+      "recordId": "aerodrome-finance-base-poolfactory-max-fee-3pct-s21",
+      "value": "matches the documentation"
+     }
+    ]
+   }
   },
   {
    "baseEasUids": [
@@ -193,17 +243,27 @@
    "kind": "protocol",
    "name": "Aerodrome Slipstream (Base)",
    "observedDelaySeconds": null,
+   "pinnedBlock": 57842915,
    "preflightArgs": {
     "address": "0x5e7BB104d84c7CB9B682AaC2F3d509f5F406809A",
     "chain": "base"
    },
    "primaryContract": "0x5e7BB104d84c7CB9B682AaC2F3d509f5F406809A",
+   "relatedContracts": [
+    "0xE6A41fE61E7a1996B59d508661e3f524d6A32075",
+    "0x090b2A6bb475c00e2256e2095A60887cD710803b",
+    "0x0AD08370c76Ff426F534bb2AFFD9b5555338ee68",
+    "0x16613524e02ad97eDfeF371bC883F2F5d6C480A5",
+    "0x22a2F7340a3fB4C7C389D91eE954766B12476721",
+    "0x99249b10593fCa1Ae9DAE6D4819F1A6dae5C013D"
+   ],
    "slug": "aerodrome-slipstream-base",
    "sprints": [
     18
    ],
    "surfaces": [
     {
+     "blockNumber": 57842915,
      "classification": "aligned_baseline",
      "id": "aerodrome-slipstream-clfactory-team-3of7-s18",
      "surface": "CLFactory owner, swap & unstaked fee managers = Protocol Team 3-of-7 Safe",
@@ -216,7 +276,8 @@
     "AERO",
     "Slipstream"
    ],
-   "url": "https://pacta.wtf/protocols/aerodrome-slipstream-base/"
+   "url": "https://pacta.wtf/protocols/aerodrome-slipstream-base/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -235,17 +296,22 @@
    "kind": "protocol",
    "name": "Balancer V2 Vault & TimelockAuthorizer",
    "observedDelaySeconds": null,
+   "pinnedBlock": 26427612,
    "preflightArgs": {
     "address": "0xBA12222222228d8Ba445958a75a0704d566BF2C8",
     "chain": "ethereum"
    },
    "primaryContract": "0xBA12222222228d8Ba445958a75a0704d566BF2C8",
+   "relatedContracts": [
+    "0x10A19e7eE7d7F8a52822f6817de8ea18204F2e4f"
+   ],
    "slug": "balancer-v2-vault-timelock",
    "sprints": [
     21
    ],
    "surfaces": [
     {
+     "blockNumber": 26427612,
      "classification": "aligned_baseline",
      "id": "balancer-v2-vault-timelock-authorizer-admin-dao-multisig-s21",
      "surface": "Authorizer DEFAULT_ADMIN_ROLE: the 6-of-11 DAO Multi-sig",
@@ -253,6 +319,7 @@
      "targetLabel": "Balancer V2 Authorizer"
     },
     {
+     "blockNumber": 26427612,
      "classification": "aligned_baseline",
      "id": "balancer-v2-vault-timelock-vault-immutable-pause-expired-s21",
      "surface": "Vault: not a proxy; pause window ended",
@@ -265,7 +332,8 @@
     "BAL",
     "veBAL"
    ],
-   "url": "https://pacta.wtf/protocols/balancer-v2-vault-timelock/"
+   "url": "https://pacta.wtf/protocols/balancer-v2-vault-timelock/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [],
@@ -282,14 +350,20 @@
    "kind": "protocol",
    "name": "Bedrock (uniETH)",
    "observedDelaySeconds": null,
+   "pinnedBlock": 26414499,
    "preflightArgs": {
     "address": "0xF1376bceF0f78459C0Ed0ba5ddce976F1ddF51F4",
     "chain": "ethereum"
    },
    "primaryContract": "0xF1376bceF0f78459C0Ed0ba5ddce976F1ddF51F4",
+   "relatedContracts": [
+    "0x8a94866dF557Bb7FCe88EfF9917237286098e590",
+    "0xa5F2B6AB5B38b88Ba221741b3A189999b4c889C6"
+   ],
    "slug": "bedrock-unieth",
    "surfaces": [
     {
+     "blockNumber": 26414499,
      "classification": "rpc_observed",
      "id": "bedrock-unieth-control-plane",
      "surface": "RockXStakingProxy · 3-of-5 Safe Control Plane",
@@ -301,7 +375,8 @@
    "tokens": [
     "uniETH"
    ],
-   "url": "https://pacta.wtf/protocols/bedrock-unieth/"
+   "url": "https://pacta.wtf/protocols/bedrock-unieth/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [],
@@ -318,14 +393,21 @@
    "kind": "protocol",
    "name": "Beefy Finance (Base)",
    "observedDelaySeconds": 0,
+   "pinnedBlock": 57421449,
    "preflightArgs": {
     "address": "0xfc69704cC3cAac545cC7577009Ea4AA04F1a61Eb",
     "chain": "base"
    },
    "primaryContract": "0xfc69704cC3cAac545cC7577009Ea4AA04F1a61Eb",
+   "relatedContracts": [
+    "0x09D19184F46A32213DF06b981122e06882B61309",
+    "0xAb35d11199216c7F7368080Cf41beD8f3AbBc4E4",
+    "0x2b0C9702A4724f2BFe7922DB92c4082098533c62"
+   ],
    "slug": "beefy-finance-base",
    "surfaces": [
     {
+     "blockNumber": 57421449,
      "classification": "rpc_observed",
      "id": "beefy-finance-base-control-plane",
      "surface": "BeefyFeeConfig_Base · 3-of-6 Safe Control Plane",
@@ -337,7 +419,8 @@
    "tokens": [
     "BIFI"
    ],
-   "url": "https://pacta.wtf/protocols/beefy-finance-base/"
+   "url": "https://pacta.wtf/protocols/beefy-finance-base/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -356,17 +439,23 @@
    "kind": "protocol",
    "name": "Cap",
    "observedDelaySeconds": 86400,
+   "pinnedBlock": 26425374,
    "preflightArgs": {
     "address": "0xD8236031d8279d82E615aF2BFab5FC0127A329ab",
     "chain": "ethereum"
    },
    "primaryContract": "0xD8236031d8279d82E615aF2BFab5FC0127A329ab",
+   "relatedContracts": [
+    "0xb8FC49402dF3ee4f8587268FB89fda4d621a8793",
+    "0xcCcc62962d17b8914c62D74FfB843d73B2a3cccC"
+   ],
    "slug": "cap",
    "sprints": [
     20
    ],
    "surfaces": [
     {
+     "blockNumber": 26425374,
      "classification": "aligned_baseline",
      "id": "cap-1d-timelock-min-delay-s20",
      "surface": "TimelockController minimum delay: 1 day",
@@ -374,6 +463,7 @@
      "targetLabel": "Cap TimelockController (Developer multisig proposer)"
     },
     {
+     "blockNumber": 26425374,
      "classification": "protective_delta",
      "id": "cap-access-control-admin-is-timelock-s20",
      "surface": "Access-control admin: the Timelock, not the multisig directly",
@@ -381,6 +471,7 @@
      "targetLabel": "Cap AccessControl registry"
     },
     {
+     "blockNumber": 26425374,
      "classification": "aligned_baseline",
      "id": "cap-cusd-upgrade-role-timelock-only-s20",
      "surface": "cUSD upgrade role (bytes4(0)) holder: the Timelock only",
@@ -394,7 +485,30 @@
     "stcUSD",
     "CAP"
    ],
-   "url": "https://pacta.wtf/protocols/cap/"
+   "url": "https://pacta.wtf/protocols/cap/",
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "protective_delta",
+      "documented": "docs.cap.app (access controls): 'Roles are managed by the Access Control admin, currently set to Cap's multisig address'",
+      "observed": "AccessControl 0x7731129a10d51e18cDE607C5C115F26503D2c683: the only DEFAULT_ADMIN_ROLE member, and the only grantAccess / revokeAccess holder, is the Timelock 0xD8236031d8279d82E615aF2BFab5FC0127A329ab;",
+      "parameter": "Access-control admin: the Timelock, not the multisig directly",
+      "recordId": "cap-access-control-admin-is-timelock-s20"
+     }
+    ],
+    "matched": [
+     {
+      "parameter": "TimelockController minimum delay: 1 day",
+      "recordId": "cap-1d-timelock-min-delay-s20",
+      "value": "matches the documentation"
+     },
+     {
+      "parameter": "cUSD upgrade role (bytes4(0)) holder: the Timelock only",
+      "recordId": "cap-cusd-upgrade-role-timelock-only-s20",
+      "value": "matches the documentation"
+     }
+    ]
+   }
   },
   {
    "baseEasUids": [],
@@ -411,14 +525,17 @@
    "kind": "protocol",
    "name": "Centrifuge V3 Root (Base)",
    "observedDelaySeconds": null,
+   "pinnedBlock": 57421449,
    "preflightArgs": {
     "address": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
     "chain": "base"
    },
    "primaryContract": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
+   "relatedContracts": [],
    "slug": "centrifuge-liquidity-pools-base",
    "surfaces": [
     {
+     "blockNumber": 57421449,
      "classification": "rpc_observed",
      "id": "centrifuge-liquidity-pools-base-control-plane",
      "surface": "CentrifugeRoot_Base · Non-Proxy Bytecode & Role Architecture",
@@ -430,7 +547,8 @@
    "tokens": [
     "CFG"
    ],
-   "url": "https://pacta.wtf/protocols/centrifuge-liquidity-pools-base/"
+   "url": "https://pacta.wtf/protocols/centrifuge-liquidity-pools-base/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -449,17 +567,29 @@
    "kind": "protocol",
    "name": "Coinbase Wrapped Staked ETH",
    "observedDelaySeconds": null,
+   "pinnedBlock": 26427612,
    "preflightArgs": {
     "address": "0xBe9895146f7AF43049ca1c1AE358B0541Ea49704",
     "chain": "ethereum"
    },
    "primaryContract": "0xBe9895146f7AF43049ca1c1AE358B0541Ea49704",
+   "relatedContracts": [
+    "0x9b37180d847B27ADC13C2277299045C1237Ae281",
+    "0xA57aFe0Ba93f6854ed1DCd58dCE301E10B15D1D6",
+    "0xEeE4Ac8A22a6b310c53d59a7d59b3E0336C19577",
+    "0x4b8741C89ABFf2562e854899E24d67A36406eA03",
+    "0x9596EAE1744997161ac094252e5020E9314BDCc2",
+    "0xBE3c68821D585Cf1552214897a1c091014B1EB0a",
+    "0x7Dd4aa646b2e2850f9D809F9299E8E87AC97b77a",
+    "0x31724cA0C982A31fbb5C57f4217AB585271fc9a5"
+   ],
    "slug": "coinbase-wrapped-staked-eth",
    "sprints": [
     21
    ],
    "surfaces": [
     {
+     "blockNumber": 26427612,
      "classification": "aligned_baseline",
      "id": "coinbase-wrapped-staked-eth-oracle-exchange-rate-updater-s21",
      "surface": "Exchange-rate oracle: the rate-limited ExchangeRateUpdater",
@@ -467,6 +597,7 @@
      "targetLabel": "Coinbase Wrapped Staked ETH (cbETH) FiatTokenProxy"
     },
     {
+     "blockNumber": 26427612,
      "classification": "aligned_baseline",
      "id": "coinbase-wrapped-staked-eth-proxy-admin-separate-owner-s21",
      "surface": "Proxy admin separate from the token owner",
@@ -478,7 +609,8 @@
    "tokens": [
     "cbETH"
    ],
-   "url": "https://pacta.wtf/protocols/coinbase-wrapped-staked-eth/"
+   "url": "https://pacta.wtf/protocols/coinbase-wrapped-staked-eth/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -497,17 +629,27 @@
    "kind": "protocol",
    "name": "Compound V3 (Base)",
    "observedDelaySeconds": 86400,
+   "pinnedBlock": 57886975,
    "preflightArgs": {
     "address": "0x18281dfC4d00905DA1aaA6731414EABa843c468A",
     "chain": "base"
    },
    "primaryContract": "0x18281dfC4d00905DA1aaA6731414EABa843c468A",
+   "relatedContracts": [
+    "0x6d903f6003cca6255D85CcA4D3B5E5146dC33925",
+    "0xb125E6687d4313864e53df431d5425969c15Eb2F",
+    "0xbdE8F31D2DdDA895264e27DD990faB3DC87b372d",
+    "0x45939657d1CA34A8FA39A924B71D28Fe8431e581",
+    "0x3cb4653F3B45F448D9100b118B75a1503281d2ee",
+    "0xbbf3f1421D886E9b2c5D716B5192aC998af2012c"
+   ],
    "slug": "compound-v3-base",
    "sprints": [
     19
    ],
    "surfaces": [
     {
+     "blockNumber": 57886975,
      "classification": "aligned_baseline",
      "id": "compound-v3-base-mainnet-timelock-local-1d-delay-s19",
      "surface": "Both Base Comet markets are governed by the Ethereum Timelock through a bridge receiver and a 1-day local timelock",
@@ -515,6 +657,7 @@
      "targetLabel": "Compound BridgeReceiver (Base)"
     },
     {
+     "blockNumber": 57886975,
      "classification": "aligned_baseline",
      "id": "compound-v3-base-pause-guardian-community-multisig-5of9-s19",
      "surface": "Pause Guardian of both Base markets = 5-of-9 Safe with the Community Multi-Sig's owners",
@@ -527,7 +670,8 @@
     "COMP",
     "cUSDCv3"
    ],
-   "url": "https://pacta.wtf/protocols/compound-v3-base/"
+   "url": "https://pacta.wtf/protocols/compound-v3-base/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -546,17 +690,24 @@
    "kind": "protocol",
    "name": "Compound V3 (Comet)",
    "observedDelaySeconds": 172800,
+   "pinnedBlock": 26402160,
    "preflightArgs": {
     "address": "0xc3d688B66703497DAA19211EEdff47f25384cdc3",
     "chain": "ethereum"
    },
    "primaryContract": "0xc3d688B66703497DAA19211EEdff47f25384cdc3",
+   "relatedContracts": [
+    "0xA17581A9E3356d9A858b789D68B4d866e593aE94",
+    "0x309a862bbC1A00e45506cB8A802D1ff10004c8C0",
+    "0xbbf3f1421D886E9b2c5D716B5192aC998af2012c"
+   ],
    "slug": "compound-v3-comet",
    "sprints": [
     9
    ],
    "surfaces": [
     {
+     "blockNumber": 26402160,
      "classification": "aligned_baseline",
      "id": "compound-v3-comet-timelock-and-pause-safe",
      "surface": "Comet Governor, 48h Timelock & Pause-Guardian Safe",
@@ -570,7 +721,8 @@
     "cUSDCv3",
     "Comet"
    ],
-   "url": "https://pacta.wtf/protocols/compound-v3-comet/"
+   "url": "https://pacta.wtf/protocols/compound-v3-comet/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -589,17 +741,24 @@
    "kind": "protocol",
    "name": "Concrete",
    "observedDelaySeconds": null,
+   "pinnedBlock": 26425374,
    "preflightArgs": {
     "address": "0xB9DC54c8261745CB97070CeFBE3D3d815aee8f20",
     "chain": "ethereum"
    },
    "primaryContract": "0xB9DC54c8261745CB97070CeFBE3D3d815aee8f20",
+   "relatedContracts": [
+    "0x70EBF87bA7a1517c204979e51979cfbf693364F9",
+    "0x0265d73a8E61F698d8EB0dfeb91Ddce55516844C",
+    "0xFB65336D4323BA79d07F7024c81B8B69E1781527"
+   ],
    "slug": "concrete",
    "sprints": [
     20
    ],
    "surfaces": [
     {
+     "blockNumber": 26425374,
      "classification": "aligned_baseline",
      "id": "concrete-vault-default-admin-unassigned-s20",
      "surface": "Vault DEFAULT_ADMIN_ROLE: unassigned",
@@ -607,6 +766,7 @@
      "targetLabel": "Concrete ctDeltaWeETH vault (Concrete Delta WeETH)"
     },
     {
+     "blockNumber": 26425374,
      "classification": "parameter_delta",
      "id": "concrete-vault-owner-safe-1of2-s20",
      "surface": "Vault owner, VAULT_MANAGER and factory manager Safe threshold: 1-of-2",
@@ -614,6 +774,7 @@
      "targetLabel": "Concrete Delta WeETH owner multisig"
     },
     {
+     "blockNumber": 26425374,
      "classification": "aligned_baseline",
      "id": "concrete-vault-proxy-admin-factory-s20",
      "surface": "Vault proxy admin: the factory",
@@ -626,7 +787,30 @@
     "ctDeltaWeETH",
     "Concrete"
    ],
-   "url": "https://pacta.wtf/protocols/concrete/"
+   "url": "https://pacta.wtf/protocols/concrete/",
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "parameter_delta",
+      "documented": "docs.concrete.xyz (risks and safety): 'Separated roles.",
+      "observed": "Safe 0x8F5f1d40243b259cEB7aB44bA421Ff191bCD3381: getThreshold() = 1 with 2 owners;",
+      "parameter": "Vault owner, VAULT_MANAGER and factory manager Safe threshold: 1-of-2",
+      "recordId": "concrete-vault-owner-safe-1of2-s20"
+     }
+    ],
+    "matched": [
+     {
+      "parameter": "Vault DEFAULT_ADMIN_ROLE: unassigned",
+      "recordId": "concrete-vault-default-admin-unassigned-s20",
+      "value": "matches the documentation"
+     },
+     {
+      "parameter": "Vault proxy admin: the factory",
+      "recordId": "concrete-vault-proxy-admin-factory-s20",
+      "value": "matches the documentation"
+     }
+    ]
+   }
   },
   {
    "baseEasUids": [
@@ -645,17 +829,24 @@
    "kind": "protocol",
    "name": "Convex Finance",
    "observedDelaySeconds": null,
+   "pinnedBlock": 26401312,
    "preflightArgs": {
     "address": "0xF403C135812408BFbE8713b5A23a04b3D48AAE31",
     "chain": "ethereum"
    },
    "primaryContract": "0xF403C135812408BFbE8713b5A23a04b3D48AAE31",
+   "relatedContracts": [
+    "0x3cE6408F923326f81A7D7929952947748180f1E6",
+    "0x256e1bbA846611C37CF89844a02435E6C098b86D",
+    "0xa3C5A1e09150B75ff251c1a7815A07182c3de2FB"
+   ],
    "slug": "convex-finance",
    "sprints": [
     4
    ],
    "surfaces": [
     {
+     "blockNumber": 26401312,
      "classification": "aligned_baseline",
      "id": "convex-booster-governance-chain",
      "surface": "Sampled Booster Governance Ownership Chain",
@@ -668,7 +859,8 @@
     "CVX",
     "cvxCRV"
    ],
-   "url": "https://pacta.wtf/protocols/convex-finance/"
+   "url": "https://pacta.wtf/protocols/convex-finance/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -687,17 +879,27 @@
    "kind": "protocol",
    "name": "Curve Finance (crvUSD)",
    "observedDelaySeconds": null,
+   "pinnedBlock": 26403523,
    "preflightArgs": {
     "address": "0xC9332fdCB1C491Dcc683bAe86Fe3cb70360738BC",
     "chain": "ethereum"
    },
    "primaryContract": "0xC9332fdCB1C491Dcc683bAe86Fe3cb70360738BC",
+   "relatedContracts": [
+    "0xeDA020b067872717901916a3B8C724C21f6080d1",
+    "0x40907540d8a6C65c637785e8f8B742ae6b0b9968",
+    "0xE478de485ad2fe566d49342Cbd03E49ed7DB3356",
+    "0x467947EE34aF926cF1DCac093870f613C96B1E0c",
+    "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E",
+    "0x370a449FeBb9411c95bf897021377fe0B7D100c0"
+   ],
    "slug": "curve-finance-crvusd",
    "sprints": [
     11
    ],
    "surfaces": [
     {
+     "blockNumber": 26403523,
      "classification": "parameter_delta",
      "id": "curve-crvusd-factory-lending-owner-proxy",
      "surface": "ControllerFactory Admin Proxy & EmergencyDAO Debt-Ceiling Guard",
@@ -710,7 +912,19 @@
     "crvUSD",
     "CRV"
    ],
-   "url": "https://pacta.wtf/protocols/curve-finance-crvusd/"
+   "url": "https://pacta.wtf/protocols/curve-finance-crvusd/",
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "parameter_delta",
+      "documented": "curvefi/docs docs/developer/crvusd/factory.md states 'Only its admin, the CurveOwnershipAgent, can call to add a market';",
+      "observed": "ControllerFactory (0xC9332fdCB1C491Dcc683bAe86Fe3cb70360738BC) admin() = LendingOwnerProxy (0xeDA020b067872717901916a3B8C724C21f6080d1), where dao() = CurveOwnershipAgent (0x40907540d8a6C65c637785e8f8B742ae6b0b9968, Ara…",
+      "parameter": "ControllerFactory Admin Proxy & EmergencyDAO Debt-Ceiling Guard",
+      "recordId": "curve-crvusd-factory-lending-owner-proxy"
+     }
+    ],
+    "matched": []
+   }
   },
   {
    "baseEasUids": [
@@ -729,17 +943,26 @@
    "kind": "protocol",
    "name": "EigenLayer Core",
    "observedDelaySeconds": 864000,
+   "pinnedBlock": 26402160,
    "preflightArgs": {
     "address": "0xC06Fd4F821eaC1fF1ae8067b36342899b57BAa2d",
     "chain": "ethereum"
    },
    "primaryContract": "0xC06Fd4F821eaC1fF1ae8067b36342899b57BAa2d",
+   "relatedContracts": [
+    "0x39053D51B77DC0d36036Fc1fCc8Cb819df8Ef37A",
+    "0x8b9566AdA63B64d1E1dcF1418b43fd1433b72444",
+    "0x369e6F597e22EaB55fFb173C6d9cD234BD699111",
+    "0xFEA47018D632A77bA579846c840d5706705Dc598",
+    "0xB8765ed72235d279c3Fb53936E4606db0Ef12806"
+   ],
    "slug": "eigenlayer-core",
    "sprints": [
     9
    ],
    "surfaces": [
     {
+     "blockNumber": 26402160,
      "classification": "aligned_baseline",
      "id": "eigenlayer-core-proxy-admin-and-timelock",
      "surface": "Core ProxyAdmin, Dual-Owner Executor Safe & 10d Timelock",
@@ -751,7 +974,8 @@
    "tokens": [
     "EIGEN"
    ],
-   "url": "https://pacta.wtf/protocols/eigenlayer-core/"
+   "url": "https://pacta.wtf/protocols/eigenlayer-core/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -770,17 +994,23 @@
    "kind": "protocol",
    "name": "Enzyme Finance",
    "observedDelaySeconds": 604800,
+   "pinnedBlock": 26421541,
    "preflightArgs": {
     "address": "0xC3DC853dD716bd5754f421ef94fdCbac3902ab32",
     "chain": "ethereum"
    },
    "primaryContract": "0xC3DC853dD716bd5754f421ef94fdCbac3902ab32",
+   "relatedContracts": [
+    "0xb270FE91e8E4b80452fBF1b4704208792A350f53",
+    "0x4f1C53F096533C04d8157EFB6Bca3eb22ddC6360"
+   ],
    "slug": "enzyme-finance",
    "sprints": [
     18
    ],
    "surfaces": [
     {
+     "blockNumber": 26421541,
      "classification": "protective_delta",
      "id": "enzyme-dispatcher-7d-migration-timelock-s18",
      "surface": "Dispatcher migration timelock = 7 days (specs: 'no longer used and is set to 0')",
@@ -793,7 +1023,19 @@
     "MLN",
     "Enzyme"
    ],
-   "url": "https://pacta.wtf/protocols/enzyme-finance/"
+   "url": "https://pacta.wtf/protocols/enzyme-finance/",
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "protective_delta",
+      "documented": "0 s (no delay)",
+      "observed": "7 d",
+      "parameter": "Timelock delay",
+      "recordId": "enzyme-dispatcher-7d-migration-timelock-s18"
+     }
+    ],
+    "matched": []
+   }
   },
   {
    "baseEasUids": [
@@ -813,11 +1055,16 @@
    "kind": "protocol",
    "name": "Ethena (USDe / sUSDe)",
    "observedDelaySeconds": 86400,
+   "pinnedBlock": 26406106,
    "preflightArgs": {
     "address": "0xE8Dc0Fab349EA169283C48Ccfd09d797E6DB7c94",
     "chain": "ethereum"
    },
    "primaryContract": "0xE8Dc0Fab349EA169283C48Ccfd09d797E6DB7c94",
+   "relatedContracts": [
+    "0x3B0AAf6e6fCd4a7cEEf8c92C32DFeA9E64dC1862",
+    "0xe3490297a08d6fC8Da46Edb7B6142E4F461b62D3"
+   ],
    "slug": "ethena-usde-susde",
    "sprints": [
     7,
@@ -825,6 +1072,7 @@
    ],
    "surfaces": [
     {
+     "blockNumber": 26401638,
      "classification": "parameter_delta",
      "id": "ethena-admin-timelock-and-dev-safe",
      "surface": "TimelockController MinDelay & Dev Multisig Quorum",
@@ -832,6 +1080,7 @@
      "targetLabel": "EthenaTimelockController"
     },
     {
+     "blockNumber": 26406106,
      "classification": "parameter_delta",
      "id": "ethena-minting-rlusd-usat-onboarding-ops",
      "surface": "EthenaTimelockController 1d delay — queued RLUSD & USAT collateral onboarding",
@@ -845,7 +1094,19 @@
     "sUSDe",
     "ENA"
    ],
-   "url": "https://pacta.wtf/protocols/ethena-usde-susde/"
+   "url": "https://pacta.wtf/protocols/ethena-usde-susde/",
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "parameter_delta",
+      "documented": "7 d",
+      "observed": "1 d",
+      "parameter": "Timelock delay",
+      "recordId": "ethena-admin-timelock-and-dev-safe"
+     }
+    ],
+    "matched": []
+   }
   },
   {
    "baseEasUids": [
@@ -864,17 +1125,26 @@
    "kind": "protocol",
    "name": "Ethena USDtb",
    "observedDelaySeconds": 86400,
+   "pinnedBlock": 26422243,
    "preflightArgs": {
     "address": "0x73E35C5c35A274E34AdE6EB13cC7f62aEE323728",
     "chain": "ethereum"
    },
    "primaryContract": "0x73E35C5c35A274E34AdE6EB13cC7f62aEE323728",
+   "relatedContracts": [
+    "0x3B0AAf6e6fCd4a7cEEf8c92C32DFeA9E64dC1862",
+    "0xd93826BB299765c87D13AeBa2A7E5d9B27A03956",
+    "0x3C405F68d5C6eCE868e5646cAC926679839aCd68",
+    "0x9D6d77a21702b9AFcF924983fbFB84AAAAe79589",
+    "0xe897D8620D5EbA2C8ecAAF0aDa191a23230aB8Ec"
+   ],
    "slug": "ethena-usdtb",
    "sprints": [
     19
    ],
    "surfaces": [
     {
+     "blockNumber": 26422243,
      "classification": "protective_delta",
      "id": "ethena-usdtb-psm-owner-24h-timelock-s19",
      "surface": "USDtb PSM owned by a 24-hour TimelockController (Dev multisig proposes), not by the Dev multisig directly",
@@ -882,6 +1152,7 @@
      "targetLabel": "USDtb PSM"
     },
     {
+     "blockNumber": 26422243,
      "classification": "aligned_baseline",
      "id": "ethena-usdtb-single-admin-no-timelock-s19",
      "surface": "USDtb token administered by a single admin address with no timelock (issuer: Anchorage)",
@@ -894,7 +1165,25 @@
     "USDtb",
     "USDTB"
    ],
-   "url": "https://pacta.wtf/protocols/ethena-usdtb/"
+   "url": "https://pacta.wtf/protocols/ethena-usdtb/",
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "protective_delta",
+      "documented": "docs.ethena.fi key addresses (Dev multisig): '5/11 signers.' and 'Owner of Ethena's deployed mainnet smart contracts & able to modify contract parameters.'",
+      "observed": "PSM (0x73E35C5c35A274E34AdE6EB13cC7f62aEE323728).owner() = EthenaTimelockController 0xE8Dc0Fab349EA169283C48Ccfd09d797E6DB7c94 (getMinDelay() = 86400s), which also holds the PSM DEFAULT_ADMIN_ROLE (the Dev multisig does…",
+      "parameter": "USDtb PSM owned by a 24-hour TimelockController (Dev multisig proposes), not by the Dev multisig directly",
+      "recordId": "ethena-usdtb-psm-owner-24h-timelock-s19"
+     }
+    ],
+    "matched": [
+     {
+      "parameter": "USDtb token administered by a single admin address with no timelock (issuer: Anchorage)",
+      "recordId": "ethena-usdtb-single-admin-no-timelock-s19",
+      "value": "matches the documentation"
+     }
+    ]
+   }
   },
   {
    "baseEasUids": [
@@ -914,11 +1203,17 @@
    "kind": "protocol",
    "name": "ether.fi Core (eETH / weETH)",
    "observedDelaySeconds": 864000,
+   "pinnedBlock": 26405302,
    "preflightArgs": {
     "address": "0x9f26d4C958fD811A1F59B01B86Be7dFFc9d20761",
     "chain": "ethereum"
    },
    "primaryContract": "0x9f26d4C958fD811A1F59B01B86Be7dFFc9d20761",
+   "relatedContracts": [
+    "0xcD425f44758a08BaAB3C4908f3e3dE5776e45d7a",
+    "0x308861A430be4cce5502d0A12724771Fc6DaF216",
+    "0xD789870beA40D056A4d26055d0bEFcC8755DA146"
+   ],
    "slug": "ether-fi-core-eeth-weeth",
    "sprints": [
     7,
@@ -926,6 +1221,7 @@
    ],
    "surfaces": [
     {
+     "blockNumber": 26401638,
      "classification": "aligned_baseline",
      "id": "etherfi-core-timelocks",
      "surface": "Sampled Upgrade & Operating Timelock Delays",
@@ -933,6 +1229,7 @@
      "targetLabel": "ether.fi Upgrade Timelock"
     },
     {
+     "blockNumber": 26405302,
      "classification": "protective_delta",
      "id": "etherfi-core-timelock-op-0x244e",
      "surface": "Core Upgrade Timelock (10d) — queued LayerZero V2 setDelegate to Timelock",
@@ -946,7 +1243,25 @@
     "weETH",
     "ETHFI"
    ],
-   "url": "https://pacta.wtf/protocols/ether-fi-core-eeth-weeth/"
+   "url": "https://pacta.wtf/protocols/ether-fi-core-eeth-weeth/",
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "protective_delta",
+      "documented": "Public pre-execution brief https://pacta.wtf/briefs/etherfi-op-0x244e/ (decoded calldata, storage-layout and delegate trace).",
+      "observed": "getMinDelay() = 864000s (10d);",
+      "parameter": "Core Upgrade Timelock (10d) — queued LayerZero V2 setDelegate to Timelock",
+      "recordId": "etherfi-core-timelock-op-0x244e"
+     }
+    ],
+    "matched": [
+     {
+      "parameter": "Sampled Upgrade & Operating Timelock Delays",
+      "recordId": "etherfi-core-timelocks",
+      "value": "matches the documentation"
+     }
+    ]
+   }
   },
   {
    "baseEasUids": [
@@ -965,17 +1280,22 @@
    "kind": "protocol",
    "name": "ether.fi Liquid / Veda BoringVault",
    "observedDelaySeconds": 86400,
+   "pinnedBlock": 26401070,
    "preflightArgs": {
     "address": "0x485Bde66Bb668a51f2372E34e45B1c6226798122",
     "chain": "ethereum"
    },
    "primaryContract": "0x485Bde66Bb668a51f2372E34e45B1c6226798122",
+   "relatedContracts": [
+    "0x0d05D94a5F1E76C18fbeB7A13d17C8a314088198"
+   ],
    "slug": "ether-fi-liquid-veda-boringvault",
    "sprints": [
     3
    ],
    "surfaces": [
     {
+     "blockNumber": 26401070,
      "classification": "aligned_baseline",
      "id": "etherfi-liquid-veda-roles-authority",
      "surface": "Sampled RolesAuthority Owner & Timelock Wiring",
@@ -989,7 +1309,8 @@
     "Veda",
     "BoringVault"
    ],
-   "url": "https://pacta.wtf/protocols/ether-fi-liquid-veda-boringvault/"
+   "url": "https://pacta.wtf/protocols/ether-fi-liquid-veda-boringvault/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -1008,17 +1329,28 @@
    "kind": "protocol",
    "name": "Euler V2 (EVK)",
    "observedDelaySeconds": 345600,
+   "pinnedBlock": 26421541,
    "preflightArgs": {
     "address": "0x29a56a1b8214D9Cf7c5561811750D5cBDb45CC8e",
     "chain": "ethereum"
    },
    "primaryContract": "0x29a56a1b8214D9Cf7c5561811750D5cBDb45CC8e",
+   "relatedContracts": [
+    "0x2F13256E04022d6356d8CE8C53C7364e13DC1f3d",
+    "0xcAD001c30E96765aC90307669d578219D4fb1DCe",
+    "0xb3b84e8320250Afe7a5fb313Ee32B52982b73c53",
+    "0xB1345E7A4D35FB3E6bF22A32B3741Ae74E5Fba27",
+    "0xff217004BdD3A6A592162380dc0E6BbF143291eB",
+    "0xcC6451385685721778E7Bd80B54F8c92b484F601",
+    "0x0C9a3dd6b8F28529d72d7f9cE918D493519EE383"
+   ],
    "slug": "euler-v2-evk",
    "sprints": [
     18
    ],
    "surfaces": [
     {
+     "blockNumber": 26421541,
      "classification": "aligned_baseline",
      "id": "euler-v2-evk-factorygovernor-4d-timelock-s18",
      "surface": "EVK factory upgradeAdmin = FactoryGovernor behind a 4d TimelockController (DAO 4-of-8 proposes)",
@@ -1032,7 +1364,8 @@
     "EVK",
     "EVC"
    ],
-   "url": "https://pacta.wtf/protocols/euler-v2-evk/"
+   "url": "https://pacta.wtf/protocols/euler-v2-evk/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [],
@@ -1049,14 +1382,17 @@
    "kind": "protocol",
    "name": "Extra Finance (Base)",
    "observedDelaySeconds": null,
+   "pinnedBlock": 57421449,
    "preflightArgs": {
     "address": "0xBB505c54D71E9e599cB8435b4F0cEEc05fC71cbD",
     "chain": "base"
    },
    "primaryContract": "0xBB505c54D71E9e599cB8435b4F0cEEc05fC71cbD",
+   "relatedContracts": [],
    "slug": "extra-finance-base",
    "surfaces": [
     {
+     "blockNumber": 57421449,
      "classification": "rpc_observed",
      "id": "extra-finance-base-control-plane",
      "surface": "ExtraLendingPool_Base · Non-Proxy Bytecode & Role Architecture",
@@ -1068,7 +1404,8 @@
    "tokens": [
     "EXTRA"
    ],
-   "url": "https://pacta.wtf/protocols/extra-finance-base/"
+   "url": "https://pacta.wtf/protocols/extra-finance-base/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -1087,17 +1424,27 @@
    "kind": "protocol",
    "name": "f(x) Protocol v2",
    "observedDelaySeconds": null,
+   "pinnedBlock": 26400152,
    "preflightArgs": {
     "address": "0x32356FE312Eba9B7D6A157ad28D1ca91b571CdA6",
     "chain": "ethereum"
    },
    "primaryContract": "0x32356FE312Eba9B7D6A157ad28D1ca91b571CdA6",
+   "relatedContracts": [
+    "0xb178197E88D58Da21bE22A408E850d1e6Dc09A38",
+    "0x6D9e81c5b7C4b37d0Fe9E8CDA776e057f4040868",
+    "0x87d5e4cAaF4358A4337C10859c7107c7AEF4f8Ce",
+    "0x26B2ec4E02ebe2F54583af25b647b1D619e67BbF",
+    "0x28c921adAC4c1072658eB01a28DA06b5F651eF62",
+    "0x68863fb8855b04509a835082478D6E3D0bE4E61a"
+   ],
    "slug": "f-x-protocol-v2",
    "sprints": [
     2
    ],
    "surfaces": [
     {
+     "blockNumber": 26400152,
      "classification": "parameter_delta",
      "id": "fx-protocol-v2-treasury-admin",
      "surface": "ProtocolTreasury DEFAULT_ADMIN_ROLE Holders",
@@ -1110,7 +1457,19 @@
     "fxUSD",
     "FXN"
    ],
-   "url": "https://pacta.wtf/protocols/f-x-protocol-v2/"
+   "url": "https://pacta.wtf/protocols/f-x-protocol-v2/",
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "parameter_delta",
+      "documented": "LongPoolManager (0x250893CA4Ba5d05626C785e8da758026928FCD24) and v2 governance docs scope EmergencySafe strictly to EMERGENCY_ROLE behind 3-day Timelock admin.",
+      "observed": "DEFAULT_ADMIN_ROLE (0x00) on all 4 v2 ProtocolTreasury proxies (0x32356FE312Eba9B7D6A157ad28D1ca91b571CdA6, 0xb178197E88D58Da21bE22A408E850d1e6Dc09A38, 0x6D9e81c5b7C4b37d0Fe9E8CDA776e057f4040868, 0x87d5e4cAaF4358A4337C1…",
+      "parameter": "ProtocolTreasury DEFAULT_ADMIN_ROLE Holders",
+      "recordId": "fx-protocol-v2-treasury-admin"
+     }
+    ],
+    "matched": []
+   }
   },
   {
    "baseEasUids": [
@@ -1129,17 +1488,25 @@
    "kind": "protocol",
    "name": "Falcon Finance (USDf / sUSDf)",
    "observedDelaySeconds": 0,
+   "pinnedBlock": 26418060,
    "preflightArgs": {
     "address": "0xc8CF6D7991f15525488b2A83Df53468D682Ba4B0",
     "chain": "ethereum"
    },
    "primaryContract": "0xc8CF6D7991f15525488b2A83Df53468D682Ba4B0",
+   "relatedContracts": [
+    "0xFa2B947eEc368f42195f24F36d2aF29f7c24CeC2",
+    "0x3Ef1127Fdf81B553066daE0FaEA58785A2AA6E14",
+    "0x16a2605C026BFe4f4B7f4471933714D9b2149AcE",
+    "0x1E482B60bf19Cb1cc859389e0eA3DED153f16Bd7"
+   ],
    "slug": "falcon-finance-usdf-susdf",
    "sprints": [
     17
    ],
    "surfaces": [
     {
+     "blockNumber": 26418060,
      "classification": "aligned_baseline",
      "id": "falcon-susdf-zero-cooldown-instant-unstake-s17",
      "surface": "sUSDf cooldownDuration() = 0 — instant unstaking to USDf",
@@ -1152,7 +1519,8 @@
     "USDf",
     "sUSDf"
    ],
-   "url": "https://pacta.wtf/protocols/falcon-finance-usdf-susdf/"
+   "url": "https://pacta.wtf/protocols/falcon-finance-usdf-susdf/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -1171,17 +1539,26 @@
    "kind": "protocol",
    "name": "Fluid / Instadapp",
    "observedDelaySeconds": null,
+   "pinnedBlock": 26401405,
    "preflightArgs": {
     "address": "0x324c5Dc1fC42c7a4D43d92df1eBA58a54d13Bf2d",
     "chain": "ethereum"
    },
    "primaryContract": "0x324c5Dc1fC42c7a4D43d92df1eBA58a54d13Bf2d",
+   "relatedContracts": [
+    "0x4F6F977aCDD1177DCD81aB83074855EcB9C2D49e",
+    "0x7FE0B032cB5982Af72498F96be3DD6566F7B7de8",
+    "0xee327311D8640156E87eC33ea55FcbF2309e0ce6",
+    "0x984636a30ed2B4A61FB7150CED644096349275d3",
+    "0x0e19B64F3A79FeeE12Df1b6f239929c6ab6C7ED0"
+   ],
    "slug": "fluid-instadapp",
    "sprints": [
     5
    ],
    "surfaces": [
     {
+     "blockNumber": 26401405,
      "classification": "parameter_delta",
      "id": "fluid-instadapp-vault-factory-auth",
      "surface": "VaultFactory.isVaultAuth Migration Scope",
@@ -1194,7 +1571,19 @@
     "FLUID",
     "INST"
    ],
-   "url": "https://pacta.wtf/protocols/fluid-instadapp/"
+   "url": "https://pacta.wtf/protocols/fluid-instadapp/",
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "parameter_delta",
+      "documented": "fluid-permissions-and-mutability.md describes narrow fee/reward/magnifier team multisig scope outside migration grants.",
+      "observed": "isVaultAuth(vault, 0x4F6F977aCDD1177DCD81aB83074855EcB9C2D49e) returns true on Vault 76 (0x7FE0B032cB5982Af72498F96be3DD6566F7B7de8), Vault 110 (0xee327311D8640156E87eC33ea55FcbF2309e0ce6), Vault 111 (0x984636a30ed2B4A6…",
+      "parameter": "VaultFactory.isVaultAuth Migration Scope",
+      "recordId": "fluid-instadapp-vault-factory-auth"
+     }
+    ],
+    "matched": []
+   }
   },
   {
    "baseEasUids": [
@@ -1213,17 +1602,25 @@
    "kind": "protocol",
    "name": "Frax Ether (frxETH / sfrxETH)",
    "observedDelaySeconds": null,
+   "pinnedBlock": 26425374,
    "preflightArgs": {
     "address": "0xbAFA44EFE7901E04E39Dad13167D089C559c1138",
     "chain": "ethereum"
    },
    "primaryContract": "0xbAFA44EFE7901E04E39Dad13167D089C559c1138",
+   "relatedContracts": [
+    "0x1c1649A38f4A3c5A0c4a24070f688C525AB7D6E6",
+    "0xbBc424e58ED38dd911309611ae2d7A23014Bd960",
+    "0xfFFffF4F3baC444b2C0ecf2A1840d018bE783937",
+    "0x223a681fc5c5522c85C96157c0efA18cd6c5405c"
+   ],
    "slug": "frax-ether-sfrxeth",
    "sprints": [
     20
    ],
    "surfaces": [
     {
+     "blockNumber": 26425374,
      "classification": "aligned_baseline",
      "id": "frax-ether-comptroller-owns-frxethminter-s20",
      "surface": "frxETHMinter owner: the documented Comptroller",
@@ -1231,6 +1628,7 @@
      "targetLabel": "frxETHMinter"
     },
     {
+     "blockNumber": 26425374,
      "classification": "aligned_baseline",
      "id": "frax-ether-lockbox-multisig-3of5-s20",
      "surface": "Ethereum lockbox owner Safe threshold: 3-of-5",
@@ -1238,6 +1636,7 @@
      "targetLabel": "Frax Ethereum lockbox multisig (LayerZero delegate)"
     },
     {
+     "blockNumber": 26425374,
      "classification": "aligned_baseline",
      "id": "frax-ether-upgrade-timelock-24h-s20",
      "surface": "Ethereum upgrade Timelock delay: 24 hours",
@@ -1251,7 +1650,8 @@
     "sfrxETH",
     "FXS"
    ],
-   "url": "https://pacta.wtf/protocols/frax-ether-sfrxeth/"
+   "url": "https://pacta.wtf/protocols/frax-ether-sfrxeth/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -1270,17 +1670,28 @@
    "kind": "protocol",
    "name": "Gearbox V3 / V3.1",
    "observedDelaySeconds": 129600,
+   "pinnedBlock": 26403523,
    "preflightArgs": {
     "address": "0xa133C9A92Fb8dDB962Af1cbae58b2723A0bdf23b",
     "chain": "ethereum"
    },
    "primaryContract": "0xa133C9A92Fb8dDB962Af1cbae58b2723A0bdf23b",
+   "relatedContracts": [
+    "0x29B97F37B3E0C704bCFD785F5b7bBa2A0B7df2c7",
+    "0x77777777144339Bdc3aCceE992D8d4D31734CB2e",
+    "0x1E9ec044853611F4bCD4BBcFE7657508BD1c53D3",
+    "0xA7D5DDc1b8557914F158076b228AA91eF613f1D5",
+    "0xbb803559B4D58b75E12dd74641AB955e8B0Df40E",
+    "0x7b065Fcb0760dF0CEA8CFd144e08554F3CeA73D1",
+    "0x3E965117A51186e41c2BB58b729A1e518A715e5F"
+   ],
    "slug": "gearbox-v3-v3-1",
    "sprints": [
     11
    ],
    "surfaces": [
     {
+     "blockNumber": 26403523,
      "classification": "parameter_delta",
      "id": "gearbox-v3-legacy-timelock-and-instance-safe",
      "surface": "LegacyTimelock Delay & InstanceManager Safe Quorum",
@@ -1292,7 +1703,25 @@
    "tokens": [
     "GEAR"
    ],
-   "url": "https://pacta.wtf/protocols/gearbox-v3-v3-1/"
+   "url": "https://pacta.wtf/protocols/gearbox-v3-v3-1/",
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "parameter_delta",
+      "documented": "2 d",
+      "observed": "36 h",
+      "parameter": "Timelock delay",
+      "recordId": "gearbox-v3-legacy-timelock-and-instance-safe"
+     }
+    ],
+    "matched": [
+     {
+      "parameter": "Safe threshold",
+      "recordId": "gearbox-v3-legacy-timelock-and-instance-safe",
+      "value": "4-of-12"
+     }
+    ]
+   }
   },
   {
    "baseEasUids": [
@@ -1311,17 +1740,25 @@
    "kind": "protocol",
    "name": "Grove Finance",
    "observedDelaySeconds": null,
+   "pinnedBlock": 26427612,
    "preflightArgs": {
     "address": "0x491EDFB0B8b608044e227225C715981a30F3A44E",
     "chain": "ethereum"
    },
    "primaryContract": "0x491EDFB0B8b608044e227225C715981a30F3A44E",
+   "relatedContracts": [
+    "0x5F5cfCB8a463868E37Ab27B5eFF3ba02112dF19a",
+    "0x1369f7b2b38c76B6478c0f0E66D94923421891Ba",
+    "0xB0113804960345fd0a245788b3423319c86940e5",
+    "0x0eEC86649E756a23CBc68d9EFEd756f16aD5F85f"
+   ],
    "slug": "grove-finance",
    "sprints": [
     21
    ],
    "surfaces": [
     {
+     "blockNumber": 26427612,
      "classification": "aligned_baseline",
      "id": "grove-finance-alm-admin-subproxy-s21",
      "surface": "Role admin over allocator custody: Grove SubProxy (Sky governance)",
@@ -1329,6 +1766,7 @@
      "targetLabel": "Grove ALMProxy (custody of allocator funds)"
     },
     {
+     "blockNumber": 26427612,
      "classification": "aligned_baseline",
      "id": "grove-finance-freezer-safe-2of5-s21",
      "surface": "Emergency freeze of relayers: 2-of-5 Freezer Safe",
@@ -1336,6 +1774,7 @@
      "targetLabel": "Grove MainnetController (rate-limited relayer operations)"
     },
     {
+     "blockNumber": 26427612,
      "classification": "aligned_baseline",
      "id": "grove-finance-relayer-safe-4of7-s21",
      "surface": "Day-to-day DeFi execution: 4-of-7 Relayer Safe",
@@ -1348,7 +1787,8 @@
     "GROVE",
     "stGROVE"
    ],
-   "url": "https://pacta.wtf/protocols/grove-finance/"
+   "url": "https://pacta.wtf/protocols/grove-finance/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -1367,17 +1807,22 @@
    "kind": "protocol",
    "name": "infiniFi",
    "observedDelaySeconds": 604800,
+   "pinnedBlock": 26425374,
    "preflightArgs": {
     "address": "0x3D18480CC32B6AB3B833dCabD80E76CfD41c48a9",
     "chain": "ethereum"
    },
    "primaryContract": "0x3D18480CC32B6AB3B833dCabD80E76CfD41c48a9",
+   "relatedContracts": [
+    "0x4B174afbeD7b98BA01F50E36109EEE5e6d327c32"
+   ],
    "slug": "infinifi",
    "sprints": [
     20
    ],
    "surfaces": [
     {
+     "blockNumber": 26425374,
      "classification": "aligned_baseline",
      "id": "infinifi-long-timelock-7d-s20",
      "surface": "Long governance timelock delay: 7 days (Short timelock: 1 day)",
@@ -1385,6 +1830,7 @@
      "targetLabel": "infiniFi Long Timelock (GOVERNOR)"
     },
     {
+     "blockNumber": 26425374,
      "classification": "parameter_delta",
      "id": "infinifi-pause-role-admin-minor-roles-s20",
      "surface": "PAUSE / UNPAUSE role admin: MINOR_ROLES_MANAGER, not GOVERNOR",
@@ -1392,6 +1838,7 @@
      "targetLabel": "InfiniFiCore role registry"
     },
     {
+     "blockNumber": 26425374,
      "classification": "aligned_baseline",
      "id": "infinifi-team-multisig-4of7-s20",
      "surface": "Team Multisig threshold: 4-of-7",
@@ -1405,7 +1852,30 @@
     "siUSD",
     "liUSD"
    ],
-   "url": "https://pacta.wtf/protocols/infinifi/"
+   "url": "https://pacta.wtf/protocols/infinifi/",
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "parameter_delta",
+      "documented": "docs.infinifi.xyz (roles documentation): 'PAUSE / Pause protocol functions / GOVERNOR / UNPAUSE / Unpause functions / GOVERNOR'",
+      "observed": "InfiniFiCore 0xF6d48735EcCf12bDC1DF2674b1ce3fcb3bD25490: getRoleAdmin(UNPAUSE) = getRoleAdmin(PAUSE) = keccak256(\"MINOR_ROLES_MANAGER\") (0x9849206c..6512), whose members are the Team Multisig 0x80608f852D152024c0a2087b1…",
+      "parameter": "PAUSE / UNPAUSE role admin: MINOR_ROLES_MANAGER, not GOVERNOR",
+      "recordId": "infinifi-pause-role-admin-minor-roles-s20"
+     }
+    ],
+    "matched": [
+     {
+      "parameter": "Long governance timelock delay: 7 days (Short timelock: 1 day)",
+      "recordId": "infinifi-long-timelock-7d-s20",
+      "value": "matches the documentation"
+     },
+     {
+      "parameter": "Team Multisig threshold: 4-of-7",
+      "recordId": "infinifi-team-multisig-4of7-s20",
+      "value": "matches the documentation"
+     }
+    ]
+   }
   },
   {
    "baseEasUids": [
@@ -1425,11 +1895,17 @@
    "kind": "protocol",
    "name": "Inverse Finance (FiRM)",
    "observedDelaySeconds": 172800,
+   "pinnedBlock": 26406106,
    "preflightArgs": {
     "address": "0x4b6c63E6a94ef26E2dF60b89372db2d8e211F1B7",
     "chain": "ethereum"
    },
    "primaryContract": "0x4b6c63E6a94ef26E2dF60b89372db2d8e211F1B7",
+   "relatedContracts": [
+    "0xBeCCB6bb0aa4ab551966A7E4B97cec74bb359Bf6",
+    "0x941c2699eC7E55a50Bde030d8E1e70649839259D",
+    "0xC45E9c231ab5D9Bd3F1131E7901B100D8D236C4d"
+   ],
    "slug": "inverse-finance-firm",
    "sprints": [
     1,
@@ -1437,6 +1913,7 @@
    ],
    "surfaces": [
     {
+     "blockNumber": 26399876,
      "classification": "parameter_delta",
      "id": "inverse-finance-firm-policy-safe",
      "surface": "Policy Committee Safe Quorum & GovernorMills Timelock",
@@ -1444,6 +1921,7 @@
      "targetLabel": "Policy Committee Safe"
     },
     {
+     "blockNumber": 26406106,
      "classification": "protective_delta",
      "id": "inverse-firm-borrowcontroller-staleness-sentinel",
      "surface": "BorrowController stalenessThreshold 0-sentinel — queued 48h fix for sDOLA market",
@@ -1457,7 +1935,32 @@
     "INV",
     "FiRM"
    ],
-   "url": "https://pacta.wtf/protocols/inverse-finance-firm/"
+   "url": "https://pacta.wtf/protocols/inverse-finance-firm/",
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "parameter_delta",
+      "documented": "Working-groups governance documentation lists 5-of-9 Policy Committee multisig.",
+      "observed": "GovernorMills (0xBeCCB6bb0aa4ab551966A7E4B97cec74bb359Bf6) guardian() wrapper (0x941c2699eC7E55a50Bde030d8E1e70649839259D) references Policy Committee Safe (0x4b6c63E6a94ef26E2dF60b89372db2d8e211F1B7) with getThreshold(…",
+      "parameter": "Policy Committee Safe Quorum & GovernorMills Timelock",
+      "recordId": "inverse-finance-firm-policy-safe"
+     },
+     {
+      "classification": "protective_delta",
+      "documented": "Verified BorrowController source (Sourcify exact_match): 'if(marketStalenessThreshold == 0) return false;'.",
+      "observed": "Timelock (0x926dF14a23BE491164dCF93f4c468A50ef659D5B) delay() = 172800s (48h), and the Timelock is BorrowController.operator().",
+      "parameter": "BorrowController stalenessThreshold 0-sentinel — queued 48h fix for sDOLA market",
+      "recordId": "inverse-firm-borrowcontroller-staleness-sentinel"
+     }
+    ],
+    "matched": [
+     {
+      "parameter": "Timelock delay",
+      "recordId": "inverse-finance-firm-policy-safe",
+      "value": "2 d"
+     }
+    ]
+   }
   },
   {
    "baseEasUids": [
@@ -1477,11 +1980,18 @@
    "kind": "protocol",
    "name": "Kelp DAO (rsETH)",
    "observedDelaySeconds": 864000,
+   "pinnedBlock": 26406106,
    "preflightArgs": {
     "address": "0x49bD9989E31aD35B0A62c20BE86335196A3135B1",
     "chain": "ethereum"
    },
    "primaryContract": "0x49bD9989E31aD35B0A62c20BE86335196A3135B1",
+   "relatedContracts": [
+    "0xb61e0E39b6d4030C36A176f576aaBE44BF59Dc78",
+    "0x947Cb49334e6571ccBFEF1f1f1178d8469D65ec7",
+    "0xb3696a817D01C8623E66D156B6798291fa10a46d",
+    "0x036676389e48133B63a802f8635AD39E752D375D"
+   ],
    "slug": "kelp-dao-rseth",
    "sprints": [
     9,
@@ -1489,6 +1999,7 @@
    ],
    "surfaces": [
     {
+     "blockNumber": 26402160,
      "classification": "aligned_baseline",
      "id": "kelp-dao-rseth-proxy-admin-and-timelock",
      "surface": "ProxyAdmin 10d Timelock & LRTConfig Admin Safe",
@@ -1496,6 +2007,7 @@
      "targetLabel": "KelpTimelockController"
     },
     {
+     "blockNumber": 26406106,
      "classification": "aligned_baseline",
      "id": "kelp-rseth-proxyadmin-10d-timelock-s14",
      "surface": "rsETH & LRTDepositPool ProxyAdmin owned by 10d TimelockController",
@@ -1507,7 +2019,8 @@
    "tokens": [
     "rsETH"
    ],
-   "url": "https://pacta.wtf/protocols/kelp-dao-rseth/"
+   "url": "https://pacta.wtf/protocols/kelp-dao-rseth/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -1526,17 +2039,26 @@
    "kind": "protocol",
    "name": "Lido (stETH / Dual Governance)",
    "observedDelaySeconds": 259200,
+   "pinnedBlock": 26403121,
    "preflightArgs": {
     "address": "0xCE0425301C85c5Ea2A0873A2dEe44d78E02D2316",
     "chain": "ethereum"
    },
    "primaryContract": "0xCE0425301C85c5Ea2A0873A2dEe44d78E02D2316",
+   "relatedContracts": [
+    "0xC1db28B3301331277e307FDCfF8DE28242A4486E",
+    "0x8B7854488Fde088d686Ea672B6ba1A5242515f45",
+    "0xC7792b3F2B399bB0EdF53fECDceCeB97FBEB18AF",
+    "0xFFe21561251c49AdccFad065C94Fb4931dF49081",
+    "0x8772E3a2D86B9347A2688f9bc1808A6d8917760C"
+   ],
    "slug": "lido-steth-dual-governance",
    "sprints": [
     10
    ],
    "surfaces": [
     {
+     "blockNumber": 26403121,
      "classification": "aligned_baseline",
      "id": "lido-dual-governance-emergency-timelock",
      "surface": "EmergencyProtectedTimelock Delays, DualGovernance & Committee Safes",
@@ -1550,7 +2072,8 @@
     "wstETH",
     "LDO"
    ],
-   "url": "https://pacta.wtf/protocols/lido-steth-dual-governance/"
+   "url": "https://pacta.wtf/protocols/lido-steth-dual-governance/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -1569,17 +2092,27 @@
    "kind": "protocol",
    "name": "Liquid Collective (LsETH)",
    "observedDelaySeconds": null,
+   "pinnedBlock": 26422243,
    "preflightArgs": {
     "address": "0x8c1BEd5b9a0928467c9B1341Da1D7BD5e10b6549",
     "chain": "ethereum"
    },
    "primaryContract": "0x8c1BEd5b9a0928467c9B1341Da1D7BD5e10b6549",
+   "relatedContracts": [
+    "0x3A5b4db174a3CC17d8cE40C5B04272737195151b",
+    "0x8EE3fC0Bcd7B57429203751C5bE5fdf1AB8409f3",
+    "0xd745A68c705F5aa75DFf528540678288ed2aD9eE",
+    "0xE3208Aa9d1186c1D1C8A5b76E794b2B68E6cb3a5",
+    "0xDE55C9dc78f985fE1502484Cb98EBfAB66A56B62",
+    "0x0056f9ed62dAa4dc3F972340C92326AcCddd1a9D"
+   ],
    "slug": "liquid-collective-lseth",
    "sprints": [
     19
    ],
    "surfaces": [
     {
+     "blockNumber": 26422243,
      "classification": "aligned_baseline",
      "id": "liquid-collective-lseth-admin-multisig-4of7-s19",
      "surface": "River (LsETH) upgrade and admin Firewalls are administered by 4-of-7 Safes",
@@ -1587,6 +2120,7 @@
      "targetLabel": "River (LsETH) proxy"
     },
     {
+     "blockNumber": 26422243,
      "classification": "aligned_baseline",
      "id": "liquid-collective-lseth-service-fee-10pct-s19",
      "surface": "Protocol service fee = 10.0% of network rewards",
@@ -1599,7 +2133,8 @@
     "LsETH",
     "Liquid Collective"
    ],
-   "url": "https://pacta.wtf/protocols/liquid-collective-lseth/"
+   "url": "https://pacta.wtf/protocols/liquid-collective-lseth/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -1618,17 +2153,23 @@
    "kind": "protocol",
    "name": "Liquity V2 (BOLD)",
    "observedDelaySeconds": null,
+   "pinnedBlock": 26401540,
    "preflightArgs": {
     "address": "0x6440f144b7e50D6a8439336510312d2F54beB01D",
     "chain": "ethereum"
    },
    "primaryContract": "0x6440f144b7e50D6a8439336510312d2F54beB01D",
+   "relatedContracts": [
+    "0x807DEf5E7d057DF05C796F4bc75C3Fe82Bd6EeE1",
+    "0xf949982B91C8c61e952B3bA942cbbfaef5386684"
+   ],
    "slug": "liquity-v2-bold",
    "sprints": [
     6
    ],
    "surfaces": [
     {
+     "blockNumber": 26401540,
      "classification": "aligned_baseline",
      "id": "liquity-v2-bold-immutability",
      "surface": "Sampled Owner & EIP-1967 Slot Alignment",
@@ -1641,7 +2182,8 @@
     "BOLD",
     "LQTY"
    ],
-   "url": "https://pacta.wtf/protocols/liquity-v2-bold/"
+   "url": "https://pacta.wtf/protocols/liquity-v2-bold/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -1661,11 +2203,20 @@
    "kind": "protocol",
    "name": "Lombard (LBTC)",
    "observedDelaySeconds": 86400,
+   "pinnedBlock": 26407707,
    "preflightArgs": {
     "address": "0x055E84e7FE8955E2781010B866f10Ef6E1E77e59",
     "chain": "ethereum"
    },
    "primaryContract": "0x055E84e7FE8955E2781010B866f10Ef6E1E77e59",
+   "relatedContracts": [
+    "0x8236a87084f8B84306f72007F36F2618A5634494",
+    "0xbae061C73876952aa2C5e483B74DfA785425f879",
+    "0xBf4202c8a0d852D432266dfE112ED624a1a36754",
+    "0x1629AE77cC70DaAc95Ec479caAEA23ECE77c67c5",
+    "0x251a604E8E8f6906d60f8dedC5aAeb8CD38F4892",
+    "0x87bde523e05Fee2C557d6F592F7EB686C69189Ab"
+   ],
    "slug": "lombard-lbtc",
    "sprints": [
     11,
@@ -1673,6 +2224,7 @@
    ],
    "surfaces": [
     {
+     "blockNumber": 26403523,
      "classification": "aligned_baseline",
      "id": "lombard-lbtc-core-proxy-upgrade-timelock",
      "surface": "Sampled Core ProxyAdmin Wiring & 24h TimelockController",
@@ -1680,6 +2232,7 @@
      "targetLabel": "Lombard TimelockController"
     },
     {
+     "blockNumber": 26407707,
      "classification": "aligned_baseline",
      "id": "lombard-lbtc-gmpbascule-zero-validate-threshold-s16",
      "surface": "GMPBascule validateThreshold() = 0 — deposit-ID validation on every inbound mint",
@@ -1691,7 +2244,8 @@
    "tokens": [
     "LBTC"
    ],
-   "url": "https://pacta.wtf/protocols/lombard-lbtc/"
+   "url": "https://pacta.wtf/protocols/lombard-lbtc/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -1710,17 +2264,25 @@
    "kind": "protocol",
    "name": "M0 Protocol ($M)",
    "observedDelaySeconds": null,
+   "pinnedBlock": 26418060,
    "preflightArgs": {
     "address": "0x866A2BF4E572CbcF37D5071A7a58503Bfb36be1b",
     "chain": "ethereum"
    },
    "primaryContract": "0x866A2BF4E572CbcF37D5071A7a58503Bfb36be1b",
+   "relatedContracts": [
+    "0xf7f9638cb444D65e5A40bF5ff98ebE4ff319F04E",
+    "0xB024aC5a7c6bC92fbACc8C3387E628a07e1Da016",
+    "0x886d405949F709bC3f4451491bDd07ff51Cdf90A",
+    "0xa0DAFaEEA4A1d44534e1b9227e19CAE6358b80FE"
+   ],
    "slug": "m0-protocol-m",
    "sprints": [
     17
    ],
    "surfaces": [
     {
+     "blockNumber": 26418060,
      "classification": "aligned_baseline",
      "id": "m0-mtoken-no-eip1967-proxy-immutable-s17",
      "surface": "MToken: no EIP-1967 proxy slots (immutable core logic)",
@@ -1728,6 +2290,7 @@
      "targetLabel": "M0 MToken ($M)"
     },
     {
+     "blockNumber": 26418060,
      "classification": "aligned_baseline",
      "id": "m0-ttg-registrar-governors-match-docs-s17",
      "surface": "TTG Registrar governors = the docs-listed Standard / Emergency / Zero Governor",
@@ -1741,7 +2304,8 @@
     "M0",
     "MToken"
    ],
-   "url": "https://pacta.wtf/protocols/m0-protocol-m/"
+   "url": "https://pacta.wtf/protocols/m0-protocol-m/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -1760,17 +2324,24 @@
    "kind": "protocol",
    "name": "Mantle Liquid Staking (mETH / cmETH)",
    "observedDelaySeconds": 259200,
+   "pinnedBlock": 26403121,
    "preflightArgs": {
     "address": "0xc26016f1166bE7b6c5611AAB104122E0f6c2aCE2",
     "chain": "ethereum"
    },
    "primaryContract": "0xc26016f1166bE7b6c5611AAB104122E0f6c2aCE2",
+   "relatedContracts": [
+    "0xd5F7838F5C461fefF7FE49ea5ebaF7728bB0ADfa",
+    "0xe3cBd06D7dadB3F4e6557bAb7EdD924CD1489E8f",
+    "0x4e59e778a0fb77fBb305637435C62FaeD9aED40f"
+   ],
    "slug": "mantle-liquid-staking-meth-cmeth",
    "sprints": [
     10
    ],
    "surfaces": [
     {
+     "blockNumber": 26403121,
      "classification": "protective_delta",
      "id": "mantle-lsp-meth-upgrade-timelock",
      "surface": "Core Proxy EIP-1967 Admin Slot & 3-Day UpgradeTimelock",
@@ -1783,7 +2354,19 @@
     "mETH",
     "cmETH"
    ],
-   "url": "https://pacta.wtf/protocols/mantle-liquid-staking-meth-cmeth/"
+   "url": "https://pacta.wtf/protocols/mantle-liquid-staking-meth-cmeth/",
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "protective_delta",
+      "documented": "0 s (no delay)",
+      "observed": "3 d",
+      "parameter": "Timelock delay",
+      "recordId": "mantle-lsp-meth-upgrade-timelock"
+     }
+    ],
+    "matched": []
+   }
   },
   {
    "baseEasUids": [
@@ -1802,17 +2385,25 @@
    "kind": "protocol",
    "name": "Maple Finance V2 / Syrup",
    "observedDelaySeconds": null,
+   "pinnedBlock": 26401540,
    "preflightArgs": {
     "address": "0xBe10aDcE8B6E3E02Db384E7FaDA5395DD113D8b3",
     "chain": "ethereum"
    },
    "primaryContract": "0xBe10aDcE8B6E3E02Db384E7FaDA5395DD113D8b3",
+   "relatedContracts": [
+    "0xd6d4Bcde6c816F17889f1Dd3000aF0261B03a196",
+    "0x804a6F5F667170F545Bf14e5DDB48C70B788390C",
+    "0x2eFFf88747EB5a3FF00d4d8d0f0800E306C0426b",
+    "0x80ac24aA929eaF5013f6436cdA2a7ba190f5Cc0b"
+   ],
    "slug": "maple-finance-v2-syrup",
    "sprints": [
     6
    ],
    "surfaces": [
     {
+     "blockNumber": 26401540,
      "classification": "parameter_delta",
      "id": "maple-v2-syrup-ppm-admin",
      "surface": "EIP-1967 Proxy Admin Slot vs. GovernorTimelock",
@@ -1826,7 +2417,19 @@
     "syrupUSDC",
     "syrupUSDT"
    ],
-   "url": "https://pacta.wtf/protocols/maple-finance-v2-syrup/"
+   "url": "https://pacta.wtf/protocols/maple-finance-v2-syrup/",
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "parameter_delta",
+      "documented": "Governor admin actions documentation describes GovernorTimelock (3-day delay) governance path.",
+      "observed": "EIP-1967 admin slot holds 4-of-7 Maple DAO Safe (0xd6d4Bcde6c816F17889f1Dd3000aF0261B03a196);",
+      "parameter": "EIP-1967 Proxy Admin Slot vs. GovernorTimelock",
+      "recordId": "maple-v2-syrup-ppm-admin"
+     }
+    ],
+    "matched": []
+   }
   },
   {
    "baseEasUids": [
@@ -1845,17 +2448,24 @@
    "kind": "protocol",
    "name": "Mellow Protocol / Lido Earn",
    "observedDelaySeconds": 0,
+   "pinnedBlock": 26401312,
    "preflightArgs": {
     "address": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
     "chain": "ethereum"
    },
    "primaryContract": "0xe5abcc40196174Ae0d12153dE286F0D8E401769d",
+   "relatedContracts": [
+    "0x6a37725ca7f4CE81c004c955f7280d5C704a249e",
+    "0x014e6DA8F283C4aF65B2AA0f201438680A004452",
+    "0x0Dd73341d6158a72b4D224541f1094188f57076E"
+   ],
    "slug": "mellow-protocol-lido-earn",
    "sprints": [
     4
    ],
    "surfaces": [
     {
+     "blockNumber": 26401312,
      "classification": "parameter_delta",
      "id": "mellow-lido-earn-curator-quorum",
      "surface": "Curator Safe Quorum & Lazy Admin Signer Overlap",
@@ -1868,7 +2478,19 @@
     "Mellow",
     "Lido Earn"
    ],
-   "url": "https://pacta.wtf/protocols/mellow-protocol-lido-earn/"
+   "url": "https://pacta.wtf/protocols/mellow-protocol-lido-earn/",
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "parameter_delta",
+      "documented": "lidofinance/docs (earn/deployment-contracts.md line 199) lists 3/6 multisig;",
+      "observed": "getThreshold() = 3, getOwners().length = 5 (3-of-5 Gnosis Safe);",
+      "parameter": "Curator Safe Quorum & Lazy Admin Signer Overlap",
+      "recordId": "mellow-lido-earn-curator-quorum"
+     }
+    ],
+    "matched": []
+   }
   },
   {
    "baseEasUids": [
@@ -1887,17 +2509,25 @@
    "kind": "protocol",
    "name": "MetaMorpho (Re7 WETH vs. Re7 USDT)",
    "observedDelaySeconds": 259200,
+   "pinnedBlock": 26401405,
    "preflightArgs": {
     "address": "0x78Fc2c2eD1A4cDb5402365934aE5648aDAd094d0",
     "chain": "ethereum"
    },
    "primaryContract": "0x78Fc2c2eD1A4cDb5402365934aE5648aDAd094d0",
+   "relatedContracts": [
+    "0xE86399fE6d7007FdEcb08A2ee1434Ee677a04433",
+    "0x0000000000000000000000000000000000000000",
+    "0x95EeF579155cd2C5510F312c8fA39208c3Be01a8",
+    "0x2F80ba89362f86a9acC71BFfE5EcF4997F52BDd4"
+   ],
    "slug": "metamorpho-re7-weth-vs-re7-usdt",
    "sprints": [
     5
    ],
    "surfaces": [
     {
+     "blockNumber": 26401405,
      "classification": "parameter_delta",
      "id": "metamorpho-re7-weth-guardian-parity",
      "surface": "Sampled MetaMorpho Vault Guardian Configuration",
@@ -1911,7 +2541,25 @@
     "Re7USDT",
     "MetaMorpho"
    ],
-   "url": "https://pacta.wtf/protocols/metamorpho-re7-weth-vs-re7-usdt/"
+   "url": "https://pacta.wtf/protocols/metamorpho-re7-weth-vs-re7-usdt/",
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "parameter_delta",
+      "documented": "Peer Re7 curated vault architecture and Aragon guardian integration.",
+      "observed": "Re7 WETH owner() = 0xE86399fE6d7007FdEcb08A2ee1434Ee677a04433 (2-of-4 Safe), timelock() = 259200s (3d), guardian() = 0x0000000000000000000000000000000000000000, pendingGuardian() = (0x0, 0);",
+      "parameter": "Sampled MetaMorpho Vault Guardian Configuration",
+      "recordId": "metamorpho-re7-weth-guardian-parity"
+     }
+    ],
+    "matched": [
+     {
+      "parameter": "Timelock delay",
+      "recordId": "metamorpho-re7-weth-guardian-parity",
+      "value": "3 d"
+     }
+    ]
+   }
   },
   {
    "baseEasUids": [
@@ -1930,17 +2578,26 @@
    "kind": "protocol",
    "name": "Moonwell Lending (Base)",
    "observedDelaySeconds": null,
+   "pinnedBlock": 57842915,
    "preflightArgs": {
     "address": "0xfBb21d0380beE3312B33c4353c8936a0F13EF26C",
     "chain": "base"
    },
    "primaryContract": "0xfBb21d0380beE3312B33c4353c8936a0F13EF26C",
+   "relatedContracts": [
+    "0x5B710010586C1b728B047c3E42473c700eeA4026",
+    "0x446342AF4F3bCD374276891C6bb3411bf2F8779E",
+    "0x08eDEbFFaE68970DCf751baa826182b3a4aCFC05",
+    "0x8b621804a7637b781e2BbD58e256a591F2dF7d51",
+    "0x8769B70ac7c93AF0e75de0D69877709B66d75838"
+   ],
    "slug": "moonwell-lending-base",
    "sprints": [
     18
    ],
    "surfaces": [
     {
+     "blockNumber": 57842915,
      "classification": "parameter_delta",
      "id": "moonwell-pause-guardian-2of4-safe-s18",
      "surface": "Comptroller pauseGuardian = 2-of-4 Safe (Constitution: pause = Security Council 3-of-5)",
@@ -1948,6 +2605,7 @@
      "targetLabel": "Moonwell Unitroller (Comptroller proxy)"
     },
     {
+     "blockNumber": 57842915,
      "classification": "aligned_baseline",
      "id": "moonwell-temporal-governor-24h-security-council-3of5-s18",
      "surface": "Unitroller admin = TemporalGovernor (24h proposal delay), owned by the 3-of-5 Security Council",
@@ -1959,7 +2617,30 @@
    "tokens": [
     "WELL"
    ],
-   "url": "https://pacta.wtf/protocols/moonwell-lending-base/"
+   "url": "https://pacta.wtf/protocols/moonwell-lending-base/",
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "parameter_delta",
+      "documented": "Moonwell DAO Constitution 8.1: 'The Security Council has the power to execute any pause functionality, or perform other required actions with no delay ...",
+      "observed": "Unitroller (0xfBb21d0380beE3312B33c4353c8936a0F13EF26C).pauseGuardian() = 2-of-4 Safe 0x5B710010586C1b728B047c3E42473c700eeA4026 (v1.4.1);",
+      "parameter": "Comptroller pauseGuardian = 2-of-4 Safe (Constitution: pause = Security Council 3-of-5)",
+      "recordId": "moonwell-pause-guardian-2of4-safe-s18"
+     }
+    ],
+    "matched": [
+     {
+      "parameter": "Safe threshold",
+      "recordId": "moonwell-pause-guardian-2of4-safe-s18",
+      "value": "3-of-5"
+     },
+     {
+      "parameter": "Unitroller admin = TemporalGovernor (24h proposal delay), owned by the 3-of-5 Security Council",
+      "recordId": "moonwell-temporal-governor-24h-security-council-3of5-s18",
+      "value": "matches the documentation"
+     }
+    ]
+   }
   },
   {
    "baseEasUids": [
@@ -1978,17 +2659,22 @@
    "kind": "protocol",
    "name": "Morpho Blue Core",
    "observedDelaySeconds": null,
+   "pinnedBlock": 26401070,
    "preflightArgs": {
     "address": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
     "chain": "ethereum"
    },
    "primaryContract": "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
+   "relatedContracts": [
+    "0xcBa28b38103307Ec8dA98377ffF9816C164f9AFa"
+   ],
    "slug": "morpho-blue-core",
    "sprints": [
     3
    ],
    "surfaces": [
     {
+     "blockNumber": 26401070,
      "classification": "aligned_baseline",
      "id": "morpho-blue-singleton-owner",
      "surface": "Sampled Singleton Owner & Fee/LLTV Bounds",
@@ -2000,7 +2686,8 @@
    "tokens": [
     "MORPHO"
    ],
-   "url": "https://pacta.wtf/protocols/morpho-blue-core/"
+   "url": "https://pacta.wtf/protocols/morpho-blue-core/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -2019,17 +2706,27 @@
    "kind": "protocol",
    "name": "Nexus Mutual",
    "observedDelaySeconds": 86400,
+   "pinnedBlock": 26421541,
    "preflightArgs": {
     "address": "0xcafea6063d4Ec6b045d9676e58897C1f0882Ca32",
     "chain": "ethereum"
    },
    "primaryContract": "0xcafea6063d4Ec6b045d9676e58897C1f0882Ca32",
+   "relatedContracts": [
+    "0xcafea466bF6dEFe480cdd54056C020c63b7DA830",
+    "0xcafea2c575550512582090AA06d0a069E7236b9e",
+    "0x6FE2C2643cb5064951fB7DD87FbCE4777FB146E3",
+    "0x01BFd82675DBCc7762C84019cA518e701C0cD07e",
+    "0x4A5C681dDC32acC6ccA51ac17e9d461e6be87900",
+    "0x51ad1265C8702c9e96Ea61Fe4088C2e22eD4418e"
+   ],
    "slug": "nexus-mutual",
    "sprints": [
     18
    ],
    "surfaces": [
     {
+     "blockNumber": 26421541,
      "classification": "aligned_baseline",
      "id": "nexus-mutual-governor-24h-timelock-s18",
      "surface": "Governor: 3 Advisory Board votes + 24h timelock; Registry upgrades every module",
@@ -2043,7 +2740,8 @@
     "wNXM",
     "Nexus Mutual"
    ],
-   "url": "https://pacta.wtf/protocols/nexus-mutual/"
+   "url": "https://pacta.wtf/protocols/nexus-mutual/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -2062,17 +2760,24 @@
    "kind": "protocol",
    "name": "Ondo Finance (OUSG & Flux Finance)",
    "observedDelaySeconds": 86400,
+   "pinnedBlock": 26403121,
    "preflightArgs": {
     "address": "0x98Db502215Da1ad9F626D4a0090A8A2f4971003c",
     "chain": "ethereum"
    },
    "primaryContract": "0x98Db502215Da1ad9F626D4a0090A8A2f4971003c",
+   "relatedContracts": [
+    "0x1B19C19393e2d034D8Ff31ff34c81252FcBbee92",
+    "0x95Af143a021DF745bc78e845b54591C53a8B3A51",
+    "0x336505EC1BcC1A020EeDe459f57581725D23465A"
+   ],
    "slug": "ondo-finance-ousg-flux-finance",
    "sprints": [
     10
    ],
    "surfaces": [
     {
+     "blockNumber": 26403121,
      "classification": "parameter_delta",
      "id": "ondo-ousg-rate-limiter-and-flux-timelock",
      "surface": "OUSG RateLimiter Global Subscription Limit & Flux 1d Timelock",
@@ -2086,7 +2791,25 @@
     "ONDO",
     "Flux"
    ],
-   "url": "https://pacta.wtf/protocols/ondo-finance-ousg-flux-finance/"
+   "url": "https://pacta.wtf/protocols/ondo-finance-ousg-flux-finance/",
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "parameter_delta",
+      "documented": "docs.ondo.finance/qualified-access-products/ousg/instant-limits.md states 'Instant minting has a $50M Global Limit' and 'Instant redemptions have a $50M Global Limit';",
+      "observed": "RateLimiter (0x98Db502215Da1ad9F626D4a0090A8A2f4971003c) globalSubscriptionLimits(0x1B19C19393e2d034D8Ff31ff34c81252FcBbee92) word [2] = 100000000000000000000000000 ($100M per 86400s window), globalRedemptionLimits(OUSG…",
+      "parameter": "OUSG RateLimiter Global Subscription Limit & Flux 1d Timelock",
+      "recordId": "ondo-ousg-rate-limiter-and-flux-timelock"
+     }
+    ],
+    "matched": [
+     {
+      "parameter": "Timelock delay",
+      "recordId": "ondo-ousg-rate-limiter-and-flux-timelock",
+      "value": "1 d"
+     }
+    ]
+   }
   },
   {
    "baseEasUids": [],
@@ -2103,14 +2826,19 @@
    "kind": "protocol",
    "name": "Origin Protocol (SuperOETHb Base)",
    "observedDelaySeconds": 172800,
+   "pinnedBlock": 57421449,
    "preflightArgs": {
     "address": "0xDBFeFD2e8460a6Ee4955A68582F85708BAEA60A3",
     "chain": "base"
    },
    "primaryContract": "0xDBFeFD2e8460a6Ee4955A68582F85708BAEA60A3",
+   "relatedContracts": [
+    "0xCcd483cE093682D7D9a41e645EEb710AFaa88249"
+   ],
    "slug": "origin-superoeth-base",
    "surfaces": [
     {
+     "blockNumber": 57421449,
      "classification": "rpc_observed",
      "id": "origin-superoeth-base-control-plane",
      "surface": "SuperOETHb_VaultProxy · 2d Timelock Admin Path",
@@ -2124,7 +2852,8 @@
     "OETH",
     "OGN"
    ],
-   "url": "https://pacta.wtf/protocols/origin-superoeth-base/"
+   "url": "https://pacta.wtf/protocols/origin-superoeth-base/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -2143,17 +2872,25 @@
    "kind": "protocol",
    "name": "Pendle Finance V2",
    "observedDelaySeconds": null,
+   "pinnedBlock": 26422243,
    "preflightArgs": {
     "address": "0x6d247b1c044fA1E22e6B04fA9F71Baf99EB29A9f",
     "chain": "ethereum"
    },
    "primaryContract": "0x6d247b1c044fA1E22e6B04fA9F71Baf99EB29A9f",
+   "relatedContracts": [
+    "0x8270400d528c34e1596EF367eeDEc99080A1b592",
+    "0x2aD631F72fB16d91c4953A7f4260A97C2fE2f31e",
+    "0x8119EC16F0573B7dAc7C0CB94EB504FB32456ee1",
+    "0xA28c08f165116587D4F3E708743B4dEe155c5E64"
+   ],
    "slug": "pendle-finance-v2",
    "sprints": [
     19
    ],
    "surfaces": [
     {
+     "blockNumber": 26422243,
      "classification": "aligned_baseline",
      "id": "pendle-finance-v2-reserve-fee-80-lp-20-s19",
      "surface": "Market factory sends 80% of swap fees to the treasury, leaving 20% to LPs",
@@ -2161,6 +2898,7 @@
      "targetLabel": "PendleMarketFactory (V7Upg)"
     },
     {
+     "blockNumber": 26422243,
      "classification": "aligned_baseline",
      "id": "pendle-finance-v2-yt-interest-fee-5pct-s19",
      "surface": "Yield contract factory takes a 5% fee on YT yield",
@@ -2173,7 +2911,8 @@
     "PENDLE",
     "vePENDLE"
    ],
-   "url": "https://pacta.wtf/protocols/pendle-finance-v2/"
+   "url": "https://pacta.wtf/protocols/pendle-finance-v2/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -2192,17 +2931,20 @@
    "kind": "protocol",
    "name": "Puffer Finance (pufETH)",
    "observedDelaySeconds": 604801,
+   "pinnedBlock": 26425374,
    "preflightArgs": {
     "address": "0xD9A442856C234a39a81a089C06451EBAa4306a72",
     "chain": "ethereum"
    },
    "primaryContract": "0xD9A442856C234a39a81a089C06451EBAa4306a72",
+   "relatedContracts": [],
    "slug": "puffer-finance-pufeth",
    "sprints": [
     20
    ],
    "surfaces": [
     {
+     "blockNumber": 26425374,
      "classification": "aligned_baseline",
      "id": "puffer-7d-timelock-delay-s20",
      "surface": "Timelock delay: 7 days",
@@ -2210,6 +2952,7 @@
      "targetLabel": "Puffer Timelock (AccessManager admin role)"
     },
     {
+     "blockNumber": 26425374,
      "classification": "parameter_delta",
      "id": "puffer-community-multisig-3of7-s20",
      "surface": "Community Multisig threshold: 3-of-7",
@@ -2217,6 +2960,7 @@
      "targetLabel": "Puffer Community Multisig (upgrader role)"
     },
     {
+     "blockNumber": 26425374,
      "classification": "aligned_baseline",
      "id": "puffer-operations-multisig-3of6-s20",
      "surface": "Operations Multisig threshold: 3-of-6",
@@ -2229,7 +2973,30 @@
     "pufETH",
     "PUFFER"
    ],
-   "url": "https://pacta.wtf/protocols/puffer-finance-pufeth/"
+   "url": "https://pacta.wtf/protocols/puffer-finance-pufeth/",
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "parameter_delta",
+      "documented": "docs.puffer.fi (multisig): 'Puffer's Community Multisig is a 3-of-6 multisig composed of reputable and aligned Ethereum community members and auditing firms.'",
+      "observed": "Safe 0x446d4d6b26815f9bA78B5D454E303315D586Cb2a (= Timelock COMMUNITY_MULTISIG()): getThreshold() = 3 with 7 owners (v1.3.0);",
+      "parameter": "Community Multisig threshold: 3-of-7",
+      "recordId": "puffer-community-multisig-3of7-s20"
+     }
+    ],
+    "matched": [
+     {
+      "parameter": "Timelock delay: 7 days",
+      "recordId": "puffer-7d-timelock-delay-s20",
+      "value": "matches the documentation"
+     },
+     {
+      "parameter": "Operations Multisig threshold: 3-of-6",
+      "recordId": "puffer-operations-multisig-3of6-s20",
+      "value": "matches the documentation"
+     }
+    ]
+   }
   },
   {
    "baseEasUids": [
@@ -2248,17 +3015,23 @@
    "kind": "protocol",
    "name": "Re Protocol (reUSD / reUSDe)",
    "observedDelaySeconds": 172800,
+   "pinnedBlock": 26427612,
    "preflightArgs": {
     "address": "0x5086bf358635B81D8C47C66d1C8b9E567Db70c72",
     "chain": "ethereum"
    },
    "primaryContract": "0x5086bf358635B81D8C47C66d1C8b9E567Db70c72",
+   "relatedContracts": [
+    "0xdDC0f880ff6e4e22E4B74632fBb43Ce4DF6cCC5a",
+    "0x8eec10616802Ef639CA55c98ac856553fAdEfBaD"
+   ],
    "slug": "re",
    "sprints": [
     21
    ],
    "surfaces": [
     {
+     "blockNumber": 26427612,
      "classification": "aligned_baseline",
      "id": "re-48h-timelock-token-admin-s21",
      "surface": "reUSD and reUSDe tokens: admin and upgrades wait 48 hours",
@@ -2266,6 +3039,7 @@
      "targetLabel": "reUSD senior-tranche stablecoin token"
     },
     {
+     "blockNumber": 26427612,
      "classification": "protective_delta",
      "id": "re-icl-admin-timelock-not-safe-s21",
      "surface": "Deposit vault role admin held behind the delay; multisig lacks it",
@@ -2273,6 +3047,7 @@
      "targetLabel": "Insurance Capital Layer deposit vault"
     },
     {
+     "blockNumber": 26427612,
      "classification": "aligned_baseline",
      "id": "re-safe-sole-timelock-proposer-s21",
      "surface": "Scheduling rights: one 3-of-5 multisig proposes, executes, cancels",
@@ -2286,7 +3061,30 @@
     "reUSDe",
     "RE"
    ],
-   "url": "https://pacta.wtf/protocols/re/"
+   "url": "https://pacta.wtf/protocols/re/",
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "protective_delta",
+      "documented": "docs.re.xyz (ICL permissions note): 'The Safe holds DEFAULT_ADMIN_ROLE on every ICL (Ethereum reUSD and reUSDe, Avalanche, Arbitrum, Base), alongside the chain's timelock.' and '...",
+      "observed": "ICL 0x4691C475bE804Fa85f91c2D6D0aDf03114de3093 (shareToken() = reUSD): hasRole(DEFAULT_ADMIN_ROLE, Safe 0x8eec10616802Ef639CA55c98ac856553fAdEfBaD) = false;",
+      "parameter": "Deposit vault role admin held behind the delay; multisig lacks it",
+      "recordId": "re-icl-admin-timelock-not-safe-s21"
+     }
+    ],
+    "matched": [
+     {
+      "parameter": "reUSD and reUSDe tokens: admin and upgrades wait 48 hours",
+      "recordId": "re-48h-timelock-token-admin-s21",
+      "value": "matches the documentation"
+     },
+     {
+      "parameter": "Scheduling rights: one 3-of-5 multisig proposes, executes, cancels",
+      "recordId": "re-safe-sole-timelock-proposer-s21",
+      "value": "matches the documentation"
+     }
+    ]
+   }
   },
   {
    "baseEasUids": [
@@ -2305,17 +3103,23 @@
    "kind": "protocol",
    "name": "Renzo Protocol (ezETH)",
    "observedDelaySeconds": null,
+   "pinnedBlock": 26401725,
    "preflightArgs": {
     "address": "0xf2F305D14DCD8aaef887E0428B3c9534795D0d60",
     "chain": "ethereum"
    },
    "primaryContract": "0xf2F305D14DCD8aaef887E0428B3c9534795D0d60",
+   "relatedContracts": [
+    "0xD1e6626310fD54Eceb5b9a51dA2eC329D6D4B68A",
+    "0xbf5495Efe5DB9ce00f80364C8B423567e58d2110"
+   ],
    "slug": "renzo-protocol-ezeth",
    "sprints": [
     8
    ],
    "surfaces": [
     {
+     "blockNumber": 26401725,
      "classification": "parameter_delta",
      "id": "renzo-ezeth-deposit-queue-fee",
      "surface": "DepositQueue.feeBasisPoints Parameter vs. Staking Docs",
@@ -2328,7 +3132,19 @@
     "ezETH",
     "REZ"
    ],
-   "url": "https://pacta.wtf/protocols/renzo-protocol-ezeth/"
+   "url": "https://pacta.wtf/protocols/renzo-protocol-ezeth/",
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "parameter_delta",
+      "documented": "docs.renzoprotocol.com/docs/products/staking-suite/ezeth states 10% fee on restaking rewards.",
+      "observed": "feeBasisPoints() = 1500 (15%);",
+      "parameter": "DepositQueue.feeBasisPoints Parameter vs. Staking Docs",
+      "recordId": "renzo-ezeth-deposit-queue-fee"
+     }
+    ],
+    "matched": []
+   }
   },
   {
    "baseEasUids": [],
@@ -2345,14 +3161,19 @@
    "kind": "protocol",
    "name": "Reserve Protocol (eUSD RToken)",
    "observedDelaySeconds": null,
+   "pinnedBlock": 26414499,
    "preflightArgs": {
     "address": "0xA0d69E286B938e21CBf7E51D71F6A4c8918f482F",
     "chain": "ethereum"
    },
    "primaryContract": "0xA0d69E286B938e21CBf7E51D71F6A4c8918f482F",
+   "relatedContracts": [
+    "0x258ce833CF9AD19208372763A00aA1565Dd40b3C"
+   ],
    "slug": "reserve-protocol-rtoken",
    "surfaces": [
     {
+     "blockNumber": 26414499,
      "classification": "rpc_observed",
      "id": "reserve-protocol-rtoken-control-plane",
      "surface": "ReserveRToken_eUSD · EIP-1967 Proxy & Upgrade Authority",
@@ -2365,7 +3186,8 @@
     "eUSD",
     "RSR"
    ],
-   "url": "https://pacta.wtf/protocols/reserve-protocol-rtoken/"
+   "url": "https://pacta.wtf/protocols/reserve-protocol-rtoken/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -2384,17 +3206,25 @@
    "kind": "protocol",
    "name": "Resolv (USR / RLP)",
    "observedDelaySeconds": 86400,
+   "pinnedBlock": 26403523,
    "preflightArgs": {
     "address": "0x66a1E37c9b0eAddca17d3662D6c05F4DECf3e110",
     "chain": "ethereum"
    },
    "primaryContract": "0x66a1E37c9b0eAddca17d3662D6c05F4DECf3e110",
+   "relatedContracts": [
+    "0xD6889F307BE1b83Bb355d5DA7d4478FB0d2Af547",
+    "0xa27a69Ae180e202fDe5D38189a3F24Fe24E55861",
+    "0xc7AB90c2Ea9271EFB31f5fA2843Eeb4B331eaFA0",
+    "0x4956b52aE2fF65D74CA2d61207523288e4528f96"
+   ],
    "slug": "resolv-usr-rlp",
    "sprints": [
     11
    ],
    "surfaces": [
     {
+     "blockNumber": 26403523,
      "classification": "aligned_baseline",
      "id": "resolv-usr-default-admin-delay-and-safe",
      "surface": "Sampled USR AccessControlDefaultAdminRules Delay & Request Counters",
@@ -2409,7 +3239,8 @@
     "wstUSR",
     "RESOLV"
    ],
-   "url": "https://pacta.wtf/protocols/resolv-usr-rlp/"
+   "url": "https://pacta.wtf/protocols/resolv-usr-rlp/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -2428,17 +3259,22 @@
    "kind": "protocol",
    "name": "Rocket Pool (rETH)",
    "observedDelaySeconds": null,
+   "pinnedBlock": 26422243,
    "preflightArgs": {
     "address": "0xdA1AB39e62E0A5297AF44C7064E501b0613f0D01",
     "chain": "ethereum"
    },
    "primaryContract": "0xdA1AB39e62E0A5297AF44C7064E501b0613f0D01",
+   "relatedContracts": [
+    "0x6C565aF34f15dE064b56afEdF7B0F59C15bB20FE"
+   ],
    "slug": "rocket-pool-reth",
    "sprints": [
     19
    ],
    "surfaces": [
     {
+     "blockNumber": 26422243,
      "classification": "aligned_baseline",
      "id": "rocket-pool-reth-odao-quorum-51pct-s19",
      "surface": "Oracle DAO proposal quorum = 51% of members",
@@ -2446,6 +3282,7 @@
      "targetLabel": "RocketDAONodeTrustedSettingsMembers"
     },
     {
+     "blockNumber": 26422243,
      "classification": "parameter_delta",
      "id": "rocket-pool-reth-security-council-leave-time-28d-s19",
      "surface": "Security council members.leave.time = 28 days (RPIP-33 bound: < 14 days)",
@@ -2453,6 +3290,7 @@
      "targetLabel": "RocketDAOProtocolSettingsSecurity"
     },
     {
+     "blockNumber": 26422243,
      "classification": "aligned_baseline",
      "id": "rocket-pool-reth-upgrade-delay-1w-s19",
      "surface": "oDAO contract upgrades wait a 1-week upgrade delay (security council veto window)",
@@ -2465,7 +3303,30 @@
     "rETH",
     "RPL"
    ],
-   "url": "https://pacta.wtf/protocols/rocket-pool-reth/"
+   "url": "https://pacta.wtf/protocols/rocket-pool-reth/",
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "parameter_delta",
+      "documented": "rpips.rocketpool.net RPIP-33 parameter table, members.leave.time: 'How long a member must give notice for before manually leaving the security council' with the bound '< 14 days'",
+      "observed": "RocketDAOProtocolSettingsSecurity (0xC9D771AaF504F33bB3C8a7E67eA9f1881F837cFf).getLeaveTime() = 2419200s (28 days).",
+      "parameter": "Security council members.leave.time = 28 days (RPIP-33 bound: < 14 days)",
+      "recordId": "rocket-pool-reth-security-council-leave-time-28d-s19"
+     }
+    ],
+    "matched": [
+     {
+      "parameter": "Oracle DAO proposal quorum = 51% of members",
+      "recordId": "rocket-pool-reth-odao-quorum-51pct-s19",
+      "value": "matches the documentation"
+     },
+     {
+      "parameter": "oDAO contract upgrades wait a 1-week upgrade delay (security council veto window)",
+      "recordId": "rocket-pool-reth-upgrade-delay-1w-s19",
+      "value": "matches the documentation"
+     }
+    ]
+   }
   },
   {
    "baseEasUids": [],
@@ -2482,14 +3343,17 @@
    "kind": "protocol",
    "name": "Safe Smart Account (v1.4.1 Singleton)",
    "observedDelaySeconds": null,
+   "pinnedBlock": 26414499,
    "preflightArgs": {
     "address": "0x41675C099F32341bf84BFc5382aF534df5C7461a",
     "chain": "ethereum"
    },
    "primaryContract": "0x41675C099F32341bf84BFc5382aF534df5C7461a",
+   "relatedContracts": [],
    "slug": "safe-singleton-core",
    "surfaces": [
     {
+     "blockNumber": 26414499,
      "classification": "rpc_observed",
      "id": "safe-singleton-core-control-plane",
      "surface": "SafeSingleton_v1_4_1 & SafeProxyFactory_v1_4_1 Control Plane",
@@ -2501,7 +3365,8 @@
    "tokens": [
     "SAFE"
    ],
-   "url": "https://pacta.wtf/protocols/safe-singleton-core/"
+   "url": "https://pacta.wtf/protocols/safe-singleton-core/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [],
@@ -2518,14 +3383,17 @@
    "kind": "protocol",
    "name": "Seamless Protocol (Base)",
    "observedDelaySeconds": null,
+   "pinnedBlock": 57421449,
    "preflightArgs": {
     "address": "0x0E02EB705be325407707662C6f6d3466E939f3a0",
     "chain": "base"
    },
    "primaryContract": "0x0E02EB705be325407707662C6f6d3466E939f3a0",
+   "relatedContracts": [],
    "slug": "seamless-protocol-base",
    "surfaces": [
     {
+     "blockNumber": 57421449,
      "classification": "rpc_observed",
      "id": "seamless-protocol-base-control-plane",
      "surface": "SeamlessPoolAddressesProvider · Non-Proxy Bytecode & Role Architecture",
@@ -2537,7 +3405,8 @@
    "tokens": [
     "SEAM"
    ],
-   "url": "https://pacta.wtf/protocols/seamless-protocol-base/"
+   "url": "https://pacta.wtf/protocols/seamless-protocol-base/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -2556,17 +3425,25 @@
    "kind": "protocol",
    "name": "Solv Protocol (SolvBTC)",
    "observedDelaySeconds": null,
+   "pinnedBlock": 26418060,
    "preflightArgs": {
     "address": "0x7A56E1C57C7475CCf742a1832B028F0456652F97",
     "chain": "ethereum"
    },
    "primaryContract": "0x7A56E1C57C7475CCf742a1832B028F0456652F97",
+   "relatedContracts": [
+    "0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D",
+    "0xFc335FdA7E6a33329A83F4d5F578eC7d8A43DC4A",
+    "0xA4b6cf2BAaA235ab7Fe10EADB84b82460165B38F",
+    "0x443628281E4f3E5b5A5D029B9a0D13900ae41578"
+   ],
    "slug": "solv-protocol-solvbtc",
    "sprints": [
     17
    ],
    "surfaces": [
     {
+     "blockNumber": 26418060,
      "classification": "aligned_baseline",
      "id": "solv-solvbtc-owner-3of5-safe-s17",
      "surface": "SolvBTC owner() = 3-of-5 Gnosis Safe (OpenZeppelin Ownable)",
@@ -2574,6 +3451,7 @@
      "targetLabel": "Solv SolvBTC"
     },
     {
+     "blockNumber": 26418060,
      "classification": "protective_delta",
      "id": "solv-solvbtc-upgrade-beacon-3d-timelock-s17",
      "surface": "SolvBTC beacon upgrades behind a 3d TimelockController (docs: timelock 'will be added')",
@@ -2586,7 +3464,25 @@
     "SolvBTC",
     "SOLV"
    ],
-   "url": "https://pacta.wtf/protocols/solv-protocol-solvbtc/"
+   "url": "https://pacta.wtf/protocols/solv-protocol-solvbtc/",
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "protective_delta",
+      "documented": "docs.solv.finance/llms-full.txt: 'The admin privileges for upgrades are assigned to a Gnosis Safe multi-signature address ...",
+      "observed": "SolvBTC is a beacon proxy: EIP-1967 beacon slot = UpgradeableBeacon 0xFc335FdA7E6a33329A83F4d5F578eC7d8A43DC4A (implementation() = 0xA4b6cf2BAaA235ab7Fe10EADB84b82460165B38F), whose owner() = SolvBTCFactory 0x443628281E…",
+      "parameter": "SolvBTC beacon upgrades behind a 3d TimelockController (docs: timelock 'will be added')",
+      "recordId": "solv-solvbtc-upgrade-beacon-3d-timelock-s17"
+     }
+    ],
+    "matched": [
+     {
+      "parameter": "SolvBTC owner() = 3-of-5 Gnosis Safe (OpenZeppelin Ownable)",
+      "recordId": "solv-solvbtc-owner-3of5-safe-s17",
+      "value": "matches the documentation"
+     }
+    ]
+   }
   },
   {
    "baseEasUids": [
@@ -2605,17 +3501,23 @@
    "kind": "protocol",
    "name": "Spark / Sky",
    "observedDelaySeconds": 172800,
+   "pinnedBlock": 26401638,
    "preflightArgs": {
     "address": "0xbE286431454714F511008713973d3B053A2d38f3",
     "chain": "ethereum"
    },
    "primaryContract": "0xbE286431454714F511008713973d3B053A2d38f3",
+   "relatedContracts": [
+    "0x02C3eA4e34C0cBd694D2adFa2c690EECbC1793eE",
+    "0x3300f198988e4C9C63F75dF86De36421f06af8c4"
+   ],
    "slug": "spark-sky",
    "sprints": [
     7
    ],
    "surfaces": [
     {
+     "blockNumber": 26401638,
      "classification": "aligned_baseline",
      "id": "spark-sky-gsm-pause-delay",
      "surface": "Sampled PoolAddressesProvider Owner & GSM Delay",
@@ -2632,7 +3534,8 @@
     "MKR",
     "SPK"
    ],
-   "url": "https://pacta.wtf/protocols/spark-sky/"
+   "url": "https://pacta.wtf/protocols/spark-sky/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -2651,17 +3554,22 @@
    "kind": "protocol",
    "name": "SSV Network",
    "observedDelaySeconds": null,
+   "pinnedBlock": 26427612,
    "preflightArgs": {
     "address": "0xDD9BC35aE942eF0cFa76930954a156B3fF30a4E1",
     "chain": "ethereum"
    },
    "primaryContract": "0xDD9BC35aE942eF0cFa76930954a156B3fF30a4E1",
+   "relatedContracts": [
+    "0xb35096b074fdb9bBac63E3AdaE0Bbde512B2E6b6"
+   ],
    "slug": "ssv-network",
    "sprints": [
     21
    ],
    "surfaces": [
     {
+     "blockNumber": 26427612,
      "classification": "aligned_baseline",
      "id": "ssv-network-dao-multisig-owns-network-s21",
      "surface": "SSVNetwork and SSVNetworkViews owner: the DAO governance multisig",
@@ -2669,6 +3577,7 @@
      "targetLabel": "SSVNetwork (UUPS proxy)"
     },
     {
+     "blockNumber": 26427612,
      "classification": "aligned_baseline",
      "id": "ssv-network-operator-fee-guardrails-s21",
      "surface": "Operator fee increases: 14-day declaration, 7-day execution, 10% cap",
@@ -2680,7 +3589,8 @@
    "tokens": [
     "SSV"
    ],
-   "url": "https://pacta.wtf/protocols/ssv-network/"
+   "url": "https://pacta.wtf/protocols/ssv-network/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -2699,17 +3609,26 @@
    "kind": "protocol",
    "name": "Stader Labs (ETHx)",
    "observedDelaySeconds": 604800,
+   "pinnedBlock": 26403676,
    "preflightArgs": {
     "address": "0xAAfb31780e4b9c95Bc920e388f4925A874cd07AF",
     "chain": "ethereum"
    },
    "primaryContract": "0xAAfb31780e4b9c95Bc920e388f4925A874cd07AF",
+   "relatedContracts": [
+    "0xA35b1B31Ce002FBF2058D22F30f95D405200A15b",
+    "0x67B12264Ca3e0037Fc7E22F2457b42643a04C86e",
+    "0x45B977CeCB9Dfaa17dFcBa88826ef684b8489fF6",
+    "0x4ABEF2263d5A5ED582FC9A9789a41D85b68d69DB",
+    "0xcf5EA1b38380f6aF39068375516Daf40Ed70D299"
+   ],
    "slug": "stader-labs-ethx",
    "sprints": [
     12
    ],
    "surfaces": [
     {
+     "blockNumber": 26403676,
      "classification": "parameter_delta",
      "id": "stader-ethx-manager-safe-and-timelock",
      "surface": "Manager Safe Quorum & 7-Day TimelockController Admin Path",
@@ -2722,7 +3641,25 @@
     "ETHx",
     "SD"
    ],
-   "url": "https://pacta.wtf/protocols/stader-labs-ethx/"
+   "url": "https://pacta.wtf/protocols/stader-labs-ethx/",
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "parameter_delta",
+      "documented": "3-of-5",
+      "observed": "3-of-6",
+      "parameter": "Safe threshold",
+      "recordId": "stader-ethx-manager-safe-and-timelock"
+     }
+    ],
+    "matched": [
+     {
+      "parameter": "Timelock delay",
+      "recordId": "stader-ethx-manager-safe-and-timelock",
+      "value": "7 d"
+     }
+    ]
+   }
   },
   {
    "baseEasUids": [
@@ -2741,17 +3678,24 @@
    "kind": "protocol",
    "name": "stake.link",
    "observedDelaySeconds": 172800,
+   "pinnedBlock": 26425374,
    "preflightArgs": {
     "address": "0xb72d8F5213b3E52FAf13Aa074b03C4788e78349F",
     "chain": "ethereum"
    },
    "primaryContract": "0xb72d8F5213b3E52FAf13Aa074b03C4788e78349F",
+   "relatedContracts": [
+    "0xb8b295df2cd735b15BE5Eb419517Aa626fc43cD5",
+    "0x8753C00D1a94D04A01b931830011d882A3F8Cc72",
+    "0xAc12290b097f6893322F5430627e472131fBC1B5"
+   ],
    "slug": "stake-link",
    "sprints": [
     20
    ],
    "surfaces": [
     {
+     "blockNumber": 26425374,
      "classification": "aligned_baseline",
      "id": "stake-link-governance-timelock-48h-s20",
      "surface": "GovernanceTimelock delay: 48 hours",
@@ -2759,6 +3703,7 @@
      "targetLabel": "stake.link GovernanceTimelock (owner of StakingPool, PriorityPool, WithdrawalPool)"
     },
     {
+     "blockNumber": 26425374,
      "classification": "aligned_baseline",
      "id": "stake-link-multisig-6of8-s20",
      "surface": "Gnosis Safe signer threshold: 6-of-8",
@@ -2766,6 +3711,7 @@
      "targetLabel": "stake.link Gnosis Safe (timelock proposer / canceller, treasury)"
     },
     {
+     "blockNumber": 26425374,
      "classification": "aligned_baseline",
      "id": "stake-link-operator-strategy-fees-s20",
      "surface": "Node Operator strategy fees: SDL stakers 15%, node operators 5%",
@@ -2778,7 +3724,8 @@
     "stLINK",
     "SDL"
    ],
-   "url": "https://pacta.wtf/protocols/stake-link/"
+   "url": "https://pacta.wtf/protocols/stake-link/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -2797,17 +3744,25 @@
    "kind": "protocol",
    "name": "StakeWise V3 (osETH)",
    "observedDelaySeconds": null,
+   "pinnedBlock": 26403676,
    "preflightArgs": {
     "address": "0x6B5815467da09DaA7DC83Db21c9239d98Bb487b5",
     "chain": "ethereum"
    },
    "primaryContract": "0x6B5815467da09DaA7DC83Db21c9239d98Bb487b5",
+   "relatedContracts": [
+    "0xf1C9acDc66974dFB6dEcB12aA385b9cD01190E38",
+    "0x0000000000000000000000000000000000000000",
+    "0x2A261e60FB14586B474C208b1B7AC6D0f5000306",
+    "0x287d1e2A8dE183A8bf8f2b09Fa1340fBd766eb59"
+   ],
    "slug": "stakewise-v3-oseth",
    "sprints": [
     12
    ],
    "surfaces": [
     {
+     "blockNumber": 26403676,
      "classification": "aligned_baseline",
      "id": "stakewise-v3-oseth-oracle-quorum-and-ltv",
      "surface": "Sampled Keeper Oracle Quorum, osETH Fee & LTV Configuration",
@@ -2820,7 +3775,8 @@
     "osETH",
     "SWISE"
    ],
-   "url": "https://pacta.wtf/protocols/stakewise-v3-oseth/"
+   "url": "https://pacta.wtf/protocols/stakewise-v3-oseth/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -2839,17 +3795,27 @@
    "kind": "protocol",
    "name": "Stargate V2",
    "observedDelaySeconds": null,
+   "pinnedBlock": 26421541,
    "preflightArgs": {
     "address": "0xc026395860Db2d07ee33e05fE50ed7bD583189C7",
     "chain": "ethereum"
    },
    "primaryContract": "0xc026395860Db2d07ee33e05fE50ed7bD583189C7",
+   "relatedContracts": [
+    "0xBE634B030FEAaB661300667EaF82510a3a025413",
+    "0x6d6620eFa72948C5f68A3C8646d58C00d3f4A980",
+    "0x1041D127b2d4BC700F0F563883bC689502606918",
+    "0xe37f7c80ceD04c4F243C0Fd04A5510D663CB88b5",
+    "0x52B35406CB2FB5e0038EdEcFc129A152a1f74087",
+    "0x65bb797c2B9830d891D87288F029ed8dACc19705"
+   ],
    "slug": "stargate-v2",
    "sprints": [
     18
    ],
    "surfaces": [
     {
+     "blockNumber": 26421541,
      "classification": "aligned_baseline",
      "id": "stargate-v2-onesig-5of7-owner-planner-fees-s18",
      "surface": "V2 pool, TokenMessaging & Treasurer owner = 5-of-7 OneSig multisig; planner sets fees",
@@ -2862,7 +3828,8 @@
     "STG",
     "Stargate"
    ],
-   "url": "https://pacta.wtf/protocols/stargate-v2/"
+   "url": "https://pacta.wtf/protocols/stargate-v2/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -2881,17 +3848,26 @@
    "kind": "protocol",
    "name": "Steakhouse USDC MetaMorpho (Base)",
    "observedDelaySeconds": 604800,
+   "pinnedBlock": 57635450,
    "preflightArgs": {
     "address": "0xbeeF010f9cb27031ad51e3333f9aF9C6B1228183",
     "chain": "base"
    },
    "primaryContract": "0xbeeF010f9cb27031ad51e3333f9aF9C6B1228183",
+   "relatedContracts": [
+    "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+    "0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb",
+    "0x0A0e559bc3b0950a7e448F0d4894db195b9cf8DD",
+    "0x827e86072B06674a077f592A531dcE4590aDeCdB",
+    "0x9e0FdDDa790651E6a05CD2dE69e624B94C04eAf5"
+   ],
    "slug": "steakhouse-usdc-metamorpho-base",
    "sprints": [
     17
    ],
    "surfaces": [
     {
+     "blockNumber": 57635450,
      "classification": "aligned_baseline",
      "id": "steakhouse-usdc-base-timelock-7d-s17",
      "surface": "MetaMorpho timelock() = 7d (604800s)",
@@ -2905,7 +3881,8 @@
     "Steakhouse",
     "MetaMorpho"
    ],
-   "url": "https://pacta.wtf/protocols/steakhouse-usdc-metamorpho-base/"
+   "url": "https://pacta.wtf/protocols/steakhouse-usdc-metamorpho-base/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [],
@@ -2922,14 +3899,17 @@
    "kind": "protocol",
    "name": "Superform Core v2 (Base)",
    "observedDelaySeconds": null,
+   "pinnedBlock": 57421449,
    "preflightArgs": {
     "address": "0xB5396ef2bF8CA360cEB4166b77AFb2bed20e74d4",
     "chain": "base"
    },
    "primaryContract": "0xB5396ef2bF8CA360cEB4166b77AFb2bed20e74d4",
+   "relatedContracts": [],
    "slug": "superform-v2-base",
    "surfaces": [
     {
+     "blockNumber": 57421449,
      "classification": "rpc_observed",
      "id": "superform-v2-base-control-plane",
      "surface": "SuperGovernor & SuperVaultAggregator Control Plane",
@@ -2942,7 +3922,8 @@
     "Superform",
     "SuperVaults"
    ],
-   "url": "https://pacta.wtf/protocols/superform-v2-base/"
+   "url": "https://pacta.wtf/protocols/superform-v2-base/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -2961,17 +3942,24 @@
    "kind": "protocol",
    "name": "Superstate (USTB / USCC)",
    "observedDelaySeconds": null,
+   "pinnedBlock": 26403676,
    "preflightArgs": {
     "address": "0x43415eB6ff9DB7E26A15b704e7A3eDCe97d31C4e",
     "chain": "ethereum"
    },
    "primaryContract": "0x43415eB6ff9DB7E26A15b704e7A3eDCe97d31C4e",
+   "relatedContracts": [
+    "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+    "0x774AE279c21B6a17a6E2BD5ab5398FF98F398807",
+    "0x14d60E7FDC0D71d8611742720E4C50E7a974020c"
+   ],
    "slug": "superstate-ustb-uscc",
    "sprints": [
     12
    ],
    "surfaces": [
     {
+     "blockNumber": 26403676,
      "classification": "aligned_baseline",
      "id": "superstate-ustb-uscc-fee-and-usdc-alignment",
      "surface": "Sampled USDC Subscription Fee & Fund Supply Alignment",
@@ -2984,7 +3972,8 @@
     "USTB",
     "USCC"
    ],
-   "url": "https://pacta.wtf/protocols/superstate-ustb-uscc/"
+   "url": "https://pacta.wtf/protocols/superstate-ustb-uscc/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -3003,17 +3992,28 @@
    "kind": "protocol",
    "name": "Swell (swETH / rswETH)",
    "observedDelaySeconds": 604800,
+   "pinnedBlock": 26403676,
    "preflightArgs": {
     "address": "0xbA829003e6b5dD858fbed3945719939a6DC3073b",
     "chain": "ethereum"
    },
    "primaryContract": "0xbA829003e6b5dD858fbed3945719939a6DC3073b",
+   "relatedContracts": [
+    "0xf951E335afb289353dc249e82926178EaC7DEd78",
+    "0x25EAf579cA2255fAA5463c635eec28697b5b8846",
+    "0xFAe103DC9cf190eD75350761e95403b7b8aFa6c0",
+    "0xD750B84845f1cAdfEAc63f96Ec74635e949bFd14",
+    "0x20fDF47509C5eFC0e1101e3CE443691781C17F90",
+    "0x625087d72c762254a72CB22cC2ECa40da6b95EAC",
+    "0x796592b2092F7E150C48643dA19Dd2F28be3333F"
+   ],
    "slug": "swell-sweth-rsweth",
    "sprints": [
     12
    ],
    "surfaces": [
     {
+     "blockNumber": 26403676,
      "classification": "aligned_baseline",
      "id": "swell-sweth-rsweth-timelock-and-reprice-bounds",
      "surface": "Sampled 7-Day SwellTimelock, ProxyAdmins & Reprice Bounds",
@@ -3027,7 +4027,8 @@
     "rswETH",
     "SWELL"
    ],
-   "url": "https://pacta.wtf/protocols/swell-sweth-rsweth/"
+   "url": "https://pacta.wtf/protocols/swell-sweth-rsweth/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -3046,17 +4047,26 @@
    "kind": "protocol",
    "name": "Symbiotic Core",
    "observedDelaySeconds": null,
+   "pinnedBlock": 26403121,
    "preflightArgs": {
     "address": "0xAEb6bdd95c502390db8f52c8909F703E9Af6a346",
     "chain": "ethereum"
    },
    "primaryContract": "0xAEb6bdd95c502390db8f52c8909F703E9Af6a346",
+   "relatedContracts": [
+    "0xAd817a6Bc954F678451A71363f04150FDD81Af9F",
+    "0xC773b1011461e7314CF05f97d95aa8e92C1Fd8aA",
+    "0x5721ce64Ee0D772Ce613b62D411350091C544cD0",
+    "0x788823C9579A049D986eB76718bC758C0998594a",
+    "0xf6BB2e64Bd201A862f2Fe5461fc7Ef01e2040b6A"
+   ],
    "slug": "symbiotic-core",
    "sprints": [
     10
    ],
    "surfaces": [
     {
+     "blockNumber": 26403121,
      "classification": "aligned_baseline",
      "id": "symbiotic-core-immutable-registries-and-safes",
      "surface": "Sampled Non-Upgradeable Core Registries & Factory/Adapter Safes",
@@ -3068,7 +4078,8 @@
    "tokens": [
     "Symbiotic"
    ],
-   "url": "https://pacta.wtf/protocols/symbiotic-core/"
+   "url": "https://pacta.wtf/protocols/symbiotic-core/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [],
@@ -3085,14 +4096,17 @@
    "kind": "protocol",
    "name": "Synthetix V3 Core",
    "observedDelaySeconds": null,
+   "pinnedBlock": 26414499,
    "preflightArgs": {
     "address": "0xffffffaEff0B96Ea8e4f94b2253f31abdD875847",
     "chain": "ethereum"
    },
    "primaryContract": "0xffffffaEff0B96Ea8e4f94b2253f31abdD875847",
+   "relatedContracts": [],
    "slug": "synthetix-v3-core",
    "surfaces": [
     {
+     "blockNumber": 26414499,
      "classification": "rpc_observed",
      "id": "synthetix-v3-core-control-plane",
      "surface": "SynthetixCoreProxy · 4-of-7 Safe Control Plane",
@@ -3105,7 +4119,8 @@
     "SNX",
     "sUSD"
    ],
-   "url": "https://pacta.wtf/protocols/synthetix-v3-core/"
+   "url": "https://pacta.wtf/protocols/synthetix-v3-core/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -3124,17 +4139,24 @@
    "kind": "protocol",
    "name": "Threshold Network (tBTC)",
    "observedDelaySeconds": 86400,
+   "pinnedBlock": 26407707,
    "preflightArgs": {
     "address": "0x92f2d8b72a7F6a551Be60b9aa4194248E9B4913D",
     "chain": "ethereum"
    },
    "primaryContract": "0x92f2d8b72a7F6a551Be60b9aa4194248E9B4913D",
+   "relatedContracts": [
+    "0x7Affa05f726D293eB1193807A91617318292008e",
+    "0x46d52E41C2F300BC82217Ce22b920c34995204eb",
+    "0x14fAD0C11C83AC736e5929D5661bbA7E6BB9c0D6"
+   ],
    "slug": "threshold-network-tbtc",
    "sprints": [
     15
    ],
    "surfaces": [
     {
+     "blockNumber": 26407707,
      "classification": "aligned_baseline",
      "id": "threshold-tbtc-timelock-1d-walletregistry-op-0xb667",
      "surface": "tBTC TimelockController 1d delay — public WalletRegistry upgradeAndCall schedule",
@@ -3147,7 +4169,8 @@
     "tBTC",
     "T"
    ],
-   "url": "https://pacta.wtf/protocols/threshold-network-tbtc/"
+   "url": "https://pacta.wtf/protocols/threshold-network-tbtc/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -3167,11 +4190,16 @@
    "kind": "protocol",
    "name": "Treehouse (TREE / tETH)",
    "observedDelaySeconds": 432000,
+   "pinnedBlock": 26407707,
    "preflightArgs": {
     "address": "0x2225DAbFfC7F862c99477381E971E8B1FDaB467e",
     "chain": "ethereum"
    },
    "primaryContract": "0x2225DAbFfC7F862c99477381E971E8B1FDaB467e",
+   "relatedContracts": [
+    "0x77146784315Ba81904d654466968e3a7c196d1f3",
+    "0x0fedcbfEBc293Ad8048726B0F887e6C1126EffA6"
+   ],
    "slug": "treehouse-tree-teth",
    "sprints": [
     14,
@@ -3179,6 +4207,7 @@
    ],
    "surfaces": [
     {
+     "blockNumber": 26406106,
      "classification": "aligned_baseline",
      "id": "treehouse-tree-timelock-op-0x2f11",
      "surface": "TREE UUPS owner = 5d TimelockController — queued Blacklistable upgrade",
@@ -3186,6 +4215,7 @@
      "targetLabel": "Treehouse TimelockController"
     },
     {
+     "blockNumber": 26407707,
      "classification": "aligned_baseline",
      "id": "treehouse-teth-owner-5d-timelock-s16",
      "surface": "tETH owner() = 5d TimelockController",
@@ -3198,7 +4228,8 @@
     "tETH",
     "TREE"
    ],
-   "url": "https://pacta.wtf/protocols/treehouse-tree-teth/"
+   "url": "https://pacta.wtf/protocols/treehouse-tree-teth/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [],
@@ -3215,14 +4246,19 @@
    "kind": "protocol",
    "name": "Uniswap V3 & Governance Timelock",
    "observedDelaySeconds": 172800,
+   "pinnedBlock": 26414499,
    "preflightArgs": {
     "address": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
     "chain": "ethereum"
    },
    "primaryContract": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+   "relatedContracts": [
+    "0x1a9C8182C09F50C8318d769245beA52c32BE35BC"
+   ],
    "slug": "uniswap-governance-timelock",
    "surfaces": [
     {
+     "blockNumber": 26414499,
      "classification": "rpc_observed",
      "id": "uniswap-governance-timelock-control-plane",
      "surface": "UniswapV3Factory · Owner Contract under the 2d Governance Timelock",
@@ -3234,7 +4270,8 @@
    "tokens": [
     "UNI"
    ],
-   "url": "https://pacta.wtf/protocols/uniswap-governance-timelock/"
+   "url": "https://pacta.wtf/protocols/uniswap-governance-timelock/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -3253,17 +4290,22 @@
    "kind": "protocol",
    "name": "Usual Money (USD0 / USD0++)",
    "observedDelaySeconds": 1,
+   "pinnedBlock": 26401725,
    "preflightArgs": {
     "address": "0x0D374775E962c3608B8F0A4b8B10567DF739bb56",
     "chain": "ethereum"
    },
    "primaryContract": "0x0D374775E962c3608B8F0A4b8B10567DF739bb56",
+   "relatedContracts": [
+    "0x6e9d65eC80D69b1f508560Bc7aeA5003db1f7FB7"
+   ],
    "slug": "usual-money-usd0-usd0",
    "sprints": [
     8
    ],
    "surfaces": [
     {
+     "blockNumber": 26401725,
      "classification": "parameter_delta",
      "id": "usual-money-registry-access-delay",
      "surface": "OpenZeppelin AccessControlDefaultAdminRules Delay",
@@ -3277,7 +4319,19 @@
     "USD0++",
     "USUAL"
    ],
-   "url": "https://pacta.wtf/protocols/usual-money-usd0-usd0/"
+   "url": "https://pacta.wtf/protocols/usual-money-usd0-usd0/",
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "parameter_delta",
+      "documented": "3 d",
+      "observed": "1 s",
+      "parameter": "Timelock delay",
+      "recordId": "usual-money-registry-access-delay"
+     }
+    ],
+    "matched": []
+   }
   },
   {
    "baseEasUids": [
@@ -3296,17 +4350,23 @@
    "kind": "protocol",
    "name": "Yearn V3",
    "observedDelaySeconds": 604800,
+   "pinnedBlock": 26401725,
    "preflightArgs": {
     "address": "0xb3bd6B2E61753C311EFbCF0111f75D29706D9a41",
     "chain": "ethereum"
    },
    "primaryContract": "0xb3bd6B2E61753C311EFbCF0111f75D29706D9a41",
+   "relatedContracts": [
+    "0xFEB4acf3df3cDEA7399794D0869ef76A6EfAff52",
+    "0x16388463d60FFE0661Cf7F1f31a7D658aC790ff7"
+   ],
    "slug": "yearn-v3",
    "sprints": [
     8
    ],
    "surfaces": [
     {
+     "blockNumber": 26401725,
      "classification": "protective_delta",
      "id": "yearn-v3-role-manager-timelock",
      "surface": "Sampled RoleManager.governance() Timelock Wiring",
@@ -3318,7 +4378,19 @@
    "tokens": [
     "YFI"
    ],
-   "url": "https://pacta.wtf/protocols/yearn-v3/"
+   "url": "https://pacta.wtf/protocols/yearn-v3/",
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "protective_delta",
+      "documented": "0 s (no delay)",
+      "observed": "7 d",
+      "parameter": "Timelock delay",
+      "recordId": "yearn-v3-role-manager-timelock"
+     }
+    ],
+    "matched": []
+   }
   },
   {
    "baseEasUids": [],
@@ -3393,7 +4465,7 @@
    "controllerKind": "timelock",
    "documentedDelaySeconds": null,
    "easAttested": false,
-   "eta": 1794651635,
+   "eta": null,
    "evidenceBasis": "pinned_rpc_brief",
    "kind": "brief",
    "name": "Ethena USDe — RLUSD & USAT collateral onboarding",

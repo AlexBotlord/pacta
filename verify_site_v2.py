@@ -2,6 +2,7 @@
 """verify_site_v2.py - offline checks for the Pacta static site (docs/). Pure stdlib; no network.
 
   python3 verify_site_v2.py        # exit 0 = all checks passed
+  python3 verify_site_v2.py --verify-sync-receipt PATH --verify-memory-centre http://127.0.0.1:<port>/mcp [--memory-env-file F]
 
 Checks: <head> budget (<body> before byte 2500; OG + X tags inside the first 1.2 KB of <head>), zero data:image blobs,
 required Open Graph / X card / canonical tags, zero "Security Quarantine" wording, count parity (sprints / records)
@@ -224,7 +225,287 @@ def llms_txt(read_):
     return read_("docs/llms.txt")
 
 
-def main():
+# ---------------------------------------------------------------- Phase 1 graph manifest (docs/api/v1/graph-manifest.json)
+GRAPH_RELATIONS = ("governed_by_controller", "exhibits_control_plane_gap", "attested_by_base_eas", "collateral_contagion_upstream")
+GRAPH_EPHEMERAL = ("discusses_protocol", "attention_spike_on")
+GRAPH_EPHEMERAL_PREFIXES = ("analytics-", "forum-", "pacta-intent-")
+GRAPH_TAU = 0.65
+
+
+def _graph_tokens(text):
+    return re.findall(r"[a-z0-9]+", text.lower())
+
+
+def _graph_cos(a, b):
+    num = sum(v * b.get(k, 0.0) for k, v in a.items())
+    den = (sum(v * v for v in a.values()) * sum(v * v for v in b.values())) ** 0.5
+    return num / den if den else 0.0
+
+
+def graph_distinctiveness(texts):
+    """Max pairwise cosine of node texts: raw token counts (the expectation of FN-Memory's bow fake embedding) and word
+    TF-IDF. Pure stdlib; the exact bow (numpy) audit runs in pacta-core test_protocol_graph_sync.py."""
+    import collections
+    import math
+    toks = [_graph_tokens(t) for t in texts]
+    counts = [collections.Counter(t) for t in toks]
+    n = len(toks)
+    df = collections.Counter(w for t in toks for w in set(t))
+    idf = {w: math.log((1 + n) / (1 + c)) + 1.0 for w, c in df.items()}
+    tfidf = [{w: c * idf[w] for w, c in cc.items()} for cc in counts]
+    best = {}
+    for name, vecs in (("count", counts), ("tfidf", tfidf)):
+        top = (0.0, None, None)
+        for i in range(n):
+            for j in range(i + 1, n):
+                c = _graph_cos(vecs[i], vecs[j])
+                if c > top[0]:
+                    top = (c, i, j)
+        best[name] = top
+    return best
+
+
+class _VerifyMcp:
+    """Minimal outbound MCP (streamable HTTP) client for --verify-memory-centre (read-only memory_relation_list)."""
+
+    def __init__(self, url, bearer, opener=None):
+        import urllib.request
+        self.url, self._bearer, self.session, self._id = url, bearer, None, 0
+        self.opener = opener or urllib.request.build_opener()
+
+    def _post(self, body, notify=False):
+        import urllib.request
+        headers = {"Content-Type": "application/json", "Accept": "application/json, text/event-stream", "Authorization": "Bearer " + self._bearer}
+        if self.session:
+            headers["Mcp-Session-Id"] = self.session
+        req = urllib.request.Request(self.url, data=json.dumps(body).encode(), headers=headers, method="POST")
+        with self.opener.open(req, timeout=20) as r:
+            self.session = r.headers.get("Mcp-Session-Id") or self.session
+            raw = r.read().decode("utf-8", "replace")
+        if notify:
+            return None
+        if raw.lstrip().startswith(("event:", "data:")):
+            msgs = [json.loads(line[5:].strip()) for line in raw.splitlines() if line.startswith("data:") and line[5:].strip()]
+            return next((m for m in msgs if m.get("id") == body.get("id")), msgs[-1] if msgs else {})
+        return json.loads(raw) if raw.strip() else {}
+
+    def call(self, name, args):
+        if self._id == 0:
+            self._id = 1
+            self._post({"jsonrpc": "2.0", "id": 1, "method": "initialize",
+                        "params": {"protocolVersion": "2025-03-26", "capabilities": {}, "clientInfo": {"name": "pacta-verify-site", "version": "1"}}})
+            self._post({"jsonrpc": "2.0", "method": "notifications/initialized"}, notify=True)
+        self._id += 1
+        msg = self._post({"jsonrpc": "2.0", "id": self._id, "method": "tools/call", "params": {"name": name, "arguments": args}})
+        res = msg.get("result") or {}
+        if msg.get("error") or res.get("isError"):
+            raise RuntimeError(f"{name}: {json.dumps(msg.get('error') or res)[:200]}")
+        if isinstance(res.get("structuredContent"), dict):
+            return res["structuredContent"]
+        return json.loads((res.get("content") or [{}])[0].get("text") or "{}")
+
+
+def live_graph_relations(url, bearer, owner):
+    """Every active relation the token can see on the centre (paged), as {(relation, source, target): row}.
+    url: an MCP URL, or inproc://<state dir> = the socketless in-process FN-Memory runtime (tools/fn_memory_inproc.py; needs
+    PACTA_FN_MEMORY_CHECKOUT / PACTA_FN_MEMORY_PYDEPS; the centre must not be open in another process)."""
+    centre = None
+    if url.startswith("inproc://"):
+        sys.path.insert(0, os.path.join(ROOT, "tools"))
+        import fn_memory_inproc
+        centre = fn_memory_inproc.InProcFnMemoryCentre.attach(url[len("inproc://"):]).start()
+        mcp = _VerifyMcp(centre.url, bearer, opener=centre.opener())
+    else:
+        mcp = _VerifyMcp(url, bearer)
+    rows, after = [], None
+    try:
+        for _ in range(600):                      # <= 60,000 rows; the per-centre cap is 50,000
+            args = {"limit": 100}
+            if after:
+                args["after"] = after
+            page = mcp.call("memory_relation_list", args)
+            rows.extend(page.get("relations") or [])
+            after = page.get("next_after")
+            if not after:
+                break
+    finally:
+        if centre is not None:
+            centre.close()
+    live = {}
+    for r in rows:
+        if owner and r.get("creator") != owner:
+            continue
+        src = next((p["id"] for p in r.get("participants") or [] if p.get("side") == "source"), None)
+        tgt = next((p["id"] for p in r.get("participants") or [] if p.get("side") == "target"), None)
+        live.setdefault((r.get("relation"), src, tgt), []).append(r)
+    return live, rows
+
+
+def _memory_bearer(env_file):
+    bearer = os.environ.get("PACTA_VERIFY_MEMORY_TOKEN") or os.environ.get("SN_MEMORY_TOKEN")
+    if env_file:
+        for line in open(env_file, encoding="utf-8"):
+            k, _, v = line.strip().partition("=")
+            if k.strip() in ("PACTA_VERIFY_MEMORY_TOKEN", "SN_MEMORY_TOKEN") and v.strip():
+                bearer = v.strip().strip('"').strip("'")
+    return bearer
+
+
+def graph_manifest_checks(args):
+    """Offline (always): manifest parity / structure / FN-Memory scrubber / distinctiveness. Optional: sync receipt and live centre."""
+    sys.path.insert(0, os.path.join(ROOT, "tools"))
+    import fn_memory_scrub as SCRUB
+    import graph_manifest as GM
+    path = os.path.join(DOCS, "api", "v1", "graph-manifest.json")
+    if not os.path.exists(path):
+        check("graph-manifest.json exists (pacta.graph_manifest.v1)", False, "missing")
+        return
+    raw = read("docs/api/v1/graph-manifest.json")
+    m = json.loads(raw)
+    prot = json.loads(read("docs/api/v1/protocols.json"))["protocols"]
+    slugs = sorted(p["slug"] for p in prot)
+    rebuilt = GM.render(GM.build(ROOT))
+    check("graph-manifest.json is the byte-identical deterministic build of protocols / index / rpc-pinned / graph_dependencies / "
+          "graph_controller_facts (+ merged bounties/submissions): no wall clock",
+          raw == rebuilt and m.get("schema") == GM.SCHEMA and m.get("generated_at") == json.loads(read("docs/api/v1/index.json"))["generated_at"],
+          f"schema {m.get('schema')}, {len(raw)} bytes")
+    nodes, edges = m.get("nodes") or [], m.get("edges") or []
+    ids = [n["id"] for n in nodes]
+    proto_nodes = sorted(i[len("pacta-proto-"):] for i in ids if i.startswith("pacta-proto-"))
+    by_rel = {r: sum(1 for e in edges if e["relation"] == r) for r in GRAPH_RELATIONS}
+    surfaces = [s for p in prot for s in p.get("surfaces") or []]
+    n_pd = sum(1 for s in surfaces if s.get("classification") == "parameter_delta")
+    n_bounty = len((m.get("sources") or {}).get("bounty_submissions") or [])
+    n_att = sum(len(p.get("sprints") or []) for p in prot)
+    gov = {e["participants"][0]["id"] for e in edges if e["relation"] == "governed_by_controller"}
+    ctrl_ids = [i for i in ids if i.startswith("pacta-ctrl-")]
+    check(f"graph manifest: {X['protocols']} protocols (1:1 slug parity with protocols.json), 4 durable relation types only, "
+          f"every protocol governed_by_controller, {X['sprints']} pacta-eas-sprint-* nodes, attested / gap edge counts match the data, "
+          "owning principal pacta@dri.network/gemini",
+          m.get("protocols") == slugs == proto_nodes and len(slugs) == X["protocols"] and m["counts"]["protocols"] == len(slugs)
+          and sorted(m.get("relation_types") or []) == sorted(GRAPH_RELATIONS) and all(by_rel[r] > 0 for r in GRAPH_RELATIONS)
+          and {e["relation"] for e in edges} <= set(GRAPH_RELATIONS)
+          and gov == {f"pacta-proto-{s}" for s in slugs}
+          and sum(1 for i in ids if i.startswith("pacta-eas-sprint-")) == X["sprints"]
+          and by_rel["attested_by_base_eas"] == n_att and by_rel["exhibits_control_plane_gap"] == n_pd + n_bounty
+          and len(set(ids)) == len(ids) and len(set(ctrl_ids)) == len(ctrl_ids)
+          and all(i.startswith(("pacta-proto-", "pacta-ctrl-", "pacta-gap-", "pacta-eas-sprint-")) for i in ids)
+          and m.get("owning_principal") == "pacta@dri.network/gemini" and m.get("source_agent") == "pacta@dri.network",
+          f"{len(nodes)} nodes {m['counts'].get('nodes_by_kind')}, {len(edges)} edges {by_rel}")
+    bad = []
+    for e in edges:
+        ev = canonical_bytes = SCRUB.canonical(e["evidence"])
+        if e["edge_key"] != f"{e['relation']}:{e['participants'][0]['id']}->{e['participants'][1]['id']}" or e["direction"] != "directed":
+            bad.append(e["edge_key"] + ": key / direction")
+        if [p["side"] for p in e["participants"]] != ["source", "target"] or any(p["id"] not in ids for p in e["participants"]):
+            bad.append(e["edge_key"] + ": participants")
+        if e["content_hash"] != GM.content_hash(e) or e["observed_at"] != m["observed_at"]:
+            bad.append(e["edge_key"] + ": content_hash / observed_at")
+        if len(canonical_bytes) > 4096 or re.search(r"0x[0-9a-fA-F]{40}", ev.decode()):
+            bad.append(e["edge_key"] + ": evidence size / 0x hex")
+        if re.search(r'"[^"]*(?:token|secret|key|password|passwd|pwd)[^"]*":', ev.decode(), re.I):
+            bad.append(e["edge_key"] + ": credential-shaped evidence key")
+    check("graph edges: edge_key = relation:source->target, directed source/target participants that exist, content_hash = sha256(canonical "
+          "{relation, direction, participants, evidence}), observed_at = index.json generated_at, evidence <= 4096 canonical bytes, "
+          "0x-free 40/64-hex, no token/secret/key/password keys; manifest_sha256 valid; no ephemeral labels or analytics-/forum-/pacta-intent- ids",
+          not bad and m.get("manifest_sha256") == GM.manifest_sha256(m) and m["counts"]["max_evidence_bytes"] <= 4096
+          and not any(e["relation"] in GRAPH_EPHEMERAL for e in edges) and not any(i.startswith(GRAPH_EPHEMERAL_PREFIXES) for i in ids),
+          f"bad {bad[:4]}; max evidence {m['counts'].get('max_evidence_bytes')} B")
+    hits = [n["id"] for n in nodes if SCRUB.looks_like_secret(n["text"])]
+    hits += [e["edge_key"] for e in edges if SCRUB.looks_like_secret(SCRUB.relation_payload_text(
+        e["relation"], e["direction"], e["participants"], e["observed_at"], e["evidence"]))]
+    long0x = [n["id"] for n in nodes if re.search(r"0x[0-9a-fA-F]{9,}", n["text"])]
+    check(f"FN-Memory {SCRUB.FN_MEMORY_COMMIT[:8]} pre-write scrubber (mcp_server.py looks_like_secret + custom_relations.py canonical payload): "
+          "0 hits across every node text and every relation payload; node text abbreviates 0x values (0xABCD..1234)",
+          not hits and not long0x, f"{len(nodes)} texts + {len(edges)} payloads; hits {hits[:4]}; unabbreviated {long0x[:4]}")
+    best = graph_distinctiveness([n["text"] for n in nodes])
+    worst = {k: (round(v[0], 3), ids[v[1]] if v[1] is not None else None, ids[v[2]] if v[2] is not None else None) for k, v in best.items()}
+    check(f"graph node texts are distinct (U4): max pairwise token-count (bow expectation) and TF-IDF cosine < {GRAPH_TAU}",
+          all(v[0] < GRAPH_TAU for v in best.values()), str(worst))
+    facts = json.loads(read("tools/graph_controller_facts.json"))
+    moved = json.loads(json.dumps(facts))
+    for f in moved["contracts"].values():          # every mutable control-plane fact changes (threshold 4 -> 3, delays, owners, code)
+        if f.get("safe_threshold"):
+            f["safe_threshold"] = max(1, f["safe_threshold"] - 1)
+            f["safe_owner_hex"] = sorted(f.get("safe_owner_hex") or [])[1:]
+            f["safe_owners"] = len(f["safe_owner_hex"])
+            f["safe_nonce"] = (f.get("safe_nonce") or 0) + 1
+        if f.get("timelock_min_delay") is not None:
+            f["timelock_min_delay"] += 3600
+        if f.get("code_keccak_hex"):
+            f["code_keccak_hex"] = "0" * 64
+    alt = GM.build(ROOT, controller_facts=moved)
+    texts = {n["id"]: n["text"] for n in nodes}
+    alt_hash = {e["edge_key"]: e["content_hash"] for e in alt["edges"]}
+    observed = [e for e in edges if e["relation"] == "governed_by_controller" and e["evidence"].get("observed_controller")]
+    changed_text = [n["id"] for n in alt["nodes"] if texts.get(n["id"]) != n["text"]]
+    check("pacta-ctrl-* node text is immutable identity: perturbing every mutable controller fact (Safe threshold / owners / "
+          "nonce, timelock delay, code hash) rewrites 0 node texts and changes the content_hash of every governed_by_controller edge "
+          "that carries observed_controller evidence (updated in place, never a node rewrite)",
+          not changed_text and observed and all(alt_hash.get(e["edge_key"]) != e["content_hash"] for e in observed)
+          and [n["id"] for n in alt["nodes"]] == ids,
+          f"{len(changed_text)} node texts changed {changed_text[:3]}; {len(observed)} edges with observed_controller evidence")
+    check("sitemap.xml lists /api/v1/graph-manifest.json", "/api/v1/graph-manifest.json</loc>" in read("docs/sitemap.xml"))
+    if args.verify_sync_receipt:
+        try:
+            rc = json.load(open(args.verify_sync_receipt, encoding="utf-8"))
+            ok = (rc.get("status") == "SYNCED" and rc.get("writeEnabled") is True and rc.get("protocols_in_graph") == X["protocols"]
+                  and rc.get("protocols_indexed") == X["protocols"] and rc.get("edges_synced") == len(edges)
+                  and rc.get("manifest_sha256") == m["manifest_sha256"] and rc.get("failed_writes") == 0)
+            detail = (f"status {rc.get('status')}, writeEnabled {rc.get('writeEnabled')}, protocols {rc.get('protocols_in_graph')}/"
+                      f"{rc.get('protocols_indexed')}, edges_synced {rc.get('edges_synced')}/{len(edges)}, manifest "
+                      f"{str(rc.get('manifest_sha256'))[:12]}, failed_writes {rc.get('failed_writes')}")
+        except (OSError, ValueError) as e:
+            ok, detail = False, f"unreadable receipt: {type(e).__name__}"
+        check(f"--verify-sync-receipt: status SYNCED, writeEnabled true, protocols_in_graph {X['protocols']}, edges_synced = "
+              "the manifest edge count (live-verified), manifest_sha256 = graph-manifest.json, failed_writes 0", ok, detail)
+    if args.verify_memory_centre:
+        bearer = _memory_bearer(args.memory_env_file)
+        if not bearer:
+            check("--verify-memory-centre: live relation parity", False, "no token (SN_MEMORY_TOKEN / PACTA_VERIFY_MEMORY_TOKEN / --memory-env-file)")
+            return
+        try:
+            live, rows = live_graph_relations(args.verify_memory_centre, bearer, m["owning_principal"])
+        except Exception as e:                    # report, never raise (a closed centre is a failed check, not a crash)
+            check("--verify-memory-centre: live relation parity", False, f"{type(e).__name__}: {str(e)[:160]}")
+            return
+        want = {(e["relation"], e["participants"][0]["id"], e["participants"][1]["id"]) for e in edges}
+        got = {k for k in live if k[0] in GRAPH_RELATIONS}
+        live_counts = {r: sum(len(v) for k, v in live.items() if k[0] == r) for r in GRAPH_RELATIONS}
+        dupes = sorted(k for k, v in live.items() if k[0] in GRAPH_RELATIONS and len(v) > 1)
+        check("--verify-memory-centre: live active relations by the 4 structural labels (creator = owning principal) equal the manifest "
+              "label counts AND the exact (relation, source_id, target_id) edge set; no duplicates",
+              live_counts == by_rel and got == want and not dupes,
+              f"live {live_counts} vs manifest {by_rel}; missing {len(want - got)}, extra {len(got - want)}, duplicates {len(dupes)}; "
+              f"{len(rows)} rows paged")
+        hash_ok = ev_ok = 0
+        for e in edges:
+            for row in live.get((e["relation"], e["participants"][0]["id"], e["participants"][1]["id"])) or []:
+                rebuilt = {"relation": row.get("relation"), "direction": row.get("direction"),
+                           "participants": [{"id": p.get("id"), "role": p.get("role"), "side": p.get("side")} for p in row.get("participants") or []],
+                           "evidence": row.get("evidence") or {}}
+                hash_ok += GM.content_hash(rebuilt) == e["content_hash"]
+                ev_ok += SCRUB.canonical(row.get("evidence") or {}) == SCRUB.canonical(e["evidence"])
+        check("--verify-memory-centre: the canonical content_hash recomputed over every live edge (relation, direction, participants, "
+              "evidence) equals the manifest content_hash, and every live evidence is canonically identical: 100%",
+              hash_ok == ev_ok == len(edges) and got == want and not dupes,
+              f"content_hash {hash_ok}/{len(edges)}, evidence {ev_ok}/{len(edges)}")
+
+
+def parse_args(argv=None):
+    import argparse
+    ap = argparse.ArgumentParser(description="Offline checks for the Pacta static site (+ optional graph sync / live centre parity)")
+    ap.add_argument("--verify-sync-receipt", metavar="PATH", help="graph-sync-receipt.json: SYNCED, writeEnabled, 66 protocols, edges_synced = "
+                    "manifest edges, manifest_sha256 matches, failed_writes == 0")
+    ap.add_argument("--verify-memory-centre", metavar="MCP_URL", help="live sn-memory MCP URL, or inproc://<state dir> (socketless in-process "
+                    "FN-Memory runtime, tools/fn_memory_inproc.py): label-count + edge parity + 100%% content_hash / evidence equality "
+                    "with the manifest (token from SN_MEMORY_TOKEN / PACTA_VERIFY_MEMORY_TOKEN or --memory-env-file)")
+    ap.add_argument("--memory-env-file", metavar="PATH", help="env file with SN_MEMORY_TOKEN (never printed)")
+    return ap.parse_args(argv)
+
+
+def main(argv=None):
+    cli = parse_args(argv)
     base = re.search(r'^BASE_URL = "([^"]+)"', read("tools/build_site.py"), re.M).group(1)
     raw = read("docs/index.html", "rb")
     page = raw.decode()
@@ -1506,6 +1787,8 @@ def main():
              if os.path.isfile(p) and p.endswith((".html", ".txt", ".json", ".xml", ".js", ".css", ".md", ".py"))]
     leaks = sorted({os.path.relpath(p, ROOT) for p in scope if tokens(open(p, errors="replace").read()) & DENY_SHA256})
     check("no private / quarantined identifiers (SHA-256 token deny-list)", not leaks, f"{len(scope)} files scanned; leaks in: {leaks}")
+
+    graph_manifest_checks(cli)
 
     width = max(len(n) for n, _, _ in RESULTS)
     for name, ok, detail in RESULTS:

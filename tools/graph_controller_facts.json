@@ -1,0 +1,545 @@
+{
+ "contracts": {
+  "base:0e02eb705be325407707662c6f6d3466e939f3a0": {
+   "code_bytes": 9779,
+   "code_keccak_hex": "22818496ed85629596372dcbe81fbc48c729489bdf829e198040b0f06fc4f58f"
+  },
+  "base:10ac0b33e1c4501cf3ec1cb1ae51ebfdbd2d4698": {
+   "code_bytes": 21772,
+   "code_keccak_hex": "dece4b0ff7f978789b63225950af144f8887e7b9e27b0d76771f195d0d6ceac5"
+  },
+  "base:16613524e02ad97edfef371bc883f2f5d6c480a5": {
+   "code_bytes": 16912,
+   "code_keccak_hex": "465dc52dbb30fca5cca06c57fb266ec0e36c10530cdc6738dc4f035c81a0ae96"
+  },
+  "base:18281dfc4d00905da1aaa6731414eaba843c468a": {
+   "code_bytes": 6546,
+   "code_keccak_hex": "25d3aee38b54d0bcb11f5e23594828690be0e57e8849f5af48ce479801e8d29a"
+  },
+  "base:2dc219e716793fb4b21548c0f009ba3af753ab01": {
+   "code_bytes": 2104,
+   "code_keccak_hex": "952a246d405d6e2b85d02284d5d10b293da25b2262a600395a1e51dfd9a443b4",
+   "owner_hex": "9390b1735def18560c509e2d0bc090e9d6ba257a"
+  },
+  "base:420dd381b31aef6683db6b902084cb0ffece40da": {
+   "code_bytes": 3516,
+   "code_keccak_hex": "e2a176e5d2bcfb214b784ec6d6733708a6376a464f203cc265c284c9f349fea3"
+  },
+  "base:56c1a4b54921dea9a344967a8693c7e661d72968": {
+   "code_bytes": 171,
+   "code_keccak_hex": "b89c1b3bdf2cf8827818646bce9a8f6e372885f8c55e5c07acbd307cb133b000",
+   "safe_nonce": 19,
+   "safe_owner_hex": [
+    "3fa960f8355d00874d9c7e3350147f5e94859bc2",
+    "a2dcdd6e0b5e0d118e2fa8922552ac0fe26efe58",
+    "b291232f480f41c75802c4a60f1d2ac03404afef",
+    "e6838d834674ec35edd53d485770baa10bdd6aae",
+    "c2674c1a1af0557e1d217ff4f13df44a637c7c13",
+    "4ab2bed1d667260db34244ba412817651c2dd52b",
+    "d4af2e86a27f8f77b0556e081f97b215c9ca8f2e"
+   ],
+   "safe_owners": 7,
+   "safe_threshold": 4,
+   "safe_version": "1.3.0"
+  },
+  "base:5a70429e0e5c7be9e5f83b497c18f5ac82345113": {
+   "code_bytes": 2041,
+   "code_keccak_hex": "6aa938da39dccb325f22f72c6097045493563811162c176de0b819ca68ec8efb"
+  },
+  "base:5e7bb104d84c7cb9b682aac2f3d509f5f406809a": {
+   "code_bytes": 4958,
+   "code_keccak_hex": "7340cf80843bd721bcaefbfc050e38304cb4174c239e6e914e3056f27f39b11c",
+   "owner_hex": "e6a41fe61e7a1996b59d508661e3f524d6a32075"
+  },
+  "base:6ffaca7c3b38ec2d631d86e15f328ee6ef6c6226": {
+   "code_bytes": 171,
+   "code_keccak_hex": "b89c1b3bdf2cf8827818646bce9a8f6e372885f8c55e5c07acbd307cb133b000",
+   "safe_nonce": 149,
+   "safe_owner_hex": [
+    "037465bf6a4a8d7f552ae18046478c6a727178f3",
+    "c51caf7ab90cf6b5cc03b81a37235054fa2d0000",
+    "6dcab4d155cffa74e65056fdc94164732d611e85",
+    "e1b019f6a0423d29ea9d8f6f5f385bf5010cccce",
+    "982f264ce97365864181df65df4931c593a515ad",
+    "010da5ff62b6e45f89fa7b2d8ced5a8b5754ec1b"
+   ],
+   "safe_owners": 6,
+   "safe_threshold": 3,
+   "safe_version": "1.3.0"
+  },
+  "base:7ed48c31f2fdc40d37407cbabf0870b2b688368f": {
+   "code_bytes": 2618,
+   "code_keccak_hex": "4c52ecbbb2915e51e056c8061997658d56bd4644233350617f11586423c6c42e"
+  },
+  "base:9c4ec768c28520b50860ea7a15bd7213a9ff58bf": {
+   "code_bytes": 1878,
+   "code_keccak_hex": "64952234eab8f3aed74355c49119f627965640b1efeb6b28430b5a31b0d3b192"
+  },
+  "base:b5396ef2bf8ca360ceb4166b77afb2bed20e74d4": {
+   "code_bytes": 15614,
+   "code_keccak_hex": "4dfe0bcd9f94f3d29d1dbbce22b6eb4192acf8d3108cc253ab28a51ec7caeff4"
+  },
+  "base:bb505c54d71e9e599cb8435b4f0ceec05fc71cbd": {
+   "code_bytes": 20198,
+   "code_keccak_hex": "2bda3204356bb12a5b68e82c0408773da0a9c311b37996552ee4e9e6756623e8",
+   "owner_hex": "5a70429e0e5c7be9e5f83b497c18f5ac82345113"
+  },
+  "base:beef010f9cb27031ad51e3333f9af9c6b1228183": {
+   "code_bytes": 19340,
+   "code_keccak_hex": "b57183e18102413197e94353cec8cc5619833db69086547af1bc61871912d7c6",
+   "owner_hex": "0a0e559bc3b0950a7e448f0d4894db195b9cf8dd"
+  },
+  "base:cc3e7c85bb0ee4f09380e041fee95a0caedd4a02": {
+   "code_bytes": 3480,
+   "code_keccak_hex": "4c07e061b0150a1cddad82199ebc03c5c08e11a7e6459c09d72f8c5953a639ca"
+  },
+  "base:fbb21d0380bee3312b33c4353c8936a0f13ef26c": {
+   "code_bytes": 1412,
+   "code_keccak_hex": "86a2f6bebe3e171b8d4231544a9925e94e586139762d0164d37c34831a3d0240"
+  },
+  "base:fc69704cc3caac545cc7577009ea4aa04f1a61eb": {
+   "code_bytes": 2112,
+   "code_keccak_hex": "6bec2bf64f7e824109f6ed55f77dd7665801d6195e461666ad6a5342a9f6daf5",
+   "owner_hex": "6ffaca7c3b38ec2d631d86e15f328ee6ef6c6226"
+  },
+  "ethereum:055e84e7fe8955e2781010b866f10ef6e1e77e59": {
+   "code_bytes": 11076,
+   "code_keccak_hex": "790260e19c593d086bc3677d1bd906d991d1652f5b22c90547ff8b7c57fa0332",
+   "timelock_min_delay": 86400
+  },
+  "ethereum:0d374775e962c3608b8f0a4b8b10567df739bb56": {
+   "code_bytes": 1129,
+   "code_keccak_hex": "e2514788bd6e4c599cb6036efdee3c2ba7e011e287c432bf1bc61bbd699fe4e2",
+   "owner_hex": "6e9d65ec80d69b1f508560bc7aea5003db1f7fb7"
+  },
+  "ethereum:1112d5c55670cb5144bf36114c20a122908068b9": {
+   "code_bytes": 7621,
+   "code_keccak_hex": "d4723305a02271b663b1dd1845d20bb855804063fe498b5bd625cff34deb078f",
+   "timelock_min_delay": 604800
+  },
+  "ethereum:119fbeedd4f4f4298fb59b720d5654442b81ae2c": {
+   "code_bytes": 3836,
+   "code_keccak_hex": "cfcb903f1e16b66259932580e42a9ffb953539c02517d33b68b9dab632ebf84b"
+  },
+  "ethereum:1f98431c8ad98523631ae4a59f267346ea31f984": {
+   "code_bytes": 24535,
+   "code_keccak_hex": "4d7b8525cd5d14343fa67a732fba5b24cddba11620ca88392f4ec6c52f91fd69",
+   "owner_hex": "f2371551fe3937db7c750f4dfabe5c2fffdcbf5a"
+  },
+  "ethereum:2225dabffc7f862c99477381e971e8b1fdab467e": {
+   "code_bytes": 7866,
+   "code_keccak_hex": "9b6b0ce7a3dd293143b0dd3e5d47c71243ac9fa18d9006bae9211a27f1d4bc1d",
+   "timelock_min_delay": 432000
+  },
+  "ethereum:29a56a1b8214d9cf7c5561811750d5cbdb45cc8e": {
+   "code_bytes": 5631,
+   "code_keccak_hex": "eae381444da7aebe662b6ab22300b74f721b0e4fdabc514d0bcf88a484e552b2"
+  },
+  "ethereum:2c5898da4df1d45eab2b7b192a361c3b9eb18d9c": {
+   "code_bytes": 5939,
+   "code_keccak_hex": "240fcce58c8cf8ef1fbb4e9ee152b0415e4ec9dd4fc51cf1f597230325835c79"
+  },
+  "ethereum:32356fe312eba9b7d6a157ad28d1ca91b571cda6": {
+   "code_bytes": 2115,
+   "code_keccak_hex": "ec17f0f42b4fbb691f7211164fc054ea2ff07eadf57f509181f80543f3dfe1aa"
+  },
+  "ethereum:324c5dc1fc42c7a4d43d92df1eba58a54d13bf2d": {
+   "code_bytes": 11224,
+   "code_keccak_hex": "867b772da380c40eb5d90b295246914abbd2031a5264d1ce3154c320de7ec699",
+   "owner_hex": "b031913cb7ad81b8a4ba412b471c2da69bea410b"
+  },
+  "ethereum:363ba8843d06ba5968f55c26ab055162edd62189": {
+   "code_bytes": 6536,
+   "code_keccak_hex": "c4486228197a3bc92b09a9d56db44effd12c2202d460738b5c2f12708e0a7578",
+   "timelock_min_delay": 0
+  },
+  "ethereum:3e6eba46abc5ab18ed95f6667d8b2fd4020e4637": {
+   "code_bytes": 2999,
+   "code_keccak_hex": "0518f4d207737618618ea11a9b67f6da3cd41df7efe9434ab260bc1955651267",
+   "owner_hex": "8119ec16f0573b7dac7c0cb94eb504fb32456ee1"
+  },
+  "ethereum:41675c099f32341bf84bfc5382af534df5c7461a": {
+   "code_bytes": 23579,
+   "code_keccak_hex": "1fe2df852ba3299d6534ef416eefa406e56ced995bca886ab7a553e6d0c5e1c4"
+  },
+  "ethereum:43415eb6ff9db7e26a15b704e7a3edce97d31c4e": {
+   "code_bytes": 2188,
+   "code_keccak_hex": "74c196ae1a3dfa8301f8fff56785f62a360dad1bd7cce3b1165086ca1d6bbaeb",
+   "owner_hex": "ad309bb6f13074128b4f23ef9ea2fe8552afca83"
+  },
+  "ethereum:485bde66bb668a51f2372e34e45b1c6226798122": {
+   "code_bytes": 2614,
+   "code_keccak_hex": "52c182d907f10a129e54b3167802ebd7156da4cb69c9de09747a6764a6681e40",
+   "owner_hex": "d829f278016b90fec735f9a12bf8b75e06102c89"
+  },
+  "ethereum:49bd9989e31ad35b0a62c20be86335196a3135b1": {
+   "code_bytes": 7621,
+   "code_keccak_hex": "d4723305a02271b663b1dd1845d20bb855804063fe498b5bd625cff34deb078f",
+   "timelock_min_delay": 864000
+  },
+  "ethereum:4e1dcf7ad4e460cfd30791ccc4f9c8a4f820ec67": {
+   "code_bytes": 3054,
+   "code_keccak_hex": "50c3cdc4074750a7a974204a716c999edd37482f907608d960b2b025ee0b3317"
+  },
+  "ethereum:6048a8c631fb7e77eca533cf9c29784e482391e7": {
+   "code_bytes": 770,
+   "code_keccak_hex": "736463ecd93106b4476c70257154462dc5603c6f4c9f73912d0e941d0ef85ada"
+  },
+  "ethereum:6440f144b7e50d6a8439336510312d2f54beb01d": {
+   "code_bytes": 6591,
+   "code_keccak_hex": "fee79b645b7275fbcb4e4891bb08f7c881e01378af3ecd74fb4dc19c47750d21"
+  },
+  "ethereum:66a1e37c9b0eaddca17d3662d6c05f4decf3e110": {
+   "code_bytes": 1159,
+   "code_keccak_hex": "b2a576c39621451a40ff068f8b5d70413ab0e138175b59913cc6df2639bfef13",
+   "owner_hex": "d6889f307be1b83bb355d5da7d4478fb0d2af547"
+  },
+  "ethereum:6b5815467da09daa7dc83db21c9239d98bb487b5": {
+   "code_bytes": 7895,
+   "code_keccak_hex": "ab5d140c3be230bf4652276fa624efc05791a58ce8466c828574a1b421d6d690",
+   "owner_hex": "144a98cb1cdbb23610501fe6108858d9b7d24934"
+  },
+  "ethereum:6d247b1c044fa1e22e6b04fa9f71baf99eb29a9f": {
+   "code_bytes": 2999,
+   "code_keccak_hex": "0518f4d207737618618ea11a9b67f6da3cd41df7efe9434ab260bc1955651267",
+   "owner_hex": "2ad631f72fb16d91c4953a7f4260a97c2fe2f31e"
+  },
+  "ethereum:6d903f6003cca6255d85cca4d3b5e5146dc33925": {
+   "code_bytes": 5988,
+   "code_keccak_hex": "78d36c8468d3af5a49c072e6ae2de71779fe97ef5866b6d6197046024fd14d04"
+  },
+  "ethereum:73e35c5c35a274e34ade6eb13cc7f62aee323728": {
+   "code_bytes": 24530,
+   "code_keccak_hex": "4bb4228a25e80e9adb840bd6f7a0e649addfeb6894b0e0449d0c6133937b199f",
+   "owner_hex": "e8dc0fab349ea169283c48ccfd09d797e6db7c94"
+  },
+  "ethereum:78fc2c2ed1a4cdb5402365934ae5648adad094d0": {
+   "code_bytes": 19340,
+   "code_keccak_hex": "4384ce70140f614d5c30212348980fd72510c885335850001fa2898f490352b1",
+   "owner_hex": "e86399fe6d7007fdecb08a2ee1434ee677a04433"
+  },
+  "ethereum:7a56e1c57c7475ccf742a1832b028f0456652f97": {
+   "code_bytes": 295,
+   "code_keccak_hex": "50a49085cf0d7de5064aadd040a8c1d1555f665019028fe6622cd6bfbb886b02",
+   "owner_hex": "0c2bc4d2698820e12e6ebe863e7b9e2650cd5b7d"
+  },
+  "ethereum:8306300ffd616049fd7e4b0354a64da835c1a81c": {
+   "code_bytes": 171,
+   "code_keccak_hex": "b89c1b3bdf2cf8827818646bce9a8f6e372885f8c55e5c07acbd307cb133b000",
+   "safe_nonce": 1551,
+   "safe_owner_hex": [
+    "381e2495e683868f693aa5b1414f712f21d34b40",
+    "c8de9f45601da8c76158b8caf3e56e8a037f2228",
+    "cbc616d595d38483e6adc45c7e426f44bf230928",
+    "c28339c70054bc22255a74e927a0b9e9a475f224",
+    "6933bcc3e96f1c4d2cb73cb391d854b18ab7a4f2",
+    "8da4e997e051605878c9c0b793c496556eacc2c0",
+    "6e74053a3798e0fc9a9775f7995316b27f21c4d2"
+   ],
+   "safe_owners": 7,
+   "safe_threshold": 4,
+   "safe_version": "1.3.0"
+  },
+  "ethereum:866a2bf4e572cbcf37d5071a7a58503bfb36be1b": {
+   "code_bytes": 15459,
+   "code_keccak_hex": "b9cc3d9749ae74871b35f9b282fb3240347aebbd4cc63c3bcb823f66e91c839b"
+  },
+  "ethereum:88ba032be87d5ef1fbe87336b7090767f367bf73": {
+   "code_bytes": 13082,
+   "code_keccak_hex": "ace6d058f61ea9244a52bc415e71dce93ead294b1d9fc3dd89f3141e1d6a4908",
+   "timelock_min_delay": 604800
+  },
+  "ethereum:8c1686069474410e6243425f4a10177a94ebee11": {
+   "code_bytes": 10323,
+   "code_keccak_hex": "4b4ef461cf084a2d8a40ec2f567574fbcecd1fe5fa778a1025efa8c17049093f"
+  },
+  "ethereum:8c1bed5b9a0928467c9b1341da1d7bd5e10b6549": {
+   "code_bytes": 2763,
+   "code_keccak_hex": "77db0c85b1557b39a74e99ce41b9f714618026cff35b5b2bff78f77beed3a2c4"
+  },
+  "ethereum:92f2d8b72a7f6a551be60b9aa4194248e9b4913d": {
+   "code_bytes": 8414,
+   "code_keccak_hex": "066ec8d8746bd6fb63f8a2d0cd82d7f17c233f828b5dab4abc68619f6ffd577a",
+   "timelock_min_delay": 86400
+  },
+  "ethereum:98db502215da1ad9f626d4a0090a8a2f4971003c": {
+   "code_bytes": 7022,
+   "code_keccak_hex": "44998960a23d285c46e9e20d5c62fc678e6ed1baa9fb6b43a1e1e96feb9aaf50"
+  },
+  "ethereum:9f26d4c958fd811a1f59b01b86be7dffc9d20761": {
+   "code_bytes": 8681,
+   "code_keccak_hex": "bf21ebc11e4f971cbfdd8a64f63d34e737f63bc98303f223a03673bd141749f0",
+   "timelock_min_delay": 864000
+  },
+  "ethereum:a0d69e286b938e21cbf7e51d71f6a4c8918f482f": {
+   "code_bytes": 686,
+   "code_keccak_hex": "ac6cd5e25813d58f658d168019d72ec53339569d503a95d849bf35535caf3411"
+  },
+  "ethereum:a1290d69c65a6fe4df752f95823fae25cb99e5a7": {
+   "code_bytes": 2837,
+   "code_keccak_hex": "df933b8ebe298b318bc9de3d68a1775d2d498e44a8c99f6e2dad04fa1ba747b8"
+  },
+  "ethereum:a133c9a92fb8ddb962af1cbae58b2723a0bdf23b": {
+   "code_bytes": 7747,
+   "code_keccak_hex": "32438a369bcdbf86c506a5a159367124777e268bc8c13ab6cdc4eaaa4fb8ff21"
+  },
+  "ethereum:aafb31780e4b9c95bc920e388f4925a874cd07af": {
+   "code_bytes": 171,
+   "code_keccak_hex": "b89c1b3bdf2cf8827818646bce9a8f6e372885f8c55e5c07acbd307cb133b000",
+   "safe_nonce": 242,
+   "safe_owner_hex": [
+    "1a857396002c84333af5c7f126352e63c22bacc8",
+    "e907915e674a347eb60dc0df2bb5a2b650b2cc9d",
+    "8fbcde7671c5a667df1373578352be2453e9b911",
+    "b859dd2cb50f19a53ad25b279750ba5dec76d306",
+    "c6160f5bc3c673ac390f11c492e8ed0d0693579a",
+    "df83e84f1eb00f0230eb912e2ec823c979800b1c"
+   ],
+   "safe_owners": 6,
+   "safe_threshold": 3,
+   "safe_version": "1.3.0"
+  },
+  "ethereum:aeb6bdd95c502390db8f52c8909f703e9af6a346": {
+   "code_bytes": 4423,
+   "code_keccak_hex": "d7277f13d28bf33ff7ed213abf5da85c468452ab84d0990eb40061ebdc467da4",
+   "owner_hex": "5721ce64ee0d772ce613b62d411350091c544cd0"
+  },
+  "ethereum:aee017052df6ac002647229d58b786e380b9721a": {
+   "code_bytes": 171,
+   "code_keccak_hex": "b89c1b3bdf2cf8827818646bce9a8f6e372885f8c55e5c07acbd307cb133b000",
+   "safe_nonce": 112,
+   "safe_owner_hex": [
+    "bed4c1c8d266e9b5841f7f0409d936e2fe58ee68",
+    "dd77c787f2f89c71791d6630b926701f98f2e735",
+    "b585db3d8142a9dfb864dcaacf33dff300bf15f8",
+    "9582fb0bde9cb910bc14c1f45ae9a34e7e67791c",
+    "ed707d4458b4e7e746051034cae06c7367a09537"
+   ],
+   "safe_owners": 5,
+   "safe_threshold": 3,
+   "safe_version": "1.4.1"
+  },
+  "ethereum:b3bd6b2e61753c311efbcf0111f75d29706d9a41": {
+   "code_bytes": 12130,
+   "code_keccak_hex": "227571be0c61a7b6b9923842d5a9ffbf6c33193ff14fc0003fb596a3ad35cf8a"
+  },
+  "ethereum:b524735356985d2f267fa010d681f061dff03715": {
+   "code_bytes": 171,
+   "code_keccak_hex": "b89c1b3bdf2cf8827818646bce9a8f6e372885f8c55e5c07acbd307cb133b000",
+   "safe_nonce": 495,
+   "safe_owner_hex": [
+    "72b32c1a6a75cbafae36c0ca8e763946d370e766",
+    "837219d7a9c666f5542c4559bf17d7b804e5c5fe",
+    "996267d7d1b7f5046543fede2c2db473ed4f65e9",
+    "cc400c09ecbac3e0033e4587bdfaabb26223e37d",
+    "868cf19464e17f76d6419acc802b122c22d2fd34"
+   ],
+   "safe_owners": 5,
+   "safe_threshold": 3,
+   "safe_version": "1.3.0"
+  },
+  "ethereum:ba12222222228d8ba445958a75a0704d566bf2c8": {
+   "code_bytes": 24512,
+   "code_keccak_hex": "9eb70db20a41bfbf4b022fd070fa7f154b7c4aec98177120dde7a958384f4e66"
+  },
+  "ethereum:ba829003e6b5dd858fbed3945719939a6dc3073b": {
+   "code_bytes": 3842,
+   "code_keccak_hex": "df04354ad449ad82bd6c77894c8db94a70e949b7c41c98b9072366a41883e62c"
+  },
+  "ethereum:bafa44efe7901e04e39dad13167d089c559c1138": {
+   "code_bytes": 12312,
+   "code_keccak_hex": "d5517d3be0b131ef314cd993db76434f602e97c316599bdfbc224d1f9683d24c",
+   "owner_hex": "8306300ffd616049fd7e4b0354a64da835c1a81c"
+  },
+  "ethereum:bbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb": {
+   "code_bytes": 15623,
+   "code_keccak_hex": "fa259fa317198f88f5fa3c119f06c066295dbcd47d715e0a30e1bcf94c02ef8c",
+   "owner_hex": "cba28b38103307ec8da98377fff9816c164f9afa"
+  },
+  "ethereum:be10adce8b6e3e02db384e7fada5395dd113d8b3": {
+   "code_bytes": 593,
+   "code_keccak_hex": "fc4b542b98e65e308447b9e52ec457622b749a3a19b65f827640310f1a34134c"
+  },
+  "ethereum:be286431454714f511008713973d3b053a2d38f3": {
+   "code_bytes": 6251,
+   "code_keccak_hex": "5b43318f7d0d4b88cdbfefa80bc26ed3ec23d602a6593dc50313ab362d1215d1"
+  },
+  "ethereum:c026395860db2d07ee33e05fe50ed7bd583189c7": {
+   "code_bytes": 23555,
+   "code_keccak_hex": "576f02c4810c5e367e809a7bfcd31b649f3c4c5b6431c4982dc7c470687977b0",
+   "owner_hex": "be634b030feaab661300667eaf82510a3a025413"
+  },
+  "ethereum:c06fd4f821eac1ff1ae8067b36342899b57baa2d": {
+   "code_bytes": 7616,
+   "code_keccak_hex": "c0c0e0b1d493c262178d67668f999fbbf8c637f5bf15f80fd76a5f7721499b01",
+   "timelock_min_delay": 864000
+  },
+  "ethereum:c139190f447e929f090edeb554d95abb8b18ac1c": {
+   "code_bytes": 2876,
+   "code_keccak_hex": "7ba4fd858e3217f73e0b0cc3493c6866c21ae78d7d01cf25b4c186a06e8b5bee",
+   "owner_hex": "d93826bb299765c87d13aeba2a7e5d9b27a03956"
+  },
+  "ethereum:c186fa914353c44b2e33ebe05f21846f1048beda": {
+   "code_bytes": 19572,
+   "code_keccak_hex": "94885b3047c2c3d6eec8dcccf3379a111669958073f5caacb17a0eef5538ece6",
+   "owner_hex": "b524735356985d2f267fa010d681f061dff03715"
+  },
+  "ethereum:c26016f1166be7b6c5611aab104122e0f6c2ace2": {
+   "code_bytes": 9871,
+   "code_keccak_hex": "0c7ead722b86869643d3cce3ce2b769e6cd2e48054130fa32025d106cb0c575c",
+   "timelock_min_delay": 259200
+  },
+  "ethereum:c2aacf6553d20d1e9d78e365aaba8032af9c85b0": {
+   "code_bytes": 4943,
+   "code_keccak_hex": "8f5149c586070246e4a0090b78d2a0b6737a3453399f3e5bdfa6203999990c26"
+  },
+  "ethereum:c3d688b66703497daa19211eedff47f25384cdc3": {
+   "code_bytes": 1878,
+   "code_keccak_hex": "64952234eab8f3aed74355c49119f627965640b1efeb6b28430b5a31b0d3b192"
+  },
+  "ethereum:c3dc853dd716bd5754f421ef94fdcbac3902ab32": {
+   "code_bytes": 10653,
+   "code_keccak_hex": "8e4f9507a4ec2e477494cac6560e08467c075efa929cb64534a3cb1370cb7727"
+  },
+  "ethereum:c3ecfe771564e3f28cfb7a9b203f4d10279338ed": {
+   "code_bytes": 7014,
+   "code_keccak_hex": "03ef1f43b008b84d05b6c04d95820d7db72a215534986d31f787b5d3d8553234",
+   "owner_hex": "055e84e7fe8955e2781010b866f10ef6e1e77e59"
+  },
+  "ethereum:c8cf6d7991f15525488b2a83df53468d682ba4b0": {
+   "code_bytes": 793,
+   "code_keccak_hex": "8bd06d4fd3cc7a1ab03dc0205dcd59abd679201b9dabc30040b882b6205b6552"
+  },
+  "ethereum:c9332fdcb1c491dcc683bae86fe3cb70360738bc": {
+   "code_bytes": 6098,
+   "code_keccak_hex": "0d3f87cb418b8edf6536a6e3fe9e03d96590802dfec656106027e82d97da176a"
+  },
+  "ethereum:c9d771aaf504f33bb3c8a7e67ea9f1881f837cff": {
+   "code_bytes": 5354,
+   "code_keccak_hex": "893e294f46ebb2b01bdc4959e8a6356c08ed381b081233ed98ae6d829a193de1"
+  },
+  "ethereum:cafea6063d4ec6b045d9676e58897c1f0882ca32": {
+   "code_bytes": 908,
+   "code_keccak_hex": "4dd396e1ed6ac2a43e9c1bfc1edb2aba51f7e66eed9cda194b0aaf0f2e63b441"
+  },
+  "ethereum:ce0425301c85c5ea2a0873a2dee44d78e02d2316": {
+   "code_bytes": 9996,
+   "code_keccak_hex": "e386040dec7b4dd086dec6b8d22f36b80c546018d08042bae689842190b1d377"
+  },
+  "ethereum:d11c452fc99cf405034ee446803b6f6c1f6d5ed8": {
+   "code_bytes": 176,
+   "code_keccak_hex": "7670cf29d3629b132d305c5f3b0b9dcf61ab0e04fc1da68b326e1a946938a5bd",
+   "owner_hex": "2225dabffc7f862c99477381e971e8b1fdab467e"
+  },
+  "ethereum:d829f278016b90fec735f9a12bf8b75e06102c89": {
+   "code_bytes": 6577,
+   "code_keccak_hex": "fddb562593c11daca66d4b598334b215a59a1812602701ff3c1d7994a2da2407",
+   "timelock_min_delay": 86400
+  },
+  "ethereum:d9a442856c234a39a81a089c06451ebaa4306a72": {
+   "code_bytes": 163,
+   "code_keccak_hex": "4fa1494dbad31bb89ca5231b5a00971549aa3a4149a217cabb1c66f127da3cc5"
+  },
+  "ethereum:da1ab39e62e0a5297af44c7064e501b0613f0d01": {
+   "code_bytes": 4163,
+   "code_keccak_hex": "b783d30ec53eae2fd3e67e8a1de338df494319bcfe6e09c82e804065eda0a880"
+  },
+  "ethereum:e5abcc40196174ae0d12153de286f0d8e401769d": {
+   "code_bytes": 171,
+   "code_keccak_hex": "d7d408ebcd99b2b70be43e20253d6d92a8ea8fab29bd3be7f55b10032331fb4c",
+   "safe_nonce": 452,
+   "safe_owner_hex": [
+    "7a63a5cc7f6a6352d0ae1fe175d745bce5d75657",
+    "73b254db9cb71a129c4e73af087d71ac7d34a8d7",
+    "9777af8c6727d57f74f7d381ad47eb4a65f042ff",
+    "59d07dc34b135b17b87840a86bff7302039e7edf",
+    "f2374bcb265505002055942d070459a4d2011012"
+   ],
+   "safe_owners": 5,
+   "safe_threshold": 3,
+   "safe_version": "1.4.1"
+  },
+  "ethereum:e8dc0fab349ea169283c48ccfd09d797e6db7c94": {
+   "code_bytes": 15149,
+   "code_keccak_hex": "177b426b5063b947e06e291b7bdc6beae2d06044b7198775d91839ded0d08873",
+   "timelock_min_delay": 86400
+  },
+  "ethereum:eb3107117fead7de89cd14d463d340a2e6917769": {
+   "code_bytes": 170,
+   "code_keccak_hex": "aea7d4252f6245f301e540cfbee27d3a88de543af8e49c5c62405d5499fab7e5",
+   "safe_nonce": 3370,
+   "safe_owner_hex": [
+    "ec99e3197f794487be7f2a5e4f1a586504262b19",
+    "b9c0e8e336f0b7ede716d18b57cb2104c9858228",
+    "8117a2708ad8c7ad4a58b2a0e1a53902a4431778",
+    "1c8236b406911a376369e33d39189f1b4b39f27d",
+    "599e835cbfc903ef09f3dd5e08d1cf63c32af8d8",
+    "347c3190bd015fbd0e47fb90aa4917138a8a32fe",
+    "01c46b12a16933bd38e2cd8a5fa567ced7f48f70"
+   ],
+   "safe_owners": 7,
+   "safe_threshold": 4,
+   "safe_version": "1.3.0"
+  },
+  "ethereum:f1376bcef0f78459c0ed0ba5ddce976f1ddf51f4": {
+   "code_bytes": 2118,
+   "code_keccak_hex": "fab70c8569de547cb870eecd48aa21351bf0733d4d1a1b4900a28a673f7e1188",
+   "owner_hex": "aee017052df6ac002647229d58b786e380b9721a"
+  },
+  "ethereum:f2371551fe3937db7c750f4dfabe5c2fffdcbf5a": {
+   "code_bytes": 7266,
+   "code_keccak_hex": "c70860dac1053e6bf7e1656c65fc140ddc7da892716f0209873be37343f579c0",
+   "owner_hex": "1a9c8182c09f50c8318d769245bea52c32be35bc"
+  },
+  "ethereum:f2f305d14dcd8aaef887e0428b3c9534795d0d60": {
+   "code_bytes": 2739,
+   "code_keccak_hex": "e5e3693157141608a301682c8c228c0277eac7efc0b98b57f874ca49752b5fd8"
+  },
+  "ethereum:f403c135812408bfbe8713b5a23a04b3d48aae31": {
+   "code_bytes": 14398,
+   "code_keccak_hex": "85c9b47873bc151451e5ea7aaf007d9a90cb676aa37aa7f26e85acf63749f291",
+   "owner_hex": "3ce6408f923326f81a7d7929952947748180f1e6"
+  },
+  "ethereum:fb034c1c6c7f42171b2d1cb8486e0f43ed07a968": {
+   "code_bytes": 7866,
+   "code_keccak_hex": "e3adc5645a36905294a337f8090ccfee6873d4b5abe886cee3e38a32a40d4238",
+   "timelock_min_delay": 345600
+  },
+  "ethereum:fd4b809ad88db6ca9dbb295a4b9d23bb0093f497": {
+   "code_bytes": 6562,
+   "code_keccak_hex": "9a4296a7ee9dce6696b96ac792955fa9b6606804b7d3392f4ecb1f5d90074f4e",
+   "timelock_min_delay": 259200
+  },
+  "ethereum:ffffffaeff0b96ea8e4f94b2253f31abdd875847": {
+   "code_bytes": 344,
+   "code_keccak_hex": "3848d007e90ad9829ee273f9577bd8336741bfb0dd9ca7f88005ed6e98c1e32b",
+   "owner_hex": "eb3107117fead7de89cd14d463d340a2e6917769"
+  }
+ },
+ "description": "Contract facts for every graph controller node, read on two RPC endpoints pinned by block hash: runtime code size and keccak256, Safe threshold / owners / nonce / VERSION, TimelockController getMinDelay and owner() where the contract answers. Hex is lowercase without 0x. Contracts of protocols with an open bounty PR are not read (zero front-running).",
+ "held_protocols": [
+  "inverse-finance-firm",
+  "origin-superoeth-base"
+ ],
+ "pins": {
+  "base": {
+   "block_hash_hex": "9ad1a88377e3e8846ce6ea6a3bb13131791d9c98ec00c27ecd6d654940dc3ee6",
+   "block_number": 57908310,
+   "rpcs": [
+    "https://mainnet.base.org",
+    "https://base.drpc.org"
+   ],
+   "timestamp": 1794772037
+  },
+  "ethereum": {
+   "block_hash_hex": "556fd9a91814fe9924c866574d1490144e844861cf18c59b5031aa443cef25d5",
+   "block_number": 26422627,
+   "rpcs": [
+    "https://ethereum-rpc.publicnode.com",
+    "https://eth.drpc.org"
+   ],
+   "timestamp": 1794772439
+  }
+ },
+ "schema": "pacta.graph_controller_facts.v1"
+}

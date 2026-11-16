@@ -28,6 +28,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import onboarding_render as OR  # noqa: E402
 import build_b2a_feeds as B2A  # noqa: E402
 import build_lookup as LK  # noqa: E402
+import graph_manifest as GM  # noqa: E402  docs/api/v1/graph-manifest.json (pacta.graph_manifest.v1)
 
 BASE_URL = "https://pacta.wtf"   # cutover: "https://pacta.fractalneurons.com"
 # Batch E: the $100 USDC capped bounty (pacta.wtf/bounties/). Issues #21-#24 on Fractal-Neurons/pacta, one per $25 slot; the
@@ -1803,6 +1804,7 @@ def main():
     w("llms/index.html", llms_html(idx, llms_text))
     sp = site_protocols(idx, pinned)
     LK.write_all(ROOT, DOCS, sp, onb, radar, BRIEF_PROTOCOL)   # api/v1/lookup.json + packages/mcp-server/src/lookup.mjs catalog
+    GM.write(ROOT, DOCS)                          # api/v1/graph-manifest.json: durable protocol graph (from protocols/index/rpc-pinned.json)
     digest = load_forum_digest()                  # data/forum-digest.json (optional; missing = empty digest)
     w("api/v1/forum-digest.json", forum_digest_json(idx, digest, pinned))
     for name, v in sp.items():
@@ -1814,7 +1816,7 @@ def main():
     w("robots.txt", ROBOTS_TXT)
     urls = ["/", "/request/", "/llms.txt", "/api/v1/index.json", "/api/v1/radar.json"] + [f"/briefs/{k}/" for k in BRIEFS] + \
         [f"/briefs/{b['slug']}/" for b in load_onboarding()["briefs"]] + (["/api/v1/onboarding.json"] if load_onboarding()["briefs"] else []) + \
-        ["/api/v1/proposals.json", "/api/v1/rpc-pinned.json", "/api/v1/lookup.json", "/api/v1/protocols.json", "/integrations/vault-factories/", "/llms/", "/llms-full.txt", "/SKILL.md", "/.well-known/agent.json", "/.well-known/mcp.json",
+        ["/api/v1/proposals.json", "/api/v1/rpc-pinned.json", "/api/v1/lookup.json", "/api/v1/protocols.json", "/api/v1/graph-manifest.json", "/integrations/vault-factories/", "/llms/", "/llms-full.txt", "/SKILL.md", "/.well-known/agent.json", "/.well-known/mcp.json",
          "/demos/swapio-x402/", "/bounties/", "/protocols/"] + [f"/protocols/{v['slug']}/" for v in sp.values()]
     w("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
       + "".join(f"  <url><loc>{BASE_URL}{u}</loc><lastmod>{today}</lastmod></url>\n" for u in urls) + "</urlset>\n")

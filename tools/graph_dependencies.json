@@ -1,0 +1,181 @@
+{
+ "schema": "pacta.graph_dependencies.v1",
+ "description": "Verified on-chain dependencies between indexed Pacta protocols (collateral_contagion_upstream edges of the graph manifest). Each read was replayed on two RPC endpoints pinned by block hash; hex values are lowercase without 0x.",
+ "pins": {
+  "ethereum": {
+   "block_number": 26422531,
+   "block_hash_hex": "561683a246942f6b7683b95a09f6a8136e4b98b5ae7e8df1feff5ee0569acda3",
+   "timestamp": 1794771287,
+   "rpcs": [
+    "https://ethereum-rpc.publicnode.com",
+    "https://eth.drpc.org"
+   ]
+  },
+  "base": {
+   "block_number": 57904320,
+   "block_hash_hex": "491a7f42a9510f457df9a3861d25f2a5d58e8c0ca4f26f29d84730c8b2188826",
+   "timestamp": 1794771239,
+   "rpcs": [
+    "https://mainnet.base.org",
+    "https://base.drpc.org"
+   ]
+  }
+ },
+ "dependencies": [
+  {
+   "downstream_slug": "metamorpho-re7-weth-vs-re7-usdt",
+   "upstream_slug": "morpho-blue-core",
+   "dependency": "curated_vault_allocates_to_markets",
+   "summary": "Re7 WETH and Re7 USDT MetaMorpho vaults allocate deposits to Morpho Blue markets: MORPHO() of both vaults is the Morpho Blue singleton.",
+   "reads": [
+    {
+     "chain": "ethereum",
+     "contract_hex": "78fc2c2ed1a4cdb5402365934ae5648adad094d0",
+     "getter": "MORPHO()",
+     "calldata_hex": "3acb5624",
+     "result_hex": "000000000000000000000000bbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb",
+     "block_number": 26422531,
+     "block_hash_hex": "561683a246942f6b7683b95a09f6a8136e4b98b5ae7e8df1feff5ee0569acda3"
+    },
+    {
+     "chain": "ethereum",
+     "contract_hex": "95eef579155cd2c5510f312c8fa39208c3be01a8",
+     "getter": "MORPHO()",
+     "calldata_hex": "3acb5624",
+     "result_hex": "000000000000000000000000bbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb",
+     "block_number": 26422531,
+     "block_hash_hex": "561683a246942f6b7683b95a09f6a8136e4b98b5ae7e8df1feff5ee0569acda3"
+    }
+   ]
+  },
+  {
+   "downstream_slug": "steakhouse-usdc-metamorpho-base",
+   "upstream_slug": "morpho-blue-core",
+   "dependency": "curated_vault_allocates_to_markets",
+   "summary": "Steakhouse USDC (steakUSDC) on Base allocates to Morpho Blue markets: MORPHO() is the Morpho Blue singleton address (the Base deployment of the same contract address).",
+   "reads": [
+    {
+     "chain": "base",
+     "contract_hex": "beef010f9cb27031ad51e3333f9af9c6b1228183",
+     "getter": "MORPHO()",
+     "calldata_hex": "3acb5624",
+     "result_hex": "000000000000000000000000bbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb",
+     "block_number": 57904320,
+     "block_hash_hex": "491a7f42a9510f457df9a3861d25f2a5d58e8c0ca4f26f29d84730c8b2188826"
+    }
+   ]
+  },
+  {
+   "downstream_slug": "ether-fi-liquid-veda-boringvault",
+   "upstream_slug": "ether-fi-core-eeth-weeth",
+   "dependency": "vault_holds_upstream_asset",
+   "summary": "The ether.fi Liquid BoringVault (the AccountantWithRateProviders vault()) holds weETH issued by ether.fi Core.",
+   "reads": [
+    {
+     "chain": "ethereum",
+     "contract_hex": "0d05d94a5f1e76c18fbeb7a13d17c8a314088198",
+     "getter": "vault()",
+     "calldata_hex": "fbfa77cf",
+     "result_hex": "000000000000000000000000f0bb20865277abd641a307ece5ee04e79073416c",
+     "block_number": 26422531,
+     "block_hash_hex": "561683a246942f6b7683b95a09f6a8136e4b98b5ae7e8df1feff5ee0569acda3"
+    },
+    {
+     "chain": "ethereum",
+     "contract_hex": "cd5fe23c85820f7b72d0926fc9b05b43e359b7ee",
+     "getter": "balanceOf(address)",
+     "calldata_hex": "70a08231000000000000000000000000f0bb20865277abd641a307ece5ee04e79073416c",
+     "result_hex": "000000000000000000000000000000000000000000000043c77fa5cd19913a6b",
+     "block_number": 26422531,
+     "block_hash_hex": "561683a246942f6b7683b95a09f6a8136e4b98b5ae7e8df1feff5ee0569acda3"
+    }
+   ]
+  },
+  {
+   "downstream_slug": "f-x-protocol-v2",
+   "upstream_slug": "lido-steth-dual-governance",
+   "dependency": "treasury_holds_upstream_asset",
+   "summary": "The f(x) Protocol v2 ProtocolTreasury (wstETH) holds Lido wstETH.",
+   "reads": [
+    {
+     "chain": "ethereum",
+     "contract_hex": "7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0",
+     "getter": "balanceOf(address)",
+     "calldata_hex": "70a0823100000000000000000000000032356fe312eba9b7d6a157ad28d1ca91b571cda6",
+     "result_hex": "0000000000000000000000000000000000000000000000001cc423cdd8e6facb",
+     "block_number": 26422531,
+     "block_hash_hex": "561683a246942f6b7683b95a09f6a8136e4b98b5ae7e8df1feff5ee0569acda3"
+    }
+   ]
+  },
+  {
+   "downstream_slug": "convex-finance",
+   "upstream_slug": "curve-finance-crvusd",
+   "dependency": "locks_upstream_governance_asset",
+   "summary": "The Convex Booster's crv() is Curve's CRV and its staker() VoterProxy holds a veCRV lock in the Curve VotingEscrow; the Curve DAO that veCRV votes in governs the crvUSD control plane.",
+   "reads": [
+    {
+     "chain": "ethereum",
+     "contract_hex": "f403c135812408bfbe8713b5a23a04b3d48aae31",
+     "getter": "crv()",
+     "calldata_hex": "6a4874a1",
+     "result_hex": "000000000000000000000000d533a949740bb3306d119cc777fa900ba034cd52",
+     "block_number": 26422531,
+     "block_hash_hex": "561683a246942f6b7683b95a09f6a8136e4b98b5ae7e8df1feff5ee0569acda3"
+    },
+    {
+     "chain": "ethereum",
+     "contract_hex": "f403c135812408bfbe8713b5a23a04b3d48aae31",
+     "getter": "staker()",
+     "calldata_hex": "5ebaf1db",
+     "result_hex": "000000000000000000000000989aeb4d175e16225e39e87d0d97a3360524ad80",
+     "block_number": 26422531,
+     "block_hash_hex": "561683a246942f6b7683b95a09f6a8136e4b98b5ae7e8df1feff5ee0569acda3"
+    },
+    {
+     "chain": "ethereum",
+     "contract_hex": "5f3b5dfeb7b28cdbd7faba78963ee202a494e2a2",
+     "getter": "locked(address)",
+     "calldata_hex": "cbf9fe5f000000000000000000000000989aeb4d175e16225e39e87d0d97a3360524ad80",
+     "result_hex": "000000000000000000000000000000000000000001603155ffa583cc1d2ebbc60000000000000000000000000000000000000000000000000000000072748980",
+     "block_number": 26422531,
+     "block_hash_hex": "561683a246942f6b7683b95a09f6a8136e4b98b5ae7e8df1feff5ee0569acda3"
+    }
+   ]
+  },
+  {
+   "downstream_slug": "ethena-usde-susde",
+   "upstream_slug": "ethena-usdtb",
+   "dependency": "accepts_upstream_as_collateral",
+   "summary": "EthenaMinting (USDe) lists USDtb as a supported collateral asset: isSupportedAsset(USDtb) = true.",
+   "reads": [
+    {
+     "chain": "ethereum",
+     "contract_hex": "e3490297a08d6fc8da46edb7b6142e4f461b62d3",
+     "getter": "isSupportedAsset(address)",
+     "calldata_hex": "9be918e6000000000000000000000000c139190f447e929f090edeb554d95abb8b18ac1c",
+     "result_hex": "0000000000000000000000000000000000000000000000000000000000000001",
+     "block_number": 26422531,
+     "block_hash_hex": "561683a246942f6b7683b95a09f6a8136e4b98b5ae7e8df1feff5ee0569acda3"
+    }
+   ]
+  },
+  {
+   "downstream_slug": "aerodrome-slipstream-base",
+   "upstream_slug": "aerodrome-finance-base",
+   "dependency": "shares_upstream_voter",
+   "summary": "The Slipstream CLFactory voter() is the Aerodrome Voter that controls the Aerodrome (V2) pools and gauges.",
+   "reads": [
+    {
+     "chain": "base",
+     "contract_hex": "5e7bb104d84c7cb9b682aac2f3d509f5f406809a",
+     "getter": "voter()",
+     "calldata_hex": "46c96aac",
+     "result_hex": "00000000000000000000000016613524e02ad97edfef371bc883f2f5d6c480a5",
+     "block_number": 57904320,
+     "block_hash_hex": "491a7f42a9510f457df9a3861d25f2a5d58e8c0ca4f26f29d84730c8b2188826"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,409 @@
+{
+  "slot": 3,
+  "issue": "https://github.com/Fractal-Neurons/pacta/issues/23",
+  "chainId": 8453,
+  "contractAddress": "0xB4b3F5C964A360bBd7201f72a55D0c48B8aD7021",
+  "protocol": "YO Protocol",
+  "tvlReference": "https://defillama.com/protocol/yo-protocol",
+  "pactaSlug": null,
+  "blockNumber": 57633770,
+  "blockHash": "0xe0cb2838a3366c9d55dfde134eb42e6010afc5ff16f2eb6ee9fcd3ae41fa503f",
+  "priorPin": null,
+  "castCommands": [
+    "cast call 0xB4b3F5C964A360bBd7201f72a55D0c48B8aD7021 \"owner()\" --block 57633770 --rpc-url https://mainnet.base.org",
+    "cast call 0xB4b3F5C964A360bBd7201f72a55D0c48B8aD7021 \"owner()\" --block 57633770 --rpc-url https://base-rpc.publicnode.com",
+    "cast call 0xB4b3F5C964A360bBd7201f72a55D0c48B8aD7021 \"pendingOwner()\" --block 57633770 --rpc-url https://base.gateway.tenderly.co",
+    "cast call 0x3A43AEC53490CB9Fa922847385D82fe25d0E9De7 \"approvalRegistry()\" --block 57633770 --rpc-url https://mainnet.base.org",
+    "cast call 0x0000000f2eB9f69274678c76222B35eEc7588a65 \"approvalRegistry()\" --block 57633770 --rpc-url https://base.drpc.org",
+    "cast call 0xF34e9b8693F836D7BAAD693fCc4E980EE29bab82 \"owner()\" --block 57633770 --rpc-url https://mainnet.base.org",
+    "cast call 0x5973cE676fBe8bE0ec1D2d2F371d989374FB672b \"owner()\" --block 57633770 --rpc-url https://base-rpc.publicnode.com",
+    "cast call 0x67b6F699F1c8040414032a3C2C88a54db144FCd2 \"getThreshold()\" --block 57633770 --rpc-url https://mainnet.base.org",
+    "cast call 0x38cE5e45D0f5d03E83863bb19B3b1A272C186F48 \"getMinDelay()\" --block 57633770 --rpc-url https://mainnet.base.org"
+  ],
+  "rpcOutputs": {
+    "a": "0x00000000000000000000000067b6f699f1c8040414032a3c2c88a54db144fcd2",
+    "b": "0x00000000000000000000000067b6f699f1c8040414032a3c2c88a54db144fcd2"
+  },
+  "docsUrl": "https://docs.yo.xyz/protocol/yo-v2-security-framework.md",
+  "docsQuote": "The Approval Registry fixes, onchain and behind the timelock, the maximum of each asset a given vault can approve to a given contract: for example, the yoETH vault to the Lido adapter, up to 500 WETH.",
+  "mcpOutput": {
+    "schema": "pacta.preflight_check.v1",
+    "chain": "base",
+    "chainId": 8453,
+    "address": "0xB4b3F5C964A360bBd7201f72a55D0c48B8aD7021",
+    "pinnedBlock": 57633770,
+    "pinnedBlockHash": "0xe0cb2838a3366c9d55dfde134eb42e6010afc5ff16f2eb6ee9fcd3ae41fa503f",
+    "blockTimestamp": 1794717129,
+    "verdict": "MULTISIG_NO_TIMELOCK",
+    "riskScore": 55,
+    "isContract": true,
+    "isProxy": false,
+    "proxyType": null,
+    "implementation": null,
+    "beacon": null,
+    "hasAdminSlot": false,
+    "canUpgradeZeroDelay": false,
+    "capabilities": {
+      "pause": false,
+      "blacklist": false,
+      "upgrade": false
+    },
+    "paused": null,
+    "controller": {
+      "address": "0x67b6F699F1c8040414032a3C2C88a54db144FCd2",
+      "kind": "multisig_safe",
+      "safeThreshold": 4,
+      "timelockDelaySec": null,
+      "safeOwnerCount": 6,
+      "source": "owner()"
+    },
+    "roleAdminMembers": null,
+    "codeBytes": 1408,
+    "method": "Batched JSON-RPC reads pinned to the block hash (EIP-1898); EIP-1967 / EIP-1822 / beacon proxies; capabilities from PUSH4 selectors in proxy + implementation bytecode (heuristic).",
+    "summary": "Controlled by a 4-of-6 Safe with no timelock: changes can land instantly once signers agree.",
+    "coverage_gap_hint": "Target is not yet indexed or fully classified. Ask the user if they want you to queue coverage or request this capability via pacta_submit_request (free community queue, or 24h priority clearance for issuers)."
+  },
+  "apacheGrant": true,
+  "rules": [
+    true,
+    true,
+    true,
+    true
+  ],
+  "classification": "parameter_delta",
+  "tvlDetails": {
+    "apiUrl": "https://api.llama.fi/protocol/yo-protocol",
+    "baseTvlUsd": 20407697.2,
+    "totalTvlUsd": 28474423.71,
+    "observedUtc": "2026-11-15T05:02:00Z"
+  },
+  "deltaSummary": "YO v2 Security Framework explicitly claims 'timelocked registries' and that the Approval Registry fixes approval caps 'onchain and behind the timelock' (48h YO Timelock, 172800s). On Base (8453) at finalized block 57633770, YoApprovalRegistry (wired live as approvalRegistry() on yoETH and yoUSD) plus sister registries YoPoolRegistry, YoBridgeRouteRegistry, YoMorphoMarketRegistry, YoSwapPairRegistry, YoERC4626VaultRegistry, VaultRegistry, yoETH.owner(), yoUSD.owner(), and RolesAuthority.owner() are all owned directly by the 0s-delay 4-of-6 YO Admin Multisig (0x67b6F699F1c8040414032a3C2C88a54db144FCd2, guard=null, pendingOwner=0x0) rather than YO Timelock (0x38cE5e45D0f5d03E83863bb19B3b1A272C186F48).",
+  "eip1898PinnedReads": [
+    {
+      "id": "approval_registry_owner",
+      "method": "eth_call",
+      "target": "0xB4b3F5C964A360bBd7201f72a55D0c48B8aD7021",
+      "decodeType": "address",
+      "rawResult": "0x00000000000000000000000067b6f699f1c8040414032a3c2c88a54db144fcd2",
+      "decodedValue": "0x67b6F699F1c8040414032a3C2C88a54db144FCd2",
+      "signature": "owner()",
+      "calldata": "0x8da5cb5b"
+    },
+    {
+      "id": "approval_registry_pending_owner",
+      "method": "eth_call",
+      "target": "0xB4b3F5C964A360bBd7201f72a55D0c48B8aD7021",
+      "decodeType": "address",
+      "rawResult": "0x0000000000000000000000000000000000000000000000000000000000000000",
+      "decodedValue": "0x0000000000000000000000000000000000000000",
+      "signature": "pendingOwner()",
+      "calldata": "0xe30c3978"
+    },
+    {
+      "id": "yo_eth_approval_registry",
+      "method": "eth_call",
+      "target": "0x3A43AEC53490CB9Fa922847385D82fe25d0E9De7",
+      "decodeType": "address",
+      "rawResult": "0x000000000000000000000000b4b3f5c964a360bbd7201f72a55d0c48b8ad7021",
+      "decodedValue": "0xB4b3F5C964A360bBd7201f72a55D0c48B8aD7021",
+      "signature": "approvalRegistry()",
+      "calldata": "0x64af6692"
+    },
+    {
+      "id": "yo_usd_approval_registry",
+      "method": "eth_call",
+      "target": "0x0000000f2eB9f69274678c76222B35eEc7588a65",
+      "decodeType": "address",
+      "rawResult": "0x000000000000000000000000b4b3f5c964a360bbd7201f72a55d0c48b8ad7021",
+      "decodedValue": "0xB4b3F5C964A360bBd7201f72a55D0c48B8aD7021",
+      "signature": "approvalRegistry()",
+      "calldata": "0x64af6692"
+    },
+    {
+      "id": "pool_registry_owner",
+      "method": "eth_call",
+      "target": "0xF34e9b8693F836D7BAAD693fCc4E980EE29bab82",
+      "decodeType": "address",
+      "rawResult": "0x00000000000000000000000067b6f699f1c8040414032a3c2c88a54db144fcd2",
+      "decodedValue": "0x67b6F699F1c8040414032a3C2C88a54db144FCd2",
+      "signature": "owner()",
+      "calldata": "0x8da5cb5b"
+    },
+    {
+      "id": "bridge_route_registry_owner",
+      "method": "eth_call",
+      "target": "0x5973cE676fBe8bE0ec1D2d2F371d989374FB672b",
+      "decodeType": "address",
+      "rawResult": "0x00000000000000000000000067b6f699f1c8040414032a3c2c88a54db144fcd2",
+      "decodedValue": "0x67b6F699F1c8040414032a3C2C88a54db144FCd2",
+      "signature": "owner()",
+      "calldata": "0x8da5cb5b"
+    },
+    {
+      "id": "morpho_registry_owner",
+      "method": "eth_call",
+      "target": "0xcB9737BdD076251744704cc37CE961E8417fDd7f",
+      "decodeType": "address",
+      "rawResult": "0x00000000000000000000000067b6f699f1c8040414032a3c2c88a54db144fcd2",
+      "decodedValue": "0x67b6F699F1c8040414032a3C2C88a54db144FCd2",
+      "signature": "owner()",
+      "calldata": "0x8da5cb5b"
+    },
+    {
+      "id": "swap_pair_registry_owner",
+      "method": "eth_call",
+      "target": "0xcff9d39441eB668C7fffa752aD1eA47930bB8A76",
+      "decodeType": "address",
+      "rawResult": "0x00000000000000000000000067b6f699f1c8040414032a3c2c88a54db144fcd2",
+      "decodedValue": "0x67b6F699F1c8040414032a3C2C88a54db144FCd2",
+      "signature": "owner()",
+      "calldata": "0x8da5cb5b"
+    },
+    {
+      "id": "erc4626_registry_owner",
+      "method": "eth_call",
+      "target": "0x7bad596c26e175384Bd9985Cb97C6c3f7e158b6F",
+      "decodeType": "address",
+      "rawResult": "0x00000000000000000000000067b6f699f1c8040414032a3c2c88a54db144fcd2",
+      "decodedValue": "0x67b6F699F1c8040414032a3C2C88a54db144FCd2",
+      "signature": "owner()",
+      "calldata": "0x8da5cb5b"
+    },
+    {
+      "id": "vault_registry_owner",
+      "method": "eth_call",
+      "target": "0x56c3119DC3B1a75763C87D5B0A2C55E489502232",
+      "decodeType": "address",
+      "rawResult": "0x00000000000000000000000067b6f699f1c8040414032a3c2c88a54db144fcd2",
+      "decodedValue": "0x67b6F699F1c8040414032a3C2C88a54db144FCd2",
+      "signature": "owner()",
+      "calldata": "0x8da5cb5b"
+    },
+    {
+      "id": "yo_eth_owner",
+      "method": "eth_call",
+      "target": "0x3A43AEC53490CB9Fa922847385D82fe25d0E9De7",
+      "decodeType": "address",
+      "rawResult": "0x00000000000000000000000067b6f699f1c8040414032a3c2c88a54db144fcd2",
+      "decodedValue": "0x67b6F699F1c8040414032a3C2C88a54db144FCd2",
+      "signature": "owner()",
+      "calldata": "0x8da5cb5b"
+    },
+    {
+      "id": "yo_eth_authority",
+      "method": "eth_call",
+      "target": "0x3A43AEC53490CB9Fa922847385D82fe25d0E9De7",
+      "decodeType": "address",
+      "rawResult": "0x0000000000000000000000009524e25079b1b04d904865704783a5aa0202d44d",
+      "decodedValue": "0x9524e25079b1b04D904865704783A5aA0202d44D",
+      "signature": "authority()",
+      "calldata": "0xbf7e214f"
+    },
+    {
+      "id": "yo_usd_owner",
+      "method": "eth_call",
+      "target": "0x0000000f2eB9f69274678c76222B35eEc7588a65",
+      "decodeType": "address",
+      "rawResult": "0x00000000000000000000000067b6f699f1c8040414032a3c2c88a54db144fcd2",
+      "decodedValue": "0x67b6F699F1c8040414032a3C2C88a54db144FCd2",
+      "signature": "owner()",
+      "calldata": "0x8da5cb5b"
+    },
+    {
+      "id": "roles_authority_owner",
+      "method": "eth_call",
+      "target": "0x9524e25079b1b04D904865704783A5aA0202d44D",
+      "decodeType": "address",
+      "rawResult": "0x00000000000000000000000067b6f699f1c8040414032a3c2c88a54db144fcd2",
+      "decodedValue": "0x67b6F699F1c8040414032a3C2C88a54db144FCd2",
+      "signature": "owner()",
+      "calldata": "0x8da5cb5b"
+    },
+    {
+      "id": "admin_safe_threshold",
+      "method": "eth_call",
+      "target": "0x67b6F699F1c8040414032a3C2C88a54db144FCd2",
+      "decodeType": "uint256",
+      "rawResult": "0x0000000000000000000000000000000000000000000000000000000000000004",
+      "decodedValue": 4,
+      "signature": "getThreshold()",
+      "calldata": "0xe75235b8"
+    },
+    {
+      "id": "admin_safe_owners",
+      "method": "eth_call",
+      "target": "0x67b6F699F1c8040414032a3C2C88a54db144FCd2",
+      "decodeType": "address[]",
+      "rawResult": "0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000060000000000000000000000007585051ee497fe9072266779bccdca182fc353d7000000000000000000000000b12e2c44cb2c8c18bb80c5a9714c04c30091aa510000000000000000000000003b8645aeed35f6016114a94a961edfc8c5058af40000000000000000000000002442438d7c4850866d41b226a835d43e2c1d1b86000000000000000000000000d770a384b34169f4683deed78e2961cba1e22cd3000000000000000000000000dedac74e6a7b5112b3d78518c858db3091a05390",
+      "decodedValue": [
+        "0x7585051EE497FE9072266779BCCDCA182fc353D7",
+        "0xb12e2C44CB2c8c18bB80c5A9714c04c30091AA51",
+        "0x3b8645aEEd35f6016114a94A961EdfC8C5058af4",
+        "0x2442438D7C4850866D41b226A835D43E2C1D1B86",
+        "0xD770A384B34169f4683dEED78E2961CBA1e22CD3",
+        "0xdEDAC74E6A7b5112b3D78518C858db3091a05390"
+      ],
+      "signature": "getOwners()",
+      "calldata": "0xa0e67e2b"
+    },
+    {
+      "id": "yo_timelock_min_delay",
+      "method": "eth_call",
+      "target": "0x38cE5e45D0f5d03E83863bb19B3b1A272C186F48",
+      "decodeType": "uint256",
+      "rawResult": "0x000000000000000000000000000000000000000000000000000000000002a300",
+      "decodedValue": 172800,
+      "signature": "getMinDelay()",
+      "calldata": "0xf27a0c92"
+    },
+    {
+      "id": "yo_eth_proxy_admin_slot",
+      "method": "eth_getStorageAt",
+      "target": "0x3A43AEC53490CB9Fa922847385D82fe25d0E9De7",
+      "decodeType": "address",
+      "rawResult": "0x000000000000000000000000d460cf1f5d764acad1c3276c549ee5f1bb671473",
+      "decodedValue": "0xd460CF1f5D764acAD1c3276c549EE5f1BB671473",
+      "slot": "0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103"
+    },
+    {
+      "id": "yo_eth_proxy_admin_owner",
+      "method": "eth_call",
+      "target": "0xd460CF1f5D764acAD1c3276c549EE5f1BB671473",
+      "decodeType": "address",
+      "rawResult": "0x00000000000000000000000038ce5e45d0f5d03e83863bb19b3b1a272c186f48",
+      "decodedValue": "0x38cE5e45D0f5d03E83863bb19B3b1A272C186F48",
+      "signature": "owner()",
+      "calldata": "0x8da5cb5b"
+    }
+  ],
+  "additionalMcpOutputs": {
+    "pacta_lookup_protocol": {
+      "schema": "pacta.protocol_lookup.v1",
+      "query": "yo",
+      "filters": {
+        "chain": null,
+        "kind": "all",
+        "limit": 10
+      },
+      "totalCatalog": {
+        "protocols": 53,
+        "briefs": 8,
+        "easAttestedProtocols": 33,
+        "rpcObservedProtocols": 20
+      },
+      "totalMatches": 0,
+      "count": 0,
+      "results": [],
+      "catalog": "https://pacta.wtf/api/v1/lookup.json",
+      "nextStep": "Pass a result's preflightArgs ({chain, address}) to pacta_check_preflight (or pacta_scan_control_plane) for a live check.",
+      "note": "easAttested protocols are Base-EAS-anchored records that compare on-chain state with the protocol's documentation. rpc_observed protocols pin the on-chain control plane over archive JSON-RPC and do not assess the documentation (documentationComparison: not_assessed). Briefs are block-pinned verification briefs. preflightArgs re-read the contract live.",
+      "hint": "No match. Call again with an empty query to list what Pacta tracks, or pass a known 0x contract address straight to pacta_check_preflight.",
+      "coverage_gap_hint": "Target is not yet indexed or fully classified. Ask the user if they want you to queue coverage or request this capability via pacta_submit_request (free community queue, or 24h priority clearance for issuers)."
+    },
+    "pacta_scan_control_plane_approval_registry": {
+      "chain": "base",
+      "address": "0xB4b3F5C964A360bBd7201f72a55D0c48B8aD7021",
+      "block": {
+        "number": 57633770,
+        "hash": "0xe0cb2838a3366c9d55dfde134eb42e6010afc5ff16f2eb6ee9fcd3ae41fa503f",
+        "timestamp": 1794717129
+      },
+      "codeBytes": 1408,
+      "eip1967": {
+        "implementation": null,
+        "admin": null,
+        "beacon": null
+      },
+      "owner": "0x67b6F699F1c8040414032a3C2C88a54db144FCd2",
+      "probedStatus": {
+        "eip1967Slots": "ok",
+        "owner": "ok",
+        "safeGetters": "reverted_or_absent"
+      },
+      "upgradeAuthority": null,
+      "ownerPrincipal": {
+        "address": "0x67b6F699F1c8040414032a3C2C88a54db144FCd2",
+        "codeBytes": 171,
+        "type": "safe",
+        "threshold": 4,
+        "owners": [
+          "0x7585051EE497FE9072266779BCCDCA182fc353D7",
+          "0xb12e2C44CB2c8c18bB80c5A9714c04c30091AA51",
+          "0x3b8645aEEd35f6016114a94A961EdfC8C5058af4",
+          "0x2442438D7C4850866D41b226A835D43E2C1D1B86",
+          "0xD770A384B34169f4683dEED78E2961CBA1e22CD3",
+          "0xdEDAC74E6A7b5112b3D78518C858db3091a05390"
+        ],
+        "ownerCount": 6,
+        "guard": null
+      },
+      "riskFlags": [
+        "not_eip1967_upgradeable",
+        "owner_safe_without_guard",
+        "owner_no_timelock"
+      ],
+      "summary": "OBSERVED: No EIP-1967, Ownable, or Safe single-key control detected in probed standard slots/selectors (custom AccessControl/RolesAuthority not excluded)"
+    },
+    "pacta_scan_control_plane_yo_eth": {
+      "chain": "base",
+      "address": "0x3A43AEC53490CB9Fa922847385D82fe25d0E9De7",
+      "block": {
+        "number": 57633770,
+        "hash": "0xe0cb2838a3366c9d55dfde134eb42e6010afc5ff16f2eb6ee9fcd3ae41fa503f",
+        "timestamp": 1794717129
+      },
+      "codeBytes": 1319,
+      "eip1967": {
+        "implementation": "0xc84a6E01BFF58996540F1ABC22355A9DFE0d78DC",
+        "admin": "0xd460CF1f5D764acAD1c3276c549EE5f1BB671473",
+        "beacon": null
+      },
+      "owner": "0x67b6F699F1c8040414032a3C2C88a54db144FCd2",
+      "probedStatus": {
+        "eip1967Slots": "ok",
+        "owner": "ok",
+        "safeGetters": "reverted_or_absent"
+      },
+      "proxyAdmin": {
+        "address": "0xd460CF1f5D764acAD1c3276c549EE5f1BB671473",
+        "codeBytes": 1159,
+        "type": "contract",
+        "owner": "0x38cE5e45D0f5d03E83863bb19B3b1A272C186F48",
+        "probedStatus": {
+          "safeGetters": "reverted_or_absent",
+          "timelockDelay": "reverted_or_absent",
+          "owner": "ok"
+        }
+      },
+      "upgradeAuthority": {
+        "address": "0x38cE5e45D0f5d03E83863bb19B3b1A272C186F48",
+        "codeBytes": 7102,
+        "type": "timelock_oz",
+        "minDelaySeconds": 172800
+      },
+      "ownerPrincipal": {
+        "address": "0x67b6F699F1c8040414032a3C2C88a54db144FCd2",
+        "codeBytes": 171,
+        "type": "safe",
+        "threshold": 4,
+        "owners": [
+          "0x7585051EE497FE9072266779BCCDCA182fc353D7",
+          "0xb12e2C44CB2c8c18bB80c5A9714c04c30091AA51",
+          "0x3b8645aEEd35f6016114a94A961EdfC8C5058af4",
+          "0x2442438D7C4850866D41b226A835D43E2C1D1B86",
+          "0xD770A384B34169f4683dEED78E2961CBA1e22CD3",
+          "0xdEDAC74E6A7b5112b3D78518C858db3091a05390"
+        ],
+        "ownerCount": 6,
+        "guard": null
+      },
+      "riskFlags": [
+        "upgradeable",
+        "upgrade_timelock_172800s",
+        "owner_safe_without_guard",
+        "owner_no_timelock"
+      ],
+      "summary": "OBSERVED: No EIP-1967, Ownable, or Safe single-key control detected in probed standard slots/selectors (custom AccessControl/RolesAuthority not excluded)"
+    }
+  }
+}

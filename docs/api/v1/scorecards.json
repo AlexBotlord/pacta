@@ -1,10 +1,10 @@
 {
  "description": "One canonical grade per published protocol (DELTA / PROTECTIVE / ALIGNED / OBSERVED) and a 5-factor control-plane rosette derived deterministically from Pacta's published records (index.json, rpc-pinned.json) and controller facts. A factor the published evidence does not decide is 'n' (not determined); docs-vs-chain parity is 'u' (uncompared) for every RPC-observed protocol. States: g strong, b moderate, a weak, n not determined, u uncompared.",
  "factorCoverage": {
-  "emergency": 25,
+  "emergency": 21,
   "parity": 74,
   "quorum": 63,
-  "timelock": 46,
+  "timelock": 49,
   "upgrade": 22
  },
  "factors": [
@@ -76,7 +76,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "b",
-     "value": "1d minimum observed delay"
+     "value": "1d minimum enforced delay across control surfaces"
     },
     {
      "evidence": "controller fact: Safe getThreshold()",
@@ -86,11 +86,11 @@
      "value": "Lowest controlling quorum: 4-of-7"
     },
     {
-     "evidence": "aave-v3-base-emergency-admin-protocol-guardian-4of7-s19: Protocol Guardian Safe (0x56C1a4b54921DEA9A344967a86…",
+     "evidence": "aave-v3-base-emergency-admin-protocol-guardian-4of7-s19: Protocol Guardian Safe (0x56C1a4b54921DEA9A344967a8693C7E661D72968, v1.3.0): getThreshold() = 4 of 7 owners, the 7 signers listed in the docs",
      "key": "emergency",
      "label": "Emergency / freeze scope",
      "state": "g",
-     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+     "value": "Pause / freeze authority scoped behind a multi-signer controller (4-of-N Safe)"
     },
     {
      "evidence": null,
@@ -122,6 +122,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 2,
    "rosetteAria": "Aave V3 (Base) control-plane rosette: Upgradeability not determined; Timelock floor moderate; Signer quorum strong; Emergency / freeze scope strong; Docs-vs-chain parity strong",
    "search": "aave v3 (base) aave-v3-base lending market (base) aave aave base 0x2dc219e716793fb4b21548c0f009ba3af753ab01 0x56c1a4b54921dea9a344967a8693c7e661d72968",
@@ -152,7 +153,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "n",
-     "value": "No enforced delay in the published records"
+     "value": "No enforced admin delay in the published records"
     },
     {
      "evidence": "aave-v3-gho-acl-manager-and-executor-lvl1: …00s / 1d); EMERGENCY_ADMIN held by 4-of-7 Protocol Guardian Safe (0x2CFe3ec4…",
@@ -162,11 +163,11 @@
      "value": "Lowest controlling quorum: 4-of-7"
     },
     {
-     "evidence": "aave-v3-gho-acl-manager-and-executor-lvl1: …ENCY_ADMIN held by 4-of-7 Protocol Guardian Safe (0x2CFe3ec4d5a6811f4B8067F0DE…",
+     "evidence": "aave-v3-gho-acl-manager-and-executor-lvl1: EMERGENCY_ADMIN held by 4-of-7 Protocol Guardian Safe (0x2CFe3ec4d5a6811f4B8067F0DE7e47DfA938Aa30)",
      "key": "emergency",
      "label": "Emergency / freeze scope",
      "state": "g",
-     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+     "value": "Pause / freeze authority scoped behind a multi-signer controller (4-of-7)"
     },
     {
      "evidence": null,
@@ -201,6 +202,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "Aave V3 / GHO control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope strong; Docs-vs-chain parity strong",
    "search": "aave v3 / gho aave-v3-gho blue-chip lending & decentralized stablecoin gho aave 0xc2aacf6553d20d1e9d78e365aaba8032af9c85b0",
@@ -228,7 +230,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "n",
-     "value": "No enforced delay in the published records"
+     "value": "No enforced admin delay in the published records"
     },
     {
      "evidence": "across-protocol-hubpool-bond-045-abt-s22: …356985D2f267FA010D681f061DfF03715 (3-of-5, v1.3.0); not a proxy (Sourcify ma…",
@@ -238,11 +240,11 @@
      "value": "Lowest controlling quorum: 3-of-5"
     },
     {
-     "evidence": "across-protocol-hubpool-bond-045-abt-s22: …AA236109002ea; liveness() = 1800s; paused() = false; owner() = Safe 0xB5247…",
+     "evidence": "across-protocol-hubpool-bond-045-abt-s22: paused() = false",
      "key": "emergency",
      "label": "Emergency / freeze scope",
-     "state": "g",
-     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+     "state": "n",
+     "value": "Pause / freeze authority present; its holder is not determined"
     },
     {
      "evidence": null,
@@ -276,8 +278,9 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 2,
-   "rosetteAria": "Across Protocol (HubPool) control-plane rosette: Upgradeability strong; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope strong; Docs-vs-chain parity strong",
+   "rosetteAria": "Across Protocol (HubPool) control-plane rosette: Upgradeability strong; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
    "search": "across protocol (hubpool) across-protocol-hubpool intent-based cross-chain settlement acx 0xc186fa914353c44b2e33ebe05f21846f1048beda 0xee1dc6bcf1ee967a350e9ac6caaaa236109002ea",
    "slug": "across-protocol-hubpool",
    "url": "https://pacta.wtf/protocols/across-protocol-hubpool/"
@@ -305,7 +308,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "n",
-     "value": "No enforced delay in the published records"
+     "value": "No enforced admin delay in the published records"
     },
     {
      "evidence": "aerodrome-finance-base-emergency-council-migration-s21: …C2d0b71a0b006243148fdF1a71d054cE0 (3-of-7, v1.5.0, the same 7 signers as the…",
@@ -315,11 +318,11 @@
      "value": "Lowest controlling quorum: 3-of-7"
     },
     {
-     "evidence": "aerodrome-finance-base-poolfactory-max-fee-3pct-s21: …volatileFee() = 30 (basis points); pauser() = feeManager() = Safe 0xE6A41fE…",
+     "evidence": "aerodrome-finance-base-poolfactory-max-fee-3pct-s21: pauser() = feeManager() = Safe 0xE6A41fE61E7a1996B59d508661e3f524d6A32075 (3-of-7, v1.3.0, no modules), also the Voter governor() and the FactoryRegistry 0x5C3…",
      "key": "emergency",
      "label": "Emergency / freeze scope",
      "state": "g",
-     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+     "value": "Pause / freeze authority scoped behind a multi-signer controller (3-of-7)"
     },
     {
      "evidence": null,
@@ -351,6 +354,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 2,
    "rosetteAria": "Aerodrome Finance (Base) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope strong; Docs-vs-chain parity weak",
    "search": "aerodrome finance (base) aerodrome-finance-base base liquidity hub & ve(3,3) dex aero veaero 0x16613524e02ad97edfef371bc883f2f5d6c480a5 0x420dd381b31aef6683db6b902084cb0ffece40da",
@@ -380,7 +384,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "n",
-     "value": "No enforced delay in the published records"
+     "value": "No enforced admin delay in the published records"
     },
     {
      "evidence": "aerodrome-slipstream-clfactory-team-3of7-s18: …Manager() = unstakedFeeManager() = 3-of-7 Safe 0xE6A41fE61E7a1996B59d508661e…",
@@ -426,6 +430,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "Aerodrome Slipstream (Base) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
    "search": "aerodrome slipstream (base) aerodrome-slipstream-base concentrated-liquidity dex aero slipstream 0x5e7bb104d84c7cb9b682aac2f3d509f5f406809a",
@@ -455,7 +460,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "n",
-     "value": "No enforced delay in the published records"
+     "value": "No enforced admin delay in the published records"
     },
     {
      "evidence": "balancer-v2-vault-timelock-authorizer-admin-dao-multisig-s21: …7d7F8a52822f6817de8ea18204F2e4f, a 6-of-11 Safe (v1.1.1, no modules).",
@@ -465,11 +470,11 @@
      "value": "Lowest controlling quorum: 6-of-11"
     },
     {
-     "evidence": "balancer-v2-vault-timelock-vault-immutable-pause-expired-s21: …lse, 1626633407, 1629225407) - the pause window and buffer period ended bef…",
+     "evidence": "balancer-v2-vault-timelock-vault-immutable-pause-expired-s21: Vault 0xBA12222222228d8Ba445958a75a0704d566BF2C8: getPausedState() = (false, 1626633407, 1629225407) - the pause window and buffer period ended before the pin",
      "key": "emergency",
      "label": "Emergency / freeze scope",
-     "state": "g",
-     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+     "state": "n",
+     "value": "Pause / freeze authority present; its holder is not determined"
     },
     {
      "evidence": null,
@@ -504,8 +509,9 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 2,
-   "rosetteAria": "Balancer V2 Vault & TimelockAuthorizer control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope strong; Docs-vs-chain parity strong",
+   "rosetteAria": "Balancer V2 Vault & TimelockAuthorizer control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
    "search": "balancer v2 vault & timelockauthorizer balancer-v2-vault-timelock programmable liquidity vault bal vebal 0xa331d84ec860bf466b4cdccfb4ac09a1b43f3ae6 0xba12222222228d8ba445958a75a0704d566bf2c8",
    "slug": "balancer-v2-vault-timelock",
    "url": "https://pacta.wtf/protocols/balancer-v2-vault-timelock/"
@@ -522,18 +528,18 @@
    "easAttested": false,
    "factors": [
     {
-     "evidence": "bedrock-unieth-control-plane: …14,499 (2,118 bytes runtime code). EIP-1967 implementation slot resolves to 0x8a94866dF557Bb7FCe88EfF991723…",
+     "evidence": "bedrock-unieth-control-plane: RockXStakingProxy (0xF1376bceF0f78459C0Ed0ba5ddce976F1ddF51F4) verified on Ethereum Mainnet at canonical block #26,414,499 (2,118 bytes runtime code). EIP-1967…",
      "key": "upgrade",
      "label": "Upgradeability",
      "state": "n",
-     "value": "Upgradeable; the gating delay is not in the published records"
+     "value": "Upgradeable; the delay gating the upgrade path is not in the published records"
     },
     {
      "evidence": null,
      "key": "timelock",
      "label": "Timelock floor",
      "state": "n",
-     "value": "No enforced delay in the published records"
+     "value": "No enforced admin delay in the published records"
     },
     {
      "evidence": "bedrock-unieth-control-plane: …etThreshold() and getOwners() as a 3-of-5 Safe multisig.",
@@ -588,6 +594,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "Bedrock (uniETH) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
    "search": "bedrock (unieth) bedrock-unieth liquid restaking unieth 0xf1376bcef0f78459c0ed0ba5ddce976f1ddf51f4",
@@ -607,18 +614,18 @@
    "easAttested": true,
    "factors": [
     {
-     "evidence": "beefy-finance-base-fee-config-owner-dev-multisig-s22: …199216c7F7368080Cf41beD8f3AbBc4E4, EIP-1967 admin = ProxyAdmin 0x2b0C9702A4724f2BFe792…",
+     "evidence": "beefy-finance-base-fee-config-owner-dev-multisig-s22: transparent proxy (Sourcify exact match), implementation 0xAb35d11199216c7F7368080Cf41beD8f3AbBc4E4, EIP-1967 admin = ProxyAdmin 0x2b0C9702A4724f2BFe7922DB92c4…",
      "key": "upgrade",
      "label": "Upgradeability",
-     "state": "a",
-     "value": "Upgradeable with no enforced delay"
+     "state": "b",
+     "value": "Upgradeable behind a 1h–47h delay (6h)"
     },
     {
      "evidence": "beefy-finance-base-vault-owner-timelock-zero-delay-s22: observed_delay_seconds = 0",
      "key": "timelock",
      "label": "Timelock floor",
      "state": "a",
-     "value": "0s minimum observed delay"
+     "value": "0s minimum enforced delay across control surfaces"
     },
     {
      "evidence": "beefy-finance-base-fee-config-owner-dev-multisig-s22: …C3B38Ec2d631D86e15f328ee6eF6C6226 (3-of-6 Safe, v1.3.0, no modules); transpa…",
@@ -664,8 +671,9 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 3,
-   "rosetteAria": "Beefy Finance (Base) control-plane rosette: Upgradeability weak; Timelock floor weak; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
+   "rosetteAria": "Beefy Finance (Base) control-plane rosette: Upgradeability moderate; Timelock floor weak; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
    "search": "beefy finance (base) beefy-finance-base automated yield vaults & clm (base) bifi 0x09d19184f46a32213df06b981122e06882b61309 0x3b60f7f25b09e71356cdffc6475c222a466a2ac9 0xfc69704cc3caac545cc7577009ea4aa04f1a61eb",
    "slug": "beefy-finance-base",
    "url": "https://pacta.wtf/protocols/beefy-finance-base/"
@@ -693,7 +701,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "b",
-     "value": "1d minimum observed delay"
+     "value": "1d minimum enforced delay across control surfaces"
     },
     {
      "evidence": "cap-1d-timelock-min-delay-s20: …02dF3ee4f8587268FB89fda4d621a8793 (3-of-5 Safe); the timelock is its own adm…",
@@ -739,6 +747,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 3,
    "rosetteAria": "Cap control-plane rosette: Upgradeability not determined; Timelock floor moderate; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
    "search": "cap cap stablecoin / credit cusd stcusd cap 0x7731129a10d51e18cde607c5c115f26503d2c683 0xd8236031d8279d82e615af2bfab5fc0127a329ab",
@@ -758,18 +767,18 @@
    "easAttested": false,
    "factors": [
     {
-     "evidence": "centrifuge-liquidity-pools-base-control-plane: …ontract). No single-key Ownable or ProxyAdmin getter exposed on the primary entr…",
+     "evidence": "centrifuge-liquidity-pools-base-control-plane: CentrifugeRoot_Base (0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f) verified on Base Mainnet at canonical block #57,421,449 (2,618 bytes runtime code). EIP-1967 i…",
      "key": "upgrade",
      "label": "Upgradeability",
      "state": "n",
-     "value": "Upgradeable; the gating delay is not in the published records"
+     "value": "Upgradeable; the delay gating the upgrade path is not in the published records"
     },
     {
      "evidence": null,
      "key": "timelock",
      "label": "Timelock floor",
      "state": "n",
-     "value": "No enforced delay in the published records"
+     "value": "No enforced admin delay in the published records"
     },
     {
      "evidence": null,
@@ -815,6 +824,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "Centrifuge V3 Root (Base) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
    "search": "centrifuge v3 root (base) centrifuge-liquidity-pools-base institutional rwa liquidity pools cfg 0x7ed48c31f2fdc40d37407cbabf0870b2b688368f",
@@ -835,18 +845,18 @@
    "easAttested": true,
    "factors": [
     {
-     "evidence": "circle-usdc-base-proxy-admin-upgrade-key-s23: …422815): admin slot keccak256('org.zeppelinos.proxy.admin') = 0x4fc7850364958d97B4d3f5A08f79…",
+     "evidence": "circle-usdc-base-proxy-admin-upgrade-key-s23: USDC FiatTokenProxy 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913 (Base, block #58422815): admin slot keccak256('org.zeppelinos.proxy.admin') = 0x4fc7850364958d97…",
      "key": "upgrade",
      "label": "Upgradeability",
      "state": "a",
-     "value": "Upgradeable with no enforced delay"
+     "value": "Upgradeable with no enforced delay: no timelock in front of upgrades"
     },
     {
-     "evidence": null,
+     "evidence": "circle-usdc-base-proxy-admin-upgrade-key-s23: USDC FiatTokenProxy 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913 (Base, block #58422815): admin slot keccak256('org.zeppelinos.proxy.admin') = 0x4fc7850364958d97…",
      "key": "timelock",
      "label": "Timelock floor",
-     "state": "n",
-     "value": "No enforced delay in the published records"
+     "state": "a",
+     "value": "0s minimum enforced delay across control surfaces"
     },
     {
      "evidence": "circle-usdc-base-owner-role-assignment-s23: …40175d20ac31ed523B6733B977173E277 (no contract code); masterMinter() = MasterMinter 0x…",
@@ -856,11 +866,11 @@
      "value": "Lowest controlling quorum: a single key"
     },
     {
-     "evidence": "circle-usdc-base-owner-role-assignment-s23: …4A422225E61E435baE41db12096106df7, pauser() = 0xD3571B3bc51CECFf49194AD67aF…",
+     "evidence": "circle-usdc-base-owner-role-assignment-s23: USDC 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913 (Base, block #58422815): owner() = 0x3ABd6f64A422225E61E435baE41db12096106df7, pauser() = 0xD3571B3bc51CECFf491…",
      "key": "emergency",
      "label": "Emergency / freeze scope",
      "state": "a",
-     "value": "Pause / freeze authority with a single key or 1-of-N"
+     "value": "Pause / freeze authority held by a single key"
     },
     {
      "evidence": null,
@@ -892,8 +902,9 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 4,
-   "rosetteAria": "Circle USDC control-plane rosette: Upgradeability weak; Timelock floor not determined; Signer quorum weak; Emergency / freeze scope weak; Docs-vs-chain parity strong",
+   "rosetteAria": "Circle USDC control-plane rosette: Upgradeability weak; Timelock floor weak; Signer quorum weak; Emergency / freeze scope weak; Docs-vs-chain parity strong",
    "search": "circle usdc circle-usdc fiat-backed stablecoin (usdc) usdc 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913 0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
    "slug": "circle-usdc",
    "url": "https://pacta.wtf/protocols/circle-usdc/"
@@ -921,7 +932,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "n",
-     "value": "No enforced delay in the published records"
+     "value": "No enforced admin delay in the published records"
     },
     {
      "evidence": "coinbase-wrapped-staked-eth-oracle-exchange-rate-updater-s21: …exact match), whose owner() is an externally owned account 0xA57aFe0Ba93f6854ed1DCd58…",
@@ -931,11 +942,11 @@
      "value": "Lowest controlling quorum: a single key"
     },
     {
-     "evidence": "coinbase-wrapped-staked-eth-proxy-admin-separate-owner-s21: …89ABFf2562e854899E24d67A36406eA03, pauser() = 0x9596EAE1744997161ac094252e5…",
+     "evidence": "coinbase-wrapped-staked-eth-proxy-admin-separate-owner-s21: owner() = 0x4b8741C89ABFf2562e854899E24d67A36406eA03, pauser() = 0x9596EAE1744997161ac094252e5020E9314BDCc2, blacklister() = 0xBE3c68821D585Cf1552214897a1c0910…",
      "key": "emergency",
      "label": "Emergency / freeze scope",
      "state": "a",
-     "value": "Pause / freeze authority with a single key or 1-of-N"
+     "value": "Pause / freeze authority held by a single key"
     },
     {
      "evidence": null,
@@ -967,6 +978,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 2,
    "rosetteAria": "Coinbase Wrapped Staked ETH control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum weak; Emergency / freeze scope weak; Docs-vs-chain parity strong",
    "search": "coinbase wrapped staked eth coinbase-wrapped-staked-eth liquid staking token (eth) cbeth 0xbe9895146f7af43049ca1c1ae358b0541ea49704",
@@ -986,18 +998,18 @@
    "easAttested": true,
    "factors": [
     {
-     "evidence": "compound-v3-base-mainnet-timelock-local-1d-delay-s19: …1d5425969c15Eb2F), owner() of CometProxyAdmin 0xbdE8F31D2DdDA895264e27DD990faB3D…",
+     "evidence": "compound-v3-base-mainnet-timelock-local-1d-delay-s19: governor() of cUSDbCv3 (0x9c4ec768c28520B50860ea7a15bd7213a9fF58bf) and cUSDCv3 (0xb125E6687d4313864e53df431d5425969c15Eb2F), owner() of CometProxyAdmin 0xbdE8…",
      "key": "upgrade",
      "label": "Upgradeability",
      "state": "b",
-     "value": "Upgradeable behind a 1h–47h delay"
+     "value": "Upgradeable behind a 1h–47h delay (1d)"
     },
     {
-     "evidence": "compound-v3-base-mainnet-timelock-local-1d-delay-s19: observed_delay_seconds = 86400",
+     "evidence": "compound-v3-base-mainnet-timelock-local-1d-delay-s19: governor() of cUSDbCv3 (0x9c4ec768c28520B50860ea7a15bd7213a9fF58bf) and cUSDCv3 (0xb125E6687d4313864e53df431d5425969c15Eb2F), owner() of CometProxyAdmin 0xbdE8…",
      "key": "timelock",
      "label": "Timelock floor",
      "state": "b",
-     "value": "1d minimum observed delay"
+     "value": "1d minimum enforced delay across control surfaces"
     },
     {
      "evidence": "compound-v3-base-pause-guardian-community-multisig-5of9-s19: …F3B45F448D9100b118B75a1503281d2ee (5-of-9, v1.3.0), whose 9 owners equal, in…",
@@ -1007,11 +1019,11 @@
      "value": "Lowest controlling quorum: 5-of-9"
     },
     {
-     "evidence": "compound-v3-base-pause-guardian-community-multisig-5of9-s19: …87d4313864e53df431d5425969c15Eb2F) pauseGuardian() = Safe 0x3cb4653F3B45F44…",
+     "evidence": "compound-v3-base-pause-guardian-community-multisig-5of9-s19: cUSDbCv3 (0x9c4ec768c28520B50860ea7a15bd7213a9fF58bf) and cUSDCv3 (0xb125E6687d4313864e53df431d5425969c15Eb2F) pauseGuardian() = Safe 0x3cb4653F3B45F448D9100b1…",
      "key": "emergency",
      "label": "Emergency / freeze scope",
      "state": "g",
-     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+     "value": "Pause / freeze authority scoped behind a multi-signer controller (5-of-9)"
     },
     {
      "evidence": null,
@@ -1043,6 +1055,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 2,
    "rosetteAria": "Compound V3 (Base) control-plane rosette: Upgradeability moderate; Timelock floor moderate; Signer quorum strong; Emergency / freeze scope strong; Docs-vs-chain parity strong",
    "search": "compound v3 (base) compound-v3-base lending market (base) comp cusdcv3 0x18281dfc4d00905da1aaa6731414eaba843c468a 0x9c4ec768c28520b50860ea7a15bd7213a9ff58bf",
@@ -1072,7 +1085,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "g",
-     "value": "2d minimum observed delay"
+     "value": "2d minimum enforced delay across control surfaces"
     },
     {
      "evidence": "compound-v3-comet-timelock-and-pause-safe: …2D1ff10004c8C0); pauseGuardian() = 5-of-9 Community Pause Safe (0xbbf3f1421D…",
@@ -1082,11 +1095,11 @@
      "value": "Lowest controlling quorum: 5-of-9"
     },
     {
-     "evidence": "compound-v3-comet-timelock-and-pause-safe: …bC1A00e45506cB8A802D1ff10004c8C0); pauseGuardian() = 5-of-9 Community Pause…",
+     "evidence": "compound-v3-comet-timelock-and-pause-safe: pauseGuardian() = 5-of-9 Community Pause Safe (0xbbf3f1421D886E9b2c5D716B5192aC998af2012c).",
      "key": "emergency",
      "label": "Emergency / freeze scope",
      "state": "g",
-     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+     "value": "Pause / freeze authority scoped behind a multi-signer controller (5-of-9)"
     },
     {
      "evidence": null,
@@ -1118,6 +1131,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "Compound V3 (Comet) control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum strong; Emergency / freeze scope strong; Docs-vs-chain parity strong",
    "search": "compound v3 (comet) compound-v3-comet blue-chip lending comp cusdcv3 comet 0xc3d688b66703497daa19211eedff47f25384cdc3",
@@ -1136,18 +1150,18 @@
    "easAttested": true,
    "factors": [
     {
-     "evidence": "concrete-vault-proxy-admin-factory-s20: …8261745CB97070CeFBE3D3d815aee8f20) EIP-1967 admin slot = ConcreteFactory 0x0265d73a8E61F698…",
+     "evidence": "concrete-vault-proxy-admin-factory-s20: ctDeltaWeETH vault (0xB9DC54c8261745CB97070CeFBE3D3d815aee8f20) EIP-1967 admin slot = ConcreteFactory 0x0265d73a8E61F698d8EB0dfeb91Ddce55516844C, which is also…",
      "key": "upgrade",
      "label": "Upgradeability",
-     "state": "a",
-     "value": "Upgradeable with no enforced delay"
+     "state": "n",
+     "value": "Upgradeable; the delay gating the upgrade path is not in the published records"
     },
     {
      "evidence": null,
      "key": "timelock",
      "label": "Timelock floor",
      "state": "n",
-     "value": "No enforced delay in the published records"
+     "value": "No enforced admin delay in the published records"
     },
     {
      "evidence": "controller fact: Safe getThreshold()",
@@ -1193,8 +1207,9 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 3,
-   "rosetteAria": "Concrete control-plane rosette: Upgradeability weak; Timelock floor not determined; Signer quorum weak; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
+   "rosetteAria": "Concrete control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum weak; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
    "search": "concrete concrete yield vaults (erc-4626) ctdeltaweeth concrete 0x8f5f1d40243b259ceb7ab44ba421ff191bcd3381 0xb9dc54c8261745cb97070cefbe3d3d815aee8f20",
    "slug": "concrete",
    "url": "https://pacta.wtf/protocols/concrete/"
@@ -1220,7 +1235,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "n",
-     "value": "No enforced delay in the published records"
+     "value": "No enforced admin delay in the published records"
     },
     {
      "evidence": "convex-booster-governance-chain: …46611C37CF89844a02435E6C098b86D -> 3-of-5 DAO Multisig (0xa3C5A1e09150B75ff2…",
@@ -1266,6 +1281,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "Convex Finance control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
    "search": "convex finance convex-finance curve governance aggregation cvx cvxcrv 0xf403c135812408bfbe8713b5a23a04b3d48aae31",
@@ -1296,7 +1312,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "n",
-     "value": "No enforced delay in the published records"
+     "value": "No enforced admin delay in the published records"
     },
     {
      "evidence": "curve-crvusd-factory-lending-owner-proxy: …49ed7DB3356) and emergency_dao() = 5-of-9 EmergencyDAO Safe (0x467947EE34aF9…",
@@ -1342,6 +1358,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "Curve Finance (crvUSD) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
    "search": "curve finance (crvusd) curve-finance-crvusd decentralized stablecoin & lending crvusd crv 0xc9332fdcb1c491dcc683bae86fe3cb70360738bc",
@@ -1360,18 +1377,18 @@
    "easAttested": true,
    "factors": [
     {
-     "evidence": "eigenlayer-core-proxy-admin-and-timelock: …1B77DC0d36036Fc1fCc8Cb819df8Ef37A) EIP-1967 admin slot = Core ProxyAdmin (0x8b9566AdA63B64d…",
+     "evidence": "eigenlayer-core-proxy-admin-and-timelock: DelegationManager (0x39053D51B77DC0d36036Fc1fCc8Cb819df8Ef37A) EIP-1967 admin slot = Core ProxyAdmin (0x8b9566AdA63B64d1E1dcF1418b43fd1433b72444), owner() = 1-…",
      "key": "upgrade",
      "label": "Upgradeability",
-     "state": "g",
-     "value": "Upgradeable behind a ≥48h delay"
+     "state": "a",
+     "value": "Upgradeable with no enforced delay: a 1-of-N executor co-owned by the timelock and a non-timelock signer bypasses the delay"
     },
     {
-     "evidence": "controller fact: getMinDelay() = 864000s",
+     "evidence": "eigenlayer-core-proxy-admin-and-timelock: DelegationManager (0x39053D51B77DC0d36036Fc1fCc8Cb819df8Ef37A) EIP-1967 admin slot = Core ProxyAdmin (0x8b9566AdA63B64d1E1dcF1418b43fd1433b72444), owner() = 1-…",
      "key": "timelock",
      "label": "Timelock floor",
-     "state": "g",
-     "value": "10d minimum observed delay"
+     "state": "a",
+     "value": "0s minimum enforced delay across control surfaces"
     },
     {
      "evidence": "eigenlayer-core-proxy-admin-and-timelock: …dcF1418b43fd1433b72444), owner() = 1-of-2 ExecutorMultisig (0x369e6F597e22Ea…",
@@ -1381,11 +1398,11 @@
      "value": "Lowest controlling quorum: 1-of-2"
     },
     {
-     "evidence": "eigenlayer-core-proxy-admin-and-timelock: …D632A77bA579846c840d5706705Dc598); pauserRegistry() = 0xB8765ed72235d279c3F…",
+     "evidence": "eigenlayer-core-proxy-admin-and-timelock: pauserRegistry() = 0xB8765ed72235d279c3Fb53936E4606db0Ef12806.",
      "key": "emergency",
      "label": "Emergency / freeze scope",
-     "state": "a",
-     "value": "Pause / freeze authority with a single key or 1-of-N"
+     "state": "n",
+     "value": "Pause / freeze authority present; its holder is not determined"
     },
     {
      "evidence": null,
@@ -1417,8 +1434,9 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
-   "rosetteAria": "EigenLayer Core control-plane rosette: Upgradeability strong; Timelock floor strong; Signer quorum weak; Emergency / freeze scope weak; Docs-vs-chain parity strong",
+   "rosetteAria": "EigenLayer Core control-plane rosette: Upgradeability weak; Timelock floor weak; Signer quorum weak; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
    "search": "eigenlayer core eigenlayer-core restaking infrastructure eigen 0xc06fd4f821eac1ff1ae8067b36342899b57baa2d",
    "slug": "eigenlayer-core",
    "url": "https://pacta.wtf/protocols/eigenlayer-core/"
@@ -1444,7 +1462,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "g",
-     "value": "7d minimum observed delay"
+     "value": "7d minimum enforced delay across control surfaces"
     },
     {
      "evidence": "enzyme-dispatcher-7d-migration-timelock-s18: …+ migrationTimelock). getOwner() = 3-of-5 Safe 0xb270FE91e8E4b80452fBF1b4704…",
@@ -1490,6 +1508,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "Enzyme Finance control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
    "search": "enzyme finance enzyme-finance on-chain asset management mln enzyme 0xc3dc853dd716bd5754f421ef94fdcbac3902ab32",
@@ -1519,7 +1538,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "b",
-     "value": "1d minimum observed delay"
+     "value": "1d minimum enforced delay across control surfaces"
     },
     {
      "evidence": "ethena-admin-timelock-and-dev-safe: …ld() = 5, getOwners().length = 10 (5-of-10 Gnosis Safe).",
@@ -1565,6 +1584,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 2,
    "rosetteAria": "Ethena (USDe / sUSDe) control-plane rosette: Upgradeability not determined; Timelock floor moderate; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
    "search": "ethena (usde / susde) ethena-usde-susde synthetic dollar / basis collateral usde susde ena 0xe8dc0fab349ea169283c48ccfd09d797e6db7c94",
@@ -1583,32 +1603,32 @@
    "easAttested": true,
    "factors": [
     {
-     "evidence": "ethena-usdtb-single-admin-no-timelock-s19: …ds DEFAULT_ADMIN_ROLE and owns the ProxyAdmin 0x3C405F68d5C6eCE868e5646cAC926679…",
+     "evidence": "ethena-usdtb-single-admin-no-timelock-s19: USDtb (0xC139190F447e929f090Edeb554D95AbB8b18aC1C).owner() = 0xd93826BB299765c87D13AeBa2A7E5d9B27A03956 (no code), which also holds DEFAULT_ADMIN_ROLE and owns…",
      "key": "upgrade",
      "label": "Upgradeability",
      "state": "a",
-     "value": "Upgradeable with no enforced delay"
+     "value": "Upgradeable with no enforced delay: no timelock in front of upgrades"
     },
     {
-     "evidence": "ethena-usdtb-single-admin-no-timelock-s19: observed_delay_seconds = 0",
+     "evidence": "ethena-usdtb-single-admin-no-timelock-s19: USDtb (0xC139190F447e929f090Edeb554D95AbB8b18aC1C).owner() = 0xd93826BB299765c87D13AeBa2A7E5d9B27A03956 (no code), which also holds DEFAULT_ADMIN_ROLE and owns…",
      "key": "timelock",
      "label": "Timelock floor",
      "state": "a",
-     "value": "0s minimum observed delay"
+     "value": "0s minimum enforced delay across control surfaces"
     },
     {
-     "evidence": "ethena-usdtb-psm-owner-24h-timelock-s19: …e6fCd4a7cEEf8c92C32DFeA9E64dC1862 (5-of-10, v1.3.0) holds PROPOSER_ROLE, CANC…",
+     "evidence": "ethena-usdtb-single-admin-no-timelock-s19: …BB299765c87D13AeBa2A7E5d9B27A03956 (no code), which also holds DEFAULT_ADMIN_RO…",
      "key": "quorum",
      "label": "Signer quorum",
-     "state": "g",
-     "value": "Lowest controlling quorum: 5-of-10"
+     "state": "a",
+     "value": "Lowest controlling quorum: a single key"
     },
     {
-     "evidence": "ethena-usdtb-single-admin-no-timelock-s19: …_BURNER_ROLE, BLOCKLISTER_ROLE and PAUSER_ROLE are each held by one address…",
+     "evidence": "ethena-usdtb-single-admin-no-timelock-s19: MINTER_BURNER_ROLE, BLOCKLISTER_ROLE and PAUSER_ROLE are each held by one address without code",
      "key": "emergency",
      "label": "Emergency / freeze scope",
-     "state": "g",
-     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+     "state": "a",
+     "value": "Pause / freeze authority held by a single key"
     },
     {
      "evidence": null,
@@ -1640,8 +1660,9 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 2,
-   "rosetteAria": "Ethena USDtb control-plane rosette: Upgradeability weak; Timelock floor weak; Signer quorum strong; Emergency / freeze scope strong; Docs-vs-chain parity strong",
+   "rosetteAria": "Ethena USDtb control-plane rosette: Upgradeability weak; Timelock floor weak; Signer quorum weak; Emergency / freeze scope weak; Docs-vs-chain parity strong",
    "search": "ethena usdtb ethena-usdtb rwa-backed stablecoin usdtb usdtb 0x73e35c5c35a274e34ade6eb13cc7f62aee323728 0xc139190f447e929f090edeb554d95abb8b18ac1c",
    "slug": "ethena-usdtb",
    "url": "https://pacta.wtf/protocols/ethena-usdtb/"
@@ -1669,7 +1690,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "g",
-     "value": "2d minimum observed delay"
+     "value": "2d minimum enforced delay across control surfaces"
     },
     {
      "evidence": null,
@@ -1715,6 +1736,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 2,
    "rosetteAria": "ether.fi Core (eETH / weETH) control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
    "search": "ether.fi core (eeth / weeth) ether-fi-core-eeth-weeth liquid staking & restaking eeth weeth ethfi 0x9f26d4c958fd811a1f59b01b86be7dffc9d20761",
@@ -1745,7 +1767,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "b",
-     "value": "1d minimum observed delay"
+     "value": "1d minimum enforced delay across control surfaces"
     },
     {
      "evidence": null,
@@ -1791,6 +1813,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "ether.fi Liquid / Veda BoringVault control-plane rosette: Upgradeability not determined; Timelock floor moderate; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
    "search": "ether.fi liquid / veda boringvault ether-fi-liquid-veda-boringvault curated restaking vaults liquid veda boringvault 0x485bde66bb668a51f2372e34e45b1c6226798122",
@@ -1820,7 +1843,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "g",
-     "value": "4d minimum observed delay"
+     "value": "4d minimum enforced delay across control surfaces"
     },
     {
      "evidence": "euler-v2-evk-factorygovernor-4d-timelock-s18: …pen; CANCELLER_ROLE: that Safe and 2-of-3 Safe 0xb3b84e8320250Afe7a5fb313Ee3…",
@@ -1830,11 +1853,11 @@
      "value": "Lowest controlling quorum: 2-of-3"
     },
     {
-     "evidence": "euler-v2-evk-factorygovernor-4d-timelock-s18: …20250Afe7a5fb313Ee32B52982b73c53). PAUSE_GUARDIAN_ROLE has 3 members (2-of-…",
+     "evidence": "euler-v2-evk-factorygovernor-4d-timelock-s18: its only DEFAULT_ADMIN_ROLE member is TimelockController 0xfb034c1C6c7F42171b2d1Cb8486E0f43ED07A968 (getMinDelay() = 345600s, 4d; PROPOSER_ROLE: 4-of-8 Safe 0x…",
      "key": "emergency",
      "label": "Emergency / freeze scope",
      "state": "g",
-     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+     "value": "Pause / freeze authority scoped behind a multi-signer controller (2-of-3)"
     },
     {
      "evidence": null,
@@ -1866,6 +1889,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "Euler V2 (EVK) control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum moderate; Emergency / freeze scope strong; Docs-vs-chain parity strong",
    "search": "euler v2 (evk) euler-v2-evk modular lending vault kit eul evk evc 0x29a56a1b8214d9cf7c5561811750d5cbdb45cc8e",
@@ -1896,7 +1920,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "n",
-     "value": "No enforced delay in the published records"
+     "value": "No enforced admin delay in the published records"
     },
     {
      "evidence": null,
@@ -1942,6 +1966,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "Extra Finance (Base) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
    "search": "extra finance (base) extra-finance-base leveraged yield & lending (base) extra 0xbb505c54d71e9e599cb8435b4f0ceec05fc71cbd",
@@ -1971,7 +1996,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "n",
-     "value": "No enforced delay in the published records"
+     "value": "No enforced admin delay in the published records"
     },
     {
      "evidence": "fx-protocol-v2-treasury-admin: …dAC4c1072658eB01a28DA06b5F651eF62, 3-of-4 Safe), while Timelock (0x68863fb88…",
@@ -2020,6 +2045,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "f(x) Protocol v2 control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
    "search": "f(x) protocol v2 f-x-protocol-v2 leveraged eth / stablecoin fxusd fxn 0x32356fe312eba9b7d6a157ad28d1ca91b571cda6",
@@ -2045,11 +2071,11 @@
      "value": "Upgrade path not in the published records"
     },
     {
-     "evidence": "falcon-susdf-zero-cooldown-instant-unstake-s17: observed_delay_seconds = 0",
+     "evidence": null,
      "key": "timelock",
      "label": "Timelock floor",
-     "state": "a",
-     "value": "0s minimum observed delay"
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
     },
     {
      "evidence": "falcon-susdf-zero-cooldown-instant-unstake-s17: …4D9b2149AcE) both return owner() = 4-of-6 Safe 0x1E482B60bf19Cb1cc859389e0eA…",
@@ -2095,8 +2121,9 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
-   "rosetteAria": "Falcon Finance (USDf / sUSDf) control-plane rosette: Upgradeability not determined; Timelock floor weak; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "rosetteAria": "Falcon Finance (USDf / sUSDf) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
    "search": "falcon finance (usdf / susdf) falcon-finance-usdf-susdf synthetic dollar usdf susdf 0xc8cf6d7991f15525488b2a83df53468d682ba4b0",
    "slug": "falcon-finance-usdf-susdf",
    "url": "https://pacta.wtf/protocols/falcon-finance-usdf-susdf/"
@@ -2124,7 +2151,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "n",
-     "value": "No enforced delay in the published records"
+     "value": "No enforced admin delay in the published records"
     },
     {
      "evidence": null,
@@ -2173,6 +2200,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "Fluid / Instadapp control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
    "search": "fluid / instadapp fluid-instadapp modular lending & dex vaults fluid inst 0x324c5dc1fc42c7a4d43d92df1eba58a54d13bf2d",
@@ -2191,18 +2219,18 @@
    "easAttested": true,
    "factors": [
     {
-     "evidence": "frax-ether-upgrade-timelock-24h-s20: …2C0ecf2A1840d018bE783937; owner of ProxyAdmin 0x223a681fc5c5522c85C96157c0efA18c…",
+     "evidence": "frax-ether-upgrade-timelock-24h-s20: owner of ProxyAdmin 0x223a681fc5c5522c85C96157c0efA18cd6c5405c, the EIP-1967 admin of both Ethereum lockboxes.",
      "key": "upgrade",
      "label": "Upgradeability",
      "state": "b",
-     "value": "Upgradeable behind a 1h–47h delay"
+     "value": "Upgradeable behind a 1h–47h delay (1d)"
     },
     {
      "evidence": "frax-ether-upgrade-timelock-24h-s20: observed_delay_seconds = 86400",
      "key": "timelock",
      "label": "Timelock floor",
      "state": "b",
-     "value": "1d minimum observed delay"
+     "value": "1d minimum enforced delay across control surfaces"
     },
     {
      "evidence": "controller fact: Safe getThreshold()",
@@ -2248,6 +2276,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 3,
    "rosetteAria": "Frax Ether (frxETH / sfrxETH) control-plane rosette: Upgradeability moderate; Timelock floor moderate; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
    "search": "frax ether (frxeth / sfrxeth) frax-ether-sfrxeth liquid staking & monetary infrastructure frxeth sfrxeth fxs 0xb1748c79709f4ba2dd82834b8c82d4a505003f27 0xb898ad2976b4d8f2e21521c9db16b7497825e503 0xbafa44efe7901e04e39dad13167d089c559c1138",
@@ -2267,18 +2296,18 @@
    "easAttested": true,
    "factors": [
     {
-     "evidence": "frax-usd-frxusd-admin-upgrades-1d-timelock-s23: …266aF91b8AeD52aCCc382b4e165586E29: EIP-1967 admin = ProxyAdmin 0x0b2C3dF006b2bd43cBCC6…",
+     "evidence": "frax-usd-sfrxusd-proxyadmin-safe-3of5-s23: sfrxUSD 0xcf62F905562626CfcDD2261162a51fd02Fc9c5b6: EIP-1967 admin = ProxyAdmin 0xeA0a6EC8114a0Af6Cf74Ca0036Ab31d892Df13cB, owner() = Safe 0xB1748C79709f4Ba2Dd…",
      "key": "upgrade",
      "label": "Upgradeability",
-     "state": "b",
-     "value": "Upgradeable behind a 1h–47h delay"
+     "state": "a",
+     "value": "Upgradeable with no enforced delay: no timelock in front of upgrades"
     },
     {
-     "evidence": "frax-usd-frxusd-admin-upgrades-1d-timelock-s23: observed_delay_seconds = 86400",
+     "evidence": "frax-usd-sfrxusd-proxyadmin-safe-3of5-s23: sfrxUSD 0xcf62F905562626CfcDD2261162a51fd02Fc9c5b6: EIP-1967 admin = ProxyAdmin 0xeA0a6EC8114a0Af6Cf74Ca0036Ab31d892Df13cB, owner() = Safe 0xB1748C79709f4Ba2Dd…",
      "key": "timelock",
      "label": "Timelock floor",
-     "state": "b",
-     "value": "1d minimum observed delay"
+     "state": "a",
+     "value": "0s minimum enforced delay across control surfaces"
     },
     {
      "evidence": "frax-usd-sfrxusd-proxyadmin-safe-3of5-s23: …9709f4Ba2Dd82834B8c82D4a505003f27 (3-of-5, v1.3.0; no timelock); timelockAdd…",
@@ -2324,8 +2353,9 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 3,
-   "rosetteAria": "Frax USD (frxUSD) control-plane rosette: Upgradeability moderate; Timelock floor moderate; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "rosetteAria": "Frax USD (frxUSD) control-plane rosette: Upgradeability weak; Timelock floor weak; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
    "search": "frax usd (frxusd) frax-usd-frxusd fiat-redeemable stablecoin (frxusd) & yield vault frxusd sfrxusd 0x831822660572bd54ebaa065c2acef662a6277d40 0xcacd6fd266af91b8aed52accc382b4e165586e29 0xcf62f905562626cfcdd2261162a51fd02fc9c5b6",
    "slug": "frax-usd-frxusd",
    "url": "https://pacta.wtf/protocols/frax-usd-frxusd/"
@@ -2354,7 +2384,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "b",
-     "value": "1d 12h minimum observed delay"
+     "value": "1d 12h minimum enforced delay across control surfaces"
     },
     {
      "evidence": "gearbox-v3-legacy-timelock-and-instance-safe: …9B4D58b75E12dd74641AB955e8B0Df40E, 4-of-12), Treasury (0x7b065Fcb0760dF0CEA8C…",
@@ -2400,6 +2430,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "Gearbox V3 / V3.1 control-plane rosette: Upgradeability not determined; Timelock floor moderate; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
    "search": "gearbox v3 / v3.1 gearbox-v3-v3-1 leveraged credit & curated lending gear 0xa133c9a92fb8ddb962af1cbae58b2723a0bdf23b",
@@ -2429,7 +2460,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "n",
-     "value": "No enforced delay in the published records"
+     "value": "No enforced admin delay in the published records"
     },
     {
      "evidence": "grove-finance-freezer-safe-2of5-s21: …3319c86940e5) = true; that Safe is 2-of-5 (v1.4.1, no modules).",
@@ -2439,11 +2470,11 @@
      "value": "Lowest controlling quorum: 2-of-5"
     },
     {
-     "evidence": "grove-finance-freezer-safe-2of5-s21: …649579Af482DB7198A392A9F5: hasRole(FREEZER, 0xB0113804960345fd0a245788b3423…",
+     "evidence": "grove-finance-freezer-safe-2of5-s21: MainnetController 0xfd9dEA9a8D5B955649579Af482DB7198A392A9F5: hasRole(FREEZER, 0xB0113804960345fd0a245788b3423319c86940e5) = true; that Safe is 2-of-5 (v1.4.1,…",
      "key": "emergency",
      "label": "Emergency / freeze scope",
      "state": "g",
-     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+     "value": "Pause / freeze authority scoped behind a multi-signer controller (2-of-5)"
     },
     {
      "evidence": null,
@@ -2478,6 +2509,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 3,
    "rosetteAria": "Grove Finance control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum moderate; Emergency / freeze scope strong; Docs-vs-chain parity strong",
    "search": "grove finance grove-finance onchain capital allocator (sky star) grove stgrove 0x491edfb0b8b608044e227225c715981a30f3a44e 0xfd9dea9a8d5b955649579af482db7198a392a9f5",
@@ -2508,7 +2540,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "g",
-     "value": "7d minimum observed delay"
+     "value": "7d minimum enforced delay across control surfaces"
     },
     {
      "evidence": "controller fact: Safe getThreshold()",
@@ -2518,11 +2550,11 @@
      "value": "Lowest controlling quorum: 4-of-7"
     },
     {
-     "evidence": "infinifi-pause-role-admin-minor-roles-s20: …tRoleAdmin(UNPAUSE) = getRoleAdmin(PAUSE) = keccak256(\"MINOR_ROLES_MANAGER\"…",
+     "evidence": "infinifi-pause-role-admin-minor-roles-s20: InfiniFiCore 0xF6d48735EcCf12bDC1DF2674b1ce3fcb3bD25490: getRoleAdmin(UNPAUSE) = getRoleAdmin(PAUSE) = keccak256(\"MINOR_ROLES_MANAGER\") (0x9849206c..6512), who…",
      "key": "emergency",
      "label": "Emergency / freeze scope",
      "state": "g",
-     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+     "value": "Pause / freeze authority scoped behind a multi-signer controller (4-of-N Safe)"
     },
     {
      "evidence": null,
@@ -2556,6 +2588,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 3,
    "rosetteAria": "infiniFi control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum strong; Emergency / freeze scope strong; Docs-vs-chain parity weak",
    "search": "infinifi infinifi yield-bearing stablecoin iusd siusd liusd 0x3d18480cc32b6ab3b833dcabd80e76cfd41c48a9 0x80608f852d152024c0a2087b16939235fec2400c 0xf6d48735eccf12bdc1df2674b1ce3fcb3bd25490",
@@ -2586,7 +2619,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "g",
-     "value": "2d minimum observed delay"
+     "value": "2d minimum enforced delay across control surfaces"
     },
     {
      "evidence": "inverse-finance-firm-policy-safe: …old() = 4, getOwners().length = 7 (4-of-7 Gnosis Safe); GovernorMills.timelo…",
@@ -2596,11 +2629,11 @@
      "value": "Lowest controlling quorum: 4-of-7"
     },
     {
-     "evidence": "inverse-finance-firm-policy-safe: …b0aa4ab551966A7E4B97cec74bb359Bf6) guardian() wrapper (0x941c2699eC7E55a50Bde0…",
+     "evidence": "inverse-finance-firm-policy-safe: GovernorMills (0xBeCCB6bb0aa4ab551966A7E4B97cec74bb359Bf6) guardian() wrapper (0x941c2699eC7E55a50Bde030d8E1e70649839259D) references Policy Committee Safe (0x…",
      "key": "emergency",
      "label": "Emergency / freeze scope",
      "state": "g",
-     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+     "value": "Pause / freeze authority scoped behind a multi-signer controller (4-of-7)"
     },
     {
      "evidence": null,
@@ -2632,6 +2665,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 2,
    "rosetteAria": "Inverse Finance (FiRM) control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum strong; Emergency / freeze scope strong; Docs-vs-chain parity weak",
    "search": "inverse finance (firm) inverse-finance-firm fixed-rate lending dola inv firm 0x01eca33e20a4c379bd8a5361f896a7dd2bae4ce8 0x4b6c63e6a94ef26e2df60b89372db2d8e211f1b7",
@@ -2650,18 +2684,18 @@
    "easAttested": true,
    "factors": [
     {
-     "evidence": "kelp-dao-rseth-proxy-admin-and-timelock: …9c65A6Fe4DF752f95823fae25cB99e5A7) EIP-1967 admin slot = ProxyAdmin (0xb61e0E39b6d4030C36A1…",
+     "evidence": "kelp-dao-rseth-proxy-admin-and-timelock: rsETH (0xA1290d69c65A6Fe4DF752f95823fae25cB99e5A7) EIP-1967 admin slot = ProxyAdmin (0xb61e0E39b6d4030C36A176f576aaBE44BF59Dc78), owner() = TimelockController…",
      "key": "upgrade",
      "label": "Upgradeability",
      "state": "g",
-     "value": "Upgradeable behind a ≥48h delay"
+     "value": "Upgradeable behind a ≥48h delay (10d)"
     },
     {
      "evidence": "controller fact: getMinDelay() = 864000s",
      "key": "timelock",
      "label": "Timelock floor",
      "state": "g",
-     "value": "10d minimum observed delay"
+     "value": "10d minimum enforced delay across control surfaces"
     },
     {
      "evidence": "kelp-dao-rseth-proxy-admin-and-timelock: …D65ec7) DEFAULT_ADMIN_ROLE held by 6-of-11 Safe (0xb3696a817D01C8623E66D156B6…",
@@ -2707,6 +2741,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 2,
    "rosetteAria": "Kelp DAO (rsETH) control-plane rosette: Upgradeability strong; Timelock floor strong; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
    "search": "kelp dao (rseth) kelp-dao-rseth liquid restaking rseth 0x49bd9989e31ad35b0a62c20be86335196a3135b1 0xa1290d69c65a6fe4df752f95823fae25cb99e5a7",
@@ -2736,7 +2771,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "g",
-     "value": "3d minimum observed delay"
+     "value": "3d minimum enforced delay across control surfaces"
     },
     {
      "evidence": "lido-dual-governance-emergency-timelock: …2D86B9347A2688f9bc1808A6d8917760C, 3-of-6 Safe); stETH totalSupply = 9,759,3…",
@@ -2782,6 +2817,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "Lido (stETH / Dual Governance) control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
    "search": "lido (steth / dual governance) lido-steth-dual-governance blue-chip liquid staking steth wsteth ldo 0xce0425301c85c5ea2a0873a2dee44d78e02d2316",
@@ -2800,18 +2836,18 @@
    "easAttested": true,
    "factors": [
     {
-     "evidence": "liquid-collective-lseth-admin-multisig-4of7-s19: …b9a0928467c9B1341Da1D7BD5e10b6549) EIP-1967 admin slot = Firewall 0x3A5b4db174a3CC17d8cE40C…",
+     "evidence": "liquid-collective-lseth-admin-multisig-4of7-s19: River (0x8c1BEd5b9a0928467c9B1341Da1D7BD5e10b6549) EIP-1967 admin slot = Firewall 0x3A5b4db174a3CC17d8cE40C5B04272737195151b, whose getAdmin() is Safe 0x8EE3fC…",
      "key": "upgrade",
      "label": "Upgradeability",
-     "state": "n",
-     "value": "Upgradeable; the gating delay is not in the published records"
+     "state": "a",
+     "value": "Upgradeable with no enforced delay: upgraded by a Safe directly (a Safe has no delay of its own) (1 other upgrade path not determined)"
     },
     {
-     "evidence": null,
+     "evidence": "liquid-collective-lseth-admin-multisig-4of7-s19: River (0x8c1BEd5b9a0928467c9B1341Da1D7BD5e10b6549) EIP-1967 admin slot = Firewall 0x3A5b4db174a3CC17d8cE40C5B04272737195151b, whose getAdmin() is Safe 0x8EE3fC…",
      "key": "timelock",
      "label": "Timelock floor",
-     "state": "n",
-     "value": "No enforced delay in the published records"
+     "state": "a",
+     "value": "0s minimum enforced delay across control surfaces"
     },
     {
      "evidence": "liquid-collective-lseth-admin-multisig-4of7-s19: …c78f985fE1502484Cb98EBfAB66A56B62 (2-of-3) may call pause() but not unpause(…",
@@ -2821,11 +2857,11 @@
      "value": "Lowest controlling quorum: 2-of-3"
     },
     {
-     "evidence": "liquid-collective-lseth-admin-multisig-4of7-s19: …b98EBfAB66A56B62 (2-of-3) may call pause() but not unpause() or upgradeTo(a…",
+     "evidence": "liquid-collective-lseth-admin-multisig-4of7-s19: the Firewall executor Safe 0xDE55C9dc78f985fE1502484Cb98EBfAB66A56B62 (2-of-3) may call pause() but not unpause() or upgradeTo(address). Implementation RiverV1…",
      "key": "emergency",
      "label": "Emergency / freeze scope",
      "state": "g",
-     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+     "value": "Pause / freeze authority scoped behind a multi-signer controller (2-of-3)"
     },
     {
      "evidence": null,
@@ -2857,8 +2893,9 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 2,
-   "rosetteAria": "Liquid Collective (LsETH) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum moderate; Emergency / freeze scope strong; Docs-vs-chain parity strong",
+   "rosetteAria": "Liquid Collective (LsETH) control-plane rosette: Upgradeability weak; Timelock floor weak; Signer quorum moderate; Emergency / freeze scope strong; Docs-vs-chain parity strong",
    "search": "liquid collective (lseth) liquid-collective-lseth institutional liquid staking lseth liquid collective 0x8c1bed5b9a0928467c9b1341da1d7bd5e10b6549",
    "slug": "liquid-collective-lseth",
    "url": "https://pacta.wtf/protocols/liquid-collective-lseth/"
@@ -2886,7 +2923,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "n",
-     "value": "No enforced delay in the published records"
+     "value": "No enforced admin delay in the published records"
     },
     {
      "evidence": null,
@@ -2932,6 +2969,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 3,
    "rosetteAria": "Liquity V1 (LUSD) control-plane rosette: Upgradeability strong; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
    "search": "liquity v1 (lusd) liquity-v1-lusd interest-free eth-backed borrowing lusd lqty 0xa39739ef8b0231dbfa0dcda07d7e29faabcf4bb2",
@@ -2950,18 +2988,18 @@
    "easAttested": true,
    "factors": [
     {
-     "evidence": "liquity-v2-bold-immutability: …B91C8c61e952B3bA942cbbfaef5386684) EIP-1967 implementation slot = 0x00...00.",
+     "evidence": "liquity-v2-bold-immutability: CollateralRegistry (0xf949982B91C8c61e952B3bA942cbbfaef5386684) EIP-1967 implementation slot = 0x00...00.",
      "key": "upgrade",
      "label": "Upgradeability",
      "state": "n",
-     "value": "Upgradeable; the gating delay is not in the published records"
+     "value": "Upgradeable; the delay gating the upgrade path is not in the published records"
     },
     {
      "evidence": null,
      "key": "timelock",
      "label": "Timelock floor",
      "state": "n",
-     "value": "No enforced delay in the published records"
+     "value": "No enforced admin delay in the published records"
     },
     {
      "evidence": null,
@@ -3007,6 +3045,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "Liquity V2 (BOLD) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
    "search": "liquity v2 (bold) liquity-v2-bold immutable cdp stablecoin bold lqty 0x6440f144b7e50d6a8439336510312d2f54beb01d",
@@ -3023,18 +3062,18 @@
    "easAttested": true,
    "factors": [
     {
-     "evidence": "lombard-lbtc-core-proxy-upgrade-timelock: …084f8B84306f72007F36F2618A5634494) EIP-1967 admin slot = ProxyAdmin (0xbae061C73876952aa2C5…",
+     "evidence": "lombard-lbtc-core-proxy-upgrade-timelock: LBTC (0x8236a87084f8B84306f72007F36F2618A5634494) EIP-1967 admin slot = ProxyAdmin (0xbae061C73876952aa2C5e483B74DfA785425f879), whose owner() — along with Ass…",
      "key": "upgrade",
      "label": "Upgradeability",
      "state": "b",
-     "value": "Upgradeable behind a 1h–47h delay"
+     "value": "Upgradeable behind a 1h–47h delay (1d)"
     },
     {
      "evidence": "controller fact: getMinDelay() = 86400s",
      "key": "timelock",
      "label": "Timelock floor",
      "state": "b",
-     "value": "1d minimum observed delay"
+     "value": "1d minimum enforced delay across control surfaces"
     },
     {
      "evidence": "lombard-lbtc-core-proxy-upgrade-timelock: …6400s / 24h, EXECUTOR_ROLE held by 3-of-5 Safe 0x251a604E8E8f6906d60f8dedC5a…",
@@ -3080,6 +3119,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 2,
    "rosetteAria": "Lombard (LBTC) control-plane rosette: Upgradeability moderate; Timelock floor moderate; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
    "search": "lombard (lbtc) lombard-lbtc institutional btcfi / liquid staked bitcoin lbtc 0x055e84e7fe8955e2781010b866f10ef6e1e77e59 0xc3ecfe771564e3f28cfb7a9b203f4d10279338ed",
@@ -3098,18 +3138,18 @@
    "easAttested": true,
    "factors": [
     {
-     "evidence": "m0-ttg-registrar-governors-match-docs-s17: …EA4A1d44534e1b9227e19CAE6358b80FE; EIP-1967 implementation slot = 0. MinterGateway.ttgRegistrar() re…",
+     "evidence": "m0-ttg-registrar-governors-match-docs-s17: EIP-1967 implementation slot = 0. MinterGateway.ttgRegistrar() returns the same Registrar.",
      "key": "upgrade",
      "label": "Upgradeability",
      "state": "n",
-     "value": "Upgradeable; the gating delay is not in the published records"
+     "value": "Upgradeable; the delay gating the upgrade path is not in the published records"
     },
     {
      "evidence": null,
      "key": "timelock",
      "label": "Timelock floor",
      "state": "n",
-     "value": "No enforced delay in the published records"
+     "value": "No enforced admin delay in the published records"
     },
     {
      "evidence": null,
@@ -3155,6 +3195,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 2,
    "rosetteAria": "M0 Protocol ($M) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
    "search": "m0 protocol ($m) m0-protocol-m stablecoin infrastructure m m0 mtoken 0x119fbeedd4f4f4298fb59b720d5654442b81ae2c 0x866a2bf4e572cbcf37d5071a7a58503bfb36be1b",
@@ -3184,7 +3225,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "g",
-     "value": "3d minimum observed delay"
+     "value": "3d minimum enforced delay across control surfaces"
     },
     {
      "evidence": "mantle-lsp-meth-upgrade-timelock: …(3 days) and PROPOSER_ROLE held by 6-of-14 Security Council Safe (0x4e59e778a…",
@@ -3230,6 +3271,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "Mantle Liquid Staking (mETH / cmETH) control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
    "search": "mantle liquid staking (meth / cmeth) mantle-liquid-staking-meth-cmeth liquid staking & restaking meth cmeth 0xc26016f1166be7b6c5611aab104122e0f6c2ace2",
@@ -3259,7 +3301,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "n",
-     "value": "No enforced delay in the published records"
+     "value": "No enforced admin delay in the published records"
     },
     {
      "evidence": "maple-v2-syrup-ppm-admin: EIP-1967 admin slot holds 4-of-7 Maple DAO Safe (0xd6d4Bcde6c816F17…",
@@ -3305,6 +3347,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "Maple Finance V2 / Syrup control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
    "search": "maple finance v2 / syrup maple-finance-v2-syrup institutional credit / rwa syrup syrupusdc syrupusdt 0xbe10adce8b6e3e02db384e7fada5395dd113d8b3",
@@ -3335,7 +3378,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "a",
-     "value": "0s minimum observed delay"
+     "value": "0s minimum enforced delay across control surfaces"
     },
     {
      "evidence": "mellow-lido-earn-curator-quorum: …old() = 3, getOwners().length = 5 (3-of-5 Gnosis Safe); DEFAULT_ADMIN_ROLE (…",
@@ -3381,6 +3424,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "Mellow Protocol / Lido Earn control-plane rosette: Upgradeability not determined; Timelock floor weak; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
    "search": "mellow protocol / lido earn mellow-protocol-lido-earn liquid restaking / curated vaults mellow lido earn 0xe5abcc40196174ae0d12153de286f0d8e401769d",
@@ -3410,7 +3454,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "g",
-     "value": "3d minimum observed delay"
+     "value": "3d minimum enforced delay across control surfaces"
     },
     {
      "evidence": "metamorpho-re7-weth-guardian-parity: …E6d7007FdEcb08A2ee1434Ee677a04433 (2-of-4 Safe), timelock() = 259200s (3d),…",
@@ -3420,11 +3464,11 @@
      "value": "Lowest controlling quorum: 2-of-4"
     },
     {
-     "evidence": "metamorpho-re7-weth-guardian-parity: …Safe), timelock() = 259200s (3d), guardian() = 0x0000000000000000000000000000…",
+     "evidence": "metamorpho-re7-weth-guardian-parity: Re7 WETH owner() = 0xE86399fE6d7007FdEcb08A2ee1434Ee677a04433 (2-of-4 Safe), timelock() = 259200s (3d), guardian() = 0x0000000000000000000000000000000000000000…",
      "key": "emergency",
      "label": "Emergency / freeze scope",
      "state": "g",
-     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+     "value": "Pause / freeze authority scoped behind a multi-signer controller (2-of-4)"
     },
     {
      "evidence": null,
@@ -3456,6 +3500,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "MetaMorpho (Re7 WETH vs. Re7 USDT) control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum moderate; Emergency / freeze scope strong; Docs-vs-chain parity weak",
    "search": "metamorpho (re7 weth vs. re7 usdt) metamorpho-re7-weth-vs-re7-usdt curated lending vaults re7weth re7usdt metamorpho 0x78fc2c2ed1a4cdb5402365934ae5648adad094d0",
@@ -3487,7 +3532,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "b",
-     "value": "1d minimum observed delay"
+     "value": "1d minimum enforced delay across control surfaces"
     },
     {
      "evidence": "moonwell-pause-guardian-2of4-safe-s18: …c8936a0F13EF26C).pauseGuardian() = 2-of-4 Safe 0x5B710010586C1b728B047c3E424…",
@@ -3497,11 +3542,11 @@
      "value": "Lowest controlling quorum: 2-of-4"
     },
     {
-     "evidence": "moonwell-pause-guardian-2of4-safe-s18: …380beE3312B33c4353c8936a0F13EF26C).pauseGuardian() = 2-of-4 Safe 0x5B710010…",
+     "evidence": "moonwell-pause-guardian-2of4-safe-s18: Unitroller (0xfBb21d0380beE3312B33c4353c8936a0F13EF26C).pauseGuardian() = 2-of-4 Safe 0x5B710010586C1b728B047c3E42473c700eeA4026 (v1.4.1)",
      "key": "emergency",
      "label": "Emergency / freeze scope",
      "state": "g",
-     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+     "value": "Pause / freeze authority scoped behind a multi-signer controller (2-of-4)"
     },
     {
      "evidence": null,
@@ -3533,6 +3578,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 2,
    "rosetteAria": "Moonwell Lending (Base) control-plane rosette: Upgradeability not determined; Timelock floor moderate; Signer quorum moderate; Emergency / freeze scope strong; Docs-vs-chain parity weak",
    "search": "moonwell lending (base) moonwell-lending-base base lending & borrowing well 0xfbb21d0380bee3312b33c4353c8936a0f13ef26c",
@@ -3562,7 +3608,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "n",
-     "value": "No enforced delay in the published records"
+     "value": "No enforced admin delay in the published records"
     },
     {
      "evidence": null,
@@ -3608,6 +3654,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "Morpho Blue Core control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
    "search": "morpho blue core morpho-blue-core base lending infrastructure morpho 0xbbbbbbbbbb9cc5e90e3b3af64bdaf62c37eeffcb",
@@ -3635,7 +3682,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "b",
-     "value": "1d minimum observed delay"
+     "value": "1d minimum enforced delay across control surfaces"
     },
     {
      "evidence": "nexus-mutual-governor-24h-timelock-s18: …5C8702c9e96Ea61Fe4088C2e22eD4418e, 3-of-5 Safe owned by the 5 seat holders)…",
@@ -3645,11 +3692,11 @@
      "value": "Lowest controlling quorum: 3-of-5"
     },
     {
-     "evidence": "nexus-mutual-governor-24h-timelock-s18: …d upgradeContract is onlyGovernor. Pause: getPauseConfig() = 0; isEmergency…",
+     "evidence": "nexus-mutual-governor-24h-timelock-s18: isEmergencyAdmin() is true for 6 EOAs (the 5 Advisory Board seat holders and 0x6fe2c2643cb5064951fb7dd87fbce4777fb146e3), and a pause needs one admin to propos…",
      "key": "emergency",
      "label": "Emergency / freeze scope",
      "state": "g",
-     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+     "value": "Pause / freeze authority scoped behind a multi-signer controller (3-of-5)"
     },
     {
      "evidence": null,
@@ -3681,6 +3728,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "Nexus Mutual control-plane rosette: Upgradeability not determined; Timelock floor moderate; Signer quorum strong; Emergency / freeze scope strong; Docs-vs-chain parity strong",
    "search": "nexus mutual nexus-mutual discretionary mutual / cover nxm wnxm nexus mutual 0xcafea6063d4ec6b045d9676e58897c1f0882ca32",
@@ -3710,7 +3758,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "b",
-     "value": "1d minimum observed delay"
+     "value": "1d minimum enforced delay across control surfaces"
     },
     {
      "evidence": null,
@@ -3758,6 +3806,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "Ondo Finance (OUSG & Flux Finance) control-plane rosette: Upgradeability not determined; Timelock floor moderate; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
    "search": "ondo finance (ousg & flux finance) ondo-finance-ousg-flux-finance institutional rwa / tokenized treasuries ousg ondo flux 0x98db502215da1ad9f626d4a0090a8a2f4971003c",
@@ -3777,18 +3826,18 @@
    "easAttested": false,
    "factors": [
     {
-     "evidence": "origin-superoeth-base-control-plane: …21,449 (2,402 bytes runtime code). EIP-1967 implementation slot resolves to 0xCcd483cE093682D7D9a41e645EEb7…",
+     "evidence": "origin-superoeth-base-control-plane: SuperOETHb_VaultProxy (0xDBFeFD2e8460a6Ee4955A68582F85708BAEA60A3) verified on Base Mainnet at canonical block #57,421,449 (2,402 bytes runtime code). EIP-1967…",
      "key": "upgrade",
      "label": "Upgradeability",
      "state": "g",
-     "value": "Upgradeable behind a ≥48h delay"
+     "value": "Upgradeable behind a ≥48h delay (2d)"
     },
     {
-     "evidence": "origin-superoeth-base-control-plane: observed_delay_seconds = 172800",
+     "evidence": "origin-superoeth-base-control-plane: SuperOETHb_VaultProxy (0xDBFeFD2e8460a6Ee4955A68582F85708BAEA60A3) verified on Base Mainnet at canonical block #57,421,449 (2,402 bytes runtime code). EIP-1967…",
      "key": "timelock",
      "label": "Timelock floor",
      "state": "g",
-     "value": "2d minimum observed delay"
+     "value": "2d minimum enforced delay across control surfaces"
     },
     {
      "evidence": null,
@@ -3839,6 +3888,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "Origin Protocol (SuperOETHb Base) control-plane rosette: Upgradeability strong; Timelock floor strong; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
    "search": "origin protocol (superoethb base) origin-superoeth-base supercharged liquid staking (base) superoethb oeth ogn 0xdbfefd2e8460a6ee4955a68582f85708baea60a3",
@@ -3857,18 +3907,18 @@
    "easAttested": true,
    "factors": [
     {
-     "evidence": "paypal-usd-pyusd-proxy-admin-upgrade-key-s23: …e23A0e8: admin slot keccak256('org.zeppelinos.proxy.admin') = 0xC94BcF6e1d8B3558E3B62e743630…",
+     "evidence": "paypal-usd-pyusd-proxy-admin-upgrade-key-s23: PYUSD 0x6c3ea9036406852006290770BEdFcAbA0e23A0e8: admin slot keccak256('org.zeppelinos.proxy.admin') = 0xC94BcF6e1d8B3558E3B62e743630D50497E3851C (no contract…",
      "key": "upgrade",
      "label": "Upgradeability",
      "state": "a",
-     "value": "Upgradeable with no enforced delay"
+     "value": "Upgradeable with no enforced delay: no timelock in front of upgrades (2 other upgrade paths not determined)"
     },
     {
-     "evidence": null,
+     "evidence": "paypal-usd-pyusd-proxy-admin-upgrade-key-s23: PYUSD 0x6c3ea9036406852006290770BEdFcAbA0e23A0e8: admin slot keccak256('org.zeppelinos.proxy.admin') = 0xC94BcF6e1d8B3558E3B62e743630D50497E3851C (no contract…",
      "key": "timelock",
      "label": "Timelock floor",
-     "state": "n",
-     "value": "No enforced delay in the published records"
+     "state": "a",
+     "value": "0s minimum enforced delay across control surfaces"
     },
     {
      "evidence": "paypal-usd-pyusd-pause-asset-protection-single-owner-role-s23: …f4f97De7AD0f000B724Fb77fE5ffc024B (no contract code), holding PAUSE_ROLE, ASSET_PROTEC…",
@@ -3878,11 +3928,11 @@
      "value": "Lowest controlling quorum: a single key"
     },
     {
-     "evidence": "paypal-usd-pyusd-pause-asset-protection-single-owner-role-s23: …fc024B (no contract code), holding PAUSE_ROLE, ASSET_PROTECTION_ROLE and DE…",
+     "evidence": "paypal-usd-pyusd-pause-asset-protection-single-owner-role-s23: PYUSD 0x6c3ea9036406852006290770BEdFcAbA0e23A0e8: defaultAdmin() = owner() = 0x3Af3e85f4f97De7AD0f000B724Fb77fE5ffc024B (no contract code), holding PAUSE_ROLE,…",
      "key": "emergency",
      "label": "Emergency / freeze scope",
      "state": "a",
-     "value": "Pause / freeze authority with a single key or 1-of-N"
+     "value": "Pause / freeze authority held by a single key"
     },
     {
      "evidence": null,
@@ -3914,8 +3964,9 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 3,
-   "rosetteAria": "PayPal USD (PYUSD) control-plane rosette: Upgradeability weak; Timelock floor not determined; Signer quorum weak; Emergency / freeze scope weak; Docs-vs-chain parity strong",
+   "rosetteAria": "PayPal USD (PYUSD) control-plane rosette: Upgradeability weak; Timelock floor weak; Signer quorum weak; Emergency / freeze scope weak; Docs-vs-chain parity strong",
    "search": "paypal usd (pyusd) paypal-usd-pyusd fiat-backed stablecoin (pyusd) pyusd 0x6c3ea9036406852006290770bedfcaba0e23a0e8",
    "slug": "paypal-usd-pyusd",
    "url": "https://pacta.wtf/protocols/paypal-usd-pyusd/"
@@ -3932,18 +3983,18 @@
    "easAttested": true,
    "factors": [
     {
-     "evidence": "pendle-finance-v2-reserve-fee-80-lp-20-s19: …94EB504FB32456ee1); EIP-1967 admin ProxyAdmin 0xA28c08f165116587D4F3E708743B4dEe…",
+     "evidence": "pendle-finance-v2-reserve-fee-80-lp-20-s19: EIP-1967 admin ProxyAdmin 0xA28c08f165116587D4F3E708743B4dEe155c5E64 (owner() = the Safe).",
      "key": "upgrade",
      "label": "Upgradeability",
-     "state": "n",
-     "value": "Upgradeable; the gating delay is not in the published records"
+     "state": "a",
+     "value": "Upgradeable with no enforced delay: upgraded by a Safe directly (a Safe has no delay of its own)"
     },
     {
-     "evidence": null,
+     "evidence": "pendle-finance-v2-reserve-fee-80-lp-20-s19: EIP-1967 admin ProxyAdmin 0xA28c08f165116587D4F3E708743B4dEe155c5E64 (owner() = the Safe).",
      "key": "timelock",
      "label": "Timelock floor",
-     "state": "n",
-     "value": "No enforced delay in the published records"
+     "state": "a",
+     "value": "0s minimum enforced delay across control surfaces"
     },
     {
      "evidence": "pendle-finance-v2-reserve-fee-80-lp-20-s19: …0A97C2fE2f31e (DEFAULT_ADMIN_ROLE: 3-of-5 Safe 0x8119EC16F0573B7dAc7C0CB94EB…",
@@ -3989,8 +4040,9 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 2,
-   "rosetteAria": "Pendle Finance V2 control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "rosetteAria": "Pendle Finance V2 control-plane rosette: Upgradeability weak; Timelock floor weak; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
    "search": "pendle finance v2 pendle-finance-v2 yield tokenization & amm pendle vependle 0x3e6eba46abc5ab18ed95f6667d8b2fd4020e4637 0x6d247b1c044fa1e22e6b04fa9f71baf99eb29a9f",
    "slug": "pendle-finance-v2",
    "url": "https://pacta.wtf/protocols/pendle-finance-v2/"
@@ -4007,18 +4059,18 @@
    "easAttested": true,
    "factors": [
     {
-     "evidence": "puffer-7d-timelock-delay-s20: …a39a81a089C06451EBAa4306a72, where upgradeToAndCall maps to role 0, held by the…",
+     "evidence": "puffer-7d-timelock-delay-s20: ACCESS_MANAGER() = 0x8c1686069474410E6243425f4a10177a94EBEE11, the authority() of PufferVault 0xD9A442856C234a39a81a089C06451EBAa4306a72, where upgradeToAndCal…",
      "key": "upgrade",
      "label": "Upgradeability",
      "state": "g",
-     "value": "Upgradeable behind a ≥48h delay"
+     "value": "Upgradeable behind a ≥48h delay (168h)"
     },
     {
-     "evidence": "puffer-7d-timelock-delay-s20: observed_delay_seconds = 604801",
+     "evidence": "puffer-7d-timelock-delay-s20: ACCESS_MANAGER() = 0x8c1686069474410E6243425f4a10177a94EBEE11, the authority() of PufferVault 0xD9A442856C234a39a81a089C06451EBAa4306a72, where upgradeToAndCal…",
      "key": "timelock",
      "label": "Timelock floor",
      "state": "g",
-     "value": "168h minimum observed delay"
+     "value": "168h minimum enforced delay across control surfaces"
     },
     {
      "evidence": "controller fact: Safe getThreshold()",
@@ -4064,6 +4116,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 3,
    "rosetteAria": "Puffer Finance (pufETH) control-plane rosette: Upgradeability strong; Timelock floor strong; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
    "search": "puffer finance (pufeth) puffer-finance-pufeth native liquid restaking pufeth puffer 0x3c28b7c7ba1a1f55c9ce66b263b33b204f2126ea 0x446d4d6b26815f9ba78b5d454e303315d586cb2a 0xc0896ab1a8cae8c2c1d27d011eb955cca955580d",
@@ -4093,7 +4146,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "g",
-     "value": "2d minimum observed delay"
+     "value": "2d minimum enforced delay across control surfaces"
     },
     {
      "evidence": "re-safe-sole-timelock-proposer-s21: …lock is its own admin; the Safe is 3-of-5 (v1.4.1, no modules).",
@@ -4142,6 +4195,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 3,
    "rosetteAria": "Re Protocol (reUSD / reUSDe) control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
    "search": "re protocol (reusd / reusde) re reinsurance-backed stablecoin reusd reusde re 0x4691c475be804fa85f91c2d6d0adf03114de3093 0x5086bf358635b81d8c47c66d1c8b9e567db70c72 0x69ddea332723cf5407151aaf68b9b076557fca93",
@@ -4171,7 +4225,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "n",
-     "value": "No enforced delay in the published records"
+     "value": "No enforced admin delay in the published records"
     },
     {
      "evidence": "renzo-ezeth-deposit-queue-fee: …fD54Eceb5b9a51dA2eC329D6D4B68A) is 3-of-5 Gnosis Safe; ezETH (0xbf5495Efe5DB…",
@@ -4217,6 +4271,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "Renzo Protocol (ezETH) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
    "search": "renzo protocol (ezeth) renzo-protocol-ezeth liquid restaking ezeth rez 0xf2f305d14dcd8aaef887e0428b3c9534795d0d60",
@@ -4244,7 +4299,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "n",
-     "value": "No enforced delay in the published records"
+     "value": "No enforced admin delay in the published records"
     },
     {
      "evidence": null,
@@ -4290,6 +4345,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 3,
    "rosetteAria": "Reserve Protocol (eUSD RToken) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
    "search": "reserve protocol (eusd rtoken) reserve-protocol-rtoken asset-backed rtoken infrastructure eusd rsr 0x18ba6e33ceb80f077deb9260c9111e62f21ae7b8 0x7697ae4def3c3cd52493ba3a6f57fc6d8c59108a",
@@ -4319,7 +4375,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "b",
-     "value": "1d minimum observed delay"
+     "value": "1d minimum enforced delay across control surfaces"
     },
     {
      "evidence": "resolv-usr-default-admin-delay-and-safe: …D6c05F4DECf3e110) defaultAdmin() = 4-of-6 Core Safe (0xD6889F307BE1b83Bb355d…",
@@ -4329,11 +4385,11 @@
      "value": "Lowest controlling quorum: 4-of-6"
     },
     {
-     "evidence": "resolv-usr-default-admin-delay-and-safe: …EFB31f5fA2843Eeb4B331eaFA0) return paused() = true; USR totalSupply = 6,085…",
+     "evidence": "resolv-usr-default-admin-delay-and-safe: sampled UsrExternalRequestsManager (0xa27a69Ae180e202fDe5D38189a3F24Fe24E55861) and RlpExternalRequestsManager (0xc7AB90c2Ea9271EFB31f5fA2843Eeb4B331eaFA0) ret…",
      "key": "emergency",
      "label": "Emergency / freeze scope",
-     "state": "g",
-     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+     "state": "n",
+     "value": "Pause / freeze authority present; its holder is not determined"
     },
     {
      "evidence": null,
@@ -4365,8 +4421,9 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
-   "rosetteAria": "Resolv (USR / RLP) control-plane rosette: Upgradeability not determined; Timelock floor moderate; Signer quorum strong; Emergency / freeze scope strong; Docs-vs-chain parity strong",
+   "rosetteAria": "Resolv (USR / RLP) control-plane rosette: Upgradeability not determined; Timelock floor moderate; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
    "search": "resolv (usr / rlp) resolv-usr-rlp delta-neutral synthetic dollar usr rlp wstusr resolv 0x66a1e37c9b0eaddca17d3662d6c05f4decf3e110",
    "slug": "resolv-usr-rlp",
    "url": "https://pacta.wtf/protocols/resolv-usr-rlp/"
@@ -4384,18 +4441,18 @@
    "easAttested": true,
    "factors": [
     {
-     "evidence": "resupply-guardian-role-main-multisig-s22: …044F95655c11fda4cD37F70A94d7e0a7d; ERC-1967 proxy with implementation GuardianUpgra…",
+     "evidence": "resupply-guardian-role-main-multisig-s22: ERC-1967 proxy with implementation GuardianUpgradeable 0x74C85620F1459862834A947dB9441911BCEBF066 (Sourcify match). The Treasury Manager operator proxy 0x4CF97…",
      "key": "upgrade",
      "label": "Upgradeability",
-     "state": "b",
-     "value": "Upgradeable behind a 1h–47h delay"
+     "state": "n",
+     "value": "Upgradeable; the delay gating the upgrade path is not in the published records"
     },
     {
      "evidence": "resupply-core-voter-execution-delay-1d-s22: observed_delay_seconds = 86400",
      "key": "timelock",
      "label": "Timelock floor",
      "state": "b",
-     "value": "1d minimum observed delay"
+     "value": "1d minimum enforced delay across control surfaces"
     },
     {
      "evidence": "resupply-main-multisig-3of5-s22: …09f2121622271e7dd0FD470264e076af6: 3-of-5 (getThreshold() = 3, getOwners() =…",
@@ -4405,11 +4462,11 @@
      "value": "Lowest controlling quorum: 3-of-5"
     },
     {
-     "evidence": "resupply-guardian-role-main-multisig-s22: Guardian operator proxy 0xA4745e0B1F40ab3DC…",
+     "evidence": "resupply-guardian-role-main-multisig-s22: Guardian operator proxy 0xA4745e0B1F40ab3DCFD98F381835De591a8974E3: guardian() = Main Multisig 0xFE11a5009f2121622271e7dd0FD470264e076af6",
      "key": "emergency",
      "label": "Emergency / freeze scope",
      "state": "g",
-     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+     "value": "Pause / freeze authority scoped behind a multi-signer controller (3-of-N Safe)"
     },
     {
      "evidence": null,
@@ -4441,8 +4498,9 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 4,
-   "rosetteAria": "Resupply control-plane rosette: Upgradeability moderate; Timelock floor moderate; Signer quorum strong; Emergency / freeze scope strong; Docs-vs-chain parity weak",
+   "rosetteAria": "Resupply control-plane rosette: Upgradeability not determined; Timelock floor moderate; Signer quorum strong; Emergency / freeze scope strong; Docs-vs-chain parity weak",
    "search": "resupply resupply cdp stablecoin (reusd) & lending markets rsup sreusd 0x10101010e0c3171d894b71b3400668af311e7d94 0xa4745e0b1f40ab3dcfd98f381835de591a8974e3 0xfe11a5009f2121622271e7dd0fd470264e076af6 0xc07e000044f95655c11fda4cd37f70a94d7e0a7d",
    "slug": "resupply",
    "url": "https://pacta.wtf/protocols/resupply/"
@@ -4470,7 +4528,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "g",
-     "value": "7d minimum observed delay"
+     "value": "7d minimum enforced delay across control surfaces"
     },
     {
      "evidence": "rocket-pool-reth-security-council-leave-time-28d-s19: …34f15dE064b56afEdF7B0F59C15bB20FE (2-of-3).",
@@ -4516,6 +4574,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 3,
    "rosetteAria": "Rocket Pool (rETH) control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum moderate; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
    "search": "rocket pool (reth) rocket-pool-reth decentralized liquid staking reth rpl 0xc9d771aaf504f33bb3c8a7e67ea9f1881f837cff 0xda1ab39e62e0a5297af44c7064e501b0613f0d01",
@@ -4543,7 +4602,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "n",
-     "value": "No enforced delay in the published records"
+     "value": "No enforced admin delay in the published records"
     },
     {
      "evidence": null,
@@ -4589,6 +4648,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "Safe Smart Account (v1.4.1 Singleton) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
    "search": "safe smart account (v1.4.1 singleton) safe-singleton-core smart account & multisig custody core safe 0x41675c099f32341bf84bfc5382af534df5c7461a",
@@ -4608,18 +4668,18 @@
    "easAttested": false,
    "factors": [
     {
-     "evidence": "seamless-protocol-base-control-plane: …ontract). No single-key Ownable or ProxyAdmin getter exposed on the primary entr…",
+     "evidence": "seamless-protocol-base-control-plane: SeamlessPoolAddressesProvider (0x0E02EB705be325407707662C6f6d3466E939f3a0) verified on Base Mainnet at canonical block #57,421,449 (9,779 bytes runtime code).…",
      "key": "upgrade",
      "label": "Upgradeability",
      "state": "n",
-     "value": "Upgradeable; the gating delay is not in the published records"
+     "value": "Upgradeable; the delay gating the upgrade path is not in the published records"
     },
     {
      "evidence": null,
      "key": "timelock",
      "label": "Timelock floor",
      "state": "n",
-     "value": "No enforced delay in the published records"
+     "value": "No enforced admin delay in the published records"
     },
     {
      "evidence": null,
@@ -4665,6 +4725,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "Seamless Protocol (Base) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
    "search": "seamless protocol (base) seamless-protocol-base base lending & integrated liquidity seam 0x0e02eb705be325407707662c6f6d3466e939f3a0",
@@ -4681,18 +4742,18 @@
    "easAttested": true,
    "factors": [
     {
-     "evidence": "solv-solvbtc-upgrade-beacon-3d-timelock-s17: …utating path (setImplementation -> upgradeTo, transferBeaconOwnership, importBe…",
+     "evidence": "solv-solvbtc-upgrade-beacon-3d-timelock-s17: governor() = the 3-of-5 Safe 0x0c2Bc4d2698820e12E6eBe863E7b9E2650CD5b7D (pendingGovernor() = 0), which holds the timelock's PROPOSER_ROLE, EXECUTOR_ROLE and CA…",
      "key": "upgrade",
      "label": "Upgradeability",
      "state": "g",
-     "value": "Upgradeable behind a ≥48h delay"
+     "value": "Upgradeable behind a ≥48h delay (3d)"
     },
     {
      "evidence": "controller fact: getMinDelay() = 259200s",
      "key": "timelock",
      "label": "Timelock floor",
      "state": "g",
-     "value": "3d minimum observed delay"
+     "value": "3d minimum enforced delay across control surfaces"
     },
     {
      "evidence": "solv-solvbtc-owner-3of5-safe-s17: …742a1832B028F0456652F97).owner() = 3-of-5 Safe 0x0c2Bc4d2698820e12E6eBe863E7…",
@@ -4738,6 +4799,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 2,
    "rosetteAria": "Solv Protocol (SolvBTC) control-plane rosette: Upgradeability strong; Timelock floor strong; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
    "search": "solv protocol (solvbtc) solv-protocol-solvbtc bitcoin reserve / wrapped btc solvbtc solv 0x7a56e1c57c7475ccf742a1832b028f0456652f97 0xfd4b809ad88db6ca9dbb295a4b9d23bb0093f497",
@@ -4767,7 +4829,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "g",
-     "value": "2d minimum observed delay"
+     "value": "2d minimum enforced delay across control surfaces"
     },
     {
      "evidence": null,
@@ -4813,6 +4875,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "Spark / Sky control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
    "search": "spark / sky spark-sky decentralized credit & liquidity usds susds dai sky mkr spk 0xbe286431454714f511008713973d3b053a2d38f3",
@@ -4831,18 +4894,18 @@
    "easAttested": true,
    "factors": [
     {
-     "evidence": "ssv-network-dao-multisig-owns-network-s21: …6e4 has the same owner(); both are UUPS proxies (empty EIP-1967 admin slot…",
+     "evidence": "ssv-network-dao-multisig-owns-network-s21: both are UUPS proxies (empty EIP-1967 admin slot).",
      "key": "upgrade",
      "label": "Upgradeability",
      "state": "n",
-     "value": "Upgradeable; the gating delay is not in the published records"
+     "value": "Upgradeable; the delay gating the upgrade path is not in the published records"
     },
     {
      "evidence": null,
      "key": "timelock",
      "label": "Timelock floor",
      "state": "n",
-     "value": "No enforced delay in the published records"
+     "value": "No enforced admin delay in the published records"
     },
     {
      "evidence": "ssv-network-dao-multisig-owns-network-s21: …4fdb9bBac63E3AdaE0Bbde512B2E6b6, a 5-of-9 Safe (v1.3.0, no modules); pending…",
@@ -4888,6 +4951,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 2,
    "rosetteAria": "SSV Network control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
    "search": "ssv network ssv-network distributed validator infrastructure ssv 0xdd9bc35ae942ef0cfa76930954a156b3ff30a4e1 0xafe830b6ee262ba11cce5f32fdcd760ffe6a66e4",
@@ -4906,18 +4970,18 @@
    "easAttested": true,
    "factors": [
     {
-     "evidence": "stader-ethx-manager-safe-and-timelock: …1Ce002FBF2058D22F30f95D405200A15b) EIP-1967 admin slot = ProxyAdmin (0x67B12264Ca3e0037Fc7E…",
+     "evidence": "stader-ethx-manager-safe-and-timelock: ETHx (0xA35b1B31Ce002FBF2058D22F30f95D405200A15b) EIP-1967 admin slot = ProxyAdmin (0x67B12264Ca3e0037Fc7E22F2457b42643a04C86e), owner() = TimelockController (…",
      "key": "upgrade",
      "label": "Upgradeability",
      "state": "g",
-     "value": "Upgradeable behind a ≥48h delay"
+     "value": "Upgradeable behind a ≥48h delay (7d)"
     },
     {
      "evidence": "controller fact: getMinDelay() = 604800s",
      "key": "timelock",
      "label": "Timelock floor",
      "state": "g",
-     "value": "7d minimum observed delay"
+     "value": "7d minimum enforced delay across control surfaces"
     },
     {
      "evidence": "stader-ethx-manager-safe-and-timelock: …old() = 3, getOwners().length = 6 (3-of-6 Gnosis Safe); ETHx (0xA35b1B31Ce00…",
@@ -4963,6 +5027,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "Stader Labs (ETHx) control-plane rosette: Upgradeability strong; Timelock floor strong; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
    "search": "stader labs (ethx) stader-labs-ethx liquid staking ethx sd 0xaafb31780e4b9c95bc920e388f4925a874cd07af",
@@ -4992,7 +5057,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "g",
-     "value": "5d minimum observed delay"
+     "value": "5d minimum enforced delay across control surfaces"
     },
     {
      "evidence": "stake-dao-timelock-executor-permissioned-s22: …860CE5C0202976Db056b5e3Cc4f9CC765 (3-of-5, Safe v1.3.0, 3 modules enabled) h…",
@@ -5041,6 +5106,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 4,
    "rosetteAria": "Stake DAO control-plane rosette: Upgradeability strong; Timelock floor strong; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
    "search": "stake dao stake-dao liquid lockers & yield strategies sdt vesdt 0x2d8bce1fae00a959354acd9ebf9174337a64d4fb 0xf930ebbd05ef8b25b1797b9b2109ddc9b0d43063 0xb27afc7844988948fbd6210aef4e1362bc2d8e6a",
@@ -5070,7 +5136,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "g",
-     "value": "2d minimum observed delay"
+     "value": "2d minimum enforced delay across control surfaces"
     },
     {
      "evidence": "controller fact: Safe getThreshold()",
@@ -5116,6 +5182,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 3,
    "rosetteAria": "stake.link control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
    "search": "stake.link stake-link liquid staking (link) stlink sdl 0x4852e48215a4785ee99b640caced5378cc39d2a4 0xb351ec0feaf4b99fdfd36b484d9ec90d0422493d 0xb72d8f5213b3e52faf13aa074b03c4788e78349f",
@@ -5145,7 +5212,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "n",
-     "value": "No enforced delay in the published records"
+     "value": "No enforced admin delay in the published records"
     },
     {
      "evidence": "stakewise-v3-oseth-oracle-quorum-and-ltv: …) = 6, validatorsMinOracles() = 6 (6-of-11 oracle signature quorum); osETH (0…",
@@ -5191,6 +5258,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "StakeWise V3 (osETH) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
    "search": "stakewise v3 (oseth) stakewise-v3-oseth liquid staking infrastructure oseth swise 0x6b5815467da09daa7dc83db21c9239d98bb487b5",
@@ -5218,7 +5286,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "n",
-     "value": "No enforced delay in the published records"
+     "value": "No enforced admin delay in the published records"
     },
     {
      "evidence": "stargate-v2-onesig-5of7-owner-planner-fees-s18: …D04c4F243C0Fd04A5510D663CB88b5 (an EOA) = TokenMessaging.planner() = FeeL…",
@@ -5264,6 +5332,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "Stargate V2 control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum weak; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
    "search": "stargate v2 stargate-v2 cross-chain liquidity / bridge stg stargate 0xc026395860db2d07ee33e05fe50ed7bd583189c7",
@@ -5294,7 +5363,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "g",
-     "value": "7d minimum observed delay"
+     "value": "7d minimum enforced delay across control surfaces"
     },
     {
      "evidence": "steakhouse-usdc-base-timelock-7d-s17: …0651E6a05CD2dE69e624B94C04eAf5 has no contract code (eth_getCode = 0x on Base and on E…",
@@ -5304,11 +5373,11 @@
      "value": "Lowest controlling quorum: a single key"
     },
     {
-     "evidence": "steakhouse-usdc-base-timelock-7d-s17: …, not compared with documentation: guardian() = 0x9e0FdDDa790651E6a05CD2dE69e6…",
+     "evidence": "steakhouse-usdc-base-timelock-7d-s17: totalAssets() = 102,512,832.83 USDC. Context, not compared with documentation: guardian() = 0x9e0FdDDa790651E6a05CD2dE69e624B94C04eAf5 has no contract code (et…",
      "key": "emergency",
      "label": "Emergency / freeze scope",
      "state": "a",
-     "value": "Pause / freeze authority with a single key or 1-of-N"
+     "value": "Pause / freeze authority held by a single key"
     },
     {
      "evidence": null,
@@ -5340,6 +5409,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "Steakhouse USDC MetaMorpho (Base) control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum weak; Emergency / freeze scope weak; Docs-vs-chain parity strong",
    "search": "steakhouse usdc metamorpho (base) steakhouse-usdc-metamorpho-base curated lending vault (metamorpho) steakusdc steakhouse metamorpho 0xbeef010f9cb27031ad51e3333f9af9c6b1228183",
@@ -5370,7 +5440,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "n",
-     "value": "No enforced delay in the published records"
+     "value": "No enforced admin delay in the published records"
     },
     {
      "evidence": null,
@@ -5416,6 +5486,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "Superform Core v2 (Base) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
    "search": "superform core v2 (base) superform-v2-base omnichain erc-7579 vault & yield infrastructure superform supervaults 0xb5396ef2bf8ca360ceb4166b77afb2bed20e74d4",
@@ -5445,7 +5516,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "n",
-     "value": "No enforced delay in the published records"
+     "value": "No enforced admin delay in the published records"
     },
     {
      "evidence": null,
@@ -5493,6 +5564,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "Superstate (USTB / USCC) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
    "search": "superstate (ustb / uscc) superstate-ustb-uscc institutional rwa / tokenized funds ustb uscc 0x43415eb6ff9db7e26a15b704e7a3edce97d31c4e",
@@ -5511,18 +5583,18 @@
    "easAttested": true,
    "factors": [
     {
-     "evidence": "swell-sweth-rsweth-timelock-and-reprice-bounds: …e82926178EaC7DEd78) EIP-1967 admin ProxyAdmin (0x25EAf579cA2255fAA5463c635eec286…",
+     "evidence": "swell-sweth-rsweth-timelock-and-reprice-bounds: swETH (0xf951E335afb289353dc249e82926178EaC7DEd78) EIP-1967 admin ProxyAdmin (0x25EAf579cA2255fAA5463c635eec28697b5b8846) and rswETH (0xFAe103DC9cf190eD7535076…",
      "key": "upgrade",
      "label": "Upgradeability",
      "state": "g",
-     "value": "Upgradeable behind a ≥48h delay"
+     "value": "Upgradeable behind a ≥48h delay (7d)"
     },
     {
      "evidence": "swell-sweth-rsweth-timelock-and-reprice-bounds: observed_delay_seconds = 604800",
      "key": "timelock",
      "label": "Timelock floor",
      "state": "g",
-     "value": "7d minimum observed delay"
+     "value": "7d minimum enforced delay across control surfaces"
     },
     {
      "evidence": "swell-sweth-rsweth-timelock-and-reprice-bounds: …delay() = 604800s / 7d, admin() = 4-of-7 Safe 0x20fDF47509C5eFC0e1101e3CE44…",
@@ -5568,6 +5640,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "Swell (swETH / rswETH) control-plane rosette: Upgradeability strong; Timelock floor strong; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
    "search": "swell (sweth / rsweth) swell-sweth-rsweth liquid staking & restaking sweth rsweth swell 0xba829003e6b5dd858fbed3945719939a6dc3073b",
@@ -5597,7 +5670,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "n",
-     "value": "No enforced delay in the published records"
+     "value": "No enforced admin delay in the published records"
     },
     {
      "evidence": "symbiotic-core-immutable-registries-and-safes: …0x00...00); VaultFactory.owner() = 2-of-3 Gnosis Safe (0x5721ce64Ee0D772Ce61…",
@@ -5643,6 +5716,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "Symbiotic Core control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum moderate; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
    "search": "symbiotic core symbiotic-core restaking infrastructure symbiotic 0xaeb6bdd95c502390db8f52c8909f703e9af6a346",
@@ -5670,7 +5744,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "n",
-     "value": "No enforced delay in the published records"
+     "value": "No enforced admin delay in the published records"
     },
     {
      "evidence": "synthetix-v3-core-control-plane: …etThreshold() and getOwners() as a 4-of-7 Safe multisig.",
@@ -5725,6 +5799,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "Synthetix V3 Core control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
    "search": "synthetix v3 core synthetix-v3-core derivatives liquidity infrastructure snx susd 0xffffffaeff0b96ea8e4f94b2253f31abdd875847",
@@ -5754,7 +5829,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "n",
-     "value": "No enforced delay in the published records"
+     "value": "No enforced admin delay in the published records"
     },
     {
      "evidence": "tether-usdt-token-live-blacklist-under-owner-s23: …e and deprecate are onlyOwner (the 3-of-6 MultiSigWallet 0xC6CDE7C39eB2f0F00…",
@@ -5764,11 +5839,11 @@
      "value": "Lowest controlling quorum: 3-of-6"
     },
     {
-     "evidence": "tether-usdt-token-live-blacklist-under-owner-s23: …58D2ee523a2206206994597C13D831ec7: deprecated() = false, upgradedAddress() = 0x…",
+     "evidence": "tether-usdt-token-live-blacklist-under-owner-s23: addBlackList / destroyBlackFunds, pause and deprecate are onlyOwner (the 3-of-6 MultiSigWallet 0xC6CDE7C39eB2f0F0095F41570af89eFC2C1Ea828; no timelock) (Sourci…",
      "key": "emergency",
      "label": "Emergency / freeze scope",
      "state": "g",
-     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+     "value": "Pause / freeze authority scoped behind a multi-signer controller (3-of-6)"
     },
     {
      "evidence": null,
@@ -5800,6 +5875,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 2,
    "rosetteAria": "Tether USDT control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope strong; Docs-vs-chain parity strong",
    "search": "tether usdt tether-usdt fiat-backed stablecoin (usdt) usdt 0xdac17f958d2ee523a2206206994597c13d831ec7",
@@ -5816,18 +5892,18 @@
    "easAttested": true,
    "factors": [
     {
-     "evidence": "threshold-tbtc-timelock-1d-walletregistry-op-0xb667: …led upgradeAndCall (0x9623609d) on ProxyAdmin (0x7Affa05f726D293eB1193807A916173…",
+     "evidence": "threshold-tbtc-timelock-1d-walletregistry-op-0xb667: getMinDelay() = 86400s (1d). Operation 0xb6671bbbedf818d7232a4006d4a85b21e3f3055d17244188f244c1da8263e0c7: isOperationPending() = true, getTimestamp() = 179460…",
      "key": "upgrade",
      "label": "Upgradeability",
      "state": "b",
-     "value": "Upgradeable behind a 1h–47h delay"
+     "value": "Upgradeable behind a 1h–47h delay (1d)"
     },
     {
      "evidence": "controller fact: getMinDelay() = 86400s",
      "key": "timelock",
      "label": "Timelock floor",
      "state": "b",
-     "value": "1d minimum observed delay"
+     "value": "1d minimum enforced delay across control surfaces"
     },
     {
      "evidence": null,
@@ -5873,6 +5949,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "Threshold Network (tBTC) control-plane rosette: Upgradeability moderate; Timelock floor moderate; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
    "search": "threshold network (tbtc) threshold-network-tbtc decentralized bitcoin bridge tbtc t 0x92f2d8b72a7f6a551be60b9aa4194248e9b4913d",
@@ -5902,7 +5979,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "g",
-     "value": "5d minimum observed delay"
+     "value": "5d minimum enforced delay across control surfaces"
     },
     {
      "evidence": "treehouse-tree-timelock-op-0x2f11: …able module whose blacklister is a 5-of-7 Safe; after execution that Safe ca…",
@@ -5912,11 +5989,11 @@
      "value": "Lowest controlling quorum: 5-of-7"
     },
     {
-     "evidence": "treehouse-tree-timelock-op-0x2f11: …26B0F887e6C1126EffA6, which adds a Blacklistable module whose blacklister is a…",
+     "evidence": "treehouse-tree-timelock-op-0x2f11: TREE (0x77146784315Ba81904d654466968e3a7c196d1f3).owner() = TimelockController. Operation 0x2f11dcc36860f09b9ef94585589ced1798cef603d133efecd017ce7e544c451f is…",
      "key": "emergency",
      "label": "Emergency / freeze scope",
      "state": "g",
-     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+     "value": "Pause / freeze authority scoped behind a multi-signer controller (5-of-7)"
     },
     {
      "evidence": null,
@@ -5948,6 +6025,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 2,
    "rosetteAria": "Treehouse (TREE / tETH) control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum strong; Emergency / freeze scope strong; Docs-vs-chain parity strong",
    "search": "treehouse (tree / teth) treehouse-tree-teth fixed income / lst teth tree 0x2225dabffc7f862c99477381e971e8b1fdab467e 0xd11c452fc99cf405034ee446803b6f6c1f6d5ed8",
@@ -5975,7 +6053,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "g",
-     "value": "2d minimum observed delay"
+     "value": "2d minimum enforced delay across control surfaces"
     },
     {
      "evidence": null,
@@ -6021,6 +6099,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 4,
    "rosetteAria": "Uniswap V3 & Governance Timelock control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
    "search": "uniswap v3 & governance timelock uniswap-governance-timelock blue-chip dex & governance uni 0x1f98431c8ad98523631ae4a59f267346ea31f984 0x1a9c8182c09f50c8318d769245bea52c32be35bc 0x408ed6354d4973f66138c91495f2f2fcbd8724c3",
@@ -6050,7 +6129,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "a",
-     "value": "1s minimum observed delay"
+     "value": "1s minimum enforced delay across control surfaces"
     },
     {
      "evidence": "usual-money-registry-access-delay: …C80D69b1f508560Bc7aeA5003db1f7FB7 (8-of-15 Gnosis Safe).",
@@ -6096,6 +6175,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "Usual Money (USD0 / USD0++) control-plane rosette: Upgradeability not determined; Timelock floor weak; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
    "search": "usual money (usd0 / usd0++) usual-money-usd0-usd0 rwa stablecoin usd0 usd0++ usual 0x0d374775e962c3608b8f0a4b8b10567df739bb56",
@@ -6125,7 +6205,7 @@
      "key": "timelock",
      "label": "Timelock floor",
      "state": "g",
-     "value": "7d minimum observed delay"
+     "value": "7d minimum enforced delay across control surfaces"
     },
     {
      "evidence": "yearn-v3-role-manager-timelock: …3d60FFE0661Cf7F1f31a7D658aC790ff7 (3-of-6 Safe).",
@@ -6171,6 +6251,7 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 1,
    "rosetteAria": "Yearn V3 control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
    "search": "yearn v3 yearn-v3 yield aggregation vaults yfi 0xb3bd6b2e61753c311efbcf0111f75d29706d9a41",
@@ -6190,18 +6271,18 @@
    "easAttested": true,
    "factors": [
     {
-     "evidence": "yo-protocol-vault-upgrades-behind-timelock-s22: …53490CB9Fa922847385D82fe25d0E9De7: EIP-1967 admin = ProxyAdmin 0xd460CF1f5D764acAD1c32…",
+     "evidence": "yo-protocol-vault-upgrades-behind-timelock-s22: yoETH 0x3A43AEC53490CB9Fa922847385D82fe25d0E9De7: EIP-1967 admin = ProxyAdmin 0xd460CF1f5D764acAD1c3276c549EE5f1BB671473, owner() = YO Timelock 0x38cE5e45D0f5d…",
      "key": "upgrade",
      "label": "Upgradeability",
-     "state": "a",
-     "value": "Upgradeable with no enforced delay"
+     "state": "g",
+     "value": "Upgradeable behind a ≥48h delay (2d)"
     },
     {
      "evidence": "yo-protocol-approval-registry-owner-admin-safe-s22: observed_delay_seconds = 0",
      "key": "timelock",
      "label": "Timelock floor",
      "state": "a",
-     "value": "0s minimum observed delay"
+     "value": "0s minimum enforced delay across control surfaces"
     },
     {
      "evidence": "yo-protocol-approval-registry-owner-admin-safe-s22: …9F1c8040414032a3C2C88a54db144FCd2 (4-of-6 Safe, v1.4.1, no modules), not the…",
@@ -6247,8 +6328,9 @@
    },
    "reconciled": false,
    "reconciledFrom": [],
+   "reconciledTo": [],
    "records": 3,
-   "rosetteAria": "YO Protocol control-plane rosette: Upgradeability weak; Timelock floor weak; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
+   "rosetteAria": "YO Protocol control-plane rosette: Upgradeability strong; Timelock floor weak; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
    "search": "yo protocol yo-protocol cross-chain yield optimizer vaults yoeth yousd yo 0x38ce5e45d0f5d03e83863bb19b3b1a272c186f48 0xb4b3f5c964a360bbd7201f72a55d0c48b8ad7021 0xd460cf1f5d764acad1c3276c549ee5f1bb671473",
    "slug": "yo-protocol",
    "url": "https://pacta.wtf/protocols/yo-protocol/"

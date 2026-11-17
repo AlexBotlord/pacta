@@ -2658,6 +2658,39 @@ def main(argv=None):
     check("E3: Website Edge v3 (scorecards + 5-factor rosette, /for-protocols/, root discovery files, theme label, no npx / star counts)",
           all(e3.values()), str([k_[:70] for k_, v_ in e3.items() if not v_]) + f" rosette bad {ro_bad[:4]}")
 
+    # ================= Website Edge v3.1 (D1): every rosette factor bound to its own control surface; recon_trail provenance =================
+    import scorecard as SCD
+    d1 = {}
+    st_ = {k_: {f_["key"]: f_["state"] for f_ in c_["factors"]} for k_, c_ in cards_.items()}
+    d1["yo-protocol: vault upgrades bound to the 48h YO Timelock (upgrade 'g') while the 0s Approval Registry Safe sets the timelock floor ('a')"] = (
+        st_["yo-protocol"]["upgrade"] == "g" and st_["yo-protocol"]["timelock"] == "a")
+    d1["frax-usd-frxusd: the sfrxUSD ProxyAdmin owned directly by the 3-of-5 Safe (no timelock) is the weakest upgrade path (upgrade 'a', timelock 'a'), not the frxUSD 1d timelock"] = (
+        st_["frax-usd-frxusd"]["upgrade"] == "a" and st_["frax-usd-frxusd"]["timelock"] == "a")
+    d1["eigenlayer-core: the 1-of-2 ExecutorMultisig co-owned by the 10d timelock and the CommunityMultisig bypasses the delay (upgrade never 'g'; 'a')"] = (
+        st_["eigenlayer-core"]["upgrade"] == "a" and st_["eigenlayer-core"]["timelock"] == "a")
+    d1["falcon-finance-usdf-susdf: the user cooldownDuration() never counts as an admin timelock floor"] = (
+        "cooldown" not in str(next(f_ for f_ in cards_["falcon-finance-usdf-susdf"]["factors"] if f_["key"] == "timelock")["evidence"]))
+    A_ = lambda n_: "0x" + n_ * 40
+    proxy_ = {"id": "syn-proxy", "surface": "Vault", "onchain_observed": f"Vault {A_('1')}: EIP-1967 admin = ProxyAdmin {A_('2')}"}
+    cooldown_ = {"id": "syn-cooldown", "surface": "Unstaking cooldown: 7 days", "observed_delay_seconds": 604800,
+                 "observed_delay_source": {"contract": A_("3"), "getter": "cooldownDuration()"}, "onchain_observed": f"sVault {A_('3')}: cooldownDuration() = 604800"}
+    param_ = {"id": "syn-param", "surface": "Fee parameter timelock: 7 days", "observed_delay_seconds": 604800,
+              "observed_delay_source": {"contract": A_("5"), "getter": "getMinDelay()"}, "onchain_observed": f"FeeTimelock {A_('5')}: getMinDelay() = 604800s; owner of FeeController {A_('6')}"}
+    fs_ = lambda rs_: {f_["key"]: f_["state"] for f_ in SCD.factors(rs_, True, "aligned")}
+    d1["synthetic authority separation: an undetermined proxy stays upgrade 'n' when an unrelated 7d withdrawal cooldown or 7d parameter timelock is added; a cooldown never sets the timelock floor"] = (
+        fs_([proxy_])["upgrade"] == "n" and fs_([proxy_, cooldown_])["upgrade"] == "n" and fs_([proxy_, param_])["upgrade"] == "n"
+        and fs_([proxy_, cooldown_])["timelock"] == "n" and fs_([proxy_, param_])["timelock"] == "g")
+    fx_ = {"reconciled": True, "pinnedBlock": 200, "reconciledFrom": [{"blockNumber": 100, "easUid": "0x" + "a" * 64, "summary": "delta"}],
+           "reconciledTo": [{"blockNumber": 200, "easUid": "0x" + "b" * 64, "docsCommit": "c0ffee1234567890", "docsSnapshot": "audits/sprint-99/x.md", "docsSha256": "d" * 64}]}
+    rt_ = BS.recon_trail(fx_)
+    d1["recon_trail: step 1 initial finding (block, Base EAS UID #1) -> step 2 verified resolution with its block, Base EAS UID #2 and docs commit / snapshot (synthetic reconciledFrom fixture)"] = (
+        rt_.count("<li>") == 2 and "block #100 · Base EAS 0xaaaaaaaa…aaaaaa" in rt_
+        and "block #200 · Base EAS 0xbbbbbbbb…bbbbbb · docs commit <code>c0ffee123456</code> · docs snapshot <code>audits/sprint-99/x.md</code>" in rt_
+        and rt_.index("Initial finding") < rt_.index("Verified resolution") and BS.recon_trail({"reconciled": False}) == ""
+        and all(len(c_["reconciledTo"]) == len(c_["reconciledFrom"]) for c_ in cards_.values()))
+    check("E3.1 (D1): rosette factors bound per control surface (YO / Frax USD / EigenLayer regressions, cooldown and unrelated-delay separation); recon_trail step-2 provenance",
+          all(d1.values()), str([k_[:70] for k_, v_ in d1.items() if not v_]) + str({k_: st_[k_] for k_ in ("yo-protocol", "frax-usd-frxusd", "eigenlayer-core")}))
+
     # ================= Visitor review P1 + P2 (first success, understanding, discovery, narrow screens, provenance, editorial independence) =================
     import control_diff as CDV1
     import build_b2a_feeds as B2AV1

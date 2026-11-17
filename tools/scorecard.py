@@ -21,11 +21,22 @@ DAY = 86400
 _NOF = re.compile(r"\b(\d{1,2})-of-(\d{1,2})\b")
 _DELAY = re.compile(r"\b(?:getMinDelay\(\)|delay\(\)|MINIMUM_DELAY\(\)|MIN_DELAY\(\)|minDelay\(\)|executionDelay\(\)|TIMELOCK_PERIOD\(\)|"
                     r"timelockDelay\(\)|getMinimumDelay\(\))\s*(?:returns\s*|=\s*)([\d,]+)\s*s\b")
-_SINGLE = re.compile(r"no contract code|externally owned|\bEOA\b")
+_SINGLE = re.compile(r"no contract code|externally owned|\bEOA\b|\(no code\)|without code")
 _GOVERNOR = re.compile(r"\bGovernor(?:Bravo|Alpha|Omega)?\b|\bDAO governance\b")
 _PROXY = re.compile(r"EIP-1967 (?:admin|implementation) (?:slot )?(?:=|resolves|is)|ProxyAdmin|AdminUpgradeabilityProxy|"
                     r"TransparentUpgradeableProxy|ERC-1967 prox|UUPS|zeppelinos\.proxy\.admin|upgradeTo")
 _IMMUTABLE = re.compile(r"\bimmutable\b|ownership renounced|owner\(\) = 0x0\b|not a proxy|no proxies")   # zero EIP-1967 slots alone is not immutability
+_COOLDOWN = re.compile(r"cooldown|unstak|withdraw|unbond|redemption|redeem|claim|lockup", re.I)   # user exit delays, not admin timelocks
+_NODELAY = re.compile(r"no timelock")
+_BYPASS = re.compile(r"\b1-of-\d{1,2}\b[^;]*?\b(?:shared between|co-owned by|jointly owned by)\b[^;]*?\bTimelock", re.I)
+_SAME_TL = re.compile(r"\bthe same (?:Timelock|timelock|TimelockController)\b")
+_TLWORD = re.compile(r"timelock", re.I)
+_UPGRADE_SURFACE = re.compile(r"upgrad|ProxyAdmin|proxy admin", re.I)
+_SAFE_DIRECT = re.compile(r"(?:owner\(\)|getAdmin\(\))\s*(?:=|is)\s*(?:the\s+)?(?:[\w-]+\s+){0,2}?Safe\b")
+_ADDR = re.compile(r"0x[0-9a-fA-F]{40}")
+_PROXY_ADMIN = re.compile(r"ProxyAdmin\s*\(?(0x[0-9a-fA-F]{40})")
+_THAT = re.compile(r"(?:that|this|the same) (?:Safe|multisig|address)\b", re.I)
+_ADDR_DELAY = re.compile(r"(0x[0-9a-fA-F]{40})[^;0-9]{0,40}?(?:getMinDelay\(\)|delay\(\))\s*(?:returns\s*|=\s*)([\d,]+)\s*s\b")
 _EMERGENCY = re.compile(r"\bpause|\bblacklist|\bfreez|PAUSE_ROLE|ASSET_PROTECTION|\bdeprecate|\bguardian\b|pauseGuardian", re.I)
 
 
@@ -45,17 +56,125 @@ def _snip(text, m, width=70):
     return ("…" if a else "") + text[a:b].strip() + ("…" if b < len(text) else "")
 
 
+def clauses(text):
+    """Split evidence text into clauses on top-level ';' (a ';' inside parentheses stays in its clause)."""
+    out, depth, cur = [], 0, []
+    for ch in text:
+        depth += (ch == "(") - (ch == ")") if ch in "()" else 0
+        if ch == ";" and depth <= 0:
+            out.append("".join(cur).strip())
+            cur = []
+        else:
+            cur.append(ch)
+    out.append("".join(cur).strip())
+    return [c for c in out if c]
+
+
+def _admin_delay(r):
+    """A record's observed_delay_seconds when it is an admin / governance execution delay (never a user cooldown)."""
+    d = r.get("observed_delay_seconds")
+    if not isinstance(d, int):
+        return None
+    getter = (r.get("observed_delay_source") or {}).get("getter")
+    if _COOLDOWN.search(getter or "") or (not getter and _COOLDOWN.search(str(r.get("surface") or ""))):
+        return None
+    return d
+
+
+def _upgrade_path(c, r, known, prev):
+    """The enforced delay (seconds) and its reason on one upgrade clause, or None when the published evidence does not decide it."""
+    if _BYPASS.search(c):
+        return 0, "a 1-of-N executor co-owned by the timelock and a non-timelock signer bypasses the delay"
+    if _NODELAY.search(c) or _SINGLE.search(c):
+        return 0, "no timelock in front of upgrades"
+    ds = [int(m.group(1).replace(",", "")) for m in _DELAY.finditer(c)]
+    if ds:
+        return min(ds), "timelock delay on the upgrade path"
+    ds = [known[a.lower()] for a in _ADDR.findall(c) if a.lower() in known]
+    if ds:
+        return min(ds), "timelock delay on the upgrade path"
+    if prev is not None and _SAME_TL.search(c):
+        return prev, "the same timelock"
+    d = _admin_delay(r)
+    if d is not None and (_TLWORD.search(c) or _UPGRADE_SURFACE.search(str(r.get("surface") or ""))):
+        return d, "timelock delay on the upgrade path"
+    if _SAFE_DIRECT.search(c) and not _TLWORD.search(c):
+        return 0, "upgraded by a Safe directly (a Safe has no delay of its own)"
+    return None
+
+
 def factors(records, easattested, g, facts=()):
     """The five factor states (g / b / a / n / u) with the evidence that decided each. records: the protocol's published records
-    (index.json or rpc-pinned.json entries); facts: graph_controller_facts entries of its contracts."""
-    texts = [(r.get("id"), str(r.get("onchain_observed") or "")) for r in records]
+    (index.json or rpc-pinned.json entries); facts: graph_controller_facts entries of its contracts (with "address").
+
+    Every factor is bound to its own control surface: each record's evidence is split into clauses and a clause only decides the
+    factor it is about. Upgradeability = the weakest established upgrade path (the delay gating that clause's proxy admin);
+    timelock floor = the weakest established admin / governance execution delay, including those upgrade paths (user withdrawal /
+    unstaking cooldowns never count); emergency scope = the holder named in the pause / freeze clause itself."""
+    texts = [(r.get("id"), str(r.get("onchain_observed") or ""), r) for r in records]
     out = {}
-    # 2: timelock floor (minimum enforced delay observed anywhere in the protocol's records / facts)
-    delays = []
+    # known timelock delays by address (the published delay sources, in-text "0x… getMinDelay() = Ns" and controller facts)
+    known = {}
     for r in records:
-        if isinstance(r.get("observed_delay_seconds"), int):
-            delays.append((r["observed_delay_seconds"], f'{r.get("id")}: observed_delay_seconds = {r["observed_delay_seconds"]}'))
-    for rid, t in texts:
+        src, d = (r.get("observed_delay_source") or {}).get("contract"), _admin_delay(r)
+        if src and d is not None:
+            known[src.lower()] = min(d, known.get(src.lower(), d))
+    for _, t, _r in texts:
+        for m in _ADDR_DELAY.finditer(t):
+            a, d = m.group(1).lower(), int(m.group(2).replace(",", ""))
+            known[a] = min(d, known.get(a, d))
+    for f in facts:
+        if isinstance(f.get("timelock_min_delay"), int) and f.get("address"):
+            known[f["address"].lower()] = f["timelock_min_delay"]
+    # 1: upgradeability: every upgrade clause on its own; the weakest established path decides
+    paths, undecided, prox, pending, admins = [], 0, None, [], {}
+    for rid, t, r in texts:
+        prev = None
+        for c in clauses(t):
+            if not _PROXY.search(c):
+                continue
+            prox = prox or (rid, c)
+            p = _upgrade_path(c, r, known, prev)
+            if p is None:
+                pending.append((rid, c))
+                continue
+            prev = p[0]
+            paths.append((p[0], p[1], f"{rid}: {_clip(c)}"))
+            for a in _PROXY_ADMIN.findall(c):
+                admins[a.lower()] = min(p[0], admins.get(a.lower(), p[0]))
+    for rid, c in pending:   # a ProxyAdmin whose gating delay another clause established
+        ds = [admins[a.lower()] for a in _PROXY_ADMIN.findall(c) if a.lower() in admins]
+        if ds:
+            paths.append((min(ds), "the ProxyAdmin's owner delay", f"{rid}: {_clip(c)}"))
+        else:
+            undecided += 1
+    if prox is None:
+        flagged = next((r for r in records if r.get("is_eip1967_proxy")), None)
+        if flagged is not None:
+            prox, undecided = (flagged.get("id"), "is_eip1967_proxy = true"), 1
+    imm = next(((rid, t, m) for rid, t, _r in texts for m in [_IMMUTABLE.search(t)] if m), None)
+    more = f" ({undecided} other upgrade path{'s' if undecided != 1 else ''} not determined)" if paths and undecided else ""
+    if paths:
+        d, why, ev = min(paths, key=lambda p: (p[0], p[2]))
+        if d >= 2 * DAY:
+            out["upgrade"] = ("g", f"Upgradeable behind a ≥48h delay ({_dur(d)}){more}", ev)
+        elif d >= 3600:
+            out["upgrade"] = ("b", f"Upgradeable behind a 1h–47h delay ({_dur(d)}){more}", ev)
+        else:
+            out["upgrade"] = ("a", f"Upgradeable with no enforced delay: {why}{more}", ev)
+    elif prox:
+        out["upgrade"] = ("n", "Upgradeable; the delay gating the upgrade path is not in the published records", f"{prox[0]}: {_clip(prox[1])}")
+    elif imm:
+        out["upgrade"] = ("g", "Immutable or ownership renounced", f"{imm[0]}: {_snip(imm[1], imm[2])}")
+    else:
+        out["upgrade"] = ("n", "Upgrade path not in the published records", None)
+    # 2: timelock floor: the weakest admin / governance execution delay on any control surface (upgrade paths included)
+    delays = [(d, ev) for d, _, ev in paths]
+    for r in records:
+        d = _admin_delay(r)
+        if d is not None:
+            delays.append((d, f'{r.get("id")}: observed_delay_seconds = {d}'))
+    for rid, t, _r in texts:
         for m in _DELAY.finditer(t):
             delays.append((int(m.group(1).replace(",", "")), f"{rid}: {_snip(t, m)}"))
     for f in facts:
@@ -64,12 +183,12 @@ def factors(records, easattested, g, facts=()):
     if delays:
         d, ev = min(delays)
         st = "g" if d >= 2 * DAY else "b" if d >= 3600 else "a"
-        out["timelock"] = (st, f"{_dur(d)} minimum observed delay", ev)
+        out["timelock"] = (st, f"{_dur(d)} minimum enforced delay across control surfaces", ev)
     else:
-        out["timelock"] = ("n", "No enforced delay in the published records", None)
+        out["timelock"] = ("n", "No enforced admin delay in the published records", None)
     # 3: signer quorum (lowest threshold of any controlling Safe; a key without contract code counts as 1-of-1)
     quorum = []
-    for rid, t in texts:
+    for rid, t, _r in texts:
         for m in _NOF.finditer(t):
             k, nn = int(m.group(1)), int(m.group(2))
             if 1 <= k <= nn:
@@ -84,40 +203,32 @@ def factors(records, easattested, g, facts=()):
         st = "g" if k >= 3 else "b" if k == 2 else "a"
         out["quorum"] = (st, f"Lowest controlling quorum: {lbl}", ev)
     else:
-        gov = next(((rid, t, m) for rid, t in texts for m in [_GOVERNOR.search(t)] if m), None)
+        gov = next(((rid, t, m) for rid, t, _r in texts for m in [_GOVERNOR.search(t)] if m), None)
         out["quorum"] = (("g", "DAO Governor (token vote)", f"{gov[0]}: {_snip(gov[1], gov[2])}") if gov
                          else ("n", "No signer quorum in the published records", None))
-    # 1: upgradeability (an upgradeable proxy is as strong as the delay / quorum gating it; immutable is strong)
-    prox = next(((rid, t, m) for rid, t in texts for m in [_PROXY.search(t)] if m), None)
-    if prox is None and any(r.get("is_eip1967_proxy") for r in records):
-        prox = next((r.get("id"), "is_eip1967_proxy = true", None) for r in records if r.get("is_eip1967_proxy"))
-    imm = next(((rid, t, m) for rid, t in texts for m in [_IMMUTABLE.search(t)] if m), None)
-    if prox:
-        ev = f"{prox[0]}: {_snip(prox[1], prox[2]) if prox[2] else prox[1]}"
-        ts, qs = out["timelock"][0], out["quorum"][0]
-        if ts == "g":
-            out["upgrade"] = ("g", "Upgradeable behind a ≥48h delay", ev)
-        elif ts == "b":
-            out["upgrade"] = ("b", "Upgradeable behind a 1h–47h delay", ev)
-        elif ts == "a" or qs == "a":
-            out["upgrade"] = ("a", "Upgradeable with no enforced delay", ev)
-        else:
-            out["upgrade"] = ("n", "Upgradeable; the gating delay is not in the published records", ev)
-    elif imm:
-        out["upgrade"] = ("g", "Immutable or ownership renounced", f"{imm[0]}: {_snip(imm[1], imm[2])}")
-    else:
-        out["upgrade"] = ("n", "Upgrade path not in the published records", None)
-    # 4: emergency / freeze scope (pause / blacklist / freeze authority and who holds it)
-    em = next(((rid, t, m) for rid, t in texts for m in [_EMERGENCY.search(t)] if m), None)
-    if em:
-        ev = f"{em[0]}: {_snip(em[1], em[2])}"
-        qs = out["quorum"][0]
-        if qs == "a":
-            out["emergency"] = ("a", "Pause / freeze authority with a single key or 1-of-N", ev)
-        elif qs in ("g", "b"):
-            out["emergency"] = ("g", "Pause / freeze authority scoped behind a multi-signer controller", ev)
-        else:
-            out["emergency"] = ("n", "Pause / freeze authority present; holder not determined", ev)
+    # 4: emergency / freeze scope: the holder named in the pause / freeze clause itself (a Safe fact by address counts)
+    safes = {f["address"].lower(): f["safe_threshold"] for f in facts if f.get("safe_threshold") and f.get("address")}
+    held, em = [], None
+    for rid, t, _r in texts:
+        cs = clauses(t)
+        for i, c in enumerate(cs):
+            if not _EMERGENCY.search(c):
+                continue
+            em = em or (rid, c)
+            if i + 1 < len(cs) and _THAT.match(cs[i + 1]):   # "…hasRole(FREEZER, 0x…) = true; that Safe is 2-of-5"
+                c = f"{c}; {cs[i + 1]}"
+            ks = [(int(m.group(1)), f"{m.group(1)}-of-{m.group(2)}") for m in _NOF.finditer(c) if 1 <= int(m.group(1)) <= int(m.group(2))]
+            ks += [(1, "a single key") for _ in _SINGLE.finditer(c)]
+            ks += [(safes[a.lower()], f"{safes[a.lower()]}-of-N Safe") for a in _ADDR.findall(c) if a.lower() in safes]
+            if ks:
+                k, lbl = min(ks)
+                held.append((k, lbl, f"{rid}: {_clip(c)}"))
+    if held:
+        k, lbl, ev = min(held)
+        out["emergency"] = (("a", f"Pause / freeze authority held by {lbl}", ev) if k == 1 else
+                            ("g", f"Pause / freeze authority scoped behind a multi-signer controller ({lbl})", ev))
+    elif em:
+        out["emergency"] = ("n", "Pause / freeze authority present; its holder is not determined", f"{em[0]}: {_clip(em[1])}")
     else:
         out["emergency"] = ("n", "No pause / freeze authority in the published records", None)
     # 5: docs-vs-chain parity (the grade; never colored without a Base-EAS-attested documentation comparison)
@@ -125,6 +236,10 @@ def factors(records, easattested, g, facts=()):
                      ("a", "Documentation differs from the chain (parameter delta)", None) if g == "delta" else
                      ("g", "Chain matches or is stronger than the documentation", None))
     return [{"key": k, "label": lbl, "state": out[k][0], "value": out[k][1], "evidence": out[k][2]} for k, lbl in FACTORS]
+
+
+def _clip(c, width=160):
+    return c if len(c) <= width else c[:width - 1].rstrip() + "…"
 
 
 def _dur(s):

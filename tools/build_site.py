@@ -461,7 +461,7 @@ def scorecards(idx, pinned=None, sp=None):
             for k in ("controller_address", "upstream_controller"):
                 if e.get(k):
                     addrs.add((ch, e[k].lower()))
-        facts = [cf[f"{c}:{a[2:]}"] for c, a in sorted(addrs) if f"{c}:{a[2:]}" in cf]
+        facts = [dict(cf[f"{c}:{a[2:]}"], address=a) for c, a in sorted(addrs) if f"{c}:{a[2:]}" in cf]
         cls = [e["classification"] for e in es]
         recon = [e for e in es if e.get("reconciledFrom")]
         g = SC.grade(cls, eas, bool(recon))
@@ -485,7 +485,12 @@ def scorecards(idx, pinned=None, sp=None):
         search = " ".join([name, v["slug"], es[0].get("category", "")] + list(LK.TOKENS.get(v["slug"], []))
                           + sorted({e["target_contract"] for e in es})).lower()
         out.append({"slug": v["slug"], "name": name, "grade": g, "gradeLabel": SC.GRADES[g][0], "reconciled": bool(recon),
-                    "reconciledFrom": [e["reconciledFrom"] for e in recon], "easAttested": eas, "chains": chains,
+                    "reconciledFrom": [e["reconciledFrom"] for e in recon],
+                    "reconciledTo": [{"blockNumber": int(e["block_number"]), "easUid": e.get("base_eas_uid"),
+                                      "docsCommit": e.get("docsCommit") or e.get("docs_commit"),
+                                      "docsSnapshot": e.get("docsSnapshot") or e.get("docs_snapshot") or e.get("summary_doc"),
+                                      "docsSha256": e.get("summary_sha256")} for e in recon],
+                    "easAttested": eas, "chains": chains,
                     "category": es[0].get("category", ""), "baskets": sorted({b for c in cats for b in baskets_of(c, chains)}),
                     "records": len(es), "deltas": cls.count("parameter_delta"), "finding": finding,
                     "pinnedBlock": max(int(e["block_number"]) for e in es),
@@ -1482,9 +1487,22 @@ def recon_trail(card):
     """Resolution provenance (spec 3.4): initial finding -> verified resolution, when a record carries reconciledFrom."""
     if not card["reconciled"]:
         return ""
-    steps = "".join(f'<li><b>Initial finding</b> · block #{int(r["blockNumber"]):,} · Base EAS {E(short(r["easUid"], 10, 6))}: {E(r.get("summary", ""))}</li>'
-                    for r in card["reconciledFrom"])
-    return f'<ol class="recon">{steps}<li><b>Verified resolution</b> · block #{card["pinnedBlock"]:,} · ALIGNED · Reconciled</li></ol>'
+    def docs(p):
+        out = []
+        if p.get("docsCommit"):
+            out.append(f'docs commit <code>{E(str(p["docsCommit"])[:12])}</code>')
+        if p.get("docsSnapshot"):
+            out.append(f'docs snapshot <code>{E(p["docsSnapshot"])}</code>'
+                       + (f' (sha256 {E(short(p["docsSha256"], 10, 6))})' if p.get("docsSha256") else ""))
+        return "".join(f" · {x}" for x in out)
+
+    tos = card.get("reconciledTo") or [{} for _ in card["reconciledFrom"]]
+    steps = ""
+    for r, t in zip(card["reconciledFrom"], tos):
+        steps += (f'<li><b>Initial finding</b> · block #{int(r["blockNumber"]):,} · Base EAS {E(short(r["easUid"], 10, 6))}{docs(r)}: {E(r.get("summary", ""))}</li>'
+                  f'<li><b>Verified resolution</b> · block #{int(t.get("blockNumber") or card["pinnedBlock"]):,}'
+                  f'{" · Base EAS " + E(short(t["easUid"], 10, 6)) if t.get("easUid") else ""}{docs(t)} · ALIGNED · Reconciled</li>')
+    return f'<ol class="recon">{steps}</ol>'
 
 
 def scorecard_section(card):

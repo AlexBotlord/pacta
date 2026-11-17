@@ -17,6 +17,7 @@ window, or copies the scope brief.
 """
 
 import datetime as dt
+import hashlib
 import html
 import json
 import os
@@ -101,13 +102,18 @@ TRACKS = {
     "api_sla": ("Enterprise / High-Throughput API SLA", "Priced on scope", "",
                 "For wallets, custodians and DeFAI agents that need more than 60 requests / minute or a dedicated SLA.",
                 "Enterprise / High-Throughput API SLA (priced on scope)"),
+    "rapid-500": ("Rapid Single-Gap Re-Verification", "$500 USDC", "24h SLA",
+                  "For a protocol team or vault curator that has resolved one flagged Safe, timelock or documentation gap: a fresh "
+                  "dual-archive-RPC re-pin at a finalized block, an updated documentation diff and a new Base Mainnet EAS attestation with a "
+                  "refreshed badge within 24h. The classification strictly follows the evidence; payment never changes it.",
+                  "Rapid Single-Gap Re-Verification ($500 USDC, 24h SLA)"),
     "community": ("Community queue", "Free", "",
                   "Standard public queue, unscheduled (typically 6–8 weeks). Curators and risk stewards always have free, "
                   "real-time access to pacta.wtf and llms.txt.",
                   "Community queue (free; unscheduled, typically 6–8 weeks)"),
 }
 DEFAULT_TRACK = "clearance"
-PAID_TRACKS = ("clearance", "continuous", "api_sla")
+PAID_TRACKS = ("clearance", "rapid-500", "continuous", "api_sla")
 # Settlement tracks in #req-pay (closed `settlement=` enum). Option A first: no transfer is needed to open intake.
 # key -> (heading, sub-line, explanation, GitHub dropdown option)
 SETTLEMENT = {
@@ -194,6 +200,89 @@ THEME_JS = ('document.documentElement.className="js";try{if(localStorage.getItem
             'document.documentElement.dataset.theme="slate"}catch(e){}\n')
 
 
+APP_SRC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "app.src.js")
+_JS_REGEX_PREV = set("(,=:[!&|?{};+-*%<>~^")
+_JS_REGEX_WORDS = ("return", "typeof", "case", "in", "of", "new", "delete", "void", "throw", "instanceof")
+
+
+def minify_js(src):
+    """Deterministic, conservative minifier for tools/app.src.js (no template literals): drops /* */ and // comments outside
+    strings and regex literals, trims every line and removes blank lines. Line breaks are kept, so automatic semicolon insertion
+    behaves exactly as in the source; verify_site_v2 asserts docs/app.js == minify_js(tools/app.src.js) and runs the result."""
+    assert "`" not in src, "template literals are not supported by minify_js"
+    out, line = [], []
+    i, n, prev = 0, len(src), ""
+
+    def flush():
+        t = "".join(line).strip()
+        if t:
+            out.append(t)
+        line.clear()
+    while i < n:
+        ch = src[i]
+        if ch in "\"'":                                     # string literal (copied verbatim)
+            j = i + 1
+            while j < n and src[j] != ch:
+                j += 2 if src[j] == "\\" else 1
+            line.append(src[i:j + 1])
+            prev, i = ch, j + 1
+        elif src.startswith("/*", i):                       # block comment
+            j = src.index("*/", i + 2)
+            if "\n" in src[i:j]:
+                flush()
+            i = j + 2
+        elif src.startswith("//", i):                       # line comment
+            while i < n and src[i] != "\n":
+                i += 1
+        elif ch == "/":
+            words = "".join(line).split()
+            last = words[-1] if words else ""
+            if prev == "" or prev in _JS_REGEX_PREV or last in _JS_REGEX_WORDS:   # regex literal
+                j, cls = i + 1, False
+                while j < n:
+                    c = src[j]
+                    if c == "\\":
+                        j += 2
+                        continue
+                    if c == "[":
+                        cls = True
+                    elif c == "]":
+                        cls = False
+                    elif c == "/" and not cls:
+                        break
+                    j += 1
+                j += 1
+                while j < n and src[j].isalpha():           # flags
+                    j += 1
+                line.append(src[i:j])
+                prev, i = "x", j
+            else:
+                line.append(ch)
+                prev, i = ch, i + 1
+        elif ch == "\n":
+            flush()
+            i += 1
+        else:
+            line.append(ch)
+            if not ch.isspace():
+                prev = ch
+            i += 1
+    flush()
+    return "\n".join(out) + "\n"
+
+
+_ASSET_V = {}
+
+
+def asset_v(name):
+    """?v=<sha8> cache-busting for the three same-origin assets, from the exact bytes the build writes."""
+    if name not in _ASSET_V:
+        body = {"app.js": lambda: minify_js(open(APP_SRC, encoding="utf-8").read()), "theme.js": lambda: THEME_JS,
+                "styles.css": lambda: open(os.path.join(DOCS, "styles.css"), encoding="utf-8").read()}[name]()
+        _ASSET_V[name] = hashlib.sha256(body.encode("utf-8")).hexdigest()[:8]
+    return _ASSET_V[name]
+
+
 def head(title, desc, url, prefix="", og_title=OG_TITLE, og_type="website", image=f"{BASE_URL}/og-preview.png", extra="", robots=ROBOTS_META, rich=False):
     """Order matters: everything social/agent-relevant comes first and stays inside the first 1.2 KB.
     b.js is the first-party beacon (docs/b.js, < 1.5 KB): no cookies, no storage ids, no third parties, honours DNT."""
@@ -213,7 +302,7 @@ def head(title, desc, url, prefix="", og_title=OG_TITLE, og_type="website", imag
         f'<meta property="og:image" content="{image}">',
         '<meta property="og:image:width" content="1200">',
         '<meta property="og:image:height" content="630">',
-        '<meta name="twitter:card" content="summary_large_image">',
+        '<meta name="twitter:card" content="summary">',
         f'<meta name="twitter:title" content="{E(og_title)}">',
         f'<meta name="twitter:description" content="{d}">',
         f'<meta name="twitter:image" content="{image}">',
@@ -222,18 +311,19 @@ def head(title, desc, url, prefix="", og_title=OG_TITLE, og_type="website", imag
         f'<link rel="icon" href="{prefix}favicon.svg" type="image/svg+xml">',
         f'<link rel="icon" href="{prefix}favicon.png" type="image/png" sizes="32x32">',
         '<meta name="referrer" content="strict-origin-when-cross-origin">',
+        '<meta name="theme-color" content="#101216">',
         f'<meta http-equiv="Content-Security-Policy" content="{CSP}">',
     ] + ([   # homepage only (sub-pages keep <body> under 2.5 KB; browsers also fetch /favicon.ico and /apple-touch-icon.png from the root)
         f'<link rel="icon" href="{prefix}favicon.ico" sizes="any">',
         f'<link rel="apple-touch-icon" href="{prefix}apple-touch-icon.png">',
-        f'<link rel="alternate" type="application/atom+xml" href="{prefix}feed.xml" title="Pacta feed (Atom)">',
-        f'<link rel="alternate" type="application/feed+json" href="{prefix}api/v1/feed.json" title="Pacta feed (JSON Feed)">',
+        f'<link rel="alternate" type="application/atom+xml" href="{prefix}feed.xml">',
+        f'<link rel="alternate" type="application/feed+json" href="{prefix}api/v1/feed.json">',
     ] if rich else []) + [
-        f'<link rel="stylesheet" href="{prefix}styles.css">',
-        f'<link rel="alternate" type="text/markdown" href="{prefix}llms.txt"' + (' title="llms.txt">' if rich else '>'),
+        f'<link rel="stylesheet" href="{prefix}styles.css?v={asset_v("styles.css")}">',
+        f'<link rel="alternate" type="text/markdown" href="{prefix}llms.txt">',
         f'<link rel="alternate" type="text/html" href="{prefix}llms/"' + (' title="llms.txt (HTML mirror)">' if rich else '>'),
-        f'<script src="{prefix}theme.js"></script>',
-        f'<script src="{prefix}app.js" defer></script>',
+        f'<script src="{prefix}theme.js?v={asset_v("theme.js")}"></script>',
+        f'<script src="{prefix}app.js?v={asset_v("app.js")}" defer></script>',
         f'<script src="{prefix}b.js" defer></script>',
         "</head>",
     ]
@@ -344,6 +434,69 @@ def site_protocols(idx, pinned=None):
     slugs = [v["slug"] for v in out.values()]
     assert len(slugs) == len(set(slugs)) and all(re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", x) for x in slugs), "protocol slug collision / shape"
     return dict(sorted(out.items(), key=lambda kv: kv[0].lower()))
+
+
+CONTROLLER_FACTS_SRC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "graph_controller_facts.json")
+
+
+def scorecards(idx, pinned=None, sp=None):
+    """One scorecard per published protocol (grade, 5-factor rosette with evidence, key finding, chains, baskets), derived only
+    from the published records and controller facts (tools/scorecard.py). Ordered by name; consumed by the homepage scorecard,
+    /protocols/<slug>/ and /api/v1/scorecards.json."""
+    import scorecard as SC
+    pinned = load_pinned() if pinned is None else pinned
+    sp = site_protocols(idx, pinned) if sp is None else sp
+    cf = json.load(open(CONTROLLER_FACTS_SRC, encoding="utf-8"))["contracts"]
+    out = []
+    for name, v in sp.items():
+        es, eas = v["entries"], not v["pinned"]
+        chains = sorted({chain_of(e) for e in es})
+        addrs = set()
+        for e in es:
+            ch = chain_of(e)
+            addrs.add((ch, e["target_contract"].lower()))
+            src = e.get("observed_delay_source") or {}
+            if src.get("contract"):
+                addrs.add((ch, src["contract"].lower()))
+            for k in ("controller_address", "upstream_controller"):
+                if e.get(k):
+                    addrs.add((ch, e[k].lower()))
+        facts = [cf[f"{c}:{a[2:]}"] for c, a in sorted(addrs) if f"{c}:{a[2:]}" in cf]
+        cls = [e["classification"] for e in es]
+        recon = [e for e in es if e.get("reconciledFrom")]
+        g = SC.grade(cls, eas, bool(recon))
+        fs = SC.factors(es, eas, g, facts)
+        wd = CD.what_differs(es) if eas else None
+        if wd and wd.get("changed"):
+            c0 = wd["changed"][0]
+            finding = f'{c0["parameter"]}: docs say {c0["documented"]} · chain says {c0["observed"]}'
+        else:
+            lead = next((e for e in es if e["classification"] == "parameter_delta"), None) or next(
+                (e for e in es if e["classification"] == "protective_delta"), None) or es[0]
+            finding = lead["surface"]
+        cats = {e.get("category", "") for e in es}
+        out.append({"slug": v["slug"], "name": name, "grade": g, "gradeLabel": SC.GRADES[g][0], "reconciled": bool(recon),
+                    "reconciledFrom": [e["reconciledFrom"] for e in recon], "easAttested": eas, "chains": chains,
+                    "category": es[0].get("category", ""), "baskets": sorted({b for c in cats for b in baskets_of(c, chains)}),
+                    "records": len(es), "deltas": cls.count("parameter_delta"), "finding": finding,
+                    "pinnedBlock": max(int(e["block_number"]) for e in es),
+                    "factors": fs, "rosetteAria": SC.aria(fs, name), "url": f"{BASE_URL}/protocols/{v['slug']}/"})
+    return out
+
+
+def scorecards_json(cards):
+    import scorecard as SC
+    totals = {g: sum(c["grade"] == g for c in cards) for g in SC.GRADES}
+    coverage = {k: sum(next(f for f in c["factors"] if f["key"] == k)["state"] not in ("n", "u") for c in cards) for k, _ in SC.FACTORS}
+    doc = {"schema": "pacta.scorecards.v1",
+           "description": "One canonical grade per published protocol (DELTA / PROTECTIVE / ALIGNED / OBSERVED) and a 5-factor control-plane "
+                          "rosette derived deterministically from Pacta's published records (index.json, rpc-pinned.json) and controller facts. "
+                          "A factor the published evidence does not decide is 'n' (not determined); docs-vs-chain parity is 'u' (uncompared) "
+                          "for every RPC-observed protocol. States: g strong, b moderate, a weak, n not determined, u uncompared.",
+           "grades": {g: {"label": SC.GRADES[g][0], "meaning": SC.GRADES[g][1], "protocols": totals[g]} for g in SC.GRADES},
+           "factors": [{"key": k, "label": lbl} for k, lbl in SC.FACTORS], "factorCoverage": coverage,
+           "protocols": cards}
+    return json.dumps(doc, indent=1, ensure_ascii=False, sort_keys=True) + "\n"
 
 
 def counts(idx):
@@ -1291,6 +1444,57 @@ def snippet(text, title, label):
             f'<button class="copy" type="button" data-copy-term aria-label="{E(label)} ({E(title)})">{E(label)}</button></div><pre>{E(text)}</pre></div>')
 
 
+_CARDS = {}
+
+
+def card_for(idx, slug):
+    """The scorecard of one published protocol (computed once per build for all protocols)."""
+    if not _CARDS:
+        _CARDS.update({c["slug"]: c for c in scorecards(idx)})
+    return _CARDS[slug]
+
+
+def grade_pill(card):
+    import scorecard as SC
+    sub = '<span class="grade-sub">✓ Reconciled</span>' if card["reconciled"] else ""
+    return f'<span class="grade g-{card["grade"]}" title="{E(SC.GRADES[card["grade"]][1])}">{E(card["gradeLabel"])}</span>{sub}'
+
+
+def factor_list(card):
+    import scorecard as SC
+    rows = "".join(f'<div data-factor="{f["key"]}" data-state="{f["state"]}"><dt><span class="fdot r-{f["state"]}" aria-hidden="true"></span>{E(f["label"])}</dt>'
+                   f'<dd><b>{E(SC.STATE_LABEL[f["state"]])}</b> · {E(f["value"])}'
+                   + (f'<small class="ev">Evidence: {E(f["evidence"])}</small>' if f["evidence"] else "") + "</dd></div>" for f in card["factors"])
+    return f'<dl class="factors">{rows}</dl>'
+
+
+def recon_trail(card):
+    """Resolution provenance (spec 3.4): initial finding -> verified resolution, when a record carries reconciledFrom."""
+    if not card["reconciled"]:
+        return ""
+    steps = "".join(f'<li><b>Initial finding</b> · block #{int(r["blockNumber"]):,} · Base EAS {E(short(r["easUid"], 10, 6))}: {E(r.get("summary", ""))}</li>'
+                    for r in card["reconciledFrom"])
+    return f'<ol class="recon">{steps}<li><b>Verified resolution</b> · block #{card["pinnedBlock"]:,} · ALIGNED · Reconciled</li></ol>'
+
+
+def scorecard_section(card):
+    import scorecard as SC
+    svg = SC.rosette_svg(card["factors"], 56, card["name"])
+    return (f'<section class="memo-sec scorecard" id="scorecard"><h2>Control-plane scorecard</h2>'
+            f'<div class="sc-head">{svg}<p>{grade_pill(card)} <span>{E(SC.GRADES[card["grade"]][1])}</span></p></div>'
+            f'{factor_list(card)}{recon_trail(card)}'
+            f'<p class="s">Each slice is derived only from the pinned records on this page and their controller facts (<a href="../../api/v1/scorecards.json">/api/v1/scorecards.json</a>). '
+            f'A hollow slice is <i>not determined</i> by the published evidence (never a guess); docs-vs-chain parity is <i>uncompared</i> for RPC-observed protocols.</p></section>\n')
+
+
+def badge_embed(name, slug, tier):
+    """Copyable Markdown / HTML for the live status badge (every tier; the badge always says exactly what Pacta verified)."""
+    label = LK.BADGE_TIERS[tier][0]
+    md = f"[![{LK.BADGE_TITLE}]({BASE_URL}/badges/{slug}.svg)]({BASE_URL}/protocols/{slug}/)"
+    htm = f'<a href="{BASE_URL}/protocols/{slug}/"><img src="{BASE_URL}/badges/{slug}.svg" alt="{LK.BADGE_TITLE}: {label}" height="20"></a>'
+    return f'{snippet(md, "Markdown", "Copy Markdown")}{snippet(htm, "HTML", "Copy HTML")}'
+
+
 def badge_section(name, slug, tier):
     """Control-plane badge on protocol pages: an embed card when aligned, the amber status + clearance path when a delta.
     RPC-observed pages carry no badge card (their slate badge exists but makes no documentation claim)."""
@@ -1315,8 +1519,13 @@ def badge_section(name, slug, tier):
                 f'It turns to the emerald <b>Aligned · Base EAS</b> shield only when the on-chain state or the documentation changes and '
                 f'the two match at a new finalized block, whoever requests the re-check.</p>'
                 f'<p><a class="btn" href="{E(request_href("community", slug))}" data-cta="badge_free_notify">{E(FREE_NOTIFY_CTA)} <span class="arr">→</span></a></p>'
+                f'<p class="s">Embed this badge (it updates when the status changes):</p>{badge_embed(name, slug, tier)}'
                 f'<p class="s">Badge: <code>{E(BASE_URL)}/badges/{E(slug)}.svg</code> · live: <code>{E(live)}</code>.</p></section>\n')
-    return ""
+    return (f'<section class="memo-sec badge-card observed" id="badge-status"><h2>Control-plane badge: RPC-Observed</h2>'
+            f'<p class="badge-preview">{img}</p>'
+            f'<p>The slate badge states only what Pacta pinned on-chain; it makes no documentation claim until {E(name)} is compared with its '
+            f'documentation and attested on Base.</p>{badge_embed(name, slug, tier)}'
+            f'<p class="s">Badge: <code>{E(BASE_URL)}/badges/{E(slug)}.svg</code> · live: <code>{E(live)}</code>.</p></section>\n')
 
 
 BOUNTY_SUBMISSIONS_DIR = os.path.join(ROOT, "bounties", "submissions")
@@ -1450,7 +1659,7 @@ def protocol_page(name, entries, idx, radar, digest=None, slug=None):
 <article class="memo">
 <header><span class="tier">{E(cat)}</span><h1>{E(title)}</h1>
 <p class="lede">{lede}</p></header>
-{what_differs_html(entries)}<section class="memo-sec"><h2>Check it live (free)</h2><p>The pre-flight API re-reads the controller, proxy and capabilities of a contract at the latest block. No key, no wallet.</p>
+{scorecard_section(card_for(idx, slug))}{what_differs_html(entries)}<section class="memo-sec"><h2>Check it live (free)</h2><p>The pre-flight API re-reads the controller, proxy and capabilities of a contract at the latest block. No key, no wallet.</p>
 {term(curl, "Live pre-flight check")}<p>MCP: <code class="mono">{E(MCP_URL)}</code> · tool <code>pacta_check_preflight</code>. {E(UA_NOTE)}</p></section>
 {provenance}{governance_section(name, digest)}{records}{ops}{editorial_box()}{badge_html}{callout}</article>
 <div class="memo-foot"><span>Read-only on-chain analysis. Not investment advice. Exploit-sensitive vulnerabilities are never published here; they go through Immunefi or Cantina bounty programmes.</span>{foot}</div>
@@ -1689,6 +1898,115 @@ def vault_factories_page(idx, sp):
 </body></html>
 """
     return head(f"{title} · Pacta", desc, url, prefix="../../", og_title=title, og_type="article") + "\n" + body
+
+
+# ---- /for-protocols/ (Website Edge v3, spec section 5) ---------------------------------------------------------------------
+# Each case study names its record and the exact numbers it states; the build asserts every number appears in that record's
+# documented / observed evidence, so the page can never claim more than the attested record says.
+CASES = [
+    ("stader-labs-ethx", "stader-ethx-manager-safe-and-timelock", "Stader Labs (ETHx)", "Ethereum",
+     "Official GitBook: the Manager multisig is a 3-of-5.", "Finalized Ethereum state: the Manager Safe runs at a 3-of-6 quorum; upgrades still wait the 7-day TimelockController.",
+     ("3-of-5",), ("3-of-6", "604800s")),
+    ("yo-protocol", "yo-protocol-approval-registry-owner-admin-safe-s22", "YO Protocol", "Base",
+     "Docs: “Onchain, timelocked caps” on what each vault may approve.", "YoApprovalRegistry.owner() is the 4-of-6 Admin Safe directly, not the 48-hour YO Timelock: no enforced delay.",
+     ("timelocked caps",), ("4-of-6", "not the YO Timelock")),
+    ("stake-dao", "stake-dao-protocol-timelock-min-delay-5d-s22", "Stake DAO", "Ethereum",
+     "Docs: a 48-hour timelock on all protocol changes; all wallets 4-of-7.", "ProtocolTimelock enforces 5 days (432,000s), stronger than documented (protective); the Treasury Safe is 3-of-5 (delta).",
+     ("48-hour",), ("432000s",)),
+    ("moonwell-lending-base", "moonwell-pause-guardian-2of4-safe-s18", "Moonwell (Base)", "Base",
+     "Governance Constitution 8.1: emergency actions need a 3-of-5 Security Council approval.", "Unitroller.pauseGuardian() resolves to a 2-of-4 Safe.",
+     ("3-of-5",), ("2-of-4",)),
+]
+
+
+def check_cases(idx):
+    by = {e["id"]: e for e in idx["entries"]}
+    tre = by["stake-dao-treasury-safe-3of5-s22"]
+    assert "4-of-7" in tre["documented_reference"] and "3-of-5" in tre["onchain_observed"]
+    for slug, rid, _, _, _, _, docs_tok, chain_tok in CASES:
+        e = by[rid]
+        assert protocol_slug(e["protocol"]) == slug, (rid, slug)
+        assert all(t in e["documented_reference"] for t in docs_tok), (rid, docs_tok)
+        assert all(t in e["onchain_observed"] for t in chain_tok), (rid, chain_tok)
+
+
+FOR_PROTOCOLS_FAQ = [
+    ("Does paying $500 or $2,500–$5,000 guarantee an ALIGNED badge?",
+     "No. Payment covers expedited engineering review and the Base EAS attestation only. The status strictly reflects what finalized "
+     "on-chain state and the public documentation show."),
+    ("We fixed our docs (or rotated signers). Can we notify Pacta for free?",
+     "Yes. Submit the updated docs commit or URL through /request/ at $0 for the community re-scan queue, or use the $500 Rapid 24h "
+     "Single-Gap Re-Verification for a same-day re-attestation."),
+    ("Do we need to share private keys, grant repo access or connect a wallet?",
+     "Never. Every scan is read-only against finalized public archive blocks and public documentation; invoices settle by standard "
+     "invoice or Base USDC."),
+    ("What if a finding exposes an active security vulnerability?",
+     "Pacta quarantines exploit-sensitive paths privately under coordinated disclosure (/.well-known/security.txt) and never publishes "
+     "exploit primitives in public scorecards."),
+]
+
+
+def for_protocols_page(idx):
+    import scorecard as SC
+    check_cases(idx)
+    c = counts(idx)
+    count_line = coverage_line(idx)
+    reg = idx["onchain_anchoring"]["commitment_registry"]
+    cards = {x["slug"]: x for x in scorecards(idx)}
+    case_html = "".join(
+        f'<article class="case" data-case="{slug}"><h3><a href="../protocols/{slug}/">{E(name)}</a> <span class="case-chain">{E(chain)}</span></h3>'
+        f'<p class="case-grade">{grade_pill(cards[slug])}{SC.rosette_svg(cards[slug]["factors"], 28, name)}</p>'
+        f'<p><b>Documented:</b> {E(docs)}</p><p><b>On-chain:</b> {E(onchain)}</p>'
+        f'<p class="s"><a href="../protocols/{slug}/">Full scorecard →</a></p></article>'
+        for slug, rid, name, chain, docs, onchain, _, _ in CASES)
+    opts = "".join(f'<option value="{x["slug"]}"{" selected" if x["slug"] == "stader-labs-ethx" else ""}>{E(x["name"])}</option>'
+                   for x in sorted(cards.values(), key=lambda x: x["name"].lower()))
+    slug0 = "stader-labs-ethx"
+    tier0 = {"delta": "parameter_delta", "protective": "parameter_delta", "aligned": "aligned", "observed": "rpc_observed"}[cards[slug0]["grade"]]
+    widget = (f'<div class="badge-widget" data-badge-widget data-base="{E(BASE_URL)}">'
+              f'<label>Protocol <select data-bw-select aria-label="Protocol for the badge preview">{opts}</select></label>'
+              f'<p class="badge-preview"><img data-bw-img src="../badges/{slug0}.svg" alt="{E(LK.BADGE_TITLE)} badge for the selected protocol" height="20"></p>'
+              f'{badge_embed(cards[slug0]["name"], slug0, tier0)}</div>')
+    faq = "".join(f'<div><dt>{E(q)}</dt><dd>{E(a)}</dd></div>' for q, a in FOR_PROTOCOLS_FAQ)
+    body = f"""<body>
+{topbar("../")}
+<main id="main">
+<section class="hero fp-hero"><div class="wrap">
+<div class="eyebrow">For protocol &amp; security teams</div>
+<h1>Turn control-plane transparency into allocator trust.</h1>
+<p class="lede">Institutional vault curators, DAO delegates, and AI risk agents check Pacta before allocating capital. Verify your live multisig quorums and timelocks, reconcile outdated docs, and publish a block-pinned Base EAS badge.</p>
+<p class="ctas"><a class="btn primary" href="#request">Request verification <span class="arr">→</span></a><a class="btn" href="#embed">Embed your badge</a><a class="btn" href="../protocols/">Browse {len(cards)} scorecards</a></p>
+</div></section>
+<section class="sec" id="cases"><div class="wrap">
+<h2>Verified findings from the public index</h2>
+<p class="sec-intro">Four real records, each pinned to a finalized block and attested on Base Mainnet EAS. The numbers are the record's own.</p>
+<div class="cases">{case_html}</div>
+</div></section>
+<section class="sec" id="embed"><div class="wrap">
+<h2>Embed a live "Pacta Attested" badge</h2>
+<p class="sec-intro">Every published protocol has a status badge that always says exactly what Pacta verified: <i>Aligned · Base EAS</i>, <i>Parameter Delta</i> or <i>RPC-Observed</i>. It links back to the scorecard and changes when the chain or the documentation changes.</p>
+{widget}
+</div></section>
+<section class="sec" id="faq"><div class="wrap">
+<h2>Editorial independence &amp; security</h2>
+<dl class="fp-faq">{faq}</dl>
+</div></section>
+<section class="sec" id="request"><div class="wrap">
+<h2>Work with Pacta</h2>
+<div class="fp-ctas">
+<div><h3>Free doc-update queue · $0</h3><p>Tell Pacta your docs or signers changed; the protocol joins the public re-scan queue.</p><a class="btn" href="../request/?tier=community">Submit updated docs URL →</a></div>
+<div><h3>Rapid Single-Gap Re-Verification · $500 (24h SLA)</h3><p>One resolved gap re-pinned on two archive RPCs, a new Base EAS attestation and a refreshed badge within 24h.</p><a class="btn primary" href="../request/?tier=rapid-500">Request a re-verification →</a></div>
+<div><h3>Full Protocol Control-Plane Dossier · $2,500–$5,000 (24h SLA)</h3><p>Every proxy, Safe, Governor and timelock across a protocol or vault suite, reconciled with your docs and attested on Base.</p><a class="btn" href="../request/?tier=clearance">Request a dossier →</a></div>
+</div>
+<p class="s">{E(EDITORIAL_INDEPENDENCE)}</p>
+</div></section>
+</main>
+{footer(count_line, reg, "../")}
+</body></html>
+"""
+    return head("For protocols: control-plane transparency & the Pacta badge · Pacta",
+                "Verify your multisig quorums and timelocks against your docs, reconcile drift and embed a live Base-EAS-attested Pacta badge.",
+                f"{BASE_URL}/for-protocols/", prefix="../", og_title="Turn control-plane transparency into allocator trust") + "\n" + body
 
 
 def request_page(idx):
@@ -2558,16 +2876,22 @@ def main():
     lb = load_leaderboard()
     w("leaderboard/index.html", leaderboard_page(idx, lb, claims))
     w("mcp/index.html", mcp_page(idx))
+    w("for-protocols/index.html", for_protocols_page(idx))
     write_hunter_badges(hunter_stats(lb, claims))
     write_wave2_master_issue(idx)
     w("404.html", not_found_page(idx, sp))       # GitHub Pages serves it for any missing path
     w("robots.txt", ROBOTS_TXT)
     w("theme.js", THEME_JS)                       # theme bootstrap (render-blocking, same origin): no inline JS anywhere
+    w("app.js", minify_js(open(APP_SRC, encoding="utf-8").read()))   # readable source: tools/app.src.js
+    w("api/v1/scorecards.json", scorecards_json(scorecards(idx, pinned, sp)))
+    # root discovery copies (byte-identical): agents that probe /agent.json, /mcp.json or /openapi.json get the canonical files
+    for root_name, src_rel in (("agent.json", ".well-known/agent.json"), ("mcp.json", ".well-known/mcp.json"), ("openapi.json", "api/v1/openapi.json")):
+        w(root_name, open(os.path.join(DOCS, src_rel), encoding="utf-8").read())
     w("feed.xml", atom_feed(idx, radar))
     w("api/v1/feed.json", json_feed(idx, radar))
     urls = ["/", "/request/", "/llms.txt", "/api/v1/index.json", "/api/v1/radar.json"] + [f"/briefs/{k}/" for k in BRIEFS] + \
         [f"/briefs/{b['slug']}/" for b in load_onboarding()["briefs"]] + (["/api/v1/onboarding.json"] if load_onboarding()["briefs"] else []) + \
-        ["/api/v1/proposals.json", "/api/v1/rpc-pinned.json", "/api/v1/lookup.json", "/api/v1/protocols.json", "/api/v1/graph-manifest.json", "/integrations/vault-factories/", "/llms/", "/llms-full.txt", "/SKILL.md", "/.well-known/agent.json", "/.well-known/mcp.json",
+        ["/api/v1/proposals.json", "/api/v1/rpc-pinned.json", "/api/v1/lookup.json", "/api/v1/protocols.json", "/api/v1/graph-manifest.json", "/integrations/vault-factories/", "/for-protocols/", "/llms/", "/llms-full.txt", "/SKILL.md", "/.well-known/agent.json", "/.well-known/mcp.json",
          "/demos/swapio-x402/", "/bounties/", "/leaderboard/", "/mcp/", "/protocols/", "/feed.xml", "/api/v1/feed.json"] + [f"/protocols/{v['slug']}/" for v in sp.values()]
     w("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
       + "".join(f"  <url><loc>{BASE_URL}{u}</loc><lastmod>{today}</lastmod></url>\n" for u in urls) + "</urlset>\n")

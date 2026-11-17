@@ -19,6 +19,9 @@
   --amber-bg: #fcf2df;
   --amber-line: #ecd3a3;
   --green: #0b6b44;
+  --teal: #0e6466;
+  --teal-bg: #e6f2f2;
+  --teal-line: #9cc9c9;
   --green-bg: #e6f4ec;
   --green-line: #b9dfca;
   --gray: #4a505c;
@@ -54,6 +57,9 @@
   --amber-bg: #221a0c;
   --amber-line: #4a3713;
   --green: #5cc394;
+  --teal: #4fbdbd;
+  --teal-bg: #0d2223;
+  --teal-line: #1f4f50;
   --green-bg: #0e1f17;
   --green-line: #1c3f2e;
   --gray: #adb3bd;
@@ -675,3 +681,35 @@ code, .mono, .hx, .addr { overflow-wrap: anywhere; }
 }
 /* long CTA labels (e.g. the dossier button) wrap inside their container at every width, never past the viewport */
 .try-actions .btn, .plan .btn, .actions .btn, .convert-cta .btn, .memo .btn { max-width: 100%; white-space: normal; height: auto; min-height: 36px; padding-top: 8px; padding-bottom: 8px; line-height: 1.35; }
+
+/* ---------- Website Edge v3: grades, rosette, factors, /for-protocols/ ---------- */
+.grade { display: inline-flex; align-items: center; height: 22px; padding: 0 8px; border: 1px solid; border-radius: 2px; font: 650 11.5px/1 var(--mono); letter-spacing: 0.06em; white-space: nowrap; vertical-align: middle; }
+.g-delta { color: var(--amber); background: var(--amber-bg); border-color: var(--amber-line); }
+.g-protective { color: var(--teal); background: var(--teal-bg); border-color: var(--teal-line); }
+.g-aligned { color: var(--green); background: var(--green-bg); border-color: var(--green-line); }
+.g-observed { color: var(--gray); background: var(--gray-bg); border-color: var(--gray-line); }
+.grade-sub { display: inline-flex; align-items: center; height: 22px; margin-left: 4px; padding: 0 6px; border: 1px solid var(--green-line); border-radius: 2px; font: 600 11px/1 var(--sans); color: var(--green); }
+.rosette { display: inline-block; vertical-align: middle; flex: none; }
+.rosette path, .fdot { stroke: var(--line-2); stroke-width: 1; }
+.r-g { fill: var(--green); } .r-b { fill: var(--accent); } .r-a { fill: var(--amber); }
+.r-n, .r-u { fill: none; stroke: var(--faint); stroke-dasharray: 2 1.5; }
+.fdot { display: inline-block; width: 10px; height: 10px; margin-right: 7px; border-radius: 50%; border: 1px solid var(--line-2); vertical-align: -1px; }
+span.r-g { background: var(--green); } span.r-b { background: var(--accent); } span.r-a { background: var(--amber); }
+span.r-n, span.r-u { background: transparent; border: 1px dashed var(--faint); }
+.scorecard .sc-head { display: flex; align-items: center; gap: 14px; margin: 6px 0 12px; }
+.scorecard .sc-head p { margin: 0; }
+.factors { margin: 0; display: grid; gap: 0; border-top: 1px solid var(--line); }
+.factors > div { display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 4px 14px; padding: 9px 0; border-bottom: 1px solid var(--line); }
+.factors dt { font-weight: 600; } .factors dd { margin: 0; overflow-wrap: anywhere; }
+.factors .ev { display: block; margin-top: 3px; color: var(--muted); font-size: 12.5px; }
+.recon { margin: 12px 0 0; padding-left: 18px; }
+.cases { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--line); }
+.case { padding: 18px 20px 18px 0; border-bottom: 1px solid var(--line); min-width: 0; overflow-wrap: anywhere; }
+.case h3 { margin: 0 0 6px; font-size: 16px; } .case-chain { font: 500 12px var(--mono); color: var(--muted); }
+.case-grade { display: flex; align-items: center; gap: 10px; margin: 0 0 8px; }
+.badge-widget select { max-width: 100%; }
+.fp-faq > div { padding: 12px 0; border-bottom: 1px solid var(--line); } .fp-faq dt { font-weight: 600; } .fp-faq dd { margin: 4px 0 0; color: var(--ink-2); }
+.fp-ctas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+.fp-ctas > div { padding: 18px 18px 18px 0; min-width: 0; } .fp-ctas h3 { font-size: 15px; margin: 0 0 6px; }
+.fp-ctas .btn { white-space: normal; height: auto; min-height: 36px; padding-top: 8px; padding-bottom: 8px; max-width: 100%; }
+@media (max-width: 860px) { .cases, .fp-ctas { grid-template-columns: minmax(0, 1fr); } .factors > div { grid-template-columns: minmax(0, 1fr); } }

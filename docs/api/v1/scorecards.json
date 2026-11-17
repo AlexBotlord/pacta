@@ -1,0 +1,4894 @@
+{
+ "description": "One canonical grade per published protocol (DELTA / PROTECTIVE / ALIGNED / OBSERVED) and a 5-factor control-plane rosette derived deterministically from Pacta's published records (index.json, rpc-pinned.json) and controller facts. A factor the published evidence does not decide is 'n' (not determined); docs-vs-chain parity is 'u' (uncompared) for every RPC-observed protocol. States: g strong, b moderate, a weak, n not determined, u uncompared.",
+ "factorCoverage": {
+  "emergency": 25,
+  "parity": 74,
+  "quorum": 63,
+  "timelock": 46,
+  "upgrade": 22
+ },
+ "factors": [
+  {
+   "key": "upgrade",
+   "label": "Upgradeability"
+  },
+  {
+   "key": "timelock",
+   "label": "Timelock floor"
+  },
+  {
+   "key": "quorum",
+   "label": "Signer quorum"
+  },
+  {
+   "key": "emergency",
+   "label": "Emergency / freeze scope"
+  },
+  {
+   "key": "parity",
+   "label": "Docs-vs-chain parity"
+  }
+ ],
+ "grades": {
+  "aligned": {
+   "label": "ALIGNED",
+   "meaning": "Docs and chain match",
+   "protocols": 42
+  },
+  "delta": {
+   "label": "DELTA",
+   "meaning": "Docs and chain differ",
+   "protocols": 24
+  },
+  "observed": {
+   "label": "OBSERVED",
+   "meaning": "Chain pinned; docs not assessed",
+   "protocols": 8
+  },
+  "protective": {
+   "label": "PROTECTIVE",
+   "meaning": "Chain stronger than documented",
+   "protocols": 8
+  }
+ },
+ "protocols": [
+  {
+   "baskets": [
+    "base",
+    "lending_vaults"
+   ],
+   "category": "Lending Market (Base)",
+   "chains": [
+    "base"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": "aave-v3-base-payloads-level1-1d-delay-s19: observed_delay_seconds = 86400",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "b",
+     "value": "1d minimum observed delay"
+    },
+    {
+     "evidence": "controller fact: Safe getThreshold()",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 4-of-7"
+    },
+    {
+     "evidence": "aave-v3-base-emergency-admin-protocol-guardian-4of7-s19: Protocol Guardian Safe (0x56C1a4b54921DEA9A344967a86…",
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "g",
+     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "EMERGENCY_ADMIN (pause / unpause) = Aave Protocol Guardian 4-of-7 Safe",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Aave V3 (Base)",
+   "pinnedBlock": 57886975,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 2,
+   "rosetteAria": "Aave V3 (Base) control-plane rosette: Upgradeability not determined; Timelock floor moderate; Signer quorum strong; Emergency / freeze scope strong; Docs-vs-chain parity strong",
+   "slug": "aave-v3-base",
+   "url": "https://pacta.wtf/protocols/aave-v3-base/"
+  },
+  {
+   "baskets": [
+    "lending_vaults",
+    "stable_rwa"
+   ],
+   "category": "Blue-Chip Lending & Decentralized Stablecoin",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced delay in the published records"
+    },
+    {
+     "evidence": "aave-v3-gho-acl-manager-and-executor-lvl1: …00s / 1d); EMERGENCY_ADMIN held by 4-of-7 Protocol Guardian Safe (0x2CFe3ec4…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 4-of-7"
+    },
+    {
+     "evidence": "aave-v3-gho-acl-manager-and-executor-lvl1: …ENCY_ADMIN held by 4-of-7 Protocol Guardian Safe (0x2CFe3ec4d5a6811f4B8067F0DE…",
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "g",
+     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "ACLManager Admin Role, Executor Lvl1 Delay & Guardian Safe",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Aave V3 / GHO",
+   "pinnedBlock": 26402160,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Aave V3 / GHO control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope strong; Docs-vs-chain parity strong",
+   "slug": "aave-v3-gho",
+   "url": "https://pacta.wtf/protocols/aave-v3-gho/"
+  },
+  {
+   "baskets": [],
+   "category": "Intent-Based Cross-Chain Settlement",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": "across-protocol-hubpool-bond-045-abt-s22: …D681f061DfF03715 (3-of-5, v1.3.0); not a proxy (Sourcify match).",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "g",
+     "value": "Immutable or ownership renounced"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced delay in the published records"
+    },
+    {
+     "evidence": "across-protocol-hubpool-bond-045-abt-s22: …356985D2f267FA010D681f061DfF03715 (3-of-5, v1.3.0); not a proxy (Sourcify ma…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 3-of-5"
+    },
+    {
+     "evidence": "across-protocol-hubpool-bond-045-abt-s22: …AA236109002ea; liveness() = 1800s; paused() = false; owner() = Safe 0xB5247…",
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "g",
+     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "Root-bundle proposals: only allow-listed ABT proposers",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Across Protocol (HubPool)",
+   "pinnedBlock": 26429396,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 2,
+   "rosetteAria": "Across Protocol (HubPool) control-plane rosette: Upgradeability strong; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope strong; Docs-vs-chain parity strong",
+   "slug": "across-protocol-hubpool",
+   "url": "https://pacta.wtf/protocols/across-protocol-hubpool/"
+  },
+  {
+   "baskets": [
+    "base"
+   ],
+   "category": "Base Liquidity Hub & ve(3,3) DEX",
+   "chains": [
+    "base"
+   ],
+   "deltas": 1,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced delay in the published records"
+    },
+    {
+     "evidence": "aerodrome-finance-base-emergency-council-migration-s21: …C2d0b71a0b006243148fdF1a71d054cE0 (3-of-7, v1.5.0, the same 7 signers as the…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 3-of-7"
+    },
+    {
+     "evidence": "aerodrome-finance-base-poolfactory-max-fee-3pct-s21: …volatileFee() = 30 (basis points); pauser() = feeManager() = Safe 0xE6A41fE…",
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "g",
+     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "a",
+     "value": "Documentation differs from the chain (parameter delta)"
+    }
+   ],
+   "finding": "Voter emergency council and epoch governor: the AerodromeMigration contract: docs say github.com/aerodrome-finance/contracts (README): 'EpochGovernor.sol A simple epoch-based governance contract used exclusively for adjusting emissions.' / SPECIFICATION.md: 'Managed NFTs can be deactivated, a process whi… · chain says Voter 0x16613524e02ad97eDfeF371bC883F2F5d6C480A5: emergencyCouncil() = epochGovernor() = AerodromeMigration 0x22a2F7340a3fB4C7C389D91eE954766B12476721 (Sourcify match;",
+   "grade": "delta",
+   "gradeLabel": "DELTA",
+   "name": "Aerodrome Finance (Base)",
+   "pinnedBlock": 58203774,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 2,
+   "rosetteAria": "Aerodrome Finance (Base) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope strong; Docs-vs-chain parity weak",
+   "slug": "aerodrome-finance-base",
+   "url": "https://pacta.wtf/protocols/aerodrome-finance-base/"
+  },
+  {
+   "baskets": [
+    "base"
+   ],
+   "category": "Concentrated-Liquidity DEX",
+   "chains": [
+    "base"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced delay in the published records"
+    },
+    {
+     "evidence": "aerodrome-slipstream-clfactory-team-3of7-s18: …Manager() = unstakedFeeManager() = 3-of-7 Safe 0xE6A41fE61E7a1996B59d508661e…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 3-of-7"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "CLFactory owner, swap & unstaked fee managers = Protocol Team 3-of-7 Safe",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Aerodrome Slipstream (Base)",
+   "pinnedBlock": 57842915,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Aerodrome Slipstream (Base) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "slug": "aerodrome-slipstream-base",
+   "url": "https://pacta.wtf/protocols/aerodrome-slipstream-base/"
+  },
+  {
+   "baskets": [
+    "lending_vaults"
+   ],
+   "category": "Programmable Liquidity Vault",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced delay in the published records"
+    },
+    {
+     "evidence": "balancer-v2-vault-timelock-authorizer-admin-dao-multisig-s21: …7d7F8a52822f6817de8ea18204F2e4f, a 6-of-11 Safe (v1.1.1, no modules).",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 6-of-11"
+    },
+    {
+     "evidence": "balancer-v2-vault-timelock-vault-immutable-pause-expired-s21: …lse, 1626633407, 1629225407) - the pause window and buffer period ended bef…",
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "g",
+     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "Authorizer DEFAULT_ADMIN_ROLE: the 6-of-11 DAO Multi-sig",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Balancer V2 Vault & TimelockAuthorizer",
+   "pinnedBlock": 26427612,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 2,
+   "rosetteAria": "Balancer V2 Vault & TimelockAuthorizer control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope strong; Docs-vs-chain parity strong",
+   "slug": "balancer-v2-vault-timelock",
+   "url": "https://pacta.wtf/protocols/balancer-v2-vault-timelock/"
+  },
+  {
+   "baskets": [
+    "eth_lst_lrt"
+   ],
+   "category": "Liquid Restaking",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "factors": [
+    {
+     "evidence": "bedrock-unieth-control-plane: …14,499 (2,118 bytes runtime code). EIP-1967 implementation slot resolves to 0x8a94866dF557Bb7FCe88EfF991723…",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgradeable; the gating delay is not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced delay in the published records"
+    },
+    {
+     "evidence": "bedrock-unieth-control-plane: …etThreshold() and getOwners() as a 3-of-5 Safe multisig.",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 3-of-5"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "RockXStakingProxy · 3-of-5 Safe Control Plane",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Bedrock (uniETH)",
+   "pinnedBlock": 26414499,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Bedrock (uniETH) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "slug": "bedrock-unieth",
+   "url": "https://pacta.wtf/protocols/bedrock-unieth/"
+  },
+  {
+   "baskets": [
+    "base",
+    "lending_vaults"
+   ],
+   "category": "Automated Yield Vaults & CLM (Base)",
+   "chains": [
+    "base"
+   ],
+   "deltas": 1,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": "beefy-finance-base-fee-config-owner-dev-multisig-s22: …199216c7F7368080Cf41beD8f3AbBc4E4, EIP-1967 admin = ProxyAdmin 0x2b0C9702A4724f2BFe792…",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "a",
+     "value": "Upgradeable with no enforced delay"
+    },
+    {
+     "evidence": "beefy-finance-base-vault-owner-timelock-zero-delay-s22: observed_delay_seconds = 0",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "a",
+     "value": "0s minimum observed delay"
+    },
+    {
+     "evidence": "beefy-finance-base-fee-config-owner-dev-multisig-s22: …C3B38Ec2d631D86e15f328ee6eF6C6226 (3-of-6 Safe, v1.3.0, no modules); transpa…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 3-of-6"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "a",
+     "value": "Documentation differs from the chain (parameter delta)"
+    }
+   ],
+   "finding": "Timelock delay: docs say 6 h · chain says 0 s (no delay)",
+   "grade": "delta",
+   "gradeLabel": "DELTA",
+   "name": "Beefy Finance (Base)",
+   "pinnedBlock": 58315414,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 3,
+   "rosetteAria": "Beefy Finance (Base) control-plane rosette: Upgradeability weak; Timelock floor weak; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
+   "slug": "beefy-finance-base",
+   "url": "https://pacta.wtf/protocols/beefy-finance-base/"
+  },
+  {
+   "baskets": [
+    "stable_rwa"
+   ],
+   "category": "Stablecoin / Credit",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": "cap-1d-timelock-min-delay-s20: observed_delay_seconds = 86400",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "b",
+     "value": "1d minimum observed delay"
+    },
+    {
+     "evidence": "cap-1d-timelock-min-delay-s20: …02dF3ee4f8587268FB89fda4d621a8793 (3-of-5 Safe); the timelock is its own adm…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 3-of-5"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "Access-control admin: the Timelock, not the multisig directly: docs say docs.cap.app (access controls): 'Roles are managed by the Access Control admin, currently set to Cap's multisig address' · chain says AccessControl 0x7731129a10d51e18cDE607C5C115F26503D2c683: the only DEFAULT_ADMIN_ROLE member, and the only grantAccess / revokeAccess holder, is the Timelock 0xD8236031d8279d82E615aF2BFab5FC0127A329ab;",
+   "grade": "protective",
+   "gradeLabel": "PROTECTIVE",
+   "name": "Cap",
+   "pinnedBlock": 26425374,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 3,
+   "rosetteAria": "Cap control-plane rosette: Upgradeability not determined; Timelock floor moderate; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "slug": "cap",
+   "url": "https://pacta.wtf/protocols/cap/"
+  },
+  {
+   "baskets": [
+    "base",
+    "stable_rwa"
+   ],
+   "category": "Institutional RWA Liquidity Pools",
+   "chains": [
+    "base"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "factors": [
+    {
+     "evidence": "centrifuge-liquidity-pools-base-control-plane: …ontract). No single-key Ownable or ProxyAdmin getter exposed on the primary entr…",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgradeable; the gating delay is not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced delay in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "CentrifugeRoot_Base · Non-Proxy Bytecode & Role Architecture",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Centrifuge V3 Root (Base)",
+   "pinnedBlock": 57421449,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Centrifuge V3 Root (Base) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "slug": "centrifuge-liquidity-pools-base",
+   "url": "https://pacta.wtf/protocols/centrifuge-liquidity-pools-base/"
+  },
+  {
+   "baskets": [
+    "base",
+    "stable_rwa"
+   ],
+   "category": "Fiat-Backed Stablecoin (USDC)",
+   "chains": [
+    "base",
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": "circle-usdc-base-proxy-admin-upgrade-key-s23: …422815): admin slot keccak256('org.zeppelinos.proxy.admin') = 0x4fc7850364958d97B4d3f5A08f79…",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "a",
+     "value": "Upgradeable with no enforced delay"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced delay in the published records"
+    },
+    {
+     "evidence": "circle-usdc-base-owner-role-assignment-s23: …40175d20ac31ed523B6733B977173E277 (no contract code); masterMinter() = MasterMinter 0x…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "a",
+     "value": "Lowest controlling quorum: a single key"
+    },
+    {
+     "evidence": "circle-usdc-base-owner-role-assignment-s23: …4A422225E61E435baE41db12096106df7, pauser() = 0xD3571B3bc51CECFf49194AD67aF…",
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "a",
+     "value": "Pause / freeze authority with a single key or 1-of-N"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "USDC (Base) roles: owner, masterMinter, pauser and blacklister are single administrator addresses, as documented",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Circle USDC",
+   "pinnedBlock": 58422815,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 4,
+   "rosetteAria": "Circle USDC control-plane rosette: Upgradeability weak; Timelock floor not determined; Signer quorum weak; Emergency / freeze scope weak; Docs-vs-chain parity strong",
+   "slug": "circle-usdc",
+   "url": "https://pacta.wtf/protocols/circle-usdc/"
+  },
+  {
+   "baskets": [
+    "eth_lst_lrt"
+   ],
+   "category": "Liquid Staking Token (ETH)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced delay in the published records"
+    },
+    {
+     "evidence": "coinbase-wrapped-staked-eth-oracle-exchange-rate-updater-s21: …exact match), whose owner() is an externally owned account 0xA57aFe0Ba93f6854ed1DCd58…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "a",
+     "value": "Lowest controlling quorum: a single key"
+    },
+    {
+     "evidence": "coinbase-wrapped-staked-eth-proxy-admin-separate-owner-s21: …89ABFf2562e854899E24d67A36406eA03, pauser() = 0x9596EAE1744997161ac094252e5…",
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "a",
+     "value": "Pause / freeze authority with a single key or 1-of-N"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "Exchange-rate oracle: the rate-limited ExchangeRateUpdater",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Coinbase Wrapped Staked ETH",
+   "pinnedBlock": 26427612,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 2,
+   "rosetteAria": "Coinbase Wrapped Staked ETH control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum weak; Emergency / freeze scope weak; Docs-vs-chain parity strong",
+   "slug": "coinbase-wrapped-staked-eth",
+   "url": "https://pacta.wtf/protocols/coinbase-wrapped-staked-eth/"
+  },
+  {
+   "baskets": [
+    "base",
+    "lending_vaults"
+   ],
+   "category": "Lending Market (Base)",
+   "chains": [
+    "base"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": "compound-v3-base-mainnet-timelock-local-1d-delay-s19: …1d5425969c15Eb2F), owner() of CometProxyAdmin 0xbdE8F31D2DdDA895264e27DD990faB3D…",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "b",
+     "value": "Upgradeable behind a 1h–47h delay"
+    },
+    {
+     "evidence": "compound-v3-base-mainnet-timelock-local-1d-delay-s19: observed_delay_seconds = 86400",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "b",
+     "value": "1d minimum observed delay"
+    },
+    {
+     "evidence": "compound-v3-base-pause-guardian-community-multisig-5of9-s19: …F3B45F448D9100b118B75a1503281d2ee (5-of-9, v1.3.0), whose 9 owners equal, in…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 5-of-9"
+    },
+    {
+     "evidence": "compound-v3-base-pause-guardian-community-multisig-5of9-s19: …87d4313864e53df431d5425969c15Eb2F) pauseGuardian() = Safe 0x3cb4653F3B45F44…",
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "g",
+     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "Both Base Comet markets are governed by the Ethereum Timelock through a bridge receiver and a 1-day local timelock",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Compound V3 (Base)",
+   "pinnedBlock": 57886975,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 2,
+   "rosetteAria": "Compound V3 (Base) control-plane rosette: Upgradeability moderate; Timelock floor moderate; Signer quorum strong; Emergency / freeze scope strong; Docs-vs-chain parity strong",
+   "slug": "compound-v3-base",
+   "url": "https://pacta.wtf/protocols/compound-v3-base/"
+  },
+  {
+   "baskets": [
+    "lending_vaults"
+   ],
+   "category": "Blue-Chip Lending",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": "compound-v3-comet-timelock-and-pause-safe: observed_delay_seconds = 172800",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "g",
+     "value": "2d minimum observed delay"
+    },
+    {
+     "evidence": "compound-v3-comet-timelock-and-pause-safe: …2D1ff10004c8C0); pauseGuardian() = 5-of-9 Community Pause Safe (0xbbf3f1421D…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 5-of-9"
+    },
+    {
+     "evidence": "compound-v3-comet-timelock-and-pause-safe: …bC1A00e45506cB8A802D1ff10004c8C0); pauseGuardian() = 5-of-9 Community Pause…",
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "g",
+     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "Comet Governor, 48h Timelock & Pause-Guardian Safe",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Compound V3 (Comet)",
+   "pinnedBlock": 26402160,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Compound V3 (Comet) control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum strong; Emergency / freeze scope strong; Docs-vs-chain parity strong",
+   "slug": "compound-v3-comet",
+   "url": "https://pacta.wtf/protocols/compound-v3-comet/"
+  },
+  {
+   "baskets": [
+    "lending_vaults"
+   ],
+   "category": "Yield Vaults (ERC-4626)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 1,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": "concrete-vault-proxy-admin-factory-s20: …8261745CB97070CeFBE3D3d815aee8f20) EIP-1967 admin slot = ConcreteFactory 0x0265d73a8E61F698…",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "a",
+     "value": "Upgradeable with no enforced delay"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced delay in the published records"
+    },
+    {
+     "evidence": "controller fact: Safe getThreshold()",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "a",
+     "value": "Lowest controlling quorum: 1-of-2"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "a",
+     "value": "Documentation differs from the chain (parameter delta)"
+    }
+   ],
+   "finding": "Vault owner, VAULT_MANAGER and factory manager Safe threshold: 1-of-2: docs say docs.concrete.xyz (risks and safety): 'Separated roles. · chain says Safe 0x8F5f1d40243b259cEB7aB44bA421Ff191bCD3381: getThreshold() = 1 with 2 owners;",
+   "grade": "delta",
+   "gradeLabel": "DELTA",
+   "name": "Concrete",
+   "pinnedBlock": 26425374,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 3,
+   "rosetteAria": "Concrete control-plane rosette: Upgradeability weak; Timelock floor not determined; Signer quorum weak; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
+   "slug": "concrete",
+   "url": "https://pacta.wtf/protocols/concrete/"
+  },
+  {
+   "baskets": [],
+   "category": "Curve Governance Aggregation",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced delay in the published records"
+    },
+    {
+     "evidence": "convex-booster-governance-chain: …46611C37CF89844a02435E6C098b86D -> 3-of-5 DAO Multisig (0xa3C5A1e09150B75ff2…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 3-of-5"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "Sampled Booster Governance Ownership Chain",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Convex Finance",
+   "pinnedBlock": 26401312,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Convex Finance control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "slug": "convex-finance",
+   "url": "https://pacta.wtf/protocols/convex-finance/"
+  },
+  {
+   "baskets": [
+    "lending_vaults",
+    "stable_rwa"
+   ],
+   "category": "Decentralized Stablecoin & Lending",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 1,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced delay in the published records"
+    },
+    {
+     "evidence": "curve-crvusd-factory-lending-owner-proxy: …49ed7DB3356) and emergency_dao() = 5-of-9 EmergencyDAO Safe (0x467947EE34aF9…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 5-of-9"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "a",
+     "value": "Documentation differs from the chain (parameter delta)"
+    }
+   ],
+   "finding": "ControllerFactory Admin Proxy & EmergencyDAO Debt-Ceiling Guard: docs say curvefi/docs docs/developer/crvusd/factory.md states 'Only its admin, the CurveOwnershipAgent, can call to add a market'; · chain says ControllerFactory (0xC9332fdCB1C491Dcc683bAe86Fe3cb70360738BC) admin() = LendingOwnerProxy (0xeDA020b067872717901916a3B8C724C21f6080d1), where dao() = CurveOwnershipAgent (0x40907540d8a6C65c637785e8f8B742ae6b0b9968, Ara…",
+   "grade": "delta",
+   "gradeLabel": "DELTA",
+   "name": "Curve Finance (crvUSD)",
+   "pinnedBlock": 26403523,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Curve Finance (crvUSD) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
+   "slug": "curve-finance-crvusd",
+   "url": "https://pacta.wtf/protocols/curve-finance-crvusd/"
+  },
+  {
+   "baskets": [
+    "eth_lst_lrt"
+   ],
+   "category": "Restaking Infrastructure",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": "eigenlayer-core-proxy-admin-and-timelock: …1B77DC0d36036Fc1fCc8Cb819df8Ef37A) EIP-1967 admin slot = Core ProxyAdmin (0x8b9566AdA63B64d…",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "g",
+     "value": "Upgradeable behind a ≥48h delay"
+    },
+    {
+     "evidence": "controller fact: getMinDelay() = 864000s",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "g",
+     "value": "10d minimum observed delay"
+    },
+    {
+     "evidence": "eigenlayer-core-proxy-admin-and-timelock: …dcF1418b43fd1433b72444), owner() = 1-of-2 ExecutorMultisig (0x369e6F597e22Ea…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "a",
+     "value": "Lowest controlling quorum: 1-of-2"
+    },
+    {
+     "evidence": "eigenlayer-core-proxy-admin-and-timelock: …D632A77bA579846c840d5706705Dc598); pauserRegistry() = 0xB8765ed72235d279c3F…",
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "a",
+     "value": "Pause / freeze authority with a single key or 1-of-N"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "Core ProxyAdmin, Dual-Owner Executor Safe & 10d Timelock",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "EigenLayer Core",
+   "pinnedBlock": 26402160,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "EigenLayer Core control-plane rosette: Upgradeability strong; Timelock floor strong; Signer quorum weak; Emergency / freeze scope weak; Docs-vs-chain parity strong",
+   "slug": "eigenlayer-core",
+   "url": "https://pacta.wtf/protocols/eigenlayer-core/"
+  },
+  {
+   "baskets": [],
+   "category": "On-chain Asset Management",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": "enzyme-dispatcher-7d-migration-timelock-s18: observed_delay_seconds = 604800",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "g",
+     "value": "7d minimum observed delay"
+    },
+    {
+     "evidence": "enzyme-dispatcher-7d-migration-timelock-s18: …+ migrationTimelock). getOwner() = 3-of-5 Safe 0xb270FE91e8E4b80452fBF1b4704…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 3-of-5"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "Timelock delay: docs say 0 s (no delay) · chain says 7 d",
+   "grade": "protective",
+   "gradeLabel": "PROTECTIVE",
+   "name": "Enzyme Finance",
+   "pinnedBlock": 26421541,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Enzyme Finance control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "slug": "enzyme-finance",
+   "url": "https://pacta.wtf/protocols/enzyme-finance/"
+  },
+  {
+   "baskets": [
+    "stable_rwa"
+   ],
+   "category": "Synthetic Dollar / Basis Collateral",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 2,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": "controller fact: getMinDelay() = 86400s",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "b",
+     "value": "1d minimum observed delay"
+    },
+    {
+     "evidence": "ethena-admin-timelock-and-dev-safe: …ld() = 5, getOwners().length = 10 (5-of-10 Gnosis Safe).",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 5-of-10"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "a",
+     "value": "Documentation differs from the chain (parameter delta)"
+    }
+   ],
+   "finding": "Timelock delay: docs say 7 d · chain says 1 d",
+   "grade": "delta",
+   "gradeLabel": "DELTA",
+   "name": "Ethena (USDe / sUSDe)",
+   "pinnedBlock": 26406106,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 2,
+   "rosetteAria": "Ethena (USDe / sUSDe) control-plane rosette: Upgradeability not determined; Timelock floor moderate; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
+   "slug": "ethena-usde-susde",
+   "url": "https://pacta.wtf/protocols/ethena-usde-susde/"
+  },
+  {
+   "baskets": [
+    "stable_rwa"
+   ],
+   "category": "RWA-Backed Stablecoin",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": "ethena-usdtb-single-admin-no-timelock-s19: …ds DEFAULT_ADMIN_ROLE and owns the ProxyAdmin 0x3C405F68d5C6eCE868e5646cAC926679…",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "a",
+     "value": "Upgradeable with no enforced delay"
+    },
+    {
+     "evidence": "ethena-usdtb-single-admin-no-timelock-s19: observed_delay_seconds = 0",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "a",
+     "value": "0s minimum observed delay"
+    },
+    {
+     "evidence": "ethena-usdtb-psm-owner-24h-timelock-s19: …e6fCd4a7cEEf8c92C32DFeA9E64dC1862 (5-of-10, v1.3.0) holds PROPOSER_ROLE, CANC…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 5-of-10"
+    },
+    {
+     "evidence": "ethena-usdtb-single-admin-no-timelock-s19: …_BURNER_ROLE, BLOCKLISTER_ROLE and PAUSER_ROLE are each held by one address…",
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "g",
+     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "USDtb PSM owned by a 24-hour TimelockController (Dev multisig proposes), not by the Dev multisig directly: docs say docs.ethena.fi key addresses (Dev multisig): '5/11 signers.' and 'Owner of Ethena's deployed mainnet smart contracts & able to modify contract parameters.' · chain says PSM (0x73E35C5c35A274E34AdE6EB13cC7f62aEE323728).owner() = EthenaTimelockController 0xE8Dc0Fab349EA169283C48Ccfd09d797E6DB7c94 (getMinDelay() = 86400s), which also holds the PSM DEFAULT_ADMIN_ROLE (the Dev multisig does…",
+   "grade": "protective",
+   "gradeLabel": "PROTECTIVE",
+   "name": "Ethena USDtb",
+   "pinnedBlock": 26422243,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 2,
+   "rosetteAria": "Ethena USDtb control-plane rosette: Upgradeability weak; Timelock floor weak; Signer quorum strong; Emergency / freeze scope strong; Docs-vs-chain parity strong",
+   "slug": "ethena-usdtb",
+   "url": "https://pacta.wtf/protocols/ethena-usdtb/"
+  },
+  {
+   "baskets": [
+    "eth_lst_lrt"
+   ],
+   "category": "Liquid Staking & Restaking",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": "etherfi-core-timelocks: …4758a08BaAB3C4908f3e3dE5776e45d7a) getMinDelay() = 172800s (2 days); LiquidityPool (0x308861A…",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "g",
+     "value": "2d minimum observed delay"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "Core Upgrade Timelock (10d) — queued LayerZero V2 setDelegate to Timelock: docs say Public pre-execution brief https://pacta.wtf/briefs/etherfi-op-0x244e/ (decoded calldata, storage-layout and delegate trace). · chain says getMinDelay() = 864000s (10d);",
+   "grade": "protective",
+   "gradeLabel": "PROTECTIVE",
+   "name": "ether.fi Core (eETH / weETH)",
+   "pinnedBlock": 26405302,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 2,
+   "rosetteAria": "ether.fi Core (eETH / weETH) control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "slug": "ether-fi-core-eeth-weeth",
+   "url": "https://pacta.wtf/protocols/ether-fi-core-eeth-weeth/"
+  },
+  {
+   "baskets": [
+    "eth_lst_lrt",
+    "lending_vaults"
+   ],
+   "category": "Curated Restaking Vaults",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": "controller fact: getMinDelay() = 86400s",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "b",
+     "value": "1d minimum observed delay"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "Sampled RolesAuthority Owner & Timelock Wiring",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "ether.fi Liquid / Veda BoringVault",
+   "pinnedBlock": 26401070,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "ether.fi Liquid / Veda BoringVault control-plane rosette: Upgradeability not determined; Timelock floor moderate; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "slug": "ether-fi-liquid-veda-boringvault",
+   "url": "https://pacta.wtf/protocols/ether-fi-liquid-veda-boringvault/"
+  },
+  {
+   "baskets": [
+    "lending_vaults"
+   ],
+   "category": "Modular Lending Vault Kit",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": "controller fact: getMinDelay() = 345600s",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "g",
+     "value": "4d minimum observed delay"
+    },
+    {
+     "evidence": "euler-v2-evk-factorygovernor-4d-timelock-s18: …pen; CANCELLER_ROLE: that Safe and 2-of-3 Safe 0xb3b84e8320250Afe7a5fb313Ee3…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "b",
+     "value": "Lowest controlling quorum: 2-of-3"
+    },
+    {
+     "evidence": "euler-v2-evk-factorygovernor-4d-timelock-s18: …20250Afe7a5fb313Ee32B52982b73c53). PAUSE_GUARDIAN_ROLE has 3 members (2-of-…",
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "g",
+     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "EVK factory upgradeAdmin = FactoryGovernor behind a 4d TimelockController (DAO 4-of-8 proposes)",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Euler V2 (EVK)",
+   "pinnedBlock": 26421541,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Euler V2 (EVK) control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum moderate; Emergency / freeze scope strong; Docs-vs-chain parity strong",
+   "slug": "euler-v2-evk",
+   "url": "https://pacta.wtf/protocols/euler-v2-evk/"
+  },
+  {
+   "baskets": [
+    "base",
+    "lending_vaults"
+   ],
+   "category": "Leveraged Yield & Lending (Base)",
+   "chains": [
+    "base"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced delay in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "ExtraLendingPool_Base · Non-Proxy Bytecode & Role Architecture",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Extra Finance (Base)",
+   "pinnedBlock": 57421449,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Extra Finance (Base) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "slug": "extra-finance-base",
+   "url": "https://pacta.wtf/protocols/extra-finance-base/"
+  },
+  {
+   "baskets": [
+    "stable_rwa"
+   ],
+   "category": "Leveraged ETH / Stablecoin",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 1,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced delay in the published records"
+    },
+    {
+     "evidence": "fx-protocol-v2-treasury-admin: …dAC4c1072658eB01a28DA06b5F651eF62, 3-of-4 Safe), while Timelock (0x68863fb88…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 3-of-4"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "a",
+     "value": "Documentation differs from the chain (parameter delta)"
+    }
+   ],
+   "finding": "ProtocolTreasury DEFAULT_ADMIN_ROLE Holders: docs say LongPoolManager (0x250893CA4Ba5d05626C785e8da758026928FCD24) and v2 governance docs scope EmergencySafe strictly to EMERGENCY_ROLE behind 3-day Timelock admin. · chain says DEFAULT_ADMIN_ROLE (0x00) on all 4 v2 ProtocolTreasury proxies (0x32356FE312Eba9B7D6A157ad28D1ca91b571CdA6, 0xb178197E88D58Da21bE22A408E850d1e6Dc09A38, 0x6D9e81c5b7C4b37d0Fe9E8CDA776e057f4040868, 0x87d5e4cAaF4358A4337C1…",
+   "grade": "delta",
+   "gradeLabel": "DELTA",
+   "name": "f(x) Protocol v2",
+   "pinnedBlock": 26400152,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "f(x) Protocol v2 control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
+   "slug": "f-x-protocol-v2",
+   "url": "https://pacta.wtf/protocols/f-x-protocol-v2/"
+  },
+  {
+   "baskets": [
+    "stable_rwa"
+   ],
+   "category": "Synthetic Dollar",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": "falcon-susdf-zero-cooldown-instant-unstake-s17: observed_delay_seconds = 0",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "a",
+     "value": "0s minimum observed delay"
+    },
+    {
+     "evidence": "falcon-susdf-zero-cooldown-instant-unstake-s17: …4D9b2149AcE) both return owner() = 4-of-6 Safe 0x1E482B60bf19Cb1cc859389e0eA…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 4-of-6"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "sUSDf cooldownDuration() = 0 — instant unstaking to USDf",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Falcon Finance (USDf / sUSDf)",
+   "pinnedBlock": 26418060,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Falcon Finance (USDf / sUSDf) control-plane rosette: Upgradeability not determined; Timelock floor weak; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "slug": "falcon-finance-usdf-susdf",
+   "url": "https://pacta.wtf/protocols/falcon-finance-usdf-susdf/"
+  },
+  {
+   "baskets": [
+    "lending_vaults"
+   ],
+   "category": "Modular Lending & DEX Vaults",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 1,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced delay in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "a",
+     "value": "Documentation differs from the chain (parameter delta)"
+    }
+   ],
+   "finding": "VaultFactory.isVaultAuth Migration Scope: docs say fluid-permissions-and-mutability.md describes narrow fee/reward/magnifier team multisig scope outside migration grants. · chain says isVaultAuth(vault, 0x4F6F977aCDD1177DCD81aB83074855EcB9C2D49e) returns true on Vault 76 (0x7FE0B032cB5982Af72498F96be3DD6566F7B7de8), Vault 110 (0xee327311D8640156E87eC33ea55FcbF2309e0ce6), Vault 111 (0x984636a30ed2B4A6…",
+   "grade": "delta",
+   "gradeLabel": "DELTA",
+   "name": "Fluid / Instadapp",
+   "pinnedBlock": 26401405,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Fluid / Instadapp control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
+   "slug": "fluid-instadapp",
+   "url": "https://pacta.wtf/protocols/fluid-instadapp/"
+  },
+  {
+   "baskets": [
+    "eth_lst_lrt"
+   ],
+   "category": "Liquid Staking & Monetary Infrastructure",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": "frax-ether-upgrade-timelock-24h-s20: …2C0ecf2A1840d018bE783937; owner of ProxyAdmin 0x223a681fc5c5522c85C96157c0efA18c…",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "b",
+     "value": "Upgradeable behind a 1h–47h delay"
+    },
+    {
+     "evidence": "frax-ether-upgrade-timelock-24h-s20: observed_delay_seconds = 86400",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "b",
+     "value": "1d minimum observed delay"
+    },
+    {
+     "evidence": "controller fact: Safe getThreshold()",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 3-of-5"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "frxETHMinter owner: the documented Comptroller",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Frax Ether (frxETH / sfrxETH)",
+   "pinnedBlock": 26425374,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 3,
+   "rosetteAria": "Frax Ether (frxETH / sfrxETH) control-plane rosette: Upgradeability moderate; Timelock floor moderate; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "slug": "frax-ether-sfrxeth",
+   "url": "https://pacta.wtf/protocols/frax-ether-sfrxeth/"
+  },
+  {
+   "baskets": [
+    "lending_vaults",
+    "stable_rwa"
+   ],
+   "category": "Fiat-Redeemable Stablecoin (frxUSD) & Yield Vault",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": "frax-usd-frxusd-admin-upgrades-1d-timelock-s23: …266aF91b8AeD52aCCc382b4e165586E29: EIP-1967 admin = ProxyAdmin 0x0b2C3dF006b2bd43cBCC6…",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "b",
+     "value": "Upgradeable behind a 1h–47h delay"
+    },
+    {
+     "evidence": "frax-usd-frxusd-admin-upgrades-1d-timelock-s23: observed_delay_seconds = 86400",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "b",
+     "value": "1d minimum observed delay"
+    },
+    {
+     "evidence": "frax-usd-sfrxusd-proxyadmin-safe-3of5-s23: …9709f4Ba2Dd82834B8c82D4a505003f27 (3-of-5, v1.3.0; no timelock); timelockAdd…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 3-of-5"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "frxUSD upgrades: ProxyAdmin owned by a 1-day timelock run by the 4-of-7 Frax Safe",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Frax USD (frxUSD)",
+   "pinnedBlock": 26431152,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 3,
+   "rosetteAria": "Frax USD (frxUSD) control-plane rosette: Upgradeability moderate; Timelock floor moderate; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "slug": "frax-usd-frxusd",
+   "url": "https://pacta.wtf/protocols/frax-usd-frxusd/"
+  },
+  {
+   "baskets": [
+    "lending_vaults",
+    "stable_rwa"
+   ],
+   "category": "Leveraged Credit & Curated Lending",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 1,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": "gearbox-v3-legacy-timelock-and-instance-safe: observed_delay_seconds = 129600",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "b",
+     "value": "1d 12h minimum observed delay"
+    },
+    {
+     "evidence": "gearbox-v3-legacy-timelock-and-instance-safe: …9B4D58b75E12dd74641AB955e8B0Df40E, 4-of-12), Treasury (0x7b065Fcb0760dF0CEA8C…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 4-of-12"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "a",
+     "value": "Documentation differs from the chain (parameter delta)"
+    }
+   ],
+   "finding": "Timelock delay: docs say 2 d · chain says 36 h",
+   "grade": "delta",
+   "gradeLabel": "DELTA",
+   "name": "Gearbox V3 / V3.1",
+   "pinnedBlock": 26403523,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Gearbox V3 / V3.1 control-plane rosette: Upgradeability not determined; Timelock floor moderate; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
+   "slug": "gearbox-v3-v3-1",
+   "url": "https://pacta.wtf/protocols/gearbox-v3-v3-1/"
+  },
+  {
+   "baskets": [
+    "lending_vaults"
+   ],
+   "category": "Onchain Capital Allocator (Sky Star)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced delay in the published records"
+    },
+    {
+     "evidence": "grove-finance-freezer-safe-2of5-s21: …3319c86940e5) = true; that Safe is 2-of-5 (v1.4.1, no modules).",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "b",
+     "value": "Lowest controlling quorum: 2-of-5"
+    },
+    {
+     "evidence": "grove-finance-freezer-safe-2of5-s21: …649579Af482DB7198A392A9F5: hasRole(FREEZER, 0xB0113804960345fd0a245788b3423…",
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "g",
+     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "Role admin over allocator custody: Grove SubProxy (Sky governance)",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Grove Finance",
+   "pinnedBlock": 26427612,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 3,
+   "rosetteAria": "Grove Finance control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum moderate; Emergency / freeze scope strong; Docs-vs-chain parity strong",
+   "slug": "grove-finance",
+   "url": "https://pacta.wtf/protocols/grove-finance/"
+  },
+  {
+   "baskets": [
+    "lending_vaults",
+    "stable_rwa"
+   ],
+   "category": "Yield-Bearing Stablecoin",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 1,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": "controller fact: getMinDelay() = 604800s",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "g",
+     "value": "7d minimum observed delay"
+    },
+    {
+     "evidence": "controller fact: Safe getThreshold()",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 4-of-7"
+    },
+    {
+     "evidence": "infinifi-pause-role-admin-minor-roles-s20: …tRoleAdmin(UNPAUSE) = getRoleAdmin(PAUSE) = keccak256(\"MINOR_ROLES_MANAGER\"…",
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "g",
+     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "a",
+     "value": "Documentation differs from the chain (parameter delta)"
+    }
+   ],
+   "finding": "PAUSE / UNPAUSE role admin: MINOR_ROLES_MANAGER, not GOVERNOR: docs say docs.infinifi.xyz (roles documentation): 'PAUSE / Pause protocol functions / GOVERNOR / UNPAUSE / Unpause functions / GOVERNOR' · chain says InfiniFiCore 0xF6d48735EcCf12bDC1DF2674b1ce3fcb3bD25490: getRoleAdmin(UNPAUSE) = getRoleAdmin(PAUSE) = keccak256(\"MINOR_ROLES_MANAGER\") (0x9849206c..6512), whose members are the Team Multisig 0x80608f852D152024c0a2087b1…",
+   "grade": "delta",
+   "gradeLabel": "DELTA",
+   "name": "infiniFi",
+   "pinnedBlock": 26425374,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 3,
+   "rosetteAria": "infiniFi control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum strong; Emergency / freeze scope strong; Docs-vs-chain parity weak",
+   "slug": "infinifi",
+   "url": "https://pacta.wtf/protocols/infinifi/"
+  },
+  {
+   "baskets": [
+    "lending_vaults",
+    "stable_rwa"
+   ],
+   "category": "Fixed-Rate Lending",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 1,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": "inverse-finance-firm-policy-safe: observed_delay_seconds = 172800",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "g",
+     "value": "2d minimum observed delay"
+    },
+    {
+     "evidence": "inverse-finance-firm-policy-safe: …old() = 4, getOwners().length = 7 (4-of-7 Gnosis Safe); GovernorMills.timelo…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 4-of-7"
+    },
+    {
+     "evidence": "inverse-finance-firm-policy-safe: …b0aa4ab551966A7E4B97cec74bb359Bf6) guardian() wrapper (0x941c2699eC7E55a50Bde0…",
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "g",
+     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "a",
+     "value": "Documentation differs from the chain (parameter delta)"
+    }
+   ],
+   "finding": "Policy Committee Safe Quorum & GovernorMills Timelock: docs say Working-groups governance documentation lists 5-of-9 Policy Committee multisig. · chain says GovernorMills (0xBeCCB6bb0aa4ab551966A7E4B97cec74bb359Bf6) guardian() wrapper (0x941c2699eC7E55a50Bde030d8E1e70649839259D) references Policy Committee Safe (0x4b6c63E6a94ef26E2dF60b89372db2d8e211F1B7) with getThreshold(…",
+   "grade": "delta",
+   "gradeLabel": "DELTA",
+   "name": "Inverse Finance (FiRM)",
+   "pinnedBlock": 26406106,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 2,
+   "rosetteAria": "Inverse Finance (FiRM) control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum strong; Emergency / freeze scope strong; Docs-vs-chain parity weak",
+   "slug": "inverse-finance-firm",
+   "url": "https://pacta.wtf/protocols/inverse-finance-firm/"
+  },
+  {
+   "baskets": [
+    "eth_lst_lrt"
+   ],
+   "category": "Liquid Restaking",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": "kelp-dao-rseth-proxy-admin-and-timelock: …9c65A6Fe4DF752f95823fae25cB99e5A7) EIP-1967 admin slot = ProxyAdmin (0xb61e0E39b6d4030C36A1…",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "g",
+     "value": "Upgradeable behind a ≥48h delay"
+    },
+    {
+     "evidence": "controller fact: getMinDelay() = 864000s",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "g",
+     "value": "10d minimum observed delay"
+    },
+    {
+     "evidence": "kelp-dao-rseth-proxy-admin-and-timelock: …D65ec7) DEFAULT_ADMIN_ROLE held by 6-of-11 Safe (0xb3696a817D01C8623E66D156B6…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 6-of-11"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "ProxyAdmin 10d Timelock & LRTConfig Admin Safe",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Kelp DAO (rsETH)",
+   "pinnedBlock": 26406106,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 2,
+   "rosetteAria": "Kelp DAO (rsETH) control-plane rosette: Upgradeability strong; Timelock floor strong; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "slug": "kelp-dao-rseth",
+   "url": "https://pacta.wtf/protocols/kelp-dao-rseth/"
+  },
+  {
+   "baskets": [
+    "eth_lst_lrt"
+   ],
+   "category": "Blue-Chip Liquid Staking",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": "lido-dual-governance-emergency-timelock: observed_delay_seconds = 259200",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "g",
+     "value": "3d minimum observed delay"
+    },
+    {
+     "evidence": "lido-dual-governance-emergency-timelock: …2D86B9347A2688f9bc1808A6d8917760C, 3-of-6 Safe); stETH totalSupply = 9,759,3…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 3-of-6"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "EmergencyProtectedTimelock Delays, DualGovernance & Committee Safes",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Lido (stETH / Dual Governance)",
+   "pinnedBlock": 26403121,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Lido (stETH / Dual Governance) control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "slug": "lido-steth-dual-governance",
+   "url": "https://pacta.wtf/protocols/lido-steth-dual-governance/"
+  },
+  {
+   "baskets": [
+    "eth_lst_lrt"
+   ],
+   "category": "Institutional Liquid Staking",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": "liquid-collective-lseth-admin-multisig-4of7-s19: …b9a0928467c9B1341Da1D7BD5e10b6549) EIP-1967 admin slot = Firewall 0x3A5b4db174a3CC17d8cE40C…",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgradeable; the gating delay is not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced delay in the published records"
+    },
+    {
+     "evidence": "liquid-collective-lseth-admin-multisig-4of7-s19: …c78f985fE1502484Cb98EBfAB66A56B62 (2-of-3) may call pause() but not unpause(…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "b",
+     "value": "Lowest controlling quorum: 2-of-3"
+    },
+    {
+     "evidence": "liquid-collective-lseth-admin-multisig-4of7-s19: …b98EBfAB66A56B62 (2-of-3) may call pause() but not unpause() or upgradeTo(a…",
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "g",
+     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "River (LsETH) upgrade and admin Firewalls are administered by 4-of-7 Safes",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Liquid Collective (LsETH)",
+   "pinnedBlock": 26422243,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 2,
+   "rosetteAria": "Liquid Collective (LsETH) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum moderate; Emergency / freeze scope strong; Docs-vs-chain parity strong",
+   "slug": "liquid-collective-lseth",
+   "url": "https://pacta.wtf/protocols/liquid-collective-lseth/"
+  },
+  {
+   "baskets": [
+    "stable_rwa"
+   ],
+   "category": "Interest-Free ETH-Backed Borrowing",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": "liquity-v1-lusd-core-ownership-renounced-s22: …F8b0231DbFA0DcdA07d7e29faAbCf4bb2: owner() = 0x0; BorrowerOperations 0x24179CD81c9e…",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "g",
+     "value": "Immutable or ownership renounced"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced delay in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "Liquidation thresholds: 110% minimum, 150% in Recovery Mode",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Liquity V1 (LUSD)",
+   "pinnedBlock": 26429396,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 3,
+   "rosetteAria": "Liquity V1 (LUSD) control-plane rosette: Upgradeability strong; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "slug": "liquity-v1-lusd",
+   "url": "https://pacta.wtf/protocols/liquity-v1-lusd/"
+  },
+  {
+   "baskets": [
+    "stable_rwa"
+   ],
+   "category": "Immutable CDP Stablecoin",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": "liquity-v2-bold-immutability: …B91C8c61e952B3bA942cbbfaef5386684) EIP-1967 implementation slot = 0x00...00.",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgradeable; the gating delay is not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced delay in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "Sampled Owner & EIP-1967 Slot Alignment",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Liquity V2 (BOLD)",
+   "pinnedBlock": 26401540,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Liquity V2 (BOLD) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "slug": "liquity-v2-bold",
+   "url": "https://pacta.wtf/protocols/liquity-v2-bold/"
+  },
+  {
+   "baskets": [],
+   "category": "Institutional BTCfi / Liquid Staked Bitcoin",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": "lombard-lbtc-core-proxy-upgrade-timelock: …084f8B84306f72007F36F2618A5634494) EIP-1967 admin slot = ProxyAdmin (0xbae061C73876952aa2C5…",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "b",
+     "value": "Upgradeable behind a 1h–47h delay"
+    },
+    {
+     "evidence": "controller fact: getMinDelay() = 86400s",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "b",
+     "value": "1d minimum observed delay"
+    },
+    {
+     "evidence": "lombard-lbtc-core-proxy-upgrade-timelock: …6400s / 24h, EXECUTOR_ROLE held by 3-of-5 Safe 0x251a604E8E8f6906d60f8dedC5a…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 3-of-5"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "Sampled Core ProxyAdmin Wiring & 24h TimelockController",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Lombard (LBTC)",
+   "pinnedBlock": 26407707,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 2,
+   "rosetteAria": "Lombard (LBTC) control-plane rosette: Upgradeability moderate; Timelock floor moderate; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "slug": "lombard-lbtc",
+   "url": "https://pacta.wtf/protocols/lombard-lbtc/"
+  },
+  {
+   "baskets": [
+    "stable_rwa"
+   ],
+   "category": "Stablecoin Infrastructure",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": "m0-ttg-registrar-governors-match-docs-s17: …EA4A1d44534e1b9227e19CAE6358b80FE; EIP-1967 implementation slot = 0. MinterGateway.ttgRegistrar() re…",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgradeable; the gating delay is not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced delay in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "MToken: no EIP-1967 proxy slots (immutable core logic)",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "M0 Protocol ($M)",
+   "pinnedBlock": 26418060,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 2,
+   "rosetteAria": "M0 Protocol ($M) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "slug": "m0-protocol-m",
+   "url": "https://pacta.wtf/protocols/m0-protocol-m/"
+  },
+  {
+   "baskets": [
+    "eth_lst_lrt"
+   ],
+   "category": "Liquid Staking & Restaking",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": "controller fact: getMinDelay() = 259200s",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "g",
+     "value": "3d minimum observed delay"
+    },
+    {
+     "evidence": "mantle-lsp-meth-upgrade-timelock: …(3 days) and PROPOSER_ROLE held by 6-of-14 Security Council Safe (0x4e59e778a…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 6-of-14"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "Timelock delay: docs say 0 s (no delay) · chain says 3 d",
+   "grade": "protective",
+   "gradeLabel": "PROTECTIVE",
+   "name": "Mantle Liquid Staking (mETH / cmETH)",
+   "pinnedBlock": 26403121,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Mantle Liquid Staking (mETH / cmETH) control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "slug": "mantle-liquid-staking-meth-cmeth",
+   "url": "https://pacta.wtf/protocols/mantle-liquid-staking-meth-cmeth/"
+  },
+  {
+   "baskets": [
+    "stable_rwa"
+   ],
+   "category": "Institutional Credit / RWA",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 1,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced delay in the published records"
+    },
+    {
+     "evidence": "maple-v2-syrup-ppm-admin: EIP-1967 admin slot holds 4-of-7 Maple DAO Safe (0xd6d4Bcde6c816F17…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 4-of-7"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "a",
+     "value": "Documentation differs from the chain (parameter delta)"
+    }
+   ],
+   "finding": "EIP-1967 Proxy Admin Slot vs. GovernorTimelock: docs say Governor admin actions documentation describes GovernorTimelock (3-day delay) governance path. · chain says EIP-1967 admin slot holds 4-of-7 Maple DAO Safe (0xd6d4Bcde6c816F17889f1Dd3000aF0261B03a196);",
+   "grade": "delta",
+   "gradeLabel": "DELTA",
+   "name": "Maple Finance V2 / Syrup",
+   "pinnedBlock": 26401540,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Maple Finance V2 / Syrup control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
+   "slug": "maple-finance-v2-syrup",
+   "url": "https://pacta.wtf/protocols/maple-finance-v2-syrup/"
+  },
+  {
+   "baskets": [
+    "eth_lst_lrt",
+    "lending_vaults"
+   ],
+   "category": "Liquid Restaking / Curated Vaults",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 1,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": "controller fact: getMinDelay() = 0s",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "a",
+     "value": "0s minimum observed delay"
+    },
+    {
+     "evidence": "mellow-lido-earn-curator-quorum: …old() = 3, getOwners().length = 5 (3-of-5 Gnosis Safe); DEFAULT_ADMIN_ROLE (…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 3-of-5"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "a",
+     "value": "Documentation differs from the chain (parameter delta)"
+    }
+   ],
+   "finding": "Curator Safe Quorum & Lazy Admin Signer Overlap: docs say lidofinance/docs (earn/deployment-contracts.md line 199) lists 3/6 multisig; · chain says getThreshold() = 3, getOwners().length = 5 (3-of-5 Gnosis Safe);",
+   "grade": "delta",
+   "gradeLabel": "DELTA",
+   "name": "Mellow Protocol / Lido Earn",
+   "pinnedBlock": 26401312,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Mellow Protocol / Lido Earn control-plane rosette: Upgradeability not determined; Timelock floor weak; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
+   "slug": "mellow-protocol-lido-earn",
+   "url": "https://pacta.wtf/protocols/mellow-protocol-lido-earn/"
+  },
+  {
+   "baskets": [
+    "lending_vaults"
+   ],
+   "category": "Curated Lending Vaults",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 1,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": "metamorpho-re7-weth-guardian-parity: observed_delay_seconds = 259200",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "g",
+     "value": "3d minimum observed delay"
+    },
+    {
+     "evidence": "metamorpho-re7-weth-guardian-parity: …E6d7007FdEcb08A2ee1434Ee677a04433 (2-of-4 Safe), timelock() = 259200s (3d),…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "b",
+     "value": "Lowest controlling quorum: 2-of-4"
+    },
+    {
+     "evidence": "metamorpho-re7-weth-guardian-parity: …Safe), timelock() = 259200s (3d), guardian() = 0x0000000000000000000000000000…",
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "g",
+     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "a",
+     "value": "Documentation differs from the chain (parameter delta)"
+    }
+   ],
+   "finding": "Sampled MetaMorpho Vault Guardian Configuration: docs say Peer Re7 curated vault architecture and Aragon guardian integration. · chain says Re7 WETH owner() = 0xE86399fE6d7007FdEcb08A2ee1434Ee677a04433 (2-of-4 Safe), timelock() = 259200s (3d), guardian() = 0x0000000000000000000000000000000000000000, pendingGuardian() = (0x0, 0);",
+   "grade": "delta",
+   "gradeLabel": "DELTA",
+   "name": "MetaMorpho (Re7 WETH vs. Re7 USDT)",
+   "pinnedBlock": 26401405,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "MetaMorpho (Re7 WETH vs. Re7 USDT) control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum moderate; Emergency / freeze scope strong; Docs-vs-chain parity weak",
+   "slug": "metamorpho-re7-weth-vs-re7-usdt",
+   "url": "https://pacta.wtf/protocols/metamorpho-re7-weth-vs-re7-usdt/"
+  },
+  {
+   "baskets": [
+    "base",
+    "lending_vaults",
+    "stable_rwa"
+   ],
+   "category": "Base Lending & Borrowing",
+   "chains": [
+    "base"
+   ],
+   "deltas": 1,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": "moonwell-temporal-governor-24h-security-council-3of5-s18: observed_delay_seconds = 86400",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "b",
+     "value": "1d minimum observed delay"
+    },
+    {
+     "evidence": "moonwell-pause-guardian-2of4-safe-s18: …c8936a0F13EF26C).pauseGuardian() = 2-of-4 Safe 0x5B710010586C1b728B047c3E424…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "b",
+     "value": "Lowest controlling quorum: 2-of-4"
+    },
+    {
+     "evidence": "moonwell-pause-guardian-2of4-safe-s18: …380beE3312B33c4353c8936a0F13EF26C).pauseGuardian() = 2-of-4 Safe 0x5B710010…",
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "g",
+     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "a",
+     "value": "Documentation differs from the chain (parameter delta)"
+    }
+   ],
+   "finding": "Comptroller pauseGuardian = 2-of-4 Safe (Constitution: pause = Security Council 3-of-5): docs say Moonwell DAO Constitution 8.1: 'The Security Council has the power to execute any pause functionality, or perform other required actions with no delay ... · chain says Unitroller (0xfBb21d0380beE3312B33c4353c8936a0F13EF26C).pauseGuardian() = 2-of-4 Safe 0x5B710010586C1b728B047c3E42473c700eeA4026 (v1.4.1);",
+   "grade": "delta",
+   "gradeLabel": "DELTA",
+   "name": "Moonwell Lending (Base)",
+   "pinnedBlock": 57842915,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 2,
+   "rosetteAria": "Moonwell Lending (Base) control-plane rosette: Upgradeability not determined; Timelock floor moderate; Signer quorum moderate; Emergency / freeze scope strong; Docs-vs-chain parity weak",
+   "slug": "moonwell-lending-base",
+   "url": "https://pacta.wtf/protocols/moonwell-lending-base/"
+  },
+  {
+   "baskets": [
+    "lending_vaults"
+   ],
+   "category": "Base Lending Infrastructure",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced delay in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "Sampled Singleton Owner & Fee/LLTV Bounds",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Morpho Blue Core",
+   "pinnedBlock": 26401070,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Morpho Blue Core control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "slug": "morpho-blue-core",
+   "url": "https://pacta.wtf/protocols/morpho-blue-core/"
+  },
+  {
+   "baskets": [],
+   "category": "Discretionary Mutual / Cover",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": "nexus-mutual-governor-24h-timelock-s18: observed_delay_seconds = 86400",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "b",
+     "value": "1d minimum observed delay"
+    },
+    {
+     "evidence": "nexus-mutual-governor-24h-timelock-s18: …5C8702c9e96Ea61Fe4088C2e22eD4418e, 3-of-5 Safe owned by the 5 seat holders)…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 3-of-5"
+    },
+    {
+     "evidence": "nexus-mutual-governor-24h-timelock-s18: …d upgradeContract is onlyGovernor. Pause: getPauseConfig() = 0; isEmergency…",
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "g",
+     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "Governor: 3 Advisory Board votes + 24h timelock; Registry upgrades every module",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Nexus Mutual",
+   "pinnedBlock": 26421541,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Nexus Mutual control-plane rosette: Upgradeability not determined; Timelock floor moderate; Signer quorum strong; Emergency / freeze scope strong; Docs-vs-chain parity strong",
+   "slug": "nexus-mutual",
+   "url": "https://pacta.wtf/protocols/nexus-mutual/"
+  },
+  {
+   "baskets": [
+    "stable_rwa"
+   ],
+   "category": "Institutional RWA / Tokenized Treasuries",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 1,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": "ondo-ousg-rate-limiter-and-flux-timelock: observed_delay_seconds = 86400",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "b",
+     "value": "1d minimum observed delay"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "a",
+     "value": "Documentation differs from the chain (parameter delta)"
+    }
+   ],
+   "finding": "OUSG RateLimiter Global Subscription Limit & Flux 1d Timelock: docs say docs.ondo.finance/qualified-access-products/ousg/instant-limits.md states 'Instant minting has a $50M Global Limit' and 'Instant redemptions have a $50M Global Limit'; · chain says RateLimiter (0x98Db502215Da1ad9F626D4a0090A8A2f4971003c) globalSubscriptionLimits(0x1B19C19393e2d034D8Ff31ff34c81252FcBbee92) word [2] = 100000000000000000000000000 ($100M per 86400s window), globalRedemptionLimits(OUSG…",
+   "grade": "delta",
+   "gradeLabel": "DELTA",
+   "name": "Ondo Finance (OUSG & Flux Finance)",
+   "pinnedBlock": 26403121,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Ondo Finance (OUSG & Flux Finance) control-plane rosette: Upgradeability not determined; Timelock floor moderate; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
+   "slug": "ondo-finance-ousg-flux-finance",
+   "url": "https://pacta.wtf/protocols/ondo-finance-ousg-flux-finance/"
+  },
+  {
+   "baskets": [
+    "base",
+    "eth_lst_lrt"
+   ],
+   "category": "Supercharged Liquid Staking (Base)",
+   "chains": [
+    "base"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "factors": [
+    {
+     "evidence": "origin-superoeth-base-control-plane: …21,449 (2,402 bytes runtime code). EIP-1967 implementation slot resolves to 0xCcd483cE093682D7D9a41e645EEb7…",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "g",
+     "value": "Upgradeable behind a ≥48h delay"
+    },
+    {
+     "evidence": "origin-superoeth-base-control-plane: observed_delay_seconds = 172800",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "g",
+     "value": "2d minimum observed delay"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "SuperOETHb_VaultProxy · 2d Timelock Admin Path",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Origin Protocol (SuperOETHb Base)",
+   "pinnedBlock": 57421449,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Origin Protocol (SuperOETHb Base) control-plane rosette: Upgradeability strong; Timelock floor strong; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "slug": "origin-superoeth-base",
+   "url": "https://pacta.wtf/protocols/origin-superoeth-base/"
+  },
+  {
+   "baskets": [
+    "stable_rwa"
+   ],
+   "category": "Fiat-Backed Stablecoin (PYUSD)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": "paypal-usd-pyusd-proxy-admin-upgrade-key-s23: …e23A0e8: admin slot keccak256('org.zeppelinos.proxy.admin') = 0xC94BcF6e1d8B3558E3B62e743630…",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "a",
+     "value": "Upgradeable with no enforced delay"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced delay in the published records"
+    },
+    {
+     "evidence": "paypal-usd-pyusd-pause-asset-protection-single-owner-role-s23: …f4f97De7AD0f000B724Fb77fE5ffc024B (no contract code), holding PAUSE_ROLE, ASSET_PROTEC…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "a",
+     "value": "Lowest controlling quorum: a single key"
+    },
+    {
+     "evidence": "paypal-usd-pyusd-pause-asset-protection-single-owner-role-s23: …fc024B (no contract code), holding PAUSE_ROLE, ASSET_PROTECTION_ROLE and DE…",
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "a",
+     "value": "Pause / freeze authority with a single key or 1-of-N"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "Pause and asset-protection roles: one address without contract code, as documented",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "PayPal USD (PYUSD)",
+   "pinnedBlock": 26431152,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 3,
+   "rosetteAria": "PayPal USD (PYUSD) control-plane rosette: Upgradeability weak; Timelock floor not determined; Signer quorum weak; Emergency / freeze scope weak; Docs-vs-chain parity strong",
+   "slug": "paypal-usd-pyusd",
+   "url": "https://pacta.wtf/protocols/paypal-usd-pyusd/"
+  },
+  {
+   "baskets": [
+    "lending_vaults"
+   ],
+   "category": "Yield Tokenization & AMM",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": "pendle-finance-v2-reserve-fee-80-lp-20-s19: …94EB504FB32456ee1); EIP-1967 admin ProxyAdmin 0xA28c08f165116587D4F3E708743B4dEe…",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgradeable; the gating delay is not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced delay in the published records"
+    },
+    {
+     "evidence": "pendle-finance-v2-reserve-fee-80-lp-20-s19: …0A97C2fE2f31e (DEFAULT_ADMIN_ROLE: 3-of-5 Safe 0x8119EC16F0573B7dAc7C0CB94EB…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 3-of-5"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "Market factory sends 80% of swap fees to the treasury, leaving 20% to LPs",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Pendle Finance V2",
+   "pinnedBlock": 26422243,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 2,
+   "rosetteAria": "Pendle Finance V2 control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "slug": "pendle-finance-v2",
+   "url": "https://pacta.wtf/protocols/pendle-finance-v2/"
+  },
+  {
+   "baskets": [
+    "eth_lst_lrt"
+   ],
+   "category": "Native Liquid Restaking",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 1,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": "puffer-7d-timelock-delay-s20: …a39a81a089C06451EBAa4306a72, where upgradeToAndCall maps to role 0, held by the…",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "g",
+     "value": "Upgradeable behind a ≥48h delay"
+    },
+    {
+     "evidence": "puffer-7d-timelock-delay-s20: observed_delay_seconds = 604801",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "g",
+     "value": "168h minimum observed delay"
+    },
+    {
+     "evidence": "controller fact: Safe getThreshold()",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 3-of-6"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "a",
+     "value": "Documentation differs from the chain (parameter delta)"
+    }
+   ],
+   "finding": "Community Multisig threshold: 3-of-7: docs say docs.puffer.fi (multisig): 'Puffer's Community Multisig is a 3-of-6 multisig composed of reputable and aligned Ethereum community members and auditing firms.' · chain says Safe 0x446d4d6b26815f9bA78B5D454E303315D586Cb2a (= Timelock COMMUNITY_MULTISIG()): getThreshold() = 3 with 7 owners (v1.3.0);",
+   "grade": "delta",
+   "gradeLabel": "DELTA",
+   "name": "Puffer Finance (pufETH)",
+   "pinnedBlock": 26425374,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 3,
+   "rosetteAria": "Puffer Finance (pufETH) control-plane rosette: Upgradeability strong; Timelock floor strong; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
+   "slug": "puffer-finance-pufeth",
+   "url": "https://pacta.wtf/protocols/puffer-finance-pufeth/"
+  },
+  {
+   "baskets": [
+    "stable_rwa"
+   ],
+   "category": "Reinsurance-Backed Stablecoin",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": "controller fact: getMinDelay() = 172800s",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "g",
+     "value": "2d minimum observed delay"
+    },
+    {
+     "evidence": "re-safe-sole-timelock-proposer-s21: …lock is its own admin; the Safe is 3-of-5 (v1.4.1, no modules).",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 3-of-5"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "Deposit vault role admin held behind the delay; multisig lacks it: docs say docs.re.xyz (ICL permissions note): 'The Safe holds DEFAULT_ADMIN_ROLE on every ICL (Ethereum reUSD and reUSDe, Avalanche, Arbitrum, Base), alongside the chain's timelock.' and '... · chain says ICL 0x4691C475bE804Fa85f91c2D6D0aDf03114de3093 (shareToken() = reUSD): hasRole(DEFAULT_ADMIN_ROLE, Safe 0x8eec10616802Ef639CA55c98ac856553fAdEfBaD) = false;",
+   "grade": "protective",
+   "gradeLabel": "PROTECTIVE",
+   "name": "Re Protocol (reUSD / reUSDe)",
+   "pinnedBlock": 26427612,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 3,
+   "rosetteAria": "Re Protocol (reUSD / reUSDe) control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "slug": "re",
+   "url": "https://pacta.wtf/protocols/re/"
+  },
+  {
+   "baskets": [
+    "eth_lst_lrt"
+   ],
+   "category": "Liquid Restaking",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 1,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced delay in the published records"
+    },
+    {
+     "evidence": "renzo-ezeth-deposit-queue-fee: …fD54Eceb5b9a51dA2eC329D6D4B68A) is 3-of-5 Gnosis Safe; ezETH (0xbf5495Efe5DB…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 3-of-5"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "a",
+     "value": "Documentation differs from the chain (parameter delta)"
+    }
+   ],
+   "finding": "DepositQueue.feeBasisPoints Parameter vs. Staking Docs: docs say docs.renzoprotocol.com/docs/products/staking-suite/ezeth states 10% fee on restaking rewards. · chain says feeBasisPoints() = 1500 (15%);",
+   "grade": "delta",
+   "gradeLabel": "DELTA",
+   "name": "Renzo Protocol (ezETH)",
+   "pinnedBlock": 26401725,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Renzo Protocol (ezETH) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
+   "slug": "renzo-protocol-ezeth",
+   "url": "https://pacta.wtf/protocols/renzo-protocol-ezeth/"
+  },
+  {
+   "baskets": [],
+   "category": "Asset-Backed RToken Infrastructure",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced delay in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "Long freeze: 1 week, the documented default",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Reserve Protocol (eUSD RToken)",
+   "pinnedBlock": 26431152,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 3,
+   "rosetteAria": "Reserve Protocol (eUSD RToken) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "slug": "reserve-protocol-rtoken",
+   "url": "https://pacta.wtf/protocols/reserve-protocol-rtoken/"
+  },
+  {
+   "baskets": [
+    "stable_rwa"
+   ],
+   "category": "Delta-Neutral Synthetic Dollar",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": "resolv-usr-default-admin-delay-and-safe: observed_delay_seconds = 86400",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "b",
+     "value": "1d minimum observed delay"
+    },
+    {
+     "evidence": "resolv-usr-default-admin-delay-and-safe: …D6c05F4DECf3e110) defaultAdmin() = 4-of-6 Core Safe (0xD6889F307BE1b83Bb355d…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 4-of-6"
+    },
+    {
+     "evidence": "resolv-usr-default-admin-delay-and-safe: …EFB31f5fA2843Eeb4B331eaFA0) return paused() = true; USR totalSupply = 6,085…",
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "g",
+     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "Sampled USR AccessControlDefaultAdminRules Delay & Request Counters",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Resolv (USR / RLP)",
+   "pinnedBlock": 26403523,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Resolv (USR / RLP) control-plane rosette: Upgradeability not determined; Timelock floor moderate; Signer quorum strong; Emergency / freeze scope strong; Docs-vs-chain parity strong",
+   "slug": "resolv-usr-rlp",
+   "url": "https://pacta.wtf/protocols/resolv-usr-rlp/"
+  },
+  {
+   "baskets": [
+    "lending_vaults",
+    "stable_rwa"
+   ],
+   "category": "CDP Stablecoin (reUSD) & Lending Markets",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 1,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": "resupply-guardian-role-main-multisig-s22: …044F95655c11fda4cD37F70A94d7e0a7d; ERC-1967 proxy with implementation GuardianUpgra…",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "b",
+     "value": "Upgradeable behind a 1h–47h delay"
+    },
+    {
+     "evidence": "resupply-core-voter-execution-delay-1d-s22: observed_delay_seconds = 86400",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "b",
+     "value": "1d minimum observed delay"
+    },
+    {
+     "evidence": "resupply-main-multisig-3of5-s22: …09f2121622271e7dd0FD470264e076af6: 3-of-5 (getThreshold() = 3, getOwners() =…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 3-of-5"
+    },
+    {
+     "evidence": "resupply-guardian-role-main-multisig-s22: Guardian operator proxy 0xA4745e0B1F40ab3DC…",
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "g",
+     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "a",
+     "value": "Documentation differs from the chain (parameter delta)"
+    }
+   ],
+   "finding": "Safe threshold: docs say 3-of-4 · chain says 3-of-5",
+   "grade": "delta",
+   "gradeLabel": "DELTA",
+   "name": "Resupply",
+   "pinnedBlock": 26429396,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 4,
+   "rosetteAria": "Resupply control-plane rosette: Upgradeability moderate; Timelock floor moderate; Signer quorum strong; Emergency / freeze scope strong; Docs-vs-chain parity weak",
+   "slug": "resupply",
+   "url": "https://pacta.wtf/protocols/resupply/"
+  },
+  {
+   "baskets": [
+    "eth_lst_lrt"
+   ],
+   "category": "Decentralized Liquid Staking",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 1,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": "rocket-pool-reth-upgrade-delay-1w-s19: observed_delay_seconds = 604800",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "g",
+     "value": "7d minimum observed delay"
+    },
+    {
+     "evidence": "rocket-pool-reth-security-council-leave-time-28d-s19: …34f15dE064b56afEdF7B0F59C15bB20FE (2-of-3).",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "b",
+     "value": "Lowest controlling quorum: 2-of-3"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "a",
+     "value": "Documentation differs from the chain (parameter delta)"
+    }
+   ],
+   "finding": "Security council members.leave.time = 28 days (RPIP-33 bound: < 14 days): docs say rpips.rocketpool.net RPIP-33 parameter table, members.leave.time: 'How long a member must give notice for before manually leaving the security council' with the bound '< 14 days' · chain says RocketDAOProtocolSettingsSecurity (0xC9D771AaF504F33bB3C8a7E67eA9f1881F837cFf).getLeaveTime() = 2419200s (28 days).",
+   "grade": "delta",
+   "gradeLabel": "DELTA",
+   "name": "Rocket Pool (rETH)",
+   "pinnedBlock": 26422243,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 3,
+   "rosetteAria": "Rocket Pool (rETH) control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum moderate; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
+   "slug": "rocket-pool-reth",
+   "url": "https://pacta.wtf/protocols/rocket-pool-reth/"
+  },
+  {
+   "baskets": [],
+   "category": "Smart Account & Multisig Custody Core",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced delay in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "SafeSingleton_v1_4_1 & SafeProxyFactory_v1_4_1 Control Plane",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Safe Smart Account (v1.4.1 Singleton)",
+   "pinnedBlock": 26414499,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Safe Smart Account (v1.4.1 Singleton) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "slug": "safe-singleton-core",
+   "url": "https://pacta.wtf/protocols/safe-singleton-core/"
+  },
+  {
+   "baskets": [
+    "base",
+    "lending_vaults"
+   ],
+   "category": "Base Lending & Integrated Liquidity",
+   "chains": [
+    "base"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "factors": [
+    {
+     "evidence": "seamless-protocol-base-control-plane: …ontract). No single-key Ownable or ProxyAdmin getter exposed on the primary entr…",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgradeable; the gating delay is not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced delay in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "SeamlessPoolAddressesProvider · Non-Proxy Bytecode & Role Architecture",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Seamless Protocol (Base)",
+   "pinnedBlock": 57421449,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Seamless Protocol (Base) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "slug": "seamless-protocol-base",
+   "url": "https://pacta.wtf/protocols/seamless-protocol-base/"
+  },
+  {
+   "baskets": [],
+   "category": "Bitcoin Reserve / Wrapped BTC",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": "solv-solvbtc-upgrade-beacon-3d-timelock-s17: …utating path (setImplementation -> upgradeTo, transferBeaconOwnership, importBe…",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "g",
+     "value": "Upgradeable behind a ≥48h delay"
+    },
+    {
+     "evidence": "controller fact: getMinDelay() = 259200s",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "g",
+     "value": "3d minimum observed delay"
+    },
+    {
+     "evidence": "solv-solvbtc-owner-3of5-safe-s17: …742a1832B028F0456652F97).owner() = 3-of-5 Safe 0x0c2Bc4d2698820e12E6eBe863E7…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 3-of-5"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "SolvBTC beacon upgrades behind a 3d TimelockController (docs: timelock 'will be added'): docs say docs.solv.finance/llms-full.txt: 'The admin privileges for upgrades are assigned to a Gnosis Safe multi-signature address ... · chain says SolvBTC is a beacon proxy: EIP-1967 beacon slot = UpgradeableBeacon 0xFc335FdA7E6a33329A83F4d5F578eC7d8A43DC4A (implementation() = 0xA4b6cf2BAaA235ab7Fe10EADB84b82460165B38F), whose owner() = SolvBTCFactory 0x443628281E…",
+   "grade": "protective",
+   "gradeLabel": "PROTECTIVE",
+   "name": "Solv Protocol (SolvBTC)",
+   "pinnedBlock": 26418060,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 2,
+   "rosetteAria": "Solv Protocol (SolvBTC) control-plane rosette: Upgradeability strong; Timelock floor strong; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "slug": "solv-protocol-solvbtc",
+   "url": "https://pacta.wtf/protocols/solv-protocol-solvbtc/"
+  },
+  {
+   "baskets": [
+    "stable_rwa"
+   ],
+   "category": "Decentralized Credit & Liquidity",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": "spark-sky-gsm-pause-delay: GSM_PAUSE_PROXY.delay() = 172800s (48 hours); Spark PoolAddressesPro…",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "g",
+     "value": "2d minimum observed delay"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "Sampled PoolAddressesProvider Owner & GSM Delay",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Spark / Sky",
+   "pinnedBlock": 26401638,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Spark / Sky control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "slug": "spark-sky",
+   "url": "https://pacta.wtf/protocols/spark-sky/"
+  },
+  {
+   "baskets": [
+    "eth_lst_lrt"
+   ],
+   "category": "Distributed Validator Infrastructure",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": "ssv-network-dao-multisig-owns-network-s21: …6e4 has the same owner(); both are UUPS proxies (empty EIP-1967 admin slot…",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgradeable; the gating delay is not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced delay in the published records"
+    },
+    {
+     "evidence": "ssv-network-dao-multisig-owns-network-s21: …4fdb9bBac63E3AdaE0Bbde512B2E6b6, a 5-of-9 Safe (v1.3.0, no modules); pending…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 5-of-9"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "SSVNetwork and SSVNetworkViews owner: the DAO governance multisig",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "SSV Network",
+   "pinnedBlock": 26427612,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 2,
+   "rosetteAria": "SSV Network control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "slug": "ssv-network",
+   "url": "https://pacta.wtf/protocols/ssv-network/"
+  },
+  {
+   "baskets": [
+    "eth_lst_lrt"
+   ],
+   "category": "Liquid Staking",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 1,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": "stader-ethx-manager-safe-and-timelock: …1Ce002FBF2058D22F30f95D405200A15b) EIP-1967 admin slot = ProxyAdmin (0x67B12264Ca3e0037Fc7E…",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "g",
+     "value": "Upgradeable behind a ≥48h delay"
+    },
+    {
+     "evidence": "controller fact: getMinDelay() = 604800s",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "g",
+     "value": "7d minimum observed delay"
+    },
+    {
+     "evidence": "stader-ethx-manager-safe-and-timelock: …old() = 3, getOwners().length = 6 (3-of-6 Gnosis Safe); ETHx (0xA35b1B31Ce00…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 3-of-6"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "a",
+     "value": "Documentation differs from the chain (parameter delta)"
+    }
+   ],
+   "finding": "Safe threshold: docs say 3-of-5 · chain says 3-of-6",
+   "grade": "delta",
+   "gradeLabel": "DELTA",
+   "name": "Stader Labs (ETHx)",
+   "pinnedBlock": 26403676,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Stader Labs (ETHx) control-plane rosette: Upgradeability strong; Timelock floor strong; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
+   "slug": "stader-labs-ethx",
+   "url": "https://pacta.wtf/protocols/stader-labs-ethx/"
+  },
+  {
+   "baskets": [
+    "lending_vaults"
+   ],
+   "category": "Liquid Lockers & Yield Strategies",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 2,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": "stake-dao-timelock-owns-protocol-controller-s22: …E1362bC2d8E6a; pendingOwner() = 0; not a proxy (Sourcify exact match); the timelo…",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "g",
+     "value": "Immutable or ownership renounced"
+    },
+    {
+     "evidence": "controller fact: getMinDelay() = 432000s",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "g",
+     "value": "5d minimum observed delay"
+    },
+    {
+     "evidence": "stake-dao-timelock-executor-permissioned-s22: …860CE5C0202976Db056b5e3Cc4f9CC765 (3-of-5, Safe v1.3.0, 3 modules enabled) h…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 3-of-5"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "a",
+     "value": "Documentation differs from the chain (parameter delta)"
+    }
+   ],
+   "finding": "Timelock delay: docs say 2 d · chain says 5 d",
+   "grade": "delta",
+   "gradeLabel": "DELTA",
+   "name": "Stake DAO",
+   "pinnedBlock": 26429396,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 4,
+   "rosetteAria": "Stake DAO control-plane rosette: Upgradeability strong; Timelock floor strong; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
+   "slug": "stake-dao",
+   "url": "https://pacta.wtf/protocols/stake-dao/"
+  },
+  {
+   "baskets": [
+    "eth_lst_lrt"
+   ],
+   "category": "Liquid Staking (LINK)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": "controller fact: getMinDelay() = 172800s",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "g",
+     "value": "2d minimum observed delay"
+    },
+    {
+     "evidence": "controller fact: Safe getThreshold()",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 6-of-8"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "GovernanceTimelock delay: 48 hours",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "stake.link",
+   "pinnedBlock": 26425374,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 3,
+   "rosetteAria": "stake.link control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "slug": "stake-link",
+   "url": "https://pacta.wtf/protocols/stake-link/"
+  },
+  {
+   "baskets": [
+    "eth_lst_lrt"
+   ],
+   "category": "Liquid Staking Infrastructure",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced delay in the published records"
+    },
+    {
+     "evidence": "stakewise-v3-oseth-oracle-quorum-and-ltv: …) = 6, validatorsMinOracles() = 6 (6-of-11 oracle signature quorum); osETH (0…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 6-of-11"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "Sampled Keeper Oracle Quorum, osETH Fee & LTV Configuration",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "StakeWise V3 (osETH)",
+   "pinnedBlock": 26403676,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "StakeWise V3 (osETH) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "slug": "stakewise-v3-oseth",
+   "url": "https://pacta.wtf/protocols/stakewise-v3-oseth/"
+  },
+  {
+   "baskets": [],
+   "category": "Cross-chain Liquidity / Bridge",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced delay in the published records"
+    },
+    {
+     "evidence": "stargate-v2-onesig-5of7-owner-planner-fees-s18: …D04c4F243C0Fd04A5510D663CB88b5 (an EOA) = TokenMessaging.planner() = FeeL…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "a",
+     "value": "Lowest controlling quorum: a single key"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "V2 pool, TokenMessaging & Treasurer owner = 5-of-7 OneSig multisig; planner sets fees",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Stargate V2",
+   "pinnedBlock": 26421541,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Stargate V2 control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum weak; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "slug": "stargate-v2",
+   "url": "https://pacta.wtf/protocols/stargate-v2/"
+  },
+  {
+   "baskets": [
+    "base",
+    "lending_vaults"
+   ],
+   "category": "Curated Lending Vault (MetaMorpho)",
+   "chains": [
+    "base"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": "steakhouse-usdc-base-timelock-7d-s17: observed_delay_seconds = 604800",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "g",
+     "value": "7d minimum observed delay"
+    },
+    {
+     "evidence": "steakhouse-usdc-base-timelock-7d-s17: …0651E6a05CD2dE69e624B94C04eAf5 has no contract code (eth_getCode = 0x on Base and on E…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "a",
+     "value": "Lowest controlling quorum: a single key"
+    },
+    {
+     "evidence": "steakhouse-usdc-base-timelock-7d-s17: …, not compared with documentation: guardian() = 0x9e0FdDDa790651E6a05CD2dE69e6…",
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "a",
+     "value": "Pause / freeze authority with a single key or 1-of-N"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "MetaMorpho timelock() = 7d (604800s)",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Steakhouse USDC MetaMorpho (Base)",
+   "pinnedBlock": 57635450,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Steakhouse USDC MetaMorpho (Base) control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum weak; Emergency / freeze scope weak; Docs-vs-chain parity strong",
+   "slug": "steakhouse-usdc-metamorpho-base",
+   "url": "https://pacta.wtf/protocols/steakhouse-usdc-metamorpho-base/"
+  },
+  {
+   "baskets": [
+    "base",
+    "lending_vaults"
+   ],
+   "category": "Omnichain ERC-7579 Vault & Yield Infrastructure",
+   "chains": [
+    "base"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced delay in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "SuperGovernor & SuperVaultAggregator Control Plane",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Superform Core v2 (Base)",
+   "pinnedBlock": 57421449,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Superform Core v2 (Base) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "slug": "superform-v2-base",
+   "url": "https://pacta.wtf/protocols/superform-v2-base/"
+  },
+  {
+   "baskets": [
+    "stable_rwa"
+   ],
+   "category": "Institutional RWA / Tokenized Funds",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced delay in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "Sampled USDC Subscription Fee & Fund Supply Alignment",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Superstate (USTB / USCC)",
+   "pinnedBlock": 26403676,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Superstate (USTB / USCC) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "slug": "superstate-ustb-uscc",
+   "url": "https://pacta.wtf/protocols/superstate-ustb-uscc/"
+  },
+  {
+   "baskets": [
+    "eth_lst_lrt"
+   ],
+   "category": "Liquid Staking & Restaking",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": "swell-sweth-rsweth-timelock-and-reprice-bounds: …e82926178EaC7DEd78) EIP-1967 admin ProxyAdmin (0x25EAf579cA2255fAA5463c635eec286…",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "g",
+     "value": "Upgradeable behind a ≥48h delay"
+    },
+    {
+     "evidence": "swell-sweth-rsweth-timelock-and-reprice-bounds: observed_delay_seconds = 604800",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "g",
+     "value": "7d minimum observed delay"
+    },
+    {
+     "evidence": "swell-sweth-rsweth-timelock-and-reprice-bounds: …delay() = 604800s / 7d, admin() = 4-of-7 Safe 0x20fDF47509C5eFC0e1101e3CE44…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 4-of-7"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "Sampled 7-Day SwellTimelock, ProxyAdmins & Reprice Bounds",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Swell (swETH / rswETH)",
+   "pinnedBlock": 26403676,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Swell (swETH / rswETH) control-plane rosette: Upgradeability strong; Timelock floor strong; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "slug": "swell-sweth-rsweth",
+   "url": "https://pacta.wtf/protocols/swell-sweth-rsweth/"
+  },
+  {
+   "baskets": [
+    "eth_lst_lrt"
+   ],
+   "category": "Restaking Infrastructure",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced delay in the published records"
+    },
+    {
+     "evidence": "symbiotic-core-immutable-registries-and-safes: …0x00...00); VaultFactory.owner() = 2-of-3 Gnosis Safe (0x5721ce64Ee0D772Ce61…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "b",
+     "value": "Lowest controlling quorum: 2-of-3"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "Sampled Non-Upgradeable Core Registries & Factory/Adapter Safes",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Symbiotic Core",
+   "pinnedBlock": 26403121,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Symbiotic Core control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum moderate; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "slug": "symbiotic-core",
+   "url": "https://pacta.wtf/protocols/symbiotic-core/"
+  },
+  {
+   "baskets": [],
+   "category": "Derivatives Liquidity Infrastructure",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced delay in the published records"
+    },
+    {
+     "evidence": "synthetix-v3-core-control-plane: …etThreshold() and getOwners() as a 4-of-7 Safe multisig.",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 4-of-7"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "SynthetixCoreProxy · 4-of-7 Safe Control Plane",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Synthetix V3 Core",
+   "pinnedBlock": 26414499,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Synthetix V3 Core control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "slug": "synthetix-v3-core",
+   "url": "https://pacta.wtf/protocols/synthetix-v3-core/"
+  },
+  {
+   "baskets": [
+    "stable_rwa"
+   ],
+   "category": "Fiat-Backed Stablecoin (USDT)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced delay in the published records"
+    },
+    {
+     "evidence": "tether-usdt-token-live-blacklist-under-owner-s23: …e and deprecate are onlyOwner (the 3-of-6 MultiSigWallet 0xC6CDE7C39eB2f0F00…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 3-of-6"
+    },
+    {
+     "evidence": "tether-usdt-token-live-blacklist-under-owner-s23: …58D2ee523a2206206994597C13D831ec7: deprecated() = false, upgradedAddress() = 0x…",
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "g",
+     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "Owner: a 3-of-6 MultiSigWallet (multi-signature authorization)",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Tether USDT",
+   "pinnedBlock": 26431152,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 2,
+   "rosetteAria": "Tether USDT control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope strong; Docs-vs-chain parity strong",
+   "slug": "tether-usdt",
+   "url": "https://pacta.wtf/protocols/tether-usdt/"
+  },
+  {
+   "baskets": [],
+   "category": "Decentralized Bitcoin Bridge",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": "threshold-tbtc-timelock-1d-walletregistry-op-0xb667: …led upgradeAndCall (0x9623609d) on ProxyAdmin (0x7Affa05f726D293eB1193807A916173…",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "b",
+     "value": "Upgradeable behind a 1h–47h delay"
+    },
+    {
+     "evidence": "controller fact: getMinDelay() = 86400s",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "b",
+     "value": "1d minimum observed delay"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "tBTC TimelockController 1d delay — public WalletRegistry upgradeAndCall schedule",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Threshold Network (tBTC)",
+   "pinnedBlock": 26407707,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Threshold Network (tBTC) control-plane rosette: Upgradeability moderate; Timelock floor moderate; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "slug": "threshold-network-tbtc",
+   "url": "https://pacta.wtf/protocols/threshold-network-tbtc/"
+  },
+  {
+   "baskets": [
+    "eth_lst_lrt"
+   ],
+   "category": "Fixed Income / LST",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": "controller fact: getMinDelay() = 432000s",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "g",
+     "value": "5d minimum observed delay"
+    },
+    {
+     "evidence": "treehouse-tree-timelock-op-0x2f11: …able module whose blacklister is a 5-of-7 Safe; after execution that Safe ca…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 5-of-7"
+    },
+    {
+     "evidence": "treehouse-tree-timelock-op-0x2f11: …26B0F887e6C1126EffA6, which adds a Blacklistable module whose blacklister is a…",
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "g",
+     "value": "Pause / freeze authority scoped behind a multi-signer controller"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "TREE UUPS owner = 5d TimelockController — queued Blacklistable upgrade",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Treehouse (TREE / tETH)",
+   "pinnedBlock": 26407707,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 2,
+   "rosetteAria": "Treehouse (TREE / tETH) control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum strong; Emergency / freeze scope strong; Docs-vs-chain parity strong",
+   "slug": "treehouse-tree-teth",
+   "url": "https://pacta.wtf/protocols/treehouse-tree-teth/"
+  },
+  {
+   "baskets": [],
+   "category": "Blue-Chip DEX & Governance",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 1,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": "uniswap-governance-timelock-delay-2d-s23: observed_delay_seconds = 172800",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "g",
+     "value": "2d minimum observed delay"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "a",
+     "value": "Documentation differs from the chain (parameter delta)"
+    }
+   ],
+   "finding": "Voting period: 40,320 blocks (~5.6 days at 12-second slots), not 7 days: docs say developers.uniswap.org (governance process): '7-day voting period for the community to vote' / 'Duration: 2-day waiting period, 7-day voting period, 2-day timelock (if passed)' · chain says GovernorBravoDelegator 0x408ED6354d4973f66138C91495F2f2FCbd8724C3: votingPeriod() = 40320 blocks = 483,840s (5.6 days) at 12-second slots;",
+   "grade": "delta",
+   "gradeLabel": "DELTA",
+   "name": "Uniswap V3 & Governance Timelock",
+   "pinnedBlock": 26431152,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 4,
+   "rosetteAria": "Uniswap V3 & Governance Timelock control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
+   "slug": "uniswap-governance-timelock",
+   "url": "https://pacta.wtf/protocols/uniswap-governance-timelock/"
+  },
+  {
+   "baskets": [
+    "stable_rwa"
+   ],
+   "category": "RWA Stablecoin",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 1,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": "usual-money-registry-access-delay: observed_delay_seconds = 1",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "a",
+     "value": "1s minimum observed delay"
+    },
+    {
+     "evidence": "usual-money-registry-access-delay: …C80D69b1f508560Bc7aeA5003db1f7FB7 (8-of-15 Gnosis Safe).",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 8-of-15"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "a",
+     "value": "Documentation differs from the chain (parameter delta)"
+    }
+   ],
+   "finding": "Timelock delay: docs say 3 d · chain says 1 s",
+   "grade": "delta",
+   "gradeLabel": "DELTA",
+   "name": "Usual Money (USD0 / USD0++)",
+   "pinnedBlock": 26401725,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Usual Money (USD0 / USD0++) control-plane rosette: Upgradeability not determined; Timelock floor weak; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
+   "slug": "usual-money-usd0-usd0",
+   "url": "https://pacta.wtf/protocols/usual-money-usd0-usd0/"
+  },
+  {
+   "baskets": [
+    "lending_vaults"
+   ],
+   "category": "Yield Aggregation Vaults",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": "controller fact: getMinDelay() = 604800s",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "g",
+     "value": "7d minimum observed delay"
+    },
+    {
+     "evidence": "yearn-v3-role-manager-timelock: …3d60FFE0661Cf7F1f31a7D658aC790ff7 (3-of-6 Safe).",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 3-of-6"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "Timelock delay: docs say 0 s (no delay) · chain says 7 d",
+   "grade": "protective",
+   "gradeLabel": "PROTECTIVE",
+   "name": "Yearn V3",
+   "pinnedBlock": 26401725,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 1,
+   "rosetteAria": "Yearn V3 control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "slug": "yearn-v3",
+   "url": "https://pacta.wtf/protocols/yearn-v3/"
+  },
+  {
+   "baskets": [
+    "base",
+    "lending_vaults"
+   ],
+   "category": "Cross-Chain Yield Optimizer Vaults",
+   "chains": [
+    "base"
+   ],
+   "deltas": 1,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": "yo-protocol-vault-upgrades-behind-timelock-s22: …53490CB9Fa922847385D82fe25d0E9De7: EIP-1967 admin = ProxyAdmin 0xd460CF1f5D764acAD1c32…",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "a",
+     "value": "Upgradeable with no enforced delay"
+    },
+    {
+     "evidence": "yo-protocol-approval-registry-owner-admin-safe-s22: observed_delay_seconds = 0",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "a",
+     "value": "0s minimum observed delay"
+    },
+    {
+     "evidence": "yo-protocol-approval-registry-owner-admin-safe-s22: …9F1c8040414032a3C2C88a54db144FCd2 (4-of-6 Safe, v1.4.1, no modules), not the…",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 4-of-6"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "a",
+     "value": "Documentation differs from the chain (parameter delta)"
+    }
+   ],
+   "finding": "Timelock delay: docs say 2 d · chain says 0 s (no delay)",
+   "grade": "delta",
+   "gradeLabel": "DELTA",
+   "name": "YO Protocol",
+   "pinnedBlock": 58315414,
+   "reconciled": false,
+   "reconciledFrom": [],
+   "records": 3,
+   "rosetteAria": "YO Protocol control-plane rosette: Upgradeability weak; Timelock floor weak; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
+   "slug": "yo-protocol",
+   "url": "https://pacta.wtf/protocols/yo-protocol/"
+  }
+ ],
+ "schema": "pacta.scorecards.v1"
+}

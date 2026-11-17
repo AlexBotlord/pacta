@@ -32,6 +32,7 @@ body:
         - "24h Onboarding & Delta Clearance ($5,000 USDC flat)"
         - "Continuous Aligned Maintenance ($1,500 USDC per month)"
         - "Enterprise / High-Throughput API SLA (priced on scope)"
+        - "Rapid Single-Gap Re-Verification ($500 USDC, 24h SLA)"
         - "Community queue (free; unscheduled, typically 6–8 weeks)"
     validations:
       required: true

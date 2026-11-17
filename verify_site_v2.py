@@ -69,7 +69,7 @@ X = EXPECT
 # sha256 of docs/api/v1/graph-manifest.json: changes only through a deliberate re-pin (a Sprint stage / stamp rewrites it after the
 # rebuild); a merged Wave 2 claim or any site-only change must leave it as is
 GRAPH_MANIFEST_SHA256 = "145bc48f5b69b29057151ce255fad3c75e88c0e4d0a2ce4e506aa898c335f08a"
-NON_PROTOCOL_PAGES = 18                                                  # docs/**/*.html pages that are not /protocols/<slug>/
+NON_PROTOCOL_PAGES = 19                                                  # docs/**/*.html pages that are not /protocols/<slug>/
 
 
 def check(name, ok, detail=""):
@@ -854,8 +854,8 @@ def main(argv=None):
     req = ['<meta charset="utf-8">', 'name="viewport"', "<title>", 'name="description"', f'<link rel="canonical" href="{base}/">',
            'property="og:type"', 'property="og:site_name"', 'property="og:title"', 'property="og:description"', f'property="og:url" content="{base}/"',
            f'property="og:image" content="{base}/og-preview.png"', 'property="og:image:width" content="1200"', 'property="og:image:height" content="630"',
-           'name="twitter:card" content="summary_large_image"', 'name="twitter:title"', 'name="twitter:description"',
-           f'name="twitter:image" content="{base}/og-preview.png"', 'href="styles.css"', 'href="favicon.svg"', 'href="favicon.png"']
+           'name="twitter:card" content="summary"', 'name="twitter:title"', 'name="twitter:description"', '<meta name="theme-color" content="#101216">',
+           f'name="twitter:image" content="{base}/og-preview.png"', 'href="styles.css?v=', 'href="favicon.svg"', 'href="favicon.png"']
     head = page[:bpos]
     missing = [r for r in req if r not in head]
     check("required head tags present", not missing, f"missing: {missing}" if missing else f"{len(req)} tags")
@@ -896,11 +896,11 @@ def main(argv=None):
           f"{sorted(shown)}")
     tmpl = read(".github/ISSUE_TEMPLATE/request-scan.yml")
     opts = re.findall(r'^\s+- "(.+)"$', tmpl.split("id: package_tier", 1)[1].split("validations", 1)[0], re.M)
-    js_opts = re.findall(r'"([^"]+)",\s*\n\s*"Pacta [^"]+ request"', read("docs/app.js"))
+    js_opts = re.findall(r'"([^"]+)",\s*\n\s*"Pacta [^"]+ request"', read("tools/app.src.js"))
     set_opts = re.findall(r'^\s+- "(.+)"$', tmpl.split("id: settlement_preference", 1)[1].split("validations", 1)[0], re.M) if "id: settlement_preference" in tmpl else []
-    js_set = re.findall(r'"(Option [AB]: [^"]+)"', read("docs/app.js"))
-    check("GitHub dropdown prefill strings match the issue template exactly (4 tracks + 2 settlement options)",
-          sorted(opts) == sorted(js_opts) and len(opts) == 4 and sorted(set_opts) == sorted(js_set) and len(set_opts) == 2
+    js_set = re.findall(r'"(Option [AB]: [^"]+)"', read("tools/app.src.js"))
+    check("GitHub dropdown prefill strings match the issue template exactly (5 tracks incl. the $500 Rapid Single-Gap Re-Verification + 2 settlement options)",
+          sorted(opts) == sorted(js_opts) and len(opts) == 5 and "Rapid Single-Gap Re-Verification ($500 USDC, 24h SLA)" in opts and sorted(set_opts) == sorted(js_set) and len(set_opts) == 2
           and all(f'id: {k}' in tmpl for k in ("forum_proposal_url", "payment_tx_hash", "settlement_preference")),
           f"template {opts} {set_opts} app.js {js_opts} {js_set}")
     sums_ = {k: (hashlib.sha256(read(p_, "rb")).hexdigest() if os.path.exists(os.path.join(ROOT, p_)) else None)
@@ -913,7 +913,16 @@ def main(argv=None):
     check("attested_not_yet_indexed_sprints is empty (every attested Sprint is indexed)",
           idx_s["onchain_anchoring"]["attestation_coverage"].get("attested_not_yet_indexed_sprints") == []
           and sorted(map(int, idx_s["onchain_anchoring"]["sprint_eas_attestations"])) == sorted({int(e["sprint"]) for e in idx_s["entries"]}))
-    appjs = read("docs/app.js")
+    appjs = read("tools/app.src.js")              # readable source: every source-text check reads it
+    sys.path.insert(0, os.path.join(ROOT, "tools"))
+    import build_site as BSM
+    appjs_min = read("docs/app.js")               # the shipped file: deterministic minification of the source, executed by the harness
+    check("docs/app.js is the deterministic minification of tools/app.src.js (comments and indentation removed, line breaks kept); "
+          "styles.css / app.js / theme.js are linked with ?v=<sha8> of their exact bytes on every page",
+          appjs_min == BSM.minify_js(appjs) and len(appjs_min) < len(appjs)
+          and all(f'app.js?v={hashlib.sha256(appjs_min.encode()).hexdigest()[:8]}"' in t and f'styles.css?v={hashlib.sha256(read("docs/styles.css").encode()).hexdigest()[:8]}"' in t
+                  and f'theme.js?v={hashlib.sha256(read("docs/theme.js").encode()).hexdigest()[:8]}"' in t for t in (open(p_, encoding="utf-8").read() for p_ in glob.glob(os.path.join(DOCS, "**", "*.html"), recursive=True)) if "<head>" in t and 'class="topbar"' in t),
+          f"{len(appjs_min):,} B minified from {len(appjs):,} B")
     check('radar says "Execution window opens in" (ETA = eligibility)', "Execution window opens in" in appjs and "Executing in" not in appjs)
     check('finality badge says "Scanner-pinned (L1 finalized)"', "Scanner-pinned (L1 finalized)" in appjs and "Scanner-pinned (L1 finalized)" in page)
 
@@ -1159,13 +1168,13 @@ def main(argv=None):
     radii = re.findall(r"border-radius:\s*([^;}]+)", css)
     bad_r = [r for r in radii if not all(v in ("0", "50%", "var(--r)") or (v.endswith("px") and float(v[:-2]) <= 4) for v in r.strip().split())]
     check("hairline design: every border-radius <= 4px (dots 50%)", not bad_r, f"{len(radii)} radii; bad {bad_r}")
-    chrome = [rel for rel in pages if rel.startswith("briefs" + os.sep) and not ('class="topbar"' in pages[rel] and 'href="../../styles.css"' in pages[rel]
+    chrome = [rel for rel in pages if rel.startswith("briefs" + os.sep) and not ('class="topbar"' in pages[rel] and 'href="../../styles.css?v=' in pages[rel]
                                                                            and "<style" not in pages[rel])]
     check("briefs share the site chrome and stylesheet (no inline styles)", not chrome, str(chrome))
 
     # behaviour: run app.js against a synthetic DOM of the real /request/ and homepage markup
     beacon_js = read("docs/b.js") if os.path.exists(os.path.join(DOCS, "b.js")) else ""
-    res = app_behaviour(appjs, pages.get(os.path.join("request", "index.html"), ""), page, BS.curated_sample(idx)[0]["id"], beacon=beacon_js,
+    res = app_behaviour(appjs_min, pages.get(os.path.join("request", "index.html"), ""), page, BS.curated_sample(idx)[0]["id"], beacon=beacon_js,
                         protocol_html=pages.get(os.path.join("protocols", "aave-v3-gho", "index.html"), ""), protocol_slug="aave-v3-gho",
                         notfound_html=pages.get("404.html", ""),
                         clearance_html=pages.get(os.path.join("protocols", "synthetix-v3-core", "index.html"), ""), clearance_slug="synthetix-v3-core",
@@ -1445,7 +1454,7 @@ def main(argv=None):
     THEME_BOOT = read("docs/theme.js") if os.path.exists(os.path.join(DOCS, "theme.js")) else ""
     inline = [rel for rel in ("index.html", os.path.join("request", "index.html"))
               if len(re.findall(r"<script(?![^>]*\bsrc=)(?![^>]*application/ld\+json)[^>]*>", pages.get(rel, ""))) != 0
-              or 'theme.js"></script>' not in pages.get(rel, "") or not THEME_BOOT.startswith('document.documentElement.className="js";')
+              or not re.search(r'theme\.js\?v=[0-9a-f]{8}"></script>', pages.get(rel, "")) or not THEME_BOOT.startswith('document.documentElement.className="js";')
               or "URLSearchParams" in THEME_BOOT or THEME_BOOT != BS.THEME_JS]
     check("/request/ prefill (tier / protocol / forum / settlement): closed enums via hasOwnProperty, text <= 80 chars, https forum <= 300 chars without credentials, "
           "written with .value only (0 innerHTML / insertAdjacentHTML / document.write in the request builder); 0 inline <script> on / and /request/ (the theme bootstrap is docs/theme.js)",
@@ -1560,7 +1569,7 @@ def main(argv=None):
                                               and "Cloudflare edge country" in t and re.search(r"never[^.]{0,40}(?:name|e-mail)", t))]
     check("free MCP tier caller fields (caller_agent slug + requester_role / caller_purpose closed enums) documented in SKILL.md, llms.txt, llms-full.txt, /llms/ and the MCP README (no personal data; location only from the Cloudflare edge); docs SKILL.md == packages/mcp-server/SKILL.md; the live checker passes caller_agent=pacta-wtf-checker",
           not cbad and read("docs/SKILL.md") == read("packages/mcp-server/SKILL.md")
-          and "&caller_agent=pacta-wtf-checker&requester_role=individual_user&caller_purpose=general_research" in read("docs/app.js"), str(cbad))
+          and "&caller_agent=pacta-wtf-checker&requester_role=individual_user&caller_purpose=general_research" in read("tools/app.src.js"), str(cbad))
     bare = []
     for dp, _dn, fns in os.walk(ROOT):
         if os.sep + ".git" in dp:
@@ -1787,7 +1796,7 @@ def main(argv=None):
     nf_ok = {
         "head budget": bool(nf) and 0 <= nf_b < 2500 and 0 < nf_tw - nf_h <= 1200 and "<style" not in nf and "data:image/" not in nf,
         "noindex + data-nf": f'<meta name="robots" content="{BS.ROBOTS_META_404}">' in nf[:nf_b] and re.search(r'<main id="main"[^>]* data-nf>', nf) is not None,
-        "root-relative navigation": all(f'href="{h}"' in nf for h in ("/protocols/", "/#preflight", "/request/", "/styles.css", "/llms.txt")) and 'src="/b.js"' in nf
+        "root-relative navigation": all(f'href="{h}"' in nf for h in ("/protocols/", "/#preflight", "/request/", "/llms.txt")) and 'href="/styles.css?v=' in nf and 'src="/b.js"' in nf
                                     and not re.search(r'(?:href|src)="(?!/|https://|#)', nf),
         "remote MCP URL + copy": f'data-copy="{MCP_}"' in nf and f"claude mcp add --transport http pacta {MCP_}" in nf,
         "deterministic build": nf == BS.not_found_page(idx_),
@@ -1971,8 +1980,11 @@ def main(argv=None):
         elif t == "parameter_delta":
             ok_ = 'id="badge-status"' in pg and f'href="../../request/?tier=clearance&amp;protocol={slug_}&amp;settlement=invoice"' in pg \
                 and "Aligned · Base EAS" in pg and 'id="embed-badge"' not in pg
-        else:
-            ok_ = 'id="embed-badge"' not in pg and 'id="badge-status"' not in pg
+        else:   # RPC-observed: the slate status card with a copyable embed, and never an Aligned / Base EAS claim
+            ok_ = 'id="embed-badge"' not in pg and 'class="memo-sec badge-card observed" id="badge-status"' in pg and html.escape(md_) in pg \
+                and "Aligned · Base EAS" not in pg
+        if t != "rpc_observed" and t == "parameter_delta" and html.escape(md_) not in pg:
+            ok_ = False                                  # every published tier carries the copyable embed snippet
         if not ok_:
             card_bad.append(slug_)
     counts_ = {}
@@ -1987,7 +1999,7 @@ def main(argv=None):
         "RPC-observed never implies EAS": not any("EAS" in read(f"docs/badges/{s_}.svg") for s_, t in tier_of.items() if t == "rpc_observed"),
         "cards": not card_bad,
     }
-    check(f"C3: {X['protocols']} deterministic /badges/<slug>.svg byte-identical to the worker's /v1/badges/<slug>.svg (badgeSvg); {X['badge_tiers']['aligned']} emerald Aligned · Base EAS, {X['badge_tiers']['parameter_delta']} amber Parameter Delta (protocol-level: any parameter / protective delta), {X['badge_tiers']['rpc_observed']} slate RPC-Observed (no EAS claim); embed card on aligned pages, clearance-to-green explainer on delta pages",
+    check(f"C3: {X['protocols']} deterministic /badges/<slug>.svg byte-identical to the worker's /v1/badges/<slug>.svg (badgeSvg); {X['badge_tiers']['aligned']} emerald Aligned · Base EAS, {X['badge_tiers']['parameter_delta']} amber Parameter Delta (protocol-level: any parameter / protective delta), {X['badge_tiers']['rpc_observed']} slate RPC-Observed (no EAS claim); embed card on aligned pages, clearance-to-green explainer on delta pages, slate status card on RPC-observed pages; copyable Markdown / HTML embed on every page",
           all(c3.values()), f"{[k for k, v in c3.items() if not v]} cards {card_bad[:4]} tiers {counts_}")
 
     # C5: protocols.json, vault-factories page, sentinel-guard package, feeds + sitemap links, robots untouched
@@ -2445,7 +2457,7 @@ def main(argv=None):
     pp = {}
     home_p = read("docs/index.html")
     css_p = read("docs/styles.css")
-    app_p = read("docs/app.js")
+    app_p = read("tools/app.src.js")
     all_pages = {r: t for r, t in pages.items() if not r.startswith("demos" + os.sep)}
     pp["V06: no 'within 24 hours' / 'Clear findings' / 'Request 24h Clearance' / Aligned-attestation-for-payment copy on any page; every delta / RPC-observed protocol page offers the free notification next to the Verification & Reconciliation Dossier"] = (
         not [r for r, t in all_pages.items() if re.search(r"within 24 hours|Clear findings|Request 24h Clearance|Aligned Attestation \+ Curator", t)]
@@ -2478,13 +2490,13 @@ def main(argv=None):
     csp_meta = f'<meta http-equiv="Content-Security-Policy" content="{BS.CSP}">'
     gen_pages = {r: t for r, t in all_pages.items()}
     csp_src = {d.split(" ")[0]: d.split(" ")[1:] for d in BS.CSP.split(";")}
-    js_hosts = set(re.findall(r'"(https://[a-z0-9.-]+)', read("docs/app.js") + read("docs/b.js") + read("docs/theme.js")))
+    js_hosts = set(re.findall(r'"(https://[a-z0-9.-]+)', read("tools/app.src.js") + read("docs/b.js") + read("docs/theme.js")))
     js_hosts = {h for h in js_hosts if h not in ("https://pacta.wtf", "https://github.com", "https://base.easscan.org", "https://etherscan.io", "https://basescan.org", "https://x.com", "https://mail.google.com")}   # link targets, never fetched
     pp["S01: meta Content-Security-Policy on every generated page (default/script 'self' only, no frame-ancestors, before any <script>); 0 inline JS (theme bootstrap = docs/theme.js); no eval / new Function; every HTTPS origin the page scripts fetch is in connect-src"] = (
         "frame-ancestors" not in BS.CSP and csp_src.get("script-src") == ["'self'"] and csp_src.get("default-src") == ["'self'"]
         and all(t.count(csp_meta) == 1 and t.find(csp_meta) < t.find("<script") for t in gen_pages.values())
         and not [r for r, t in gen_pages.items() if re.search(r"<script(?![^>]*\bsrc=)(?![^>]*application/ld\+json)[^>]*>", t)]
-        and read("docs/theme.js") == BS.THEME_JS and not re.search(r"\beval\(|new Function\(", read("docs/app.js") + read("docs/b.js"))
+        and read("docs/theme.js") == BS.THEME_JS and not re.search(r"\beval\(|new Function\(", read("tools/app.src.js") + read("docs/b.js"))
         and js_hosts <= set(csp_src.get("connect-src", [])))
     def top_level(css, rule):   # True when `rule` exists exactly once and sits outside every @media block
         i = css.find(rule)
@@ -2570,6 +2582,51 @@ def main(argv=None):
         and not re.search(r'<[^>]+\son[a-z]+=', demo_) and not re.search(r'(?:src|href)="(?:https?:)?//(?!pacta\.wtf)[^"]*"[^>]*>', re.sub(r"<a\b[^>]*>", "", demo_.split("<body")[0])))
     check("PP2: website, accessibility & trust polish v2 (V06 dossier + free path, F03 radar truth, F02 inspector sync, F04/F06 freshness + timeout, F05 repro, S02, V07, A01 contrast / copy / h1 / links, V02 nav + MCP, icons, referrer, feeds, JSON-LD)",
           all(pp.values()), str([k[:60] for k, v in pp.items() if not v]))
+
+    # ================= Website Edge v3 (strategy-approved spec): scorecards, rosette, /for-protocols/, discovery files, assets =================
+    e3 = {}
+    sc_ = json.loads(read("docs/api/v1/scorecards.json"))
+    cards_ = {c_["slug"]: c_ for c_ in sc_["protocols"]}
+    pjp_ = {p_["slug"]: p_ for p_ in json.loads(read("docs/api/v1/protocols.json"))["protocols"]}
+    e3["scorecards.json: one card per published protocol; grade OBSERVED <=> rpc_observed; DELTA <=> a parameter-delta record; slice 5 (docs-vs-chain parity) "
+       "hollow 'u' for every RPC-observed protocol and never 'u' for an attested one; states only g/b/a/n/u; byte-identical rebuild"] = (
+        sc_.get("schema") == "pacta.scorecards.v1" and set(cards_) == set(pjp_) and len(cards_) == X["protocols"]
+        and all((c_["grade"] == "observed") == (not pjp_[k_]["easAttested"]) for k_, c_ in cards_.items())
+        and all((c_["grade"] == "delta") == any(sf_["classification"] == "parameter_delta" for sf_ in pjp_[k_]["surfaces"]) for k_, c_ in cards_.items())
+        and all((c_["factors"][4]["state"] == "u") == (not c_["easAttested"]) for c_ in cards_.values())
+        and sum(c_["factors"][4]["state"] == "u" for c_ in cards_.values()) == X["rpc_protocols"]
+        and all(f_["state"] in ("g", "b", "a", "n", "u") and [x_["key"] for x_ in c_["factors"]] == ["upgrade", "timelock", "quorum", "emergency", "parity"]
+                for c_ in cards_.values() for f_ in c_["factors"])
+        and read("docs/api/v1/scorecards.json") == BS.scorecards_json(BS.scorecards(json.loads(read("docs/api/v1/index.json")))))
+    ro_bad = []
+    for k_, c_ in cards_.items():
+        pg_ = pages.get(os.path.join("protocols", k_, "index.html"), "")
+        m_ = re.search(r'<svg class="rosette"[^>]*aria-label="([^"]+)"', pg_)
+        if not (m_ and 'id="scorecard"' in pg_ and all(lbl_ in m_.group(1) for lbl_ in ("Upgradeability", "Timelock floor", "Signer quorum", "Emergency / freeze scope", "Docs-vs-chain parity"))
+                and pg_.count("data-factor=") == 5 and f'class="grade g-{c_["grade"]}"' in pg_
+                and (c_["easAttested"] or ('data-factor="parity" data-state="u"' in pg_ and 'class="r-u"' in pg_))):
+            ro_bad.append(k_)
+    e3[f"every /protocols/<slug>/ page ({X['protocols']}): grade pill, 5-slice rosette whose aria-label names all 5 factors, the 5-factor breakdown; hollow uncompared parity on RPC-observed pages"] = not ro_bad
+    fp_ = pages.get(os.path.join("for-protocols", "index.html"), "")
+    e3["/for-protocols/: h1, 4 verified case studies (Stader, YO, Stake DAO, Moonwell), live badge widget over every protocol, 4-question FAQ, $0 / $500 / $2,500-$5,000 CTAs, in the sitemap"] = (
+        "<h1>Turn control-plane transparency into allocator trust.</h1>" in fp_
+        and all(f'data-case="{x_}"' in fp_ for x_ in ("stader-labs-ethx", "yo-protocol", "stake-dao", "moonwell-lending-base"))
+        and fp_.count("<option value=") == X["protocols"] and "data-badge-widget" in fp_ and fp_.count("<dt>") >= 4
+        and all(f'href="../request/?tier={t_}"' in fp_ for t_ in ("community", "rapid-500", "clearance"))
+        and "$500 (24h SLA)" in fp_ and "$2,500–$5,000 (24h SLA)" in fp_ and f"<loc>{BS.BASE_URL}/for-protocols/</loc>" in read("docs/sitemap.xml"))
+    oa_ = json.loads(read("docs/api/v1/openapi.json"))
+    e3["root discovery files /agent.json, /mcp.json, /openapi.json are valid JSON and byte-identical to /.well-known/agent.json, /.well-known/mcp.json, /api/v1/openapi.json (OpenAPI 3.1 snapshot of the Worker)"] = (
+        all(read(f"docs/{a_}") == read(f"docs/{b_}") and isinstance(json.loads(read(f"docs/{a_}")), dict)
+            for a_, b_ in (("agent.json", ".well-known/agent.json"), ("mcp.json", ".well-known/mcp.json"), ("openapi.json", "api/v1/openapi.json")))
+        and oa_.get("openapi") == "3.1.0" and len(oa_.get("paths", {})) >= 10 and oa_.get("servers") == [{"url": API_}])
+    rendered_ = "".join(pages.values())
+    e3["0 'npx @pacta/mcp-server' / 'npx -y @pacta' install commands and 0 third-party list star counts (97.8k, awesome-mcp-servers) in any rendered page"] = (
+        not re.search(r"npx[^<\n]{0,8}@pacta/mcp-server|97\.8k|awesome-mcp-servers", rendered_))
+    e3["theme toggle: spoken label names the action (Switch to Paper / Slate theme) and theme-color follows the active theme"] = (
+        '"Switch to Paper theme" : "Switch to Slate theme"' in appjs and 'meta[name="theme-color"]' in appjs and '"#101216" : "#f7f7f5"' in appjs
+        and all('<meta name="theme-color" content="#101216">' in t_ for t_ in pages.values() if 'class="topbar"' in t_))
+    check("E3: Website Edge v3 (scorecards + 5-factor rosette, /for-protocols/, root discovery files, theme label, no npx / star counts)",
+          all(e3.values()), str([k_[:70] for k_, v_ in e3.items() if not v_]) + f" rosette bad {ro_bad[:4]}")
 
     # ================= Visitor review P1 + P2 (first success, understanding, discovery, narrow screens, provenance, editorial independence) =================
     import control_diff as CDV1

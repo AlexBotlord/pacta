@@ -1,0 +1,370 @@
+{
+ "anchoring": {
+  "attester": "0xcA4E2ff22B69A7284210c47BdeE21Aac1269da09",
+  "chainId": 8453,
+  "easSchema": "0x7ff485bc1159dff3c70eefcb9dff2d65be990301760c2d53799e5a45e3badf83",
+  "registry": "0x35D21Bb4Df6586FE7759b5e57263ffeB3e1fd872",
+  "treasury": {
+   "address": "0x4348DF1BEFAffcbA248B5118B1b782B1B2bdEd14",
+   "kind": "externally owned account",
+   "label": "Pacta Treasury",
+   "use": "Pacta treasury (direct settlement EOA): Option B direct on-chain USDC settlement of commercial issuer clearance (Option A is a formal commercial invoice). An externally owned account, not a smart-contract wallet; not the x402 payTo."
+  }
+ },
+ "authentication": {
+  "notes": "No API key, no account, no wallet during the free launch. If metered mode is switched on later, live scans use x402 instead of keys: v1 (HTTP 402 + X-PAYMENT) or v2 (PAYMENT-REQUIRED + PAYMENT-SIGNATURE).",
+  "schemes": [
+   "none"
+  ]
+ },
+ "capabilities": {
+  "pushNotifications": false,
+  "stateTransitionHistory": false,
+  "streaming": false
+ },
+ "defaultInputModes": [
+  "application/json",
+  "text/plain"
+ ],
+ "defaultOutputModes": [
+  "application/json",
+  "text/markdown"
+ ],
+ "description": "Free pre-execution contract and governance safety API for AI agents (launch: $0, no API key, no wallet): who can upgrade, pause or blacklist a contract, how fast, pinned to a block hash. Plus block-pinned DeFi control-plane records, live governance proposals and a timelock radar. Remote MCP and OpenAPI 3.1; x402 v1 + v2 ready.",
+ "documentationUrl": "https://pacta.wtf/llms-full.txt",
+ "endpoints": {
+  "bounties": "https://pacta.wtf/bounties/",
+  "feeds": {
+   "/.well-known/agent.json": "https://pacta.wtf/.well-known/agent.json",
+   "/.well-known/mcp.json": "https://pacta.wtf/.well-known/mcp.json",
+   "/SKILL.md": "https://pacta.wtf/SKILL.md",
+   "/api/v1/index.json": "https://pacta.wtf/api/v1/index.json",
+   "/api/v1/lookup.json": "https://pacta.wtf/api/v1/lookup.json",
+   "/api/v1/onboarding.json": "https://pacta.wtf/api/v1/onboarding.json",
+   "/api/v1/proposals.json": "https://pacta.wtf/api/v1/proposals.json",
+   "/api/v1/protocols.json": "https://pacta.wtf/api/v1/protocols.json",
+   "/api/v1/radar.json": "https://pacta.wtf/api/v1/radar.json",
+   "/llms-full.txt": "https://pacta.wtf/llms-full.txt",
+   "/llms.txt": "https://pacta.wtf/llms.txt"
+  },
+  "lookup": "https://pacta-x402.pacta.workers.dev/v1/protocols/lookup",
+  "lookup_catalog": "https://pacta.wtf/api/v1/lookup.json",
+  "mcp_manifest": "https://pacta.wtf/.well-known/mcp.json",
+  "mcp_remote": "https://pacta-x402.pacta.workers.dev/mcp",
+  "openapi": "https://pacta-x402.pacta.workers.dev/openapi.json",
+  "preflight": "https://pacta-x402.pacta.workers.dev/v1/check/preflight",
+  "protocols": "https://pacta.wtf/protocols/",
+  "requests": "https://pacta-x402.pacta.workers.dev/v1/requests",
+  "skill": "https://pacta.wtf/SKILL.md",
+  "x402_gateway": "https://pacta-x402.pacta.workers.dev"
+ },
+ "iconUrl": "https://pacta.wtf/favicon.png",
+ "name": "Pacta",
+ "pricing": {
+  "apiKey": false,
+  "mode": "free_launch",
+  "note": "Free launch: every route answers HTTP 200 at $0 with no API key and no wallet (60 requests / minute per caller). The x402 prices below apply only if the operator switches pricingMode to x402_paid.",
+  "priceUsd": "0.00",
+  "rateLimitPerMinute": 60,
+  "wallet": false
+ },
+ "protocolVersion": "0.3.0",
+ "provider": {
+  "organization": "Fractal Neurons",
+  "url": "https://fractalneurons.com"
+ },
+ "skills": [
+  {
+   "description": "Resolve a protocol or token name (Aave, Ethena, USDe, Moonwell, kUSD, ...) to Pacta's verified record and the checksummed contract to check next. Free, in memory, every pricing mode.",
+   "examples": [
+    "GET https://pacta-x402.pacta.workers.dev/v1/protocols/lookup?q=ethena",
+    "MCP tool pacta_lookup_protocol {\"query\": \"USDe\"}"
+   ],
+   "id": "protocol-lookup",
+   "inputModes": [
+    "application/json"
+   ],
+   "name": "Protocol / token name lookup",
+   "outputModes": [
+    "application/json"
+   ],
+   "tags": [
+    "lookup",
+    "discovery",
+    "agent-safety",
+    "free"
+   ]
+  },
+  {
+   "description": "Before approving, depositing into or calling a contract: who controls it (EOA, Safe, timelock, nobody), how fast it can change, and whether it can pause, blacklist or upgrade. Free, one call.",
+   "examples": [
+    "GET https://pacta-x402.pacta.workers.dev/v1/check/preflight?chain=base&address=0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+    "MCP tool pacta_check_preflight {\"chain\": \"ethereum\", \"address\": \"0x...\"}"
+   ],
+   "id": "contract-preflight",
+   "inputModes": [
+    "application/json"
+   ],
+   "name": "Pre-execution contract check",
+   "outputModes": [
+    "application/json"
+   ],
+   "tags": [
+    "preflight",
+    "agent-safety",
+    "proxy",
+    "timelock",
+    "multisig",
+    "free"
+   ]
+  },
+  {
+   "description": "Who can upgrade, pause, mint or change delays for a DeFi protocol, at a canonical block, with a cast reproduction.",
+   "examples": [
+    "Which address can upgrade Ethena's minting contract and with what delay?",
+    "Fetch https://pacta.wtf/api/v1/index.json and list parameter deltas."
+   ],
+   "id": "control-plane-lookup",
+   "inputModes": [
+    "application/json"
+   ],
+   "name": "Control-plane lookup",
+   "outputModes": [
+    "application/json"
+   ],
+   "tags": [
+    "defi",
+    "governance",
+    "timelock",
+    "proxy-admin",
+    "risk"
+   ]
+  },
+  {
+   "description": "For a live Aave / Euler / Morpho / Sky onboarding proposal, return the block-pinned control-plane observations and Sentinel predicates.",
+   "examples": [
+    "Fetch https://pacta.wtf/api/v1/proposals.json and summarise aave-25128.",
+    "Fetch https://pacta.wtf/api/v1/proposals.json and summarise aave-25499."
+   ],
+   "id": "collateral-diligence",
+   "inputModes": [
+    "application/json"
+   ],
+   "name": "Collateral onboarding diligence",
+   "outputModes": [
+    "application/json"
+   ],
+   "tags": [
+    "curator",
+    "collateral",
+    "aave",
+    "euler",
+    "morpho",
+    "sky"
+   ]
+  },
+  {
+   "description": "Pending timelock operations and their on-chain ETAs.",
+   "examples": [
+    "Fetch https://pacta.wtf/api/v1/radar.json."
+   ],
+   "id": "timelock-radar",
+   "inputModes": [
+    "application/json"
+   ],
+   "name": "Queued timelock radar",
+   "outputModes": [
+    "application/json"
+   ],
+   "tags": [
+    "timelock",
+    "monitoring"
+   ]
+  },
+  {
+   "description": "When a lookup misses or a pre-flight target is unindexed (coverage_gap_hint), queue or upvote a coverage / feature request with the user's consent: pacta_submit_request or POST /v1/requests. Free, 5 per hour, never opens a GitHub issue; contact details only on explicit request and never published.",
+   "examples": [
+    "MCP tool pacta_submit_request {\"request_type\": \"missing_protocol\", \"target_subject\": \"pendle-v2\", ...}",
+    "POST https://pacta-x402.pacta.workers.dev/v1/requests"
+   ],
+   "id": "coverage-request",
+   "inputModes": [
+    "application/json"
+   ],
+   "name": "Opt-in coverage / feature request",
+   "outputModes": [
+    "application/json"
+   ],
+   "tags": [
+    "demand",
+    "coverage",
+    "opt-in",
+    "free"
+   ]
+  },
+  {
+   "description": "Replay any record with eth_call / cast at its pinned block and compare the canonical block hash.",
+   "examples": [
+    "cast call <target> \"getMinDelay()\" --block <N> --rpc-url $ETH_RPC_URL"
+   ],
+   "id": "verify-onchain",
+   "inputModes": [
+    "text/plain"
+   ],
+   "name": "Reproduce a value",
+   "outputModes": [
+    "text/plain"
+   ],
+   "tags": [
+    "verification",
+    "eip-1898",
+    "coding-agent"
+   ]
+  }
+ ],
+ "url": "https://pacta.wtf/",
+ "version": "2026.11.17",
+ "x402": {
+  "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+  "bareProbe": "A bare GET (no query) or zero-byte POST with no payment header on any paid URL returns HTTP 402 at once: the v1 JSON body (x402Version 1, network base, maxAmountRequired) plus the v2 PAYMENT-REQUIRED header (x402Version 2, network eip155:8453, amount, extensions.bazaar with a JSON Schema draft 2020-12 schema).",
+  "chainId": 8453,
+  "discovery": "https://pacta-x402.pacta.workers.dev/.well-known/x402",
+  "free": [
+   "https://pacta-x402.pacta.workers.dev/health",
+   "https://pacta-x402.pacta.workers.dev/.well-known/x402",
+   "https://pacta-x402.pacta.workers.dev/v1/sample/control-plane"
+  ],
+  "gatewayUrl": "https://pacta-x402.pacta.workers.dev",
+  "maxTimeoutSeconds": 60,
+  "network": "base",
+  "networks": [
+   "base",
+   "eip155:8453"
+  ],
+  "onchainReceiptVerification": true,
+  "payTo": "0xcA4E2ff22B69A7284210c47BdeE21Aac1269da09",
+  "pricingMode": "free_launch",
+  "routes": [
+   {
+    "amount": "10000",
+    "effectivePriceUsd": "0.00",
+    "maxAmountRequired": "10000",
+    "methods": [
+     "GET",
+     "POST"
+    ],
+    "path": "/v1/check/preflight",
+    "priceUsd": "$0.01",
+    "query": "chain=ethereum|base&address=0x…",
+    "url": "https://pacta-x402.pacta.workers.dev/v1/check/preflight"
+   },
+   {
+    "amount": "100000",
+    "effectivePriceUsd": "0.00",
+    "maxAmountRequired": "100000",
+    "methods": [
+     "GET",
+     "POST"
+    ],
+    "path": "/v1/scan/control-plane",
+    "priceUsd": "$0.10",
+    "query": "chain=ethereum|base&address=0x…",
+    "url": "https://pacta-x402.pacta.workers.dev/v1/scan/control-plane"
+   },
+   {
+    "amount": "250000",
+    "effectivePriceUsd": "0.00",
+    "maxAmountRequired": "250000",
+    "methods": [
+     "GET",
+     "POST"
+    ],
+    "path": "/v1/scan/timelock-op",
+    "priceUsd": "$0.25",
+    "query": "chain=ethereum|base&timelock=0x…&opId=0x…",
+    "url": "https://pacta-x402.pacta.workers.dev/v1/scan/timelock-op"
+   },
+   {
+    "amount": "150000",
+    "effectivePriceUsd": "0.00",
+    "maxAmountRequired": "150000",
+    "methods": [
+     "GET",
+     "POST"
+    ],
+    "path": "/v1/scan/proposal-diff",
+    "priceUsd": "$0.15",
+    "query": "forum=aave|euler|morpho|sky&topicId=<id>",
+    "url": "https://pacta-x402.pacta.workers.dev/v1/scan/proposal-diff"
+   },
+   {
+    "amount": "100000",
+    "effectivePriceUsd": "0.00",
+    "maxAmountRequired": "100000",
+    "methods": [
+     "GET",
+     "POST"
+    ],
+    "path": "/v1/briefs/live-timelocks",
+    "priceUsd": "$0.10",
+    "query": "",
+    "url": "https://pacta-x402.pacta.workers.dev/v1/briefs/live-timelocks"
+   }
+  ],
+  "scheme": "exact",
+  "settlement": {
+   "note": "A settled call returns 200 with both PAYMENT-RESPONSE and X-PAYMENT-RESPONSE (base64 {success, transaction, network, payer}). That receipt is the facilitator's settlement assertion bound to the payer; the MCP client checks it against the signed authorization but does not look the transaction up on Base (onchainReceiptVerified: false).",
+   "onchainReceiptVerified": false,
+   "receiptHeaders": [
+    "PAYMENT-RESPONSE",
+    "X-PAYMENT-RESPONSE"
+   ]
+  },
+  "settlementGuard": {
+   "appliesTo": "x402_paid settlements only",
+   "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+   "chainId": 8453,
+   "failures": {
+    "402": [
+     "unconfirmed_or_reverted_settlement_tx",
+     "insufficient_onchain_usdc_transfer",
+     "replay_settlement_tx"
+    ],
+    "502": [
+     "settlement_rpc_unavailable"
+    ]
+   },
+   "onchainReceiptVerification": true,
+   "payTo": "0xcA4E2ff22B69A7284210c47BdeE21Aac1269da09",
+   "replay": "best-effort replay rejection: synchronous same-isolate in-flight + FIFO (4,096) sets block same-isolate concurrent/serial replays, and non-atomic eventually-consistent KV used_tx:<txHash> (30-day TTL) blocks post-propagation serial cross-isolate replays (402 replay_settlement_tx); concurrent cross-isolate races before KV write/propagation are not globally atomic without Durable Objects",
+   "requires": "receipt status 0x1 and canonical USDC (Base) Transfer(payer -> payTo) logs summing to at least the route price",
+   "rpcMethod": "eth_getTransactionReceipt"
+  },
+  "settlementGuardNote": "In x402_paid mode the gateway verifies every settlement on Base before releasing the product: eth_getTransactionReceipt must show status 0x1 and canonical USDC Transfer(payer -> payTo 0xcA4E2ff22B69A7284210c47BdeE21Aac1269da09) logs summing to at least the route price, and replays are rejected on a best-effort basis (402 replay_settlement_tx) via synchronous same-isolate state and non-atomic eventually-consistent KV used_tx:<txHash>; concurrent cross-isolate races are not globally atomic without Durable Objects. Otherwise the product is withheld: 402 unconfirmed_or_reverted_settlement_tx / insufficient_onchain_usdc_transfer, or 502 settlement_rpc_unavailable when no Base RPC answers.",
+  "status": "live",
+  "wire": {
+   "v1": {
+    "amountField": "maxAmountRequired",
+    "challenge": "402 JSON body",
+    "network": "base",
+    "paymentHeader": "X-PAYMENT",
+    "receiptHeader": "X-PAYMENT-RESPONSE",
+    "x402Version": 1
+   },
+   "v2": {
+    "amountField": "amount",
+    "bazaarSchema": "https://json-schema.org/draft/2020-12/schema",
+    "challenge": "PAYMENT-REQUIRED header (base64 JSON)",
+    "network": "eip155:8453",
+    "paymentHeader": "PAYMENT-SIGNATURE",
+    "receiptHeader": "PAYMENT-RESPONSE",
+    "x402Version": 2
+   }
+  },
+  "x402Version": 1,
+  "x402Versions": [
+   1,
+   2
+  ]
+ }
+}

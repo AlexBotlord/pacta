@@ -1,0 +1,284 @@
+{
+ "description": "Block-pinned DeFi control-plane commitments, Base EAS attestations and governance proposals for agents.",
+ "disambiguation": "Disambiguation: Pacta by Fractal Neurons (https://pacta.wtf, pacta.base.eth, io.github.Fractal-Neurons/pacta) is the EVM DeFi control-plane, Safe multisig, and timelock verification registry — unrelated to pactaprotocol.org (commercial escrow) or RMI PACTA (climate assessment).",
+ "documentation": "https://pacta.wtf/llms-full.txt",
+ "environment": [
+  {
+   "description": "Local snapshot of /api/v1/index.json (offline use)",
+   "name": "PACTA_INDEX_PATH",
+   "required": false,
+   "secret": false
+  },
+  {
+   "description": "Local snapshot of /api/v1/proposals.json",
+   "name": "PACTA_PROPOSALS_PATH",
+   "required": false,
+   "secret": false
+  },
+  {
+   "description": "Local spec JSON (anchoring overrides, local index fallback)",
+   "name": "PACTA_SPEC_PATH",
+   "required": false,
+   "secret": false
+  },
+  {
+   "description": "Enables paid x402 tools against this gateway URL; the live gateway is https://pacta-x402.pacta.workers.dev (unset: free tools only)",
+   "name": "PACTA_X402_URL",
+   "required": false,
+   "secret": false
+  },
+  {
+   "description": "Per-call USDC cap in atomic units (default 1000000 = $1.00; hard ceiling 5000000)",
+   "name": "PACTA_X402_MAX_ATOMIC",
+   "required": false,
+   "secret": false
+  },
+  {
+   "description": "Timeout per outbound request in ms (default 8000)",
+   "name": "PACTA_X402_TIMEOUT_MS",
+   "required": false,
+   "secret": false
+  }
+ ],
+ "feeds": {
+  "/.well-known/agent.json": "https://pacta.wtf/.well-known/agent.json",
+  "/.well-known/mcp.json": "https://pacta.wtf/.well-known/mcp.json",
+  "/SKILL.md": "https://pacta.wtf/SKILL.md",
+  "/api/v1/index.json": "https://pacta.wtf/api/v1/index.json",
+  "/api/v1/lookup.json": "https://pacta.wtf/api/v1/lookup.json",
+  "/api/v1/onboarding.json": "https://pacta.wtf/api/v1/onboarding.json",
+  "/api/v1/proposals.json": "https://pacta.wtf/api/v1/proposals.json",
+  "/api/v1/protocols.json": "https://pacta.wtf/api/v1/protocols.json",
+  "/api/v1/radar.json": "https://pacta.wtf/api/v1/radar.json",
+  "/llms-full.txt": "https://pacta.wtf/llms-full.txt",
+  "/llms.txt": "https://pacta.wtf/llms.txt"
+ },
+ "homepage": "https://pacta.wtf/",
+ "lookup": {
+  "catalog": "https://pacta.wtf/api/v1/lookup.json",
+  "free": true,
+  "http": "https://pacta-x402.pacta.workers.dev/v1/protocols/lookup",
+  "note": "Name lookup first: if you only have a protocol or token name (e.g. Aave, Ethena, USDe, Moonwell, kUSD), call pacta_lookup_protocol (or GET https://pacta-x402.pacta.workers.dev/v1/protocols/lookup?q=<name>) to resolve its verified record: canonical slug and page URL, checksummed primary contract and controller, classification with its evidence basis (eas_attested: Base-EAS-attested, documentation compared; rpc_observed: on-chain control plane pinned over JSON-RPC, documentationComparison not_assessed; briefs), and preflightArgs {chain, address} for pacta_check_preflight. 82 protocols + 8 briefs, answered in memory with no RPC; free in every pricing mode; an empty query lists the catalog. Catalog: https://pacta.wtf/api/v1/lookup.json.",
+  "tool": "pacta_lookup_protocol"
+ },
+ "name": "io.github.Fractal-Neurons/pacta",
+ "openapi": "https://pacta-x402.pacta.workers.dev/openapi.json",
+ "package": "@pacta/mcp-server",
+ "packageVersion": "0.1.5",
+ "status": "publication_pending: @pacta/mcp-server is not yet published to npm or the MCP registry. Use the remote MCP server now (no install): https://pacta-x402.pacta.workers.dev/mcp. The stdio server runs from a clone of the repository: node packages/mcp-server/bin/pacta-mcp.mjs.",
+ "title": "Pacta by Fractal Neurons",
+ "toolSummary": {
+  "remote": "6 read-only inspection tools + 1 opt-in coverage/feature request tool (pacta_submit_request)",
+  "requestTool": "pacta_submit_request",
+  "requestsEndpoint": "https://pacta-x402.pacta.workers.dev/v1/requests",
+  "stdio": "10 read-only inspection tools + 1 opt-in request tool"
+ },
+ "tools": [
+  {
+   "access": "free",
+   "description": "Resolve a protocol or token name, symbol, slug or 0x address to its verified record and preflightArgs {chain, address} (query, chain, kind, limit; no RPC)",
+   "effectivePriceUsd": "0.00",
+   "name": "pacta_lookup_protocol",
+   "price": null,
+   "readOnly": true
+  },
+  {
+   "access": "free",
+   "description": "Filter indexed records (protocol, classification, sprint, limit)",
+   "effectivePriceUsd": "0.00",
+   "name": "pacta_list_commitments",
+   "price": null,
+   "readOnly": true
+  },
+  {
+   "access": "free",
+   "description": "Base EAS anchoring: PactaCommitmentRegistry, schema, sprint attestation UIDs",
+   "effectivePriceUsd": "0.00",
+   "name": "pacta_get_anchoring",
+   "price": null,
+   "readOnly": true
+  },
+  {
+   "access": "free",
+   "description": "Governance proposals feed (forum, topic_id, chain, limit, include_repro)",
+   "effectivePriceUsd": "0.00",
+   "name": "pacta_list_proposals",
+   "price": null,
+   "readOnly": true
+  },
+  {
+   "access": "free",
+   "description": "x402 gateway status and discovery manifest (only when PACTA_X402_URL is set)",
+   "effectivePriceUsd": "0.00",
+   "name": "pacta_x402_discover",
+   "price": null,
+   "readOnly": true
+  },
+  {
+   "access": "free_launch",
+   "description": "Pre-execution check of a contract: verdict, 0-100 risk score, proxy / admin / timelock, capabilities (chain, address, block)",
+   "effectivePriceUsd": "0.00",
+   "name": "pacta_check_preflight",
+   "price": "$0.01",
+   "readOnly": true
+  },
+  {
+   "access": "free_launch",
+   "description": "Live control-plane scan of a contract (chain, address)",
+   "effectivePriceUsd": "0.00",
+   "name": "pacta_scan_control_plane",
+   "price": "$0.10",
+   "readOnly": true
+  },
+  {
+   "access": "free_launch",
+   "description": "Live TimelockController operation state (timelock, opId)",
+   "effectivePriceUsd": "0.00",
+   "name": "pacta_scan_timelock_op",
+   "price": "$0.25",
+   "readOnly": true
+  },
+  {
+   "access": "free_launch",
+   "description": "Live state of tracked queued timelock operations",
+   "effectivePriceUsd": "0.00",
+   "name": "pacta_live_timelocks",
+   "price": "$0.10",
+   "readOnly": true
+  },
+  {
+   "access": "free_launch",
+   "description": "Re-run a tracked governance proposal's pinned reads live, pinned-vs-live diffs (forum, topicId)",
+   "effectivePriceUsd": "0.00",
+   "name": "pacta_scan_proposal_diff",
+   "price": "$0.15",
+   "readOnly": true
+  },
+  {
+   "access": "free",
+   "description": "Opt-in (the only tool that writes): queue or upvote a coverage / feature request after a coverage_gap_hint, with the user's consent; forwards to POST /v1/requests (only when PACTA_X402_URL is set)",
+   "effectivePriceUsd": "0.00",
+   "name": "pacta_submit_request",
+   "price": null,
+   "readOnly": false
+  }
+ ],
+ "transport": {
+  "auth": "none",
+  "pricingMode": "free_launch",
+  "tools": [
+   "pacta_lookup_protocol",
+   "pacta_check_preflight",
+   "pacta_scan_control_plane",
+   "pacta_scan_timelock_op",
+   "pacta_scan_proposal_diff",
+   "pacta_get_live_timelocks",
+   "pacta_submit_request"
+  ],
+  "type": "streamable-http",
+  "url": "https://pacta-x402.pacta.workers.dev/mcp"
+ },
+ "transports": [
+  {
+   "install": "none",
+   "tools": [
+    "pacta_lookup_protocol",
+    "pacta_check_preflight",
+    "pacta_scan_control_plane",
+    "pacta_scan_timelock_op",
+    "pacta_scan_proposal_diff",
+    "pacta_get_live_timelocks",
+    "pacta_submit_request"
+   ],
+   "type": "streamable-http",
+   "url": "https://pacta-x402.pacta.workers.dev/mcp"
+  },
+  {
+   "args": [
+    "packages/mcp-server/bin/pacta-mcp.mjs"
+   ],
+   "command": "node",
+   "install": "from a clone of the repository (npm publication pending)",
+   "type": "stdio"
+  }
+ ],
+ "verification": {
+  "chainId": 8453,
+  "easSchema": "0x7ff485bc1159dff3c70eefcb9dff2d65be990301760c2d53799e5a45e3badf83",
+  "method": "eth_call with EIP-1898 {blockHash, requireCanonical: true}",
+  "registry": "0x35D21Bb4Df6586FE7759b5e57263ffeB3e1fd872"
+ },
+ "version": "2026.11.17",
+ "x402": {
+  "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+  "chainId": 8453,
+  "discovery": "https://pacta-x402.pacta.workers.dev/.well-known/x402",
+  "enableWith": "PACTA_X402_URL=https://pacta-x402.pacta.workers.dev",
+  "gatewayOnchainReceiptVerification": true,
+  "gatewaySettlementGuard": "In x402_paid mode the gateway verifies every settlement on Base before releasing the product: eth_getTransactionReceipt must show status 0x1 and canonical USDC Transfer(payer -> payTo 0xcA4E2ff22B69A7284210c47BdeE21Aac1269da09) logs summing to at least the route price, and replays are rejected on a best-effort basis (402 replay_settlement_tx) via synchronous same-isolate state and non-atomic eventually-consistent KV used_tx:<txHash>; concurrent cross-isolate races are not globally atomic without Durable Objects. Otherwise the product is withheld: 402 unconfirmed_or_reverted_settlement_tx / insufficient_onchain_usdc_transfer, or 502 settlement_rpc_unavailable when no Base RPC answers.",
+  "gatewayUrl": "https://pacta-x402.pacta.workers.dev",
+  "maxTimeoutSeconds": 60,
+  "networks": [
+   "base",
+   "eip155:8453"
+  ],
+  "onchainReceiptVerified": false,
+  "optIn": true,
+  "paidRoutes": [
+   {
+    "amount": "10000",
+    "path": "/v1/check/preflight",
+    "priceUsd": "$0.01"
+   },
+   {
+    "amount": "100000",
+    "path": "/v1/scan/control-plane",
+    "priceUsd": "$0.10"
+   },
+   {
+    "amount": "250000",
+    "path": "/v1/scan/timelock-op",
+    "priceUsd": "$0.25"
+   },
+   {
+    "amount": "150000",
+    "path": "/v1/scan/proposal-diff",
+    "priceUsd": "$0.15"
+   },
+   {
+    "amount": "100000",
+    "path": "/v1/briefs/live-timelocks",
+    "priceUsd": "$0.10"
+   }
+  ],
+  "payTo": "0xcA4E2ff22B69A7284210c47BdeE21Aac1269da09",
+  "toolPaymentArguments": {
+   "preference": "x402Version",
+   "v1": "xPaymentHeader",
+   "v2": "paymentSignatureHeader"
+  },
+  "wire": {
+   "v1": {
+    "amountField": "maxAmountRequired",
+    "challenge": "402 JSON body",
+    "network": "base",
+    "paymentHeader": "X-PAYMENT",
+    "receiptHeader": "X-PAYMENT-RESPONSE",
+    "x402Version": 1
+   },
+   "v2": {
+    "amountField": "amount",
+    "bazaarSchema": "https://json-schema.org/draft/2020-12/schema",
+    "challenge": "PAYMENT-REQUIRED header (base64 JSON)",
+    "network": "eip155:8453",
+    "paymentHeader": "PAYMENT-SIGNATURE",
+    "receiptHeader": "PAYMENT-RESPONSE",
+    "x402Version": 2
+   }
+  },
+  "x402Versions": [
+   1,
+   2
+  ]
+ }
+}

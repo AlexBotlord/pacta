@@ -20,6 +20,7 @@
   <url><loc>https://pacta.wtf/api/v1/protocols.json</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/api/v1/graph-manifest.json</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/integrations/vault-factories/</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://pacta.wtf/for-protocols/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/llms/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/llms-full.txt</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/SKILL.md</loc><lastmod>2026-11-17</lastmod></url>

@@ -43,6 +43,7 @@
   <url><loc>https://pacta.wtf/protocols/beefy-finance-base/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/cap/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/centrifuge-liquidity-pools-base/</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://pacta.wtf/protocols/chainlink-ccip/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/circle-usdc/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/coinbase-wrapped-staked-eth/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/compound-v3-base/</loc><lastmod>2026-11-17</lastmod></url>
@@ -81,6 +82,7 @@
   <url><loc>https://pacta.wtf/protocols/moonwell-lending-base/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/morpho-blue-core/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/nexus-mutual/</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://pacta.wtf/protocols/obol-network/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/ondo-finance-ousg-flux-finance/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/origin-superoeth-base/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/paypal-usd-pyusd/</loc><lastmod>2026-11-17</lastmod></url>
@@ -102,6 +104,7 @@
   <url><loc>https://pacta.wtf/protocols/stake-link/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/stakewise-v3-oseth/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/stargate-v2/</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://pacta.wtf/protocols/steakhouse-financial-ethereum/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/steakhouse-usdc-metamorpho-base/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/superform-v2-base/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/superstate-ustb-uscc/</loc><lastmod>2026-11-17</lastmod></url>
@@ -112,6 +115,7 @@
   <url><loc>https://pacta.wtf/protocols/threshold-network-tbtc/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/treehouse-tree-teth/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/uniswap-governance-timelock/</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://pacta.wtf/protocols/uniswap-v4/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/usual-money-usd0-usd0/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/yearn-v3/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/yo-protocol/</loc><lastmod>2026-11-17</lastmod></url>

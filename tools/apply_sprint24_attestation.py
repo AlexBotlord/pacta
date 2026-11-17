@@ -102,6 +102,15 @@ def sub_once(text, pattern, repl, name, count=1, flags=0):
     return new
 
 
+def sub_done(text, old, new, name):
+    """Literal replace, idempotent: exactly one old occurrence is replaced; if it is already gone, exactly one new must be present."""
+    if text.count(old) == 1:
+        return text.replace(old, new)
+    if old not in text and text.count(new) == 1:
+        return text
+    fail(f"{name}: expected one of {old!r} (or the applied {new!r})")
+
+
 def placeholder(h):
     body = h[2:]
     return len(set(body[i:i + 2] for i in range(0, 64, 2))) == 1
@@ -456,7 +465,7 @@ def sync_core(core):
     s = sub_once(s, r"const RPC_PINNED_SLUGS = \[(.*?)\];", lambda m: "const RPC_PINNED_SLUGS = [\n" + render_list(rpc_slugs) + "];",
                  "worker RPC_PINNED_SLUGS", flags=re.S)
     # the "uniswap" lookup now also returns the new uniswap-v4 protocol (prefix match), after uniswap-governance-timelock
-    s = sub_once(s, re.escape('assert.deepEqual(top(r), ["uniswap-governance-timelock"]);'),
+    s = sub_done(s, 'assert.deepEqual(top(r), ["uniswap-governance-timelock"]);',
                  'assert.deepEqual(top(r), ["uniswap-governance-timelock", "uniswap-v4"]);', "worker uniswap lookup")
     old, new = FOOTER_PROBE
     if new not in rpc_slugs:
@@ -464,8 +473,8 @@ def sync_core(core):
     if old != new:
         if old in rpc_slugs:
             fail(f"citation-footer probe: {old} must be converted", 1)
-        s = sub_once(s, re.escape(f'["{old}", "{old}"]'), f'["{new}", "{new}"]', "worker footer probe case")
-        s = sub_once(s, re.escape(f'slug !== "{old}"'), f'slug !== "{new}"', "worker footer probe easAttested")
+        s = sub_done(s, f'["{old}", "{old}"]', f'["{new}", "{new}"]', "worker footer probe case")
+        s = sub_done(s, f'slug !== "{old}"', f'slug !== "{new}"', "worker footer probe easAttested")
     else:
         sub_once(s, re.escape(f'["{new}", "{new}"]'), f'["{new}", "{new}"]', "worker footer probe case (unchanged)")
     write(p, s)
@@ -613,6 +622,12 @@ def finish(core, node, skip_tests):
     run([sys.executable, "verify_site_v2.py"], ROOT, "verify_site_v2")
     if core:
         sync_core(core)
+        # the Worker's OpenAPI document embeds catalog-derived numbers (e.g. the lookup limit maximum): re-snapshot it from the synced
+        # worker, rebuild (root /openapi.json copy) and re-verify
+        run([sys.executable, "tools/sync_openapi.py", "--core", core], ROOT, "sync_openapi")
+        build_twice()
+        run([sys.executable, "tools/sync_openapi.py", "--check", "--core", core], ROOT, "sync_openapi --check")
+        run([sys.executable, "verify_site_v2.py"], ROOT, "verify_site_v2 (after the OpenAPI re-snapshot)")
     if not skip_tests:
         tests(core, node)
     print(f"done: Sprint {SPRINT} stamped ({TARGET['records']} records, {TARGET['sprints']} sprints, {TARGET['protocols']} protocol pages = "

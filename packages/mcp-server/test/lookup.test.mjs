@@ -14,7 +14,7 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const DOCS = join(HERE, "..", "..", "..", "docs", "api", "v1");
 const GW = "https://gateway.example.test";
 // PUBLISHED-COUNTS (the one line a Sprint stamp rewrites; equals pacta-github-repo verify_site_v2.EXPECT)
-const PUBLISHED = Object.freeze({ protocols: 82, briefs: 8, easAttestedProtocols: 74, rpcObservedProtocols: 8 });
+const PUBLISHED = Object.freeze({ protocols: 86, briefs: 8, easAttestedProtocols: 80, rpcObservedProtocols: 6 });
 const rec = (reply) => {
   const calls = [];
   const f = async (url) => { calls.push(String(url)); return reply(String(url)); };
@@ -183,7 +183,7 @@ test("address aliases: the Aave V3 Base Pool resolves exactly to aave-v3-base; '
 
 test("0.1.5 footer: an rpc_observed record says not_attested and never names a UID; briefs carry none; a miss has none (1 content block)", async () => {
   const srv = new PactaMcpServer({ fetchImpl: rec(() => { throw new Error("no network"); }) });
-  const slug = "synthetix-v3-core";
+  const slug = "bedrock-unieth";
   const item = LOOKUP_CATALOG.find((x) => x.kind === "protocol" && x.slug === slug);
   assert.equal(item.evidenceBasis, "rpc_observed");
   assert.deepEqual(item.baseEasUids, []);

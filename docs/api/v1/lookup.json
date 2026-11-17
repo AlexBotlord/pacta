@@ -571,36 +571,62 @@
    }
   },
   {
-   "baseEasUids": [],
+   "baseEasUids": [
+    "0x61c2970c176b85ab604e6b565c5f050a7176b62e725d449e8d27d700365283d6"
+   ],
    "category": "Institutional RWA Liquidity Pools",
    "chain": "base",
    "chainId": 8453,
-   "classification": "rpc_observed",
+   "classification": "aligned_baseline",
    "controllerAddress": null,
    "controllerKind": "immutable_or_role_governed",
-   "documentationComparison": "not_assessed",
+   "documentationComparison": "compared",
    "documentedDelaySeconds": null,
-   "easAttested": false,
-   "evidenceBasis": "rpc_observed",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
    "kind": "protocol",
    "name": "Centrifuge V3 Root (Base)",
    "observedDelaySeconds": null,
-   "pinnedBlock": 57421449,
+   "pinnedBlock": 58534152,
    "preflightArgs": {
     "address": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
     "chain": "base"
    },
    "primaryContract": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
-   "relatedContracts": [],
+   "relatedContracts": [
+    "0x055589229506Ee89645EF08ebE9B9a863486d0dE",
+    "0xd21413291444C5c104F1b5918cA0D2f6EC91Ad16",
+    "0xCEb7eD5d5B3bAD3088f6A1697738B60d829635c6",
+    "0x9711730060C73Ee7Fcfe1890e8A0993858a7D225"
+   ],
    "slug": "centrifuge-liquidity-pools-base",
+   "sprints": [
+    24
+   ],
    "surfaces": [
     {
-     "blockNumber": 57421449,
-     "classification": "rpc_observed",
-     "id": "centrifuge-liquidity-pools-base-control-plane",
-     "surface": "CentrifugeRoot_Base · Non-Proxy Bytecode & Role Architecture",
+     "blockNumber": 58534152,
+     "classification": "aligned_baseline",
+     "id": "centrifuge-liquidity-pools-base-ops-guardian-s24",
+     "surface": "OpsGuardian: not a ward of Root (no pause authority), run by the Ops Safe",
      "targetContract": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
-     "targetLabel": "CentrifugeRoot_Base"
+     "targetLabel": "Centrifuge Root (Base)"
+    },
+    {
+     "blockNumber": 58534152,
+     "classification": "aligned_baseline",
+     "id": "centrifuge-liquidity-pools-base-protocol-guardian-s24",
+     "surface": "ProtocolGuardian: a ward of Root, controlled by the Protocol Safe",
+     "targetContract": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
+     "targetLabel": "Centrifuge Root (Base)"
+    },
+    {
+     "blockNumber": 58534152,
+     "classification": "aligned_baseline",
+     "id": "centrifuge-liquidity-pools-base-root-timelock-s24",
+     "surface": "Root timelock: 48 hours before a scheduled permission takes effect",
+     "targetContract": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
+     "targetLabel": "Centrifuge Root (Base)"
     }
    ],
    "targetLabel": "CentrifugeRoot_Base",
@@ -609,6 +635,112 @@
    ],
    "url": "https://pacta.wtf/protocols/centrifuge-liquidity-pools-base/",
    "whatDiffers": null
+  },
+  {
+   "baseEasUids": [
+    "0x61c2970c176b85ab604e6b565c5f050a7176b62e725d449e8d27d700365283d6"
+   ],
+   "category": "Cross-Chain Messaging & Token Bridge Infrastructure",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "mixed",
+   "controllerAddress": "0x44835bBBA9D40DEDa9b64858095EcFB2693c9449",
+   "controllerKind": "timelock",
+   "documentationComparison": "compared",
+   "documentedDelaySeconds": null,
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "kind": "protocol",
+   "name": "Chainlink CCIP",
+   "observedDelaySeconds": 10800,
+   "pinnedBlock": 26433001,
+   "preflightArgs": {
+    "address": "0x80226fc0Ee2b096224EeAc085Bb9a8cba1146f7D",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x80226fc0Ee2b096224EeAc085Bb9a8cba1146f7D",
+   "relatedContracts": [
+    "0x411dE17f12D1A34ecC7F45f49844626267c75e81",
+    "0x117ec8aD107976e1dBCc21717ff78407Bc36aADc",
+    "0x6608920e3F6b591EC3Cf15CA1DDf66fBE117F56A",
+    "0x8C00Cc7cC37396e88BbFe66371341a59D1b5771F",
+    "0xE53289F32c8E690b7173aA33affE9B6B0CB0012F",
+    "0xD6597750bf74DCAEC57e0F9aD2ec998D837005bf",
+    "0xD9757aA52907798d1aF2FDa7A6C0cC733E5aCf7e"
+   ],
+   "slug": "chainlink-ccip",
+   "sprints": [
+    24
+   ],
+   "surfaces": [
+    {
+     "blockNumber": 26433001,
+     "classification": "aligned_baseline",
+     "id": "chainlink-ccip-config-owner-rbac-timelock-s24",
+     "surface": "CCIP configuration owner: an RBACTimelock (Router, RMN proxy, TokenAdminRegistry, CCIPHome)",
+     "targetContract": "0x80226fc0Ee2b096224EeAc085Bb9a8cba1146f7D",
+     "targetLabel": "CCIP Router (Ethereum)"
+    },
+    {
+     "blockNumber": 26433001,
+     "classification": "aligned_baseline",
+     "id": "chainlink-ccip-rmn-uncurse-owner-s24",
+     "surface": "RMN: uncurse is owner-only and the owner is an RBACTimelock; curse also by authorized callers",
+     "targetContract": "0x0B047953451A207743fB62541B21199b95190602",
+     "targetLabel": "CCIP RMN (Ethereum)"
+    },
+    {
+     "blockNumber": 26433001,
+     "classification": "parameter_delta",
+     "id": "chainlink-ccip-timelock-proposers-s24",
+     "surface": "Timelock proposers: a 6-of-12 Safe besides the ManyChainMultiSigs (docs: all proposals from an MCMS)",
+     "targetContract": "0x44835bBBA9D40DEDa9b64858095EcFB2693c9449",
+     "targetLabel": "CCIP RBACTimelock (Ethereum)"
+    },
+    {
+     "blockNumber": 26433001,
+     "classification": "aligned_baseline",
+     "id": "chainlink-ccip-token-admin-registry-owner-s24",
+     "surface": "CCIP Directory addresses resolve on-chain; TokenAdminRegistry owned by the RBACTimelock",
+     "targetContract": "0xb22764f98dD05c789929716D677382Df22C05Cb6",
+     "targetLabel": "CCIP TokenAdminRegistry (Ethereum)"
+    }
+   ],
+   "targetLabel": "CCIP Router (Ethereum)",
+   "tokens": [
+    "CCIP",
+    "LINK",
+    "Chainlink"
+   ],
+   "url": "https://pacta.wtf/protocols/chainlink-ccip/",
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "parameter_delta",
+      "documented": "docs.chain.link (CCIP upgradability): 'All proposals originate from a ManyChainMultiSig (MCMS), which requires multiple independent signers to sign off.' / 'For example, you can view the Ethereum mainnet MCMS on Ethersc…",
+      "observed": "RBACTimelock 0x44835bBBA9D40DEDa9b64858095EcFB2693c9449: getRoleMemberCount(PROPOSER_ROLE) = 3: ManyChainMultiSig 0xE53289F32c8E690b7173aA33affE9B6B0CB0012F (the MCMS the docs link), GnosisSafeProxy 0xD6597750bf74DCAEC5…",
+      "parameter": "Timelock proposers: a 6-of-12 Safe besides the ManyChainMultiSigs (docs: all proposals from an MCMS)",
+      "recordId": "chainlink-ccip-timelock-proposers-s24"
+     }
+    ],
+    "matched": [
+     {
+      "parameter": "CCIP configuration owner: an RBACTimelock (Router, RMN proxy, TokenAdminRegistry, CCIPHome)",
+      "recordId": "chainlink-ccip-config-owner-rbac-timelock-s24",
+      "value": "matches the documentation"
+     },
+     {
+      "parameter": "RMN: uncurse is owner-only and the owner is an RBACTimelock; curse also by authorized callers",
+      "recordId": "chainlink-ccip-rmn-uncurse-owner-s24",
+      "value": "matches the documentation"
+     },
+     {
+      "parameter": "CCIP Directory addresses resolve on-chain; TokenAdminRegistry owned by the RBACTimelock",
+      "recordId": "chainlink-ccip-token-admin-registry-owner-s24",
+      "value": "matches the documentation"
+     }
+    ]
+   }
   },
   {
    "baseEasUids": [
@@ -3023,6 +3155,108 @@
   },
   {
    "baseEasUids": [
+    "0x61c2970c176b85ab604e6b565c5f050a7176b62e725d449e8d27d700365283d6"
+   ],
+   "category": "Distributed Validator Infrastructure & Governance Token",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "mixed",
+   "controllerAddress": "0xCdBf527842Ab04Da548d33EB09d03DB831381Fb0",
+   "controllerKind": "timelock",
+   "documentationComparison": "compared",
+   "documentedDelaySeconds": 432000,
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "kind": "protocol",
+   "name": "Obol Network",
+   "observedDelaySeconds": 432000,
+   "pinnedBlock": 26433001,
+   "preflightArgs": {
+    "address": "0xCdBf527842Ab04Da548d33EB09d03DB831381Fb0",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xCdBf527842Ab04Da548d33EB09d03DB831381Fb0",
+   "relatedContracts": [
+    "0x02b5D1Fd67246c0513223D320901474aA20Bf973",
+    "0x7E90E03654732ABedF89Faf87f05BcD03ACEeFdC",
+    "0x42D201CC4d9C1e31c032397F54caCE2f48C1FA72"
+   ],
+   "slug": "obol-network",
+   "sprints": [
+    24
+   ],
+   "surfaces": [
+    {
+     "blockNumber": 26433001,
+     "classification": "aligned_baseline",
+     "id": "obol-network-governance-timelock-delay-s24",
+     "surface": "Governance timelock: 5 days between a passed proposal and execution",
+     "targetContract": "0xCdBf527842Ab04Da548d33EB09d03DB831381Fb0",
+     "targetLabel": "Obol TimelockController"
+    },
+    {
+     "blockNumber": 26433001,
+     "classification": "aligned_baseline",
+     "id": "obol-network-governor-thresholds-s24",
+     "surface": "Governor: 30,000 OBOL proposal threshold, 0.84% quorum",
+     "targetContract": "0xcB1622185A0c62A80494bEde05Ba95ef29Fbf85c",
+     "targetLabel": "ObolGovernor"
+    },
+    {
+     "blockNumber": 26433001,
+     "classification": "aligned_baseline",
+     "id": "obol-network-stobol-withdraw-delay-s24",
+     "surface": "stOBOL unstaking: no withdrawal delay (WithdrawGate delay 0)",
+     "targetContract": "0x4094C8D36e40795Ca25BFe9451f158D30614666A",
+     "targetLabel": "stOBOL WithdrawGate"
+    },
+    {
+     "blockNumber": 26433001,
+     "classification": "parameter_delta",
+     "id": "obol-network-token-supply-cap-s24",
+     "surface": "OBOL supply: documented cap of 500M, no cap on-chain; a 2-of-3 Safe holds MINTER_ROLE",
+     "targetContract": "0x0B010000b7624eb9B3DfBC279673C76E9D29D5F7",
+     "targetLabel": "ObolToken"
+    }
+   ],
+   "targetLabel": "Obol TimelockController",
+   "tokens": [
+    "OBOL",
+    "stOBOL",
+    "Obol"
+   ],
+   "url": "https://pacta.wtf/protocols/obol-network/",
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "parameter_delta",
+      "documented": "docs.obol.org (token distribution;",
+      "observed": "ObolToken 0x0B010000b7624eb9B3DfBC279673C76E9D29D5F7 (Sourcify exact match): totalSupply() = 500000000000000103303500000 (500,000,000.0000001033035 OBOL);",
+      "parameter": "OBOL supply: documented cap of 500M, no cap on-chain; a 2-of-3 Safe holds MINTER_ROLE",
+      "recordId": "obol-network-token-supply-cap-s24"
+     }
+    ],
+    "matched": [
+     {
+      "parameter": "Governance timelock: 5 days between a passed proposal and execution",
+      "recordId": "obol-network-governance-timelock-delay-s24",
+      "value": "matches the documentation"
+     },
+     {
+      "parameter": "Governor: 30,000 OBOL proposal threshold, 0.84% quorum",
+      "recordId": "obol-network-governor-thresholds-s24",
+      "value": "matches the documentation"
+     },
+     {
+      "parameter": "stOBOL unstaking: no withdrawal delay (WithdrawGate delay 0)",
+      "recordId": "obol-network-stobol-withdraw-delay-s24",
+      "value": "matches the documentation"
+     }
+    ]
+   }
+  },
+  {
+   "baseEasUids": [
     "0xfdd83c8091ef6e8ffe67e8a55a78892fcfbb1092683b21ff2d85f8cc09750e6c"
    ],
    "category": "Institutional RWA / Tokenized Treasuries",
@@ -4400,6 +4634,85 @@
   },
   {
    "baseEasUids": [
+    "0x61c2970c176b85ab604e6b565c5f050a7176b62e725d449e8d27d700365283d6"
+   ],
+   "category": "Morpho v1 Curator Vault Suite (USDC, USDT, PYUSD)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "aligned_baseline",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
+   "documentedDelaySeconds": null,
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "kind": "protocol",
+   "name": "Steakhouse Financial (Ethereum)",
+   "observedDelaySeconds": null,
+   "pinnedBlock": 26433001,
+   "preflightArgs": {
+    "address": "0xBEEF01735c132Ada46AA9aA4c54623cAA92A64CB",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xBEEF01735c132Ada46AA9aA4c54623cAA92A64CB",
+   "relatedContracts": [
+    "0xaa0500198B4425DfC4E272FbE42C8E64E21fc03d",
+    "0xbEef047a543E45807105E51A8BBEFCc5950fcfBa",
+    "0xbEEF02e5E13584ab96848af90261f0C8Ee04722a",
+    "0xaeC761545Fd135db6d04D27C92BCB3951668c67F",
+    "0xCcFd0E9CEC732fb839fadDeCc72B6154530bC90f",
+    "0x827e86072B06674a077f592A531dcE4590aDeCdB"
+   ],
+   "slug": "steakhouse-financial-ethereum",
+   "sprints": [
+    24
+   ],
+   "surfaces": [
+    {
+     "blockNumber": 26433001,
+     "classification": "aligned_baseline",
+     "id": "steakhouse-financial-ethereum-steakusdc-guardian-aragon-s24",
+     "surface": "steakUSDC guardian: its own Aragon DAO (steakusdc-guardian.dao.eth), as announced",
+     "targetContract": "0xBEEF01735c132Ada46AA9aA4c54623cAA92A64CB",
+     "targetLabel": "Steakhouse USDC (steakUSDC) MetaMorpho vault"
+    },
+    {
+     "blockNumber": 26433001,
+     "classification": "aligned_baseline",
+     "id": "steakhouse-financial-ethereum-steakusdc-guardian-vote-1d-s24",
+     "surface": "steakUSDC guardian DAO: 1-day voting window; settings, plugin upgrade and root permissions revoked",
+     "targetContract": "0x79864900a4d34fb7907De9fe404758de5a4956dE",
+     "targetLabel": "steakUSDC guardian token-voting plugin"
+    },
+    {
+     "blockNumber": 26433001,
+     "classification": "aligned_baseline",
+     "id": "steakhouse-financial-ethereum-steakusdc-timelock-7d-s24",
+     "surface": "Vault timelock: 7 days (steakUSDC, steakUSDT, steakPYUSD)",
+     "targetContract": "0xBEEF01735c132Ada46AA9aA4c54623cAA92A64CB",
+     "targetLabel": "Steakhouse USDC (steakUSDC) MetaMorpho vault"
+    },
+    {
+     "blockNumber": 26433001,
+     "classification": "aligned_baseline",
+     "id": "steakhouse-financial-ethereum-vaults-owner-safe-5-of-10-s24",
+     "surface": "Vault owner: one Safe with a quorum of five keys (5-of-10)",
+     "targetContract": "0x0A0e559bc3b0950a7e448F0d4894db195b9cf8DD",
+     "targetLabel": "Steakhouse vaults owner Safe"
+    }
+   ],
+   "targetLabel": "Steakhouse USDC (steakUSDC) MetaMorpho vault",
+   "tokens": [
+    "steakUSDT",
+    "steakPYUSD",
+    "steakUSDC",
+    "Steakhouse"
+   ],
+   "url": "https://pacta.wtf/protocols/steakhouse-financial-ethereum/",
+   "whatDiffers": null
+  },
+  {
+   "baseEasUids": [
     "0xbeb412dfc350f879f816a5cb001b53257a3ee03c12cf1d8e2c15a070141ed8c7"
    ],
    "category": "Curated Lending Vault (MetaMorpho)",
@@ -4649,36 +4962,67 @@
    "whatDiffers": null
   },
   {
-   "baseEasUids": [],
+   "baseEasUids": [
+    "0x61c2970c176b85ab604e6b565c5f050a7176b62e725d449e8d27d700365283d6"
+   ],
    "category": "Derivatives Liquidity Infrastructure",
    "chain": "ethereum",
    "chainId": 1,
-   "classification": "rpc_observed",
+   "classification": "aligned_baseline",
    "controllerAddress": "0xEb3107117FEAd7de89Cd14D463D340A2E6917769",
    "controllerKind": "multisig_safe",
-   "documentationComparison": "not_assessed",
+   "documentationComparison": "compared",
    "documentedDelaySeconds": null,
-   "easAttested": false,
-   "evidenceBasis": "rpc_observed",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
    "kind": "protocol",
    "name": "Synthetix V3 Core",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26414499,
+   "pinnedBlock": 26433001,
    "preflightArgs": {
     "address": "0xffffffaEff0B96Ea8e4f94b2253f31abdD875847",
     "chain": "ethereum"
    },
    "primaryContract": "0xffffffaEff0B96Ea8e4f94b2253f31abdD875847",
-   "relatedContracts": [],
+   "relatedContracts": [
+    "0x58ce7364744e59402B3672D3Cf3Bb415a12441cD"
+   ],
    "slug": "synthetix-v3-core",
+   "sprints": [
+    24
+   ],
    "surfaces": [
     {
-     "blockNumber": 26414499,
-     "classification": "rpc_observed",
-     "id": "synthetix-v3-core-control-plane",
-     "surface": "SynthetixCoreProxy · 4-of-7 Safe Control Plane",
+     "blockNumber": 26433001,
+     "classification": "aligned_baseline",
+     "id": "synthetix-v3-core-account-owner-s24",
+     "surface": "Account NFT (AccountProxy) owner: the CoreProxy, not a key or Safe",
+     "targetContract": "0x0E429603D3Cb1DFae4E6F52Add5fE82d96d77Dac",
+     "targetLabel": "Synthetix V3 AccountProxy"
+    },
+    {
+     "blockNumber": 26433001,
+     "classification": "aligned_baseline",
+     "id": "synthetix-v3-core-oracle-owner-s24",
+     "surface": "Price-oracle manager (OracleManagerProxy) owner: the pDAO 4-of-7 Safe directly",
+     "targetContract": "0x0aaF300E148378489a8A471DD3e9E53E30cb42e3",
+     "targetLabel": "Synthetix V3 OracleManagerProxy"
+    },
+    {
+     "blockNumber": 26433001,
+     "classification": "aligned_baseline",
+     "id": "synthetix-v3-core-owner-s24",
+     "surface": "CoreProxy owner (upgrades and administration): the pDAO Safe, as listed",
      "targetContract": "0xffffffaEff0B96Ea8e4f94b2253f31abdD875847",
      "targetLabel": "SynthetixCoreProxy"
+    },
+    {
+     "blockNumber": 26433001,
+     "classification": "aligned_baseline",
+     "id": "synthetix-v3-core-usd-owner-s24",
+     "surface": "snxUSD stablecoin (USDProxy) owner: the CoreProxy",
+     "targetContract": "0xb2F30A7C980f052f02563fb518dcc39e6bf38175",
+     "targetLabel": "Synthetix V3 USDProxy (snxUSD)"
     }
    ],
    "targetLabel": "SynthetixCoreProxy",
@@ -4948,6 +5292,84 @@
      }
     ]
    }
+  },
+  {
+   "baseEasUids": [
+    "0x61c2970c176b85ab604e6b565c5f050a7176b62e725d449e8d27d700365283d6"
+   ],
+   "category": "Blue-Chip DEX (Singleton PoolManager & Protocol Fees)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "aligned_baseline",
+   "controllerAddress": "0x1a9C8182C09F50C8318d769245beA52c32BE35BC",
+   "controllerKind": "timelock",
+   "documentationComparison": "compared",
+   "documentedDelaySeconds": null,
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "kind": "protocol",
+   "name": "Uniswap V4",
+   "observedDelaySeconds": 172800,
+   "pinnedBlock": 58534152,
+   "preflightArgs": {
+    "address": "0x000000000004444c5dc75cB358380D2e3dE08A90",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x000000000004444c5dc75cB358380D2e3dE08A90",
+   "relatedContracts": [
+    "0x408ED6354d4973f66138C91495F2f2FCbd8724C3",
+    "0xc53DD825dedBE7814562528A1A30e8e5BCbB4b55",
+    "0x9bD25e67bF390437C8fAF480AC735a27BcF6168c",
+    "0x31FAfd4889FA1269F7a13A66eE0fB458f27D72A9",
+    "0xf38521f130fcCF29dB1961597bc5d2B60F995f85",
+    "0x1cd822b70a0591420F65E94b9B3A0D0b0fB3a314"
+   ],
+   "slug": "uniswap-v4",
+   "sprints": [
+    24
+   ],
+   "surfaces": [
+    {
+     "blockNumber": 26433001,
+     "classification": "aligned_baseline",
+     "id": "uniswap-v4-poolmanager-owner-timelock-s24",
+     "surface": "Owner: the 2-day governance Timelock run by GovernorBravo",
+     "targetContract": "0x000000000004444c5dc75cB358380D2e3dE08A90",
+     "targetLabel": "Uniswap V4 PoolManager (Ethereum)"
+    },
+    {
+     "blockNumber": 58534152,
+     "classification": "aligned_baseline",
+     "id": "uniswap-v4-poolmanager-protocol-fee-controller-base-s24",
+     "surface": "Base pools: fees routed to the listed Base V4FeeAdapter (chain 8453)",
+     "targetContract": "0x498581fF718922c3f8e6A244956aF099B2652b2b",
+     "targetLabel": "Uniswap V4 PoolManager (Base)"
+    },
+    {
+     "blockNumber": 26433001,
+     "classification": "aligned_baseline",
+     "id": "uniswap-v4-poolmanager-protocol-fee-controller-eth-s24",
+     "surface": "Ethereum pools: fees routed to the listed V4FeeAdapter",
+     "targetContract": "0x000000000004444c5dc75cB358380D2e3dE08A90",
+     "targetLabel": "Uniswap V4 PoolManager (Ethereum)"
+    },
+    {
+     "blockNumber": 26433001,
+     "classification": "aligned_baseline",
+     "id": "uniswap-v4-v4feeadapter-owner-timelock-s24",
+     "surface": "Who sets v4 protocol fees: the Timelock as owner and feeSetter",
+     "targetContract": "0x89A5D5bF00a27D55c02951E49078a5C5771051dB",
+     "targetLabel": "Uniswap V4FeeAdapter (Ethereum)"
+    }
+   ],
+   "targetLabel": "Uniswap V4 PoolManager (Ethereum)",
+   "tokens": [
+    "UNI",
+    "Uniswap v4",
+    "PoolManager"
+   ],
+   "url": "https://pacta.wtf/protocols/uniswap-v4/",
+   "whatDiffers": null
   },
   {
    "baseEasUids": [
@@ -5418,9 +5840,9 @@
  ],
  "totals": {
   "briefs": 8,
-  "easAttestedProtocols": 74,
-  "items": 90,
-  "protocols": 82,
-  "rpcObservedProtocols": 8
+  "easAttestedProtocols": 80,
+  "items": 94,
+  "protocols": 86,
+  "rpcObservedProtocols": 6
  }
 }

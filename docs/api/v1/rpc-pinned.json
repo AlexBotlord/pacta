@@ -1,7 +1,7 @@
 {
   "schema": "pacta.rpc_pinned_records.v1",
   "title": "Pacta RPC-pinned control-plane records",
-  "description": "Read-only control-plane observations of 8 protocols (3 Ethereum, 5 Base), each pinned to a canonical block number and block hash and reproducible with cast. These records are NOT EAS-attested: they have no sprint number, no summary document and no Base EAS UID. The Base-EAS-attested Sprint records are in /api/v1/index.json. Euler V2 (EVK) and Moonwell Lending (Base) were re-scanned in Sprint 18, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Pendle Finance V2 and Rocket Pool (rETH) were re-scanned in Sprint 19, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Frax Ether (frxETH / sfrxETH) and Puffer Finance (pufETH) were re-scanned in Sprint 20, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Aerodrome Finance (Base) and Balancer V2 Vault & TimelockAuthorizer were re-scanned in Sprint 21, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Across Protocol (HubPool) and Beefy Finance (Base) were re-scanned in Sprint 22, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Uniswap V3 & Governance Timelock and Reserve Protocol (eUSD RToken) were re-scanned in Sprint 23, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here.",
+  "description": "Read-only control-plane observations of 6 protocols (2 Ethereum, 4 Base), each pinned to a canonical block number and block hash and reproducible with cast. These records are NOT EAS-attested: they have no sprint number, no summary document and no Base EAS UID. The Base-EAS-attested Sprint records are in /api/v1/index.json. Euler V2 (EVK) and Moonwell Lending (Base) were re-scanned in Sprint 18, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Pendle Finance V2 and Rocket Pool (rETH) were re-scanned in Sprint 19, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Frax Ether (frxETH / sfrxETH) and Puffer Finance (pufETH) were re-scanned in Sprint 20, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Aerodrome Finance (Base) and Balancer V2 Vault & TimelockAuthorizer were re-scanned in Sprint 21, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Across Protocol (HubPool) and Beefy Finance (Base) were re-scanned in Sprint 22, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Uniswap V3 & Governance Timelock and Reserve Protocol (eUSD RToken) were re-scanned in Sprint 23, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Synthetix V3 Core and Centrifuge V3 Root (Base) were re-scanned in Sprint 24, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here.",
   "attestation": {
     "eas_attested": false,
     "base_eas_uid": null,
@@ -24,10 +24,10 @@
   },
   "verification": "Captured by one Pacta seat over public JSON-RPC and independently re-read at the same pinned blocks by a second seat (block hash, runtime bytecode size and keccak256, EIP-1967 implementation / admin slots, controller getter, Safe getThreshold / getOwners, timelock delay). Two records were corrected by the re-read (Moonwell admin contract, Uniswap V3 factory owner contract).",
   "summary": {
-    "protocols": 8,
-    "records": 8,
-    "ethereum": 3,
-    "base": 5
+    "protocols": 6,
+    "records": 6,
+    "ethereum": 2,
+    "base": 4
   },
   "source_pack_sha256": "857179d8c3024fae3b2204fcae4b542f96cba9b03777cfb6f56095a607f00950",
   "protocols": [
@@ -40,17 +40,6 @@
       "chain_label": "Ethereum",
       "record_ids": [
         "bedrock-unieth-control-plane"
-      ]
-    },
-    {
-      "slug": "centrifuge-liquidity-pools-base",
-      "name": "Centrifuge V3 Root (Base)",
-      "family": "centrifuge",
-      "category": "Institutional RWA Liquidity Pools",
-      "chain": "base",
-      "chain_label": "Base",
-      "record_ids": [
-        "centrifuge-liquidity-pools-base-control-plane"
       ]
     },
     {
@@ -106,17 +95,6 @@
       "chain_label": "Base",
       "record_ids": [
         "superform-v2-base-control-plane"
-      ]
-    },
-    {
-      "slug": "synthetix-v3-core",
-      "name": "Synthetix V3 Core",
-      "family": "synthetix",
-      "category": "Derivatives Liquidity Infrastructure",
-      "chain": "ethereum",
-      "chain_label": "Ethereum",
-      "record_ids": [
-        "synthetix-v3-core-control-plane"
       ]
     }
   ],
@@ -174,51 +152,6 @@
       "docs_url": "https://docs.bedrock.technology/",
       "governance_url": "https://docs.bedrock.technology/",
       "documented_reference": "Bedrock (uniETH) documentation is linked for reference (https://docs.bedrock.technology/; governance: https://docs.bedrock.technology/). This RPC-pinned record does not compare documentation parameters with the on-chain state."
-    },
-    {
-      "id": "centrifuge-liquidity-pools-base-control-plane",
-      "protocol": "Centrifuge V3 Root (Base)",
-      "slug": "centrifuge-liquidity-pools-base",
-      "family": "centrifuge",
-      "category": "Institutional RWA Liquidity Pools",
-      "chain": "base",
-      "chain_id": 8453,
-      "caip2": "eip155:8453",
-      "chain_label": "Base",
-      "rpc_env_var": "$BASE_RPC_URL",
-      "provenance": "rpc_pinned",
-      "base_eas_uid": null,
-      "block_number": 57421449,
-      "block_hash": "0x36147f7f0b6d2a0a94975e98b14c979034930dbe6f9905a5b0bcb2ab45ba35b0",
-      "classification": "rpc_observed",
-      "documentation_comparison": "not_assessed",
-      "surface": "CentrifugeRoot_Base · Non-Proxy Bytecode & Role Architecture",
-      "target_contract": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
-      "target_label": "CentrifugeRoot_Base",
-      "bytecode_bytes": 2618,
-      "bytecode_keccak256": "0x4c52ecbbb2915e51e056c8061997658d56bd4644233350617f11586423c6c42e",
-      "is_eip1967_proxy": false,
-      "eip1967_implementation": null,
-      "eip1967_admin": null,
-      "controller_kind": "immutable_or_role_governed",
-      "controller_address": null,
-      "upstream_controller": null,
-      "upstream_kind": null,
-      "safe_quorum": null,
-      "paired_contract": null,
-      "paired_label": null,
-      "check_type": "eth_getStorageAt",
-      "selector_or_slot": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
-      "call_signature": null,
-      "call_args": [],
-      "repro_calldata": null,
-      "extra_calls": [],
-      "onchain_observed": "CentrifugeRoot_Base (0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f) verified on Base Mainnet at canonical block #57,421,449 (2,618 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). No single-key Ownable or ProxyAdmin getter exposed on the primary entry contract; permissions follow immutable or role-scoped module architecture.",
-      "observed_delay_seconds": null,
-      "documented_delay_seconds": null,
-      "docs_url": "https://github.com/centrifuge/liquidity-pools",
-      "governance_url": "https://gov.centrifuge.io/",
-      "documented_reference": "Centrifuge V3 Root (Base) documentation is linked for reference (https://github.com/centrifuge/liquidity-pools; governance: https://gov.centrifuge.io/). This RPC-pinned record does not compare documentation parameters with the on-chain state."
     },
     {
       "id": "extra-finance-base-control-plane",
@@ -449,60 +382,6 @@
       "docs_url": "https://docs.superform.xyz/deployment-addresses",
       "governance_url": "https://docs.superform.xyz/operate/permissions",
       "documented_reference": "Superform Core v2 (Base) documentation is linked for reference (https://docs.superform.xyz/deployment-addresses; governance: https://docs.superform.xyz/operate/permissions). This RPC-pinned record does not compare documentation parameters with the on-chain state."
-    },
-    {
-      "id": "synthetix-v3-core-control-plane",
-      "protocol": "Synthetix V3 Core",
-      "slug": "synthetix-v3-core",
-      "family": "synthetix",
-      "category": "Derivatives Liquidity Infrastructure",
-      "chain": "ethereum",
-      "chain_id": 1,
-      "caip2": "eip155:1",
-      "chain_label": "Ethereum",
-      "rpc_env_var": "$ETH_RPC_URL",
-      "provenance": "rpc_pinned",
-      "base_eas_uid": null,
-      "block_number": 26414499,
-      "block_hash": "0xb83fee0a1d10d5fb8510d87ee9e33b180acac3208a7d00162a6a6f97789c0978",
-      "classification": "rpc_observed",
-      "documentation_comparison": "not_assessed",
-      "surface": "SynthetixCoreProxy · 4-of-7 Safe Control Plane",
-      "target_contract": "0xffffffaEff0B96Ea8e4f94b2253f31abdD875847",
-      "target_label": "SynthetixCoreProxy",
-      "bytecode_bytes": 344,
-      "bytecode_keccak256": "0x3848d007e90ad9829ee273f9577bd8336741bfb0dd9ca7f88005ed6e98c1e32b",
-      "is_eip1967_proxy": false,
-      "eip1967_implementation": null,
-      "eip1967_admin": null,
-      "controller_kind": "multisig_safe",
-      "controller_address": "0xEb3107117FEAd7de89Cd14D463D340A2E6917769",
-      "upstream_controller": null,
-      "upstream_kind": null,
-      "safe_quorum": "4-of-7",
-      "paired_contract": null,
-      "paired_label": null,
-      "check_type": "eth_call",
-      "selector_or_slot": "0x8da5cb5b",
-      "call_signature": "owner()",
-      "call_args": [],
-      "repro_calldata": "0x8da5cb5b",
-      "extra_calls": [
-        {
-          "to": "0xEb3107117FEAd7de89Cd14D463D340A2E6917769",
-          "signature": "getThreshold()(uint256)"
-        },
-        {
-          "to": "0xEb3107117FEAd7de89Cd14D463D340A2E6917769",
-          "signature": "getOwners()(address[])"
-        }
-      ],
-      "onchain_observed": "SynthetixCoreProxy (0xffffffaEff0B96Ea8e4f94b2253f31abdD875847) verified on Ethereum Mainnet at canonical block #26,414,499 (344 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). Direct owner() returns 0xEb3107117FEAd7de89Cd14D463D340A2E6917769, verified via getThreshold() and getOwners() as a 4-of-7 Safe multisig.",
-      "observed_delay_seconds": null,
-      "documented_delay_seconds": null,
-      "docs_url": "https://docs.synthetix.io/v/v3/for-developers/addresses",
-      "governance_url": "https://governance.synthetix.io/",
-      "documented_reference": "Synthetix V3 Core documentation is linked for reference (https://docs.synthetix.io/v/v3/for-developers/addresses; governance: https://governance.synthetix.io/). This RPC-pinned record does not compare documentation parameters with the on-chain state."
     }
   ]
 }

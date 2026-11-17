@@ -2,10 +2,10 @@
  "description": "One canonical grade per published protocol (DELTA / PROTECTIVE / ALIGNED / OBSERVED) and a 5-factor control-plane rosette derived deterministically from Pacta's published records (index.json, rpc-pinned.json) and controller facts. A factor the published evidence does not decide is 'n' (not determined); docs-vs-chain parity is 'u' (uncompared) for every RPC-observed protocol. States: g strong, b moderate, a weak, n not determined, u uncompared.",
  "factorCoverage": {
   "emergency": 21,
-  "parity": 74,
-  "quorum": 63,
-  "timelock": 49,
-  "upgrade": 21
+  "parity": 80,
+  "quorum": 67,
+  "timelock": 54,
+  "upgrade": 22
  },
  "factors": [
   {
@@ -33,17 +33,17 @@
   "aligned": {
    "label": "ALIGNED",
    "meaning": "Docs and chain match",
-   "protocols": 42
+   "protocols": 46
   },
   "delta": {
    "label": "DELTA",
    "meaning": "Docs and chain differ",
-   "protocols": 24
+   "protocols": 26
   },
   "observed": {
    "label": "OBSERVED",
    "meaning": "Chain pinned; docs not assessed",
-   "protocols": 8
+   "protocols": 6
   },
   "protective": {
    "label": "PROTECTIVE",
@@ -764,28 +764,104 @@
     "base"
    ],
    "deltas": 0,
-   "easAttested": false,
+   "easAttested": true,
    "factors": [
     {
-     "evidence": "centrifuge-liquidity-pools-base-control-plane: CentrifugeRoot_Base (0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f) verified on Base Mainnet at canonical block #57,421,449 (2,618 bytes runtime code). EIP-1967 i…",
+     "evidence": "centrifuge-liquidity-pools-base-root-timelock-s24: …800s (48 hours); paused() = false; not a proxy.",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "g",
+     "value": "Immutable or ownership renounced"
+    },
+    {
+     "evidence": "centrifuge-liquidity-pools-base-root-timelock-s24: observed_delay_seconds = 172800",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "g",
+     "value": "2d minimum enforced delay across control surfaces"
+    },
+    {
+     "evidence": "centrifuge-liquidity-pools-base-ops-guardian-s24: …91444C5c104F1b5918cA0D2f6EC91Ad16 (2-of-7, v1.4.1), not a ward either.",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "b",
+     "value": "Lowest controlling quorum: 2-of-7"
+    },
+    {
+     "evidence": "centrifuge-liquidity-pools-base-root-timelock-s24: paused() = false",
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "Pause / freeze authority present; its holder is not determined"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "OpsGuardian: not a ward of Root (no pause authority), run by the Ops Safe",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Centrifuge V3 Root (Base)",
+   "pinnedBlock": 58534152,
+   "probe": {
+    "block_hash": "0x7b884f4d029427b5d15f71c50b128bd69ac7c6da6962ced946ca87b0b4e6e843",
+    "block_number": 58534152,
+    "call_args": [
+     "0x055589229506Ee89645EF08ebE9B9a863486d0dE"
+    ],
+    "call_signature": "wards(address)",
+    "chain": "base",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "centrifuge-liquidity-pools-base-ops-guardian-s24",
+    "repro_calldata": "0xbf353dbb000000000000000000000000055589229506ee89645ef08ebe9b9a863486d0de",
+    "rpc_env_var": "$BASE_RPC_URL",
+    "selector_or_slot": "0xbf353dbb",
+    "target_contract": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
+    "target_label": "Centrifuge Root (Base)"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 3,
+   "rosetteAria": "Centrifuge V3 Root (Base) control-plane rosette: Upgradeability strong; Timelock floor strong; Signer quorum moderate; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "search": "centrifuge v3 root (base) centrifuge-liquidity-pools-base institutional rwa liquidity pools cfg 0x7ed48c31f2fdc40d37407cbabf0870b2b688368f",
+   "slug": "centrifuge-liquidity-pools-base",
+   "url": "https://pacta.wtf/protocols/centrifuge-liquidity-pools-base/"
+  },
+  {
+   "baskets": [],
+   "category": "Cross-Chain Messaging & Token Bridge Infrastructure",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 1,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
      "key": "upgrade",
      "label": "Upgradeability",
      "state": "n",
-     "value": "Upgradeable; the delay gating the upgrade path is not in the published records"
+     "value": "Upgrade path not in the published records"
     },
     {
-     "evidence": null,
+     "evidence": "chainlink-ccip-config-owner-rbac-timelock-s24: BYPASSER_ROLE has 1 member, ManyChainMultiSig 0x117ec8aD107976e1dBCc21717ff78407Bc36aADc, which can execute calls immediately through bypasserExecuteBatch (no…",
      "key": "timelock",
      "label": "Timelock floor",
-     "state": "n",
-     "value": "No enforced admin delay in the published records"
+     "state": "a",
+     "value": "0s: a bypasser role can execute without waiting the timelock delay"
     },
     {
-     "evidence": null,
+     "evidence": "chainlink-ccip-timelock-proposers-s24: …0F9aD2ec998D837005bf (Safe v1.3.0, 6-of-12; also a canceller) and ManyChainMu…",
      "key": "quorum",
      "label": "Signer quorum",
-     "state": "n",
-     "value": "No signer quorum in the published records"
+     "state": "g",
+     "value": "Lowest controlling quorum: 6-of-12"
     },
     {
      "evidence": null,
@@ -798,38 +874,40 @@
      "evidence": null,
      "key": "parity",
      "label": "Docs-vs-chain parity",
-     "state": "u",
-     "value": "Uncompared: documentation not assessed (RPC-observed)"
+     "state": "a",
+     "value": "Documentation differs from the chain (parameter delta)"
     }
    ],
-   "finding": "CentrifugeRoot_Base · Non-Proxy Bytecode & Role Architecture",
-   "grade": "observed",
-   "gradeLabel": "OBSERVED",
-   "name": "Centrifuge V3 Root (Base)",
-   "pinnedBlock": 57421449,
+   "finding": "Timelock proposers: a 6-of-12 Safe besides the ManyChainMultiSigs (docs: all proposals from an MCMS): docs say docs.chain.link (CCIP upgradability): 'All proposals originate from a ManyChainMultiSig (MCMS), which requires multiple independent signers to sign off.' / 'For example, you can view the Ethereum mainnet MCMS on Ethersc… · chain says RBACTimelock 0x44835bBBA9D40DEDa9b64858095EcFB2693c9449: getRoleMemberCount(PROPOSER_ROLE) = 3: ManyChainMultiSig 0xE53289F32c8E690b7173aA33affE9B6B0CB0012F (the MCMS the docs link), GnosisSafeProxy 0xD6597750bf74DCAEC5…",
+   "grade": "delta",
+   "gradeLabel": "DELTA",
+   "name": "Chainlink CCIP",
+   "pinnedBlock": 26433001,
    "probe": {
-    "block_hash": "0x36147f7f0b6d2a0a94975e98b14c979034930dbe6f9905a5b0bcb2ab45ba35b0",
-    "block_number": 57421449,
-    "call_args": [],
-    "call_signature": null,
-    "chain": "base",
-    "check_type": "eth_getStorageAt",
+    "block_hash": "0xa058ec92ccf0024822a76097f183d8e2d344d56e9539038c857e0cdaaa0ee5a7",
+    "block_number": 26433001,
+    "call_args": [
+     "0xb09aa5aeb3702cfd50b6b62bc4532604938f21248a27a1d5ca736082b6819cc1"
+    ],
+    "call_signature": "getRoleMemberCount(bytes32)",
+    "chain": "ethereum",
+    "check_type": "eth_call",
     "extra_calls": [],
-    "id": "centrifuge-liquidity-pools-base-control-plane",
-    "repro_calldata": null,
-    "rpc_env_var": "$BASE_RPC_URL",
-    "selector_or_slot": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
-    "target_contract": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f",
-    "target_label": "CentrifugeRoot_Base"
+    "id": "chainlink-ccip-timelock-proposers-s24",
+    "repro_calldata": "0xca15c873b09aa5aeb3702cfd50b6b62bc4532604938f21248a27a1d5ca736082b6819cc1",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0xca15c873",
+    "target_contract": "0x44835bBBA9D40DEDa9b64858095EcFB2693c9449",
+    "target_label": "CCIP RBACTimelock (Ethereum)"
    },
    "reconciled": false,
    "reconciledFrom": [],
    "reconciledTo": [],
-   "records": 1,
-   "rosetteAria": "Centrifuge V3 Root (Base) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
-   "search": "centrifuge v3 root (base) centrifuge-liquidity-pools-base institutional rwa liquidity pools cfg 0x7ed48c31f2fdc40d37407cbabf0870b2b688368f",
-   "slug": "centrifuge-liquidity-pools-base",
-   "url": "https://pacta.wtf/protocols/centrifuge-liquidity-pools-base/"
+   "records": 4,
+   "rosetteAria": "Chainlink CCIP control-plane rosette: Upgradeability not determined; Timelock floor weak; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
+   "search": "chainlink ccip chainlink-ccip cross-chain messaging & token bridge infrastructure ccip link chainlink 0x0b047953451a207743fb62541b21199b95190602 0x44835bbba9d40deda9b64858095ecfb2693c9449 0x80226fc0ee2b096224eeac085bb9a8cba1146f7d 0xb22764f98dd05c789929716d677382df22c05cb6",
+   "slug": "chainlink-ccip",
+   "url": "https://pacta.wtf/protocols/chainlink-ccip/"
   },
   {
    "baskets": [
@@ -3737,6 +3815,82 @@
   },
   {
    "baskets": [
+    "eth_lst_lrt"
+   ],
+   "category": "Distributed Validator Infrastructure & Governance Token",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 1,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": "controller fact: getMinDelay() = 432000s",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "g",
+     "value": "5d minimum enforced delay across control surfaces"
+    },
+    {
+     "evidence": "obol-network-stobol-withdraw-delay-s24: …654732ABedF89Faf87f05BcD03ACEeFdC (1-of-2, v1.4.1).",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "a",
+     "value": "Lowest controlling quorum: 1-of-2"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "a",
+     "value": "Documentation differs from the chain (parameter delta)"
+    }
+   ],
+   "finding": "OBOL supply: documented cap of 500M, no cap on-chain; a 2-of-3 Safe holds MINTER_ROLE: docs say docs.obol.org (token distribution; · chain says ObolToken 0x0B010000b7624eb9B3DfBC279673C76E9D29D5F7 (Sourcify exact match): totalSupply() = 500000000000000103303500000 (500,000,000.0000001033035 OBOL);",
+   "grade": "delta",
+   "gradeLabel": "DELTA",
+   "name": "Obol Network",
+   "pinnedBlock": 26433001,
+   "probe": {
+    "block_hash": "0xa058ec92ccf0024822a76097f183d8e2d344d56e9539038c857e0cdaaa0ee5a7",
+    "block_number": 26433001,
+    "call_args": [],
+    "call_signature": "totalSupply()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "obol-network-token-supply-cap-s24",
+    "repro_calldata": "0x18160ddd",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0x18160ddd",
+    "target_contract": "0x0B010000b7624eb9B3DfBC279673C76E9D29D5F7",
+    "target_label": "ObolToken"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 4,
+   "rosetteAria": "Obol Network control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum weak; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
+   "search": "obol network obol-network distributed validator infrastructure & governance token obol stobol obol 0x0b010000b7624eb9b3dfbc279673c76e9d29d5f7 0x4094c8d36e40795ca25bfe9451f158d30614666a 0xcdbf527842ab04da548d33eb09d03db831381fb0 0xcb1622185a0c62a80494bede05ba95ef29fbf85c",
+   "slug": "obol-network",
+   "url": "https://pacta.wtf/protocols/obol-network/"
+  },
+  {
+   "baskets": [
     "stable_rwa"
    ],
    "category": "Institutional RWA / Tokenized Treasuries",
@@ -5341,6 +5495,82 @@
   },
   {
    "baskets": [
+    "lending_vaults"
+   ],
+   "category": "Morpho v1 Curator Vault Suite (USDC, USDT, PYUSD)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": "steakhouse-financial-ethereum-steakusdc-timelock-7d-s24: observed_delay_seconds = 604800",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "g",
+     "value": "7d minimum enforced delay across control surfaces"
+    },
+    {
+     "evidence": "steakhouse-financial-ethereum-vaults-owner-safe-5-of-10-s24: …72B06674a077f592A531dcE4590aDeCdB (3-of-9).",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 3-of-9"
+    },
+    {
+     "evidence": "steakhouse-financial-ethereum-steakusdc-guardian-aragon-s24: steakUSDC 0xBEEF01735c132Ada46AA9aA4c54623cAA92A64CB (MetaMorpho, Sourcify exact match): guardian() = 0xaa0500198B4425DfC4E272FbE42C8E64E21fc03d, the Aragon DA…",
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "Pause / freeze authority present; its holder is not determined"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "steakUSDC guardian: its own Aragon DAO (steakusdc-guardian.dao.eth), as announced",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Steakhouse Financial (Ethereum)",
+   "pinnedBlock": 26433001,
+   "probe": {
+    "block_hash": "0xa058ec92ccf0024822a76097f183d8e2d344d56e9539038c857e0cdaaa0ee5a7",
+    "block_number": 26433001,
+    "call_args": [],
+    "call_signature": "guardian()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "steakhouse-financial-ethereum-steakusdc-guardian-aragon-s24",
+    "repro_calldata": "0x452a9320",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0x452a9320",
+    "target_contract": "0xBEEF01735c132Ada46AA9aA4c54623cAA92A64CB",
+    "target_label": "Steakhouse USDC (steakUSDC) MetaMorpho vault"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 4,
+   "rosetteAria": "Steakhouse Financial (Ethereum) control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "search": "steakhouse financial (ethereum) steakhouse-financial-ethereum morpho v1 curator vault suite (usdc, usdt, pyusd) steakusdt steakpyusd steakusdc steakhouse 0x0a0e559bc3b0950a7e448f0d4894db195b9cf8dd 0x79864900a4d34fb7907de9fe404758de5a4956de 0xbeef01735c132ada46aa9aa4c54623caa92a64cb",
+   "slug": "steakhouse-financial-ethereum",
+   "url": "https://pacta.wtf/protocols/steakhouse-financial-ethereum/"
+  },
+  {
+   "baskets": [
     "base",
     "lending_vaults"
    ],
@@ -5730,7 +5960,7 @@
     "ethereum"
    ],
    "deltas": 0,
-   "easAttested": false,
+   "easAttested": true,
    "factors": [
     {
      "evidence": null,
@@ -5747,7 +5977,7 @@
      "value": "No enforced admin delay in the published records"
     },
     {
-     "evidence": "synthetix-v3-core-control-plane: …etThreshold() and getOwners() as a 4-of-7 Safe multisig.",
+     "evidence": "synthetix-v3-core-oracle-owner-s24: …17FEAd7de89Cd14D463D340A2E6917769 (4-of-7); nominatedOwner() = 0x0.",
      "key": "quorum",
      "label": "Signer quorum",
      "state": "g",
@@ -5764,45 +5994,36 @@
      "evidence": null,
      "key": "parity",
      "label": "Docs-vs-chain parity",
-     "state": "u",
-     "value": "Uncompared: documentation not assessed (RPC-observed)"
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
     }
    ],
-   "finding": "SynthetixCoreProxy · 4-of-7 Safe Control Plane",
-   "grade": "observed",
-   "gradeLabel": "OBSERVED",
+   "finding": "Account NFT (AccountProxy) owner: the CoreProxy, not a key or Safe",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
    "name": "Synthetix V3 Core",
-   "pinnedBlock": 26414499,
+   "pinnedBlock": 26433001,
    "probe": {
-    "block_hash": "0xb83fee0a1d10d5fb8510d87ee9e33b180acac3208a7d00162a6a6f97789c0978",
-    "block_number": 26414499,
+    "block_hash": "0xa058ec92ccf0024822a76097f183d8e2d344d56e9539038c857e0cdaaa0ee5a7",
+    "block_number": 26433001,
     "call_args": [],
     "call_signature": "owner()",
     "chain": "ethereum",
     "check_type": "eth_call",
-    "extra_calls": [
-     {
-      "signature": "getThreshold()(uint256)",
-      "to": "0xEb3107117FEAd7de89Cd14D463D340A2E6917769"
-     },
-     {
-      "signature": "getOwners()(address[])",
-      "to": "0xEb3107117FEAd7de89Cd14D463D340A2E6917769"
-     }
-    ],
-    "id": "synthetix-v3-core-control-plane",
+    "extra_calls": [],
+    "id": "synthetix-v3-core-account-owner-s24",
     "repro_calldata": "0x8da5cb5b",
     "rpc_env_var": "$ETH_RPC_URL",
     "selector_or_slot": "0x8da5cb5b",
-    "target_contract": "0xffffffaEff0B96Ea8e4f94b2253f31abdD875847",
-    "target_label": "SynthetixCoreProxy"
+    "target_contract": "0x0E429603D3Cb1DFae4E6F52Add5fE82d96d77Dac",
+    "target_label": "Synthetix V3 AccountProxy"
    },
    "reconciled": false,
    "reconciledFrom": [],
    "reconciledTo": [],
-   "records": 1,
-   "rosetteAria": "Synthetix V3 Core control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
-   "search": "synthetix v3 core synthetix-v3-core derivatives liquidity infrastructure snx susd 0xffffffaeff0b96ea8e4f94b2253f31abdd875847",
+   "records": 4,
+   "rosetteAria": "Synthetix V3 Core control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "search": "synthetix v3 core synthetix-v3-core derivatives liquidity infrastructure snx susd 0x0e429603d3cb1dfae4e6f52add5fe82d96d77dac 0x0aaf300e148378489a8a471dd3e9e53e30cb42e3 0xb2f30a7c980f052f02563fb518dcc39e6bf38175 0xffffffaeff0b96ea8e4f94b2253f31abdd875847",
    "slug": "synthetix-v3-core",
    "url": "https://pacta.wtf/protocols/synthetix-v3-core/"
   },
@@ -6105,6 +6326,83 @@
    "search": "uniswap v3 & governance timelock uniswap-governance-timelock blue-chip dex & governance uni 0x1f98431c8ad98523631ae4a59f267346ea31f984 0x1a9c8182c09f50c8318d769245bea52c32be35bc 0x408ed6354d4973f66138c91495f2f2fcbd8724c3",
    "slug": "uniswap-governance-timelock",
    "url": "https://pacta.wtf/protocols/uniswap-governance-timelock/"
+  },
+  {
+   "baskets": [
+    "base"
+   ],
+   "category": "Blue-Chip DEX (Singleton PoolManager & Protocol Fees)",
+   "chains": [
+    "base",
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": "uniswap-v4-poolmanager-owner-timelock-s24: observed_delay_seconds = 172800",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "g",
+     "value": "2d minimum enforced delay across control surfaces"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "Owner: the 2-day governance Timelock run by GovernorBravo",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Uniswap V4",
+   "pinnedBlock": 58534152,
+   "probe": {
+    "block_hash": "0xa058ec92ccf0024822a76097f183d8e2d344d56e9539038c857e0cdaaa0ee5a7",
+    "block_number": 26433001,
+    "call_args": [],
+    "call_signature": "owner()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "uniswap-v4-poolmanager-owner-timelock-s24",
+    "repro_calldata": "0x8da5cb5b",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0x8da5cb5b",
+    "target_contract": "0x000000000004444c5dc75cB358380D2e3dE08A90",
+    "target_label": "Uniswap V4 PoolManager (Ethereum)"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 4,
+   "rosetteAria": "Uniswap V4 control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "search": "uniswap v4 uniswap-v4 blue-chip dex (singleton poolmanager & protocol fees) uni uniswap v4 poolmanager 0x000000000004444c5dc75cb358380d2e3de08a90 0x498581ff718922c3f8e6a244956af099b2652b2b 0x89a5d5bf00a27d55c02951e49078a5c5771051db",
+   "slug": "uniswap-v4",
+   "url": "https://pacta.wtf/protocols/uniswap-v4/"
   },
   {
    "baskets": [

@@ -46,14 +46,14 @@ import xml.etree.ElementTree as ET
 ROOT = os.path.dirname(os.path.abspath(__file__))
 DOCS = os.path.join(ROOT, "docs")
 RESULTS = []
-# ---- EXPECT-BEGIN: the published numbers, in one place (tools/apply_sprint23_attestation.py rewrites this block when it stamps a Sprint)
+# ---- EXPECT-BEGIN: the published numbers, in one place (tools/apply_sprint24_attestation.py rewrites this block when it stamps a Sprint)
 EXPECT = {
-    "sprints": 23, "records": 136, "eas_attestations": 23,              # index.json sprints_completed / records_indexed; Base EAS sprint UIDs
-    "protocols": 82, "eas_protocols": 74, "rpc_protocols": 8,          # /protocols/ pages = EAS-attested + RPC-pinned; badges = protocols
-    "briefs": 8, "badge_tiers": {"aligned": 42, "parameter_delta": 32, "rpc_observed": 8},
-    "base_records": 18,                                                  # index.json records with chain "base"
-    "rpc_by_chain": {"ethereum": 3, "base": 5},                         # rpc-pinned.json records per chain (sum = rpc_protocols)
-    "multi_attest_txs": ["1–12", "13–16", "17", "18", "19", "20", "21", "22", "23"],                              # attestation_coverage.eas_multi_attest_txs keys
+    "sprints": 24, "records": 159, "eas_attestations": 24,              # index.json sprints_completed / records_indexed; Base EAS sprint UIDs
+    "protocols": 86, "eas_protocols": 80, "rpc_protocols": 6,          # /protocols/ pages = EAS-attested + RPC-pinned; badges = protocols
+    "briefs": 8, "badge_tiers": {"aligned": 46, "parameter_delta": 34, "rpc_observed": 6},
+    "base_records": 22,                                                  # index.json records with chain "base"
+    "rpc_by_chain": {"ethereum": 2, "base": 4},                         # rpc-pinned.json records per chain (sum = rpc_protocols)
+    "multi_attest_txs": ["1–12", "13–16", "17", "18", "19", "20", "21", "22", "23", "24"],                              # attestation_coverage.eas_multi_attest_txs keys
     "summaries": {"15": "61c0cc292cfa1fc3840277cf312383d24a6c81af56afac303afdbd84e7316cf6",
                   "16": "91b8e29301ef0e625c4ddc9eadaf5388115812f5958f90b6e0ed53a4808ba8ae",
                   "17": "2fd7ab979c6dfc3aae44f6c46c8f0397959927874ff0358574043a056d3168ea",
@@ -62,13 +62,14 @@ EXPECT = {
                   "20": "ecf3ff31366c88541b265c13153f7dd3cd087d7f1f6ae7a801b63669d2fc94af",
                   "21": "a114b900050c2e71b026efb664dfaf6584603b053089f11ea245b8e75041e35b",
                   "22": "a6a933827b5c74a6d1839d747fd3d09b8c6b3ef11c278f7b395ca18aa26da35b",
-                  "23": "98ac27b6847e96920e3479f7692adaa4056e2f21c94fae30624edf1442faea59"},   # audits/sprint-<n>/ summary SHA-256 (attested)
+                  "23": "98ac27b6847e96920e3479f7692adaa4056e2f21c94fae30624edf1442faea59",
+                  "24": "3719c5f2ae685806b428a5dea0b9b62b8969bca591271f484cb97c20cb53a36d"},   # audits/sprint-<n>/ summary SHA-256 (attested)
 }
 # ---- EXPECT-END
 X = EXPECT
 # sha256 of docs/api/v1/graph-manifest.json: changes only through a deliberate re-pin (a Sprint stage / stamp rewrites it after the
 # rebuild); a merged Wave 2 claim or any site-only change must leave it as is
-GRAPH_MANIFEST_SHA256 = "fcae00bf6d9165b599ab899e1926888faf15555673a54947a6e0988f02f34391"
+GRAPH_MANIFEST_SHA256 = "0a371b5f4ce1332d92a6057e0a54358c98013892b5d9bb5142730709af99d85d"
 NON_PROTOCOL_PAGES = 19                                                  # docs/**/*.html pages that are not /protocols/<slug>/
 
 
@@ -1200,7 +1201,7 @@ def main(argv=None):
     res = app_behaviour(appjs_min, pages.get(os.path.join("request", "index.html"), ""), page, BS.curated_sample(idx)[0]["id"], beacon=beacon_js,
                         protocol_html=pages.get(os.path.join("protocols", "aave-v3-gho", "index.html"), ""), protocol_slug="aave-v3-gho",
                         notfound_html=pages.get("404.html", ""),
-                        clearance_html=pages.get(os.path.join("protocols", "synthetix-v3-core", "index.html"), ""), clearance_slug="synthetix-v3-core",
+                        clearance_html=pages.get(os.path.join("protocols", "bedrock-unieth", "index.html"), ""), clearance_slug="bedrock-unieth",
                         brief_html=pages.get(os.path.join("briefs", "kerne-kusd-base", "index.html"), ""), brief_slug="kerne-kusd-base",
                         prefill_slug="across-protocol-hubpool",
                         timelock_brief_html=ready_fixture_brief(json.loads(read("docs/api/v1/index.json"))),
@@ -1726,8 +1727,8 @@ def main(argv=None):
         "search probes": lk.get("probes") == {"ethena": [["ethena-usde-susde", "prefix"], ["ethena-usdtb", "prefix"]],
                                               "usde": [["ethena-usde-susde", "exact"], ["ethena-ops-0x0ca0-0x1fe5", "exact"]],
                                               "aave": [["aave-v3-base", "exact"], ["aave-v3-gho", "exact"]],
-                                              "moonwell": [["moonwell-lending-base", "prefix"]], "kusd": [["kerne-kusd-base", "exact"], ["steakhouse-usdc-metamorpho-base", "substring"]],
-                                              "uniswap": [["uniswap-governance-timelock", "prefix"]],
+                                              "moonwell": [["moonwell-lending-base", "prefix"]], "kusd": [["kerne-kusd-base", "exact"], ["steakhouse-financial-ethereum", "substring"]],
+                                              "uniswap": [["uniswap-governance-timelock", "prefix"], ["uniswap-v4", "prefix"]],
                                               "ether.fi": [["ether-fi-core-eeth-weeth", "prefix"], ["ether-fi-liquid-veda-boringvault", "prefix"]]}
                           and (lk.get("empty") or {}).get("count") == 20 and (lk.get("empty") or {}).get("totalMatches") == X["protocols"] + X["briefs"]
                           and set(lk.get("base") or ["x"]) == {"base"} and (lk.get("over") or {}).get("error") == "invalid_input",

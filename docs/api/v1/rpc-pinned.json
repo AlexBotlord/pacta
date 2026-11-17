@@ -1,7 +1,7 @@
 {
   "schema": "pacta.rpc_pinned_records.v1",
   "title": "Pacta RPC-pinned control-plane records",
-  "description": "Read-only control-plane observations of 6 protocols (2 Ethereum, 4 Base), each pinned to a canonical block number and block hash and reproducible with cast. These records are NOT EAS-attested: they have no sprint number, no summary document and no Base EAS UID. The Base-EAS-attested Sprint records are in /api/v1/index.json. Euler V2 (EVK) and Moonwell Lending (Base) were re-scanned in Sprint 18, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Pendle Finance V2 and Rocket Pool (rETH) were re-scanned in Sprint 19, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Frax Ether (frxETH / sfrxETH) and Puffer Finance (pufETH) were re-scanned in Sprint 20, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Aerodrome Finance (Base) and Balancer V2 Vault & TimelockAuthorizer were re-scanned in Sprint 21, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Across Protocol (HubPool) and Beefy Finance (Base) were re-scanned in Sprint 22, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Uniswap V3 & Governance Timelock and Reserve Protocol (eUSD RToken) were re-scanned in Sprint 23, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Synthetix V3 Core and Centrifuge V3 Root (Base) were re-scanned in Sprint 24, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here.",
+  "description": "Read-only control-plane observations of 4 protocols (0 Ethereum, 4 Base), each pinned to a canonical block number and block hash and reproducible with cast. These records are NOT EAS-attested: they have no sprint number, no summary document and no Base EAS UID. The Base-EAS-attested Sprint records are in /api/v1/index.json. Euler V2 (EVK) and Moonwell Lending (Base) were re-scanned in Sprint 18, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Pendle Finance V2 and Rocket Pool (rETH) were re-scanned in Sprint 19, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Frax Ether (frxETH / sfrxETH) and Puffer Finance (pufETH) were re-scanned in Sprint 20, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Aerodrome Finance (Base) and Balancer V2 Vault & TimelockAuthorizer were re-scanned in Sprint 21, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Across Protocol (HubPool) and Beefy Finance (Base) were re-scanned in Sprint 22, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Uniswap V3 & Governance Timelock and Reserve Protocol (eUSD RToken) were re-scanned in Sprint 23, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Synthetix V3 Core and Centrifuge V3 Root (Base) were re-scanned in Sprint 24, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Bedrock (uniETH) and Safe Smart Account (v1.4.1 Singleton) were re-scanned in Sprint 25, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here.",
   "attestation": {
     "eas_attested": false,
     "base_eas_uid": null,
@@ -24,24 +24,13 @@
   },
   "verification": "Captured by one Pacta seat over public JSON-RPC and independently re-read at the same pinned blocks by a second seat (block hash, runtime bytecode size and keccak256, EIP-1967 implementation / admin slots, controller getter, Safe getThreshold / getOwners, timelock delay). Two records were corrected by the re-read (Moonwell admin contract, Uniswap V3 factory owner contract).",
   "summary": {
-    "protocols": 6,
-    "records": 6,
-    "ethereum": 2,
+    "protocols": 4,
+    "records": 4,
+    "ethereum": 0,
     "base": 4
   },
   "source_pack_sha256": "857179d8c3024fae3b2204fcae4b542f96cba9b03777cfb6f56095a607f00950",
   "protocols": [
-    {
-      "slug": "bedrock-unieth",
-      "name": "Bedrock (uniETH)",
-      "family": "bedrock",
-      "category": "Liquid Restaking",
-      "chain": "ethereum",
-      "chain_label": "Ethereum",
-      "record_ids": [
-        "bedrock-unieth-control-plane"
-      ]
-    },
     {
       "slug": "extra-finance-base",
       "name": "Extra Finance (Base)",
@@ -62,17 +51,6 @@
       "chain_label": "Base",
       "record_ids": [
         "origin-superoeth-base-control-plane"
-      ]
-    },
-    {
-      "slug": "safe-singleton-core",
-      "name": "Safe Smart Account (v1.4.1 Singleton)",
-      "family": "safe",
-      "category": "Smart Account & Multisig Custody Core",
-      "chain": "ethereum",
-      "chain_label": "Ethereum",
-      "record_ids": [
-        "safe-singleton-core-control-plane"
       ]
     },
     {
@@ -99,60 +77,6 @@
     }
   ],
   "entries": [
-    {
-      "id": "bedrock-unieth-control-plane",
-      "protocol": "Bedrock (uniETH)",
-      "slug": "bedrock-unieth",
-      "family": "bedrock",
-      "category": "Liquid Restaking",
-      "chain": "ethereum",
-      "chain_id": 1,
-      "caip2": "eip155:1",
-      "chain_label": "Ethereum",
-      "rpc_env_var": "$ETH_RPC_URL",
-      "provenance": "rpc_pinned",
-      "base_eas_uid": null,
-      "block_number": 26414499,
-      "block_hash": "0xb83fee0a1d10d5fb8510d87ee9e33b180acac3208a7d00162a6a6f97789c0978",
-      "classification": "rpc_observed",
-      "documentation_comparison": "not_assessed",
-      "surface": "RockXStakingProxy · 3-of-5 Safe Control Plane",
-      "target_contract": "0xF1376bceF0f78459C0Ed0ba5ddce976F1ddF51F4",
-      "target_label": "RockXStakingProxy",
-      "bytecode_bytes": 2118,
-      "bytecode_keccak256": "0xfab70c8569de547cb870eecd48aa21351bf0733d4d1a1b4900a28a673f7e1188",
-      "is_eip1967_proxy": true,
-      "eip1967_implementation": "0x8a94866dF557Bb7FCe88EfF9917237286098e590",
-      "eip1967_admin": "0xa5F2B6AB5B38b88Ba221741b3A189999b4c889C6",
-      "controller_kind": "multisig_safe",
-      "controller_address": "0xAeE017052DF6Ac002647229D58B786E380B9721A",
-      "upstream_controller": null,
-      "upstream_kind": null,
-      "safe_quorum": "3-of-5",
-      "paired_contract": null,
-      "paired_label": null,
-      "check_type": "eth_call",
-      "selector_or_slot": "0x8da5cb5b",
-      "call_signature": "owner()",
-      "call_args": [],
-      "repro_calldata": "0x8da5cb5b",
-      "extra_calls": [
-        {
-          "to": "0xAeE017052DF6Ac002647229D58B786E380B9721A",
-          "signature": "getThreshold()(uint256)"
-        },
-        {
-          "to": "0xAeE017052DF6Ac002647229D58B786E380B9721A",
-          "signature": "getOwners()(address[])"
-        }
-      ],
-      "onchain_observed": "RockXStakingProxy (0xF1376bceF0f78459C0Ed0ba5ddce976F1ddF51F4) verified on Ethereum Mainnet at canonical block #26,414,499 (2,118 bytes runtime code). EIP-1967 implementation slot resolves to 0x8a94866dF557Bb7FCe88EfF9917237286098e590, EIP-1967 admin slot = ProxyAdmin (0xa5F2B6AB5B38b88Ba221741b3A189999b4c889C6). Direct owner() returns 0xAeE017052DF6Ac002647229D58B786E380B9721A, verified via getThreshold() and getOwners() as a 3-of-5 Safe multisig.",
-      "observed_delay_seconds": null,
-      "documented_delay_seconds": null,
-      "docs_url": "https://docs.bedrock.technology/",
-      "governance_url": "https://docs.bedrock.technology/",
-      "documented_reference": "Bedrock (uniETH) documentation is linked for reference (https://docs.bedrock.technology/; governance: https://docs.bedrock.technology/). This RPC-pinned record does not compare documentation parameters with the on-chain state."
-    },
     {
       "id": "extra-finance-base-control-plane",
       "protocol": "Extra Finance (Base)",
@@ -247,51 +171,6 @@
       "docs_url": "https://docs.originprotocol.com/",
       "governance_url": "https://snapshot.org/#/ousdgov.eth",
       "documented_reference": "Origin Protocol (SuperOETHb Base) documentation is linked for reference (https://docs.originprotocol.com/; governance: https://snapshot.org/#/ousdgov.eth). This RPC-pinned record does not compare documentation parameters with the on-chain state."
-    },
-    {
-      "id": "safe-singleton-core-control-plane",
-      "protocol": "Safe Smart Account (v1.4.1 Singleton)",
-      "slug": "safe-singleton-core",
-      "family": "safe",
-      "category": "Smart Account & Multisig Custody Core",
-      "chain": "ethereum",
-      "chain_id": 1,
-      "caip2": "eip155:1",
-      "chain_label": "Ethereum",
-      "rpc_env_var": "$ETH_RPC_URL",
-      "provenance": "rpc_pinned",
-      "base_eas_uid": null,
-      "block_number": 26414499,
-      "block_hash": "0xb83fee0a1d10d5fb8510d87ee9e33b180acac3208a7d00162a6a6f97789c0978",
-      "classification": "rpc_observed",
-      "documentation_comparison": "not_assessed",
-      "surface": "SafeSingleton_v1_4_1 & SafeProxyFactory_v1_4_1 Control Plane",
-      "target_contract": "0x41675C099F32341bf84BFc5382aF534df5C7461a",
-      "target_label": "SafeSingleton_v1_4_1",
-      "bytecode_bytes": 23579,
-      "bytecode_keccak256": "0x1fe2df852ba3299d6534ef416eefa406e56ced995bca886ab7a553e6d0c5e1c4",
-      "is_eip1967_proxy": false,
-      "eip1967_implementation": null,
-      "eip1967_admin": null,
-      "controller_kind": "contract_controller",
-      "controller_address": "0x4e1DCf7AD4e460CfD30791CCC4F9c8a4f820ec67",
-      "upstream_controller": null,
-      "upstream_kind": null,
-      "safe_quorum": null,
-      "paired_contract": "0x4e1DCf7AD4e460CfD30791CCC4F9c8a4f820ec67",
-      "paired_label": "SafeProxyFactory_v1_4_1",
-      "check_type": "eth_getStorageAt",
-      "selector_or_slot": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
-      "call_signature": null,
-      "call_args": [],
-      "repro_calldata": null,
-      "extra_calls": [],
-      "onchain_observed": "SafeSingleton_v1_4_1 (0x41675C099F32341bf84BFc5382aF534df5C7461a) verified on Ethereum Mainnet at canonical block #26,414,499 (23,579 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). Paired protocol control contract SafeProxyFactory_v1_4_1 (0x4e1DCf7AD4e460CfD30791CCC4F9c8a4f820ec67, 3,054 bytes) verified live at the same block.",
-      "observed_delay_seconds": null,
-      "documented_delay_seconds": null,
-      "docs_url": "https://docs.safe.global/",
-      "governance_url": "https://forum.safe.global/",
-      "documented_reference": "Safe Smart Account (v1.4.1 Singleton) documentation is linked for reference (https://docs.safe.global/; governance: https://forum.safe.global/). This RPC-pinned record does not compare documentation parameters with the on-chain state."
     },
     {
       "id": "seamless-protocol-base-control-plane",

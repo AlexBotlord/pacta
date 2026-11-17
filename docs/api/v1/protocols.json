@@ -291,6 +291,106 @@
   },
   {
    "badge": {
+    "label": "Parameter Delta",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/axelar-network.svg",
+    "svg": "https://pacta.wtf/badges/axelar-network.svg",
+    "tier": "parameter_delta"
+   },
+   "baseEasUids": [
+    "0x1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff"
+   ],
+   "category": "Cross-Chain Gateway & Interchain Token Service",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "mixed",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "name": "Axelar Network",
+   "preflightArgs": {
+    "address": "0x4F4495243837681061C4743b74B3eEdf548D56A5",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x4F4495243837681061C4743b74B3eEdf548D56A5",
+   "slug": "axelar-network",
+   "sprints": [
+    25
+   ],
+   "surfaces": [
+    {
+     "baseEasUid": "0x1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff",
+     "blockHash": "0xb712439847099ec3e8b1617aafd1bc7ece29e22a88dc4e7c8afcf05e6944d987",
+     "blockNumber": 26434786,
+     "chain": "ethereum",
+     "classification": "parameter_delta",
+     "id": "axelar-network-gateway-auth-module-s25",
+     "sprint": 25,
+     "surface": "Gateway implementation and auth module differ from the deployment config",
+     "targetContract": "0x4F4495243837681061C4743b74B3eEdf548D56A5",
+     "targetLabel": "AxelarGateway (proxy)"
+    },
+    {
+     "baseEasUid": "0x1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff",
+     "blockHash": "0xb712439847099ec3e8b1617aafd1bc7ece29e22a88dc4e7c8afcf05e6944d987",
+     "blockNumber": 26434786,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "axelar-network-gateway-governance-s25",
+     "sprint": 25,
+     "surface": "Gateway governed by Axelar governance (AxelarServiceGovernance)",
+     "targetContract": "0x4F4495243837681061C4743b74B3eEdf548D56A5",
+     "targetLabel": "AxelarGateway (proxy)"
+    },
+    {
+     "baseEasUid": "0x1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff",
+     "blockHash": "0xb712439847099ec3e8b1617aafd1bc7ece29e22a88dc4e7c8afcf05e6944d987",
+     "blockNumber": 26434786,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "axelar-network-gateway-mint-limiter-s25",
+     "sprint": 25,
+     "surface": "Mint limits set by a 3-of-6 multisig, as configured",
+     "targetContract": "0xCC940AE49C78F20E3F13F3cF37e996b98Ac3EC68",
+     "targetLabel": "Axelar Multisig (gateway mintLimiter)"
+    },
+    {
+     "baseEasUid": "0x1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff",
+     "blockHash": "0xb712439847099ec3e8b1617aafd1bc7ece29e22a88dc4e7c8afcf05e6944d987",
+     "blockNumber": 26434786,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "axelar-network-governance-timelock-s25",
+     "sprint": 25,
+     "surface": "Governance timelock: 3 days, plus a documented operator fast path",
+     "targetContract": "0x7Acbae6CBa67d78AAf69e47000884aE00F9B2525",
+     "targetLabel": "AxelarServiceGovernance"
+    },
+    {
+     "baseEasUid": "0x1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff",
+     "blockHash": "0xb712439847099ec3e8b1617aafd1bc7ece29e22a88dc4e7c8afcf05e6944d987",
+     "blockNumber": 26434786,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "axelar-network-its-owner-s25",
+     "sprint": 25,
+     "surface": "Interchain Token Service owned by the Axelar governance contract",
+     "targetContract": "0xB5FB4BE02232B1bBA4dC8f81dc24C26980dE9e3C",
+     "targetLabel": "InterchainTokenService (proxy)"
+    }
+   ],
+   "targetLabel": "AxelarGateway (proxy)",
+   "tokens": [
+    "AXL",
+    "Axelar",
+    "AxelarGateway",
+    "InterchainTokenService"
+   ],
+   "url": "https://pacta.wtf/protocols/axelar-network/"
+  },
+  {
+   "badge": {
     "label": "Aligned · Base EAS",
     "live": "https://pacta-x402.pacta.workers.dev/v1/badges/balancer-v2-vault-timelock.svg",
     "svg": "https://pacta.wtf/badges/balancer-v2-vault-timelock.svg",
@@ -353,21 +453,23 @@
   },
   {
    "badge": {
-    "label": "RPC-Observed",
+    "label": "Parameter Delta",
     "live": "https://pacta-x402.pacta.workers.dev/v1/badges/bedrock-unieth.svg",
     "svg": "https://pacta.wtf/badges/bedrock-unieth.svg",
-    "tier": "rpc_observed"
+    "tier": "parameter_delta"
    },
-   "baseEasUids": [],
+   "baseEasUids": [
+    "0x1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff"
+   ],
    "category": "Liquid Restaking",
    "chain": "ethereum",
    "chainId": 1,
-   "classification": "rpc_observed",
+   "classification": "mixed",
    "controllerAddress": "0xAeE017052DF6Ac002647229D58B786E380B9721A",
    "controllerKind": "multisig_safe",
-   "documentationComparison": "not_assessed",
-   "easAttested": false,
-   "evidenceBasis": "rpc_observed",
+   "documentationComparison": "compared",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
    "name": "Bedrock (uniETH)",
    "preflightArgs": {
     "address": "0xF1376bceF0f78459C0Ed0ba5ddce976F1ddF51F4",
@@ -375,22 +477,60 @@
    },
    "primaryContract": "0xF1376bceF0f78459C0Ed0ba5ddce976F1ddF51F4",
    "slug": "bedrock-unieth",
-   "sprints": [],
+   "sprints": [
+    25
+   ],
    "surfaces": [
     {
-     "baseEasUid": null,
-     "blockHash": "0xb83fee0a1d10d5fb8510d87ee9e33b180acac3208a7d00162a6a6f97789c0978",
-     "blockNumber": 26414499,
+     "baseEasUid": "0x1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff",
+     "blockHash": "0xb712439847099ec3e8b1617aafd1bc7ece29e22a88dc4e7c8afcf05e6944d987",
+     "blockNumber": 26434786,
      "chain": "ethereum",
-     "classification": "rpc_observed",
-     "id": "bedrock-unieth-control-plane",
-     "sprint": null,
-     "surface": "RockXStakingProxy · 3-of-5 Safe Control Plane",
+     "classification": "aligned_baseline",
+     "id": "bedrock-unieth-eigenpod-owner-s25",
+     "sprint": 25,
+     "surface": "EigenPod owned by Bedrock's restaking contract",
+     "targetContract": "0x926720Ae39114D0e2043b79570A1e08f00D01cCE",
+     "targetLabel": "Bedrock EigenPod (pod 0)"
+    },
+    {
+     "baseEasUid": "0x1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff",
+     "blockHash": "0xb712439847099ec3e8b1617aafd1bc7ece29e22a88dc4e7c8afcf05e6944d987",
+     "blockNumber": 26434786,
+     "chain": "ethereum",
+     "classification": "parameter_delta",
+     "id": "bedrock-unieth-restaking-impl-s25",
+     "sprint": 25,
+     "surface": "Restaking implementation differs from the one the docs list",
+     "targetContract": "0x3F4eaCeb930b0Edfa78a1DFCbaE5c5494E6e9850",
+     "targetLabel": "Bedrock Restaking (proxy)"
+    },
+    {
+     "baseEasUid": "0x1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff",
+     "blockHash": "0xb712439847099ec3e8b1617aafd1bc7ece29e22a88dc4e7c8afcf05e6944d987",
+     "blockNumber": 26434786,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "bedrock-unieth-staking-fee-s25",
+     "sprint": 25,
+     "surface": "Staking commission: 10% of rewards",
+     "targetContract": "0x4beFa2aA9c305238AA3E0b5D17eB20C045269E9d",
+     "targetLabel": "Bedrock Staking (proxy)"
+    },
+    {
+     "baseEasUid": "0x1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff",
+     "blockHash": "0xb712439847099ec3e8b1617aafd1bc7ece29e22a88dc4e7c8afcf05e6944d987",
+     "blockNumber": 26434786,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "bedrock-unieth-upgrade-admin-s25",
+     "sprint": 25,
+     "surface": "uniETH upgrade admin: the ProxyAdmin named in Bedrock's deployment list",
      "targetContract": "0xF1376bceF0f78459C0Ed0ba5ddce976F1ddF51F4",
-     "targetLabel": "RockXStakingProxy"
+     "targetLabel": "uniETH token proxy (Universal ETH)"
     }
    ],
-   "targetLabel": "RockXStakingProxy",
+   "targetLabel": "uniETH token proxy (Universal ETH)",
    "tokens": [
     "uniETH"
    ],
@@ -2203,6 +2343,81 @@
   {
    "badge": {
     "label": "Aligned · Base EAS",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/layerzero-v2.svg",
+    "svg": "https://pacta.wtf/badges/layerzero-v2.svg",
+    "tier": "aligned"
+   },
+   "baseEasUids": [
+    "0x1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff"
+   ],
+   "category": "Cross-Chain Messaging (Endpoint & Message Libraries)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "aligned_baseline",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "name": "LayerZero V2",
+   "preflightArgs": {
+    "address": "0x1a44076050125825900e736c501f859c50fE728c",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x1a44076050125825900e736c501f859c50fE728c",
+   "slug": "layerzero-v2",
+   "sprints": [
+    25
+   ],
+   "surfaces": [
+    {
+     "baseEasUid": "0x1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff",
+     "blockHash": "0xb712439847099ec3e8b1617aafd1bc7ece29e22a88dc4e7c8afcf05e6944d987",
+     "blockNumber": 26434786,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "layerzero-v2-endpoint-immutable-s25",
+     "sprint": 25,
+     "surface": "EndpointV2: not a proxy; its code cannot be replaced",
+     "targetContract": "0x1a44076050125825900e736c501f859c50fE728c",
+     "targetLabel": "LayerZero EndpointV2 (Ethereum)"
+    },
+    {
+     "baseEasUid": "0x1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff",
+     "blockHash": "0xb712439847099ec3e8b1617aafd1bc7ece29e22a88dc4e7c8afcf05e6944d987",
+     "blockNumber": 26434786,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "layerzero-v2-endpoint-owner-onesig-s25",
+     "sprint": 25,
+     "surface": "Endpoint owner: a 5-of-9 LayerZero multisig that sets default libraries",
+     "targetContract": "0x1a44076050125825900e736c501f859c50fE728c",
+     "targetLabel": "LayerZero EndpointV2 (Ethereum)"
+    },
+    {
+     "baseEasUid": "0x1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff",
+     "blockHash": "0xb712439847099ec3e8b1617aafd1bc7ece29e22a88dc4e7c8afcf05e6944d987",
+     "blockNumber": 26434786,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "layerzero-v2-eth-base-pathway-dvns-s25",
+     "sprint": 25,
+     "surface": "Ethereum to Base default pathway: send and receive require the same 4 DVNs",
+     "targetContract": "0xbB2Ea70C9E858123480642Cf96acbcCE1372dCe1",
+     "targetLabel": "LayerZero SendUln302 (Ethereum)"
+    }
+   ],
+   "targetLabel": "LayerZero EndpointV2 (Ethereum)",
+   "tokens": [
+    "ZRO",
+    "LayerZero",
+    "EndpointV2"
+   ],
+   "url": "https://pacta.wtf/protocols/layerzero-v2/"
+  },
+  {
+   "badge": {
+    "label": "Aligned · Base EAS",
     "live": "https://pacta-x402.pacta.workers.dev/v1/badges/lido-steth-dual-governance.svg",
     "svg": "https://pacta.wtf/badges/lido-steth-dual-governance.svg",
     "tier": "aligned"
@@ -3322,6 +3537,92 @@
   },
   {
    "badge": {
+    "label": "Aligned · Base EAS",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/railgun.svg",
+    "svg": "https://pacta.wtf/badges/railgun.svg",
+    "tier": "aligned"
+   },
+   "baseEasUids": [
+    "0x1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff"
+   ],
+   "category": "Zero-Knowledge Privacy Pool (Shielded Wallet)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "aligned_baseline",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "name": "RAILGUN",
+   "preflightArgs": {
+    "address": "0xFA7093CDD9EE6932B4eb2c9e1cde7CE00B1FA4b9",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xFA7093CDD9EE6932B4eb2c9e1cde7CE00B1FA4b9",
+   "slug": "railgun",
+   "sprints": [
+    25
+   ],
+   "surfaces": [
+    {
+     "baseEasUid": "0x1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff",
+     "blockHash": "0xb712439847099ec3e8b1617aafd1bc7ece29e22a88dc4e7c8afcf05e6944d987",
+     "blockNumber": 26434786,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "railgun-fees-shield-unshield-s25",
+     "sprint": 25,
+     "surface": "Shield and unshield fees: 0.25% each",
+     "targetContract": "0xFA7093CDD9EE6932B4eb2c9e1cde7CE00B1FA4b9",
+     "targetLabel": "RailgunSmartWallet (proxy)"
+    },
+    {
+     "baseEasUid": "0x1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff",
+     "blockHash": "0xb712439847099ec3e8b1617aafd1bc7ece29e22a88dc4e7c8afcf05e6944d987",
+     "blockNumber": 26434786,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "railgun-governance-owner-s25",
+     "sprint": 25,
+     "surface": "Delegator owner: the documented Protocol Request (voting) contract",
+     "targetContract": "0xB6d513f6222Ee92Fff975E901bd792E2513fB53B",
+     "targetLabel": "RAILGUN Delegator"
+    },
+    {
+     "baseEasUid": "0x1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff",
+     "blockHash": "0xb712439847099ec3e8b1617aafd1bc7ece29e22a88dc4e7c8afcf05e6944d987",
+     "blockNumber": 26434786,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "railgun-sponsor-window-s25",
+     "sprint": 25,
+     "surface": "Protocol requests: a 30-day sponsorship window",
+     "targetContract": "0xc480F68A3dcC3EdD82134FAB45C14A0FcF1dA3CC",
+     "targetLabel": "RAILGUN Voting"
+    },
+    {
+     "baseEasUid": "0x1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff",
+     "blockHash": "0xb712439847099ec3e8b1617aafd1bc7ece29e22a88dc4e7c8afcf05e6944d987",
+     "blockNumber": 26434786,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "railgun-upgrade-admin-s25",
+     "sprint": 25,
+     "surface": "Upgrades and pauses: ProxyAdmin owned by the Delegator, owned by the vote",
+     "targetContract": "0x4F8E20f55f879beE7Bc010Bd6bD2138B34aC65c8",
+     "targetLabel": "RAILGUN ProxyAdmin"
+    }
+   ],
+   "targetLabel": "RailgunSmartWallet (proxy)",
+   "tokens": [
+    "RAIL",
+    "Railgun"
+   ],
+   "url": "https://pacta.wtf/protocols/railgun/"
+  },
+  {
+   "badge": {
     "label": "Parameter Delta",
     "live": "https://pacta-x402.pacta.workers.dev/v1/badges/re.svg",
     "svg": "https://pacta.wtf/badges/re.svg",
@@ -3733,21 +4034,23 @@
   },
   {
    "badge": {
-    "label": "RPC-Observed",
+    "label": "Aligned · Base EAS",
     "live": "https://pacta-x402.pacta.workers.dev/v1/badges/safe-singleton-core.svg",
     "svg": "https://pacta.wtf/badges/safe-singleton-core.svg",
-    "tier": "rpc_observed"
+    "tier": "aligned"
    },
-   "baseEasUids": [],
+   "baseEasUids": [
+    "0x1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff"
+   ],
    "category": "Smart Account & Multisig Custody Core",
    "chain": "ethereum",
    "chainId": 1,
-   "classification": "rpc_observed",
-   "controllerAddress": "0x4e1DCf7AD4e460CfD30791CCC4F9c8a4f820ec67",
-   "controllerKind": "contract_controller",
-   "documentationComparison": "not_assessed",
-   "easAttested": false,
-   "evidenceBasis": "rpc_observed",
+   "classification": "aligned_baseline",
+   "controllerAddress": null,
+   "controllerKind": "immutable_or_role_governed",
+   "documentationComparison": "compared",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
    "name": "Safe Smart Account (v1.4.1 Singleton)",
    "preflightArgs": {
     "address": "0x41675C099F32341bf84BFc5382aF534df5C7461a",
@@ -3755,19 +4058,57 @@
    },
    "primaryContract": "0x41675C099F32341bf84BFc5382aF534df5C7461a",
    "slug": "safe-singleton-core",
-   "sprints": [],
+   "sprints": [
+    25
+   ],
    "surfaces": [
     {
-     "baseEasUid": null,
-     "blockHash": "0xb83fee0a1d10d5fb8510d87ee9e33b180acac3208a7d00162a6a6f97789c0978",
-     "blockNumber": 26414499,
+     "baseEasUid": "0x1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff",
+     "blockHash": "0xb712439847099ec3e8b1617aafd1bc7ece29e22a88dc4e7c8afcf05e6944d987",
+     "blockNumber": 26434786,
      "chain": "ethereum",
-     "classification": "rpc_observed",
-     "id": "safe-singleton-core-control-plane",
-     "sprint": null,
-     "surface": "SafeSingleton_v1_4_1 & SafeProxyFactory_v1_4_1 Control Plane",
+     "classification": "aligned_baseline",
+     "id": "safe-singleton-core-proxy-factory-bytecode-s25",
+     "sprint": 25,
+     "surface": "SafeProxyFactory: registry code hash, no proxy and no admin",
+     "targetContract": "0x4e1DCf7AD4e460CfD30791CCC4F9c8a4f820ec67",
+     "targetLabel": "SafeProxyFactory v1.4.1"
+    },
+    {
+     "baseEasUid": "0x1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff",
+     "blockHash": "0xb712439847099ec3e8b1617aafd1bc7ece29e22a88dc4e7c8afcf05e6944d987",
+     "blockNumber": 26434786,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "safe-singleton-core-safel2-locked-s25",
+     "sprint": 25,
+     "surface": "SafeL2 singleton: locked, code matches the registry",
+     "targetContract": "0x29fcB43b46531BcA003ddC8FCB67FFE91900C762",
+     "targetLabel": "SafeL2 v1.4.1 singleton"
+    },
+    {
+     "baseEasUid": "0x1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff",
+     "blockHash": "0xb712439847099ec3e8b1617aafd1bc7ece29e22a88dc4e7c8afcf05e6944d987",
+     "blockNumber": 26434786,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "safe-singleton-core-singleton-bytecode-s25",
+     "sprint": 25,
+     "surface": "Safe singleton code matches the official registry hash",
      "targetContract": "0x41675C099F32341bf84BFc5382aF534df5C7461a",
-     "targetLabel": "SafeSingleton_v1_4_1"
+     "targetLabel": "Safe v1.4.1 singleton"
+    },
+    {
+     "baseEasUid": "0x1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff",
+     "blockHash": "0xb712439847099ec3e8b1617aafd1bc7ece29e22a88dc4e7c8afcf05e6944d987",
+     "blockNumber": 26434786,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "safe-singleton-core-singleton-locked-s25",
+     "sprint": 25,
+     "surface": "Safe singleton locked: threshold 1 with no owners",
+     "targetContract": "0x41675C099F32341bf84BFc5382aF534df5C7461a",
+     "targetLabel": "Safe v1.4.1 singleton"
     }
    ],
    "targetLabel": "SafeSingleton_v1_4_1",
@@ -5129,6 +5470,93 @@
   },
   {
    "badge": {
+    "label": "Aligned · Base EAS",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/wormhole-core-ntt.svg",
+    "svg": "https://pacta.wtf/badges/wormhole-core-ntt.svg",
+    "tier": "aligned"
+   },
+   "baseEasUids": [
+    "0x1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff"
+   ],
+   "category": "Cross-Chain Messaging (Guardian-Attested Core Bridge)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "aligned_baseline",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "name": "Wormhole Core (NTT)",
+   "preflightArgs": {
+    "address": "0x98f3c9e6E3fAce36bAAd05FE09d375Ef1464288B",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x98f3c9e6E3fAce36bAAd05FE09d375Ef1464288B",
+   "slug": "wormhole-core-ntt",
+   "sprints": [
+    25
+   ],
+   "surfaces": [
+    {
+     "baseEasUid": "0x1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff",
+     "blockHash": "0xb712439847099ec3e8b1617aafd1bc7ece29e22a88dc4e7c8afcf05e6944d987",
+     "blockNumber": 26434786,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "wormhole-core-ntt-eth-guardian-quorum-s25",
+     "sprint": 25,
+     "surface": "Messages need 13 of the 19 guardians (guardian set 7)",
+     "targetContract": "0x98f3c9e6E3fAce36bAAd05FE09d375Ef1464288B",
+     "targetLabel": "Wormhole Core (Ethereum)"
+    },
+    {
+     "baseEasUid": "0x1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff",
+     "blockHash": "0xb712439847099ec3e8b1617aafd1bc7ece29e22a88dc4e7c8afcf05e6944d987",
+     "blockNumber": 26434786,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "wormhole-core-ntt-eth-message-fee-s25",
+     "sprint": 25,
+     "surface": "Message fee: 0 (publishing is free)",
+     "targetContract": "0x98f3c9e6E3fAce36bAAd05FE09d375Ef1464288B",
+     "targetLabel": "Wormhole Core (Ethereum)"
+    },
+    {
+     "baseEasUid": "0x1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff",
+     "blockHash": "0xb712439847099ec3e8b1617aafd1bc7ece29e22a88dc4e7c8afcf05e6944d987",
+     "blockNumber": 26434786,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "wormhole-core-ntt-eth-upgrade-governance-s25",
+     "sprint": 25,
+     "surface": "Upgrades: guardian-signed governance messages only, no admin key",
+     "targetContract": "0x98f3c9e6E3fAce36bAAd05FE09d375Ef1464288B",
+     "targetLabel": "Wormhole Core (Ethereum)"
+    },
+    {
+     "baseEasUid": "0x1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff",
+     "blockHash": "0x897856027b5df4c28b13bbc5d6d13fdd6fe8d51ecf3c23b5f5802c454f09ce58",
+     "blockNumber": 58641783,
+     "chain": "base",
+     "classification": "aligned_baseline",
+     "id": "wormhole-core-ntt-guardian-quorum-base-s25",
+     "sprint": 25,
+     "surface": "Base core: the same 13-of-19 guardian quorum and governance",
+     "targetContract": "0xbebdb6C8ddC678FfA9f8748f85C815C556Dd8ac6",
+     "targetLabel": "Wormhole Core (Base)"
+    }
+   ],
+   "targetLabel": "Wormhole Core (Ethereum)",
+   "tokens": [
+    "Wormhole",
+    "NTT",
+    "Guardian"
+   ],
+   "url": "https://pacta.wtf/protocols/wormhole-core-ntt/"
+  },
+  {
+   "badge": {
     "label": "Parameter Delta",
     "live": "https://pacta-x402.pacta.workers.dev/v1/badges/yearn-v3.svg",
     "svg": "https://pacta.wtf/badges/yearn-v3.svg",
@@ -5263,13 +5691,13 @@
  },
  "totals": {
   "badgeTiers": {
-   "aligned": 46,
-   "parameter_delta": 34,
-   "rpc_observed": 6
+   "aligned": 50,
+   "parameter_delta": 36,
+   "rpc_observed": 4
   },
-  "easAttested": 80,
-  "protocols": 86,
-  "rpcObserved": 6,
-  "surfaces": 165
+  "easAttested": 86,
+  "protocols": 90,
+  "rpcObserved": 4,
+  "surfaces": 187
  }
 }

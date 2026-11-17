@@ -44,6 +44,7 @@
   <url><loc>https://pacta.wtf/protocols/across-protocol-hubpool/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/aerodrome-finance-base/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/aerodrome-slipstream-base/</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://pacta.wtf/protocols/axelar-network/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/balancer-v2-vault-timelock/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/bedrock-unieth/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/beefy-finance-base/</loc><lastmod>2026-11-17</lastmod></url>
@@ -75,6 +76,7 @@
   <url><loc>https://pacta.wtf/protocols/infinifi/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/inverse-finance-firm/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/kelp-dao-rseth/</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://pacta.wtf/protocols/layerzero-v2/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/lido-steth-dual-governance/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/liquid-collective-lseth/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/liquity-v1-lusd/</loc><lastmod>2026-11-17</lastmod></url>
@@ -94,6 +96,7 @@
   <url><loc>https://pacta.wtf/protocols/paypal-usd-pyusd/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/pendle-finance-v2/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/puffer-finance-pufeth/</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://pacta.wtf/protocols/railgun/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/re/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/renzo-protocol-ezeth/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/reserve-protocol-rtoken/</loc><lastmod>2026-11-17</lastmod></url>
@@ -123,6 +126,7 @@
   <url><loc>https://pacta.wtf/protocols/uniswap-governance-timelock/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/uniswap-v4/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/usual-money-usd0-usd0/</loc><lastmod>2026-11-17</lastmod></url>
+  <url><loc>https://pacta.wtf/protocols/wormhole-core-ntt/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/yearn-v3/</loc><lastmod>2026-11-17</lastmod></url>
   <url><loc>https://pacta.wtf/protocols/yo-protocol/</loc><lastmod>2026-11-17</lastmod></url>
 </urlset>

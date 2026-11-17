@@ -1,7 +1,7 @@
 {
  "schema": "pacta.graph_manifest.v1",
- "generated_at": "2026-11-17T06:33:59Z",
- "observed_at": 1794897239.0,
+ "generated_at": "2026-11-17T12:32:23Z",
+ "observed_at": 1794918743.0,
  "owning_principal": "pacta@dri.network/gemini",
  "source_agent": "pacta@dri.network",
  "place": "pacta:protocol-graph",
@@ -14,9 +14,9 @@
  ],
  "sources": {
   "sha256": {
-   "protocols.json": "f89c33ba97a7c5e0b314be9226db8111838a924f34148d0f61868ec7dc1ba921",
-   "index.json": "c69a32d3f330281d1dc8e93475e6864241126c06e876c29e4e7e303c7e162367",
-   "rpc-pinned.json": "f3519d073b158c311eac5b40e3dafc7abcc932f4aeed90a68a249343dd6fa9c3",
+   "protocols.json": "fc59664aa8d35ffa41f41edd81a100a032e831f29755024784d0d7edf2b37683",
+   "index.json": "578c4d5b7c60faa92f072deb7abafbf597b321634101c88fd2978030ec97d910",
+   "rpc-pinned.json": "1ff2149bbd34fcc596ea2b5c36c768ccf3ce7d2f486905e4814d72ab5ff7ffc6",
    "graph_dependencies.json": "c32f718b692f497f33bd8e50e300b883ae1ce3316215fb5e2d01f2c235bff4fa",
    "graph_controller_facts.json": "ff8c6851e3c63451fe1afec7c357e3d25b048ed6ddac0f09808b94e8aa46be00"
   },
@@ -32,6 +32,7 @@
   "across-protocol-hubpool",
   "aerodrome-finance-base",
   "aerodrome-slipstream-base",
+  "axelar-network",
   "balancer-v2-vault-timelock",
   "bedrock-unieth",
   "beefy-finance-base",
@@ -63,6 +64,7 @@
   "infinifi",
   "inverse-finance-firm",
   "kelp-dao-rseth",
+  "layerzero-v2",
   "lido-steth-dual-governance",
   "liquid-collective-lseth",
   "liquity-v1-lusd",
@@ -82,6 +84,7 @@
   "paypal-usd-pyusd",
   "pendle-finance-v2",
   "puffer-finance-pufeth",
+  "railgun",
   "re",
   "renzo-protocol-ezeth",
   "reserve-protocol-rtoken",
@@ -111,27 +114,28 @@
   "uniswap-governance-timelock",
   "uniswap-v4",
   "usual-money-usd0-usd0",
+  "wormhole-core-ntt",
   "yearn-v3",
   "yo-protocol"
  ],
  "counts": {
-  "protocols": 86,
-  "nodes": 307,
+  "protocols": 90,
+  "nodes": 330,
   "nodes_by_kind": {
-   "protocol": 86,
-   "controller": 166,
-   "control_plane_gap": 31,
-   "eas_attestation": 24
+   "protocol": 90,
+   "controller": 182,
+   "control_plane_gap": 33,
+   "eas_attestation": 25
   },
-  "edges": 293,
+  "edges": 317,
   "edges_by_relation": {
-   "governed_by_controller": 169,
-   "exhibits_control_plane_gap": 31,
-   "attested_by_base_eas": 86,
+   "governed_by_controller": 185,
+   "exhibits_control_plane_gap": 33,
+   "attested_by_base_eas": 92,
    "collateral_contagion_upstream": 7
   },
   "max_evidence_bytes": 1502,
-  "protocols_with_controller_edge": 86
+  "protocols_with_controller_edge": 90
  },
  "nodes": [
   {
@@ -233,6 +237,11 @@
    "id": "pacta-ctrl-base-bb505c54",
    "kind": "controller",
    "text": "ExtraLendingPool_Base 0xBB50..1cbD [8453, primary/checked] owner(); documented at docs.extrafi.io."
+  },
+  {
+   "id": "pacta-ctrl-base-bebdb6c8",
+   "kind": "controller",
+   "text": "Wormhole Core (Base) 0xbebd..8ac6 [8453, checked] Base core: the same guardian quorum and governance; getGuardianSet(uint32); documented in wormhole.com/docs (core contract addresses / guardians): / /."
   },
   {
    "id": "pacta-ctrl-base-beef010f",
@@ -340,6 +349,11 @@
    "text": "Reserve eUSD StRSR 0x18ba..E7B8 [Ethereum 1, checked] RSR unstaking delay; withdrawal leak (documented mainnet defaults); unstakingDelay() selector 07089246; documented in docs.reserve.org (Yield DTF advanced parameters): /."
   },
   {
+   "id": "pacta-ctrl-ethereum-1a440760",
+   "kind": "controller",
+   "text": "LayerZero EndpointV2 (Ethereum) 0x1a44..728c [1, primary/checked] EndpointV2: not a proxy; its code cannot be replaced; Endpoint owner: a LayerZero multisig that sets default libraries; documented in docs.layerzero.network (endpoint): /; owner(); documented in docs.layerzero.network (defaults): / /."
+  },
+  {
    "id": "pacta-ctrl-ethereum-1a9c8182",
    "kind": "controller",
    "text": "Uniswap Timelock 0x1a9C..35BC [Ethereum 1, checked] Timelock: before execution; delay(); documented in developers.uniswap.org (governance process): /."
@@ -358,6 +372,11 @@
    "id": "pacta-ctrl-ethereum-29a56a1b",
    "kind": "controller",
    "text": "EulerEVaultFactory (GenericFactory) 0x29a5..CC8e [Ethereum 1, primary/checked of Euler V2 (EVK)] EVK factory upgradeAdmin = FactoryGovernor behind a TimelockController (DAO proposes); upgradeAdmin() selector c4d5608a; documented in docs.euler.finance; Euler forum: The prose docs state no delay; the official evk-periphery deployment script sets EVAULT_FACTORY_TIMELOCK_MIN_DELAY."
+  },
+  {
+   "id": "pacta-ctrl-ethereum-29fcb43b",
+   "kind": "controller",
+   "text": "SafeL2 v1.4.1 singleton 0x29fc..C762 [Ethereum 1, checked] SafeL2 singleton: locked, code matches the registry; getThreshold(); documented in safe-deployments registry (v1.4.1): / /."
   },
   {
    "id": "pacta-ctrl-ethereum-2c5898da",
@@ -398,6 +417,11 @@
    "id": "pacta-ctrl-ethereum-3e6eba46",
    "kind": "controller",
    "text": "PendleYieldContractFactory 0x3E6E..4637 [Ethereum 1, checked of Pendle Finance V2] Yield contract factory takes a fee on YT yield; interestFeeRate() selector dd86fea1; documented in docs.pendle.finance (fees)."
+  },
+  {
+   "id": "pacta-ctrl-ethereum-3f4eaceb",
+   "kind": "controller",
+   "text": "Bedrock Restaking (proxy) 0x3F4e..9850 [Ethereum 1, checked] no direct read."
   },
   {
    "id": "pacta-ctrl-ethereum-408ed635",
@@ -460,9 +484,24 @@
    "text": "Policy Committee Safe 0x4b6c..F1B7 [Ethereum 1, primary/checked] getThreshold()."
   },
   {
+   "id": "pacta-ctrl-ethereum-4befa2aa",
+   "kind": "controller",
+   "text": "Bedrock Staking (proxy) 0x4beF..9E9d [Ethereum 1, checked] Staking commission: of rewards; managerFeeShare() selector e43a4954; documented in docs.bedrock.technology (fees): /."
+  },
+  {
    "id": "pacta-ctrl-ethereum-4e1dcf7a",
    "kind": "controller",
    "text": "contract controller 0x4e1D..ec67 [Ethereum 1] controls SafeSingleton_v1_4_1; governed via forum.safe.global."
+  },
+  {
+   "id": "pacta-ctrl-ethereum-4f449524",
+   "kind": "controller",
+   "text": "AxelarGateway (proxy) 0x4F44..56A5 [Ethereum 1, primary/checked of Axelar Network] Gateway governed by Axelar governance (AxelarServiceGovernance); authModule() selector 64940c56; governance(); documented in docs.axelar.dev (EVM contracts owned by governance contracts) / deployment config (AxelarServiceGovernance entry): / /."
+  },
+  {
+   "id": "pacta-ctrl-ethereum-4f8e20f5",
+   "kind": "controller",
+   "text": "RAILGUN ProxyAdmin 0x4F8E..65c8 [Ethereum 1, checked] Upgrades and pauses: ProxyAdmin owned by the Delegator, owned by the vote; owner(); documented in docs.railgun.org (protocol governance): /."
   },
   {
    "id": "pacta-ctrl-ethereum-5086bf35",
@@ -540,6 +579,11 @@
    "text": "Solv SolvBTC 0x7A56..2F97 [Ethereum 1, primary/checked] SolvBTC owner() = Gnosis Safe (OpenZeppelin Ownable); owner(); documented in docs.solv.finance/llms-full.txt."
   },
   {
+   "id": "pacta-ctrl-ethereum-7acbae6c",
+   "kind": "controller",
+   "text": "AxelarServiceGovernance 0x7Acb..2525 [Ethereum 1, checked of Axelar Network] Governance timelock:, plus a documented operator fast path; minimumTimeLockDelay() selector 15334a20; documented in deployment config (minimumTimeDelay, operator) / docs.axelar.dev (operator approvals): / /."
+  },
+  {
    "id": "pacta-ctrl-ethereum-80226fc0",
    "kind": "controller",
    "text": "CCIP Router (Ethereum) 0x8022..6f7D [1, primary/checked] CCIP configuration owner: an RBACTimelock (Router, RMN proxy, TokenAdminRegistry, CCIPHome); owner(); documented in docs.chain.link (CCIP upgradability): /."
@@ -590,6 +634,11 @@
    "text": "Concrete Delta WeETH owner multisig 0x8F5f..3381 [Ethereum 1, checked] getThreshold()."
   },
   {
+   "id": "pacta-ctrl-ethereum-926720ae",
+   "kind": "controller",
+   "text": "Bedrock EigenPod (pod 0) 0x9267..1cCE [Ethereum 1, checked] EigenPod owned by Bedrock's restaking contract; podOwner() selector 0b18ff66; documented in docs.bedrock.technology (restaking): / / 'RESTAKING_ADDRESS: ' / 'EIGENPOD_ADDRESS."
+  },
+  {
    "id": "pacta-ctrl-ethereum-926df14a",
    "kind": "controller",
    "text": "timelock 0x926d..9D5B [Ethereum 1] Timelock on FiRM BorrowController."
@@ -603,6 +652,11 @@
    "id": "pacta-ctrl-ethereum-98db5022",
    "kind": "controller",
    "text": "Ondo RateLimiter 0x98Db..003c [Ethereum 1, primary/checked] globalSubscriptionLimits(address) selector 435e3a08."
+  },
+  {
+   "id": "pacta-ctrl-ethereum-98f3c9e6",
+   "kind": "controller",
+   "text": "Wormhole Core (Ethereum) 0x98f3..288B [1, primary/checked] Messages need 13 of the 19 guardians (guardian set 7); Message fee: 0 (publishing is free); Upgrades: guardian-signed governance messages only, no admin key; getGuardianSet(uint32); documented in wormhole.com/docs (guardians / security): / /; messageFee() selector 1a90a219; documented in wormhole.com/docs (core contracts); documented in wormhole.com/docs (governance / security): / /."
   },
   {
    "id": "pacta-ctrl-ethereum-9f26d4c9",
@@ -700,6 +754,16 @@
    "text": "multisig safe 0xB524..3715 [Ethereum 1] controls AcrossHubPool; governed via forum.across.to."
   },
   {
+   "id": "pacta-ctrl-ethereum-b5fb4be0",
+   "kind": "controller",
+   "text": "InterchainTokenService (proxy) 0xB5FB..9e3C [Ethereum 1, checked of Axelar Network] Interchain Token Service owned by the Axelar governance contract; owner(); documented in docs.axelar.dev (contract addresses / ITS): /."
+  },
+  {
+   "id": "pacta-ctrl-ethereum-b6d513f6",
+   "kind": "controller",
+   "text": "RAILGUN Delegator 0xB6d5..B53B [Ethereum 1, checked] Delegator owner: the documented Protocol Request (voting) contract; owner(); documented in docs.railgun.org (helpful links)."
+  },
+  {
    "id": "pacta-ctrl-ethereum-b72d8f52",
    "kind": "controller",
    "text": "stake.link GovernanceTimelock (owner of StakingPool, PriorityPool, WithdrawalPool) 0xb72d..349F [Ethereum 1, controller/primary/checked] GovernanceTimelock delay; getMinDelay(); documented in docs.stake.link (security and audits)."
@@ -728,6 +792,11 @@
    "id": "pacta-ctrl-ethereum-bafa44ef",
    "kind": "controller",
    "text": "frxETHMinter 0xbAFA..1138 [Ethereum 1, primary/checked of Frax Ether (frxETH / sfrxETH)] owner(); documented at docs.frax.com."
+  },
+  {
+   "id": "pacta-ctrl-ethereum-bb2ea70c",
+   "kind": "controller",
+   "text": "LayerZero SendUln302 (Ethereum) 0xbB2E..dCe1 [1, checked] Ethereum to Base default pathway: send and receive require the same 4 DVNs; getAppUlnConfig(address,uint32) selector 39e3f938; documented in docs.layerzero.network (security stack)."
   },
   {
    "id": "pacta-ctrl-ethereum-bbbbbbbb",
@@ -810,6 +879,11 @@
    "text": "Lombard GMPBascule 0xC3ec..38eD [Ethereum 1, checked] GMPBascule validateThreshold() — deposit-ID validation on every inbound mint; validateThreshold() selector effbcbf3; documented in docs.lombard.finance/learn/architecture (Bascule Drawbridge)."
   },
   {
+   "id": "pacta-ctrl-ethereum-c480f68a",
+   "kind": "controller",
+   "text": "RAILGUN Voting 0xc480..A3CC [Ethereum 1, checked] Protocol requests: a sponsorship window; SPONSOR_WINDOW() selector 0fe0554d; documented in docs.railgun.org (protocol governance): /."
+  },
+  {
    "id": "pacta-ctrl-ethereum-c8cf6d79",
    "kind": "controller",
    "text": "Falcon sUSDf vault 0xc8CF..a4B0 [Ethereum 1, controller/primary/checked] sUSDf cooldownDuration() — instant unstaking to USDf; cooldownDuration() selector 35269315; documented in docs.falcon.finance/mechanism/redemptions/."
@@ -838,6 +912,11 @@
    "id": "pacta-ctrl-ethereum-cb162218",
    "kind": "controller",
    "text": "ObolGovernor 0xcB16..f85c [Ethereum 1, checked of Obol Network] Governor: 30,000 OBOL proposal threshold, quorum; proposalThreshold() selector b58131b0; documented in docs.obol.org (v1.8 Token House governance): / /."
+  },
+  {
+   "id": "pacta-ctrl-ethereum-cc940ae4",
+   "kind": "controller",
+   "text": "Axelar Multisig (gateway mintLimiter) 0xCC94..EC68 [Ethereum 1, checked] Mint limits set by a multisig, as configured; signerThreshold() selector a4a4f390; documented in axelar-contract-deployments (mainnet config): /."
   },
   {
    "id": "pacta-ctrl-ethereum-cdbf5278",
@@ -938,6 +1017,11 @@
    "id": "pacta-ctrl-ethereum-f930ebbd",
    "kind": "controller",
    "text": "Stake DAO Treasury Safe (Ethereum) 0xF930..3063 [1, checked] getThreshold()."
+  },
+  {
+   "id": "pacta-ctrl-ethereum-fa7093cd",
+   "kind": "controller",
+   "text": "RailgunSmartWallet (proxy) 0xFA70..A4b9 [Ethereum 1, primary/checked of RAILGUN] Shield and unshield fees: each; shieldFee() selector 01c37790; documented in docs.railgun.org (deductions / helpful links): /."
   },
   {
    "id": "pacta-ctrl-ethereum-fb034c1c",
@@ -1050,6 +1134,11 @@
    "text": "Sprint 24 Base EAS attestation 0x61c2..83d6 in tx 0xe774..dcb6: Ethereum block 26433001 0xa058..e5a7, summary 0x3719..a36d, 23 records (21 aligned baseline, 2 parameter delta) for Centrifuge V3 Root (Base); Chainlink CCIP; Obol Network; Steakhouse Financial (Ethereum); Synthetix V3 Core; Uniswap V4 (CCIP, CFG, Chainlink, LINK, OBOL, Obol, PoolManager, SNX, Steakhouse, UNI, Uniswap v4, sUSD, stOBOL, steakPYUSD, steakUSDC, steakUSDT)."
   },
   {
+   "id": "pacta-eas-sprint-25",
+   "kind": "eas_attestation",
+   "text": "Sprint 25 Base EAS attestation 0x1c37..11ff in tx 0xe8f1..2898: Ethereum block 26434786 0xb712..d987, summary 0x4046..94bc, 24 records (22 aligned baseline, 2 parameter delta) for Axelar Network; Bedrock (uniETH); LayerZero V2; RAILGUN; Safe Smart Account (v1.4.1 Singleton); Wormhole Core (NTT) (AXL, Axelar, AxelarGateway, EndpointV2, Guardian, InterchainTokenService, LayerZero, NTT, RAIL, Railgun, SAFE, Wormhole, ZRO, uniETH)."
+  },
+  {
    "id": "pacta-eas-sprint-3",
    "kind": "eas_attestation",
    "text": "Sprint 3 Base EAS attestation 0x291e..95a8 in tx 0x8c53..001b: Ethereum block 26401070 0xcf55..6234, summary 0x02d6..c122, 2 records (2 aligned baseline) for Morpho Blue Core; ether.fi Liquid / Veda BoringVault (BoringVault, Liquid, MORPHO, Veda)."
@@ -1088,6 +1177,16 @@
    "id": "pacta-gap-aerodrome-finance-base-emergency-council-migration-s21",
    "kind": "control_plane_gap",
    "text": "Control-plane gap aerodrome-finance-base-emergency-council-migration-s21: Aerodrome Finance (Base) — Voter emergency council and epoch governor: the AerodromeMigration contract. Observed: Voter 0x1661..80A5: emergencyCouncil() = epochGovernor() = AerodromeMigration 0x22a2..6721 (Sourcify match; MIGRATION_OPEN() = 1792620000), owned by Safe 0x4225..4cE0 (3-of-7, v1.5.0, the same 7 signers as the governor Safe 0xE6A4..2075). Documented: github.com/aerodrome-finance/contracts (README): 'EpochGovernor.sol A simple epoch-based governance contract used exclusively for adjusting emissions.' / SPECIFICATION.md: 'Managed NFTs can be deactivated, a process which prevents the NFT from voting and from receiving deposits (requires emergency… Sprint 21, Base block 58203774."
+  },
+  {
+   "id": "pacta-gap-axelar-network-gateway-auth-module-s25",
+   "kind": "control_plane_gap",
+   "text": "Control-plane gap axelar-network-gateway-auth-module-s25: Axelar Network — Gateway implementation and auth module differ from the deployment config. Observed: AxelarGateway 0x4F44..56A5: implementation() = 0x16C2..1960, authModule() = 0x3d3C..3BD0 (whose owner() is the gateway); the deployment config lists implementation 0x99B5..4098 and auth module 0xE3B8..8AD0. Documented: axelar-contract-deployments (mainnet config, chains.ethereum, linked from docs.axelar.dev): '\"implementation\": \"0x99B5..4098\"' / '\"authModule\": \"0xE3B8..8AD0\"' Sprint 25, Ethereum block 26434786."
+  },
+  {
+   "id": "pacta-gap-bedrock-unieth-restaking-impl-s25",
+   "kind": "control_plane_gap",
+   "text": "Control-plane gap bedrock-unieth-restaking-impl-s25: Bedrock (uniETH) — Restaking implementation differs from the one the docs list. Observed: Restaking proxy 0x3F4e..9850: EIP-1967 implementation = 0x1e4D..E518 (Sourcify match), not the documented 0x9609..0262; admin = ProxyAdmin 0xa5F2..89C6. Documented: docs.bedrock.technology (uniETH contracts): 'Restaking proxy contract: https://etherscan.io/address/0x3f4e..9850' / 'Restaking implementation: https://etherscan.io/address/0x9609..0262#code' Sprint 25, Ethereum block 26434786."
   },
   {
    "id": "pacta-gap-beefy-finance-base-vault-owner-timelock-zero-delay-s22",
@@ -1265,6 +1364,11 @@
    "text": "Protocol Aerodrome Slipstream (Base): category Concentrated-Liquidity DEX; assets AERO, Slipstream; 0x5e7B..809A."
   },
   {
+   "id": "pacta-proto-axelar-network",
+   "kind": "protocol",
+   "text": "Protocol Axelar Network: category Cross-Chain Gateway & Interchain Token Service; chain Ethereum mainnet; assets AXL, Axelar, AxelarGateway, InterchainTokenService; 0x4F44..56A5."
+  },
+  {
    "id": "pacta-proto-balancer-v2-vault-timelock",
    "kind": "protocol",
    "text": "Protocol Balancer V2 Vault & TimelockAuthorizer [balancer-v2-vault-timelock]: category Programmable Liquidity Vault; chain Ethereum mainnet; assets BAL, veBAL; 0xBA12..F2C8."
@@ -1420,6 +1524,11 @@
    "text": "Protocol Kelp DAO (rsETH): category Liquid Restaking; chain Ethereum mainnet; 0x49bD..35B1."
   },
   {
+   "id": "pacta-proto-layerzero-v2",
+   "kind": "protocol",
+   "text": "Protocol LayerZero V2: category Cross-Chain Messaging (Endpoint & Message Libraries); chain Ethereum mainnet; assets ZRO, LayerZero, EndpointV2; 0x1a44..728c."
+  },
+  {
    "id": "pacta-proto-lido-steth-dual-governance",
    "kind": "protocol",
    "text": "Protocol Lido (stETH / Dual Governance): category Blue-Chip Liquid Staking; chain Ethereum mainnet; assets wstETH, LDO; 0xCE04..2316."
@@ -1513,6 +1622,11 @@
    "id": "pacta-proto-puffer-finance-pufeth",
    "kind": "protocol",
    "text": "Protocol Puffer Finance (pufETH): category Native Liquid Restaking; chain Ethereum mainnet; assets PUFFER; 0xD9A4..6a72."
+  },
+  {
+   "id": "pacta-proto-railgun",
+   "kind": "protocol",
+   "text": "Protocol RAILGUN: category Zero-Knowledge Privacy Pool (Shielded Wallet); chain Ethereum mainnet; assets RAIL, Railgun; 0xFA70..A4b9."
   },
   {
    "id": "pacta-proto-re",
@@ -1660,6 +1774,11 @@
    "text": "Protocol Usual Money (USD0 / USD0++): category RWA Stablecoin; chain Ethereum mainnet; assets USUAL; 0x0D37..bb56."
   },
   {
+   "id": "pacta-proto-wormhole-core-ntt",
+   "kind": "protocol",
+   "text": "Protocol Wormhole Core (NTT): category Cross-Chain Messaging (Guardian-Attested Core Bridge); chain Ethereum mainnet; assets Wormhole, Guardian; 0x98f3..288B."
+  },
+  {
    "id": "pacta-proto-yearn-v3",
    "kind": "protocol",
    "text": "Protocol Yearn V3: category Yield Aggregation Vaults; chain Ethereum mainnet; assets YFI; 0xb3bd..9a41."
@@ -1687,7 +1806,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-aave-v3-base->pacta-eas-sprint-19",
     "protocol_slug": "aave-v3-base",
@@ -1724,7 +1843,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-aave-v3-gho->pacta-eas-sprint-9",
     "protocol_slug": "aave-v3-gho",
@@ -1760,7 +1879,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-across-protocol-hubpool->pacta-eas-sprint-22",
     "protocol_slug": "across-protocol-hubpool",
@@ -1797,7 +1916,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-aerodrome-finance-base->pacta-eas-sprint-21",
     "protocol_slug": "aerodrome-finance-base",
@@ -1835,7 +1954,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-aerodrome-slipstream-base->pacta-eas-sprint-18",
     "protocol_slug": "aerodrome-slipstream-base",
@@ -1856,6 +1975,47 @@
    "content_hash": "3f2e47ab62fa77cfb0806176821056a166720e2dfca0c744ad1c6144f00bedcc"
   },
   {
+   "edge_key": "attested_by_base_eas:pacta-proto-axelar-network->pacta-eas-sprint-25",
+   "relation": "attested_by_base_eas",
+   "direction": "directed",
+   "participants": [
+    {
+     "id": "pacta-proto-axelar-network",
+     "role": "protocol",
+     "side": "source"
+    },
+    {
+     "id": "pacta-eas-sprint-25",
+     "role": "eas_attestation",
+     "side": "target"
+    }
+   ],
+   "observed_at": 1794918743.0,
+   "evidence": {
+    "edge_id": "attested_by_base_eas:pacta-proto-axelar-network->pacta-eas-sprint-25",
+    "protocol_slug": "axelar-network",
+    "sprint": 25,
+    "eas_uid_hex": "1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff",
+    "eas_tx_hex": "e8f151f9fb9e5b462423fd93dfb13310fd5dbb54245764ac38cf21f6bc072898",
+    "summary_sha256_hex": "4046bfd661f631ceedb335ad428fa8285e7906b1bed34c25a29fe894510c94bc",
+    "record_ids": [
+     "axelar-network-gateway-auth-module-s25",
+     "axelar-network-gateway-governance-s25",
+     "axelar-network-gateway-mint-limiter-s25",
+     "axelar-network-governance-timelock-s25",
+     "axelar-network-its-owner-s25"
+    ],
+    "classifications": [
+     "aligned_baseline",
+     "parameter_delta"
+    ],
+    "block_numbers": [
+     26434786
+    ]
+   },
+   "content_hash": "2749e36a3485a4b666f5f1bea29c935b91f7feeb3e4896e37fdfa09ae7f46b28"
+  },
+  {
    "edge_key": "attested_by_base_eas:pacta-proto-balancer-v2-vault-timelock->pacta-eas-sprint-21",
    "relation": "attested_by_base_eas",
    "direction": "directed",
@@ -1871,7 +2031,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-balancer-v2-vault-timelock->pacta-eas-sprint-21",
     "protocol_slug": "balancer-v2-vault-timelock",
@@ -1893,6 +2053,46 @@
    "content_hash": "6b2820cd6a4d64f543c6b4333619f58dadb3b73dc455f053971861c3764c1fff"
   },
   {
+   "edge_key": "attested_by_base_eas:pacta-proto-bedrock-unieth->pacta-eas-sprint-25",
+   "relation": "attested_by_base_eas",
+   "direction": "directed",
+   "participants": [
+    {
+     "id": "pacta-proto-bedrock-unieth",
+     "role": "protocol",
+     "side": "source"
+    },
+    {
+     "id": "pacta-eas-sprint-25",
+     "role": "eas_attestation",
+     "side": "target"
+    }
+   ],
+   "observed_at": 1794918743.0,
+   "evidence": {
+    "edge_id": "attested_by_base_eas:pacta-proto-bedrock-unieth->pacta-eas-sprint-25",
+    "protocol_slug": "bedrock-unieth",
+    "sprint": 25,
+    "eas_uid_hex": "1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff",
+    "eas_tx_hex": "e8f151f9fb9e5b462423fd93dfb13310fd5dbb54245764ac38cf21f6bc072898",
+    "summary_sha256_hex": "4046bfd661f631ceedb335ad428fa8285e7906b1bed34c25a29fe894510c94bc",
+    "record_ids": [
+     "bedrock-unieth-eigenpod-owner-s25",
+     "bedrock-unieth-restaking-impl-s25",
+     "bedrock-unieth-staking-fee-s25",
+     "bedrock-unieth-upgrade-admin-s25"
+    ],
+    "classifications": [
+     "aligned_baseline",
+     "parameter_delta"
+    ],
+    "block_numbers": [
+     26434786
+    ]
+   },
+   "content_hash": "a2cead2c949cc94a2d51f94ea71a1e46248edb043b3baedf677e3cb7b6111265"
+  },
+  {
    "edge_key": "attested_by_base_eas:pacta-proto-beefy-finance-base->pacta-eas-sprint-22",
    "relation": "attested_by_base_eas",
    "direction": "directed",
@@ -1908,7 +2108,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-beefy-finance-base->pacta-eas-sprint-22",
     "protocol_slug": "beefy-finance-base",
@@ -1947,7 +2147,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-cap->pacta-eas-sprint-20",
     "protocol_slug": "cap",
@@ -1986,7 +2186,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-centrifuge-liquidity-pools-base->pacta-eas-sprint-24",
     "protocol_slug": "centrifuge-liquidity-pools-base",
@@ -2024,7 +2224,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-chainlink-ccip->pacta-eas-sprint-24",
     "protocol_slug": "chainlink-ccip",
@@ -2064,7 +2264,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-circle-usdc->pacta-eas-sprint-23",
     "protocol_slug": "circle-usdc",
@@ -2104,7 +2304,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-coinbase-wrapped-staked-eth->pacta-eas-sprint-21",
     "protocol_slug": "coinbase-wrapped-staked-eth",
@@ -2141,7 +2341,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-compound-v3-base->pacta-eas-sprint-19",
     "protocol_slug": "compound-v3-base",
@@ -2178,7 +2378,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-compound-v3-comet->pacta-eas-sprint-9",
     "protocol_slug": "compound-v3-comet",
@@ -2214,7 +2414,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-concrete->pacta-eas-sprint-20",
     "protocol_slug": "concrete",
@@ -2253,7 +2453,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-convex-finance->pacta-eas-sprint-4",
     "protocol_slug": "convex-finance",
@@ -2289,7 +2489,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-curve-finance-crvusd->pacta-eas-sprint-11",
     "protocol_slug": "curve-finance-crvusd",
@@ -2325,7 +2525,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-eigenlayer-core->pacta-eas-sprint-9",
     "protocol_slug": "eigenlayer-core",
@@ -2361,7 +2561,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-enzyme-finance->pacta-eas-sprint-18",
     "protocol_slug": "enzyme-finance",
@@ -2397,7 +2597,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-ethena-usde-susde->pacta-eas-sprint-14",
     "protocol_slug": "ethena-usde-susde",
@@ -2433,7 +2633,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-ethena-usde-susde->pacta-eas-sprint-7",
     "protocol_slug": "ethena-usde-susde",
@@ -2469,7 +2669,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-ethena-usdtb->pacta-eas-sprint-19",
     "protocol_slug": "ethena-usdtb",
@@ -2507,7 +2707,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-ether-fi-core-eeth-weeth->pacta-eas-sprint-13",
     "protocol_slug": "ether-fi-core-eeth-weeth",
@@ -2543,7 +2743,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-ether-fi-core-eeth-weeth->pacta-eas-sprint-7",
     "protocol_slug": "ether-fi-core-eeth-weeth",
@@ -2579,7 +2779,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-ether-fi-liquid-veda-boringvault->pacta-eas-sprint-3",
     "protocol_slug": "ether-fi-liquid-veda-boringvault",
@@ -2615,7 +2815,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-euler-v2-evk->pacta-eas-sprint-18",
     "protocol_slug": "euler-v2-evk",
@@ -2651,7 +2851,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-f-x-protocol-v2->pacta-eas-sprint-2",
     "protocol_slug": "f-x-protocol-v2",
@@ -2687,7 +2887,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-falcon-finance-usdf-susdf->pacta-eas-sprint-17",
     "protocol_slug": "falcon-finance-usdf-susdf",
@@ -2723,7 +2923,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-fluid-instadapp->pacta-eas-sprint-5",
     "protocol_slug": "fluid-instadapp",
@@ -2759,7 +2959,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-frax-ether-sfrxeth->pacta-eas-sprint-20",
     "protocol_slug": "frax-ether-sfrxeth",
@@ -2797,7 +2997,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-frax-usd-frxusd->pacta-eas-sprint-23",
     "protocol_slug": "frax-usd-frxusd",
@@ -2835,7 +3035,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-gearbox-v3-v3-1->pacta-eas-sprint-11",
     "protocol_slug": "gearbox-v3-v3-1",
@@ -2871,7 +3071,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-grove-finance->pacta-eas-sprint-21",
     "protocol_slug": "grove-finance",
@@ -2909,7 +3109,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-infinifi->pacta-eas-sprint-20",
     "protocol_slug": "infinifi",
@@ -2948,7 +3148,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-inverse-finance-firm->pacta-eas-sprint-1",
     "protocol_slug": "inverse-finance-firm",
@@ -2984,7 +3184,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-inverse-finance-firm->pacta-eas-sprint-14",
     "protocol_slug": "inverse-finance-firm",
@@ -3020,7 +3220,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-kelp-dao-rseth->pacta-eas-sprint-14",
     "protocol_slug": "kelp-dao-rseth",
@@ -3056,7 +3256,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-kelp-dao-rseth->pacta-eas-sprint-9",
     "protocol_slug": "kelp-dao-rseth",
@@ -3077,6 +3277,44 @@
    "content_hash": "54846d5bbde39aac83592fde6f1d42c3046f433eee2e89ed437167b93f2684d9"
   },
   {
+   "edge_key": "attested_by_base_eas:pacta-proto-layerzero-v2->pacta-eas-sprint-25",
+   "relation": "attested_by_base_eas",
+   "direction": "directed",
+   "participants": [
+    {
+     "id": "pacta-proto-layerzero-v2",
+     "role": "protocol",
+     "side": "source"
+    },
+    {
+     "id": "pacta-eas-sprint-25",
+     "role": "eas_attestation",
+     "side": "target"
+    }
+   ],
+   "observed_at": 1794918743.0,
+   "evidence": {
+    "edge_id": "attested_by_base_eas:pacta-proto-layerzero-v2->pacta-eas-sprint-25",
+    "protocol_slug": "layerzero-v2",
+    "sprint": 25,
+    "eas_uid_hex": "1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff",
+    "eas_tx_hex": "e8f151f9fb9e5b462423fd93dfb13310fd5dbb54245764ac38cf21f6bc072898",
+    "summary_sha256_hex": "4046bfd661f631ceedb335ad428fa8285e7906b1bed34c25a29fe894510c94bc",
+    "record_ids": [
+     "layerzero-v2-endpoint-immutable-s25",
+     "layerzero-v2-endpoint-owner-onesig-s25",
+     "layerzero-v2-eth-base-pathway-dvns-s25"
+    ],
+    "classifications": [
+     "aligned_baseline"
+    ],
+    "block_numbers": [
+     26434786
+    ]
+   },
+   "content_hash": "860f8e1121e5fe6ee96c63e767c5b5ae148749b8f7a9708d1453ad660017dce2"
+  },
+  {
    "edge_key": "attested_by_base_eas:pacta-proto-lido-steth-dual-governance->pacta-eas-sprint-10",
    "relation": "attested_by_base_eas",
    "direction": "directed",
@@ -3092,7 +3330,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-lido-steth-dual-governance->pacta-eas-sprint-10",
     "protocol_slug": "lido-steth-dual-governance",
@@ -3128,7 +3366,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-liquid-collective-lseth->pacta-eas-sprint-19",
     "protocol_slug": "liquid-collective-lseth",
@@ -3165,7 +3403,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-liquity-v1-lusd->pacta-eas-sprint-22",
     "protocol_slug": "liquity-v1-lusd",
@@ -3203,7 +3441,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-liquity-v2-bold->pacta-eas-sprint-6",
     "protocol_slug": "liquity-v2-bold",
@@ -3239,7 +3477,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-lombard-lbtc->pacta-eas-sprint-11",
     "protocol_slug": "lombard-lbtc",
@@ -3275,7 +3513,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-lombard-lbtc->pacta-eas-sprint-16",
     "protocol_slug": "lombard-lbtc",
@@ -3311,7 +3549,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-m0-protocol-m->pacta-eas-sprint-17",
     "protocol_slug": "m0-protocol-m",
@@ -3348,7 +3586,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-mantle-liquid-staking-meth-cmeth->pacta-eas-sprint-10",
     "protocol_slug": "mantle-liquid-staking-meth-cmeth",
@@ -3384,7 +3622,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-maple-finance-v2-syrup->pacta-eas-sprint-6",
     "protocol_slug": "maple-finance-v2-syrup",
@@ -3420,7 +3658,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-mellow-protocol-lido-earn->pacta-eas-sprint-4",
     "protocol_slug": "mellow-protocol-lido-earn",
@@ -3456,7 +3694,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-metamorpho-re7-weth-vs-re7-usdt->pacta-eas-sprint-5",
     "protocol_slug": "metamorpho-re7-weth-vs-re7-usdt",
@@ -3492,7 +3730,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-moonwell-lending-base->pacta-eas-sprint-18",
     "protocol_slug": "moonwell-lending-base",
@@ -3530,7 +3768,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-morpho-blue-core->pacta-eas-sprint-3",
     "protocol_slug": "morpho-blue-core",
@@ -3566,7 +3804,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-nexus-mutual->pacta-eas-sprint-18",
     "protocol_slug": "nexus-mutual",
@@ -3602,7 +3840,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-obol-network->pacta-eas-sprint-24",
     "protocol_slug": "obol-network",
@@ -3642,7 +3880,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-ondo-finance-ousg-flux-finance->pacta-eas-sprint-10",
     "protocol_slug": "ondo-finance-ousg-flux-finance",
@@ -3678,7 +3916,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-paypal-usd-pyusd->pacta-eas-sprint-23",
     "protocol_slug": "paypal-usd-pyusd",
@@ -3716,7 +3954,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-pendle-finance-v2->pacta-eas-sprint-19",
     "protocol_slug": "pendle-finance-v2",
@@ -3753,7 +3991,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-puffer-finance-pufeth->pacta-eas-sprint-20",
     "protocol_slug": "puffer-finance-pufeth",
@@ -3777,6 +4015,45 @@
    "content_hash": "dfd4678e98f3ffb6c7da274668d80fec571b040299f4c92e850c8f08086f4e82"
   },
   {
+   "edge_key": "attested_by_base_eas:pacta-proto-railgun->pacta-eas-sprint-25",
+   "relation": "attested_by_base_eas",
+   "direction": "directed",
+   "participants": [
+    {
+     "id": "pacta-proto-railgun",
+     "role": "protocol",
+     "side": "source"
+    },
+    {
+     "id": "pacta-eas-sprint-25",
+     "role": "eas_attestation",
+     "side": "target"
+    }
+   ],
+   "observed_at": 1794918743.0,
+   "evidence": {
+    "edge_id": "attested_by_base_eas:pacta-proto-railgun->pacta-eas-sprint-25",
+    "protocol_slug": "railgun",
+    "sprint": 25,
+    "eas_uid_hex": "1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff",
+    "eas_tx_hex": "e8f151f9fb9e5b462423fd93dfb13310fd5dbb54245764ac38cf21f6bc072898",
+    "summary_sha256_hex": "4046bfd661f631ceedb335ad428fa8285e7906b1bed34c25a29fe894510c94bc",
+    "record_ids": [
+     "railgun-fees-shield-unshield-s25",
+     "railgun-governance-owner-s25",
+     "railgun-sponsor-window-s25",
+     "railgun-upgrade-admin-s25"
+    ],
+    "classifications": [
+     "aligned_baseline"
+    ],
+    "block_numbers": [
+     26434786
+    ]
+   },
+   "content_hash": "086a378635673cdcaf489a102721d5dcebd08471b26d06f0f3505575584eb92b"
+  },
+  {
    "edge_key": "attested_by_base_eas:pacta-proto-re->pacta-eas-sprint-21",
    "relation": "attested_by_base_eas",
    "direction": "directed",
@@ -3792,7 +4069,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-re->pacta-eas-sprint-21",
     "protocol_slug": "re",
@@ -3831,7 +4108,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-renzo-protocol-ezeth->pacta-eas-sprint-8",
     "protocol_slug": "renzo-protocol-ezeth",
@@ -3867,7 +4144,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-reserve-protocol-rtoken->pacta-eas-sprint-23",
     "protocol_slug": "reserve-protocol-rtoken",
@@ -3905,7 +4182,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-resolv-usr-rlp->pacta-eas-sprint-11",
     "protocol_slug": "resolv-usr-rlp",
@@ -3941,7 +4218,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-resupply->pacta-eas-sprint-22",
     "protocol_slug": "resupply",
@@ -3981,7 +4258,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-rocket-pool-reth->pacta-eas-sprint-19",
     "protocol_slug": "rocket-pool-reth",
@@ -4005,6 +4282,45 @@
    "content_hash": "5c1ac9e138f4b83011737477d0ef4b1b79d9be322fa6a2ce941979f72013e568"
   },
   {
+   "edge_key": "attested_by_base_eas:pacta-proto-safe-singleton-core->pacta-eas-sprint-25",
+   "relation": "attested_by_base_eas",
+   "direction": "directed",
+   "participants": [
+    {
+     "id": "pacta-proto-safe-singleton-core",
+     "role": "protocol",
+     "side": "source"
+    },
+    {
+     "id": "pacta-eas-sprint-25",
+     "role": "eas_attestation",
+     "side": "target"
+    }
+   ],
+   "observed_at": 1794918743.0,
+   "evidence": {
+    "edge_id": "attested_by_base_eas:pacta-proto-safe-singleton-core->pacta-eas-sprint-25",
+    "protocol_slug": "safe-singleton-core",
+    "sprint": 25,
+    "eas_uid_hex": "1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff",
+    "eas_tx_hex": "e8f151f9fb9e5b462423fd93dfb13310fd5dbb54245764ac38cf21f6bc072898",
+    "summary_sha256_hex": "4046bfd661f631ceedb335ad428fa8285e7906b1bed34c25a29fe894510c94bc",
+    "record_ids": [
+     "safe-singleton-core-proxy-factory-bytecode-s25",
+     "safe-singleton-core-safel2-locked-s25",
+     "safe-singleton-core-singleton-bytecode-s25",
+     "safe-singleton-core-singleton-locked-s25"
+    ],
+    "classifications": [
+     "aligned_baseline"
+    ],
+    "block_numbers": [
+     26434786
+    ]
+   },
+   "content_hash": "3e9c52e70acf4dc08a7e42f27ed18d11f516ac58fed1934e87dbbf5ef042400f"
+  },
+  {
    "edge_key": "attested_by_base_eas:pacta-proto-solv-protocol-solvbtc->pacta-eas-sprint-17",
    "relation": "attested_by_base_eas",
    "direction": "directed",
@@ -4020,7 +4336,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-solv-protocol-solvbtc->pacta-eas-sprint-17",
     "protocol_slug": "solv-protocol-solvbtc",
@@ -4058,7 +4374,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-spark-sky->pacta-eas-sprint-7",
     "protocol_slug": "spark-sky",
@@ -4094,7 +4410,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-ssv-network->pacta-eas-sprint-21",
     "protocol_slug": "ssv-network",
@@ -4131,7 +4447,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-stader-labs-ethx->pacta-eas-sprint-12",
     "protocol_slug": "stader-labs-ethx",
@@ -4167,7 +4483,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-stake-dao->pacta-eas-sprint-22",
     "protocol_slug": "stake-dao",
@@ -4208,7 +4524,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-stake-link->pacta-eas-sprint-20",
     "protocol_slug": "stake-link",
@@ -4246,7 +4562,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-stakewise-v3-oseth->pacta-eas-sprint-12",
     "protocol_slug": "stakewise-v3-oseth",
@@ -4282,7 +4598,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-stargate-v2->pacta-eas-sprint-18",
     "protocol_slug": "stargate-v2",
@@ -4318,7 +4634,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-steakhouse-financial-ethereum->pacta-eas-sprint-24",
     "protocol_slug": "steakhouse-financial-ethereum",
@@ -4357,7 +4673,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-steakhouse-usdc-metamorpho-base->pacta-eas-sprint-17",
     "protocol_slug": "steakhouse-usdc-metamorpho-base",
@@ -4393,7 +4709,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-superstate-ustb-uscc->pacta-eas-sprint-12",
     "protocol_slug": "superstate-ustb-uscc",
@@ -4429,7 +4745,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-swell-sweth-rsweth->pacta-eas-sprint-12",
     "protocol_slug": "swell-sweth-rsweth",
@@ -4465,7 +4781,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-symbiotic-core->pacta-eas-sprint-10",
     "protocol_slug": "symbiotic-core",
@@ -4501,7 +4817,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-synthetix-v3-core->pacta-eas-sprint-24",
     "protocol_slug": "synthetix-v3-core",
@@ -4540,7 +4856,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-tether-usdt->pacta-eas-sprint-23",
     "protocol_slug": "tether-usdt",
@@ -4577,7 +4893,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-threshold-network-tbtc->pacta-eas-sprint-15",
     "protocol_slug": "threshold-network-tbtc",
@@ -4613,7 +4929,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-treehouse-tree-teth->pacta-eas-sprint-14",
     "protocol_slug": "treehouse-tree-teth",
@@ -4649,7 +4965,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-treehouse-tree-teth->pacta-eas-sprint-16",
     "protocol_slug": "treehouse-tree-teth",
@@ -4685,7 +5001,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-uniswap-governance-timelock->pacta-eas-sprint-23",
     "protocol_slug": "uniswap-governance-timelock",
@@ -4725,7 +5041,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-uniswap-v4->pacta-eas-sprint-24",
     "protocol_slug": "uniswap-v4",
@@ -4765,7 +5081,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-usual-money-usd0-usd0->pacta-eas-sprint-8",
     "protocol_slug": "usual-money-usd0-usd0",
@@ -4786,6 +5102,46 @@
    "content_hash": "e25d289a2de2e5492f2d89fcf1749dcecd565c6cc884907710382f1e20850f26"
   },
   {
+   "edge_key": "attested_by_base_eas:pacta-proto-wormhole-core-ntt->pacta-eas-sprint-25",
+   "relation": "attested_by_base_eas",
+   "direction": "directed",
+   "participants": [
+    {
+     "id": "pacta-proto-wormhole-core-ntt",
+     "role": "protocol",
+     "side": "source"
+    },
+    {
+     "id": "pacta-eas-sprint-25",
+     "role": "eas_attestation",
+     "side": "target"
+    }
+   ],
+   "observed_at": 1794918743.0,
+   "evidence": {
+    "edge_id": "attested_by_base_eas:pacta-proto-wormhole-core-ntt->pacta-eas-sprint-25",
+    "protocol_slug": "wormhole-core-ntt",
+    "sprint": 25,
+    "eas_uid_hex": "1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff",
+    "eas_tx_hex": "e8f151f9fb9e5b462423fd93dfb13310fd5dbb54245764ac38cf21f6bc072898",
+    "summary_sha256_hex": "4046bfd661f631ceedb335ad428fa8285e7906b1bed34c25a29fe894510c94bc",
+    "record_ids": [
+     "wormhole-core-ntt-eth-guardian-quorum-s25",
+     "wormhole-core-ntt-eth-message-fee-s25",
+     "wormhole-core-ntt-eth-upgrade-governance-s25",
+     "wormhole-core-ntt-guardian-quorum-base-s25"
+    ],
+    "classifications": [
+     "aligned_baseline"
+    ],
+    "block_numbers": [
+     26434786,
+     58641783
+    ]
+   },
+   "content_hash": "115a8e8621391d8502391b423ed1b1139bd521df07b8e481e16e9277f25e1055"
+  },
+  {
    "edge_key": "attested_by_base_eas:pacta-proto-yearn-v3->pacta-eas-sprint-8",
    "relation": "attested_by_base_eas",
    "direction": "directed",
@@ -4801,7 +5157,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-yearn-v3->pacta-eas-sprint-8",
     "protocol_slug": "yearn-v3",
@@ -4837,7 +5193,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "attested_by_base_eas:pacta-proto-yo-protocol->pacta-eas-sprint-22",
     "protocol_slug": "yo-protocol",
@@ -4876,7 +5232,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "collateral_contagion_upstream:pacta-proto-aerodrome-slipstream-base->pacta-proto-aerodrome-finance-base",
     "downstream_slug": "aerodrome-slipstream-base",
@@ -4913,7 +5269,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "collateral_contagion_upstream:pacta-proto-convex-finance->pacta-proto-curve-finance-crvusd",
     "downstream_slug": "convex-finance",
@@ -4968,7 +5324,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "collateral_contagion_upstream:pacta-proto-ethena-usde-susde->pacta-proto-ethena-usdtb",
     "downstream_slug": "ethena-usde-susde",
@@ -5005,7 +5361,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "collateral_contagion_upstream:pacta-proto-ether-fi-liquid-veda-boringvault->pacta-proto-ether-fi-core-eeth-weeth",
     "downstream_slug": "ether-fi-liquid-veda-boringvault",
@@ -5051,7 +5407,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "collateral_contagion_upstream:pacta-proto-f-x-protocol-v2->pacta-proto-lido-steth-dual-governance",
     "downstream_slug": "f-x-protocol-v2",
@@ -5088,7 +5444,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "collateral_contagion_upstream:pacta-proto-metamorpho-re7-weth-vs-re7-usdt->pacta-proto-morpho-blue-core",
     "downstream_slug": "metamorpho-re7-weth-vs-re7-usdt",
@@ -5134,7 +5490,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "collateral_contagion_upstream:pacta-proto-steakhouse-usdc-metamorpho-base->pacta-proto-morpho-blue-core",
     "downstream_slug": "steakhouse-usdc-metamorpho-base",
@@ -5171,7 +5527,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "exhibits_control_plane_gap:pacta-proto-aerodrome-finance-base->pacta-gap-aerodrome-finance-base-emergency-council-migration-s21",
     "protocol_slug": "aerodrome-finance-base",
@@ -5190,6 +5546,74 @@
    "content_hash": "49b709f097b227801c3ec7a1b8aec87cb0f869ed482e3b7440de2b065b2ebc42"
   },
   {
+   "edge_key": "exhibits_control_plane_gap:pacta-proto-axelar-network->pacta-gap-axelar-network-gateway-auth-module-s25",
+   "relation": "exhibits_control_plane_gap",
+   "direction": "directed",
+   "participants": [
+    {
+     "id": "pacta-proto-axelar-network",
+     "role": "protocol",
+     "side": "source"
+    },
+    {
+     "id": "pacta-gap-axelar-network-gateway-auth-module-s25",
+     "role": "control_plane_gap",
+     "side": "target"
+    }
+   ],
+   "observed_at": 1794918743.0,
+   "evidence": {
+    "edge_id": "exhibits_control_plane_gap:pacta-proto-axelar-network->pacta-gap-axelar-network-gateway-auth-module-s25",
+    "protocol_slug": "axelar-network",
+    "surface_id": "axelar-network-gateway-auth-module-s25",
+    "classification": "parameter_delta",
+    "sprint": 25,
+    "chain": "ethereum",
+    "target_contract_hex": "4f4495243837681061c4743b74b3eedf548d56a5",
+    "block_number": 26434786,
+    "block_hash_hex": "b712439847099ec3e8b1617aafd1bc7ece29e22a88dc4e7c8afcf05e6944d987",
+    "surface": "Gateway implementation and auth module differ from the deployment config",
+    "observed_delay_seconds": null,
+    "documented_delay_seconds": null,
+    "summary_sha256_hex": "4046bfd661f631ceedb335ad428fa8285e7906b1bed34c25a29fe894510c94bc"
+   },
+   "content_hash": "968405be6eb4314c0d75a8bb1fa09e3f247c3166e03eb9cd622f690a95d4c7ef"
+  },
+  {
+   "edge_key": "exhibits_control_plane_gap:pacta-proto-bedrock-unieth->pacta-gap-bedrock-unieth-restaking-impl-s25",
+   "relation": "exhibits_control_plane_gap",
+   "direction": "directed",
+   "participants": [
+    {
+     "id": "pacta-proto-bedrock-unieth",
+     "role": "protocol",
+     "side": "source"
+    },
+    {
+     "id": "pacta-gap-bedrock-unieth-restaking-impl-s25",
+     "role": "control_plane_gap",
+     "side": "target"
+    }
+   ],
+   "observed_at": 1794918743.0,
+   "evidence": {
+    "edge_id": "exhibits_control_plane_gap:pacta-proto-bedrock-unieth->pacta-gap-bedrock-unieth-restaking-impl-s25",
+    "protocol_slug": "bedrock-unieth",
+    "surface_id": "bedrock-unieth-restaking-impl-s25",
+    "classification": "parameter_delta",
+    "sprint": 25,
+    "chain": "ethereum",
+    "target_contract_hex": "3f4eaceb930b0edfa78a1dfcbae5c5494e6e9850",
+    "block_number": 26434786,
+    "block_hash_hex": "b712439847099ec3e8b1617aafd1bc7ece29e22a88dc4e7c8afcf05e6944d987",
+    "surface": "Restaking implementation differs from the one the docs list",
+    "observed_delay_seconds": null,
+    "documented_delay_seconds": null,
+    "summary_sha256_hex": "4046bfd661f631ceedb335ad428fa8285e7906b1bed34c25a29fe894510c94bc"
+   },
+   "content_hash": "e5b8a85330d2f679de776061c9136bb6918fa23dc8a90d0e39e1ee1f24ce23af"
+  },
+  {
    "edge_key": "exhibits_control_plane_gap:pacta-proto-beefy-finance-base->pacta-gap-beefy-finance-base-vault-owner-timelock-zero-delay-s22",
    "relation": "exhibits_control_plane_gap",
    "direction": "directed",
@@ -5205,7 +5629,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "exhibits_control_plane_gap:pacta-proto-beefy-finance-base->pacta-gap-beefy-finance-base-vault-owner-timelock-zero-delay-s22",
     "protocol_slug": "beefy-finance-base",
@@ -5239,7 +5663,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "exhibits_control_plane_gap:pacta-proto-chainlink-ccip->pacta-gap-chainlink-ccip-timelock-proposers-s24",
     "protocol_slug": "chainlink-ccip",
@@ -5273,7 +5697,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "exhibits_control_plane_gap:pacta-proto-concrete->pacta-gap-concrete-vault-owner-safe-1of2-s20",
     "protocol_slug": "concrete",
@@ -5307,7 +5731,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "exhibits_control_plane_gap:pacta-proto-curve-finance-crvusd->pacta-gap-curve-crvusd-factory-lending-owner-proxy",
     "protocol_slug": "curve-finance-crvusd",
@@ -5341,7 +5765,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "exhibits_control_plane_gap:pacta-proto-ethena-usde-susde->pacta-gap-ethena-admin-timelock-and-dev-safe",
     "protocol_slug": "ethena-usde-susde",
@@ -5375,7 +5799,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "exhibits_control_plane_gap:pacta-proto-ethena-usde-susde->pacta-gap-ethena-minting-rlusd-usat-onboarding-ops",
     "protocol_slug": "ethena-usde-susde",
@@ -5409,7 +5833,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "exhibits_control_plane_gap:pacta-proto-f-x-protocol-v2->pacta-gap-fx-protocol-v2-treasury-admin",
     "protocol_slug": "f-x-protocol-v2",
@@ -5443,7 +5867,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "exhibits_control_plane_gap:pacta-proto-fluid-instadapp->pacta-gap-fluid-instadapp-vault-factory-auth",
     "protocol_slug": "fluid-instadapp",
@@ -5477,7 +5901,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "exhibits_control_plane_gap:pacta-proto-gearbox-v3-v3-1->pacta-gap-gearbox-v3-legacy-timelock-and-instance-safe",
     "protocol_slug": "gearbox-v3-v3-1",
@@ -5511,7 +5935,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "exhibits_control_plane_gap:pacta-proto-infinifi->pacta-gap-infinifi-pause-role-admin-minor-roles-s20",
     "protocol_slug": "infinifi",
@@ -5545,7 +5969,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "exhibits_control_plane_gap:pacta-proto-inverse-finance-firm->pacta-gap-inverse-finance-firm-policy-safe",
     "protocol_slug": "inverse-finance-firm",
@@ -5579,7 +6003,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "exhibits_control_plane_gap:pacta-proto-maple-finance-v2-syrup->pacta-gap-maple-v2-syrup-ppm-admin",
     "protocol_slug": "maple-finance-v2-syrup",
@@ -5613,7 +6037,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "exhibits_control_plane_gap:pacta-proto-mellow-protocol-lido-earn->pacta-gap-mellow-lido-earn-curator-quorum",
     "protocol_slug": "mellow-protocol-lido-earn",
@@ -5647,7 +6071,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "exhibits_control_plane_gap:pacta-proto-metamorpho-re7-weth-vs-re7-usdt->pacta-gap-metamorpho-re7-weth-guardian-parity",
     "protocol_slug": "metamorpho-re7-weth-vs-re7-usdt",
@@ -5681,7 +6105,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "exhibits_control_plane_gap:pacta-proto-moonwell-lending-base->pacta-gap-moonwell-pause-guardian-2of4-safe-s18",
     "protocol_slug": "moonwell-lending-base",
@@ -5715,7 +6139,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "exhibits_control_plane_gap:pacta-proto-obol-network->pacta-gap-obol-network-token-supply-cap-s24",
     "protocol_slug": "obol-network",
@@ -5749,7 +6173,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "exhibits_control_plane_gap:pacta-proto-ondo-finance-ousg-flux-finance->pacta-gap-ondo-ousg-rate-limiter-and-flux-timelock",
     "protocol_slug": "ondo-finance-ousg-flux-finance",
@@ -5783,7 +6207,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "exhibits_control_plane_gap:pacta-proto-puffer-finance-pufeth->pacta-gap-puffer-community-multisig-3of7-s20",
     "protocol_slug": "puffer-finance-pufeth",
@@ -5817,7 +6241,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "exhibits_control_plane_gap:pacta-proto-renzo-protocol-ezeth->pacta-gap-renzo-ezeth-deposit-queue-fee",
     "protocol_slug": "renzo-protocol-ezeth",
@@ -5851,7 +6275,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "exhibits_control_plane_gap:pacta-proto-resupply->pacta-gap-bounty-slot-2-resupply",
     "protocol_slug": "resupply",
@@ -5881,7 +6305,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "exhibits_control_plane_gap:pacta-proto-resupply->pacta-gap-resupply-main-multisig-3of5-s22",
     "protocol_slug": "resupply",
@@ -5915,7 +6339,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "exhibits_control_plane_gap:pacta-proto-rocket-pool-reth->pacta-gap-rocket-pool-reth-security-council-leave-time-28d-s19",
     "protocol_slug": "rocket-pool-reth",
@@ -5949,7 +6373,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "exhibits_control_plane_gap:pacta-proto-stader-labs-ethx->pacta-gap-stader-ethx-manager-safe-and-timelock",
     "protocol_slug": "stader-labs-ethx",
@@ -5983,7 +6407,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "exhibits_control_plane_gap:pacta-proto-stake-dao->pacta-gap-bounty-slot-1-stake-dao",
     "protocol_slug": "stake-dao",
@@ -6013,7 +6437,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "exhibits_control_plane_gap:pacta-proto-stake-dao->pacta-gap-stake-dao-timelock-executor-permissioned-s22",
     "protocol_slug": "stake-dao",
@@ -6047,7 +6471,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "exhibits_control_plane_gap:pacta-proto-stake-dao->pacta-gap-stake-dao-treasury-safe-3of5-s22",
     "protocol_slug": "stake-dao",
@@ -6081,7 +6505,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "exhibits_control_plane_gap:pacta-proto-uniswap-governance-timelock->pacta-gap-uniswap-governance-voting-period-40320-blocks-s23",
     "protocol_slug": "uniswap-governance-timelock",
@@ -6115,7 +6539,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "exhibits_control_plane_gap:pacta-proto-usual-money-usd0-usd0->pacta-gap-usual-money-registry-access-delay",
     "protocol_slug": "usual-money-usd0-usd0",
@@ -6149,7 +6573,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "exhibits_control_plane_gap:pacta-proto-yo-protocol->pacta-gap-bounty-slot-3-yo-protocol",
     "protocol_slug": "yo-protocol",
@@ -6179,7 +6603,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "exhibits_control_plane_gap:pacta-proto-yo-protocol->pacta-gap-yo-protocol-approval-registry-owner-admin-safe-s22",
     "protocol_slug": "yo-protocol",
@@ -6213,7 +6637,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-aave-v3-base->pacta-ctrl-base-2dc219e7",
     "protocol_slug": "aave-v3-base",
@@ -6257,7 +6681,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-aave-v3-base->pacta-ctrl-base-56c1a4b5",
     "protocol_slug": "aave-v3-base",
@@ -6305,7 +6729,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-aave-v3-gho->pacta-ctrl-ethereum-c2aacf65",
     "protocol_slug": "aave-v3-gho",
@@ -6349,7 +6773,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-across-protocol-hubpool->pacta-ctrl-ethereum-b5247353",
     "protocol_slug": "across-protocol-hubpool",
@@ -6392,7 +6816,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-across-protocol-hubpool->pacta-ctrl-ethereum-c186fa91",
     "protocol_slug": "across-protocol-hubpool",
@@ -6437,7 +6861,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-across-protocol-hubpool->pacta-ctrl-ethereum-ee1dc6bc",
     "protocol_slug": "across-protocol-hubpool",
@@ -6481,7 +6905,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-aerodrome-finance-base->pacta-ctrl-base-16613524",
     "protocol_slug": "aerodrome-finance-base",
@@ -6525,7 +6949,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-aerodrome-finance-base->pacta-ctrl-base-420dd381",
     "protocol_slug": "aerodrome-finance-base",
@@ -6569,7 +6993,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-aerodrome-slipstream-base->pacta-ctrl-base-5e7bb104",
     "protocol_slug": "aerodrome-slipstream-base",
@@ -6599,6 +7023,181 @@
    "content_hash": "d1e94f600c91d055dd05e3a737da775b66edeb16564cdff61779b745e6afda9f"
   },
   {
+   "edge_key": "governed_by_controller:pacta-proto-axelar-network->pacta-ctrl-ethereum-4f449524",
+   "relation": "governed_by_controller",
+   "direction": "directed",
+   "participants": [
+    {
+     "id": "pacta-proto-axelar-network",
+     "role": "protocol",
+     "side": "source"
+    },
+    {
+     "id": "pacta-ctrl-ethereum-4f449524",
+     "role": "controller",
+     "side": "target"
+    }
+   ],
+   "observed_at": 1794918743.0,
+   "evidence": {
+    "edge_id": "governed_by_controller:pacta-proto-axelar-network->pacta-ctrl-ethereum-4f449524",
+    "protocol_slug": "axelar-network",
+    "chain": "ethereum",
+    "chain_id": 1,
+    "contract_hex": "4f4495243837681061c4743b74b3eedf548d56a5",
+    "address_roles": [
+     "primary_contract",
+     "surface_target"
+    ],
+    "surface_ids": [
+     "axelar-network-gateway-auth-module-s25",
+     "axelar-network-gateway-governance-s25"
+    ],
+    "target_labels": [
+     "AxelarGateway (proxy)"
+    ],
+    "controller_kind": null,
+    "evidence_basis": "eas_attested",
+    "badge_tier": "parameter_delta",
+    "observed_controller": {
+     "facts_block_number": 26434786,
+     "code_bytes": 1205,
+     "code_keccak_hex": "f034dde8be2a30edee7f287668d298948dc2b018d097d57a177e060913a1812a"
+    }
+   },
+   "content_hash": "a18caa3cee44780dc0a0157f6c78ae1cfa0192e4fc860037e15ab9a85198891c"
+  },
+  {
+   "edge_key": "governed_by_controller:pacta-proto-axelar-network->pacta-ctrl-ethereum-7acbae6c",
+   "relation": "governed_by_controller",
+   "direction": "directed",
+   "participants": [
+    {
+     "id": "pacta-proto-axelar-network",
+     "role": "protocol",
+     "side": "source"
+    },
+    {
+     "id": "pacta-ctrl-ethereum-7acbae6c",
+     "role": "controller",
+     "side": "target"
+    }
+   ],
+   "observed_at": 1794918743.0,
+   "evidence": {
+    "edge_id": "governed_by_controller:pacta-proto-axelar-network->pacta-ctrl-ethereum-7acbae6c",
+    "protocol_slug": "axelar-network",
+    "chain": "ethereum",
+    "chain_id": 1,
+    "contract_hex": "7acbae6cba67d78aaf69e47000884ae00f9b2525",
+    "address_roles": [
+     "surface_target"
+    ],
+    "surface_ids": [
+     "axelar-network-governance-timelock-s25"
+    ],
+    "target_labels": [
+     "AxelarServiceGovernance"
+    ],
+    "controller_kind": null,
+    "evidence_basis": "eas_attested",
+    "badge_tier": "parameter_delta",
+    "observed_controller": {
+     "facts_block_number": 26434786,
+     "code_bytes": 6248,
+     "code_keccak_hex": "297f8236f2b5cb952a7dbc1fa87a54b573159e455055d67c6c1a362e2b2c2fab"
+    }
+   },
+   "content_hash": "a43fe235058d0063b64a1541d5ebec4484ec6f4d72efd5e7c9a891dad56872cf"
+  },
+  {
+   "edge_key": "governed_by_controller:pacta-proto-axelar-network->pacta-ctrl-ethereum-b5fb4be0",
+   "relation": "governed_by_controller",
+   "direction": "directed",
+   "participants": [
+    {
+     "id": "pacta-proto-axelar-network",
+     "role": "protocol",
+     "side": "source"
+    },
+    {
+     "id": "pacta-ctrl-ethereum-b5fb4be0",
+     "role": "controller",
+     "side": "target"
+    }
+   ],
+   "observed_at": 1794918743.0,
+   "evidence": {
+    "edge_id": "governed_by_controller:pacta-proto-axelar-network->pacta-ctrl-ethereum-b5fb4be0",
+    "protocol_slug": "axelar-network",
+    "chain": "ethereum",
+    "chain_id": 1,
+    "contract_hex": "b5fb4be02232b1bba4dc8f81dc24c26980de9e3c",
+    "address_roles": [
+     "surface_target"
+    ],
+    "surface_ids": [
+     "axelar-network-its-owner-s25"
+    ],
+    "target_labels": [
+     "InterchainTokenService (proxy)"
+    ],
+    "controller_kind": null,
+    "evidence_basis": "eas_attested",
+    "badge_tier": "parameter_delta",
+    "observed_controller": {
+     "facts_block_number": 26434786,
+     "code_bytes": 421,
+     "code_keccak_hex": "08a4a556c4db879b4f24104d13a8baf86915d58b12c81b382dfea2a82d2856cf",
+     "owner_hex": "7acbae6cba67d78aaf69e47000884ae00f9b2525"
+    }
+   },
+   "content_hash": "3384b7d863c521385ab278c1586906e1f1d6f03e026eec2f3f5c1d770b504ade"
+  },
+  {
+   "edge_key": "governed_by_controller:pacta-proto-axelar-network->pacta-ctrl-ethereum-cc940ae4",
+   "relation": "governed_by_controller",
+   "direction": "directed",
+   "participants": [
+    {
+     "id": "pacta-proto-axelar-network",
+     "role": "protocol",
+     "side": "source"
+    },
+    {
+     "id": "pacta-ctrl-ethereum-cc940ae4",
+     "role": "controller",
+     "side": "target"
+    }
+   ],
+   "observed_at": 1794918743.0,
+   "evidence": {
+    "edge_id": "governed_by_controller:pacta-proto-axelar-network->pacta-ctrl-ethereum-cc940ae4",
+    "protocol_slug": "axelar-network",
+    "chain": "ethereum",
+    "chain_id": 1,
+    "contract_hex": "cc940ae49c78f20e3f13f3cf37e996b98ac3ec68",
+    "address_roles": [
+     "surface_target"
+    ],
+    "surface_ids": [
+     "axelar-network-gateway-mint-limiter-s25"
+    ],
+    "target_labels": [
+     "Axelar Multisig (gateway mintLimiter)"
+    ],
+    "controller_kind": null,
+    "evidence_basis": "eas_attested",
+    "badge_tier": "parameter_delta",
+    "observed_controller": {
+     "facts_block_number": 26434786,
+     "code_bytes": 4029,
+     "code_keccak_hex": "912095d5076ee40a9dd49c0f9d61d61334c47a78c7512852791652baef26c296"
+    }
+   },
+   "content_hash": "87754d6a8af0bb6b60c706b27ef35745a34a7aa6fb4666f12744cb94ab412e76"
+  },
+  {
    "edge_key": "governed_by_controller:pacta-proto-balancer-v2-vault-timelock->pacta-ctrl-ethereum-6048a8c6",
    "relation": "governed_by_controller",
    "direction": "directed",
@@ -6614,7 +7213,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-balancer-v2-vault-timelock->pacta-ctrl-ethereum-6048a8c6",
     "protocol_slug": "balancer-v2-vault-timelock",
@@ -6653,7 +7252,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-balancer-v2-vault-timelock->pacta-ctrl-ethereum-a331d84e",
     "protocol_slug": "balancer-v2-vault-timelock",
@@ -6696,7 +7295,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-balancer-v2-vault-timelock->pacta-ctrl-ethereum-ba122222",
     "protocol_slug": "balancer-v2-vault-timelock",
@@ -6725,6 +7324,135 @@
    "content_hash": "7848b14fc868e800f794fe28ae82c0b507411cd0c63910447346d2c88b1054f7"
   },
   {
+   "edge_key": "governed_by_controller:pacta-proto-bedrock-unieth->pacta-ctrl-ethereum-3f4eaceb",
+   "relation": "governed_by_controller",
+   "direction": "directed",
+   "participants": [
+    {
+     "id": "pacta-proto-bedrock-unieth",
+     "role": "protocol",
+     "side": "source"
+    },
+    {
+     "id": "pacta-ctrl-ethereum-3f4eaceb",
+     "role": "controller",
+     "side": "target"
+    }
+   ],
+   "observed_at": 1794918743.0,
+   "evidence": {
+    "edge_id": "governed_by_controller:pacta-proto-bedrock-unieth->pacta-ctrl-ethereum-3f4eaceb",
+    "protocol_slug": "bedrock-unieth",
+    "chain": "ethereum",
+    "chain_id": 1,
+    "contract_hex": "3f4eaceb930b0edfa78a1dfcbae5c5494e6e9850",
+    "address_roles": [
+     "surface_target"
+    ],
+    "surface_ids": [
+     "bedrock-unieth-restaking-impl-s25"
+    ],
+    "target_labels": [
+     "Bedrock Restaking (proxy)"
+    ],
+    "controller_kind": null,
+    "evidence_basis": "eas_attested",
+    "badge_tier": "parameter_delta",
+    "observed_controller": {
+     "facts_block_number": 26434786,
+     "code_bytes": 2124,
+     "code_keccak_hex": "a1584f7a03fb93645d1a1f3dad540c9a53b48fe23d07320e0142b0d227bc8353"
+    }
+   },
+   "content_hash": "15e168fc5b47215b7c905dd924eb184b149361325577a128616240d2db7aa4e9"
+  },
+  {
+   "edge_key": "governed_by_controller:pacta-proto-bedrock-unieth->pacta-ctrl-ethereum-4befa2aa",
+   "relation": "governed_by_controller",
+   "direction": "directed",
+   "participants": [
+    {
+     "id": "pacta-proto-bedrock-unieth",
+     "role": "protocol",
+     "side": "source"
+    },
+    {
+     "id": "pacta-ctrl-ethereum-4befa2aa",
+     "role": "controller",
+     "side": "target"
+    }
+   ],
+   "observed_at": 1794918743.0,
+   "evidence": {
+    "edge_id": "governed_by_controller:pacta-proto-bedrock-unieth->pacta-ctrl-ethereum-4befa2aa",
+    "protocol_slug": "bedrock-unieth",
+    "chain": "ethereum",
+    "chain_id": 1,
+    "contract_hex": "4befa2aa9c305238aa3e0b5d17eb20c045269e9d",
+    "address_roles": [
+     "surface_target"
+    ],
+    "surface_ids": [
+     "bedrock-unieth-staking-fee-s25"
+    ],
+    "target_labels": [
+     "Bedrock Staking (proxy)"
+    ],
+    "controller_kind": null,
+    "evidence_basis": "eas_attested",
+    "badge_tier": "parameter_delta",
+    "observed_controller": {
+     "facts_block_number": 26434786,
+     "code_bytes": 2118,
+     "code_keccak_hex": "fab70c8569de547cb870eecd48aa21351bf0733d4d1a1b4900a28a673f7e1188"
+    }
+   },
+   "content_hash": "0c0ce32cd32f476e9a7bfdeb434ac18a1d8cfc214f4825dccf05a4b76cf2531f"
+  },
+  {
+   "edge_key": "governed_by_controller:pacta-proto-bedrock-unieth->pacta-ctrl-ethereum-926720ae",
+   "relation": "governed_by_controller",
+   "direction": "directed",
+   "participants": [
+    {
+     "id": "pacta-proto-bedrock-unieth",
+     "role": "protocol",
+     "side": "source"
+    },
+    {
+     "id": "pacta-ctrl-ethereum-926720ae",
+     "role": "controller",
+     "side": "target"
+    }
+   ],
+   "observed_at": 1794918743.0,
+   "evidence": {
+    "edge_id": "governed_by_controller:pacta-proto-bedrock-unieth->pacta-ctrl-ethereum-926720ae",
+    "protocol_slug": "bedrock-unieth",
+    "chain": "ethereum",
+    "chain_id": 1,
+    "contract_hex": "926720ae39114d0e2043b79570a1e08f00d01cce",
+    "address_roles": [
+     "surface_target"
+    ],
+    "surface_ids": [
+     "bedrock-unieth-eigenpod-owner-s25"
+    ],
+    "target_labels": [
+     "Bedrock EigenPod (pod 0)"
+    ],
+    "controller_kind": null,
+    "evidence_basis": "eas_attested",
+    "badge_tier": "parameter_delta",
+    "observed_controller": {
+     "facts_block_number": 26434786,
+     "code_bytes": 846,
+     "code_keccak_hex": "abfd2dfbb9f1b63da008db9f3d405ec3c11d9cf641d23724b472062fd1753584"
+    }
+   },
+   "content_hash": "82351b448f45661a4b8d2ffe7445940efe92366585413dd620eac5460bc05578"
+  },
+  {
    "edge_key": "governed_by_controller:pacta-proto-bedrock-unieth->pacta-ctrl-ethereum-aee01705",
    "relation": "governed_by_controller",
    "direction": "directed",
@@ -6740,7 +7468,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-bedrock-unieth->pacta-ctrl-ethereum-aee01705",
     "protocol_slug": "bedrock-unieth",
@@ -6753,8 +7481,8 @@
     "surface_ids": [],
     "target_labels": [],
     "controller_kind": "multisig_safe",
-    "evidence_basis": "rpc_observed",
-    "badge_tier": "rpc_observed",
+    "evidence_basis": "eas_attested",
+    "badge_tier": "parameter_delta",
     "observed_controller": {
      "facts_block_number": 26422627,
      "code_bytes": 171,
@@ -6765,7 +7493,7 @@
      "safe_owners_digest_hex": "2ccbe72bf4191d13d0d216a55a1fb226cf65eb8b9c51de20af553fcc5a6b54a3"
     }
    },
-   "content_hash": "0ed259e97f20ab19ed6f6423b39ae0ff3e8f9b03aeae80b2f5274d4bb026d87a"
+   "content_hash": "f4f22bf5f2aafeea67ccc2c1d1cd03ea2960f64fefcc89d349d75f54a462d5d0"
   },
   {
    "edge_key": "governed_by_controller:pacta-proto-bedrock-unieth->pacta-ctrl-ethereum-f1376bce",
@@ -6783,7 +7511,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-bedrock-unieth->pacta-ctrl-ethereum-f1376bce",
     "protocol_slug": "bedrock-unieth",
@@ -6795,14 +7523,14 @@
      "surface_target"
     ],
     "surface_ids": [
-     "bedrock-unieth-control-plane"
+     "bedrock-unieth-upgrade-admin-s25"
     ],
     "target_labels": [
-     "RockXStakingProxy"
+     "uniETH token proxy (Universal ETH)"
     ],
     "controller_kind": null,
-    "evidence_basis": "rpc_observed",
-    "badge_tier": "rpc_observed",
+    "evidence_basis": "eas_attested",
+    "badge_tier": "parameter_delta",
     "observed_controller": {
      "facts_block_number": 26422627,
      "code_bytes": 2118,
@@ -6810,7 +7538,7 @@
      "owner_hex": "aee017052df6ac002647229d58b786e380b9721a"
     }
    },
-   "content_hash": "4a49bb5ea615b9d703e951b6245dae759608e19e76fdcb2522ad850483db7349"
+   "content_hash": "d1b974dc9116d6c02eb62b47472936ebc7b63886b2e1147c312f503578d9cb9b"
   },
   {
    "edge_key": "governed_by_controller:pacta-proto-beefy-finance-base->pacta-ctrl-base-09d19184",
@@ -6828,7 +7556,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-beefy-finance-base->pacta-ctrl-base-09d19184",
     "protocol_slug": "beefy-finance-base",
@@ -6872,7 +7600,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-beefy-finance-base->pacta-ctrl-base-3b60f7f2",
     "protocol_slug": "beefy-finance-base",
@@ -6916,7 +7644,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-beefy-finance-base->pacta-ctrl-base-6ffaca7c",
     "protocol_slug": "beefy-finance-base",
@@ -6959,7 +7687,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-beefy-finance-base->pacta-ctrl-base-fc69704c",
     "protocol_slug": "beefy-finance-base",
@@ -7004,7 +7732,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-cap->pacta-ctrl-ethereum-7731129a",
     "protocol_slug": "cap",
@@ -7048,7 +7776,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-cap->pacta-ctrl-ethereum-d8236031",
     "protocol_slug": "cap",
@@ -7094,7 +7822,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-centrifuge-liquidity-pools-base->pacta-ctrl-base-7ed48c31",
     "protocol_slug": "centrifuge-liquidity-pools-base",
@@ -7140,7 +7868,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-chainlink-ccip->pacta-ctrl-ethereum-0b047953",
     "protocol_slug": "chainlink-ccip",
@@ -7184,7 +7912,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-chainlink-ccip->pacta-ctrl-ethereum-44835bbb",
     "protocol_slug": "chainlink-ccip",
@@ -7229,7 +7957,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-chainlink-ccip->pacta-ctrl-ethereum-80226fc0",
     "protocol_slug": "chainlink-ccip",
@@ -7274,7 +8002,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-chainlink-ccip->pacta-ctrl-ethereum-b22764f9",
     "protocol_slug": "chainlink-ccip",
@@ -7318,7 +8046,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-circle-usdc->pacta-ctrl-base-833589fc",
     "protocol_slug": "circle-usdc",
@@ -7364,7 +8092,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-circle-usdc->pacta-ctrl-ethereum-a0b86991",
     "protocol_slug": "circle-usdc",
@@ -7409,7 +8137,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-coinbase-wrapped-staked-eth->pacta-ctrl-ethereum-be989514",
     "protocol_slug": "coinbase-wrapped-staked-eth",
@@ -7455,7 +8183,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-compound-v3-base->pacta-ctrl-base-18281dfc",
     "protocol_slug": "compound-v3-base",
@@ -7499,7 +8227,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-compound-v3-base->pacta-ctrl-base-9c4ec768",
     "protocol_slug": "compound-v3-base",
@@ -7542,7 +8270,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-compound-v3-base->pacta-ctrl-base-cc3e7c85",
     "protocol_slug": "compound-v3-base",
@@ -7581,7 +8309,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-compound-v3-comet->pacta-ctrl-ethereum-6d903f60",
     "protocol_slug": "compound-v3-comet",
@@ -7620,7 +8348,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-compound-v3-comet->pacta-ctrl-ethereum-c3d688b6",
     "protocol_slug": "compound-v3-comet",
@@ -7664,7 +8392,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-concrete->pacta-ctrl-ethereum-8f5f1d40",
     "protocol_slug": "concrete",
@@ -7711,7 +8439,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-concrete->pacta-ctrl-ethereum-b9dc54c8",
     "protocol_slug": "concrete",
@@ -7757,7 +8485,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-convex-finance->pacta-ctrl-ethereum-f403c135",
     "protocol_slug": "convex-finance",
@@ -7802,7 +8530,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-curve-finance-crvusd->pacta-ctrl-ethereum-c9332fdc",
     "protocol_slug": "curve-finance-crvusd",
@@ -7846,7 +8574,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-eigenlayer-core->pacta-ctrl-ethereum-c06fd4f8",
     "protocol_slug": "eigenlayer-core",
@@ -7892,7 +8620,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-enzyme-finance->pacta-ctrl-ethereum-c3dc853d",
     "protocol_slug": "enzyme-finance",
@@ -7937,7 +8665,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-ethena-usde-susde->pacta-ctrl-ethereum-e8dc0fab",
     "protocol_slug": "ethena-usde-susde",
@@ -7984,7 +8712,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-ethena-usdtb->pacta-ctrl-ethereum-73e35c5c",
     "protocol_slug": "ethena-usdtb",
@@ -8029,7 +8757,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-ethena-usdtb->pacta-ctrl-ethereum-c139190f",
     "protocol_slug": "ethena-usdtb",
@@ -8073,7 +8801,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-ethena-usdtb->pacta-ctrl-ethereum-e8dc0fab",
     "protocol_slug": "ethena-usdtb",
@@ -8113,7 +8841,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-ether-fi-core-eeth-weeth->pacta-ctrl-ethereum-9f26d4c9",
     "protocol_slug": "ether-fi-core-eeth-weeth",
@@ -8161,7 +8889,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-ether-fi-liquid-veda-boringvault->pacta-ctrl-ethereum-485bde66",
     "protocol_slug": "ether-fi-liquid-veda-boringvault",
@@ -8206,7 +8934,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-ether-fi-liquid-veda-boringvault->pacta-ctrl-ethereum-d829f278",
     "protocol_slug": "ether-fi-liquid-veda-boringvault",
@@ -8246,7 +8974,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-euler-v2-evk->pacta-ctrl-ethereum-29a56a1b",
     "protocol_slug": "euler-v2-evk",
@@ -8290,7 +9018,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-euler-v2-evk->pacta-ctrl-ethereum-fb034c1c",
     "protocol_slug": "euler-v2-evk",
@@ -8330,7 +9058,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-extra-finance-base->pacta-ctrl-base-5a70429e",
     "protocol_slug": "extra-finance-base",
@@ -8369,7 +9097,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-extra-finance-base->pacta-ctrl-base-bb505c54",
     "protocol_slug": "extra-finance-base",
@@ -8414,7 +9142,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-f-x-protocol-v2->pacta-ctrl-ethereum-32356fe3",
     "protocol_slug": "f-x-protocol-v2",
@@ -8458,7 +9186,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-falcon-finance-usdf-susdf->pacta-ctrl-ethereum-c8cf6d79",
     "protocol_slug": "falcon-finance-usdf-susdf",
@@ -8503,7 +9231,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-fluid-instadapp->pacta-ctrl-ethereum-324c5dc1",
     "protocol_slug": "fluid-instadapp",
@@ -8548,7 +9276,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-frax-ether-sfrxeth->pacta-ctrl-ethereum-8306300f",
     "protocol_slug": "frax-ether-sfrxeth",
@@ -8591,7 +9319,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-frax-ether-sfrxeth->pacta-ctrl-ethereum-b1748c79",
     "protocol_slug": "frax-ether-sfrxeth",
@@ -8638,7 +9366,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-frax-ether-sfrxeth->pacta-ctrl-ethereum-b898ad29",
     "protocol_slug": "frax-ether-sfrxeth",
@@ -8681,7 +9409,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-frax-ether-sfrxeth->pacta-ctrl-ethereum-bafa44ef",
     "protocol_slug": "frax-ether-sfrxeth",
@@ -8726,7 +9454,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-frax-usd-frxusd->pacta-ctrl-ethereum-83182266",
     "protocol_slug": "frax-usd-frxusd",
@@ -8773,7 +9501,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-frax-usd-frxusd->pacta-ctrl-ethereum-b898ad29",
     "protocol_slug": "frax-usd-frxusd",
@@ -8812,7 +9540,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-frax-usd-frxusd->pacta-ctrl-ethereum-cacd6fd2",
     "protocol_slug": "frax-usd-frxusd",
@@ -8857,7 +9585,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-frax-usd-frxusd->pacta-ctrl-ethereum-cf62f905",
     "protocol_slug": "frax-usd-frxusd",
@@ -8900,7 +9628,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-gearbox-v3-v3-1->pacta-ctrl-ethereum-a133c9a9",
     "protocol_slug": "gearbox-v3-v3-1",
@@ -8945,7 +9673,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-grove-finance->pacta-ctrl-ethereum-491edfb0",
     "protocol_slug": "grove-finance",
@@ -8989,7 +9717,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-grove-finance->pacta-ctrl-ethereum-fd9dea9a",
     "protocol_slug": "grove-finance",
@@ -9033,7 +9761,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-infinifi->pacta-ctrl-ethereum-3d18480c",
     "protocol_slug": "infinifi",
@@ -9079,7 +9807,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-infinifi->pacta-ctrl-ethereum-80608f85",
     "protocol_slug": "infinifi",
@@ -9126,7 +9854,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-infinifi->pacta-ctrl-ethereum-f6d48735",
     "protocol_slug": "infinifi",
@@ -9169,7 +9897,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-inverse-finance-firm->pacta-ctrl-ethereum-01eca33e",
     "protocol_slug": "inverse-finance-firm",
@@ -9208,7 +9936,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-inverse-finance-firm->pacta-ctrl-ethereum-4b6c63e6",
     "protocol_slug": "inverse-finance-firm",
@@ -9248,7 +9976,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-inverse-finance-firm->pacta-ctrl-ethereum-926df14a",
     "protocol_slug": "inverse-finance-firm",
@@ -9283,7 +10011,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-kelp-dao-rseth->pacta-ctrl-ethereum-49bd9989",
     "protocol_slug": "kelp-dao-rseth",
@@ -9329,7 +10057,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-kelp-dao-rseth->pacta-ctrl-ethereum-a1290d69",
     "protocol_slug": "kelp-dao-rseth",
@@ -9357,6 +10085,96 @@
    "content_hash": "68a1b00bab681d0486af04c58e09de048f073dcad3ec77d6677bd30a573093e3"
   },
   {
+   "edge_key": "governed_by_controller:pacta-proto-layerzero-v2->pacta-ctrl-ethereum-1a440760",
+   "relation": "governed_by_controller",
+   "direction": "directed",
+   "participants": [
+    {
+     "id": "pacta-proto-layerzero-v2",
+     "role": "protocol",
+     "side": "source"
+    },
+    {
+     "id": "pacta-ctrl-ethereum-1a440760",
+     "role": "controller",
+     "side": "target"
+    }
+   ],
+   "observed_at": 1794918743.0,
+   "evidence": {
+    "edge_id": "governed_by_controller:pacta-proto-layerzero-v2->pacta-ctrl-ethereum-1a440760",
+    "protocol_slug": "layerzero-v2",
+    "chain": "ethereum",
+    "chain_id": 1,
+    "contract_hex": "1a44076050125825900e736c501f859c50fe728c",
+    "address_roles": [
+     "primary_contract",
+     "surface_target"
+    ],
+    "surface_ids": [
+     "layerzero-v2-endpoint-immutable-s25",
+     "layerzero-v2-endpoint-owner-onesig-s25"
+    ],
+    "target_labels": [
+     "LayerZero EndpointV2 (Ethereum)"
+    ],
+    "controller_kind": null,
+    "evidence_basis": "eas_attested",
+    "badge_tier": "aligned",
+    "observed_controller": {
+     "facts_block_number": 26434786,
+     "code_bytes": 24005,
+     "code_keccak_hex": "b747fab405fadff7fc9d8adb083d18d3454ac58ffdefe9121ed5f008f57d93e0",
+     "owner_hex": "be010a7e3686fdf65e93344ab664d065a0b02478"
+    }
+   },
+   "content_hash": "7fc3564ef82f3a1f219c975749f8b8b9a280f21c728e365a22b6ad3f3b3be677"
+  },
+  {
+   "edge_key": "governed_by_controller:pacta-proto-layerzero-v2->pacta-ctrl-ethereum-bb2ea70c",
+   "relation": "governed_by_controller",
+   "direction": "directed",
+   "participants": [
+    {
+     "id": "pacta-proto-layerzero-v2",
+     "role": "protocol",
+     "side": "source"
+    },
+    {
+     "id": "pacta-ctrl-ethereum-bb2ea70c",
+     "role": "controller",
+     "side": "target"
+    }
+   ],
+   "observed_at": 1794918743.0,
+   "evidence": {
+    "edge_id": "governed_by_controller:pacta-proto-layerzero-v2->pacta-ctrl-ethereum-bb2ea70c",
+    "protocol_slug": "layerzero-v2",
+    "chain": "ethereum",
+    "chain_id": 1,
+    "contract_hex": "bb2ea70c9e858123480642cf96acbcce1372dce1",
+    "address_roles": [
+     "surface_target"
+    ],
+    "surface_ids": [
+     "layerzero-v2-eth-base-pathway-dvns-s25"
+    ],
+    "target_labels": [
+     "LayerZero SendUln302 (Ethereum)"
+    ],
+    "controller_kind": null,
+    "evidence_basis": "eas_attested",
+    "badge_tier": "aligned",
+    "observed_controller": {
+     "facts_block_number": 26434786,
+     "code_bytes": 22995,
+     "code_keccak_hex": "dd60d5461da3a779567301a7f52c4de2fd7d4c829b3e8de663bb2149be857275",
+     "owner_hex": "be010a7e3686fdf65e93344ab664d065a0b02478"
+    }
+   },
+   "content_hash": "8e14d74e0c131ff414440d246287771db2bdd124ee406567c4a0d20060e88c79"
+  },
+  {
    "edge_key": "governed_by_controller:pacta-proto-lido-steth-dual-governance->pacta-ctrl-ethereum-ce042530",
    "relation": "governed_by_controller",
    "direction": "directed",
@@ -9372,7 +10190,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-lido-steth-dual-governance->pacta-ctrl-ethereum-ce042530",
     "protocol_slug": "lido-steth-dual-governance",
@@ -9417,7 +10235,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-liquid-collective-lseth->pacta-ctrl-ethereum-8c1bed5b",
     "protocol_slug": "liquid-collective-lseth",
@@ -9462,7 +10280,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-liquity-v1-lusd->pacta-ctrl-ethereum-a39739ef",
     "protocol_slug": "liquity-v1-lusd",
@@ -9508,7 +10326,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-liquity-v2-bold->pacta-ctrl-ethereum-6440f144",
     "protocol_slug": "liquity-v2-bold",
@@ -9552,7 +10370,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-lombard-lbtc->pacta-ctrl-ethereum-055e84e7",
     "protocol_slug": "lombard-lbtc",
@@ -9598,7 +10416,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-lombard-lbtc->pacta-ctrl-ethereum-c3ecfe77",
     "protocol_slug": "lombard-lbtc",
@@ -9642,7 +10460,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-m0-protocol-m->pacta-ctrl-ethereum-119fbeed",
     "protocol_slug": "m0-protocol-m",
@@ -9685,7 +10503,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-m0-protocol-m->pacta-ctrl-ethereum-866a2bf4",
     "protocol_slug": "m0-protocol-m",
@@ -9729,7 +10547,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-mantle-liquid-staking-meth-cmeth->pacta-ctrl-ethereum-c26016f1",
     "protocol_slug": "mantle-liquid-staking-meth-cmeth",
@@ -9775,7 +10593,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-maple-finance-v2-syrup->pacta-ctrl-ethereum-be10adce",
     "protocol_slug": "maple-finance-v2-syrup",
@@ -9819,7 +10637,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-mellow-protocol-lido-earn->pacta-ctrl-ethereum-363ba884",
     "protocol_slug": "mellow-protocol-lido-earn",
@@ -9859,7 +10677,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-mellow-protocol-lido-earn->pacta-ctrl-ethereum-e5abcc40",
     "protocol_slug": "mellow-protocol-lido-earn",
@@ -9907,7 +10725,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-metamorpho-re7-weth-vs-re7-usdt->pacta-ctrl-ethereum-78fc2c2e",
     "protocol_slug": "metamorpho-re7-weth-vs-re7-usdt",
@@ -9953,7 +10771,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-moonwell-lending-base->pacta-ctrl-base-fbb21d03",
     "protocol_slug": "moonwell-lending-base",
@@ -9998,7 +10816,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-morpho-blue-core->pacta-ctrl-ethereum-bbbbbbbb",
     "protocol_slug": "morpho-blue-core",
@@ -10043,7 +10861,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-nexus-mutual->pacta-ctrl-ethereum-cafea606",
     "protocol_slug": "nexus-mutual",
@@ -10088,7 +10906,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-obol-network->pacta-ctrl-ethereum-0b010000",
     "protocol_slug": "obol-network",
@@ -10131,7 +10949,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-obol-network->pacta-ctrl-ethereum-4094c8d3",
     "protocol_slug": "obol-network",
@@ -10175,7 +10993,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-obol-network->pacta-ctrl-ethereum-cb162218",
     "protocol_slug": "obol-network",
@@ -10218,7 +11036,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-obol-network->pacta-ctrl-ethereum-cdbf5278",
     "protocol_slug": "obol-network",
@@ -10264,7 +11082,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-ondo-finance-ousg-flux-finance->pacta-ctrl-ethereum-2c5898da",
     "protocol_slug": "ondo-finance-ousg-flux-finance",
@@ -10303,7 +11121,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-ondo-finance-ousg-flux-finance->pacta-ctrl-ethereum-98db5022",
     "protocol_slug": "ondo-finance-ousg-flux-finance",
@@ -10347,7 +11165,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-origin-superoeth-base->pacta-ctrl-base-dbfefd2e",
     "protocol_slug": "origin-superoeth-base",
@@ -10387,7 +11205,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-origin-superoeth-base->pacta-ctrl-base-f817cb30",
     "protocol_slug": "origin-superoeth-base",
@@ -10422,7 +11240,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-paypal-usd-pyusd->pacta-ctrl-ethereum-6c3ea903",
     "protocol_slug": "paypal-usd-pyusd",
@@ -10469,7 +11287,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-pendle-finance-v2->pacta-ctrl-ethereum-3e6eba46",
     "protocol_slug": "pendle-finance-v2",
@@ -10513,7 +11331,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-pendle-finance-v2->pacta-ctrl-ethereum-6d247b1c",
     "protocol_slug": "pendle-finance-v2",
@@ -10558,7 +11376,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-puffer-finance-pufeth->pacta-ctrl-ethereum-3c28b7c7",
     "protocol_slug": "puffer-finance-pufeth",
@@ -10601,7 +11419,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-puffer-finance-pufeth->pacta-ctrl-ethereum-446d4d6b",
     "protocol_slug": "puffer-finance-pufeth",
@@ -10648,7 +11466,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-puffer-finance-pufeth->pacta-ctrl-ethereum-8c168606",
     "protocol_slug": "puffer-finance-pufeth",
@@ -10687,7 +11505,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-puffer-finance-pufeth->pacta-ctrl-ethereum-c0896ab1",
     "protocol_slug": "puffer-finance-pufeth",
@@ -10734,7 +11552,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-puffer-finance-pufeth->pacta-ctrl-ethereum-d9a44285",
     "protocol_slug": "puffer-finance-pufeth",
@@ -10758,6 +11576,182 @@
    "content_hash": "858c2b375344c1487a443d20e10e018c93c9cdf3dfd65723ca476cbb709b1ddd"
   },
   {
+   "edge_key": "governed_by_controller:pacta-proto-railgun->pacta-ctrl-ethereum-4f8e20f5",
+   "relation": "governed_by_controller",
+   "direction": "directed",
+   "participants": [
+    {
+     "id": "pacta-proto-railgun",
+     "role": "protocol",
+     "side": "source"
+    },
+    {
+     "id": "pacta-ctrl-ethereum-4f8e20f5",
+     "role": "controller",
+     "side": "target"
+    }
+   ],
+   "observed_at": 1794918743.0,
+   "evidence": {
+    "edge_id": "governed_by_controller:pacta-proto-railgun->pacta-ctrl-ethereum-4f8e20f5",
+    "protocol_slug": "railgun",
+    "chain": "ethereum",
+    "chain_id": 1,
+    "contract_hex": "4f8e20f55f879bee7bc010bd6bd2138b34ac65c8",
+    "address_roles": [
+     "surface_target"
+    ],
+    "surface_ids": [
+     "railgun-upgrade-admin-s25"
+    ],
+    "target_labels": [
+     "RAILGUN ProxyAdmin"
+    ],
+    "controller_kind": null,
+    "evidence_basis": "eas_attested",
+    "badge_tier": "aligned",
+    "observed_controller": {
+     "facts_block_number": 26434786,
+     "code_bytes": 1655,
+     "code_keccak_hex": "aa877a64a4bbd200afb3a73faba2235d0627692b38d6f08340b484b821c5ba66",
+     "owner_hex": "b6d513f6222ee92fff975e901bd792e2513fb53b"
+    }
+   },
+   "content_hash": "df1889ed3a13b39380b7922db84d61aa4628f2ed81f94e24ef04d828d4b48f75"
+  },
+  {
+   "edge_key": "governed_by_controller:pacta-proto-railgun->pacta-ctrl-ethereum-b6d513f6",
+   "relation": "governed_by_controller",
+   "direction": "directed",
+   "participants": [
+    {
+     "id": "pacta-proto-railgun",
+     "role": "protocol",
+     "side": "source"
+    },
+    {
+     "id": "pacta-ctrl-ethereum-b6d513f6",
+     "role": "controller",
+     "side": "target"
+    }
+   ],
+   "observed_at": 1794918743.0,
+   "evidence": {
+    "edge_id": "governed_by_controller:pacta-proto-railgun->pacta-ctrl-ethereum-b6d513f6",
+    "protocol_slug": "railgun",
+    "chain": "ethereum",
+    "chain_id": 1,
+    "contract_hex": "b6d513f6222ee92fff975e901bd792e2513fb53b",
+    "address_roles": [
+     "surface_target"
+    ],
+    "surface_ids": [
+     "railgun-governance-owner-s25"
+    ],
+    "target_labels": [
+     "RAILGUN Delegator"
+    ],
+    "controller_kind": null,
+    "evidence_basis": "eas_attested",
+    "badge_tier": "aligned",
+    "observed_controller": {
+     "facts_block_number": 26434786,
+     "code_bytes": 2979,
+     "code_keccak_hex": "6e6724cfc1afb06e6dc95b31d92e421903ad381dc24940df56a05158bf0b07eb",
+     "owner_hex": "c480f68a3dcc3edd82134fab45c14a0fcf1da3cc"
+    }
+   },
+   "content_hash": "c6d5fbf9ef0bd763c093d4fc96721285dd3c7eac9426368acd9943b88634fed5"
+  },
+  {
+   "edge_key": "governed_by_controller:pacta-proto-railgun->pacta-ctrl-ethereum-c480f68a",
+   "relation": "governed_by_controller",
+   "direction": "directed",
+   "participants": [
+    {
+     "id": "pacta-proto-railgun",
+     "role": "protocol",
+     "side": "source"
+    },
+    {
+     "id": "pacta-ctrl-ethereum-c480f68a",
+     "role": "controller",
+     "side": "target"
+    }
+   ],
+   "observed_at": 1794918743.0,
+   "evidence": {
+    "edge_id": "governed_by_controller:pacta-proto-railgun->pacta-ctrl-ethereum-c480f68a",
+    "protocol_slug": "railgun",
+    "chain": "ethereum",
+    "chain_id": 1,
+    "contract_hex": "c480f68a3dcc3edd82134fab45c14a0fcf1da3cc",
+    "address_roles": [
+     "surface_target"
+    ],
+    "surface_ids": [
+     "railgun-sponsor-window-s25"
+    ],
+    "target_labels": [
+     "RAILGUN Voting"
+    ],
+    "controller_kind": null,
+    "evidence_basis": "eas_attested",
+    "badge_tier": "aligned",
+    "observed_controller": {
+     "facts_block_number": 26434786,
+     "code_bytes": 9412,
+     "code_keccak_hex": "6bf0a37e8abd0cbec3baab0a0e7dc3c14e7a9a5bbd369e77b426cbd92de6007b"
+    }
+   },
+   "content_hash": "1456171c446a4c74c0e1214d9ee18cc61c125df13cfe4879e06d26e16f3497cf"
+  },
+  {
+   "edge_key": "governed_by_controller:pacta-proto-railgun->pacta-ctrl-ethereum-fa7093cd",
+   "relation": "governed_by_controller",
+   "direction": "directed",
+   "participants": [
+    {
+     "id": "pacta-proto-railgun",
+     "role": "protocol",
+     "side": "source"
+    },
+    {
+     "id": "pacta-ctrl-ethereum-fa7093cd",
+     "role": "controller",
+     "side": "target"
+    }
+   ],
+   "observed_at": 1794918743.0,
+   "evidence": {
+    "edge_id": "governed_by_controller:pacta-proto-railgun->pacta-ctrl-ethereum-fa7093cd",
+    "protocol_slug": "railgun",
+    "chain": "ethereum",
+    "chain_id": 1,
+    "contract_hex": "fa7093cdd9ee6932b4eb2c9e1cde7ce00b1fa4b9",
+    "address_roles": [
+     "primary_contract",
+     "surface_target"
+    ],
+    "surface_ids": [
+     "railgun-fees-shield-unshield-s25"
+    ],
+    "target_labels": [
+     "RailgunSmartWallet (proxy)"
+    ],
+    "controller_kind": null,
+    "evidence_basis": "eas_attested",
+    "badge_tier": "aligned",
+    "observed_controller": {
+     "facts_block_number": 26434786,
+     "code_bytes": 1646,
+     "code_keccak_hex": "961b5d92bc024b170e1ab8c4b8e0b987c44e3a62ed78770a1d0b5409e64537ff",
+     "owner_hex": "b6d513f6222ee92fff975e901bd792e2513fb53b"
+    }
+   },
+   "content_hash": "3f15b49d280b0829a81c4efcdaf64d3c74cd971e46f71effb5f751b7e9a0d3cb"
+  },
+  {
    "edge_key": "governed_by_controller:pacta-proto-re->pacta-ctrl-ethereum-4691c475",
    "relation": "governed_by_controller",
    "direction": "directed",
@@ -10773,7 +11767,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-re->pacta-ctrl-ethereum-4691c475",
     "protocol_slug": "re",
@@ -10816,7 +11810,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-re->pacta-ctrl-ethereum-5086bf35",
     "protocol_slug": "re",
@@ -10860,7 +11854,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-re->pacta-ctrl-ethereum-69ddea33",
     "protocol_slug": "re",
@@ -10905,7 +11899,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-renzo-protocol-ezeth->pacta-ctrl-ethereum-f2f305d1",
     "protocol_slug": "renzo-protocol-ezeth",
@@ -10949,7 +11943,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-reserve-protocol-rtoken->pacta-ctrl-ethereum-18ba6e33",
     "protocol_slug": "reserve-protocol-rtoken",
@@ -10992,7 +11986,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-reserve-protocol-rtoken->pacta-ctrl-ethereum-7697ae4d",
     "protocol_slug": "reserve-protocol-rtoken",
@@ -11036,7 +12030,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-reserve-protocol-rtoken->pacta-ctrl-ethereum-a0d69e28",
     "protocol_slug": "reserve-protocol-rtoken",
@@ -11075,7 +12069,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-resolv-usr-rlp->pacta-ctrl-ethereum-66a1e37c",
     "protocol_slug": "resolv-usr-rlp",
@@ -11121,7 +12115,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-resupply->pacta-ctrl-ethereum-10101010",
     "protocol_slug": "resupply",
@@ -11165,7 +12159,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-resupply->pacta-ctrl-ethereum-11111111",
     "protocol_slug": "resupply",
@@ -11205,7 +12199,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-resupply->pacta-ctrl-ethereum-a4745e0b",
     "protocol_slug": "resupply",
@@ -11249,7 +12243,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-resupply->pacta-ctrl-ethereum-c07e0000",
     "protocol_slug": "resupply",
@@ -11293,7 +12287,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-resupply->pacta-ctrl-ethereum-fe11a500",
     "protocol_slug": "resupply",
@@ -11340,7 +12334,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-rocket-pool-reth->pacta-ctrl-ethereum-c9d771aa",
     "protocol_slug": "rocket-pool-reth",
@@ -11384,7 +12378,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-rocket-pool-reth->pacta-ctrl-ethereum-da1ab39e",
     "protocol_slug": "rocket-pool-reth",
@@ -11413,6 +12407,49 @@
    "content_hash": "4b3679db89f52dfaf2f8b791d3089231f295efaaccfed638dc9ed58177ca5b62"
   },
   {
+   "edge_key": "governed_by_controller:pacta-proto-safe-singleton-core->pacta-ctrl-ethereum-29fcb43b",
+   "relation": "governed_by_controller",
+   "direction": "directed",
+   "participants": [
+    {
+     "id": "pacta-proto-safe-singleton-core",
+     "role": "protocol",
+     "side": "source"
+    },
+    {
+     "id": "pacta-ctrl-ethereum-29fcb43b",
+     "role": "controller",
+     "side": "target"
+    }
+   ],
+   "observed_at": 1794918743.0,
+   "evidence": {
+    "edge_id": "governed_by_controller:pacta-proto-safe-singleton-core->pacta-ctrl-ethereum-29fcb43b",
+    "protocol_slug": "safe-singleton-core",
+    "chain": "ethereum",
+    "chain_id": 1,
+    "contract_hex": "29fcb43b46531bca003ddc8fcb67ffe91900c762",
+    "address_roles": [
+     "surface_target"
+    ],
+    "surface_ids": [
+     "safe-singleton-core-safel2-locked-s25"
+    ],
+    "target_labels": [
+     "SafeL2 v1.4.1 singleton"
+    ],
+    "controller_kind": null,
+    "evidence_basis": "eas_attested",
+    "badge_tier": "aligned",
+    "observed_controller": {
+     "facts_block_number": 26434786,
+     "code_bytes": 24421,
+     "code_keccak_hex": "b1f926978a0f44a2c0ec8fe822418ae969bd8c3f18d61e5103100339894f81ff"
+    }
+   },
+   "content_hash": "37ceda8838c9562f68a4d75073bd0a5dcd29580b160192922f3c8c6803ec6f9b"
+  },
+  {
    "edge_key": "governed_by_controller:pacta-proto-safe-singleton-core->pacta-ctrl-ethereum-41675c09",
    "relation": "governed_by_controller",
    "direction": "directed",
@@ -11428,7 +12465,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-safe-singleton-core->pacta-ctrl-ethereum-41675c09",
     "protocol_slug": "safe-singleton-core",
@@ -11440,21 +12477,22 @@
      "surface_target"
     ],
     "surface_ids": [
-     "safe-singleton-core-control-plane"
+     "safe-singleton-core-singleton-bytecode-s25",
+     "safe-singleton-core-singleton-locked-s25"
     ],
     "target_labels": [
-     "SafeSingleton_v1_4_1"
+     "Safe v1.4.1 singleton"
     ],
     "controller_kind": null,
-    "evidence_basis": "rpc_observed",
-    "badge_tier": "rpc_observed",
+    "evidence_basis": "eas_attested",
+    "badge_tier": "aligned",
     "observed_controller": {
      "facts_block_number": 26422627,
      "code_bytes": 23579,
      "code_keccak_hex": "1fe2df852ba3299d6534ef416eefa406e56ced995bca886ab7a553e6d0c5e1c4"
     }
    },
-   "content_hash": "7c47ab3a8b081a3725597f061e07c461759636bda0f8b623371f0235cdf48d9d"
+   "content_hash": "a75578cad0854422961d4248b3b42036ba8675135cb1dba88e1243973e191606"
   },
   {
    "edge_key": "governed_by_controller:pacta-proto-safe-singleton-core->pacta-ctrl-ethereum-4e1dcf7a",
@@ -11472,7 +12510,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-safe-singleton-core->pacta-ctrl-ethereum-4e1dcf7a",
     "protocol_slug": "safe-singleton-core",
@@ -11480,20 +12518,24 @@
     "chain_id": 1,
     "contract_hex": "4e1dcf7ad4e460cfd30791ccc4f9c8a4f820ec67",
     "address_roles": [
-     "controller"
+     "surface_target"
     ],
-    "surface_ids": [],
-    "target_labels": [],
-    "controller_kind": "contract_controller",
-    "evidence_basis": "rpc_observed",
-    "badge_tier": "rpc_observed",
+    "surface_ids": [
+     "safe-singleton-core-proxy-factory-bytecode-s25"
+    ],
+    "target_labels": [
+     "SafeProxyFactory v1.4.1"
+    ],
+    "controller_kind": null,
+    "evidence_basis": "eas_attested",
+    "badge_tier": "aligned",
     "observed_controller": {
      "facts_block_number": 26422627,
      "code_bytes": 3054,
      "code_keccak_hex": "50c3cdc4074750a7a974204a716c999edd37482f907608d960b2b025ee0b3317"
     }
    },
-   "content_hash": "4c1c2f631cf96b9d28ff0b65392dc5f13cdc7da932bf20164d8488b6b92a9169"
+   "content_hash": "53c2676458a17bcb2d5855c8a6a85f14c9909ecc643ff5ef33b3cf360052a0f6"
   },
   {
    "edge_key": "governed_by_controller:pacta-proto-seamless-protocol-base->pacta-ctrl-base-0e02eb70",
@@ -11511,7 +12553,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-seamless-protocol-base->pacta-ctrl-base-0e02eb70",
     "protocol_slug": "seamless-protocol-base",
@@ -11555,7 +12597,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-solv-protocol-solvbtc->pacta-ctrl-ethereum-7a56e1c5",
     "protocol_slug": "solv-protocol-solvbtc",
@@ -11600,7 +12642,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-solv-protocol-solvbtc->pacta-ctrl-ethereum-fd4b809a",
     "protocol_slug": "solv-protocol-solvbtc",
@@ -11644,7 +12686,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-spark-sky->pacta-ctrl-ethereum-be286431",
     "protocol_slug": "spark-sky",
@@ -11689,7 +12731,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-ssv-network->pacta-ctrl-ethereum-afe830b6",
     "protocol_slug": "ssv-network",
@@ -11733,7 +12775,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-ssv-network->pacta-ctrl-ethereum-dd9bc35a",
     "protocol_slug": "ssv-network",
@@ -11778,7 +12820,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-stader-labs-ethx->pacta-ctrl-ethereum-1112d5c5",
     "protocol_slug": "stader-labs-ethx",
@@ -11818,7 +12860,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-stader-labs-ethx->pacta-ctrl-ethereum-aafb3178",
     "protocol_slug": "stader-labs-ethx",
@@ -11866,7 +12908,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-stake-dao->pacta-ctrl-ethereum-2d8bce1f",
     "protocol_slug": "stake-dao",
@@ -11910,7 +12952,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-stake-dao->pacta-ctrl-ethereum-b27afc78",
     "protocol_slug": "stake-dao",
@@ -11957,7 +12999,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-stake-dao->pacta-ctrl-ethereum-f930ebbd",
     "protocol_slug": "stake-dao",
@@ -12004,7 +13046,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-stake-link->pacta-ctrl-ethereum-4852e482",
     "protocol_slug": "stake-link",
@@ -12048,7 +13090,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-stake-link->pacta-ctrl-ethereum-b351ec0f",
     "protocol_slug": "stake-link",
@@ -12095,7 +13137,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-stake-link->pacta-ctrl-ethereum-b72d8f52",
     "protocol_slug": "stake-link",
@@ -12141,7 +13183,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-stakewise-v3-oseth->pacta-ctrl-ethereum-6b581546",
     "protocol_slug": "stakewise-v3-oseth",
@@ -12186,7 +13228,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-stargate-v2->pacta-ctrl-ethereum-c0263958",
     "protocol_slug": "stargate-v2",
@@ -12231,7 +13273,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-steakhouse-financial-ethereum->pacta-ctrl-ethereum-0a0e559b",
     "protocol_slug": "steakhouse-financial-ethereum",
@@ -12278,7 +13320,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-steakhouse-financial-ethereum->pacta-ctrl-ethereum-79864900",
     "protocol_slug": "steakhouse-financial-ethereum",
@@ -12321,7 +13363,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-steakhouse-financial-ethereum->pacta-ctrl-ethereum-beef0173",
     "protocol_slug": "steakhouse-financial-ethereum",
@@ -12367,7 +13409,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-steakhouse-usdc-metamorpho-base->pacta-ctrl-base-beef010f",
     "protocol_slug": "steakhouse-usdc-metamorpho-base",
@@ -12413,7 +13455,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-superform-v2-base->pacta-ctrl-base-10ac0b33",
     "protocol_slug": "superform-v2-base",
@@ -12452,7 +13494,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-superform-v2-base->pacta-ctrl-base-b5396ef2",
     "protocol_slug": "superform-v2-base",
@@ -12496,7 +13538,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-superstate-ustb-uscc->pacta-ctrl-ethereum-43415eb6",
     "protocol_slug": "superstate-ustb-uscc",
@@ -12541,7 +13583,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-swell-sweth-rsweth->pacta-ctrl-ethereum-ba829003",
     "protocol_slug": "swell-sweth-rsweth",
@@ -12586,7 +13628,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-symbiotic-core->pacta-ctrl-ethereum-aeb6bdd9",
     "protocol_slug": "symbiotic-core",
@@ -12631,7 +13673,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-synthetix-v3-core->pacta-ctrl-ethereum-0aaf300e",
     "protocol_slug": "synthetix-v3-core",
@@ -12675,7 +13717,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-synthetix-v3-core->pacta-ctrl-ethereum-0e429603",
     "protocol_slug": "synthetix-v3-core",
@@ -12719,7 +13761,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-synthetix-v3-core->pacta-ctrl-ethereum-b2f30a7c",
     "protocol_slug": "synthetix-v3-core",
@@ -12763,7 +13805,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-synthetix-v3-core->pacta-ctrl-ethereum-eb310711",
     "protocol_slug": "synthetix-v3-core",
@@ -12806,7 +13848,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-synthetix-v3-core->pacta-ctrl-ethereum-ffffffae",
     "protocol_slug": "synthetix-v3-core",
@@ -12851,7 +13893,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-tether-usdt->pacta-ctrl-ethereum-dac17f95",
     "protocol_slug": "tether-usdt",
@@ -12897,7 +13939,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-threshold-network-tbtc->pacta-ctrl-ethereum-92f2d8b7",
     "protocol_slug": "threshold-network-tbtc",
@@ -12943,7 +13985,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-treehouse-tree-teth->pacta-ctrl-ethereum-2225dabf",
     "protocol_slug": "treehouse-tree-teth",
@@ -12989,7 +14031,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-treehouse-tree-teth->pacta-ctrl-ethereum-d11c452f",
     "protocol_slug": "treehouse-tree-teth",
@@ -13033,7 +14075,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-uniswap-governance-timelock->pacta-ctrl-ethereum-1a9c8182",
     "protocol_slug": "uniswap-governance-timelock",
@@ -13076,7 +14118,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-uniswap-governance-timelock->pacta-ctrl-ethereum-1f98431c",
     "protocol_slug": "uniswap-governance-timelock",
@@ -13121,7 +14163,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-uniswap-governance-timelock->pacta-ctrl-ethereum-408ed635",
     "protocol_slug": "uniswap-governance-timelock",
@@ -13165,7 +14207,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-uniswap-governance-timelock->pacta-ctrl-ethereum-f2371551",
     "protocol_slug": "uniswap-governance-timelock",
@@ -13205,7 +14247,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-uniswap-v4->pacta-ctrl-base-498581ff",
     "protocol_slug": "uniswap-v4",
@@ -13249,7 +14291,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-uniswap-v4->pacta-ctrl-ethereum-00000000",
     "protocol_slug": "uniswap-v4",
@@ -13295,7 +14337,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-uniswap-v4->pacta-ctrl-ethereum-1a9c8182",
     "protocol_slug": "uniswap-v4",
@@ -13334,7 +14376,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-uniswap-v4->pacta-ctrl-ethereum-89a5d5bf",
     "protocol_slug": "uniswap-v4",
@@ -13378,7 +14420,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-usual-money-usd0-usd0->pacta-ctrl-ethereum-0d374775",
     "protocol_slug": "usual-money-usd0-usd0",
@@ -13409,6 +14451,95 @@
    "content_hash": "628bb281122bdb282af9a50b0dc940a2f2532b840ae2f55d3879500d97c65eb7"
   },
   {
+   "edge_key": "governed_by_controller:pacta-proto-wormhole-core-ntt->pacta-ctrl-base-bebdb6c8",
+   "relation": "governed_by_controller",
+   "direction": "directed",
+   "participants": [
+    {
+     "id": "pacta-proto-wormhole-core-ntt",
+     "role": "protocol",
+     "side": "source"
+    },
+    {
+     "id": "pacta-ctrl-base-bebdb6c8",
+     "role": "controller",
+     "side": "target"
+    }
+   ],
+   "observed_at": 1794918743.0,
+   "evidence": {
+    "edge_id": "governed_by_controller:pacta-proto-wormhole-core-ntt->pacta-ctrl-base-bebdb6c8",
+    "protocol_slug": "wormhole-core-ntt",
+    "chain": "base",
+    "chain_id": 8453,
+    "contract_hex": "bebdb6c8ddc678ffa9f8748f85c815c556dd8ac6",
+    "address_roles": [
+     "surface_target"
+    ],
+    "surface_ids": [
+     "wormhole-core-ntt-guardian-quorum-base-s25"
+    ],
+    "target_labels": [
+     "Wormhole Core (Base)"
+    ],
+    "controller_kind": null,
+    "evidence_basis": "eas_attested",
+    "badge_tier": "aligned",
+    "observed_controller": {
+     "facts_block_number": 58641783,
+     "code_bytes": 680,
+     "code_keccak_hex": "502ed826a5c13dc27d501dcd0180214368e3ec4a32b94a1fc14eb59ab4427beb"
+    }
+   },
+   "content_hash": "e7c9efedd10cdfe507c8d2c474d17f6030a5e83e0107e8b7e556762ba08a6950"
+  },
+  {
+   "edge_key": "governed_by_controller:pacta-proto-wormhole-core-ntt->pacta-ctrl-ethereum-98f3c9e6",
+   "relation": "governed_by_controller",
+   "direction": "directed",
+   "participants": [
+    {
+     "id": "pacta-proto-wormhole-core-ntt",
+     "role": "protocol",
+     "side": "source"
+    },
+    {
+     "id": "pacta-ctrl-ethereum-98f3c9e6",
+     "role": "controller",
+     "side": "target"
+    }
+   ],
+   "observed_at": 1794918743.0,
+   "evidence": {
+    "edge_id": "governed_by_controller:pacta-proto-wormhole-core-ntt->pacta-ctrl-ethereum-98f3c9e6",
+    "protocol_slug": "wormhole-core-ntt",
+    "chain": "ethereum",
+    "chain_id": 1,
+    "contract_hex": "98f3c9e6e3face36baad05fe09d375ef1464288b",
+    "address_roles": [
+     "primary_contract",
+     "surface_target"
+    ],
+    "surface_ids": [
+     "wormhole-core-ntt-eth-guardian-quorum-s25",
+     "wormhole-core-ntt-eth-message-fee-s25",
+     "wormhole-core-ntt-eth-upgrade-governance-s25"
+    ],
+    "target_labels": [
+     "Wormhole Core (Ethereum)"
+    ],
+    "controller_kind": null,
+    "evidence_basis": "eas_attested",
+    "badge_tier": "aligned",
+    "observed_controller": {
+     "facts_block_number": 26434786,
+     "code_bytes": 680,
+     "code_keccak_hex": "adf9db5c37ff049019dd27726900e248d3dc675cee2b4eaf5ecaf18457a36b42"
+    }
+   },
+   "content_hash": "6e3886f08f62f92e82e2a78b9be4663078a8d7cc841ad3bc2c5fda866518b10f"
+  },
+  {
    "edge_key": "governed_by_controller:pacta-proto-yearn-v3->pacta-ctrl-ethereum-88ba032b",
    "relation": "governed_by_controller",
    "direction": "directed",
@@ -13424,7 +14555,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-yearn-v3->pacta-ctrl-ethereum-88ba032b",
     "protocol_slug": "yearn-v3",
@@ -13464,7 +14595,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-yearn-v3->pacta-ctrl-ethereum-b3bd6b2e",
     "protocol_slug": "yearn-v3",
@@ -13508,7 +14639,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-yo-protocol->pacta-ctrl-base-38ce5e45",
     "protocol_slug": "yo-protocol",
@@ -13552,7 +14683,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-yo-protocol->pacta-ctrl-base-b4b3f5c9",
     "protocol_slug": "yo-protocol",
@@ -13597,7 +14728,7 @@
      "side": "target"
     }
    ],
-   "observed_at": 1794897239.0,
+   "observed_at": 1794918743.0,
    "evidence": {
     "edge_id": "governed_by_controller:pacta-proto-yo-protocol->pacta-ctrl-base-d460cf1f",
     "protocol_slug": "yo-protocol",
@@ -13626,5 +14757,5 @@
    "content_hash": "5677574f0f2aba204ed8b95486cc472dde027ae3a5b6fa992f319cb16a1f713b"
   }
  ],
- "manifest_sha256": "ad42662e1cf3e598c8a0554aab32dfb79a56c3c580299f763f5c0ed0c5e652f5"
+ "manifest_sha256": "f71385f43b9a86ff2465b82f818a8625e95d9113a62b6f279c263bb66f19ca2a"
 }

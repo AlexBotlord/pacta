@@ -2,10 +2,10 @@
  "description": "One canonical grade per published protocol (DELTA / PROTECTIVE / ALIGNED / OBSERVED) and a 5-factor control-plane rosette derived deterministically from Pacta's published records (index.json, rpc-pinned.json) and controller facts. A factor the published evidence does not decide is 'n' (not determined); docs-vs-chain parity is 'u' (uncompared) for every RPC-observed protocol. States: g strong, b moderate, a weak, n not determined, u uncompared.",
  "factorCoverage": {
   "emergency": 21,
-  "parity": 80,
+  "parity": 86,
   "quorum": 67,
-  "timelock": 54,
-  "upgrade": 22
+  "timelock": 56,
+  "upgrade": 24
  },
  "factors": [
   {
@@ -33,17 +33,17 @@
   "aligned": {
    "label": "ALIGNED",
    "meaning": "Docs and chain match",
-   "protocols": 46
+   "protocols": 50
   },
   "delta": {
    "label": "DELTA",
    "meaning": "Docs and chain differ",
-   "protocols": 26
+   "protocols": 28
   },
   "observed": {
    "label": "OBSERVED",
    "meaning": "Chain pinned; docs not assessed",
-   "protocols": 6
+   "protocols": 4
   },
   "protective": {
    "label": "PROTECTIVE",
@@ -473,6 +473,87 @@
    "url": "https://pacta.wtf/protocols/aerodrome-slipstream-base/"
   },
   {
+   "baskets": [],
+   "category": "Cross-Chain Gateway & Interchain Token Service",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 1,
+   "easAttested": true,
+   "evidence": {
+    "documented": "axelar-contract-deployments (mainnet config, chains.ethereum, linked from docs.axelar.dev): '\"implementation\": \"0x99B5FA03a5ea4315725c43346e55a6A6fbd94098\"' / '\"authModule\": \"0xE3B83f79Fbf01B25659f8A814945aB82186A8AD0\"'",
+    "observed": "AxelarGateway 0x4F4495243837681061C4743b74B3eEdf548D56A5: implementation() = 0x16C22cbDD77350b1AC88AdDA344F691c12f41960, authModule() = 0x3d3C73E91B1b0C243f1437F2d8363b1D5B093BD0 (whose owner() is the gateway); the deployment config lists implementation 0x99B5FA03a5ea4315725c43346e55a6A6fbd94098 and auth module 0xE3B83f79Fbf01B25659f8A814945aB82186A8AD0.",
+    "recordId": "axelar-network-gateway-auth-module-s25",
+    "surface": "Gateway implementation and auth module differ from the deployment config"
+   },
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": "axelar-network-governance-timelock-s25: operator() = 0xc8a8399c3D1207f4e109673be7047604737c1D56 (no contract code), which can run executeOperatorProposal immediately (no delay) for proposals Axelar …",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "a",
+     "value": "0s: an operator can execute approved proposals without waiting the timelock delay"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": "axelar-network-its-owner-s25: paused() = false.",
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "Pause / freeze authority present; its holder is not determined"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "a",
+     "value": "Documentation differs from the chain (parameter delta)"
+    }
+   ],
+   "finding": "Gateway implementation and auth module differ from the deployment config: docs say axelar-contract-deployments (mainnet config, chains.ethereum, linked from docs.axelar.dev): '\"implementation\": \"0x99B5FA03a5ea4315725c43346e55a6A6fbd94098\"' / '\"authModule\": \"0xE3B83f79Fbf01B25659f8A814945aB82186A8AD0\"' · chain says AxelarGateway 0x4F4495243837681061C4743b74B3eEdf548D56A5: implementation() = 0x16C22cbDD77350b1AC88AdDA344F691c12f41960, authModule() = 0x3d3C73E91B1b0C243f1437F2d8363b1D5B093BD0 (whose owner() is the gateway);",
+   "grade": "delta",
+   "gradeLabel": "DELTA",
+   "name": "Axelar Network",
+   "pinnedBlock": 26434786,
+   "probe": {
+    "block_hash": "0xb712439847099ec3e8b1617aafd1bc7ece29e22a88dc4e7c8afcf05e6944d987",
+    "block_number": 26434786,
+    "call_args": [],
+    "call_signature": "authModule()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "axelar-network-gateway-auth-module-s25",
+    "repro_calldata": "0x64940c56",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0x64940c56",
+    "target_contract": "0x4F4495243837681061C4743b74B3eEdf548D56A5",
+    "target_label": "AxelarGateway (proxy)"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 5,
+   "rosetteAria": "Axelar Network control-plane rosette: Upgradeability not determined; Timelock floor weak; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
+   "search": "axelar network axelar-network cross-chain gateway & interchain token service axl axelar axelargateway interchaintokenservice 0x4f4495243837681061c4743b74b3eedf548d56a5 0x7acbae6cba67d78aaf69e47000884ae00f9b2525 0xb5fb4be02232b1bba4dc8f81dc24c26980de9e3c 0xcc940ae49c78f20e3f13f3cf37e996b98ac3ec68",
+   "slug": "axelar-network",
+   "summary_short": "Deployment config lists an older gateway implementation; 3-day timelock with operator path",
+   "url": "https://pacta.wtf/protocols/axelar-network/"
+  },
+  {
    "baskets": [
     "lending_vaults"
    ],
@@ -566,31 +647,31 @@
    "chains": [
     "ethereum"
    ],
-   "deltas": 0,
-   "easAttested": false,
+   "deltas": 1,
+   "easAttested": true,
    "evidence": {
-    "documented": "Bedrock (uniETH) documentation is linked for reference (https://docs.bedrock.technology/; governance: https://docs.bedrock.technology/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
-    "observed": "RockXStakingProxy (0xF1376bceF0f78459C0Ed0ba5ddce976F1ddF51F4) verified on Ethereum Mainnet at canonical block #26,414,499 (2,118 bytes runtime code). EIP-1967 implementation slot resolves to 0x8a94866dF557Bb7FCe88EfF9917237286098e590, EIP-1967 admin slot = ProxyAdmin (0xa5F2B6AB5B38b88Ba221741b3A189999b4c889C6). Direct owner() returns 0xAeE017052DF6Ac002647229D58B786E380B9721A, verified via getThreshold() and getOwners() as a 3-of-5 Safe multisig.",
-    "recordId": "bedrock-unieth-control-plane",
-    "surface": "RockXStakingProxy · 3-of-5 Safe Control Plane"
+    "documented": "docs.bedrock.technology (uniETH contracts): 'Restaking proxy contract: https://etherscan.io/address/0x3f4eaceb930b0edfa78a1dfcbae5c5494e6e9850' / 'Restaking implementation: https://etherscan.io/address/0x9609af0490b96d7add7eea3554b1a944ee440262#code'",
+    "observed": "Restaking proxy 0x3F4eaCeb930b0Edfa78a1DFCbaE5c5494E6e9850: EIP-1967 implementation = 0x1e4D0A963953e7c08Fc7602B01e683547Fc4E518 (Sourcify match), not the documented 0x9609Af0490b96D7AdD7EEa3554b1a944ee440262; admin = ProxyAdmin 0xa5F2B6AB5B38b88Ba221741b3A189999b4c889C6.",
+    "recordId": "bedrock-unieth-restaking-impl-s25",
+    "surface": "Restaking implementation differs from the one the docs list"
    },
    "factors": [
     {
-     "evidence": "bedrock-unieth-control-plane: RockXStakingProxy (0xF1376bceF0f78459C0Ed0ba5ddce976F1ddF51F4) verified on Ethereum Mainnet at canonical block #26,414,499 (2,118 bytes runtime code). EIP-1967 …",
+     "evidence": "bedrock-unieth-restaking-impl-s25: admin = ProxyAdmin 0xa5F2B6AB5B38b88Ba221741b3A189999b4c889C6.",
      "key": "upgrade",
      "label": "Upgradeability",
-     "state": "n",
-     "value": "Upgradeable; the delay gating the upgrade path is not in the published records"
+     "state": "a",
+     "value": "Upgradeable with no enforced delay: the ProxyAdmin's owner delay (1 other upgrade path not determined)"
     },
     {
-     "evidence": null,
+     "evidence": "bedrock-unieth-restaking-impl-s25: admin = ProxyAdmin 0xa5F2B6AB5B38b88Ba221741b3A189999b4c889C6.",
      "key": "timelock",
      "label": "Timelock floor",
-     "state": "n",
-     "value": "No enforced admin delay in the published records"
+     "state": "a",
+     "value": "0s minimum enforced delay across control surfaces"
     },
     {
-     "evidence": "bedrock-unieth-control-plane: … getThreshold() and getOwners() as a 3-of-5 Safe multisig.",
+     "evidence": "bedrock-unieth-upgrade-admin-s25: … 0x3050620423f4dB43E1904815E898C466526387b8 (3-of-5, no guard); uniETH owner() = Safe 0xAeE017052DF6Ac002647229D58B786E380B9721A …",
      "key": "quorum",
      "label": "Signer quorum",
      "state": "g",
@@ -607,47 +688,38 @@
      "evidence": null,
      "key": "parity",
      "label": "Docs-vs-chain parity",
-     "state": "u",
-     "value": "Uncompared: documentation not assessed (RPC-observed)"
+     "state": "a",
+     "value": "Documentation differs from the chain (parameter delta)"
     }
    ],
-   "finding": "RockXStakingProxy · 3-of-5 Safe Control Plane",
-   "grade": "observed",
-   "gradeLabel": "OBSERVED",
+   "finding": "Restaking implementation differs from the one the docs list: docs say docs.bedrock.technology (uniETH contracts): 'Restaking proxy contract: https://etherscan.io/address/0x3f4eaceb930b0edfa78a1dfcbae5c5494e6e9850' / 'Restaking implementation: https://etherscan.io/address/0x9609af0490b96d7… · chain says Restaking proxy 0x3F4eaCeb930b0Edfa78a1DFCbaE5c5494E6e9850: EIP-1967 implementation = 0x1e4D0A963953e7c08Fc7602B01e683547Fc4E518 (Sourcify match), not the documented 0x9609Af0490b96D7AdD7EEa3554b1a944ee440262;",
+   "grade": "delta",
+   "gradeLabel": "DELTA",
    "name": "Bedrock (uniETH)",
-   "pinnedBlock": 26414499,
+   "pinnedBlock": 26434786,
    "probe": {
-    "block_hash": "0xb83fee0a1d10d5fb8510d87ee9e33b180acac3208a7d00162a6a6f97789c0978",
-    "block_number": 26414499,
+    "block_hash": "0xb712439847099ec3e8b1617aafd1bc7ece29e22a88dc4e7c8afcf05e6944d987",
+    "block_number": 26434786,
     "call_args": [],
-    "call_signature": "owner()",
+    "call_signature": null,
     "chain": "ethereum",
-    "check_type": "eth_call",
-    "extra_calls": [
-     {
-      "signature": "getThreshold()(uint256)",
-      "to": "0xAeE017052DF6Ac002647229D58B786E380B9721A"
-     },
-     {
-      "signature": "getOwners()(address[])",
-      "to": "0xAeE017052DF6Ac002647229D58B786E380B9721A"
-     }
-    ],
-    "id": "bedrock-unieth-control-plane",
-    "repro_calldata": "0x8da5cb5b",
+    "check_type": "eth_getStorageAt",
+    "extra_calls": [],
+    "id": "bedrock-unieth-restaking-impl-s25",
+    "repro_calldata": null,
     "rpc_env_var": "$ETH_RPC_URL",
-    "selector_or_slot": "0x8da5cb5b",
-    "target_contract": "0xF1376bceF0f78459C0Ed0ba5ddce976F1ddF51F4",
-    "target_label": "RockXStakingProxy"
+    "selector_or_slot": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+    "target_contract": "0x3F4eaCeb930b0Edfa78a1DFCbaE5c5494E6e9850",
+    "target_label": "Bedrock Restaking (proxy)"
    },
    "reconciled": false,
    "reconciledFrom": [],
    "reconciledTo": [],
-   "records": 1,
-   "rosetteAria": "Bedrock (uniETH) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
-   "search": "bedrock (unieth) bedrock-unieth liquid restaking unieth 0xf1376bcef0f78459c0ed0ba5ddce976f1ddf51f4",
+   "records": 4,
+   "rosetteAria": "Bedrock (uniETH) control-plane rosette: Upgradeability weak; Timelock floor weak; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
+   "search": "bedrock (unieth) bedrock-unieth liquid restaking unieth 0x3f4eaceb930b0edfa78a1dfcbae5c5494e6e9850 0x4befa2aa9c305238aa3e0b5d17eb20c045269e9d 0x926720ae39114d0e2043b79570a1e08f00d01cce 0xf1376bcef0f78459c0ed0ba5ddce976f1ddf51f4",
    "slug": "bedrock-unieth",
-   "summary_short": "Staking proxy is run by a 3-of-5 Safe; docs not assessed",
+   "summary_short": "Docs list an older restaking implementation; uniETH upgrades via a 3-of-5 Safe ProxyAdmin",
    "url": "https://pacta.wtf/protocols/bedrock-unieth/"
   },
   {
@@ -3079,6 +3151,87 @@
    "url": "https://pacta.wtf/protocols/kelp-dao-rseth/"
   },
   {
+   "baskets": [],
+   "category": "Cross-Chain Messaging (Endpoint & Message Libraries)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "evidence": {
+    "documented": "docs.layerzero.network (endpoint): 'The LayerZero Endpoint is the immutable, permissionless protocol entrypoint for sending and receiving omnichain messages.' / 'The LayerZero Endpoint is the single, immutable entry and exit point for cross‑chain messaging, built on five core modules:'",
+    "observed": "EndpointV2 0x1a44076050125825900e736c501f859c50fE728c (Ethereum; Sourcify match): EIP-1967 implementation slot = 0x0 (not a proxy); the Base endpoint at the same address is also not a proxy.",
+    "recordId": "layerzero-v2-endpoint-immutable-s25",
+    "surface": "EndpointV2: not a proxy; its code cannot be replaced"
+   },
+   "factors": [
+    {
+     "evidence": "layerzero-v2-endpoint-immutable-s25: EndpointV2 0x1a44076050125825900e736c501f859c50fE728c (Ethereum; Sourcify match): EIP-1967 implementation slot = 0x0 (not a proxy)",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgradeable; the delay gating the upgrade path is not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "EndpointV2: not a proxy; its code cannot be replaced",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "LayerZero V2",
+   "pinnedBlock": 26434786,
+   "probe": {
+    "block_hash": "0xb712439847099ec3e8b1617aafd1bc7ece29e22a88dc4e7c8afcf05e6944d987",
+    "block_number": 26434786,
+    "call_args": [],
+    "call_signature": null,
+    "chain": "ethereum",
+    "check_type": "eth_getStorageAt",
+    "extra_calls": [],
+    "id": "layerzero-v2-endpoint-immutable-s25",
+    "repro_calldata": null,
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+    "target_contract": "0x1a44076050125825900e736c501f859c50fE728c",
+    "target_label": "LayerZero EndpointV2 (Ethereum)"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 3,
+   "rosetteAria": "LayerZero V2 control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "search": "layerzero v2 layerzero-v2 cross-chain messaging (endpoint & message libraries) zro layerzero endpointv2 0x1a44076050125825900e736c501f859c50fe728c 0xbb2ea70c9e858123480642cf96acbcce1372dce1",
+   "slug": "layerzero-v2",
+   "summary_short": "Endpoint is immutable; a 5-of-9 multisig sets the message defaults, as documented",
+   "url": "https://pacta.wtf/protocols/layerzero-v2/"
+  },
+  {
    "baskets": [
     "eth_lst_lrt"
    ],
@@ -4663,6 +4816,87 @@
    "url": "https://pacta.wtf/protocols/puffer-finance-pufeth/"
   },
   {
+   "baskets": [],
+   "category": "Zero-Knowledge Privacy Pool (Shielded Wallet)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "evidence": {
+    "documented": "docs.railgun.org (deductions / helpful links): 'The smart contracts take a 0.25% deduction per shield and unshield interaction which is then sent to the “treasury address”.' / 'Protocol deductions (0.25% on shield and unshield interactions) are sent directly on-chain to the treasury contract for that network.'",
+    "observed": "RailgunSmartWallet 0xFA7093CDD9EE6932B4eb2c9e1cde7CE00B1FA4b9: shieldFee() = 25 and unshieldFee() = 25 basis points (of 10000); treasury() = 0xE8A8B458BcD1Ececc6b6b58F80929b29cCecFF40.",
+    "recordId": "railgun-fees-shield-unshield-s25",
+    "surface": "Shield and unshield fees: 0.25% each"
+   },
+   "factors": [
+    {
+     "evidence": "railgun-upgrade-admin-s25: RailgunSmartWallet 0xFA7093CDD9EE6932B4eb2c9e1cde7CE00B1FA4b9: EIP-1967 admin = ProxyAdmin 0x4F8E20f55f879beE7Bc010Bd6bD2138B34aC65c8, owner() = Delegator …",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgradeable; the delay gating the upgrade path is not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "Shield and unshield fees: 0.25% each",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "RAILGUN",
+   "pinnedBlock": 26434786,
+   "probe": {
+    "block_hash": "0xb712439847099ec3e8b1617aafd1bc7ece29e22a88dc4e7c8afcf05e6944d987",
+    "block_number": 26434786,
+    "call_args": [],
+    "call_signature": "shieldFee()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "railgun-fees-shield-unshield-s25",
+    "repro_calldata": "0x01c37790",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0x01c37790",
+    "target_contract": "0xFA7093CDD9EE6932B4eb2c9e1cde7CE00B1FA4b9",
+    "target_label": "RailgunSmartWallet (proxy)"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 4,
+   "rosetteAria": "RAILGUN control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "search": "railgun railgun zero-knowledge privacy pool (shielded wallet) rail railgun 0x4f8e20f55f879bee7bc010bd6bd2138b34ac65c8 0xb6d513f6222ee92fff975e901bd792e2513fb53b 0xfa7093cdd9ee6932b4eb2c9e1cde7ce00b1fa4b9 0xc480f68a3dcc3edd82134fab45c14a0fcf1da3cc",
+   "slug": "railgun",
+   "summary_short": "0.25% shield fees; upgrades and pauses only via the on-chain protocol vote, as documented",
+   "url": "https://pacta.wtf/protocols/railgun/"
+  },
+  {
    "baskets": [
     "stable_rwa"
    ],
@@ -5169,20 +5403,20 @@
     "ethereum"
    ],
    "deltas": 0,
-   "easAttested": false,
+   "easAttested": true,
    "evidence": {
-    "documented": "Safe Smart Account (v1.4.1 Singleton) documentation is linked for reference (https://docs.safe.global/; governance: https://forum.safe.global/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
-    "observed": "SafeSingleton_v1_4_1 (0x41675C099F32341bf84BFc5382aF534df5C7461a) verified on Ethereum Mainnet at canonical block #26,414,499 (23,579 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). Paired protocol control contract SafeProxyFactory_v1_4_1 (0x4e1DCf7AD4e460CfD30791CCC4F9c8a4f820ec67, 3,054 bytes) verified live at the same block.",
-    "recordId": "safe-singleton-core-control-plane",
-    "surface": "SafeSingleton_v1_4_1 & SafeProxyFactory_v1_4_1 Control Plane"
+    "documented": "safe-deployments registry (v1.4.1): '\"address\": \"0x4e1DCf7AD4e460CfD30791CCC4F9c8a4f820ec67\",' / '\"1\": \"canonical\",' / 'The Safe proxy factory contract provides a simple way to create a new proxy contract pointing to a singleton and executing a setup function in the newly deployed proxy all in one transaction.'",
+    "observed": "SafeProxyFactory 0x4e1DCf7AD4e460CfD30791CCC4F9c8a4f820ec67: EIP-1967 implementation and admin slots = 0x0; keccak256(runtime code) = 0x50c3cdc4…0b3317.",
+    "recordId": "safe-singleton-core-proxy-factory-bytecode-s25",
+    "surface": "SafeProxyFactory: registry code hash, no proxy and no admin"
    },
    "factors": [
     {
-     "evidence": null,
+     "evidence": "safe-singleton-core-singleton-bytecode-s25: … 0x1fe2df85…c5e1c4; EIP-1967 slots 0x0 (not a proxy).",
      "key": "upgrade",
      "label": "Upgradeability",
-     "state": "n",
-     "value": "Upgrade path not in the published records"
+     "state": "g",
+     "value": "Immutable or ownership renounced"
     },
     {
      "evidence": null,
@@ -5209,38 +5443,38 @@
      "evidence": null,
      "key": "parity",
      "label": "Docs-vs-chain parity",
-     "state": "u",
-     "value": "Uncompared: documentation not assessed (RPC-observed)"
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
     }
    ],
-   "finding": "SafeSingleton_v1_4_1 & SafeProxyFactory_v1_4_1 Control Plane",
-   "grade": "observed",
-   "gradeLabel": "OBSERVED",
+   "finding": "SafeProxyFactory: registry code hash, no proxy and no admin",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
    "name": "Safe Smart Account (v1.4.1 Singleton)",
-   "pinnedBlock": 26414499,
+   "pinnedBlock": 26434786,
    "probe": {
-    "block_hash": "0xb83fee0a1d10d5fb8510d87ee9e33b180acac3208a7d00162a6a6f97789c0978",
-    "block_number": 26414499,
+    "block_hash": "0xb712439847099ec3e8b1617aafd1bc7ece29e22a88dc4e7c8afcf05e6944d987",
+    "block_number": 26434786,
     "call_args": [],
     "call_signature": null,
     "chain": "ethereum",
     "check_type": "eth_getStorageAt",
     "extra_calls": [],
-    "id": "safe-singleton-core-control-plane",
+    "id": "safe-singleton-core-proxy-factory-bytecode-s25",
     "repro_calldata": null,
     "rpc_env_var": "$ETH_RPC_URL",
     "selector_or_slot": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
-    "target_contract": "0x41675C099F32341bf84BFc5382aF534df5C7461a",
-    "target_label": "SafeSingleton_v1_4_1"
+    "target_contract": "0x4e1DCf7AD4e460CfD30791CCC4F9c8a4f820ec67",
+    "target_label": "SafeProxyFactory v1.4.1"
    },
    "reconciled": false,
    "reconciledFrom": [],
    "reconciledTo": [],
-   "records": 1,
-   "rosetteAria": "Safe Smart Account (v1.4.1 Singleton) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
-   "search": "safe smart account (v1.4.1 singleton) safe-singleton-core smart account & multisig custody core safe 0x41675c099f32341bf84bfc5382af534df5c7461a",
+   "records": 4,
+   "rosetteAria": "Safe Smart Account (v1.4.1 Singleton) control-plane rosette: Upgradeability strong; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "search": "safe smart account (v1.4.1 singleton) safe-singleton-core smart account & multisig custody core safe 0x29fcb43b46531bca003ddc8fcb67ffe91900c762 0x41675c099f32341bf84bfc5382af534df5c7461a 0x4e1dcf7ad4e460cfd30791ccc4f9c8a4f820ec67",
    "slug": "safe-singleton-core",
-   "summary_short": "Safe v1.4.1 singleton and proxy factory pinned; docs not assessed",
+   "summary_short": "v1.4.1 singleton and factory code match Safe's registry; singletons cannot be initialized",
    "url": "https://pacta.wtf/protocols/safe-singleton-core/"
   },
   {
@@ -7067,6 +7301,92 @@
    "slug": "usual-money-usd0-usd0",
    "summary_short": "Timelock delay: docs 3 days · chain 1 second",
    "url": "https://pacta.wtf/protocols/usual-money-usd0-usd0/"
+  },
+  {
+   "baskets": [
+    "base"
+   ],
+   "category": "Cross-Chain Messaging (Guardian-Attested Core Bridge)",
+   "chains": [
+    "base",
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "evidence": {
+    "documented": "wormhole.com/docs (guardians / security): 'Once a sufficient delegate quorum is reached or once Guardians independently observe the event, signatures accumulate until the required 13-of-19 quorum is achieved.' / 'Some chains (such as Ethereum and Solana) are secured by all 19 Guardians.' / 'The Core Contract does not distinguish between chains with direct observation and delegated chains; it verifies only that a valid 13-of-19 VAA has been produced.'",
+    "observed": "Wormhole core 0x98f3c9e6E3fAce36bAAd05FE09d375Ef1464288B: getCurrentGuardianSetIndex() = 7; getGuardianSet(7) = 19 keys, expirationTime 0; quorum(19) = 13.",
+    "recordId": "wormhole-core-ntt-eth-guardian-quorum-s25",
+    "surface": "Messages need 13 of the 19 guardians (guardian set 7)"
+   },
+   "factors": [
+    {
+     "evidence": "wormhole-core-ntt-eth-upgrade-governance-s25: Wormhole core 0x98f3c9e6E3fAce36bAAd05FE09d375Ef1464288B: EIP-1967 implementation = 0x3c3d457f1522D3540AB3325Aa5f1864E34cBA9D0",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgradeable; the delay gating the upgrade path is not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": "wormhole-core-ntt-eth-upgrade-governance-s25: upgrades only through submitContractUpgrade with a governance message signed by the current guardian set's quorum.",
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "Pause / freeze authority present; its holder is not determined"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "Messages need 13 of the 19 guardians (guardian set 7)",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Wormhole Core (NTT)",
+   "pinnedBlock": 58641783,
+   "probe": {
+    "block_hash": "0xb712439847099ec3e8b1617aafd1bc7ece29e22a88dc4e7c8afcf05e6944d987",
+    "block_number": 26434786,
+    "call_args": [
+     "0x7"
+    ],
+    "call_signature": "getGuardianSet(uint32)",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "wormhole-core-ntt-eth-guardian-quorum-s25",
+    "repro_calldata": "0xf951975a0000000000000000000000000000000000000000000000000000000000000007",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0xf951975a",
+    "target_contract": "0x98f3c9e6E3fAce36bAAd05FE09d375Ef1464288B",
+    "target_label": "Wormhole Core (Ethereum)"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 4,
+   "rosetteAria": "Wormhole Core (NTT) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "search": "wormhole core (ntt) wormhole-core-ntt cross-chain messaging (guardian-attested core bridge) wormhole ntt guardian 0x98f3c9e6e3face36baad05fe09d375ef1464288b 0xbebdb6c8ddc678ffa9f8748f85c815c556dd8ac6",
+   "slug": "wormhole-core-ntt",
+   "summary_short": "Messages and upgrades need 13 of 19 guardians on Ethereum and Base, as documented",
+   "url": "https://pacta.wtf/protocols/wormhole-core-ntt/"
   },
   {
    "baskets": [

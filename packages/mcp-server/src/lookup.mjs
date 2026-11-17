@@ -133,10 +133,11 @@ const lookupIndex = LOOKUP_CATALOG.map((x) => {
   const name = lc(x.name), tokens = x.tokens.map(lc);
   const addrs = [x.primaryContract, x.controllerAddress, ...(x.surfaces || []).map((s) => s.targetContract), ...(x.aliasAddresses || [])]
     .filter(Boolean).map(lc);
+  const related = (x.relatedContracts || []).map(lc);     // other contracts the records name (tokens, ProxyAdmins, Safes, timelocks)
   const words = name.split(/[^a-z0-9+.]+/).filter(Boolean);
   const hay = [x.slug, name, ...tokens, lc(x.category), lc(x.targetLabel), lc(x.venue), ...(x.surfaces || []).flatMap((s) => [lc(s.surface), lc(s.targetLabel)]), ...addrs].join(" ");
   const highlight = x.kind === "brief" ? 2 : (x.classification === "parameter_delta" || (x.surfaces || []).some((s) => s.classification === "parameter_delta")) ? 1 : 3;
-  return { item: x, name, tokens, addrs, words, hay, highlight };
+  return { item: x, name, tokens, addrs, related, words, hay, highlight };
 });
 
 /** Validate raw inputs. -> {ok: true, query, chain, kind, limit} | {ok: false, error: "invalid_input", detail}. */
@@ -171,10 +172,12 @@ export function parseLookupInput(raw = {}) {
   return { ok: true, query: listing ? "" : query, chain, kind, limit };
 }
 
-/** Rank one catalog entry for a lower-cased query: 1 exact, 2 prefix, 3 substring / every term, 0 no match. */
+/** Rank one catalog entry for a lower-cased query: 1 exact, 2 prefix, 3 substring / every term / a related contract address, 0 no match. */
 function lookupRank(e, q) {
   const x = e.item;
-  if (q === x.slug || e.tokens.includes(q) || e.name === q || (/^0x[0-9a-f]{40}$/.test(q) && e.addrs.includes(q))) return 1;
+  const addr = /^0x[0-9a-f]{40}$/.test(q);
+  if (q === x.slug || e.tokens.includes(q) || e.name === q || (addr && e.addrs.includes(q))) return 1;
+  if (addr) return e.related.includes(q) ? 3 : 0;      // an address names a contract: primary / surface / alias (exact) or related only
   if (x.slug.startsWith(q) || e.name.startsWith(q) || e.words.some((w) => w.startsWith(q)) || e.tokens.some((t) => t.startsWith(q))) return 2;
   const terms = q.split(/[\s,]+/).filter(Boolean);
   return terms.length && terms.every((t) => e.hay.includes(t)) ? 3 : 0;

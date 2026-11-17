@@ -69,7 +69,7 @@ EXPECT = {
 X = EXPECT
 # sha256 of docs/api/v1/graph-manifest.json: changes only through a deliberate re-pin (a Sprint stage / stamp rewrites it after the
 # rebuild); a merged Wave 2 claim or any site-only change must leave it as is
-GRAPH_MANIFEST_SHA256 = "0a371b5f4ce1332d92a6057e0a54358c98013892b5d9bb5142730709af99d85d"
+GRAPH_MANIFEST_SHA256 = "c6b6b70809da6c83de062428f772a664a1850d602841c56f8ed84255c8ab0148"
 NON_PROTOCOL_PAGES = 26                                                  # docs/**/*.html pages that are not /protocols/<slug>/
 
 
@@ -345,6 +345,18 @@ def graph_distinctiveness(texts, exempt_tfidf=()):
                     top = (c, i, j)
         best[name] = top
     return best
+
+
+def repro_ok(e):
+    """A record's cast / eth_call reproduction is complete and self-consistent: selector = keccak(signature), one 0x-hex string per
+    argument, calldata = selector + the 32-byte argument words (a storage read has no signature and a 32-byte slot)."""
+    if e["check_type"] == "eth_call":
+        sig, args, cd = e.get("call_signature"), e.get("call_args"), e.get("repro_calldata")
+        arity = 0 if not sig or sig.endswith("()") else sig.count(",") + 1
+        return (bool(sig) and "0x" + keccak(sig.encode()).hex()[:8] == e["selector_or_slot"] and isinstance(args, list) and len(args) == arity
+                and all(isinstance(a, str) and re.fullmatch(r"0x[0-9a-fA-F]{1,64}", a) for a in args)
+                and cd == e["selector_or_slot"] + "".join(a[2:].lower().rjust(64, "0") for a in args))
+    return e.get("call_signature") is None and re.fullmatch(r"0x[0-9a-f]{64}", e["selector_or_slot"]) is not None
 
 
 def scrub_secret(text, secret):
@@ -1050,17 +1062,7 @@ def main(argv=None):
     check("EIP-55 on every address: site, index, README, briefs, audits", not bad55, f"{n55} addresses in {len(corpus)} files; bad: {bad55[:5]}")
 
     # reproducibility: every record carries a complete, self-consistent cast/eth_call reproduction
-    bad_repro = []
-    for e in entries:
-        if e["check_type"] == "eth_call":
-            sig, args, cd = e.get("call_signature"), e.get("call_args"), e.get("repro_calldata")
-            arity = 0 if not sig or sig.endswith("()") else sig.count(",") + 1
-            ok = bool(sig) and "0x" + keccak(sig.encode()).hex()[:8] == e["selector_or_slot"] and isinstance(args, list) and len(args) == arity \
-                and cd == e["selector_or_slot"] + "".join(a[2:].lower().rjust(64, "0") for a in args)
-        else:
-            ok = e.get("call_signature") is None and re.fullmatch(r"0x[0-9a-f]{64}", e["selector_or_slot"]) is not None
-        if not ok:
-            bad_repro.append(e["id"])
+    bad_repro = [e["id"] for e in entries if not repro_ok(e)]
     check("every record has a complete cast reproduction (signature, all args, calldata)", not bad_repro, f"bad: {bad_repro}")
 
     # assets
@@ -2179,16 +2181,17 @@ def main(argv=None):
                     and 0 <= stg["drift_rescans"]["drifted"] <= len(stg["drift_rescans"]["protocols"])
                     and f'{stg["drift_rescans"]["drifted"]} of {len(stg["drift_rescans"]["protocols"])}' in read(stg["summary_doc"])
                     and f'`{stg["drift_rescans"]["checks"]}` checks' in read(stg["summary_doc"])))
-                or any(sl not in {e["slug"] for e in pinned_["entries"]} or BS.protocol_slug(nm) != sl or not any(r["protocol"] == nm for r in rs)
+                or any(sl not in {e["slug"] for e in pinned_["entries"]} or stg.get("slug_overrides", {}).get(nm, BS.protocol_slug(nm)) != sl
+                       or not any(r["protocol"] == nm for r in rs)
                        for sl, nm in stg.get("converts_rpc_pinned", {}).items())
                 or any(r["base_eas_uid"] is not None or r["sprint"] != n_ or (r["block_number"], r["block_hash"]) != pins_[r["chain"]]
                        or r["rpc_env_var"] != BS.CHAINS[r["chain"]][2] or not eip55_ok(r["target_contract"])
-                       or (r["check_type"] == "eth_call" and "0x" + keccak(r["call_signature"].encode()).hex()[:8] != r["selector_or_slot"]) for r in rs)
+                       or not repro_ok(r) for r in rs)
                 or len({r["id"] for r in rs} | {e["id"] for e in idx_mc["entries"]}) != len(rs) + len(idx_mc["entries"])
                 or str(pins_["ethereum"][0]) not in stg["summary_doc"] or not all(h_ in read(stg["summary_doc"]) for _, h_ in pins_.values())):
             st_bad.append(os.path.relpath(sp_path, ROOT))
     check("staged Sprint bundles (not yet indexed): summary SHA-256, EAS verified / drift counts (drift = parameter deltas; optional re-scan block / count stated in the summary), per-chain pins (number + hash, also in the summary), "
-          "RPC variable, EIP-55 targets, selector = keccak(signature), base_eas_uid null, ids disjoint from index.json",
+          "RPC variable, EIP-55 targets, complete cast reproduction (selector = keccak(signature), 0x-hex args, calldata), base_eas_uid null, ids disjoint from index.json",
           not st_bad, str(st_bad))
 
     # ================= Batch D3 + E1 (task-66ff0d53564a) =================
@@ -2780,6 +2783,20 @@ def main(argv=None):
        "without the bypass it stays 'b'; chainlink-ccip (when published) reads the bypass"] = (
         fs_([rbac_])["timelock"] == "b" and fs_([byp_])["timelock"] == "a"
         and (ccip_tl is None or (ccip_tl["state"] == "a" and "bypasser" in ccip_tl["value"] and "3h" not in ccip_tl["value"])))
+    opx_ = dict(rbac_, onchain_observed=rbac_["onchain_observed"] + f"; operator() = {A_('f')} (no contract code), which can run "
+                                                                     "executeOperatorProposal immediately (no delay) for proposals governance approved.")
+    eoa_ = dict(rbac_, onchain_observed=rbac_["onchain_observed"] + f"; pauser() = {A_('f')} (no contract code)")
+    # the quorum exemption is bound to the operator() relation itself: any other EOA holder in the same clause still counts
+    opw_ = dict(rbac_, onchain_observed=rbac_["onchain_observed"] + "; executeOperatorProposal executes approved proposals, while owner() = EOA "
+                                                                     + A_("2"))
+    opp_ = dict(rbac_, onchain_observed=opx_["onchain_observed"][:-1] + f", and a separate pauser() = EOA {A_('3')}.")
+    ops_ = dict(rbac_, onchain_observed=opx_["onchain_observed"] + f"; owner() = EOA {A_('2')}")
+    d1["operator fast path: an approved-proposal executeOperatorProposal route with no delay is a 0s floor ('a') with its own label; only "
+       "the operator()'s own key (no contract code) is exempt from the single-key quorum: an owner() EOA joined by 'while' or after ';', or a "
+       "pauser() EOA inside the operator clause, still reads 'a'"] = (
+        fs_([opx_])["timelock"] == "a" and "operator" in next(f_["value"] for f_ in SCD.factors([opx_], True, "aligned") if f_["key"] == "timelock")
+        and fs_([opx_])["quorum"] == fs_([rbac_])["quorum"] == "n" and fs_([eoa_])["quorum"] == "a"
+        and fs_([opw_])["quorum"] == "a" and fs_([opp_])["quorum"] == "a" and fs_([ops_])["quorum"] == "a")
     d1["text-parsed withdrawal delay: a 0s unstaking-gate delay() in the evidence text never sets the admin timelock floor (5d timelock stays 'g')"] = (
         fs_([gate_, tl_])["timelock"] == "g" and fs_([gate_])["timelock"] == "n")
     d1["synthetic authority separation: an undetermined proxy stays upgrade 'n' when an unrelated 7d withdrawal cooldown or 7d parameter timelock is added; a cooldown never sets the timelock floor"] = (

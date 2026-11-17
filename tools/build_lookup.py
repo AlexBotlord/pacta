@@ -120,6 +120,14 @@ CONVERTED_CONTINUITY = {
                           "controllerAddress": "0xEb3107117FEAd7de89Cd14D463D340A2E6917769", "controllerKind": "multisig_safe"},
     "centrifuge-liquidity-pools-base": {"primaryContract": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f", "targetLabel": "CentrifugeRoot_Base",
                                         "controllerAddress": None, "controllerKind": "immutable_or_role_governed"},
+    # Sprint 25 conversions: published primary contracts and controllers kept (the published graph only grows). Bedrock's label is
+    # corrected by the Sprint 25 scan: the primary contract is the uniETH token proxy, whose owner() is the published Safe 0xAeE0..721A
+    # (also the Staking / Restaking admin); its upgrade path (ProxyAdmin 0xa5F2..89C6, owned by a second Safe) is in the Sprint 25
+    # upgrade-admin record. The Safe singleton has no controller (it is immutable).
+    "bedrock-unieth": {"primaryContract": "0xF1376bceF0f78459C0Ed0ba5ddce976F1ddF51F4", "targetLabel": "uniETH token proxy (Universal ETH)",
+                       "controllerAddress": "0xAeE017052DF6Ac002647229D58B786E380B9721A", "controllerKind": "multisig_safe"},
+    "safe-singleton-core": {"primaryContract": "0x41675C099F32341bf84BFc5382aF534df5C7461a", "targetLabel": "SafeSingleton_v1_4_1",
+                            "controllerAddress": None, "controllerKind": "immutable_or_role_governed"},
 }
 # Extra contract addresses a protocol answers to in pacta_lookup_protocol (an exact 0x query), each verified on-chain:
 # aave-v3-base: the Aave V3 Base Pool (PoolAddressesProvider 0xe20f..d64D getPool() and Pool.ADDRESSES_PROVIDER(), Sprint 24 evidence).

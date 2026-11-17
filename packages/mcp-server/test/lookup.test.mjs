@@ -181,6 +181,27 @@ test("address aliases: the Aave V3 Base Pool resolves exactly to aave-v3-base; '
   assert.ok(steak.includes("steakhouse-usdc-metamorpho-base"));
 });
 
+test("0x address lookup: primary / surface contracts resolve exactly, a token or controller the records name resolves through relatedContracts", () => {
+  const cases = [["0xA0b86991c6218b36c1d19d4a2e9eb0ce3606eB48", "circle-usdc", "exact"], ["0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", "circle-usdc", "exact"],
+                 ["0xA35b1B31Ce002FBF2058D22F30f95D405200A15b", "stader-labs-ethx", "substring"]];
+  for (const [q, slug, match] of cases) {
+    for (const v of [q, q.toLowerCase()]) {
+      const r = lookupProtocols({ query: v });
+      assert.ok(r.totalMatches >= 1, v);
+      assert.equal(r.results[0].slug, slug, v);
+      assert.equal(r.results[0].match, match, v);
+    }
+  }
+  // an address never prefix / word-matches anything, and an unknown address matches nothing
+  assert.equal(lookupProtocols({ query: "0x" + "1".repeat(40) }).totalMatches, 0);
+  // every relatedContracts address resolves to a protocol that names it
+  for (const x of LOOKUP_CATALOG.filter((i) => i.kind === "protocol")) {
+    for (const a of x.relatedContracts || []) {
+      assert.ok(lookupProtocols({ query: a, limit: 50 }).results.some((r) => r.slug === x.slug), `${x.slug} ${a}`);
+    }
+  }
+});
+
 test("0.1.5 footer: an rpc_observed record says not_attested and never names a UID; briefs carry none; a miss has none (1 content block)", async () => {
   const srv = new PactaMcpServer({ fetchImpl: rec(() => { throw new Error("no network"); }) });
   const slug = "bedrock-unieth";

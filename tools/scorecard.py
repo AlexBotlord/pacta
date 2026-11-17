@@ -26,7 +26,25 @@ _GOVERNOR = re.compile(r"\bGovernor(?:Bravo|Alpha|Omega)?\b|\bDAO governance\b")
 _PROXY = re.compile(r"EIP-1967 (?:admin|implementation) (?:slot )?(?:=|resolves|is)|ProxyAdmin|AdminUpgradeabilityProxy|"
                     r"TransparentUpgradeableProxy|ERC-1967 prox|UUPS|zeppelinos\.proxy\.admin|upgradeTo")
 _IMMUTABLE = re.compile(r"\bimmutable\b|ownership renounced|owner\(\) = 0x0\b|not a proxy|no proxies")   # zero EIP-1967 slots alone is not immutability
-_BYPASS_EXEC = re.compile(r"bypasserExecuteBatch[^;]*\b(?:immediately|no delay)\b|\b(?:immediately|no delay)\b[^;]*bypasserExecuteBatch", re.I)
+_BYPASS_EXEC = re.compile(r"(?:bypasserExecuteBatch|executeOperatorProposal)[^;]*\b(?:immediately|no delay)\b|"
+                          r"\b(?:immediately|no delay)\b[^;]*(?:bypasserExecuteBatch|executeOperatorProposal)", re.I)
+# an operator that can only execute proposals governance already approved (AxelarServiceGovernance.executeOperatorProposal reverts
+# NotApproved otherwise) cannot originate a change: its key is an execution route (scored as the timelock floor), not a controlling quorum
+_OPERATOR_EXEC = re.compile(r"executeOperatorProposal[^;]*\bapproved\b|\bapproved\b[^;]*executeOperatorProposal", re.I)
+_GETTER_EQ = re.compile(r"\b(\w+)\(\)\s*=")          # "operator() =", "owner() =", "pauser() =": the relation a value belongs to
+
+
+def _operator_key(text, pos):
+    """True when the single-key match at pos belongs to the approved-proposal executor relation itself: inside a clause that
+    states the executeOperatorProposal-approved route, the nearest getter assignment before the match is operator(). Any other
+    holder in the same clause (owner() = EOA, pauser() = EOA, ...) keeps counting as a single key."""
+    for a, b in clause_spans(text):
+        if a <= pos < b:
+            if not _OPERATOR_EXEC.search(text[a:b]):
+                return False
+            gs = list(_GETTER_EQ.finditer(text, a, pos))
+            return bool(gs) and gs[-1].group(1) == "operator"
+    return False
 _COOLDOWN = re.compile(r"cooldown|unstak|withdraw|unbond|redemption|redeem|claim|lockup", re.I)   # user exit delays, not admin timelocks
 _NODELAY = re.compile(r"no timelock")
 _BYPASS = re.compile(r"\b1-of-\d{1,2}\b[^;]*?\b(?:shared between|co-owned by|jointly owned by)\b[^;]*?\bTimelock", re.I)
@@ -83,6 +101,18 @@ def clauses(text):
             cur.append(ch)
     out.append("".join(cur).strip())
     return [c for c in out if c]
+
+
+def clause_spans(text):
+    """(start, end) offsets of the clauses() split (same top-level ';' rule), so a match can be located in its own clause."""
+    spans, depth, start = [], 0, 0
+    for i, ch in enumerate(text):
+        depth += (ch == "(") - (ch == ")") if ch in "()" else 0
+        if ch == ";" and depth <= 0:
+            spans.append((start, i))
+            start = i + 1
+    spans.append((start, len(text)))
+    return spans
 
 
 def _admin_delay(r):
@@ -218,7 +248,9 @@ def factors(records, easattested, g, facts=()):
     if delays:
         d, ev = min(delays)
         st = "g" if d >= 2 * DAY else "b" if d >= 3600 else "a"
-        out["timelock"] = (st, ("0s: a bypasser role can execute without waiting the timelock delay" if d == 0 and _BYPASS_EXEC.search(ev)
+        out["timelock"] = (st, ("0s: an operator can execute approved proposals without waiting the timelock delay"
+                                if d == 0 and "executeOperatorProposal" in ev and _BYPASS_EXEC.search(ev) else
+                                "0s: a bypasser role can execute without waiting the timelock delay" if d == 0 and _BYPASS_EXEC.search(ev)
                                 else f"{_dur(d)} minimum enforced delay across control surfaces"), ev)
     else:
         out["timelock"] = ("n", "No enforced admin delay in the published records", None)
@@ -237,6 +269,8 @@ def factors(records, easattested, g, facts=()):
                 quorum.append((k, f"{k}-of-{nn}" + (" (via a 1-of-N contract-executor wrapper co-owned with a timelock)" if wrapped else ""),
                                f"{rid}: {_snip(t, m)}"))
         for m in _SINGLE.finditer(t):
+            if _operator_key(t, m.start()):
+                continue                                  # the approved-proposal executor's own key (see _operator_key)
             quorum.append((1, "a single key", f"{rid}: {_snip(t, m)}"))
     for f in facts:
         if f.get("safe_threshold") and str(f.get("address", "")).lower() not in wrappers:

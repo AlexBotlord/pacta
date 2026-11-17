@@ -176,10 +176,14 @@ function lookupRank(e, q) {
 }
 const LOOKUP_MATCH = ["listing", "exact", "prefix", "substring"];
 // ---- citation + clearance footer: a deterministic 2-line text per protocol record. Line 1 cites the record page and names a Base
-// Mainnet EAS UID ONLY for an EAS-attested record (an rpc_observed record says not_attested); line 2 is the issuer clearance /
-// monitoring intake (/request/ pre-fills the protocol from ?protocol=<slug>).
+// Mainnet EAS UID ONLY for an EAS-attested record (an rpc_observed record says not_attested); line 2 names the three issuer paths
+// ($0 doc-update queue, $500 Rapid re-verification pre-filled for this protocol via ?tier=rapid-500&protocol=<slug>, $2,500-$5,000
+// Dossier) under the editorial-independence clause.
 export const CITATION_BASE_URL = "https://pacta.wtf/protocols/";
-export const CLEARANCE_LINE = "Institutional 24h Clearance ($5,000 USDC) & Continuous Monitoring ($1,500/mo): https://pacta.wtf/request/?protocol=";
+export const CLEARANCE_LINE = "Issuer paths (payment never alters a classification; it strictly follows verified on-chain and documentation "
+  + "evidence): $0 maintainer doc-update queue https://pacta.wtf/request/ · $500 USDC Rapid Single-Gap Re-Verification (24h SLA) "
+  + "https://pacta.wtf/request/?tier=rapid-500&protocol=";
+export const CLEARANCE_TAIL = " · $2,500–$5,000 USDC Full Protocol Control-Plane Dossier (24h SLA) https://pacta.wtf/for-protocols/";
 const CITATION_SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const CITATION_UID_RE = /^0x[0-9a-fA-F]{64}$/;
 /** The 2-line footer for a protocol item; null for anything else (a brief, a malformed slug or UID: never a fabricated citation). */
@@ -190,7 +194,7 @@ export function protocolCitationFooter(item) {
   const line1 = uids.length
     ? `Citation: ${CITATION_BASE_URL}${item.slug}/ (Base Mainnet EAS: ${uids[0]})`
     : `Citation: ${CITATION_BASE_URL}${item.slug}/ (RPC-observed baseline; Base Mainnet EAS: not_attested)`;
-  return `${line1}\n${CLEARANCE_LINE}${item.slug}`;
+  return `${line1}\n${CLEARANCE_LINE}${item.slug}${CLEARANCE_TAIL}`;
 }
 /** A copy of v with every "citationFooter" key removed from every plain object at any depth (arrays and objects are walked
  * iteratively: no recursion limit, no stack overflow on deep JSON, a repeated reference becomes null). Keys are defined, never

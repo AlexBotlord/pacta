@@ -127,9 +127,10 @@ test("catalog parity with docs/api/v1 (index.json, rpc-pinned.json, onboarding.j
 });
 
 // ---- 0.1.5 citation + clearance footer (protocolCitationFooter, shared with the worker's LOOKUP block)
-const CLEAR = "Institutional 24h Clearance ($5,000 USDC) & Continuous Monitoring ($1,500/mo): https://pacta.wtf/request/?protocol=";
-const easFooter = (slug, uid) => `Citation: https://pacta.wtf/protocols/${slug}/ (Base Mainnet EAS: ${uid})\n${CLEAR}${slug}`;
-const rpcFooter = (slug) => `Citation: https://pacta.wtf/protocols/${slug}/ (RPC-observed baseline; Base Mainnet EAS: not_attested)\n${CLEAR}${slug}`;
+const CLEAR = "Issuer paths (payment never alters a classification; it strictly follows verified on-chain and documentation evidence): $0 maintainer doc-update queue https://pacta.wtf/request/ · $500 USDC Rapid Single-Gap Re-Verification (24h SLA) https://pacta.wtf/request/?tier=rapid-500&protocol=";
+const TAIL = " · $2,500–$5,000 USDC Full Protocol Control-Plane Dossier (24h SLA) https://pacta.wtf/for-protocols/";
+const easFooter = (slug, uid) => `Citation: https://pacta.wtf/protocols/${slug}/ (Base Mainnet EAS: ${uid})\n${CLEAR}${slug}${TAIL}`;
+const rpcFooter = (slug) => `Citation: https://pacta.wtf/protocols/${slug}/ (RPC-observed baseline; Base Mainnet EAS: not_attested)\n${CLEAR}${slug}${TAIL}`;
 
 test("0.1.5 footer: EAS-attested lookups (concrete, ethena) carry the exact 2-line citation in results, the result, content[0] JSON and content[1]", async () => {
   const srv = new PactaMcpServer({ fetchImpl: rec(() => { throw new Error("no network"); }) });

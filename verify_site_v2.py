@@ -2691,6 +2691,28 @@ def main(argv=None):
     check("E3.1 (D1): rosette factors bound per control surface (YO / Frax USD / EigenLayer regressions, cooldown and unrelated-delay separation); recon_trail step-2 provenance",
           all(d1.values()), str([k_[:70] for k_, v_ in d1.items() if not v_]) + str({k_: st_[k_] for k_ in ("yo-protocol", "frax-usd-frxusd", "eigenlayer-core")}))
 
+    # ================= Website Edge v3.2: an upgrade path resolves only through a controller bound in its own clause =================
+    d2 = {}
+    up_ = lambda rs_: fs_(rs_)["upgrade"]
+    multi_ = {"id": "syn-multi", "surface": "Proxy upgrade and parameter controls", "observed_delay_seconds": 604800,
+              "observed_delay_source": {"contract": A_("b"), "getter": "getMinDelay()"},
+              "onchain_observed": f"Vault {A_('1')}: EIP-1967 admin = ProxyAdmin {A_('a')}, owner unknown; ParamTimelock {A_('b')}: getMinDelay() = 604800s"}
+    d2["same-record multi-surface probe: a record whose surface says 'upgrade' and whose 7d delay source is a parameter timelock in another clause leaves the proxy upgrade 'n'"] = (
+        up_([multi_]) == "n")
+    ctx_ = {"id": "syn-ctx", "surface": "Vault", "onchain_observed": f"ProxyAdmin {A_('a')} owner unknown, unrelated reference {A_('b')}"}
+    pt_ = {"id": "syn-pt", "surface": "Parameter timelock: 7 days", "observed_delay_seconds": 604800,
+           "observed_delay_source": {"contract": A_("b"), "getter": "getMinDelay()"}, "onchain_observed": f"ParamTimelock {A_('b')}: getMinDelay() = 604800s"}
+    same_ = {"id": "syn-same", "surface": "Vault", "onchain_observed": f"ProxyAdmin {A_('a')}, owner unknown, ParamTimelock {A_('b')} getMinDelay() = 604800s"}
+    d2["context-address probe: an address merely mentioned in the proxy clause (or a delay in the same clause) whose 7d delay another record establishes leaves the upgrade 'n'"] = (
+        up_([ctx_, pt_]) == "n" and up_([same_]) == "n")
+    bound_ = {"id": "syn-bound", "surface": "Vault", "onchain_observed": f"Vault {A_('1')}: EIP-1967 admin = ProxyAdmin {A_('a')}, owner() = Timelock {A_('b')}"}
+    d2["positive control: the same 7d timelock explicitly bound as the ProxyAdmin owner() does decide the upgrade path ('g')"] = up_([bound_, pt_]) == "g"
+    eq_ = next(f_ for f_ in cards_["eigenlayer-core"]["factors"] if f_["key"] == "quorum")
+    d2["eigenlayer-core: the 1-of-2 ExecutorMultisig (owners: the 10d timelock and the 9-of-13 CommunityMultisig) is a contract-executor wrapper, never scored as a weak single-signer quorum"] = (
+        eq_["state"] != "a" and "1-of-2" not in eq_["value"] and "contract-executor wrapper" in eq_["value"])
+    check("E3.2: upgrade paths resolve only through a controller bound in their own clause (multi-surface, context-address and same-clause probes + positive control); EigenLayer contract-executor quorum",
+          all(d2.values()), str([k_[:70] for k_, v_ in d2.items() if not v_]) + f" eigenlayer quorum {eq_['state']} {eq_['value']}")
+
     # ================= Visitor review P1 + P2 (first success, understanding, discovery, narrow screens, provenance, editorial independence) =================
     import control_diff as CDV1
     import build_b2a_feeds as B2AV1

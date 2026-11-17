@@ -31,12 +31,21 @@ _NODELAY = re.compile(r"no timelock")
 _BYPASS = re.compile(r"\b1-of-\d{1,2}\b[^;]*?\b(?:shared between|co-owned by|jointly owned by)\b[^;]*?\bTimelock", re.I)
 _SAME_TL = re.compile(r"\bthe same (?:Timelock|timelock|TimelockController)\b")
 _TLWORD = re.compile(r"timelock", re.I)
-_UPGRADE_SURFACE = re.compile(r"upgrad|ProxyAdmin|proxy admin", re.I)
 _SAFE_DIRECT = re.compile(r"(?:owner\(\)|getAdmin\(\))\s*(?:=|is)\s*(?:the\s+)?(?:[\w-]+\s+){0,2}?Safe\b")
 _ADDR = re.compile(r"0x[0-9a-fA-F]{40}")
 _PROXY_ADMIN = re.compile(r"ProxyAdmin\s*\(?(0x[0-9a-fA-F]{40})")
 _THAT = re.compile(r"(?:that|this|the same) (?:Safe|multisig|address)\b", re.I)
-_ADDR_DELAY = re.compile(r"(0x[0-9a-fA-F]{40})[^;0-9]{0,40}?(?:getMinDelay\(\)|delay\(\))\s*(?:returns\s*|=\s*)([\d,]+)\s*s\b")
+_ADDR_DELAY = re.compile(r"(0x[0-9a-fA-F]{40})[^;0-9]{0,40}?(?:(?:getMinDelay\(\)|delay\(\))\s*(?:returns\s*|=\s*)|minimum delay\s+)([\d,]+)\s*s?\b")
+_W = r"(?:(?!0x[0-9a-fA-F]{40})[\w-]+\s+){0,3}?"   # up to 3 label words, never an address
+# an address bound as the owner / admin / controller in the clause itself (never a context address)
+_BOUND = re.compile(r"(?:owner\(\)|admin\(\)|getAdmin\(\)|governance\(\)|EIP-1967 admin(?: slot)?|admin slot[^=;]{0,60}?)\s*(?:=|is|returns|resolves? to|to)\s*"
+                    r"(?:the\s+)?" + _W + r"\(?(0x[0-9a-fA-F]{40})"
+                    r"|\b(?:owned by|governed by|behind|held by|resolves? to)\s+(?:the\s+)?" + _W + r"\(?(0x[0-9a-fA-F]{40})")
+_ONLY = re.compile(r"\bonly(Admin|Owner)\b")
+_SUBJECT_OWNS = re.compile(r"^(?:it owns|owner of)\b|\bit owns\b")   # the record's own subject owns the ProxyAdmin
+_DEFINITE = re.compile(r"\b(?:held by|are|is|owned by|=)\s+the ((?:[A-Za-z]+ )?(?:Timelock|timelock)(?:Controller)?)\b")
+_NAMED = re.compile(r"\b([A-Za-z]\w*)(?:\(\))?\s*(?:=\s*)?\(?(0x[0-9a-fA-F]{40})")
+_WRAPPER = re.compile(r"\b1-of-(\d{1,2})\b([^;]*?)\b(?:shared between|co-owned by|jointly owned by)\b([^;]*)")
 _EMERGENCY = re.compile(r"\bpause|\bblacklist|\bfreez|PAUSE_ROLE|ASSET_PROTECTION|\bdeprecate|\bguardian\b|pauseGuardian", re.I)
 
 
@@ -81,23 +90,38 @@ def _admin_delay(r):
     return d
 
 
-def _upgrade_path(c, r, known, prev):
-    """The enforced delay (seconds) and its reason on one upgrade clause, or None when the published evidence does not decide it."""
+def _norm(name):
+    return re.sub(r"[^a-z]", "", name.lower())
+
+
+def _upgrade_path(c, t, known, prev):
+    """The enforced delay (seconds) and its reason on one upgrade clause c of record text t, or None when the published evidence
+    does not decide it. A delay counts only through a controller bound in the clause itself: an owner / admin / controller relation
+    to an address, the record's own subject ("it owns the ProxyAdmin"), or a named definite reference ("the local timelock" ->
+    localTimelock() = 0x…). A delay elsewhere in the record, or an address merely mentioned in the clause, never decides it."""
     if _BYPASS.search(c):
         return 0, "a 1-of-N executor co-owned by the timelock and a non-timelock signer bypasses the delay"
     if _NODELAY.search(c) or _SINGLE.search(c):
         return 0, "no timelock in front of upgrades"
-    ds = [int(m.group(1).replace(",", "")) for m in _DELAY.finditer(c)]
-    if ds:
-        return min(ds), "timelock delay on the upgrade path"
-    ds = [known[a.lower()] for a in _ADDR.findall(c) if a.lower() in known]
+    bound = [(m.group(1) or m.group(2)).lower() for m in _BOUND.finditer(c)]
+    ds = [known[a] for a in bound if a in known]
     if ds:
         return min(ds), "timelock delay on the upgrade path"
     if prev is not None and _SAME_TL.search(c):
         return prev, "the same timelock"
-    d = _admin_delay(r)
-    if d is not None and (_TLWORD.search(c) or _UPGRADE_SURFACE.search(str(r.get("surface") or ""))):
-        return d, "timelock delay on the upgrade path"
+    refs = []
+    if _SUBJECT_OWNS.search(c):
+        first = _ADDR.search(t)
+        refs += [first.group(0).lower()] if first else []
+    for m in _ONLY.finditer(c):   # "upgradeTo … is onlyAdmin" -> the record's own admin() = 0x… relation
+        rel = re.search(r"\b" + m.group(1).lower() + r"\(\)\s*=\s*(?:the\s+)?" + _W + r"\(?(0x[0-9a-fA-F]{40})", t)
+        refs += [rel.group(1).lower()] if rel else []
+    for m in _DEFINITE.finditer(c):
+        key = _norm(m.group(1))
+        refs += [n.group(2).lower() for n in _NAMED.finditer(t) if _norm(n.group(1)) == key]
+    ds = [known[a] for a in refs if a in known]
+    if ds:
+        return min(ds), "timelock delay on the upgrade path"
     if _SAFE_DIRECT.search(c) and not _TLWORD.search(c):
         return 0, "upgraded by a Safe directly (a Safe has no delay of its own)"
     return None
@@ -134,7 +158,7 @@ def factors(records, easattested, g, facts=()):
             if not _PROXY.search(c):
                 continue
             prox = prox or (rid, c)
-            p = _upgrade_path(c, r, known, prev)
+            p = _upgrade_path(c, t, known, prev)
             if p is None:
                 pending.append((rid, c))
                 continue
@@ -187,16 +211,23 @@ def factors(records, easattested, g, facts=()):
     else:
         out["timelock"] = ("n", "No enforced admin delay in the published records", None)
     # 3: signer quorum (lowest threshold of any controlling Safe; a key without contract code counts as 1-of-1)
-    quorum = []
+    quorum, wrapped, wrappers = [], set(), set()
     for rid, t, _r in texts:
+        for w in _WRAPPER.finditer(t):
+            if _TLWORD.search(w.group(3)) and (_NOF.search(w.group(3)) or re.search(r"Safe|[Mm]ultisig", w.group(3))):
+                wrapped.add((rid, w.start()))
+                wrappers.update(a.lower() for a in _ADDR.findall(w.group(2)))
         for m in _NOF.finditer(t):
             k, nn = int(m.group(1)), int(m.group(2))
+            if (rid, m.start()) in wrapped:
+                continue
             if 1 <= k <= nn:
-                quorum.append((k, f"{k}-of-{nn}", f"{rid}: {_snip(t, m)}"))
+                quorum.append((k, f"{k}-of-{nn}" + (" (via a 1-of-N contract-executor wrapper co-owned with a timelock)" if wrapped else ""),
+                               f"{rid}: {_snip(t, m)}"))
         for m in _SINGLE.finditer(t):
             quorum.append((1, "a single key", f"{rid}: {_snip(t, m)}"))
     for f in facts:
-        if f.get("safe_threshold"):
+        if f.get("safe_threshold") and str(f.get("address", "")).lower() not in wrappers:
             quorum.append((f["safe_threshold"], f'{f["safe_threshold"]}-of-{f.get("safe_owners")}', "controller fact: Safe getThreshold()"))
     if quorum:
         k, lbl, ev = min(quorum, key=lambda q: (q[0], q[1]))

@@ -199,8 +199,9 @@ def build(root, controller_facts=None, protocols_override=None, use_minted=True)
     ctrl = {}                                    # (chain, addr) -> {"roles": set, "labels": set, "protocols": set, "surfaces": [...]}
     for p in protocols:
         ch = p["chain"]
-        def touch(addr, role, label=None, surface=None, kind=None):
-            c = ctrl.setdefault((ch, addr.lower()), {"addr": addr, "roles": set(), "labels": set(), "protocols": set(), "surfaces": [], "kinds": set()})
+        def touch(addr, role, label=None, surface=None, kind=None, chain=None):
+            # a surface target lives on its record's own chain (a protocol may have records on Ethereum and Base)
+            c = ctrl.setdefault((chain or ch, addr.lower()), {"addr": addr, "roles": set(), "labels": set(), "protocols": set(), "surfaces": [], "kinds": set()})
             c["roles"].add(role)
             c["protocols"].add(p["slug"])
             if label:
@@ -215,7 +216,7 @@ def build(root, controller_facts=None, protocols_override=None, use_minted=True)
         for s in p.get("surfaces") or []:
             if s.get("targetContract"):         # delta surfaces live in gap nodes; RPC-pinned surface strings are templated
                 touch(s["targetContract"], "surface_target", s.get("targetLabel"),
-                      None if s.get("classification") in ("parameter_delta", "rpc_observed") else s.get("surface"))
+                      None if s.get("classification") in ("parameter_delta", "rpc_observed") else s.get("surface"), chain=s.get("chain") or ch)
     addr8 = {}
     for (ch, a) in ctrl:
         nid = ctrl_id(ch, a)
@@ -410,7 +411,8 @@ def build(root, controller_facts=None, protocols_override=None, use_minted=True)
         src, ch = proto_id(p["slug"]), p["chain"]
         addrs = {}
         def note(addr, role, s=None):
-            a = addrs.setdefault(addr.lower(), {"roles": set(), "surface_ids": [], "labels": set()})
+            key = ((s.get("chain") or ch) if s is not None else ch, addr.lower())       # (chain, address): see touch()
+            a = addrs.setdefault(key, {"roles": set(), "surface_ids": [], "labels": set()})
             a["roles"].add(role)
             if s is not None:
                 a["surface_ids"].append(s["id"])
@@ -422,13 +424,13 @@ def build(root, controller_facts=None, protocols_override=None, use_minted=True)
         for s in p.get("surfaces") or []:
             if s.get("targetContract"):
                 note(s["targetContract"], "surface_target", s)
-        for a, info in sorted(addrs.items()):
-            add_edge("governed_by_controller", src, ctrl_id(ch, a), {
-                "protocol_slug": p["slug"], "chain": ch, "chain_id": p["chainId"], "contract_hex": a[2:],
+        for (ach, a), info in sorted(addrs.items()):
+            add_edge("governed_by_controller", src, ctrl_id(ach, a), {
+                "protocol_slug": p["slug"], "chain": ach, "chain_id": p["chainId"] if ach == ch else CHAIN_ID[ach], "contract_hex": a[2:],
                 "address_roles": sorted(info["roles"]), "surface_ids": sorted(set(info["surface_ids"])),
                 "target_labels": sorted(info["labels"]), "controller_kind": p.get("controllerKind") if "controller" in info["roles"] else None,
                 "evidence_basis": p.get("evidenceBasis"), "badge_tier": p["badge"]["tier"],
-                "observed_controller": observed_controller(ch, a)})
+                "observed_controller": observed_controller(ach, a)})
         for s in p.get("surfaces") or []:
             if s.get("classification") == "parameter_delta":
                 r = records.get(s["id"]) or {}

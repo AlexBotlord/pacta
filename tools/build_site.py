@@ -1068,7 +1068,9 @@ def preflight_section():
 # A protocol whose published name does not slug to its published slug (an RPC-pinned page converted to EAS-attested keeps
 # both its name and its /protocols/ slug, so its graph anchor and page never change).
 SLUG_OVERRIDES = {"Frax Ether (frxETH / sfrxETH)": "frax-ether-sfrxeth", "Re Protocol (reUSD / reUSDe)": "re",
-                  "Balancer V2 Vault & TimelockAuthorizer": "balancer-v2-vault-timelock"}
+                  "Balancer V2 Vault & TimelockAuthorizer": "balancer-v2-vault-timelock",
+                  # Sprint 23 conversions keep their published RPC-pinned slugs
+                  "Uniswap V3 & Governance Timelock": "uniswap-governance-timelock", "Reserve Protocol (eUSD RToken)": "reserve-protocol-rtoken"}
 
 
 def protocol_slug(name):

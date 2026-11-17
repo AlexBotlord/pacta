@@ -150,6 +150,17 @@ test("0.1.5 footer: EAS-attested lookups (concrete, ethena) carry the exact 2-li
   }
 });
 
+test("token alias: \"cbeth\" (any case) resolves exactly to the attested coinbase-wrapped-staked-eth protocol, ranked first", () => {
+  const item = LOOKUP_CATALOG.find((x) => x.kind === "protocol" && x.slug === "coinbase-wrapped-staked-eth");
+  assert.ok(item && item.easAttested === true && item.tokens.includes("cbETH"));
+  for (const q of ["cbeth", "cbETH", "CBETH", "  cbeth  "]) {
+    const r = lookupProtocols({ query: q });
+    assert.equal(r.results[0].slug, "coinbase-wrapped-staked-eth", q);
+    assert.equal(r.results[0].match, "exact", q);
+    assert.equal(r.results[0].evidenceBasis, "eas_attested", q);
+  }
+});
+
 test("0.1.5 footer: an rpc_observed record says not_attested and never names a UID; briefs carry none; a miss has none (1 content block)", async () => {
   const srv = new PactaMcpServer({ fetchImpl: rec(() => { throw new Error("no network"); }) });
   const slug = "synthetix-v3-core";

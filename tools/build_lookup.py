@@ -108,6 +108,11 @@ CONVERTED_CONTINUITY = {
                                 "controllerAddress": "0xB524735356985D2f267FA010D681f061DfF03715", "controllerKind": "multisig_safe"},
     "beefy-finance-base": {"primaryContract": "0xfc69704cC3cAac545cC7577009Ea4AA04F1a61Eb", "targetLabel": "BeefyFeeConfig_Base",
                            "controllerAddress": "0x6FfaCA7C3B38Ec2d631D86e15f328ee6eF6C6226", "controllerKind": "multisig_safe"},
+    # Sprint 23 conversions (values from the published RPC-pinned records)
+    "uniswap-governance-timelock": {"primaryContract": "0x1F98431c8aD98523631AE4a59f267346ea31F984", "targetLabel": "UniswapV3Factory",
+                                    "controllerAddress": "0xf2371551Fe3937Db7c750f4DfABe5c2fFFdcBf5A", "controllerKind": "contract_controller"},
+    "reserve-protocol-rtoken": {"primaryContract": "0xA0d69E286B938e21CBf7E51D71F6A4c8918f482F", "targetLabel": "ReserveRToken_eUSD",
+                                "controllerAddress": None, "controllerKind": "immutable_or_role_governed"},
 }
 
 

@@ -67,7 +67,7 @@ EXPECT = {
 X = EXPECT
 # sha256 of docs/api/v1/graph-manifest.json: changes only through a deliberate re-pin (a Sprint stage / stamp rewrites it after the
 # rebuild); a merged Wave 2 claim or any site-only change must leave it as is
-GRAPH_MANIFEST_SHA256 = "36554cf1d09f49bdcdf484ee9eb1e14d823a4723b0c1dddd036bd8e5719fe2b3"
+GRAPH_MANIFEST_SHA256 = "aa05a8ab3134b3a5c071973a4b2fc973071caae5cec991e54b78338cb88f254e"
 NON_PROTOCOL_PAGES = 18                                                  # docs/**/*.html pages that are not /protocols/<slug>/
 
 

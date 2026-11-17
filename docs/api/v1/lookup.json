@@ -609,6 +609,90 @@
   },
   {
    "baseEasUids": [
+    "0x435a5212e2490cd6024859f474dbbd897752b24985480413301d7573cb195801"
+   ],
+   "category": "Fiat-Backed Stablecoin (USDC)",
+   "chain": "base",
+   "chainId": 8453,
+   "classification": "aligned_baseline",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
+   "documentedDelaySeconds": null,
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "kind": "protocol",
+   "name": "Circle USDC",
+   "observedDelaySeconds": null,
+   "pinnedBlock": 58422815,
+   "preflightArgs": {
+    "address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+    "chain": "base"
+   },
+   "primaryContract": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+   "relatedContracts": [
+    "0x3ABd6f64A422225E61E435baE41db12096106df7",
+    "0xD3571B3bc51CECFf49194AD67aFFFC648d5e07b4",
+    "0x1f2e3A640175d20ac31ed523B6733B977173E277",
+    "0x2230393EDAD0299b7E7B59F20AA856cD1bEd52e1",
+    "0xb5bff84d169a72e76e94eC950da51Bac90b60284",
+    "0x4fc7850364958d97B4d3f5A08f79db2493f8cA44",
+    "0x2Ce6311ddAE708829bc0784C967b7d77D19FD779",
+    "0xFcb19e6a322b27c06842A71e8c725399f049AE3a",
+    "0x4914f61d25e5C567143774B76EdbF4D5109a8566",
+    "0x0A06BE16275B95a7d2567fBdAE118b36C7DA78F9",
+    "0xE982615d461DD5cD06575BbeA87624fda4e3de17",
+    "0xC1d9fe41D19Dd52cb3Ae5d1D3b0030B5D498c704",
+    "0x807a96288A1A408dBC13DE2b1d087d10356395d2",
+    "0x43506849D7C04F9138D1A2050bbF3A0c054402dd"
+   ],
+   "slug": "circle-usdc",
+   "sprints": [
+    23
+   ],
+   "surfaces": [
+    {
+     "blockNumber": 58422815,
+     "classification": "aligned_baseline",
+     "id": "circle-usdc-base-owner-role-assignment-s23",
+     "surface": "USDC (Base) roles: owner, masterMinter, pauser and blacklister are single administrator addresses, as documented",
+     "targetContract": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+     "targetLabel": "USDC FiatTokenProxy (Base)"
+    },
+    {
+     "blockNumber": 58422815,
+     "classification": "aligned_baseline",
+     "id": "circle-usdc-base-proxy-admin-upgrade-key-s23",
+     "surface": "USDC (Base) upgrades: a single proxy admin address switches the implementation, as documented",
+     "targetContract": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+     "targetLabel": "USDC FiatTokenProxy (Base)"
+    },
+    {
+     "blockNumber": 26431152,
+     "classification": "aligned_baseline",
+     "id": "circle-usdc-eth-owner-role-assignment-s23",
+     "surface": "USDC (Ethereum) roles: owner, masterMinter, pauser and blacklister are single administrator addresses, as documented",
+     "targetContract": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+     "targetLabel": "USDC FiatTokenProxy (Ethereum)"
+    },
+    {
+     "blockNumber": 26431152,
+     "classification": "aligned_baseline",
+     "id": "circle-usdc-eth-proxy-admin-upgrade-key-s23",
+     "surface": "USDC (Ethereum) upgrades: a single proxy admin address switches the implementation, as documented",
+     "targetContract": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+     "targetLabel": "USDC FiatTokenProxy (Ethereum)"
+    }
+   ],
+   "targetLabel": "USDC FiatTokenProxy (Base)",
+   "tokens": [
+    "USDC"
+   ],
+   "url": "https://pacta.wtf/protocols/circle-usdc/",
+   "whatDiffers": null
+  },
+  {
+   "baseEasUids": [
     "0xaddd478e0a488405a28720e11fed8d1942853dbb36fc75bb5a0725b83a460ad6"
    ],
    "category": "Liquid Staking Token (ETH)",
@@ -1708,6 +1792,74 @@
     "FXS"
    ],
    "url": "https://pacta.wtf/protocols/frax-ether-sfrxeth/",
+   "whatDiffers": null
+  },
+  {
+   "baseEasUids": [
+    "0x435a5212e2490cd6024859f474dbbd897752b24985480413301d7573cb195801"
+   ],
+   "category": "Fiat-Redeemable Stablecoin (frxUSD) & Yield Vault",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "aligned_baseline",
+   "controllerAddress": "0xb898Ad2976b4d8f2E21521C9db16b7497825E503",
+   "controllerKind": "timelock",
+   "documentationComparison": "compared",
+   "documentedDelaySeconds": null,
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "kind": "protocol",
+   "name": "Frax USD (frxUSD)",
+   "observedDelaySeconds": 86400,
+   "pinnedBlock": 26431152,
+   "preflightArgs": {
+    "address": "0xCAcd6fd266aF91b8AeD52aCCc382b4e165586E29",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xCAcd6fd266aF91b8AeD52aCCc382b4e165586E29",
+   "relatedContracts": [
+    "0x0b2C3dF006b2bd43cBCC60075e7a0bf314474eD6",
+    "0xfFFffF4F3baC444b2C0ecf2A1840d018bE783937",
+    "0xeA0a6EC8114a0Af6Cf74Ca0036Ab31d892Df13cB",
+    "0xB1748C79709f4Ba2Dd82834B8c82D4a505003f27",
+    "0x4b45D73b83686e69d08E61105FdB7F7b51f41Bc1"
+   ],
+   "slug": "frax-usd-frxusd",
+   "sprints": [
+    23
+   ],
+   "surfaces": [
+    {
+     "blockNumber": 26431152,
+     "classification": "aligned_baseline",
+     "id": "frax-usd-frxusd-admin-upgrades-1d-timelock-s23",
+     "surface": "frxUSD upgrades: ProxyAdmin owned by a 1-day timelock run by the 4-of-7 Frax Safe",
+     "targetContract": "0xCAcd6fd266aF91b8AeD52aCCc382b4e165586E29",
+     "targetLabel": "frxUSD (TransparentUpgradeableProxy)"
+    },
+    {
+     "blockNumber": 26431152,
+     "classification": "aligned_baseline",
+     "id": "frax-usd-frxusd-amo-timelock-msig-3of6-s23",
+     "surface": "AMO Timelock (msig): a 3-of-6 Safe, as listed",
+     "targetContract": "0x831822660572bd54ebaa065C2acef662a6277D40",
+     "targetLabel": "Frax AMO Timelock (msig) Safe"
+    },
+    {
+     "blockNumber": 26431152,
+     "classification": "aligned_baseline",
+     "id": "frax-usd-sfrxusd-proxyadmin-safe-3of5-s23",
+     "surface": "sfrxUSD upgrades: ProxyAdmin owned directly by the 3-of-5 Frax Safe (no timelock)",
+     "targetContract": "0xcf62F905562626CfcDD2261162a51fd02Fc9c5b6",
+     "targetLabel": "sfrxUSD (TransparentUpgradeableProxy)"
+    }
+   ],
+   "targetLabel": "frxUSD (TransparentUpgradeableProxy)",
+   "tokens": [
+    "frxUSD",
+    "sfrxUSD"
+   ],
+   "url": "https://pacta.wtf/protocols/frax-usd-frxusd/",
    "whatDiffers": null
   },
   {
@@ -2980,6 +3132,73 @@
   },
   {
    "baseEasUids": [
+    "0x435a5212e2490cd6024859f474dbbd897752b24985480413301d7573cb195801"
+   ],
+   "category": "Fiat-Backed Stablecoin (PYUSD)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "aligned_baseline",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
+   "documentedDelaySeconds": null,
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "kind": "protocol",
+   "name": "PayPal USD (PYUSD)",
+   "observedDelaySeconds": null,
+   "pinnedBlock": 26431152,
+   "preflightArgs": {
+    "address": "0x6c3ea9036406852006290770BEdFcAbA0e23A0e8",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x6c3ea9036406852006290770BEdFcAbA0e23A0e8",
+   "relatedContracts": [
+    "0x3Af3e85f4f97De7AD0f000B724Fb77fE5ffc024B",
+    "0xC94BcF6e1d8B3558E3B62e743630D50497E3851C",
+    "0x8C35CaA5FD5bDC64b6B11344aD57594A3676256a",
+    "0x31d9bDEa6F104606C954f8FE6ba614F1BD347Ec3",
+    "0xFaB5891ED867a1195303251912013b92c4fc3a1D"
+   ],
+   "slug": "paypal-usd-pyusd",
+   "sprints": [
+    23
+   ],
+   "surfaces": [
+    {
+     "blockNumber": 26431152,
+     "classification": "aligned_baseline",
+     "id": "paypal-usd-pyusd-pause-asset-protection-single-owner-role-s23",
+     "surface": "Pause and asset-protection roles: one address without contract code, as documented",
+     "targetContract": "0x6c3ea9036406852006290770BEdFcAbA0e23A0e8",
+     "targetLabel": "PayPal USD (PYUSD) AdminUpgradeabilityProxy"
+    },
+    {
+     "blockNumber": 26431152,
+     "classification": "aligned_baseline",
+     "id": "paypal-usd-pyusd-proxy-admin-upgrade-key-s23",
+     "surface": "Upgrades: AdminUpgradeabilityProxy with a separate proxy admin address",
+     "targetContract": "0x6c3ea9036406852006290770BEdFcAbA0e23A0e8",
+     "targetLabel": "PayPal USD (PYUSD) AdminUpgradeabilityProxy"
+    },
+    {
+     "blockNumber": 26431152,
+     "classification": "aligned_baseline",
+     "id": "paypal-usd-pyusd-supply-control-contract-s23",
+     "surface": "Supply: minting and burning through the separately deployed SupplyControl contract",
+     "targetContract": "0x6c3ea9036406852006290770BEdFcAbA0e23A0e8",
+     "targetLabel": "PayPal USD (PYUSD) AdminUpgradeabilityProxy"
+    }
+   ],
+   "targetLabel": "PayPal USD (PYUSD) AdminUpgradeabilityProxy",
+   "tokens": [
+    "PYUSD"
+   ],
+   "url": "https://pacta.wtf/protocols/paypal-usd-pyusd/",
+   "whatDiffers": null
+  },
+  {
+   "baseEasUids": [
     "0xa04d9c98873fce6fffb60fe535510092f22284f3afeeb78e36e4a0c25d5ea928"
    ],
    "category": "Yield Tokenization & AMM",
@@ -3270,38 +3489,57 @@
    }
   },
   {
-   "baseEasUids": [],
+   "baseEasUids": [
+    "0x435a5212e2490cd6024859f474dbbd897752b24985480413301d7573cb195801"
+   ],
    "category": "Asset-Backed RToken Infrastructure",
    "chain": "ethereum",
    "chainId": 1,
-   "classification": "rpc_observed",
+   "classification": "aligned_baseline",
    "controllerAddress": null,
    "controllerKind": "immutable_or_role_governed",
-   "documentationComparison": "not_assessed",
+   "documentationComparison": "compared",
    "documentedDelaySeconds": null,
-   "easAttested": false,
-   "evidenceBasis": "rpc_observed",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
    "kind": "protocol",
    "name": "Reserve Protocol (eUSD RToken)",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26414499,
+   "pinnedBlock": 26431152,
    "preflightArgs": {
     "address": "0xA0d69E286B938e21CBf7E51D71F6A4c8918f482F",
     "chain": "ethereum"
    },
    "primaryContract": "0xA0d69E286B938e21CBf7E51D71F6A4c8918f482F",
-   "relatedContracts": [
-    "0x258ce833CF9AD19208372763A00aA1565Dd40b3C"
-   ],
+   "relatedContracts": [],
    "slug": "reserve-protocol-rtoken",
+   "sprints": [
+    23
+   ],
    "surfaces": [
     {
-     "blockNumber": 26414499,
-     "classification": "rpc_observed",
-     "id": "reserve-protocol-rtoken-control-plane",
-     "surface": "ReserveRToken_eUSD · EIP-1967 Proxy & Upgrade Authority",
-     "targetContract": "0xA0d69E286B938e21CBf7E51D71F6A4c8918f482F",
-     "targetLabel": "ReserveRToken_eUSD"
+     "blockNumber": 26431152,
+     "classification": "aligned_baseline",
+     "id": "reserve-eusd-long-freeze-1-week-s23",
+     "surface": "Long freeze: 1 week, the documented default",
+     "targetContract": "0x7697aE4dEf3C3Cd52493Ba3a6F57fc6d8c59108a",
+     "targetLabel": "Reserve eUSD Main"
+    },
+    {
+     "blockNumber": 26431152,
+     "classification": "aligned_baseline",
+     "id": "reserve-eusd-short-freeze-3-days-s23",
+     "surface": "Short freeze: 3 days, the documented default",
+     "targetContract": "0x7697aE4dEf3C3Cd52493Ba3a6F57fc6d8c59108a",
+     "targetLabel": "Reserve eUSD Main"
+    },
+    {
+     "blockNumber": 26431152,
+     "classification": "aligned_baseline",
+     "id": "reserve-eusd-unstaking-delay-2-weeks-s23",
+     "surface": "RSR unstaking delay: 2 weeks; withdrawal leak 5% (documented mainnet defaults)",
+     "targetContract": "0x18ba6e33ceb80f077DEb9260c9111e62f21aE7B8",
+     "targetLabel": "Reserve eUSD StRSR"
     }
    ],
    "targetLabel": "ReserveRToken_eUSD",
@@ -4450,6 +4688,61 @@
   },
   {
    "baseEasUids": [
+    "0x435a5212e2490cd6024859f474dbbd897752b24985480413301d7573cb195801"
+   ],
+   "category": "Fiat-Backed Stablecoin (USDT)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "aligned_baseline",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
+   "documentedDelaySeconds": null,
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "kind": "protocol",
+   "name": "Tether USDT",
+   "observedDelaySeconds": null,
+   "pinnedBlock": 26431152,
+   "preflightArgs": {
+    "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+   "relatedContracts": [
+    "0xC6CDE7C39eB2f0F0095F41570af89eFC2C1Ea828"
+   ],
+   "slug": "tether-usdt",
+   "sprints": [
+    23
+   ],
+   "surfaces": [
+    {
+     "blockNumber": 26431152,
+     "classification": "aligned_baseline",
+     "id": "tether-usdt-owner-multisig-3of6-s23",
+     "surface": "Owner: a 3-of-6 MultiSigWallet (multi-signature authorization)",
+     "targetContract": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+     "targetLabel": "Tether USD (TetherToken)"
+    },
+    {
+     "blockNumber": 26431152,
+     "classification": "aligned_baseline",
+     "id": "tether-usdt-token-live-blacklist-under-owner-s23",
+     "surface": "Token live (not deprecated); blacklisting, pausing and deprecation sit with the owner multisig",
+     "targetContract": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+     "targetLabel": "Tether USD (TetherToken)"
+    }
+   ],
+   "targetLabel": "Tether USD (TetherToken)",
+   "tokens": [
+    "USDT"
+   ],
+   "url": "https://pacta.wtf/protocols/tether-usdt/",
+   "whatDiffers": null
+  },
+  {
+   "baseEasUids": [
     "0x967a4935786194575835d5a46e3e39b1d553225deb6a96c7ff4acf52a34dff22"
    ],
    "category": "Decentralized Bitcoin Bridge",
@@ -4558,38 +4851,65 @@
    "whatDiffers": null
   },
   {
-   "baseEasUids": [],
+   "baseEasUids": [
+    "0x435a5212e2490cd6024859f474dbbd897752b24985480413301d7573cb195801"
+   ],
    "category": "Blue-Chip DEX & Governance",
    "chain": "ethereum",
    "chainId": 1,
-   "classification": "rpc_observed",
+   "classification": "mixed",
    "controllerAddress": "0xf2371551Fe3937Db7c750f4DfABe5c2fFFdcBf5A",
    "controllerKind": "contract_controller",
-   "documentationComparison": "not_assessed",
+   "documentationComparison": "compared",
    "documentedDelaySeconds": null,
-   "easAttested": false,
-   "evidenceBasis": "rpc_observed",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
    "kind": "protocol",
    "name": "Uniswap V3 & Governance Timelock",
-   "observedDelaySeconds": 172800,
-   "pinnedBlock": 26414499,
+   "observedDelaySeconds": null,
+   "pinnedBlock": 26431152,
    "preflightArgs": {
     "address": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
     "chain": "ethereum"
    },
    "primaryContract": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
-   "relatedContracts": [
-    "0x1a9C8182C09F50C8318d769245beA52c32BE35BC"
-   ],
+   "relatedContracts": [],
    "slug": "uniswap-governance-timelock",
+   "sprints": [
+    23
+   ],
    "surfaces": [
     {
-     "blockNumber": 26414499,
-     "classification": "rpc_observed",
-     "id": "uniswap-governance-timelock-control-plane",
-     "surface": "UniswapV3Factory · Owner Contract under the 2d Governance Timelock",
+     "blockNumber": 26431152,
+     "classification": "aligned_baseline",
+     "id": "uniswap-governance-quorum-40m-uni-s23",
+     "surface": "Quorum: 40M UNI",
+     "targetContract": "0x408ED6354d4973f66138C91495F2f2FCbd8724C3",
+     "targetLabel": "Uniswap GovernorBravoDelegator"
+    },
+    {
+     "blockNumber": 26431152,
+     "classification": "aligned_baseline",
+     "id": "uniswap-governance-timelock-delay-2d-s23",
+     "surface": "Timelock: 2 days before execution",
+     "targetContract": "0x1a9C8182C09F50C8318d769245beA52c32BE35BC",
+     "targetLabel": "Uniswap Timelock"
+    },
+    {
+     "blockNumber": 26431152,
+     "classification": "aligned_baseline",
+     "id": "uniswap-governance-v3-factory-owner-timelock-s23",
+     "surface": "UniswapV3Factory owner: a fee adapter owned by the governance Timelock",
      "targetContract": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
      "targetLabel": "UniswapV3Factory"
+    },
+    {
+     "blockNumber": 26431152,
+     "classification": "parameter_delta",
+     "id": "uniswap-governance-voting-period-40320-blocks-s23",
+     "surface": "Voting period: 40,320 blocks (~5.6 days at 12-second slots), not 7 days",
+     "targetContract": "0x408ED6354d4973f66138C91495F2f2FCbd8724C3",
+     "targetLabel": "Uniswap GovernorBravoDelegator"
     }
    ],
    "targetLabel": "UniswapV3Factory",
@@ -4597,7 +4917,34 @@
     "UNI"
    ],
    "url": "https://pacta.wtf/protocols/uniswap-governance-timelock/",
-   "whatDiffers": null
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "parameter_delta",
+      "documented": "developers.uniswap.org (governance process): '7-day voting period for the community to vote' / 'Duration: 2-day waiting period, 7-day voting period, 2-day timelock (if passed)'",
+      "observed": "GovernorBravoDelegator 0x408ED6354d4973f66138C91495F2f2FCbd8724C3: votingPeriod() = 40320 blocks = 483,840s (5.6 days) at 12-second slots;",
+      "parameter": "Voting period: 40,320 blocks (~5.6 days at 12-second slots), not 7 days",
+      "recordId": "uniswap-governance-voting-period-40320-blocks-s23"
+     }
+    ],
+    "matched": [
+     {
+      "parameter": "Quorum: 40M UNI",
+      "recordId": "uniswap-governance-quorum-40m-uni-s23",
+      "value": "matches the documentation"
+     },
+     {
+      "parameter": "Timelock: 2 days before execution",
+      "recordId": "uniswap-governance-timelock-delay-2d-s23",
+      "value": "matches the documentation"
+     },
+     {
+      "parameter": "UniswapV3Factory owner: a fee adapter owned by the governance Timelock",
+      "recordId": "uniswap-governance-v3-factory-owner-timelock-s23",
+      "value": "matches the documentation"
+     }
+    ]
+   }
   },
   {
    "baseEasUids": [
@@ -5068,9 +5415,9 @@
  ],
  "totals": {
   "briefs": 8,
-  "easAttestedProtocols": 68,
-  "items": 86,
-  "protocols": 78,
-  "rpcObservedProtocols": 10
+  "easAttestedProtocols": 74,
+  "items": 90,
+  "protocols": 82,
+  "rpcObservedProtocols": 8
  }
 }

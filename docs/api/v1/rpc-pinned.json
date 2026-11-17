@@ -1,7 +1,7 @@
 {
   "schema": "pacta.rpc_pinned_records.v1",
   "title": "Pacta RPC-pinned control-plane records",
-  "description": "Read-only control-plane observations of 10 protocols (5 Ethereum, 5 Base), each pinned to a canonical block number and block hash and reproducible with cast. These records are NOT EAS-attested: they have no sprint number, no summary document and no Base EAS UID. The Base-EAS-attested Sprint records are in /api/v1/index.json. Euler V2 (EVK) and Moonwell Lending (Base) were re-scanned in Sprint 18, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Pendle Finance V2 and Rocket Pool (rETH) were re-scanned in Sprint 19, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Frax Ether (frxETH / sfrxETH) and Puffer Finance (pufETH) were re-scanned in Sprint 20, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Aerodrome Finance (Base) and Balancer V2 Vault & TimelockAuthorizer were re-scanned in Sprint 21, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Across Protocol (HubPool) and Beefy Finance (Base) were re-scanned in Sprint 22, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here.",
+  "description": "Read-only control-plane observations of 8 protocols (3 Ethereum, 5 Base), each pinned to a canonical block number and block hash and reproducible with cast. These records are NOT EAS-attested: they have no sprint number, no summary document and no Base EAS UID. The Base-EAS-attested Sprint records are in /api/v1/index.json. Euler V2 (EVK) and Moonwell Lending (Base) were re-scanned in Sprint 18, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Pendle Finance V2 and Rocket Pool (rETH) were re-scanned in Sprint 19, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Frax Ether (frxETH / sfrxETH) and Puffer Finance (pufETH) were re-scanned in Sprint 20, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Aerodrome Finance (Base) and Balancer V2 Vault & TimelockAuthorizer were re-scanned in Sprint 21, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Across Protocol (HubPool) and Beefy Finance (Base) were re-scanned in Sprint 22, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here. Uniswap V3 & Governance Timelock and Reserve Protocol (eUSD RToken) were re-scanned in Sprint 23, compared against their documentation and moved to the Base-EAS-attested index (same /protocols/ slugs); they are no longer RPC-pinned records here.",
   "attestation": {
     "eas_attested": false,
     "base_eas_uid": null,
@@ -24,9 +24,9 @@
   },
   "verification": "Captured by one Pacta seat over public JSON-RPC and independently re-read at the same pinned blocks by a second seat (block hash, runtime bytecode size and keccak256, EIP-1967 implementation / admin slots, controller getter, Safe getThreshold / getOwners, timelock delay). Two records were corrected by the re-read (Moonwell admin contract, Uniswap V3 factory owner contract).",
   "summary": {
-    "protocols": 10,
-    "records": 10,
-    "ethereum": 5,
+    "protocols": 8,
+    "records": 8,
+    "ethereum": 3,
     "base": 5
   },
   "source_pack_sha256": "857179d8c3024fae3b2204fcae4b542f96cba9b03777cfb6f56095a607f00950",
@@ -76,17 +76,6 @@
       ]
     },
     {
-      "slug": "reserve-protocol-rtoken",
-      "name": "Reserve Protocol (eUSD RToken)",
-      "family": "reserve",
-      "category": "Asset-Backed RToken Infrastructure",
-      "chain": "ethereum",
-      "chain_label": "Ethereum",
-      "record_ids": [
-        "reserve-protocol-rtoken-control-plane"
-      ]
-    },
-    {
       "slug": "safe-singleton-core",
       "name": "Safe Smart Account (v1.4.1 Singleton)",
       "family": "safe",
@@ -128,17 +117,6 @@
       "chain_label": "Ethereum",
       "record_ids": [
         "synthetix-v3-core-control-plane"
-      ]
-    },
-    {
-      "slug": "uniswap-governance-timelock",
-      "name": "Uniswap V3 & Governance Timelock",
-      "family": "uniswap",
-      "category": "Blue-Chip DEX & Governance",
-      "chain": "ethereum",
-      "chain_label": "Ethereum",
-      "record_ids": [
-        "uniswap-governance-timelock-control-plane"
       ]
     }
   ],
@@ -338,51 +316,6 @@
       "documented_reference": "Origin Protocol (SuperOETHb Base) documentation is linked for reference (https://docs.originprotocol.com/; governance: https://snapshot.org/#/ousdgov.eth). This RPC-pinned record does not compare documentation parameters with the on-chain state."
     },
     {
-      "id": "reserve-protocol-rtoken-control-plane",
-      "protocol": "Reserve Protocol (eUSD RToken)",
-      "slug": "reserve-protocol-rtoken",
-      "family": "reserve",
-      "category": "Asset-Backed RToken Infrastructure",
-      "chain": "ethereum",
-      "chain_id": 1,
-      "caip2": "eip155:1",
-      "chain_label": "Ethereum",
-      "rpc_env_var": "$ETH_RPC_URL",
-      "provenance": "rpc_pinned",
-      "base_eas_uid": null,
-      "block_number": 26414499,
-      "block_hash": "0xb83fee0a1d10d5fb8510d87ee9e33b180acac3208a7d00162a6a6f97789c0978",
-      "classification": "rpc_observed",
-      "documentation_comparison": "not_assessed",
-      "surface": "ReserveRToken_eUSD · EIP-1967 Proxy & Upgrade Authority",
-      "target_contract": "0xA0d69E286B938e21CBf7E51D71F6A4c8918f482F",
-      "target_label": "ReserveRToken_eUSD",
-      "bytecode_bytes": 686,
-      "bytecode_keccak256": "0xac6cd5e25813d58f658d168019d72ec53339569d503a95d849bf35535caf3411",
-      "is_eip1967_proxy": true,
-      "eip1967_implementation": "0x258ce833CF9AD19208372763A00aA1565Dd40b3C",
-      "eip1967_admin": null,
-      "controller_kind": "immutable_or_role_governed",
-      "controller_address": null,
-      "upstream_controller": null,
-      "upstream_kind": null,
-      "safe_quorum": null,
-      "paired_contract": null,
-      "paired_label": null,
-      "check_type": "eth_getStorageAt",
-      "selector_or_slot": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
-      "call_signature": null,
-      "call_args": [],
-      "repro_calldata": null,
-      "extra_calls": [],
-      "onchain_observed": "ReserveRToken_eUSD (0xA0d69E286B938e21CBf7E51D71F6A4c8918f482F) verified on Ethereum Mainnet at canonical block #26,414,499 (686 bytes runtime code). EIP-1967 implementation slot resolves to 0x258ce833CF9AD19208372763A00aA1565Dd40b3C, EIP-1967 admin slot = zero (UUPS / internal upgrade authority). No single-key Ownable or ProxyAdmin getter exposed on the primary entry contract; permissions follow immutable or role-scoped module architecture.",
-      "observed_delay_seconds": null,
-      "documented_delay_seconds": null,
-      "docs_url": "https://reserve.org/",
-      "governance_url": "https://forum.reserve.org/",
-      "documented_reference": "Reserve Protocol (eUSD RToken) documentation is linked for reference (https://reserve.org/; governance: https://forum.reserve.org/). This RPC-pinned record does not compare documentation parameters with the on-chain state."
-    },
-    {
       "id": "safe-singleton-core-control-plane",
       "protocol": "Safe Smart Account (v1.4.1 Singleton)",
       "slug": "safe-singleton-core",
@@ -570,60 +503,6 @@
       "docs_url": "https://docs.synthetix.io/v/v3/for-developers/addresses",
       "governance_url": "https://governance.synthetix.io/",
       "documented_reference": "Synthetix V3 Core documentation is linked for reference (https://docs.synthetix.io/v/v3/for-developers/addresses; governance: https://governance.synthetix.io/). This RPC-pinned record does not compare documentation parameters with the on-chain state."
-    },
-    {
-      "id": "uniswap-governance-timelock-control-plane",
-      "protocol": "Uniswap V3 & Governance Timelock",
-      "slug": "uniswap-governance-timelock",
-      "family": "uniswap",
-      "category": "Blue-Chip DEX & Governance",
-      "chain": "ethereum",
-      "chain_id": 1,
-      "caip2": "eip155:1",
-      "chain_label": "Ethereum",
-      "rpc_env_var": "$ETH_RPC_URL",
-      "provenance": "rpc_pinned",
-      "base_eas_uid": null,
-      "block_number": 26414499,
-      "block_hash": "0xb83fee0a1d10d5fb8510d87ee9e33b180acac3208a7d00162a6a6f97789c0978",
-      "classification": "rpc_observed",
-      "documentation_comparison": "not_assessed",
-      "surface": "UniswapV3Factory · Owner Contract under the 2d Governance Timelock",
-      "target_contract": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
-      "target_label": "UniswapV3Factory",
-      "bytecode_bytes": 24535,
-      "bytecode_keccak256": "0x4d7b8525cd5d14343fa67a732fba5b24cddba11620ca88392f4ec6c52f91fd69",
-      "is_eip1967_proxy": false,
-      "eip1967_implementation": null,
-      "eip1967_admin": null,
-      "controller_kind": "contract_controller",
-      "controller_address": "0xf2371551Fe3937Db7c750f4DfABe5c2fFFdcBf5A",
-      "upstream_controller": "0x1a9C8182C09F50C8318d769245beA52c32BE35BC",
-      "upstream_kind": "timelock",
-      "safe_quorum": null,
-      "paired_contract": null,
-      "paired_label": null,
-      "check_type": "eth_call",
-      "selector_or_slot": "0x8da5cb5b",
-      "call_signature": "owner()",
-      "call_args": [],
-      "repro_calldata": "0x8da5cb5b",
-      "extra_calls": [
-        {
-          "to": "0xf2371551Fe3937Db7c750f4DfABe5c2fFFdcBf5A",
-          "signature": "owner()(address)"
-        },
-        {
-          "to": "0x1a9C8182C09F50C8318d769245beA52c32BE35BC",
-          "signature": "delay()(uint256)"
-        }
-      ],
-      "onchain_observed": "UniswapV3Factory (0x1F98431c8aD98523631AE4a59f267346ea31F984) verified on Ethereum Mainnet at canonical block #26,414,499 (24,535 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). Direct owner() returns contract 0xf2371551Fe3937Db7c750f4DfABe5c2fFFdcBf5A (7,266 bytes runtime code; exposes no timelock delay getter). That contract's owner() is the Uniswap governance Timelock 0x1a9C8182C09F50C8318d769245beA52c32BE35BC, whose delay() returns 172,800s (2d).",
-      "observed_delay_seconds": 172800,
-      "documented_delay_seconds": null,
-      "docs_url": "https://docs.uniswap.org/contracts/v3/reference/deployments/ethereum-deployments",
-      "governance_url": "https://gov.uniswap.org/",
-      "documented_reference": "Uniswap V3 & Governance Timelock documentation is linked for reference (https://docs.uniswap.org/contracts/v3/reference/deployments/ethereum-deployments; governance: https://gov.uniswap.org/). This RPC-pinned record does not compare documentation parameters with the on-chain state."
     }
   ]
 }

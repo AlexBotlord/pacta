@@ -592,6 +592,91 @@
   {
    "badge": {
     "label": "Aligned · Base EAS",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/circle-usdc.svg",
+    "svg": "https://pacta.wtf/badges/circle-usdc.svg",
+    "tier": "aligned"
+   },
+   "baseEasUids": [
+    "0x435a5212e2490cd6024859f474dbbd897752b24985480413301d7573cb195801"
+   ],
+   "category": "Fiat-Backed Stablecoin (USDC)",
+   "chain": "base",
+   "chainId": 8453,
+   "classification": "aligned_baseline",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "name": "Circle USDC",
+   "preflightArgs": {
+    "address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+    "chain": "base"
+   },
+   "primaryContract": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+   "slug": "circle-usdc",
+   "sprints": [
+    23
+   ],
+   "surfaces": [
+    {
+     "baseEasUid": "0x435a5212e2490cd6024859f474dbbd897752b24985480413301d7573cb195801",
+     "blockHash": "0x5aced8e0d59eebe168d9dc8778d0305063a1a02f9ffd264774cbd75b3b979a51",
+     "blockNumber": 58422815,
+     "chain": "base",
+     "classification": "aligned_baseline",
+     "id": "circle-usdc-base-owner-role-assignment-s23",
+     "sprint": 23,
+     "surface": "USDC (Base) roles: owner, masterMinter, pauser and blacklister are single administrator addresses, as documented",
+     "targetContract": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+     "targetLabel": "USDC FiatTokenProxy (Base)"
+    },
+    {
+     "baseEasUid": "0x435a5212e2490cd6024859f474dbbd897752b24985480413301d7573cb195801",
+     "blockHash": "0x5aced8e0d59eebe168d9dc8778d0305063a1a02f9ffd264774cbd75b3b979a51",
+     "blockNumber": 58422815,
+     "chain": "base",
+     "classification": "aligned_baseline",
+     "id": "circle-usdc-base-proxy-admin-upgrade-key-s23",
+     "sprint": 23,
+     "surface": "USDC (Base) upgrades: a single proxy admin address switches the implementation, as documented",
+     "targetContract": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+     "targetLabel": "USDC FiatTokenProxy (Base)"
+    },
+    {
+     "baseEasUid": "0x435a5212e2490cd6024859f474dbbd897752b24985480413301d7573cb195801",
+     "blockHash": "0xfe2ed4e127f30bb42dd30c6fc1460a82d8438cff3a717ec89210805e55199a46",
+     "blockNumber": 26431152,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "circle-usdc-eth-owner-role-assignment-s23",
+     "sprint": 23,
+     "surface": "USDC (Ethereum) roles: owner, masterMinter, pauser and blacklister are single administrator addresses, as documented",
+     "targetContract": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+     "targetLabel": "USDC FiatTokenProxy (Ethereum)"
+    },
+    {
+     "baseEasUid": "0x435a5212e2490cd6024859f474dbbd897752b24985480413301d7573cb195801",
+     "blockHash": "0xfe2ed4e127f30bb42dd30c6fc1460a82d8438cff3a717ec89210805e55199a46",
+     "blockNumber": 26431152,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "circle-usdc-eth-proxy-admin-upgrade-key-s23",
+     "sprint": 23,
+     "surface": "USDC (Ethereum) upgrades: a single proxy admin address switches the implementation, as documented",
+     "targetContract": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+     "targetLabel": "USDC FiatTokenProxy (Ethereum)"
+    }
+   ],
+   "targetLabel": "USDC FiatTokenProxy (Base)",
+   "tokens": [
+    "USDC"
+   ],
+   "url": "https://pacta.wtf/protocols/circle-usdc/"
+  },
+  {
+   "badge": {
+    "label": "Aligned · Base EAS",
     "live": "https://pacta-x402.pacta.workers.dev/v1/badges/coinbase-wrapped-staked-eth.svg",
     "svg": "https://pacta.wtf/badges/coinbase-wrapped-staked-eth.svg",
     "tier": "aligned"
@@ -1599,6 +1684,80 @@
     "FXS"
    ],
    "url": "https://pacta.wtf/protocols/frax-ether-sfrxeth/"
+  },
+  {
+   "badge": {
+    "label": "Aligned · Base EAS",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/frax-usd-frxusd.svg",
+    "svg": "https://pacta.wtf/badges/frax-usd-frxusd.svg",
+    "tier": "aligned"
+   },
+   "baseEasUids": [
+    "0x435a5212e2490cd6024859f474dbbd897752b24985480413301d7573cb195801"
+   ],
+   "category": "Fiat-Redeemable Stablecoin (frxUSD) & Yield Vault",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "aligned_baseline",
+   "controllerAddress": "0xb898Ad2976b4d8f2E21521C9db16b7497825E503",
+   "controllerKind": "timelock",
+   "documentationComparison": "compared",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "name": "Frax USD (frxUSD)",
+   "preflightArgs": {
+    "address": "0xCAcd6fd266aF91b8AeD52aCCc382b4e165586E29",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xCAcd6fd266aF91b8AeD52aCCc382b4e165586E29",
+   "slug": "frax-usd-frxusd",
+   "sprints": [
+    23
+   ],
+   "surfaces": [
+    {
+     "baseEasUid": "0x435a5212e2490cd6024859f474dbbd897752b24985480413301d7573cb195801",
+     "blockHash": "0xfe2ed4e127f30bb42dd30c6fc1460a82d8438cff3a717ec89210805e55199a46",
+     "blockNumber": 26431152,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "frax-usd-frxusd-admin-upgrades-1d-timelock-s23",
+     "sprint": 23,
+     "surface": "frxUSD upgrades: ProxyAdmin owned by a 1-day timelock run by the 4-of-7 Frax Safe",
+     "targetContract": "0xCAcd6fd266aF91b8AeD52aCCc382b4e165586E29",
+     "targetLabel": "frxUSD (TransparentUpgradeableProxy)"
+    },
+    {
+     "baseEasUid": "0x435a5212e2490cd6024859f474dbbd897752b24985480413301d7573cb195801",
+     "blockHash": "0xfe2ed4e127f30bb42dd30c6fc1460a82d8438cff3a717ec89210805e55199a46",
+     "blockNumber": 26431152,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "frax-usd-frxusd-amo-timelock-msig-3of6-s23",
+     "sprint": 23,
+     "surface": "AMO Timelock (msig): a 3-of-6 Safe, as listed",
+     "targetContract": "0x831822660572bd54ebaa065C2acef662a6277D40",
+     "targetLabel": "Frax AMO Timelock (msig) Safe"
+    },
+    {
+     "baseEasUid": "0x435a5212e2490cd6024859f474dbbd897752b24985480413301d7573cb195801",
+     "blockHash": "0xfe2ed4e127f30bb42dd30c6fc1460a82d8438cff3a717ec89210805e55199a46",
+     "blockNumber": 26431152,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "frax-usd-sfrxusd-proxyadmin-safe-3of5-s23",
+     "sprint": 23,
+     "surface": "sfrxUSD upgrades: ProxyAdmin owned directly by the 3-of-5 Frax Safe (no timelock)",
+     "targetContract": "0xcf62F905562626CfcDD2261162a51fd02Fc9c5b6",
+     "targetLabel": "sfrxUSD (TransparentUpgradeableProxy)"
+    }
+   ],
+   "targetLabel": "frxUSD (TransparentUpgradeableProxy)",
+   "tokens": [
+    "frxUSD",
+    "sfrxUSD"
+   ],
+   "url": "https://pacta.wtf/protocols/frax-usd-frxusd/"
   },
   {
    "badge": {
@@ -2753,6 +2912,79 @@
   {
    "badge": {
     "label": "Aligned · Base EAS",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/paypal-usd-pyusd.svg",
+    "svg": "https://pacta.wtf/badges/paypal-usd-pyusd.svg",
+    "tier": "aligned"
+   },
+   "baseEasUids": [
+    "0x435a5212e2490cd6024859f474dbbd897752b24985480413301d7573cb195801"
+   ],
+   "category": "Fiat-Backed Stablecoin (PYUSD)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "aligned_baseline",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "name": "PayPal USD (PYUSD)",
+   "preflightArgs": {
+    "address": "0x6c3ea9036406852006290770BEdFcAbA0e23A0e8",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x6c3ea9036406852006290770BEdFcAbA0e23A0e8",
+   "slug": "paypal-usd-pyusd",
+   "sprints": [
+    23
+   ],
+   "surfaces": [
+    {
+     "baseEasUid": "0x435a5212e2490cd6024859f474dbbd897752b24985480413301d7573cb195801",
+     "blockHash": "0xfe2ed4e127f30bb42dd30c6fc1460a82d8438cff3a717ec89210805e55199a46",
+     "blockNumber": 26431152,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "paypal-usd-pyusd-pause-asset-protection-single-owner-role-s23",
+     "sprint": 23,
+     "surface": "Pause and asset-protection roles: one address without contract code, as documented",
+     "targetContract": "0x6c3ea9036406852006290770BEdFcAbA0e23A0e8",
+     "targetLabel": "PayPal USD (PYUSD) AdminUpgradeabilityProxy"
+    },
+    {
+     "baseEasUid": "0x435a5212e2490cd6024859f474dbbd897752b24985480413301d7573cb195801",
+     "blockHash": "0xfe2ed4e127f30bb42dd30c6fc1460a82d8438cff3a717ec89210805e55199a46",
+     "blockNumber": 26431152,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "paypal-usd-pyusd-proxy-admin-upgrade-key-s23",
+     "sprint": 23,
+     "surface": "Upgrades: AdminUpgradeabilityProxy with a separate proxy admin address",
+     "targetContract": "0x6c3ea9036406852006290770BEdFcAbA0e23A0e8",
+     "targetLabel": "PayPal USD (PYUSD) AdminUpgradeabilityProxy"
+    },
+    {
+     "baseEasUid": "0x435a5212e2490cd6024859f474dbbd897752b24985480413301d7573cb195801",
+     "blockHash": "0xfe2ed4e127f30bb42dd30c6fc1460a82d8438cff3a717ec89210805e55199a46",
+     "blockNumber": 26431152,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "paypal-usd-pyusd-supply-control-contract-s23",
+     "sprint": 23,
+     "surface": "Supply: minting and burning through the separately deployed SupplyControl contract",
+     "targetContract": "0x6c3ea9036406852006290770BEdFcAbA0e23A0e8",
+     "targetLabel": "PayPal USD (PYUSD) AdminUpgradeabilityProxy"
+    }
+   ],
+   "targetLabel": "PayPal USD (PYUSD) AdminUpgradeabilityProxy",
+   "tokens": [
+    "PYUSD"
+   ],
+   "url": "https://pacta.wtf/protocols/paypal-usd-pyusd/"
+  },
+  {
+   "badge": {
+    "label": "Aligned · Base EAS",
     "live": "https://pacta-x402.pacta.workers.dev/v1/badges/pendle-finance-v2.svg",
     "svg": "https://pacta.wtf/badges/pendle-finance-v2.svg",
     "tier": "aligned"
@@ -3013,21 +3245,23 @@
   },
   {
    "badge": {
-    "label": "RPC-Observed",
+    "label": "Aligned · Base EAS",
     "live": "https://pacta-x402.pacta.workers.dev/v1/badges/reserve-protocol-rtoken.svg",
     "svg": "https://pacta.wtf/badges/reserve-protocol-rtoken.svg",
-    "tier": "rpc_observed"
+    "tier": "aligned"
    },
-   "baseEasUids": [],
+   "baseEasUids": [
+    "0x435a5212e2490cd6024859f474dbbd897752b24985480413301d7573cb195801"
+   ],
    "category": "Asset-Backed RToken Infrastructure",
    "chain": "ethereum",
    "chainId": 1,
-   "classification": "rpc_observed",
+   "classification": "aligned_baseline",
    "controllerAddress": null,
    "controllerKind": "immutable_or_role_governed",
-   "documentationComparison": "not_assessed",
-   "easAttested": false,
-   "evidenceBasis": "rpc_observed",
+   "documentationComparison": "compared",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
    "name": "Reserve Protocol (eUSD RToken)",
    "preflightArgs": {
     "address": "0xA0d69E286B938e21CBf7E51D71F6A4c8918f482F",
@@ -3035,19 +3269,45 @@
    },
    "primaryContract": "0xA0d69E286B938e21CBf7E51D71F6A4c8918f482F",
    "slug": "reserve-protocol-rtoken",
-   "sprints": [],
+   "sprints": [
+    23
+   ],
    "surfaces": [
     {
-     "baseEasUid": null,
-     "blockHash": "0xb83fee0a1d10d5fb8510d87ee9e33b180acac3208a7d00162a6a6f97789c0978",
-     "blockNumber": 26414499,
+     "baseEasUid": "0x435a5212e2490cd6024859f474dbbd897752b24985480413301d7573cb195801",
+     "blockHash": "0xfe2ed4e127f30bb42dd30c6fc1460a82d8438cff3a717ec89210805e55199a46",
+     "blockNumber": 26431152,
      "chain": "ethereum",
-     "classification": "rpc_observed",
-     "id": "reserve-protocol-rtoken-control-plane",
-     "sprint": null,
-     "surface": "ReserveRToken_eUSD · EIP-1967 Proxy & Upgrade Authority",
-     "targetContract": "0xA0d69E286B938e21CBf7E51D71F6A4c8918f482F",
-     "targetLabel": "ReserveRToken_eUSD"
+     "classification": "aligned_baseline",
+     "id": "reserve-eusd-long-freeze-1-week-s23",
+     "sprint": 23,
+     "surface": "Long freeze: 1 week, the documented default",
+     "targetContract": "0x7697aE4dEf3C3Cd52493Ba3a6F57fc6d8c59108a",
+     "targetLabel": "Reserve eUSD Main"
+    },
+    {
+     "baseEasUid": "0x435a5212e2490cd6024859f474dbbd897752b24985480413301d7573cb195801",
+     "blockHash": "0xfe2ed4e127f30bb42dd30c6fc1460a82d8438cff3a717ec89210805e55199a46",
+     "blockNumber": 26431152,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "reserve-eusd-short-freeze-3-days-s23",
+     "sprint": 23,
+     "surface": "Short freeze: 3 days, the documented default",
+     "targetContract": "0x7697aE4dEf3C3Cd52493Ba3a6F57fc6d8c59108a",
+     "targetLabel": "Reserve eUSD Main"
+    },
+    {
+     "baseEasUid": "0x435a5212e2490cd6024859f474dbbd897752b24985480413301d7573cb195801",
+     "blockHash": "0xfe2ed4e127f30bb42dd30c6fc1460a82d8438cff3a717ec89210805e55199a46",
+     "blockNumber": 26431152,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "reserve-eusd-unstaking-delay-2-weeks-s23",
+     "sprint": 23,
+     "surface": "RSR unstaking delay: 2 weeks; withdrawal leak 5% (documented mainnet defaults)",
+     "targetContract": "0x18ba6e33ceb80f077DEb9260c9111e62f21aE7B8",
+     "targetLabel": "Reserve eUSD StRSR"
     }
    ],
    "targetLabel": "ReserveRToken_eUSD",
@@ -4142,6 +4402,67 @@
   {
    "badge": {
     "label": "Aligned · Base EAS",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/tether-usdt.svg",
+    "svg": "https://pacta.wtf/badges/tether-usdt.svg",
+    "tier": "aligned"
+   },
+   "baseEasUids": [
+    "0x435a5212e2490cd6024859f474dbbd897752b24985480413301d7573cb195801"
+   ],
+   "category": "Fiat-Backed Stablecoin (USDT)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "aligned_baseline",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "name": "Tether USDT",
+   "preflightArgs": {
+    "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+   "slug": "tether-usdt",
+   "sprints": [
+    23
+   ],
+   "surfaces": [
+    {
+     "baseEasUid": "0x435a5212e2490cd6024859f474dbbd897752b24985480413301d7573cb195801",
+     "blockHash": "0xfe2ed4e127f30bb42dd30c6fc1460a82d8438cff3a717ec89210805e55199a46",
+     "blockNumber": 26431152,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "tether-usdt-owner-multisig-3of6-s23",
+     "sprint": 23,
+     "surface": "Owner: a 3-of-6 MultiSigWallet (multi-signature authorization)",
+     "targetContract": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+     "targetLabel": "Tether USD (TetherToken)"
+    },
+    {
+     "baseEasUid": "0x435a5212e2490cd6024859f474dbbd897752b24985480413301d7573cb195801",
+     "blockHash": "0xfe2ed4e127f30bb42dd30c6fc1460a82d8438cff3a717ec89210805e55199a46",
+     "blockNumber": 26431152,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "tether-usdt-token-live-blacklist-under-owner-s23",
+     "sprint": 23,
+     "surface": "Token live (not deprecated); blacklisting, pausing and deprecation sit with the owner multisig",
+     "targetContract": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+     "targetLabel": "Tether USD (TetherToken)"
+    }
+   ],
+   "targetLabel": "Tether USD (TetherToken)",
+   "tokens": [
+    "USDT"
+   ],
+   "url": "https://pacta.wtf/protocols/tether-usdt/"
+  },
+  {
+   "badge": {
+    "label": "Aligned · Base EAS",
     "live": "https://pacta-x402.pacta.workers.dev/v1/badges/threshold-network-tbtc.svg",
     "svg": "https://pacta.wtf/badges/threshold-network-tbtc.svg",
     "tier": "aligned"
@@ -4255,21 +4576,23 @@
   },
   {
    "badge": {
-    "label": "RPC-Observed",
+    "label": "Parameter Delta",
     "live": "https://pacta-x402.pacta.workers.dev/v1/badges/uniswap-governance-timelock.svg",
     "svg": "https://pacta.wtf/badges/uniswap-governance-timelock.svg",
-    "tier": "rpc_observed"
+    "tier": "parameter_delta"
    },
-   "baseEasUids": [],
+   "baseEasUids": [
+    "0x435a5212e2490cd6024859f474dbbd897752b24985480413301d7573cb195801"
+   ],
    "category": "Blue-Chip DEX & Governance",
    "chain": "ethereum",
    "chainId": 1,
-   "classification": "rpc_observed",
+   "classification": "mixed",
    "controllerAddress": "0xf2371551Fe3937Db7c750f4DfABe5c2fFFdcBf5A",
    "controllerKind": "contract_controller",
-   "documentationComparison": "not_assessed",
-   "easAttested": false,
-   "evidenceBasis": "rpc_observed",
+   "documentationComparison": "compared",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
    "name": "Uniswap V3 & Governance Timelock",
    "preflightArgs": {
     "address": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
@@ -4277,19 +4600,57 @@
    },
    "primaryContract": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
    "slug": "uniswap-governance-timelock",
-   "sprints": [],
+   "sprints": [
+    23
+   ],
    "surfaces": [
     {
-     "baseEasUid": null,
-     "blockHash": "0xb83fee0a1d10d5fb8510d87ee9e33b180acac3208a7d00162a6a6f97789c0978",
-     "blockNumber": 26414499,
+     "baseEasUid": "0x435a5212e2490cd6024859f474dbbd897752b24985480413301d7573cb195801",
+     "blockHash": "0xfe2ed4e127f30bb42dd30c6fc1460a82d8438cff3a717ec89210805e55199a46",
+     "blockNumber": 26431152,
      "chain": "ethereum",
-     "classification": "rpc_observed",
-     "id": "uniswap-governance-timelock-control-plane",
-     "sprint": null,
-     "surface": "UniswapV3Factory · Owner Contract under the 2d Governance Timelock",
+     "classification": "aligned_baseline",
+     "id": "uniswap-governance-quorum-40m-uni-s23",
+     "sprint": 23,
+     "surface": "Quorum: 40M UNI",
+     "targetContract": "0x408ED6354d4973f66138C91495F2f2FCbd8724C3",
+     "targetLabel": "Uniswap GovernorBravoDelegator"
+    },
+    {
+     "baseEasUid": "0x435a5212e2490cd6024859f474dbbd897752b24985480413301d7573cb195801",
+     "blockHash": "0xfe2ed4e127f30bb42dd30c6fc1460a82d8438cff3a717ec89210805e55199a46",
+     "blockNumber": 26431152,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "uniswap-governance-timelock-delay-2d-s23",
+     "sprint": 23,
+     "surface": "Timelock: 2 days before execution",
+     "targetContract": "0x1a9C8182C09F50C8318d769245beA52c32BE35BC",
+     "targetLabel": "Uniswap Timelock"
+    },
+    {
+     "baseEasUid": "0x435a5212e2490cd6024859f474dbbd897752b24985480413301d7573cb195801",
+     "blockHash": "0xfe2ed4e127f30bb42dd30c6fc1460a82d8438cff3a717ec89210805e55199a46",
+     "blockNumber": 26431152,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "uniswap-governance-v3-factory-owner-timelock-s23",
+     "sprint": 23,
+     "surface": "UniswapV3Factory owner: a fee adapter owned by the governance Timelock",
      "targetContract": "0x1F98431c8aD98523631AE4a59f267346ea31F984",
      "targetLabel": "UniswapV3Factory"
+    },
+    {
+     "baseEasUid": "0x435a5212e2490cd6024859f474dbbd897752b24985480413301d7573cb195801",
+     "blockHash": "0xfe2ed4e127f30bb42dd30c6fc1460a82d8438cff3a717ec89210805e55199a46",
+     "blockNumber": 26431152,
+     "chain": "ethereum",
+     "classification": "parameter_delta",
+     "id": "uniswap-governance-voting-period-40320-blocks-s23",
+     "sprint": 23,
+     "surface": "Voting period: 40,320 blocks (~5.6 days at 12-second slots), not 7 days",
+     "targetContract": "0x408ED6354d4973f66138C91495F2f2FCbd8724C3",
+     "targetLabel": "Uniswap GovernorBravoDelegator"
     }
    ],
    "targetLabel": "UniswapV3Factory",
@@ -4485,13 +4846,13 @@
  },
  "totals": {
   "badgeTiers": {
-   "aligned": 37,
-   "parameter_delta": 31,
-   "rpc_observed": 10
+   "aligned": 42,
+   "parameter_delta": 32,
+   "rpc_observed": 8
   },
-  "easAttested": 68,
-  "protocols": 78,
-  "rpcObserved": 10,
-  "surfaces": 127
+  "easAttested": 74,
+  "protocols": 82,
+  "rpcObserved": 8,
+  "surfaces": 144
  }
 }

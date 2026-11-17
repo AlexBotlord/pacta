@@ -353,7 +353,7 @@ def llms_full(idx, radar, prop, onb, pinned=None):
          "- Free: " + ", ".join(f"GET {X402_URL}{p}" for p in X402_FREE) + " (/.well-known/x402 is the Bazaar discovery manifest, discoverable: true).", "",
          "## On-chain anchoring (Base, chain id 8453)",
          f"- PactaCommitmentRegistry {REGISTRY} (Sourcify verified); attester pacta.base.eth {a['attester_eoa']}.",
-         f"- EAS schema {EAS_SCHEMA}: uint16 sprintId, uint64 chainId, uint64 blockNumber, bytes32 blockHash, uint8 verifiedCount, uint8 driftCount, bytes32 summarySha256, string prURI.",
+         f"- EAS schema {EAS_SCHEMA}: uint16 sprintId,uint64 chainId,uint64 blockNumber,bytes32 blockHash,uint8 verifiedCount,uint8 driftCount,bytes32 summarySha256,string prURI (as registered on Base).",
          ] + [f"- Sprint {k} attestation UID {v}" for k, v in sorted(a["sprint_eas_attestations"].items(), key=lambda kv: int(kv[0]))] + [
          "", "## Sentinel (Phase 2)", f"- {SENTINEL}", "",
          "## Governance proposals (from /api/v1/proposals.json)"]

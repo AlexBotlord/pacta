@@ -5,7 +5,7 @@
   <subtitle>Block-pinned DeFi control-plane records (Base EAS) and queued timelock operations</subtitle>
   <link rel="self" href="https://pacta.wtf/feed.xml"/>
   <link href="https://pacta.wtf/"/>
-  <updated>2026-11-17T06:33:59Z</updated>
+  <updated>2026-11-17T11:02:47Z</updated>
   <author><name>Pacta by Fractal Neurons</name><uri>https://pacta.wtf/</uri></author>
   <entry>
     <id>https://pacta.wtf/#sprint-24</id>
@@ -179,21 +179,21 @@
     <id>https://pacta.wtf/briefs/ethena-ops-0x0ca0-0x1fe5/#radar</id>
     <title>Ethena timelock: executed · Ethena USDe — RLUSD &amp; USAT collateral onboarding</title>
     <link href="https://pacta.wtf/briefs/ethena-ops-0x0ca0-0x1fe5/"/>
-    <updated>2026-11-16T17:39:35Z</updated>
-    <summary>Two queued EthenaMinting.addSupportedAsset calls onboard RLUSD and USAT at 200M / 20M USDe-per-block caps (stablesDeltaLimit = 0 bps). Read at finalized Ethereum block #26,429,140.</summary>
+    <updated>2026-11-17T11:02:47Z</updated>
+    <summary>Two queued EthenaMinting.addSupportedAsset calls onboard RLUSD and USAT at 200M / 20M USDe-per-block caps (stablesDeltaLimit = 0 bps). Read at finalized Ethereum block #26,434,340.</summary>
   </entry>
   <entry>
     <id>https://pacta.wtf/briefs/treehouse-op-0x2f11/#radar</id>
     <title>Treehouse timelock: pending · Treehouse TREE — UUPS upgrade adding Blacklistable</title>
     <link href="https://pacta.wtf/briefs/treehouse-op-0x2f11/"/>
-    <updated>2026-11-16T17:39:35Z</updated>
-    <summary>Upgrades the TREE governance token (not tETH) and installs a 5-of-7 Safe as blacklister: a zero-delay transfer-freeze role after execution. Read at finalized Ethereum block #26,429,140.</summary>
+    <updated>2026-11-17T11:02:47Z</updated>
+    <summary>Upgrades the TREE governance token (not tETH) and installs a 5-of-7 Safe as blacklister: a zero-delay transfer-freeze role after execution. Read at finalized Ethereum block #26,434,340.</summary>
   </entry>
   <entry>
     <id>https://pacta.wtf/briefs/etherfi-op-0x244e/#radar</id>
     <title>ether.fi timelock: pending · ether.fi — LayerZero V2 delegate moved behind the 10-day timelock</title>
     <link href="https://pacta.wtf/briefs/etherfi-op-0x244e/"/>
-    <updated>2026-11-16T17:39:35Z</updated>
-    <summary>EtherfiL1SyncPoolETH.setDelegate(EtherFiTimelock): protective hardening of the OApp&#x27;s messaging configuration. Read at finalized Ethereum block #26,429,140.</summary>
+    <updated>2026-11-17T11:02:47Z</updated>
+    <summary>EtherfiL1SyncPoolETH.setDelegate(EtherFiTimelock): protective hardening of the OApp&#x27;s messaging configuration. Read at finalized Ethereum block #26,434,340.</summary>
   </entry>
 </feed>

@@ -16,23 +16,44 @@
   function num(n) { return Number(n).toLocaleString("en-US"); }
 
   // ---- theme: Paper (default) / Slate ---------------------------------------------------------------
-  function applyTheme(t) {
-    if (t === "slate") document.documentElement.setAttribute("data-theme", "slate");
-    else document.documentElement.removeAttribute("data-theme");
-    $$(".tt span").forEach(function (s) { s.classList.toggle("on", s.getAttribute("data-t") === (t === "slate" ? "slate" : "paper")); });
-    // the spoken label names the action the button performs; the browser chrome follows the active theme's background
-    var b = $(".tt"); if (b) b.setAttribute("aria-label", t === "slate" ? "Switch to Paper theme" : "Switch to Slate theme");
-    var m = $('meta[name="theme-color"]'); if (m) m.setAttribute("content", t === "slate" ? "#101216" : "#f7f7f5");
+  // ---- theme: Light / Dark / System (U2) on a .dark class; System follows prefers-color-scheme, also when it changes ----------
+  function applyTheme(pref) {
+    var dark = pref === "dark" || (pref === "system" && systemDark());
+    document.documentElement.classList.toggle("dark", dark);
+    document.documentElement.setAttribute("data-theme-pref", pref);
+    $$("[data-theme-set]").forEach(function (b) { b.setAttribute("aria-checked", String(b.getAttribute("data-theme-set") === pref)); });
+    var btn = $("[data-theme-btn]"); if (btn) btn.setAttribute("aria-label", "Theme: " + (pref === "system" ? "System" : pref === "dark" ? "Dark" : "Light"));
   }
   function initTheme() {
-    var t = null; try { t = localStorage.getItem("pacta-theme"); } catch (e) {}
-    applyTheme(t);
-    var b = $(".tt");
-    if (b) b.addEventListener("click", function () {
-      var next = document.documentElement.getAttribute("data-theme") === "slate" ? "paper" : "slate";
-      try { localStorage.setItem("pacta-theme", next); } catch (e) {}
-      applyTheme(next);
-    });
+    applyTheme(themePref());
+    var root = $("[data-theme-menu]"), btn = $("[data-theme-btn]"), menu = $("#theme-menu");
+    if (btn && menu) {
+      var close = function (focusBtn) { menu.hidden = true; btn.setAttribute("aria-expanded", "false"); if (focusBtn) btn.focus(); };
+      var open = function () {
+        menu.hidden = false; btn.setAttribute("aria-expanded", "true");
+        var cur = $('[aria-checked="true"]', menu) || $("[data-theme-set]", menu); if (cur) cur.focus();
+      };
+      btn.addEventListener("click", function () { if (menu.hidden) open(); else close(false); });
+      menu.addEventListener("click", function (ev) {
+        var it = ev.target && ev.target.closest ? ev.target.closest("[data-theme-set]") : null; if (!it) return;
+        var pref = it.getAttribute("data-theme-set");
+        if (pref !== "light" && pref !== "dark") pref = "system";
+        try { if (pref === "system") localStorage.removeItem(THEME_KEY); else localStorage.setItem(THEME_KEY, pref); } catch (e) { /* private mode */ }
+        applyTheme(pref); close(true);
+      });
+      menu.addEventListener("keydown", function (ev) {
+        var items = $$("[data-theme-set]", menu), i = items.indexOf(document.activeElement);
+        if (ev.key === "Escape") { ev.preventDefault(); close(true); }
+        else if (ev.key === "ArrowDown") { ev.preventDefault(); items[(i + 1) % items.length].focus(); }
+        else if (ev.key === "ArrowUp") { ev.preventDefault(); items[(i - 1 + items.length) % items.length].focus(); }
+        else if (ev.key === "Tab") close(false);
+      });
+      document.addEventListener("click", function (ev) { if (!menu.hidden && root && !root.contains(ev.target)) close(false); });
+    }
+    try {
+      var mq = window.matchMedia("(prefers-color-scheme: dark)"), follow = function () { if (themePref() === "system") applyTheme("system"); };
+      if (mq.addEventListener) mq.addEventListener("change", follow); else if (mq.addListener) mq.addListener(follow);
+    } catch (e) { /* no matchMedia */ }
   }
 
   // ---- countdowns (an ETA is when execution becomes possible, not a guarantee) -----------------------
@@ -82,7 +103,7 @@
     b.setAttribute("data-live", "1");
   }
   function applyLiveTimelocks(j) {
-    if (!j || typeof j !== "object" || !Array.isArray(j.operations)) return;
+    if (!j || typeof j !== "object" || !Array.isArray(j.operations)) return null;
     var by = {}, blk = null;
     j.operations.forEach(function (op) {
       var id = op && typeof op.opId === "string" ? op.opId.toLowerCase() : "", st = liveOpState(op);
@@ -111,35 +132,52 @@
         n.textContent = "Live re-check at the latest block #" + blk.toLocaleString("en-US") + " via the free /v1/briefs/live-timelocks.";
       });
     }
+    return blk;
   }
   // Radar header counts follow the badges: executed operations are never counted as queued (re-derived after a live re-check).
+  // M4: radar header counts follow the rows (one per radar.json item, by state): "1 ready · 1 pending · 1 executed (2 operations)"
+  var RADAR_ORDER = ["ready", "pending", "mixed", "unknown", "executed"];
+  var RADAR_WORD = { ready: "ready", pending: "pending", mixed: "mixed", unknown: "cancelled or unknown", executed: "executed" };
   function radarCounts() {
     var out = $("[data-radar-counts]"); if (!out) return;
-    var pend = 0, exec = 0, protos = {};
+    var by = {}, ops = {};
     $$("#radar tr[data-radar-row]").forEach(function (tr) {
       var b = $("[data-ops]", tr), n = b ? (b.getAttribute("data-ops") || "").split(/\s+/).filter(Boolean).length : 0;
       var st = b ? b.getAttribute("data-opstate") : tr.getAttribute("data-radar-row");
-      if (st === "executed") { exec += n; tr.setAttribute("data-radar-row", "executed"); tr.classList.add("is-executed"); }
-      else { pend += n; if (n) protos[$("b", tr) ? $("b", tr).textContent : ""] = 1; tr.setAttribute("data-radar-row", "pending"); tr.classList.remove("is-executed"); }
+      if (!RADAR_WORD[st]) st = "unknown";
+      tr.setAttribute("data-radar-row", st); tr.classList.toggle("is-executed", st === "executed");
+      by[st] = (by[st] || 0) + 1; ops[st] = (ops[st] || 0) + n;
     });
-    var np = Object.keys(protos).length;
-    out.textContent = pend + " pending operation" + (pend === 1 ? "" : "s") + " across " + np + " protocol" + (np === 1 ? "" : "s") + " · " + exec + " recently executed";
+    out.textContent = RADAR_ORDER.filter(function (s) { return by[s]; }).map(function (s) {
+      return by[s] + " " + RADAR_WORD[s] + (ops[s] !== by[s] ? " (" + ops[s] + " operations)" : "");
+    }).join(" · ");
   }
   function initLiveTimelocks() {
     var host = $("[data-live-timelocks]");
-    if (!host || typeof fetch !== "function" || !$("[data-ops]")) return;
+    if (!host || typeof fetch !== "function" || !$("[data-ops]")) { liveSettled(false, null); return; }
     var url = host.getAttribute("data-live-timelocks") || "";
-    if (!LIVE_TL_RE.test(url)) return;
+    if (!LIVE_TL_RE.test(url)) { liveSettled(false, null); return; }
+    $$("[data-live-status-text]").forEach(function (n) { n.textContent = "Checking live chain state…"; });
+    $$("[data-live-status] .spinner").forEach(function (n) { n.hidden = false; });
+    var ctl = typeof AbortController === "function" ? new AbortController() : null;
+    var done = false, guard = setTimeout(function () {
+      if (done) return;
+      done = true; LIVE_FAILED = true;
+      if (ctl) { try { ctl.abort(); } catch (e) { /* already settled */ } }
+      liveSettled(false, null); freshness();
+    }, 9000);
+    function settle(ok, blk) { if (done) return; done = true; clearTimeout(guard); liveSettled(ok, blk); freshness(); }
     var init = { cache: "no-store", headers: { Accept: "application/json" } };
-    try { if (typeof AbortSignal !== "undefined" && typeof AbortSignal.timeout === "function") init.signal = AbortSignal.timeout(8000); } catch (e) { /* no timeout */ }
+    if (ctl) init.signal = ctl.signal;
     fetch(url, init)
-      .then(function (r) { return r && r.status === 200 ? r.json() : null; })
+      .then(function (r) { if (done) return null; return r && r.status === 200 ? r.json() : null; })
       .then(function (j) {
-        if (j && typeof j === "object" && Array.isArray(j.operations)) { applyLiveTimelocks(j); LIVE_OK_AT = Math.floor(Date.now() / 1000); LIVE_FAILED = false; }
-        else LIVE_FAILED = true;
-        freshness();
-      }, function () { LIVE_FAILED = true; freshness(); /* offline / blocked / timeout: keep the static state */ })
-      .catch(function () { LIVE_FAILED = true; freshness(); /* malformed payload: keep the static state */ });
+        if (done) return;   // the fallback already showed the pinned snapshot: a late payload never changes a badge
+        if (j && typeof j === "object" && Array.isArray(j.operations)) {
+          var blk = applyLiveTimelocks(j); LIVE_OK_AT = Math.floor(Date.now() / 1000); LIVE_FAILED = false; settle(true, blk);
+        } else { LIVE_FAILED = true; settle(false, null); }
+      }, function () { LIVE_FAILED = true; settle(false, null); /* offline / blocked / timeout: keep the static state */ })
+      .catch(function () { LIVE_FAILED = true; settle(false, null); /* malformed payload: keep the static state */ });
   }
   // V01: the hero form drives the full #pf-form checker (same validation, timeout and states) and scrolls to the result
   // /for-protocols/: live badge preview + copyable Markdown / HTML for the selected protocol (attributes and textContent only)
@@ -158,31 +196,46 @@
   }
   // ---- Website Edge v3: protocol scorecards (#scorecards) ------------------------------------------------------------------
   var SC_STATE = { g: "Strong", b: "Moderate", a: "Weak", n: "Not determined", u: "Uncompared" };
-  var SC_GRADE = { delta: "DELTA", protective: "PROTECTIVE", aligned: "ALIGNED", observed: "OBSERVED" };
+  var SC_GRADE = { delta: "Delta", protective: "Protective", aligned: "Aligned", observed: "Observed" };
+  var SC_VARIANT = { delta: "warning", protective: "info", aligned: "neutral", observed: "outline" };
+  var SC_LETTER = { g: "S", b: "M", a: "W", n: "—", u: "—" };
+  var SC_RADIUS = { g: 1, b: 0.78, a: 0.56, n: 1, u: 1 };
   var SC_CHAIN = { ethereum: "Ethereum", base: "Base" };
   var SVG_NS = "http://www.w3.org/2000/svg";
   // the same geometry as tools/scorecard.py rosette_svg(): five 72-degree slices clockwise from 12 o'clock
-  function rosette(fs, size, name) {
+  // the same geometry as tools/scorecard.py rosette_svg(): five 72-degree slices clockwise from 12 o'clock inside a hairline ring;
+  // slice length is the colour-independent cue (strong 100 %, moderate 78 %, weak 56 %, hollow full slice when not determined)
+  function rosette(fs, size, name, interactive) {
     if (typeof document.createElementNS !== "function") return null;
     var svg = document.createElementNS(SVG_NS, "svg"), c = size / 2, r = size / 2 - 1.5;
-    svg.setAttribute("class", "rosette"); svg.setAttribute("width", String(size)); svg.setAttribute("height", String(size));
+    svg.setAttribute("class", "rosette" + (interactive ? " rosette-i" : "")); svg.setAttribute("width", String(size)); svg.setAttribute("height", String(size));
     svg.setAttribute("viewBox", "0 0 " + size + " " + size); svg.setAttribute("role", "img");
+    if (interactive) {   // one keyboard stop (>= 24 px) whose Tooltip lists the five factors; slices show their own on hover
+      svg.setAttribute("tabindex", "0");
+      svg.setAttribute("data-tip", fs.map(function (f) { return String(f.label) + ": " + SC_STATE[/^[gbanu]$/.test(f.state) ? f.state : "n"]; }).join("\n"));
+    }
     svg.setAttribute("aria-label", (name ? name + " control-plane rosette: " : "Control-plane rosette: ")
       + fs.map(function (f) { return f.label + " " + String(SC_STATE[f.state] || "").toLowerCase(); }).join("; "));
+    var ring = document.createElementNS(SVG_NS, "circle");
+    ring.setAttribute("class", "r-ring"); ring.setAttribute("cx", c.toFixed(1)); ring.setAttribute("cy", c.toFixed(1)); ring.setAttribute("r", r.toFixed(1));
+    svg.appendChild(ring);
     fs.forEach(function (f, i) {
+      var st = /^[gbanu]$/.test(f.state) ? f.state : "n", rr = r * SC_RADIUS[st];
       var a0 = (-90 + 72 * i + 1.5) * Math.PI / 180, a1 = (-90 + 72 * (i + 1) - 1.5) * Math.PI / 180;
-      var p = document.createElementNS(SVG_NS, "path");
-      p.setAttribute("class", "r-" + (/^[gbanu]$/.test(f.state) ? f.state : "n"));
-      p.setAttribute("d", "M" + c.toFixed(1) + " " + c.toFixed(1) + "L" + (c + r * Math.cos(a0)).toFixed(1) + " " + (c + r * Math.sin(a0)).toFixed(1)
-        + "A" + r.toFixed(1) + " " + r.toFixed(1) + " 0 0 1 " + (c + r * Math.cos(a1)).toFixed(1) + " " + (c + r * Math.sin(a1)).toFixed(1) + "Z");
+      var p = document.createElementNS(SVG_NS, "path"), lbl = String(f.label) + ": " + SC_STATE[st];
+      p.setAttribute("class", "r-" + st);
+      p.setAttribute("d", "M" + c.toFixed(1) + " " + c.toFixed(1) + "L" + (c + rr * Math.cos(a0)).toFixed(1) + " " + (c + rr * Math.sin(a0)).toFixed(1)
+        + "A" + rr.toFixed(1) + " " + rr.toFixed(1) + " 0 0 1 " + (c + rr * Math.cos(a1)).toFixed(1) + " " + (c + rr * Math.sin(a1)).toFixed(1) + "Z");
+      if (interactive) p.setAttribute("data-tip", lbl);
+      if (interactive) { var t = document.createElementNS(SVG_NS, "title"); t.textContent = lbl; p.appendChild(t); }
       svg.appendChild(p);
     });
     return svg;
   }
   function gradePill(card) {
     var g = SC_GRADE[card.grade] ? card.grade : "observed";
-    var w = el("span", {}, [el("span", { "class": "grade g-" + g, text: SC_GRADE[g] })]);
-    if (card.reconciled) w.appendChild(el("span", { "class": "grade-sub", text: "✓ Reconciled" }));
+    var w = el("span", {}, [el("span", { "class": "grade g-" + g, "data-slot": "badge", "data-variant": SC_VARIANT[g], text: SC_GRADE[g] })]);
+    if (card.reconciled) w.appendChild(el("span", { "class": "grade-sub", text: "Reconciled" }));
     return w;
   }
   function factorList(card) {
@@ -192,7 +245,7 @@
       var dd = el("dd", {}, [el("b", { text: SC_STATE[st] }), " · " + String(f.value || "")]);
       if (f.evidence) dd.appendChild(el("small", { "class": "ev", text: "Evidence: " + String(f.evidence) }));
       dl.appendChild(el("div", { "data-factor": String(f.key), "data-state": st }, [
-        el("dt", {}, [el("span", { "class": "fdot r-" + st, "aria-hidden": "true" }), String(f.label)]), dd]));
+        el("dt", {}, [el("span", { "class": "fdot r-" + st, "aria-hidden": "true", text: SC_LETTER[st] }), String(f.label)]), dd]));
     });
     return dl;
   }
@@ -214,51 +267,58 @@
       });
     }));
   }
-  function scRows(card) {
+  function scRows(card, prefix) {
     var nets = (card.chains || []).map(function (c) { return SC_CHAIN[c] || c; }).join(" · ");
-    var slug = String(card.slug), did = "sc-d-" + slug;
+    var slug = String(card.slug), did = "sc-d-" + slug, pre = /^(\.\.\/)*$/.test(prefix || "") ? (prefix || "") : "";
     var tog = el("button", { "class": "sc-toggle", type: "button", "aria-expanded": "false", "aria-controls": did, text: String(card.name) });
-    var ros = rosette(card.factors || [], 28, card.name);
+    var ros = rosette(card.factors || [], 32, card.name, false);
     var row = el("tr", { "class": "sc-row", "data-slug": slug, "data-grade": String(card.grade), "data-baskets": (card.baskets || []).join(" "),
       "data-search": String(card.search || "") }, [
       el("td", {}, [tog, el("span", { "class": "sc-chain", text: nets })]), el("td", {}, [gradePill(card)]),
-      el("td", {}, ros ? [ros] : [String(SC_GRADE[card.grade] || "")]), el("td", { "class": "sc-find", text: String(card.finding || "") })]);
-    var p = card.probe || {};
+      el("td", {}, ros ? [ros] : [String(SC_GRADE[card.grade] || "")]), el("td", { "class": "sc-find", text: String(card.summary_short || card.finding || "") }),
+      el("td", { "class": "sc-chev" }, [el("span", { "class": "chev", "aria-hidden": "true" }, [svgIcon("m6 9 6 6 6-6")])])]);
+    var p = card.probe || {}, n = card.records, eas = card.easAttested !== false;
+    var noun = eas ? (n === 1 ? "attested check" : "attested checks") : (n === 1 ? "block-pinned check" : "block-pinned checks");
     var live = el("div", { "class": "sc-live", "data-probe-chain": String(p.chain || ""), "data-probe-target": String(p.target_contract || ""),
       "data-probe-kind": String(p.check_type || ""), "data-probe-sos": String(p.selector_or_slot || ""), "data-probe-data": String(p.repro_calldata || ""),
       "data-probe-sig": String(p.call_signature || "") });
-    var dr = el("div", { "class": "sc-dr" }, [factorList(card),
-      el("p", { "class": "sc-meta", text: (card.easAttested ? "Base EAS attested" : "RPC-observed (not EAS-attested)") + " · " + card.records
-        + " block-pinned " + (card.records === 1 ? "check" : "checks") + " · pinned block #" + num(card.pinnedBlock) }), live]);
-    if (p.target_contract) dr.appendChild(term(castCmd(p)));
-    dr.appendChild(el("p", {}, [el("a", { href: "protocols/" + slug + "/", text: "Full scorecard →" })]));
-    var drawer = el("tr", { "class": "sc-drawer", id: did, hidden: "" }, [el("td", { colspan: "4" }, [dr])]);
+    var big = rosette(card.factors || [], 72, card.name, true);
+    var dr = el("div", { "class": "sc-dr" }, [
+      el("div", { "class": "sc-ros" }, [big, el("span", { "class": "sc-meta", text: "Hover or focus a slice" })]),
+      el("div", {}, [scEvidence(card), factorList(card)]),
+      el("p", { "class": "sc-meta", text: (eas ? "Base EAS attested" : "RPC-observed, not EAS-attested") + " · " + n + " " + noun + " · pinned block #" + num(card.pinnedBlock) }),
+      live]);
+    if (p.target_contract) dr.appendChild(term(castCmd(p), "Reproduce on any archive node", "Copy the cast reproduction for " + String(card.name)));
+    dr.appendChild(el("p", { "class": "links" }, [el("a", { href: pre + "protocols/" + slug + "/", text: "Full scorecard for " + String(card.name) + " →" })]));
+    var drawer = el("tr", { "class": "sc-drawer", id: did, hidden: "" }, [el("td", { colspan: "5" }, [dr])]);
     return [row, drawer];
   }
   function initScorecards() {
     var root = $("#scorecards"); if (!root) return;
-    var body = $("[data-sc-body]", root), q = $("#sc-q", root), empty = $("[data-sc-empty]", root), more = $("[data-sc-all]", root);
+    var body = $("[data-sc-body]", root), q = $("#sc-q", root), qclr = $("[data-sc-qclear]", root), bsel = $("[data-sc-basket]", root);
+    var empty = $("[data-sc-empty]", root), more = $("[data-sc-all]", root);
     if (!body) return;
-    var filt = "all", hydrated = false, loading = null;
+    var prefix = body.getAttribute("data-prefix") || "", filt = "all", bkt = "all", hydrated = body.hasAttribute("data-full"), loading = null;
     function rows() { return $$("tr.sc-row", body); }
     function drawerOf(r) { return $("#" + "sc-d-" + r.getAttribute("data-slug")); }
-    function closeAll() {
-      rows().forEach(function (r) {
-        var d = drawerOf(r); if (d) d.hidden = true;
-        var t = $(".sc-toggle", r); if (t) t.setAttribute("aria-expanded", "false");
-      });
+    function setOpen(r, open) {
+      var d = drawerOf(r), t = $(".sc-toggle", r); if (!d) return;
+      d.hidden = !open; r.classList.toggle("open", open);
+      if (t) t.setAttribute("aria-expanded", String(open));
+      if (open) scLive($(".sc-live", d));
     }
+    function closeAll() { rows().forEach(function (r) { setOpen(r, false); }); }
     function apply() {
       var t = q ? String(q.value || "").trim().toLowerCase() : "", shown = 0;
       rows().forEach(function (r) {
         var g = r.getAttribute("data-grade"), bs = (r.getAttribute("data-baskets") || "").split(" ");
-        var ok = (filt === "all" || (filt === "delta" ? g === "delta" : bs.indexOf(filt) >= 0))
-          && (!t || (r.getAttribute("data-search") || "").indexOf(t) >= 0);
+        var ok = (filt === "all" || g === filt) && (bkt === "all" || bs.indexOf(bkt) >= 0) && (!t || (r.getAttribute("data-search") || "").indexOf(t) >= 0);
         r.hidden = !ok; if (ok) shown++;
-        var d = drawerOf(r); if (d && !ok) { d.hidden = true; var tg = $(".sc-toggle", r); if (tg) tg.setAttribute("aria-expanded", "false"); }
+        if (!ok) setOpen(r, false);
       });
       if (shown === 0) closeAll();   // F02: zero matches never leave a stale drawer open
       if (empty) empty.hidden = shown !== 0;
+      if (qclr) qclr.hidden = !(q && q.value);
       return shown;
     }
     function hydrate() {
@@ -269,7 +329,7 @@
         var cards = d && Array.isArray(d.protocols) ? d.protocols : [];
         if (!cards.length) return false;
         body.textContent = "";
-        cards.forEach(function (c) { scRows(c).forEach(function (n) { body.appendChild(n); }); });
+        cards.forEach(function (c) { scRows(c, prefix).forEach(function (n) { body.appendChild(n); }); });
         hydrated = true;
         if (more) more.hidden = true;
         return true;
@@ -277,16 +337,19 @@
       return loading;
     }
     function then(fn) { return function () { var a = arguments; hydrate().then(function () { fn.apply(null, a); }); }; }
+    // U4: the whole row is the trigger (the name stays the focusable button); links inside the row keep their own behaviour
     body.addEventListener("click", function (ev) {
-      var t = ev.target && ev.target.closest ? ev.target.closest(".sc-toggle") : null; if (!t) return;
-      var d = $("#" + t.getAttribute("aria-controls")); if (!d) return;
-      var open = d.hidden; d.hidden = !open; t.setAttribute("aria-expanded", String(open));
-      if (open) scLive($(".sc-live", d));
+      var t = ev.target; if (!t || !t.closest) return;
+      var r = t.closest("tr.sc-row"); if (!r || t.closest("a")) return;
+      var d = drawerOf(r); if (!d) return;
+      setOpen(r, d.hidden);
     });
     if (q) {
       q.addEventListener("focus", function () { hydrate(); });
       q.addEventListener("input", then(function () { apply(); }));
     }
+    if (qclr) qclr.addEventListener("click", function () { if (q) { q.value = ""; q.focus(); } apply(); });
+    if (bsel) bsel.addEventListener("change", then(function () { bkt = String(bsel.value || "all"); apply(); }));
     $$("[data-sc-f]", root).forEach(function (b) {
       b.addEventListener("click", then(function () {
         filt = b.getAttribute("data-sc-f") || "all";
@@ -297,23 +360,31 @@
     if (more) more.addEventListener("click", then(function () { apply(); }));
     var clr = empty && $("[data-sc-clear]", empty);
     if (clr) clr.addEventListener("click", function () {
-      filt = "all"; if (q) q.value = "";
+      filt = "all"; bkt = "all"; if (q) q.value = ""; if (bsel) bsel.value = "all";
       $$("[data-sc-f]", root).forEach(function (o) { o.setAttribute("aria-pressed", String(o.getAttribute("data-sc-f") === "all")); });
       apply();
     });
   }
   // hero receipt strip: the pinned, attested receipt renders instantly (text only); the live check runs through the checker
+  // V6: the hero examples load their pinned receipt into the proof card (text and attributes only) and run the live check
   function initReceipts() {
-    var out = $("#receipt-out"); if (!out) return;
-    $$("[data-receipt]").forEach(function (b) {
+    var card = $("[data-proof-card]"), chips = $$("[data-receipt]");
+    chips.forEach(function (b) {
       b.addEventListener("click", function () {
-        var href = b.getAttribute("data-r-href") || "";
-        out.textContent = "";
-        out.appendChild(el("b", { text: (b.getAttribute("data-r-name") || "") + ": " }));
-        out.appendChild(document.createTextNode((b.getAttribute("data-r-docs") || "") + " · " + (b.getAttribute("data-r-chain") || "")
-          + " · pinned at " + (b.getAttribute("data-r-net") || "") + " block #" + num(b.getAttribute("data-r-block") || 0) + " · Base EAS attested · "));
-        if (/^protocols\/[a-z0-9-]+\/$/.test(href)) out.appendChild(el("a", { href: href, text: "Full record →" }));
-        out.hidden = false;
+        chips.forEach(function (o) { o.setAttribute("aria-pressed", String(o === b)); });
+        if (!card) return;
+        var set = function (sel, v) { var n = $(sel, card); if (n) n.textContent = v; };
+        set("[data-pc-name]", b.getAttribute("data-r-name") || "");
+        set("[data-pc-docs]", b.getAttribute("data-r-docs") || "");
+        set("[data-pc-chain]", b.getAttribute("data-r-chain") || "");
+        set("[data-pc-block]", (b.getAttribute("data-r-net") || "") + " #" + num(b.getAttribute("data-r-block") || 0));
+        var uid = b.getAttribute("data-r-uid") || "", u = $("[data-pc-uid]", card);
+        if (u && /^0x[0-9a-fA-F]{64}$/.test(uid)) {
+          if (u.tagName === "A") { u.setAttribute("href", "https://base.easscan.org/attestation/view/" + uid); u.setAttribute("title", uid); }
+          u.textContent = short(uid, 10, 6);
+        }
+        var h = $("[data-pc-href]", card), href = b.getAttribute("data-r-href") || "";
+        if (h && /^(\.\.\/)*protocols\/[a-z0-9-]+\/$/.test(href)) h.setAttribute("href", href);
       });
     });
   }
@@ -347,38 +418,45 @@
         if (/\/mcp\b/.test(q)) B("copy_mcp_url"); else if (/^curl /.test(q)) B("copy_curl");
       } else if ((a = x.closest("a"))) {
         if (/SKILL\.md$/.test(a.getAttribute("href") || "")) B("copy_skill_md");
-        else if (a.closest("a.primary,.memo-foot a,a[data-cta]")) B("cta_click");
+        else if (a.closest('a.primary,a[data-variant="default"],.memo-foot a,a[data-cta]')) B("cta_click");
       }
     }, true);
   }
 
   // ---- copy to clipboard (works on http(s) and file://) ---------------------------------------------
   function copyText(text) {
-    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
-    return new Promise(function (resolve, reject) {
-      var ta = el("textarea", { readonly: "", style: "position:fixed;top:-1000px;opacity:0" });
-      ta.value = text; document.body.appendChild(ta); ta.select();
-      try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); } finally { ta.remove(); }
-    });
+    function legacy() {
+      return new Promise(function (resolve, reject) {
+        var ta = el("textarea", { readonly: "", style: "position:fixed;top:-1000px;opacity:0" });
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        try { document.execCommand("copy") ? resolve() : reject(); } catch (e) { reject(e); } finally { ta.remove(); }
+      });
+    }
+    // the async Clipboard API can be refused (permissions, embedded contexts): fall back to the selection copy
+    if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text).then(null, legacy);
+    return legacy();
   }
+
   function flash(btn, ok) {
-    if (!btn.hasAttribute("data-label")) btn.setAttribute("data-label", btn.innerHTML);   // our own static markup
+    var s = $("span", btn) || btn;
+    if (!btn.hasAttribute("data-label")) btn.setAttribute("data-label", s.textContent);
     clearTimeout(btn._t);
     btn.classList.toggle("done", ok);
-    btn.textContent = ok ? "Copied!" : "Select and press Ctrl+C";
-    btn._t = setTimeout(function () { btn.innerHTML = btn.getAttribute("data-label"); btn.classList.remove("done"); }, 1600);
+    s.textContent = ok ? "Copied" : "Press Ctrl+C";
+    btn._t = setTimeout(function () { s.textContent = btn.getAttribute("data-label"); btn.classList.remove("done"); }, 1600);
   }
   function initCopy() {
     document.addEventListener("click", function (ev) {
-      var b = ev.target.closest("[data-copy],[data-copy-from],[data-copy-term]");
+      var b = ev.target && ev.target.closest ? ev.target.closest("[data-copy],[data-copy-from],[data-copy-term]") : null;
       if (!b) return;
       ev.preventDefault(); ev.stopPropagation();
       var src = b.hasAttribute("data-copy-term") ? $("pre", b.closest(".term")) : $("#" + b.getAttribute("data-copy-from"));
       var text = b.hasAttribute("data-copy") ? b.getAttribute("data-copy") : (src ? src.textContent : "");
       copyText(text).then(function () {
         flash(b, true);
-        var st = $("#req-status"); if (st && b.closest("#req-form")) st.textContent = "Copied! Paste it into an email to " + REQ_TO + " from any mail app.";
-      }, function () { flash(b, false); });
+        toast("Copied to clipboard");
+        var st = $("#req-status"); if (st && b.closest("#req-form, .req-side")) st.textContent = "Copied. Paste it into an email to " + REQ_TO + " from any mail app.";
+      }, function () { flash(b, false); toast("Copy failed: select the text and press Ctrl+C"); });
     });
   }
 
@@ -447,7 +525,10 @@
     });
     return parts.join(" ") || "0s";
   }
-  function copyBtn(v, label) { return el("button", { "class": "copy", type: "button", "data-copy": v, "aria-label": "Copy " + String(v), text: label || "Copy" }); }
+  function copyBtn(v, label) {
+    return el("button", { "class": "copy", "data-slot": "button", "data-variant": "ghost", "data-size": "sm", type: "button", "data-copy": v,
+      "aria-label": "Copy " + String(v) }, [el("span", { text: label || "Copy" })]);
+  }
   function hexref(v, a, b) { return [el("span", { "class": "addr", title: v, text: short(v, a || 6, b || 4) }), copyBtn(v)]; }
   function delayCmp(e) {
     var o = e.observed_delay_seconds, d = e.documented_delay_seconds;
@@ -477,10 +558,10 @@
         (e.call_args && e.call_args.length ? " " + e.call_args.join(" ") : "") + " \\\n  --block " + e.block_number + " " + rpc;
     return first + "\ncast block " + e.block_number + " --field hash " + rpc + "\n# expect " + e.block_hash;
   }
-  function term(cmd, title) {
-    return el("div", { "class": "term" }, [
-      el("div", { "class": "term-h" }, [el("span", { text: title || "Reproduce on any archive node" }),
-        el("button", { "class": "copy", type: "button", "data-copy-term": "", "aria-label": "Copy command: " + (title || "command"), text: "Copy command" })]),
+  function term(cmd, title, what) {
+    var b = el("button", { "class": "copy", "data-slot": "button", "data-variant": "ghost", "data-size": "sm", type: "button", "data-copy-term": "",
+      "aria-label": what || ("Copy command: " + (title || "command")) }, [el("span", { text: "Copy" })]);
+    return el("div", { "class": "term" }, [el("div", { "class": "term-h" }, [el("span", { text: title || "Reproduce on any archive node" }), b]),
       el("pre", { text: cmd })]);
   }
   function proof(e) {
@@ -770,25 +851,25 @@
   }
 
   // ---- request builder: brief + GitHub intake + Gmail compose + copy ---------------------------------
-  // Tracks: 24h clearance (default), continuous Aligned maintenance, high-throughput API SLA, free community queue. The
+  // Tracks: 24h dossier (default), $500 re-verification, Continuous Monitoring, high-throughput API SLA, free community queue. The
   // public data itself is free for everyone, so nothing here gates access. GitHub dropdown strings must match
   // .github/ISSUE_TEMPLATE/request-scan.yml. Paid tracks settle by Option A (commercial invoice, default) or Option B
   // (direct on-chain USDC to the Pacta treasury, an EOA).
   var REQ_TO = "pacta@dri.network";
   var TRACK = {
-    clearance: ["Full Protocol Control-Plane Dossier ($2,500–$5,000 USDC, 24h SLA)",
-                "Full Protocol Control-Plane Dossier ($2,500–$5,000 USDC, 24h SLA)",
-                "Pacta 24h clearance request", "$2,500–$5,000 USDC (24h SLA)"],
-    continuous: ["Continuous Aligned Maintenance ($1,500 USDC per month)",
-                 "Continuous Aligned Maintenance ($1,500 USDC per month)",
-                 "Pacta continuous Aligned maintenance request", "$1,500 USDC per month"],
-    api_sla: ["Enterprise / High-Throughput API SLA (priced on scope)",
-              "Enterprise / High-Throughput API SLA (priced on scope)",
-              "Pacta enterprise API SLA request", "the scoped amount (quoted on the invoice)"],
+    community: ["Community queue (free; unscheduled, typically 6–8 weeks)", "Community queue (free; unscheduled, typically 6–8 weeks)",
+                "Pacta community queue request", ""],
     "rapid-500": ["Rapid Single-Gap Re-Verification ($500 USDC, 24h SLA)", "Rapid Single-Gap Re-Verification ($500 USDC, 24h SLA)",
                   "Pacta rapid single-gap re-verification request", "$500 USDC (24h SLA)"],
-    community: ["Community queue (free; unscheduled, typically 6–8 weeks)", "Community queue (free; unscheduled, typically 6–8 weeks)",
-                "Pacta community queue request", ""]
+    clearance: ["Full Protocol Control-Plane Dossier ($2,500–$5,000 USDC, 24h SLA)",
+                "Full Protocol Control-Plane Dossier ($2,500–$5,000 USDC, 24h SLA)",
+                "Pacta 24h dossier request", "$2,500–$5,000 USDC (24h SLA)"],
+    continuous: ["Continuous Monitoring ($1,500 USDC per month)",
+                 "Continuous Monitoring ($1,500 USDC per month)",
+                 "Pacta Continuous Monitoring request", "$1,500 USDC per month"],
+    api_sla: ["Enterprise / High-Throughput API SLA (priced on scope)",
+              "Enterprise / High-Throughput API SLA (priced on scope)",
+              "Pacta enterprise API SLA request", "the scoped amount (quoted on the invoice)"]
   };
   var SETTLE = {
     invoice: ["Option A — formal commercial invoice (PDF) & counterparty settlement (no upfront transfer; invoice on scope confirmation)",
@@ -820,15 +901,22 @@
   // PREFILL-END
   function initRequest() {
     var form = $("#req-form"); if (!form) return;
-    form.addEventListener("submit", function (e) { e.preventDefault(); });   // the brief is built client-side; never navigate (no inline onsubmit: CSP-safe)
     var out = $("#req-brief"), gh = $("#req-gh"), gm = $("#req-gmail"), st = $("#req-status"), pay = $("#req-pay");
     var txField = $("#req-tx-field"), txHint = $("#req-tx-hint"), txIn = $("#req-tx"), sum = $("#req-pay-sum"), direct = $("#req-direct");
+    var done = $("#req-done"), send = $("#req-send"), api = form.getAttribute("data-api") || "";
     var treasury = form.getAttribute("data-treasury") || "";
     function val(n) { var x = form.elements[n]; return x ? String(x.value || "").trim() : ""; }
     function tier() { var x = $('input[name="tier"]:checked', form); return x && own(TRACK, x.value) ? x.value : "clearance"; }
-    function settlement() { var x = $('input[name="settlement"]:checked', form); return x && own(SETTLE, x.value) ? x.value : "invoice"; }
-    function protocols() { return $$('input[name="protocol"]:checked', form).map(function (x) { return x.value; }); }
+    function settlement() { var x = $('input[name="settlement"]:checked', document); return x && own(SETTLE, x.value) ? x.value : "invoice"; }
+    var combo = initCombo(form, function () { update(); });
+    function protocols() { return combo.values().map(function (x) { return x.name; }); }
+    function fieldErr(inputId, errId, text) {
+      var inp = $("#" + inputId), m = $("#" + errId);
+      if (m) { m.textContent = text || ""; m.hidden = !text; }
+      if (inp) { if (text) inp.setAttribute("aria-invalid", "true"); else inp.removeAttribute("aria-invalid"); }
+    }
     function update() {
+      if (!out) return;
       var t = tier(), paid = t !== "community", s = settlement(), dir = paid && s === "direct";
       var ps = protocols(), org = val("org"), scope = val("scope"), contact = val("contact");
       var forum = val("forum"), tx = dir ? val("tx") : "", txOk = !tx || TX_RE.test(tx);
@@ -837,7 +925,7 @@
         "Track: " + TRACK[t][0],
         "Organization: " + (org || "(not given)"),
         "Protocols in scope: " + (ps.length ? ps.join(", ") : "(none selected)")];
-      if (scope) lines.push("Contracts / docs / portfolio:", scope);
+      if (scope) lines.push("Scope:", scope);
       if (forum) lines.push("Forum proposal: " + forum);
       if (paid) {
         lines.push("Settlement: " + SETTLE[s][0]);
@@ -865,13 +953,88 @@
       if (forum) p.set("forum_proposal_url", forum);
       if (dir && tx && txOk) p.set("payment_tx_hash", tx);
       p.set("contact_channel", contact);
-      gh.href = "https://github.com/Fractal-Neurons/pacta/issues/new?" + p.toString();
-      gm.href = "https://mail.google.com/mail/?view=cm&fs=1&to=" + encodeURIComponent(REQ_TO) + "&su=" + encodeURIComponent(subj) +
+      if (gh) gh.href = "https://github.com/Fractal-Neurons/pacta/issues/new?" + p.toString();
+      if (gm) gm.href = "https://mail.google.com/mail/?view=cm&fs=1&to=" + encodeURIComponent(REQ_TO) + "&su=" + encodeURIComponent(subj) +
         "&body=" + encodeURIComponent(lines.slice(3).join("\n"));
-      if (st) st.textContent = "";
     }
+    // the request body, or null with every problem shown next to its field
+    function payload() {
+      var t = tier(), sel = combo.values(), org = val("org"), scope = val("scope"), forum = val("forum"), contact = val("contact"), ok = true;
+      var subj = "";
+      if (sel.length) {
+        var parts = [], i;
+        for (i = 0; i < sel.length; i++) {
+          var next = (sel[i].slug || cleanSubject(sel[i].name).toLowerCase());
+          if ((parts.concat([next]).join(", ") + (i < sel.length - 1 ? " and " + (sel.length - i - 1) + " more" : "")).length > 120) break;
+          parts.push(next);
+        }
+        subj = parts.join(", ") + (parts.length < sel.length ? " and " + (sel.length - parts.length) + " more" : "");
+      } else subj = cleanSubject(org).slice(0, 120);
+      if (subj.length < 2) { fieldErr("req-proto-q", "req-proto-err", "Choose at least one protocol, or name your organization."); ok = false; }
+      else fieldErr("req-proto-q", "req-proto-err", "");
+      if (org && /[@<>]/.test(org)) { fieldErr("req-org", "req-org-err", "Keep contact details and markup out of the organization name."); ok = false; }
+      else fieldErr("req-org", "req-org-err", "");
+      if (PII_RE.test(scope)) { fieldErr("req-scope", "req-scope-err", "Remove emails, @handles, IP addresses or HTML from Scope; put a contact in Contact."); ok = false; }
+      else fieldErr("req-scope", "req-scope-err", "");
+      var cleanForumUrl = forum ? cleanForum(forum) : "";
+      if (forum && (!cleanForumUrl || cleanForumUrl.length > 200)) { fieldErr("req-forum", "req-forum-err", "Use a public https:// link of up to 200 characters."); ok = false; }
+      else fieldErr("req-forum", "req-forum-err", "");
+      var c = contact.replace(/^github:/i, "");
+      if (contact && (JUNK_CONTACT.test(contact) || contact.length > 120 || !(EMAIL_RE.test(c) || TG_RE.test(c) || GH_RE.test(c)))) {
+        fieldErr("req-contact", "req-contact-err", "Use a work email, a @telegram handle or a GitHub username, or leave it empty."); ok = false;
+      } else fieldErr("req-contact", "req-contact-err", "");
+      if (!ok) return null;
+      var cap = cutWords(TRACK[t][0] + (scope ? ": " + scope.replace(BAD_CHARS, "") : "."), 280);
+      var body = { caller_agent: "pacta-web", requester_role: val("requester_role"), caller_purpose: val("caller_purpose"),
+        request_type: val("request_type"), target_subject: subj, requested_capability: cap, urgency_track: URGENCY[t] };
+      Object.keys(REQ_ENUMS).forEach(function (k) { if (REQ_ENUMS[k].indexOf(body[k]) < 0) body[k] = REQ_ENUMS[k][k === "requester_role" ? 5 : k === "caller_purpose" ? 6 : 0]; });
+      if (cleanForumUrl) body.forum_proposal_url = cleanForumUrl;
+      if (contact) body.contact_handle = contact;
+      return body;
+    }
+    function busy(on) {
+      if (!send) return;
+      send.disabled = on; send.setAttribute("aria-busy", String(on));
+      var sp = $(".spinner", send), l = $("[data-req-label]", send);
+      if (sp) sp.hidden = !on; if (l) l.textContent = on ? "Sending…" : "Send request";
+    }
+    function status(t, bad) { if (st) { st.textContent = t; st.style.color = bad ? "var(--destructive)" : ""; } }
+    function showDone(j) {
+      if (!done) return;
+      var set = function (sel, v) { var n = $(sel, done); if (n) n.textContent = v; };
+      var up = j.status === "upvoted_existing";
+      set("[data-req-id]", String(j.request_id));
+      set("[data-req-st]", up ? "Added your vote to an existing request" : "Queued");
+      set("[data-req-votes]", typeof j.demand_votes === "number" ? String(j.demand_votes) : "1");
+      set("[data-req-done-title]", up ? "Request recorded" : "Request received");
+      set("[data-req-done-text]", up ? "Someone asked for the same scope; your request was added to it." : "Your request is in the queue. Keep the ID for follow-up.");
+      var fr = $("[data-req-fast-row]", done), fa = $("[data-req-fast]", done), fu = String(j.fast_track_url || "");
+      if (fr && fa && /^https:\/\/[^\s"<>]+$/.test(fu)) { fa.setAttribute("href", fu); fr.hidden = false; } else if (fr) fr.hidden = true;
+      form.hidden = true; done.hidden = false;
+      try { done.focus(); } catch (e) { /* focus is best effort */ }
+    }
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();   // no navigation, no inline handler (CSP-safe)
+      status("", false);
+      var body = payload();
+      if (!body) { status("Fix the highlighted fields, then send again.", true); var f = $('[aria-invalid="true"]', form); if (f) f.focus(); return; }
+      if (!REQ_API_RE.test(api) || typeof fetch !== "function") { status("This browser cannot send the form; open a GitHub issue or copy the brief instead.", true); return; }
+      busy(true);
+      var init = { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(body) };
+      try { if (typeof AbortSignal !== "undefined" && typeof AbortSignal.timeout === "function") init.signal = AbortSignal.timeout(15000); } catch (x) { /* none */ }
+      fetch(api, init).then(function (res) { return res.json().then(function (j) { return { status: res.status, j: j }; }, function () { return { status: res.status, j: {} }; }); })
+        .then(function (x) {
+          busy(false);
+          var j = x.j || {};
+          if (x.status === 200 && /^REQ-\d{4}-[A-Za-z0-9]+$/.test(String(j.request_id || ""))) { showDone(j); return; }
+          if (x.status === 429) status("Too many requests from this network (HTTP 429). Wait a few minutes, or open a GitHub issue.", true);
+          else status("The API answered HTTP " + x.status + (j.detail ? ": " + String(j.detail) : j.error ? ": " + String(j.error) : "") + ". Fix the form, or open a GitHub issue.", true);
+        }, function () { busy(false); status("Could not reach the API. Open a GitHub issue or copy the brief instead.", true); });
+    });
+    var again = done && $("[data-req-again]", done);
+    if (again) again.addEventListener("click", function () { done.hidden = true; form.hidden = false; status("", false); var f = $('input[name="tier"]:checked', form); if (f) f.focus(); });
     function pick(name, v) {
-      var r = $$('input[name="' + name + '"]', form).filter(function (x) { return x.value === v; })[0];
+      var r = $$('input[name="' + name + '"]').filter(function (x) { return x.value === v; })[0];
       if (r) r.checked = true;
       return !!r;
     }
@@ -880,21 +1043,20 @@
       if (o.tier) pick("tier", o.tier);
       if (o.settlement) pick("settlement", o.settlement);
       if (o.protocol) {
-        var low = o.protocol.toLowerCase(), orgIn = form.elements.org;
-        var box = $$('input[name="protocol"]', form).filter(function (x) {
-          return x.getAttribute("data-slug") === o.protocol || String(x.value).toLowerCase() === low;
-        })[0];
-        if (box) box.checked = true;
-        if (orgIn && !String(orgIn.value || "").trim()) orgIn.value = box ? box.value : o.protocol;
+        var orgIn = form.elements.org, hit = combo.select(o.protocol);
+        if (orgIn && !String(orgIn.value || "").trim()) {
+          var v = combo.values(); orgIn.value = hit && v.length ? v[v.length - 1].name : o.protocol;
+        }
       }
       if (o.forum && form.elements.forum) form.elements.forum.value = o.forum;
     }
     form.addEventListener("input", update);
     form.addEventListener("change", update);
-    gh.addEventListener("click", function () { if (st) st.textContent = "Opened in a new tab. If nothing appeared, use Copy brief."; });
-    gm.addEventListener("click", function () { if (st) st.textContent = "Opened in a new tab. If nothing appeared, use Copy brief."; });
+    document.addEventListener("change", function (ev) { if (ev.target && ev.target.getAttribute && ev.target.getAttribute("name") === "settlement" && !form.contains(ev.target)) update(); });
+    if (gh) gh.addEventListener("click", function () { status("Opened in a new tab. If nothing appeared, use Copy brief.", false); });
+    if (gm) gm.addEventListener("click", function () { status("Opened in a new tab. If nothing appeared, use Copy brief.", false); });
     document.addEventListener("click", function (ev) {
-      var a = ev.target.closest("a[data-tier]"); if (!a) return;
+      var a = ev.target && ev.target.closest ? ev.target.closest("a[data-tier]") : null; if (!a) return;
       if ((a.getAttribute("href") || "").charAt(0) === "#") { preselect(a.getAttribute("data-tier")); }
     });
     prefill(readPrefill(location.search));
@@ -906,8 +1068,9 @@
   var SLOT_IMPL = "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc";
   var SLOT_BEACON = "0xa3f0ad74e5423aebfd80d3ef4346578335a9a72aeaee59ff6cb3582b35133d50";
   var SLOT_PROXIABLE = "0xc5f16f0fcc639fa48a6947836d9850f504798523bf8c9a3a87d5876cf622bcf7";
-  var VERDICT_CLASS = { IMMUTABLE_NO_ADMIN: "", TIMELOCK_PROTECTED: "protect", ZERO_DELAY_TIMELOCK_RISK: "delta", MULTISIG_NO_TIMELOCK: "delta",
-    INSTANT_EOA_ADMIN_RISK: "delta", UNCLASSIFIED_CONTRACT_CONTROLLER: "delta", UNDEPLOYED_OR_EOA: "" };
+  // V7: amber is for warnings only; neutral and good verdicts get the neutral badge
+  var VERDICT_VARIANT = { IMMUTABLE_NO_ADMIN: "neutral", TIMELOCK_PROTECTED: "neutral", UNDEPLOYED_OR_EOA: "neutral", ZERO_DELAY_TIMELOCK_RISK: "warning",
+    MULTISIG_NO_TIMELOCK: "warning", INSTANT_EOA_ADMIN_RISK: "warning", UNCLASSIFIED_CONTRACT_CONTROLLER: "warning" };
   function pfCasts(r) {
     var rpc = r.chain === "base" ? "$BASE_RPC_URL" : "$ETH_RPC_URL", b = " --block " + r.pinnedBlock + " --rpc-url " + rpc, c = [];
     c.push("cast block " + r.pinnedBlock + " --field hash --rpc-url " + rpc + (/^0x[0-9a-f]{64}$/.test(String(r.pinnedBlockHash || "")) ? "   # expect " + r.pinnedBlockHash : ""));
@@ -933,9 +1096,9 @@
     UNDEPLOYED_OR_EOA: "No contract code at this address (EOA or not deployed)" };
   function verdictText(v) { return VERDICT_TEXT[v] || String(v); }
   function rawDetails(r) {
-    var d = el("details", { "class": "pf-raw", "data-pf-raw": "" }, [el("summary", { text: "Raw verdict and JSON" }),
-      el("p", {}, [el("code", { text: String(r.verdict) })]), el("pre", { "class": "pf-json", text: JSON.stringify(r, null, 2) })]);
-    return d;
+    return el("details", { "class": "acc pf-raw", "data-slot": "accordion-item", "data-pf-raw": "" }, [
+      el("summary", { "data-slot": "accordion-trigger", text: "Raw verdict and JSON" }),
+      el("div", { "data-slot": "accordion-content" }, [el("p", {}, [el("code", { text: String(r.verdict) })]), el("pre", { "class": "pf-json", text: JSON.stringify(r, null, 2) })])]);
   }
   // ---- one-click "Verify live on RPC": CORS public endpoints, first answer wins (fallback on error), latency in ms; text only
   var LIVE_RPCS = { ethereum: ["https://ethereum-rpc.publicnode.com", "https://eth.drpc.org"],
@@ -1013,29 +1176,44 @@
     out.appendChild(box);
   }
   // live RPC unavailable for an indexed target: the Worker answers from the pinned catalog record (never a dead end)
+  // live RPC unavailable for an indexed target: the Worker answers from the pinned catalog record (never a dead end)
   function pfFallback(out, b) {
     out.textContent = "";
-    out.appendChild(el("p", { "class": "pf-verdict" }, [badge(null, "PINNED CATALOG RECORD", "plain"), " Live RPC unavailable: showing the block-pinned record"]));
-    pfAssess(out, b);
-    out.appendChild(el("p", { text: String(b.summary || "") }));
-    pfMatch(out, b.catalogMatch);
+    var card = el("div", { "data-slot": "card", "class": "pf-card", "data-pf-result": "" }, [
+      el("div", { "class": "pf-verdict-row" }, [el("span", { "data-slot": "badge", "data-variant": "outline", text: "Pinned record" }),
+        el("p", { "class": "pf-verdict-title pf-verdict", text: "Live RPC unavailable: showing the block-pinned record" })])]);
+    pfAssess(card, b);
+    card.appendChild(el("p", { text: String(b.summary || "") }));
+    pfMatch(card, b.catalogMatch);
+    out.appendChild(card);
   }
+  // U5: verdict first (verdict, score, confidence, scope), then the facts, then cast commands and raw JSON collapsed
   function pfRender(out, r) {
     out.textContent = "";
-    var caps = r.capabilities || {}, k = r.controller || {};
+    var caps = r.capabilities || {}, k = r.controller || {}, v = String(r.verdict || ""), variant = VERDICT_VARIANT[v] || "warning";
     var capList = Object.keys(caps).filter(function (x) { return caps[x] === true; });
     var risk = typeof r.riskScore === "number" ? String(r.riskScore) + "/100" : "n/a";
+    var a = r.assessment && typeof r.assessment === "object" ? r.assessment : {};
     var ctl = String(k.kind || "none");
     if (typeof k.safeThreshold === "number") ctl += " (" + k.safeThreshold + "-of-" + (typeof k.safeOwnerCount === "number" ? k.safeOwnerCount : "?") + ")";
     if (typeof k.timelockDelaySec === "number") ctl += " (" + secs(k.timelockDelaySec) + " delay)";
     if (typeof k.roleAdminCount === "number") ctl += " (" + k.roleAdminCount + " DEFAULT_ADMIN_ROLE members)";
-    out.appendChild(el("p", { "class": "pf-section", text: "Live contract check (latest block)" }));
-    out.appendChild(el("p", { "class": "pf-verdict" }, [badge(null, verdictText(r.verdict), VERDICT_CLASS[r.verdict] || "delta"),
-      " Heuristic score · Risk " + risk + " (0 = no admin power seen, 100 = instant single-key control)"]));
-    pfAssess(out, r);
-    out.appendChild(el("p", { text: String(r.summary || "") }));
-    pfMatch(out, r.catalogMatch);
-    out.appendChild(el("dl", { "class": "pf-dl" }, [
+    var addr = ADDR_RE.test(String(r.address || "")) ? String(r.address) : "";
+    var card = el("div", { "data-slot": "card", "class": "pf-card", "data-pf-result": "" });
+    card.appendChild(el("p", { "class": "pf-section", text: "Live contract check · " + (r.chain === "base" ? "Base" : "Ethereum") + " · block " + num(r.pinnedBlock) }));
+    card.appendChild(el("div", { "class": "pf-verdict-row" }, [el("span", { "data-slot": "badge", "data-variant": variant, "data-pf-badge": "", text: variant === "warning" ? "Warning" : "Result" }),
+      el("p", { "class": "pf-verdict-title pf-verdict", "data-pf-verdict": "", text: verdictText(v) })]));
+    card.appendChild(el("dl", { "class": "pf-metrics" }, [
+      el("div", {}, [el("dt", { text: "Risk score" }), el("dd", { "data-pf-risk": "", text: risk })]),
+      el("div", {}, [el("dt", { text: "Confidence" }), el("dd", { text: String(a.confidence || "n/a") })]),
+      el("div", {}, [el("dt", { text: "Covers" }), el("dd", { text: "This address only" })])]));
+    card.appendChild(alertBox("This rates one contract, not the protocol",
+      "The verdict and the 0–100 score describe the single address you entered" + (addr ? " (" + short(addr, 6, 4) + ")" : "") +
+      ". A protocol's Docs-vs-chain status is on its scorecard, and a protocol can be Delta while one of its contracts has no admin."));
+    if (r.summary) card.appendChild(el("p", { "class": "s", text: String(r.summary) }));
+    pfAssess(card, r);
+    pfMatch(card, r.catalogMatch);
+    card.appendChild(el("dl", { "class": "pf-dl" }, [
       pfRow("Chain / block", String(r.chain) + " · block " + num(r.pinnedBlock)),
       pfRow("Contract", pfAddr(r.address)),
       pfRow("Proxy", r.isProxy ? "yes" : "no"),
@@ -1046,11 +1224,13 @@
       pfRow("Paused", r.paused === true ? "yes" : r.paused === false ? "no" : "n/a"),
       pfRow("Pinned block hash", /^0x[0-9a-f]{64}$/.test(String(r.pinnedBlockHash || "")) ? el("span", {}, hexref(r.pinnedBlockHash, 10, 6)) : "n/a"),
       pfRow("Checked at (UTC)", typeof r.checkedAt === "string" ? r.checkedAt : (typeof r.blockTimestamp === "number" ? new Date(r.blockTimestamp * 1000).toISOString() : "n/a"))]));
-    out.appendChild(rawDetails(r));
-    if (r.isContract !== false && ADDR_RE.test(String(r.address)) && /^\d+$/.test(String(r.pinnedBlock)))
-      out.appendChild(term(pfCasts(r).join("\n"), "Verify it yourself (Foundry cast, pinned block)"));
+    var acc = el("div", { "data-slot": "accordion" });
+    if (r.isContract !== false && addr && /^\d+$/.test(String(r.pinnedBlock)))
+      acc.appendChild(accItem("Reproduce with cast (pinned block)", [term(pfCasts(r).join("\n"), "Foundry cast", "Copy the cast commands for " + addr)]));
+    acc.appendChild(rawDetails(r));
+    card.appendChild(acc);
     if (/^\d+$/.test(String(r.pinnedBlock)))
-      out.appendChild(liveVerifyBtn("Verify live on RPC", function () {
+      card.appendChild(liveVerifyBtn("Verify live on RPC", function () {
         var ch = r.chain === "base" ? "base" : "ethereum", want = String(r.pinnedBlockHash || "").toLowerCase();
         function fail(what) { return function (e) { return what + " failed (" + String(e && e.message || e) + ")"; }; }
         var pinned = rpcCall(ch, "eth_getBlockByNumber", ["0x" + Number(r.pinnedBlock).toString(16), false]).then(function (x) {
@@ -1058,54 +1238,79 @@
           return "Pinned block #" + r.pinnedBlock + " hash " + h + (want ? (h === want ? " = pinned hash ✓" : " ≠ pinned hash " + want) : "")
             + " · " + x.rpc + " · " + x.ms + " ms";
         }, fail("Pinned block check"));
-        var live = !ADDR_RE.test(String(r.address)) ? Promise.resolve("Live read skipped: no contract address") : liveBlock(ch).then(function (b) {
-          return rpcCall(ch, "eth_getCode", [r.address, b.hex]).then(function (c) {
+        var live = !addr ? Promise.resolve("Live read skipped: no contract address") : liveBlock(ch).then(function (b) {
+          return rpcCall(ch, "eth_getCode", [addr, b.hex]).then(function (c) {
             var bytes = Math.max(0, String(c.result).length - 2) / 2, ms = b.ms + c.ms;
             var head = "Live at block #" + b.n + " (" + b.hex + "): eth_getCode " + bytes + " bytes";
             if (!bytes) return [head + " (no contract code)", hosts(b, c) + " · " + ms + " ms"];
             var what = r.isProxy ? "EIP-1967 admin slot" : "owner()";
-            var read = r.isProxy ? rpcCall(ch, "eth_getStorageAt", [r.address, EIP1967_ADMIN_SLOT, b.hex])
-              : rpcCall(ch, "eth_call", [{ to: r.address, data: "0x8da5cb5b" }, b.hex]);
+            var read = r.isProxy ? rpcCall(ch, "eth_getStorageAt", [addr, EIP1967_ADMIN_SLOT, b.hex])
+              : rpcCall(ch, "eth_call", [{ to: addr, data: "0x8da5cb5b" }, b.hex]);
             return read.then(function (y) {
               return [head, what + ": " + String(y.result), "Decoded: " + decodeWord(y.result), hosts(b, y) + " · " + (ms + y.ms) + " ms"];
             }, function (e) { return [head, what + ": no answer (" + String(e && e.message || e) + ")", hosts(b, c) + " · " + ms + " ms"]; });
           });
         }, fail("Live block read"));
-        return Promise.all([pinned, live]).then(function (a) { return [].concat(a[0], a[1]); });
+        return Promise.all([pinned, live]).then(function (x) { return [].concat(x[0], x[1]); });
       }));
+    out.appendChild(card);
   }
+  // U3/A3: noValidate form; 0x + 40 hex validated on blur and submit; the error is a visible message the input points to
+  // (aria-invalid + aria-describedby); the button is disabled with a spinner while the check runs
   function initPreflight() {
     var box = $(".pf"), form = $("#pf-form"), out = $("#pf-out");
     if (!box || !form || !out) return;
     var api = box.getAttribute("data-api") || "", chainSel = $('select[name="chain"]', form), addr = $('input[name="address"]', form);
     if (!chainSel || !addr || !/^https:\/\//.test(api)) return;
+    var err = $("#pf-addr-error"), btn = $("#pf-submit"), spin = btn ? $(".spinner", btn) : null, lbl = btn ? $("[data-pf-label]", btn) : null;
+    var help = addr.getAttribute("aria-describedby") || "pf-help";
     var seq = 0, ctl = null, timer = null, PF_TIMEOUT_MS = 10000;
-    if (!addr.getAttribute("id")) addr.setAttribute("id", "pf-address");
-    function msg(t, kind) {
-      out.textContent = "";
-      var p = el("p", { "class": "note" + (kind ? " pf-" + kind : ""), id: "pf-msg", text: t });
-      if (kind) p.setAttribute("data-pf-state", kind);
-      out.appendChild(p);
-      if (kind && kind !== "validation") {
-        var retry = el("button", { type: "button", "class": "btn sm", "data-pf-retry": "", text: "Retry" });
-        retry.addEventListener("click", function () { run(); });
-        out.appendChild(retry);
+    function busy(on) {
+      if (!btn) return;
+      btn.disabled = on; btn.setAttribute("aria-busy", String(on));
+      if (spin) spin.hidden = !on;
+      if (lbl) lbl.textContent = on ? "Checking…" : "Check contract";
+    }
+    function invalid(text) {
+      if (text) {
+        if (err) { err.textContent = text; err.hidden = false; }
+        addr.setAttribute("aria-invalid", "true"); addr.setAttribute("aria-describedby", "pf-addr-error");
+      } else {
+        if (err) { err.textContent = ""; err.hidden = true; }
+        addr.removeAttribute("aria-invalid"); addr.setAttribute("aria-describedby", help);
       }
     }
-    function invalid(on) {
-      if (on) { addr.setAttribute("aria-invalid", "true"); addr.setAttribute("aria-describedby", "pf-msg"); }
-      else { addr.removeAttribute("aria-invalid"); addr.removeAttribute("aria-describedby"); }
+    function problem(a) {
+      if (!a) return "Enter a contract address.";
+      if (!/^0x/i.test(a)) return "A contract address starts with 0x.";
+      if (!ADDR_RE.test(a)) return "Enter 0x followed by 40 hexadecimal characters (" + Math.max(0, a.length - 2) + " entered).";
+      return "";
     }
+    function val() { return String(addr.value || "").trim(); }
+    function msg(t, kind) {
+      out.textContent = "";
+      var p = el("p", { "class": "pf-msg", id: "pf-msg", role: "status" }, [el("span", { text: t })]);
+      if (kind) p.setAttribute("data-pf-state", kind);
+      if (kind === "loading") p.insertBefore(el("span", { "class": "spinner", "aria-hidden": "true" }), p.firstChild);
+      out.appendChild(p);
+      if (kind && kind !== "loading") {
+        var retry = el("button", { type: "button", "data-slot": "button", "data-variant": "outline", "data-size": "sm", "data-pf-retry": "", text: "Retry" });
+        retry.addEventListener("click", function () { run(); });
+        p.appendChild(retry);
+      }
+    }
+    addr.addEventListener("blur", function () { var a = val(); invalid(a ? problem(a) : ""); });
+    addr.addEventListener("input", function () { if (addr.getAttribute("aria-invalid") === "true") { var a = val(); invalid(a ? problem(a) : ""); } });
     function run() {
       // Every submit (valid or not) supersedes the previous one: bump seq and abort any in-flight request BEFORE the
       // input checks, so a stale response can never overwrite a later validation message.
       var my = ++seq;
       if (ctl) { try { ctl.abort(); } catch (e) { /* already settled */ } ctl = null; }
       if (timer) { clearTimeout(timer); timer = null; }
-      var a = String(addr.value || "").trim(), ch = chainSel.value === "base" ? "base" : "ethereum";
-      if (!ADDR_RE.test(a)) { msg("Enter a 0x-prefixed, 40-hex-character contract address.", "validation"); invalid(true); return; }
-      invalid(false);
-      if (typeof fetch !== "function") { msg("This browser cannot call the API; use the curl command above."); return; }
+      var a = val(), ch = chainSel.value === "base" ? "base" : "ethereum", p = problem(a);
+      if (p) { invalid(p); busy(false); out.textContent = ""; addr.focus(); return; }
+      invalid("");
+      if (typeof fetch !== "function") { msg("This browser cannot call the API; use the cURL quickstart.", "http"); return; }
       // First-party beacon hook (docs/b.js); optional: the checker works the same without it.
       if (typeof window.pactaBeacon === "function") { try { window.pactaBeacon("live_checker_submit", ch + ":" + a.toLowerCase()); } catch (e) { /* ignore */ } }
       var opts = { headers: { Accept: "application/json" } }, timedOut = false;
@@ -1114,25 +1319,28 @@
         var mine = ctl;
         timer = setTimeout(function () { timedOut = true; try { mine.abort(); } catch (e) { /* settled */ } }, PF_TIMEOUT_MS);
       }
-      msg("Checking " + short(a, 6, 4) + " on " + ch + " at the latest block…");
+      busy(true);
+      msg("Checking " + short(a, 6, 4) + " on " + ch + " at the latest block…", "loading");
       // optional free-tier attribution (non-personal): the browser demo names itself; no location, no personal data
       fetch(api + "/v1/check/preflight?chain=" + ch + "&address=" + a + "&caller_agent=pacta-wtf-checker&requester_role=individual_user&caller_purpose=general_research", opts)
         .then(function (res) { return res.json().then(function (b) { return { status: res.status, body: b }; }); })
         .then(function (x) {
           if (my !== seq) return;
           if (timer) { clearTimeout(timer); timer = null; }
+          busy(false);
           var b = x.body || {}, r = b.verdict ? b : (b.result && b.result.verdict ? b.result : null);
           if (x.status === 200 && b.source === "pinned_catalog_fallback") pfFallback(out, b);
           else if (x.status === 200 && r) pfRender(out, r);
           else if (x.status === 429) msg("Rate limited: HTTP 429" + (b.error ? " (" + String(b.error) + ")" : "") + (b.detail ? ": " + String(b.detail) : "") + ". Wait a minute, then retry.", "ratelimit");
-          else if (x.status === 400) { msg("The API rejected the input (HTTP 400)" + (b.detail ? ": " + String(b.detail) : "."), "validation"); invalid(true); }
+          else if (x.status === 400) { out.textContent = ""; invalid("The API rejected this address" + (b.detail ? ": " + String(b.detail) : ".")); }
           else msg("The API answered HTTP " + x.status + (b.error ? " (" + String(b.error) + ")" : "") + (b.detail ? ": " + String(b.detail) : "."), "http");
         })
         .catch(function () {
           if (my !== seq) return;
           if (timer) { clearTimeout(timer); timer = null; }
-          if (timedOut) msg("The check timed out after " + (PF_TIMEOUT_MS / 1000) + " s. The address is kept; retry, or use the curl command above.", "timeout");
-          else msg("Network error: could not reach the API. Retry, or use the curl command above.", "network");
+          busy(false);
+          if (timedOut) msg("The check timed out after " + (PF_TIMEOUT_MS / 1000) + " s. The address is kept; retry, or use the cURL quickstart.", "timeout");
+          else msg("Network error: could not reach the API. Retry, or use the cURL quickstart.", "network");
         });
     }
     form.addEventListener("submit", function (ev) { ev.preventDefault(); run(); });
@@ -1157,7 +1365,7 @@
     function label(btns, attr, v) {
       var b = btns.filter(function (x) { return x.getAttribute(attr) === v; })[0];
       var n = b && $(".num", b);
-      return b ? String(b.textContent).slice(0, b.textContent.length - (n ? n.textContent.length : 0)) : v;
+      return b ? String(b.textContent).slice(0, b.textContent.length - (n ? n.textContent.length : 0)).trim() : v;
     }
     function words() { return q.value.toLowerCase().split(" ").filter(Boolean); }
     function apply() {
@@ -1175,7 +1383,7 @@
       bBtns.forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-pfilter-basket") === bkt)); });
       if (count) count.textContent = shown + " of " + rows.length + " protocols shown";
       var parts = [];
-      if (st !== "all") parts.push("Status: " + label(sBtns, "data-pfilter-status", st));
+      if (st !== "all") parts.push("Docs vs chain: " + label(sBtns, "data-pfilter-status", st));
       if (chn !== "all") parts.push("Chain: " + label(cBtns, "data-pfilter-chain", chn));
       if (bkt !== "all") parts.push("Basket: " + label(bBtns, "data-pfilter-basket", bkt));
       if (q.value.trim()) parts.push("Search: “" + q.value.trim() + "”");
@@ -1232,8 +1440,222 @@
     $$("[data-snapshot-fallback]").forEach(function (n) { n.hidden = !stale; });
   }
 
+  var THEME_KEY = "pacta-theme";
+  function themePref() {
+    var t = null; try { t = localStorage.getItem(THEME_KEY); } catch (e) { /* private mode */ }
+    if (t === "slate") t = "dark";
+    if (t === "paper") t = "light";
+    return t === "light" || t === "dark" ? t : "system";
+  }
+
+  function systemDark() { try { return window.matchMedia("(prefers-color-scheme: dark)").matches; } catch (e) { return false; } }
+
+  // ---- R4: hamburger Sheet below 768 px (dialog: focus moves in, Tab is trapped, Escape / overlay / link closes) -------------
+  function initSheet() {
+    var sheet = $("#nav-sheet"), openBtn = $("[data-sheet-open]"); if (!sheet || !openBtn) return;
+    var last = null;
+    function focusables() { return $$("a[href],button:not([disabled])", sheet); }
+    function open() {
+      last = document.activeElement; sheet.hidden = false; document.body.classList.add("sheet-open");
+      openBtn.setAttribute("aria-expanded", "true");
+      var f = $('[data-slot="button"][data-sheet-close]', sheet) || focusables()[0]; if (f) f.focus();
+    }
+    function close() {
+      if (sheet.hidden) return;
+      sheet.hidden = true; document.body.classList.remove("sheet-open"); openBtn.setAttribute("aria-expanded", "false");
+      if (last && last.focus) last.focus();
+    }
+    openBtn.addEventListener("click", open);
+    sheet.addEventListener("click", function (ev) {
+      var t = ev.target && ev.target.closest ? ev.target : null; if (!t) return;
+      if (t.closest("[data-sheet-close]") || t.closest("a[href]")) close();
+    });
+    sheet.addEventListener("keydown", function (ev) {
+      if (ev.key === "Escape") { ev.preventDefault(); close(); return; }
+      if (ev.key !== "Tab") return;
+      var f = focusables(); if (!f.length) return;
+      if (ev.shiftKey && document.activeElement === f[0]) { ev.preventDefault(); f[f.length - 1].focus(); }
+      else if (!ev.shiftKey && document.activeElement === f[f.length - 1]) { ev.preventDefault(); f[0].focus(); }
+    });
+    window.addEventListener("resize", function () { if (window.innerWidth >= 768) close(); });
+  }
+
+  // ---- Tabs (MCP / cURL / Python): roving tabindex, arrow keys, Home / End; panels hidden only once JavaScript runs ---------
+  function initTabs() {
+    $$("[data-tabs]").forEach(function (root) {
+      var tabs = $$('[role="tab"]', root);
+      function select(t, focus) {
+        tabs.forEach(function (x) {
+          var on = x === t, p = document.getElementById(x.getAttribute("aria-controls") || "");
+          x.setAttribute("aria-selected", String(on)); x.setAttribute("tabindex", on ? "0" : "-1");
+          if (p) { if (on) p.removeAttribute("data-inactive"); else p.setAttribute("data-inactive", ""); }
+        });
+        if (focus) t.focus();
+      }
+      tabs.forEach(function (t, i) {
+        t.addEventListener("click", function () { select(t, false); });
+        t.addEventListener("keydown", function (ev) {
+          var j = ev.key === "ArrowRight" ? i + 1 : ev.key === "ArrowLeft" ? i - 1 : ev.key === "Home" ? 0 : ev.key === "End" ? tabs.length - 1 : null;
+          if (j === null) return;
+          ev.preventDefault(); select(tabs[(j + tabs.length) % tabs.length], true);
+        });
+      });
+    });
+  }
+
+  // ---- Tooltip: any [data-tip] (rosette slices) shows its label on hover and on keyboard focus (A1) ---------------------------
+  function initTooltips() {
+    var tip = null;
+    function show(t) {
+      var label = t.getAttribute("data-tip"); if (!label) return;
+      if (!tip) { tip = el("div", { "class": "tip", role: "tooltip", id: "pacta-tip" }); document.body.appendChild(tip); }
+      tip.textContent = label; tip.hidden = false;
+      var r = t.getBoundingClientRect(), w = tip.offsetWidth, h = tip.offsetHeight;
+      var left = Math.max(8, Math.min(document.documentElement.clientWidth - w - 8, r.left + r.width / 2 - w / 2));
+      var top = r.top - h - 8 < 8 ? r.bottom + 8 : r.top - h - 8;
+      tip.style.left = Math.round(left + window.scrollX) + "px"; tip.style.top = Math.round(top + window.scrollY) + "px";
+      t.setAttribute("aria-describedby", "pacta-tip");
+    }
+    function hide(t) { if (tip) tip.hidden = true; if (t && t.removeAttribute) t.removeAttribute("aria-describedby"); }
+    function tgt(ev) { return ev.target && ev.target.closest ? ev.target.closest("[data-tip]") : null; }
+    document.addEventListener("mouseover", function (ev) { var t = tgt(ev); if (t) show(t); });
+    document.addEventListener("mouseout", function (ev) { var t = tgt(ev); if (t) hide(t); });
+    document.addEventListener("focusin", function (ev) { var t = tgt(ev); if (t) show(t); });
+    document.addEventListener("focusout", function (ev) { var t = tgt(ev); if (t) hide(t); });
+    document.addEventListener("keydown", function (ev) { if (ev.key === "Escape") hide(null); });
+  }
+
+  // ---- A4: "Copied" is announced through the aria-live toaster (Sonner-style toast) ------------------------------------------
+  function toast(text) {
+    var host = $("#toaster"); if (!host) return;
+    host.textContent = "";
+    host.appendChild(el("div", { "data-slot": "toast" }, [text]));
+    clearTimeout(host._t);
+    host._t = setTimeout(function () { host.textContent = ""; }, 2400);
+  }
+
+  function svgIcon(d) {
+    if (typeof document.createElementNS !== "function") return el("span", {});
+    var s = document.createElementNS(SVG_NS, "svg");
+    [["class", "i"], ["viewBox", "0 0 24 24"], ["aria-hidden", "true"], ["focusable", "false"]].forEach(function (a) { s.setAttribute(a[0], a[1]); });
+    var p = document.createElementNS(SVG_NS, "path"); p.setAttribute("d", d); s.appendChild(p);
+    return s;
+  }
+
+  function scEvidence(card) {
+    var ev = card.evidence || {}, eas = card.easAttested !== false;
+    return el("div", { "class": "sc-ev" }, [
+      el("p", { "class": "sc-full" }, [el("b", { text: "Docs say: " }), String(ev.documented || "")]),
+      el("p", { "class": "sc-full" }, [el("b", { text: eas ? "Chain says: " : "Chain (pinned; docs not compared): " }), String(ev.observed || card.finding || "")])]);
+  }
+
+  // T1: the radar's state badges stay skeletons until the live re-check settles (success, failure or timeout), then appear once
+  function liveSettled(ok, blk) {
+    $$("[data-live-pending]").forEach(function (n) { n.removeAttribute("data-live-pending"); });
+    $$("[data-live-status]").forEach(function (n) {
+      var t = $("[data-live-status-text]", n), sp = $(".spinner", n); if (sp) sp.hidden = true;
+      if (t) t.textContent = ok ? "Live state confirmed" + (blk ? " at block #" + blk.toLocaleString("en-US") : "") : "Live check unavailable: showing the pinned snapshot";
+    });
+  }
+
+  function accItem(title, kids) {
+    return el("details", { "class": "acc", "data-slot": "accordion-item" }, [el("summary", { "data-slot": "accordion-trigger", text: title }),
+      el("div", { "data-slot": "accordion-content" }, kids)]);
+  }
+
+  function alertBox(title, text) {
+    return el("div", { "data-slot": "alert", role: "note", "data-pf-scope": "" }, [el("p", { "data-slot": "alert-title", text: title }),
+      el("div", { "data-slot": "alert-description", text: text })]);
+  }
+
+  // U6: the exact POST /v1/requests wire schema (the Worker rejects unknown keys): closed enums, bounded plain text, no PII outside
+  // contact_handle. urgency_track follows the chosen track.
+  var REQ_ENUMS = {
+    requester_role: ["protocol_team", "risk_curator_analyst", "institutional_allocator", "defi_developer", "security_researcher", "individual_user", "autonomous_agent"],
+    caller_purpose: ["collateral_due_diligence", "governance_monitoring", "security_audit", "pre_trade_safety", "yield_allocation", "integration_testing", "general_research"],
+    request_type: ["doc_or_data_discrepancy", "missing_protocol", "missing_check_surface", "unsupported_chain", "mcp_or_api_feature"]
+  };
+  var URGENCY = { community: "community_queue_free", "rapid-500": "active_due_diligence", clearance: "issuer_24h_clearance_5k",
+    continuous: "active_due_diligence", api_sla: "api_high_volume_sla" };
+  var REQ_API_RE = /^https:\/\/pacta-x402\.pacta\.workers\.dev\/v1\/requests$/;
+  var EMAIL_RE = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/, TG_RE = /^@[A-Za-z0-9_]{3,32}$/, GH_RE = /^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$/;
+  var PII_RE = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}|(^|[\s(])@[A-Za-z0-9_]{2,}|\b\d{1,3}(?:\.\d{1,3}){3}\b|<[^>]*>/;
+  var JUNK_CONTACT = /^(none|n\/?a|na|-+|null|user@example\.com|test@test\.com|email@example\.com)$/i;
+
+  function cleanSubject(v) { return String(v || "").replace(/[:@<>]/g, " ").replace(BAD_CHARS, "").replace(/\s+/g, " ").trim(); }
+
+  function cutWords(s, max) {
+    s = String(s || "").replace(/\s+/g, " ").trim();
+    if (s.length <= max) return s;
+    var c = s.slice(0, max - 1), i = c.lastIndexOf(" ");
+    return (i > 20 ? c.slice(0, i) : c).replace(/[\s,;:.(-]+$/, "") + "…";
+  }
+
+  // Command + Popover combobox (multi-select) for the protocols in scope: type to filter, arrows / Enter to toggle, chips to remove
+  function initCombo(form, onChange) {
+    var root = $("[data-combo]", form), none = { values: function () { return []; }, select: function () { return false; }, input: null };
+    if (!root) return none;
+    var input = $("#req-proto-q", root), list = $("#req-proto-list", root), chips = $("[data-combo-chips]", root);
+    if (!input || !list || !chips) return none;
+    var emptyLi = $('[data-slot="command-empty"]', list), items = $$('[role="option"]', list), active = -1, selected = [];
+    function visible() { return items.filter(function (i) { return !i.hidden; }); }
+    function setActive(i) {
+      var v = visible(); items.forEach(function (x) { x.removeAttribute("data-active"); }); active = i;
+      if (i >= 0 && v[i]) {
+        v[i].setAttribute("data-active", "true"); input.setAttribute("aria-activedescendant", v[i].id);
+        try { v[i].scrollIntoView({ block: "nearest" }); } catch (e) { /* old browsers */ }
+      } else input.removeAttribute("aria-activedescendant");
+    }
+    function render() {
+      chips.textContent = "";
+      selected.forEach(function (it) {
+        var name = it.getAttribute("data-name") || "";
+        var x = el("button", { type: "button", "aria-label": "Remove " + name }, [svgIcon("M18 6 6 18M6 6l12 12")]);
+        x.addEventListener("click", function () { toggle(it); input.focus(); });
+        chips.appendChild(el("span", { "class": "chip-x" }, [el("span", { text: name }), x]));
+      });
+      items.forEach(function (it) { it.setAttribute("aria-selected", String(selected.indexOf(it) >= 0)); });
+      onChange();
+    }
+    function toggle(it) { var i = selected.indexOf(it); if (i >= 0) selected.splice(i, 1); else selected.push(it); render(); }
+    function open() { list.hidden = false; input.setAttribute("aria-expanded", "true"); }
+    function close() { list.hidden = true; input.setAttribute("aria-expanded", "false"); setActive(-1); }
+    function filter() {
+      var t = String(input.value || "").trim().toLowerCase(), n = 0;
+      items.forEach(function (it) {
+        var ok = !t || String(it.getAttribute("data-name") || "").toLowerCase().indexOf(t) >= 0 || String(it.getAttribute("data-slug") || "").indexOf(t) >= 0;
+        it.hidden = !ok; if (ok) n++;
+      });
+      if (emptyLi) emptyLi.hidden = n !== 0;
+      setActive(n ? 0 : -1);
+    }
+    input.addEventListener("focus", function () { filter(); open(); });
+    input.addEventListener("input", function () { filter(); open(); });
+    input.addEventListener("keydown", function (ev) {
+      var v = visible();
+      if (ev.key === "ArrowDown") { ev.preventDefault(); open(); setActive(Math.min(v.length - 1, active + 1)); }
+      else if (ev.key === "ArrowUp") { ev.preventDefault(); setActive(Math.max(0, active - 1)); }
+      else if (ev.key === "Enter") { ev.preventDefault(); if (!list.hidden && v[active]) toggle(v[active]); }
+      else if (ev.key === "Escape") { if (!list.hidden) { ev.preventDefault(); close(); } }
+      else if (ev.key === "Backspace" && !input.value && selected.length) toggle(selected[selected.length - 1]);
+    });
+    list.addEventListener("mousedown", function (ev) { ev.preventDefault(); });   // keep focus in the input
+    list.addEventListener("click", function (ev) { var it = ev.target && ev.target.closest ? ev.target.closest('[role="option"]') : null; if (it) toggle(it); });
+    document.addEventListener("click", function (ev) { if (!root.contains(ev.target)) close(); });
+    return {
+      input: input,
+      values: function () { return selected.map(function (it) { return { name: it.getAttribute("data-name") || "", slug: it.getAttribute("data-slug") || "" }; }); },
+      select: function (v) {
+        var low = String(v).toLowerCase();
+        var it = items.filter(function (x) { return x.getAttribute("data-slug") === v || String(x.getAttribute("data-name") || "").toLowerCase() === low; })[0];
+        if (it && selected.indexOf(it) < 0) { selected.push(it); render(); }
+        return !!it;
+      }
+    };
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
-    initTheme(); initCopy(); initBeaconHooks(); tick(); setInterval(tick, 30000);
+    initTheme(); initSheet(); initTabs(); initTooltips(); initCopy(); initBeaconHooks(); tick(); setInterval(tick, 30000);
     initIndex(); initRequest(); initInspector(); initPreflight(); initLiveTimelocks(); initProtocolFilter(); initAges(); initRefresh(); initHeroCheck(); initBadgeWidget(); initScorecards(); initReceipts();
     setInterval(initAges, 60000);
     if ($("#insp-list")) loadData().catch(function () { /* static sheet and drawer links keep working */ });

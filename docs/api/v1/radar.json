@@ -2,10 +2,10 @@
   "schema": "pacta.radar.v1",
   "chain_id": 1,
   "refreshed_at": {
-    "block_number": 26429140,
-    "block_hash": "0x83a6cc0a445318c3be9b0802bb4e8199d83b363a3d76cadcdb6175dd3d64f1f9",
-    "block_timestamp": 1794850775,
-    "block_time_utc": "2026-11-16 17:39 UTC",
+    "block_number": 26434340,
+    "block_hash": "0x546ff607f1c54cf3f5e776a26d689c751d4deb91fcf0c87e159af7ba6d077f6a",
+    "block_timestamp": 1794913367,
+    "block_time_utc": "2026-11-17 11:02 UTC",
     "tag": "finalized",
     "rpcs_cross_checked": 2
   },
@@ -48,7 +48,7 @@
           "eta": 1794891107,
           "pending": true,
           "done": false,
-          "ready": false
+          "ready": true
         }
       ],
       "eta": 1794891107

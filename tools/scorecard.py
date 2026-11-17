@@ -62,8 +62,13 @@ def grade(classifications, easattested, reconciled=False):
 
 
 def _snip(text, m, width=70):
+    """A window around the match that starts and ends on whole words (never inside a 0x value or a word; V8)."""
     a, b = max(0, m.start() - width // 2), min(len(text), m.end() + width // 2)
-    return ("…" if a else "") + text[a:b].strip() + ("…" if b < len(text) else "")
+    while a > 0 and not text[a - 1].isspace():
+        a -= 1
+    while b < len(text) and not text[b].isspace():
+        b += 1
+    return ("… " if a else "") + text[a:b].strip() + (" …" if b < len(text) else "")
 
 
 def clauses(text):
@@ -277,7 +282,13 @@ def factors(records, easattested, g, facts=()):
 
 
 def _clip(c, width=160):
-    return c if len(c) <= width else c[:width - 1].rstrip() + "…"
+    """Whole-word clip (V8): never mid-word, never inside a 0x value; the full text stays on the protocol page."""
+    if len(c) <= width:
+        return c
+    cut = c[:width]
+    if not c[width].isspace():
+        cut = cut[:cut.rfind(" ")] if " " in cut else cut
+    return cut.rstrip(" ,;:(") + " …"
 
 
 def _dur(s):
@@ -294,18 +305,32 @@ def aria(fs, name=None):
             + "; ".join(f'{f["label"]} {STATE_LABEL[f["state"]].lower()}' for f in fs))
 
 
-def rosette_svg(fs, size=28, name=None):
-    """28x28 inline SVG: five 72-degree slices clockwise from 12 o'clock (factor order); hollow dashed outline for n / u."""
+# V5/A1: the slice length is a second, colour-independent cue (strong full, moderate 78 %, weak 56 %); not determined / uncompared
+# is a hollow dashed full-length outline. The letters S / M / W / — sit next to every factor list.
+RADIUS = {"g": 1.0, "b": 0.78, "a": 0.56, "n": 1.0, "u": 1.0}
+
+
+def rosette_svg(fs, size=28, name=None, interactive=False):
+    """Inline SVG: five 72-degree slices clockwise from 12 o'clock (factor order) inside a hairline ring. Ordered palette (strong
+    green, moderate yellow, weak red) plus slice length; each slice names its factor and state in a <title> (hover). With
+    interactive=True every slice is focusable and carries data-tip for the keyboard / hover Tooltip (app.js)."""
     import math
     c, r = size / 2, size / 2 - 1.5
-    parts = []
+    parts = [f'<circle class="r-ring" cx="{c:.1f}" cy="{c:.1f}" r="{r:.1f}"/>']
     for i, f in enumerate(fs):
+        rr = r * RADIUS.get(f["state"], 1.0)
         a0, a1 = math.radians(-90 + 72 * i + 1.5), math.radians(-90 + 72 * (i + 1) - 1.5)
-        x0, y0, x1, y1 = c + r * math.cos(a0), c + r * math.sin(a0), c + r * math.cos(a1), c + r * math.sin(a1)
-        d = f"M{c:.1f} {c:.1f}L{x0:.1f} {y0:.1f}A{r:.1f} {r:.1f} 0 0 1 {x1:.1f} {y1:.1f}Z"
-        parts.append(f'<path class="r-{f["state"]}" d="{d}"/>')
-    return (f'<svg class="rosette" width="{size}" height="{size}" viewBox="0 0 {size} {size}" role="img" '
-            f'aria-label="{_esc(aria(fs, name))}">{"".join(parts)}</svg>')
+        x0, y0, x1, y1 = c + rr * math.cos(a0), c + rr * math.sin(a0), c + rr * math.cos(a1), c + rr * math.sin(a1)
+        d = f"M{c:.1f} {c:.1f}L{x0:.1f} {y0:.1f}A{rr:.1f} {rr:.1f} 0 0 1 {x1:.1f} {y1:.1f}Z"
+        lbl = f'{f["label"]}: {STATE_LABEL[f["state"]]}'
+        extra = f' data-tip="{_esc(lbl)}"' if interactive else ""
+        parts.append(f'<path class="r-{f["state"]}" d="{d}"{extra}><title>{_esc(lbl)}</title></path>' if interactive
+                     else f'<path class="r-{f["state"]}" d="{d}"/>')
+    # interactive: one keyboard stop (>= 24 px) whose Tooltip lists all five factors; each slice shows its own on hover
+    tip = "\n".join(f'{f["label"]}: {STATE_LABEL[f["state"]]}' for f in fs)
+    extra_svg = f' tabindex="0" data-tip="{_esc(tip)}"' if interactive else ""
+    return (f'<svg class="rosette{" rosette-i" if interactive else ""}" width="{size}" height="{size}" viewBox="0 0 {size} {size}" role="img" '
+            f'aria-label="{_esc(aria(fs, name))}"{extra_svg}>{"".join(parts)}</svg>')
 
 
 def _esc(s):

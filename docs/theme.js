@@ -1,1 +1,1 @@
-document.documentElement.className="js";try{if(localStorage.getItem("pacta-theme")==="slate")document.documentElement.dataset.theme="slate"}catch(e){}
+(function(){var d=document.documentElement,t="system",m=false;d.classList.add("js");try{t=localStorage.getItem("pacta-theme")||"system"}catch(e){}if(t==="slate")t="dark";if(t==="paper")t="light";if(t!=="light"&&t!=="dark")t="system";try{m=window.matchMedia("(prefers-color-scheme: dark)").matches}catch(e){}if(t==="dark"||(t==="system"&&m))d.classList.add("dark");d.setAttribute("data-theme-pref",t)})();

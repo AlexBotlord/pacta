@@ -21,7 +21,7 @@ For **collateral issuers** onboarding a new asset to Morpho, Euler, Aave or Sky,
 3. **Base Mainnet EAS `Aligned` attestation** recorded in `PactaCommitmentRegistry` [`0x35D21Bb4Df6586FE7759b5e57263ffeB3e1fd872`](https://basescan.org/address/0x35D21Bb4Df6586FE7759b5e57263ffeB3e1fd872).
 4. **Curator Diligence Dossier (PDF + JSON)**, paste-ready for Morpho, Euler, Aave and Sky forum listing proposals.
 
-Delivered within **24 hours** of confirmed scope and settlement. Optional **Continuous Aligned Maintenance: `$1,500 USDC / month`** (keeps the attestation and dossier current across governance proposals, signer rotations and timelock upgrades). Request at [`pacta.wtf/request/?tier=clearance`](https://pacta.wtf/request/?tier=clearance) or [`?tier=continuous`](https://pacta.wtf/request/?tier=continuous).
+Delivered within **24 hours** of confirmed scope and settlement. Optional **Continuous Monitoring: `$1,500 USDC / month`** (re-checks the control plane across governance proposals, signer rotations and timelock upgrades; the result can still be Delta). Request at [`pacta.wtf/request/?tier=clearance`](https://pacta.wtf/request/?tier=clearance) or [`?tier=continuous`](https://pacta.wtf/request/?tier=continuous).
 
 **Settlement, two tracks:**
 

@@ -98,6 +98,9 @@ class Element extends Node_ {
   appendChild(c) { if (typeof c === "string") c = new Text(c); c.parentNode = this; this.childNodes.push(c); return c; }
   remove() { if (this.parentNode) { this.parentNode.childNodes = this.parentNode.childNodes.filter(x => x !== this); this.parentNode = null; } }
   get children() { return this.childNodes.filter(c => c.nodeType === 1); }
+  get firstChild() { return this.childNodes[0] || null; }
+  contains(n) { for (let e = n; e; e = e.parentNode) if (e === this) return true; return false; }
+  insertBefore(c, ref) { if (typeof c === "string") c = new Text(c); c.parentNode = this; const i = this.childNodes.indexOf(ref); if (i < 0) this.childNodes.push(c); else this.childNodes.splice(i, 0, c); return c; }
   *_desc() { for (const c of this.children) { yield c; yield* c._desc(); } }
   querySelectorAll(sel) { const l = parseSelector(sel); return [...this._desc()].filter(e => matches(e, l)); }
   querySelector(sel) { return this.querySelectorAll(sel)[0] || null; }
@@ -155,8 +158,8 @@ function run(tree, app, loc) {
   const ctx = {
     window, document, location, navigator, URLSearchParams, URL, AbortController: loc.noAbort ? undefined : AbortController,
     console, Promise, JSON, Date, Math, Event: Event_,
-    localStorage: { getItem: () => null, setItem: () => {} },
-    setTimeout: () => 0, clearTimeout: () => {}, setInterval: () => 0,
+    localStorage: { getItem: () => null, setItem: () => {}, removeItem: () => {} },
+    setTimeout: loc.setTimeout || (() => 0), clearTimeout: loc.clearTimeout || (() => {}), setInterval: () => 0,
     fetch: loc.fetch || (() => Promise.reject(new Error("network disabled in harness")))
   };
   vm.createContext(ctx);
@@ -176,7 +179,7 @@ const TX = "0x" + "ab".repeat(32);
 const FORUM = "https://forum.example.invalid/t/harness-listing/1";
 const OPT = {
   clearance: "Full Protocol Control-Plane Dossier ($2,500–$5,000 USDC, 24h SLA)",
-  continuous: "Continuous Aligned Maintenance ($1,500 USDC per month)",
+  continuous: "Continuous Monitoring ($1,500 USDC per month)",
   api_sla: "Enterprise / High-Throughput API SLA (priced on scope)",
   community: "Community queue (free; unscheduled, typically 6–8 weeks)"
 };
@@ -259,7 +262,7 @@ try {
   pick(d, "continuous");
   q = ghParams(d);
   res.continuous_track = q.get("package_tier") === OPT.continuous && brief(d).includes("$1,500 USDC per month in USDC to the Pacta treasury")
-    && d.getElementById("req-pay-sum").textContent === "Continuous Aligned Maintenance · $1,500 USDC per month";
+    && d.getElementById("req-pay-sum").textContent === "Continuous Monitoring · $1,500 USDC per month";
   pick(d, "api_sla");
   q = ghParams(d);
   res.api_sla_track = q.get("package_tier") === OPT.api_sla && d.getElementById("req-pay").hidden === false
@@ -276,11 +279,12 @@ try {
   {
     const PF = "https://forum.example.invalid/t/listing-proposal/42";
     const fieldVal = (doc, id) => doc.getElementById(id).value;
-    const box = (doc, slug) => doc.querySelectorAll('input[name="protocol"]').find(x => x.getAttribute("data-slug") === slug);
-    const slug = input.prefillSlug, name = box(d, slug) && box(d, slug).getAttribute("value");
+    // v4: the protocols in scope are a Command combobox (role=option, aria-selected) instead of 86 checkboxes
+    const box = (doc, slug) => doc.querySelectorAll('[role="option"]').find(x => x.getAttribute("data-slug") === slug);
+    const slug = input.prefillSlug, name = box(d, slug) && box(d, slug).getAttribute("data-name");
     let x = run(input.request, input.app, { path: "/request/", search: "?tier=clearance&protocol=" + slug + "&forum=" + encodeURIComponent(PF) });
     let xd = x.document, xq = ghParams(xd);
-    res.prefill_clearance_protocol_forum = checked(xd) === "clearance" && settled(xd) === "invoice" && !!name && box(xd, slug).checked === true
+    res.prefill_clearance_protocol_forum = checked(xd) === "clearance" && settled(xd) === "invoice" && !!name && box(xd, slug).getAttribute("aria-selected") === "true"
       && fieldVal(xd, "req-org") === name && fieldVal(xd, "req-forum") === PF && brief(xd).includes("Protocols in scope: " + name)
       && brief(xd).includes("Forum proposal: " + PF) && xq.get("forum_proposal_url") === PF && xq.get("settlement_preference") === SET.invoice;
     x = run(input.request, input.app, { path: "/request/", search: "?tier=clearance&protocol=" + slug + "&forum=" + encodeURIComponent(PF) + "&settlement=direct" });
@@ -363,9 +367,11 @@ async function preflightScenario() {
     + "&caller_agent=pacta-wtf-checker&requester_role=individual_user&caller_purpose=general_research";
   res.pf_preset_fetches_once = calls.length === 1 && calls[0] === want;
   const txt = out.textContent;
-  res.pf_renders_verdict = txt.includes("MULTISIG_NO_TIMELOCK") && txt.includes("Risk 60/100") && txt.includes("multisig_safe (3-of-5)") && txt.includes("pause, upgrade");
+  res.pf_renders_verdict = txt.includes("MULTISIG_NO_TIMELOCK") && txt.includes("Risk score") && txt.includes("60/100") && txt.includes("multisig_safe (3-of-5)") && txt.includes("pause, upgrade");
   // V05 + F05: plain-English verdict with the raw enum / JSON one click away; live contract check vs pinned comparison; 1-click RPC verify
-  res.pp2_verdict_plain = txt.includes("A multisig can change it with no delay") && txt.includes("Heuristic score") && !!out.querySelector("[data-pf-raw]")
+  // v4 (U5): verdict first, then score / confidence / scope, then facts; cast + raw JSON in collapsed accordion items
+  res.pp2_verdict_plain = txt.includes("A multisig can change it with no delay") && !!out.querySelector("[data-pf-scope]") && !!out.querySelector("[data-pf-raw]")
+    && out.querySelector("[data-pf-raw]").getAttribute("open") === null
     && out.querySelector("[data-pf-raw]").textContent.includes("MULTISIG_NO_TIMELOCK") && txt.includes("Live contract check")
     && !!out.querySelector("[data-live-verify-btn]") && txt.includes('"getOwners()(address[])"') && txt.includes("--field hash");
   res.pf_text_only = out.querySelectorAll("img").length === 0 && txt.includes("<img src=x onerror=alert(1)>");
@@ -374,7 +380,8 @@ async function preflightScenario() {
   const form = d.getElementById("pf-form"), addr = form.querySelector('input[name="address"]');
   addr.value = "0x123"; const sev = new Event_("submit"); form.dispatchEvent(sev);
   await flush();
-  res.pf_invalid_address_no_fetch = calls.length === 1 && sev.defaultPrevented === true && /40-hex/.test(out.textContent);
+  const perr = d.getElementById("pf-addr-error");   // U3: the error sits under the field, not in the result area
+  res.pf_invalid_address_no_fetch = calls.length === 1 && sev.defaultPrevented === true && /40 hexadecimal/.test(perr.textContent) && perr.hidden === false;
   reply = { status: 429, body: { error: "rate_limited", detail: "60 requests / minute" } };
   addr.value = PF_EXAMPLE.address; form.dispatchEvent(new Event_("submit"));
   await flush(); await flush(); await flush();
@@ -399,7 +406,9 @@ async function staleResponseScenario() {
   addr.value = "0xnot-an-address"; form.dispatchEvent(new Event_("submit"));
   await flush();
   release(); await flush(); await flush(); await flush();
-  res.pf_f1_stale_200_keeps_input_error = pending && calls.length === 1 && /40-hex/.test(out.textContent) && !out.textContent.includes("MULTISIG_NO_TIMELOCK");
+  const perr = d.getElementById("pf-addr-error");
+  res.pf_f1_stale_200_keeps_input_error = pending && calls.length === 1 && /40 hexadecimal/.test(perr.textContent) && perr.hidden === false
+    && !out.textContent.includes("MULTISIG_NO_TIMELOCK");
   res.pf_f1_previous_request_aborted = !!signals[0] && signals[0].aborted === true;
   // same guarantee where AbortController does not exist (the sequence number alone protects the output)
   const p2 = run(input.index, input.app, { path: "/", fetch: fetchMock, noAbort: true });
@@ -407,7 +416,9 @@ async function staleResponseScenario() {
   a2.value = PF_EXAMPLE.address; f2.dispatchEvent(new Event_("submit")); await flush();
   a2.value = ""; f2.dispatchEvent(new Event_("submit")); await flush();
   release(); await flush(); await flush(); await flush();
-  res.pf_f1_no_abortcontroller_still_safe = calls.length === 2 && signals[1] === undefined && /40-hex/.test(o2.textContent) && !o2.textContent.includes("MULTISIG_NO_TIMELOCK");
+  const e2 = p2.document.getElementById("pf-addr-error");
+  res.pf_f1_no_abortcontroller_still_safe = calls.length === 2 && signals[1] === undefined && /Enter a contract address/.test(e2.textContent) && e2.hidden === false
+    && !o2.textContent.includes("MULTISIG_NO_TIMELOCK");
 }
 
 // (k) first-party beacon (docs/b.js) with a recording navigator.sendBeacon mock: payloads, copy hooks, scroll once, DNT,
@@ -426,10 +437,12 @@ async function beaconScenario() {
   res.b_hook_exposed = typeof p.window.pactaBeacon === "function";
   // copy hooks, by what the button copies / the link points to
   const d = p.document, n0 = p.beacons.length;
-  const copyMcp = d.querySelectorAll("button[data-copy]").find(b => /\/mcp$/.test(b.getAttribute("data-copy")));
-  const copyCurl = d.querySelectorAll("button[data-copy]").find(b => /^curl /.test(b.getAttribute("data-copy")));
+  // v4: the homepage quickstarts are Tabs of code blocks (data-copy-term); the CTA is a default-variant Button link
+  const termCopy = (re) => d.querySelectorAll("button[data-copy-term]").find(b => re.test((b.closest(".term").querySelector("pre") || { textContent: "" }).textContent));
+  const copyMcp = termCopy(/\/mcp$/);
+  const copyCurl = termCopy(/^curl /);
   const skill = d.querySelectorAll("a[href]").find(a => a.getAttribute("href") === "SKILL.md");
-  const cta = d.querySelectorAll("a.primary")[0];
+  const cta = d.querySelectorAll('a[data-variant="default"]')[0];
   click(copyMcp); click(copyCurl); click(skill); click(cta);
   res.b_copy_and_cta_events = same(p.events().slice(n0).map(e => e.e), ["copy_mcp_url", "copy_curl", "copy_skill_md", "cta_click"])
     && p.events().slice(n0).every(e => e.p === "/" && !("r" in e) && !("u" in e));
@@ -481,7 +494,8 @@ async function beaconScenario() {
       res.b_cta_clearance_brief = same(br.kinds, ["free_notify", "clearance", "clearance_invoice"]) && same(br.events, ["cta_click", "cta_click", "cta_click"]);
     }
     const hp = ctaClicks(input.index, "/");
-    res.b_cta_pricing = same(hp.kinds, ["pricing_free", "pricing_rapid_500", "pricing_dossier"]) && same(hp.events, ["cta_click", "cta_click", "cta_click"]);
+    res.b_cta_pricing = same(hp.kinds, ["pricing_community", "pricing_rapid_500", "pricing_clearance", "pricing_continuous", "pricing_api_sla"])
+      && same(hp.events, ["cta_click", "cta_click", "cta_click", "cta_click", "cta_click"]);
   }
   // 404: not_found_404 instead of page_load; paths are redacted to a closed canonical set BEFORE transmission
   // (Phase C.1): only /protocols/<safe-slug>/ keeps its slug (and t); anything else is "/404"; IP / local referrers are dropped
@@ -527,7 +541,7 @@ async function beaconScenario() {
     sent.push([url, opts]); return Promise.resolve({ status: 0, type: "opaque" });
   };
   p = run(input.index, input.app, { path: "/", beacon: B, nav: { doNotTrack: "1" }, fetch: rec });
-  click(p.document.querySelectorAll("button[data-copy]").find(b => /\/mcp$/.test(b.getAttribute("data-copy"))));
+  click(p.document.querySelectorAll("button[data-copy-term]").find(b => /\/mcp$/.test((b.closest(".term").querySelector("pre") || { textContent: "" }).textContent)));
   p.window.scrollY = 3500; (p.winListeners.scroll || []).forEach(fn => fn({}));
   p.window.pactaBeacon("live_checker_submit", "ethereum:0x" + "1".repeat(40));
   res.b_dnt_sends_nothing = p.beacons.length === 0 && sent.length === 0 && typeof p.window.pactaBeacon === "function";
@@ -543,7 +557,7 @@ async function beaconScenario() {
   const trap = { get: () => { touched = true; return ""; }, set: () => { touched = true; } };
   const t0 = run(input.index, null, { path: "/", beacon: B });   // b.js alone
   Object.defineProperty(t0.document, "cookie", trap);
-  click(t0.document.querySelectorAll("button[data-copy]")[0]);
+  click(t0.document.querySelectorAll("button[data-copy], button[data-copy-term]")[0]);
   res.b_no_cookie_access = !touched && t0.events().length >= 1;
 }
 // (j) live timelock re-check: brief pages and #radar fetch the free /v1/briefs/live-timelocks once on load and update the
@@ -598,6 +612,41 @@ async function liveTimelockScenario() {
   x = await runWith(input.request, "/request/", { status: 200, body: { operations: [] } });
   res.live_no_fetch_elsewhere = x.calls.length === 0;
 }
+// (j2) T1 late-payload race (v4.1): once the 9 s fallback has shown the pinned snapshot, a live response that resolves afterwards
+// (the fetch itself, or a slow r.json() body) never changes a badge or the status line, and the guard aborts the request.
+async function lateLivePayloadScenario() {
+  const scen = async (lateBody) => {
+    const timers = [], signals = [];
+    let releaseFetch = null, releaseJson = null;
+    const fetchMock = (url, init) => {
+      if (!/live-timelocks/.test(String(url))) return Promise.reject(new Error("site data not needed here"));
+      signals.push(init && init.signal);
+      const body = () => new Promise((r) => { releaseJson = r; });
+      if (lateBody) return Promise.resolve({ status: 200, json: body });   // headers arrive, the body decodes late
+      return new Promise((r) => { releaseFetch = () => r({ status: 200, json: () => Promise.resolve(releaseFetch.payload) }); });
+    };
+    const p = run(input.index, input.app, { path: "/", fetch: fetchMock, setTimeout: (fn, ms) => { timers.push({ fn, ms }); return timers.length; } });
+    for (let i = 0; i < 4; i++) await flush();
+    const d = p.document, badges = () => d.querySelectorAll("#radar [data-ops]");
+    const snap = () => badges().map((b) => b.getAttribute("data-opstate") + "|" + b.textContent + "|" + (b.getAttribute("data-live") || "")).join(";")
+      + "#" + d.querySelector("[data-live-status-text]").textContent + "#" + d.querySelector("[data-radar-counts]").textContent;
+    const pendingBefore = !!d.querySelector("[data-live-pending]");
+    const guard = timers.find((t) => t.ms === 9000);
+    if (!guard) return { ok: false, why: "no 9000 ms guard" };
+    guard.fn();
+    const afterGuard = snap();
+    const fallbackShown = /Live check unavailable: showing the pinned snapshot/.test(afterGuard) && !d.querySelector("[data-live-pending]");
+    const payload = { operations: badges().flatMap((b) => (b.getAttribute("data-ops") || "").split(/\s+/).filter(Boolean))
+      .map((id) => ({ opId: id, live: { status: "pending", isOperationPending: true, isOperationDone: false }, block: { number: 26999999 } })) };
+    if (lateBody) releaseJson(payload); else { releaseFetch.payload = payload; releaseFetch(); }
+    for (let i = 0; i < 6; i++) await flush();
+    return { ok: pendingBefore && fallbackShown && snap() === afterGuard && !!signals[0] && signals[0].aborted === true
+      && !badges().some((b) => b.getAttribute("data-live") === "1"), afterGuard, after: snap() };
+  };
+  const a = await scen(false), b = await scen(true);
+  res.t1_late_payload_after_fallback_ignored = a.ok === true;
+  res.t1_late_json_body_after_fallback_ignored = b.ok === true;
+}
 // /protocols/ (visitor review P1): Status x Chain x search combine (intersection); "Clear all" resets all three; 0 matches renders a
 // one-click recovery prompt (textContent + data-precover buttons, no inline handlers); rows only toggle the hidden attribute.
 function protocolFilterScenario() {
@@ -614,20 +663,22 @@ function protocolFilterScenario() {
   const n = rows.length, want = (pred) => rows.filter(pred).length, empty = d.getElementById("proto-empty"), clear = d.getElementById("proto-clear");
   res.pfilter_initial_all = n === input.expectProtocols && shown().length === n && count() === n + " of " + n + " protocols shown" && empty.hidden && clear.hidden;
   let ok = true;
-  for (const [kind, k, pred] of [["status", "aligned", tierIs("aligned")], ["status", "parameter_delta", tierIs("parameter_delta")], ["status", "rpc_observed", tierIs("rpc_observed")],
+  // v4: one vocabulary (M3) and the scorecard counts (M4): Deltas / Protective / Aligned / Observed, labels "(n)"
+  for (const [kind, k, pred] of [["status", "aligned", tierIs("aligned")], ["status", "delta", tierIs("delta")], ["status", "protective", tierIs("protective")],
+    ["status", "observed", tierIs("observed")],
     ["chain", "ethereum", chainHas("ethereum")], ["chain", "base", chainHas("base")]]) {
     click("status", "all"); click("chain", "all"); click(kind, k);
     const label = (btn(kind, k).querySelector(".num") || { textContent: "" }).textContent;
-    ok = ok && shown().length === want(pred) && shown().every(pred) && String(want(pred)) === label && pressed(kind).join() === k
+    ok = ok && shown().length === want(pred) && shown().every(pred) && "(" + want(pred) + ")" === label && pressed(kind).join() === k
       && count() === want(pred) + " of " + n + " protocols shown";
   }
   res.pfilter_pills_exact = ok;
   // independent groups intersect: Status Parameter Delta x Chain Base = rows that are both
-  click("status", "parameter_delta"); click("chain", "base");
-  const both = (r) => tierIs("parameter_delta")(r) && chainHas("base")(r);
-  res.pfilter_status_x_chain = pressed("status").join() === "parameter_delta" && pressed("chain").join() === "base" && shown().length === want(both)
-    && shown().every(both) && want(both) < want(tierIs("parameter_delta"))
-    && d.getElementById("proto-active").textContent.includes("Status: Parameter Delta") && d.getElementById("proto-active").textContent.includes("Chain: Base") && !clear.hidden;
+  click("status", "delta"); click("chain", "base");
+  const both = (r) => tierIs("delta")(r) && chainHas("base")(r);
+  res.pfilter_status_x_chain = pressed("status").join() === "delta" && pressed("chain").join() === "base" && shown().length === want(both)
+    && shown().every(both) && want(both) < want(tierIs("delta"))
+    && d.getElementById("proto-active").textContent.includes("Docs vs chain: Deltas") && d.getElementById("proto-active").textContent.includes("Chain: Base") && !clear.hidden;
   click("status", "all"); click("chain", "all"); type("ethena");
   res.pfilter_text_search = shown().length >= 1 && shown().every((r) => (r.getAttribute("data-psearch") || "").includes("ethena")) && shown().length < n;
   // 0 matches: recovery prompt names the active filters and offers one-click fixes
@@ -676,21 +727,23 @@ async function visitorScenario() {
   const d = p.document, out = d.getElementById("pf-out");
   await flush(); await flush(); await flush();
   // Edge v3 hero: three receipts; a click renders the pinned receipt instantly and runs the live check of the same contract
-  const rec = d.querySelectorAll("[data-receipt]"), go = rec[0], ro = d.getElementById("receipt-out");
+  const rec = d.querySelectorAll("[data-receipt]"), go = rec[0], pc = d.querySelector("[data-proof-card]");   // V6 proof card
   reply = { status: 200, body: { ...PF_EXAMPLE, verdict: "UNCLASSIFIED_CONTRACT_CONTROLLER", riskScore: 60, source: "live_rpc",
     assessment: { coverage: "indexed_verified", confidence: "medium", method: "Live bytecode + storage heuristic", limits: ["riskScore is a heuristic."] },
     catalogMatch: { slug: "stader-labs-ethx", name: "Stader Labs (ETHx)", url: "https://pacta.wtf/protocols/stader-labs-ethx/", classification: "parameter_delta",
       pinnedBlock: 26403676, whatDiffers: { changed: [{ parameter: "Safe threshold", observed: "3-of-6", documented: "3-of-5" }],
         matched: [{ parameter: "Timelock delay", value: "7 d" }] } } } };
   go.dispatchEvent(new Event_("click"));
-  const instant = !!ro && ro.hidden === false && ro.textContent.includes("Stader ETHx: Docs say 3-of-5 · Chain says 3-of-6 Safe")
-    && ro.textContent.includes("Base EAS attested") && ro.querySelectorAll("a").some((a) => a.getAttribute("href") === "protocols/stader-labs-ethx/");
+  const pcv = (s) => (pc.querySelector(s) || { textContent: "" }).textContent;
+  const instant = !!pc && pcv("[data-pc-name]") === "Stader ETHx" && pcv("[data-pc-docs]") === "Manager Safe is 3-of-5" && pcv("[data-pc-chain]") === "Manager Safe is 3-of-6"
+    && /^Ethereum #[\d,]+$/.test(pcv("[data-pc-block]")) && pc.querySelector("[data-pc-href]").getAttribute("href") === "protocols/stader-labs-ethx/"
+    && go.getAttribute("aria-pressed") === "true";
   await flush(); await flush(); await flush();
   const t = out.textContent, link = out.querySelectorAll("a").find((a) => a.textContent === "Full record →");
   res.v_hero_receipts = rec.length === 3 && instant && rec.every((b) => /^0x[0-9a-fA-F]{40}$/.test(b.getAttribute("data-pf-address") || ""))
     && rec.map((b) => b.getAttribute("data-r-name")).join("|") === "Stader ETHx|YO Protocol|Moonwell (Base)";
   res.v_hero_click_fetches = calls.length === 1 && calls[0].includes("address=" + go.getAttribute("data-pf-address"));
-  res.v_assessment_next_to_score = t.includes("Risk 60/100") && t.includes("Confidence medium") && t.includes("Indexed & verified record")
+  res.v_assessment_next_to_score = t.includes("Risk score") && t.includes("60/100") && t.includes("Confidence medium") && t.includes("Indexed & verified record")
     && t.includes("Limits: riskScore is a heuristic.");
   res.v_catalog_match = t.includes("Indexed by Pacta: Stader Labs (ETHx)") && t.includes("Changed: Safe threshold 3-of-6 observed vs 3-of-5 documented")
     && t.includes("Matched: Timelock delay: 7 d") && !!link && link.getAttribute("href") === "https://pacta.wtf/protocols/stader-labs-ethx/";
@@ -703,14 +756,16 @@ async function visitorScenario() {
     catalogMatch: { slug: "stader-labs-ethx", name: "Stader Labs (ETHx)", url: "https://pacta.wtf/protocols/stader-labs-ethx/", classification: "parameter_delta", pinnedBlock: 26403676 } } };
   go.dispatchEvent(new Event_("click"));
   await flush(); await flush(); await flush();
-  res.v_fallback_rendered = out.textContent.includes("PINNED CATALOG RECORD") && out.textContent.includes("Live RPC unavailable")
+  res.v_fallback_rendered = out.textContent.includes("Pinned record") && out.textContent.includes("Live RPC unavailable")
     && out.textContent.includes("Indexed by Pacta: Stader Labs (ETHx)") && !/HTTP 200/.test(out.textContent);
   // the hero checker flags a malformed address on its own input (aria-invalid + aria-describedby) and clears it on a valid one
   const pf = d.getElementById("pf-form"), pin = pf.querySelector('input[name="address"]');
   pin.value = "0x123"; pf.dispatchEvent(new Event_("submit")); await flush();
-  const bad = pin.getAttribute("aria-invalid") === "true" && pin.getAttribute("aria-describedby") === "pf-msg" && !!d.getElementById("pf-msg");
+  const bad = pin.getAttribute("aria-invalid") === "true" && pin.getAttribute("aria-describedby") === "pf-addr-error"
+    && d.getElementById("pf-addr-error").textContent.length > 0 && d.getElementById("pf-addr-error").hidden === false;
   pin.value = "0xA35b1B31Ce002FBF2058D22F30f95D405200A15b"; pf.dispatchEvent(new Event_("submit")); await flush(); await flush(); await flush();
-  res.e3_checker_aria_invalid = bad && pin.getAttribute("aria-invalid") === null && pin.getAttribute("aria-describedby") === null;
+  res.e3_checker_aria_invalid = bad && pin.getAttribute("aria-invalid") === null && pin.getAttribute("aria-describedby") === "pf-help"
+    && d.getElementById("pf-addr-error").hidden === true;
   const ages = d.querySelectorAll("[data-age]");
   res.v_ages = ages.length >= 2 && ages.every((a) => / \(\d+d \d+h \d+m ago\)$| \(\d+h \d+m ago\)$/.test(a.textContent));
   // Edge v3 scorecards: 16 static flagship rows; search / filters / Show all hydrate every protocol from /api/v1/scorecards.json
@@ -724,6 +779,13 @@ async function visitorScenario() {
   const opened = dr0.hidden === false && tog0.getAttribute("aria-expanded") === "true" && dr0.querySelectorAll("[data-factor]").length === 5;
   ev = new Event_("click"); ev.target = tog0; d.querySelector("[data-sc-body]").dispatchEvent(ev);
   res.e3_drawer_toggle = opened && dr0.hidden === true && tog0.getAttribute("aria-expanded") === "false";
+  // U4 (v4): a click anywhere in the row (here the "What differs" cell) toggles it too; the row carries .open while expanded
+  const find0 = rowsNow()[0].querySelector(".sc-find");
+  ev = new Event_("click"); ev.target = find0; d.querySelector("[data-sc-body]").dispatchEvent(ev);
+  const rowOpen = dr0.hidden === false && rowsNow()[0].classList.contains("open") && tog0.getAttribute("aria-expanded") === "true";
+  ev = new Event_("click"); ev.target = find0; d.querySelector("[data-sc-body]").dispatchEvent(ev);
+  res.v4_whole_row_toggle = rowOpen && dr0.hidden === true && !rowsNow()[0].classList.contains("open")
+    && rowsNow().every((r) => (r.querySelector(".sc-find").textContent || "").length <= 90 && !/…/.test(r.querySelector(".sc-find").textContent));
   d.querySelector("[data-sc-all]").dispatchEvent(new Event_("click"));
   for (let i = 0; i < 4; i++) await flush();
   const all = rowsNow();
@@ -740,8 +802,13 @@ async function visitorScenario() {
   pill("delta").dispatchEvent(new Event_("click")); await flush(); await flush();
   const nDelta = cards.filter((c) => c.grade === "delta").length;
   res.e3_filter_deltas = visible().length === nDelta && visible().every((r) => r.getAttribute("data-grade") === "delta") && pill("delta").getAttribute("aria-pressed") === "true";
-  pill("base").dispatchEvent(new Event_("click")); await flush(); await flush();
-  res.e3_filter_basket = visible().length === cards.filter((c) => (c.baskets || []).includes("base")).length && visible().length > 0;
+  // v4: the basket is its own Select and intersects with the Docs-vs-chain filter
+  const bsel = d.querySelector("[data-sc-basket]"), basket = (v) => { bsel.value = v; const e = new Event_("change"); e.target = bsel; bsel.dispatchEvent(e); };
+  basket("base"); await flush(); await flush();
+  const deltaBase = visible().length === cards.filter((c) => c.grade === "delta" && (c.baskets || []).includes("base")).length;
+  pill("all").dispatchEvent(new Event_("click")); await flush(); await flush();
+  res.e3_filter_basket = deltaBase && visible().length === cards.filter((c) => (c.baskets || []).includes("base")).length && visible().length > 0;
+  basket("all"); await flush();
   const q = d.getElementById("sc-q");
   pill("all").dispatchEvent(new Event_("click")); await flush();
   const tg = visible()[0].querySelector(".sc-toggle"); ev = new Event_("click"); ev.target = tg; d.querySelector("[data-sc-body]").dispatchEvent(ev);
@@ -749,11 +816,15 @@ async function visitorScenario() {
   const emp = d.querySelector("[data-sc-empty]");
   res.e3_zero_match = visible().length === 0 && emp.hidden === false && d.querySelectorAll("#scorecards tr.sc-drawer").every((x) => x.hidden);
   emp.querySelector("[data-sc-clear]").dispatchEvent(new Event_("click")); await flush();
-  res.e3_clear_filters = q.value === "" && visible().length === cards.length && emp.hidden === true && pill("all").getAttribute("aria-pressed") === "true";
+  res.e3_clear_filters = q.value === "" && visible().length === cards.length && emp.hidden === true && pill("all").getAttribute("aria-pressed") === "true"
+    && bsel.value === "all";
   q.value = "usdc"; q.dispatchEvent(new Event_("input")); await flush(); await flush();
   res.e3_search = visible().some((r) => r.getAttribute("data-slug") === "circle-usdc") && visible().length < cards.length;
   const rc = d.querySelector("[data-radar-counts]");
-  res.pp2_radar_counts = !!rc && /^\d+ pending operations? across \d+ protocols? · \d+ recently executed$/.test(rc.textContent);
+  // M4 (v4): the header counts the rows by state, e.g. "1 ready · 1 pending · 1 executed (2 operations)"
+  const ST = "(ready|pending|mixed|cancelled or unknown|executed)( \\(\\d+ operations\\))?";
+  res.pp2_radar_counts = !!rc && new RegExp("^\\d+ " + ST + "( · \\d+ " + ST + ")*$").test(rc.textContent)
+    && d.querySelectorAll("#radar tr[data-radar-row]").length === rc.textContent.split(" · ").reduce((s, x) => s + parseInt(x, 10), 0);
 }
 
 // F05 "Verify live on RPC" (behavioural): a mocked JSON-RPC responder for the four public RPCs records every call, so the test asserts
@@ -822,9 +893,10 @@ async function liveRpcScenario() {
   // (3) D1 + non-proxy: IMMUTABLE_NO_ADMIN renders the exact headline (heuristic caveat kept); the live read is owner() at the fresh block
   await submit({ ...PF_EXAMPLE, verdict: "IMMUTABLE_NO_ADMIN", riskScore: 0, isProxy: false, implementation: null, hasAdminSlot: false,
     controller: { address: null, kind: "none" }, capabilities: {}, summary: "No admin surface found." });
-  const vt = out.querySelector(".pf-verdict"), vb = vt && vt.querySelector(".badge");
-  res.pp3_immutable_headline = !!vt && (vb ? vb.textContent === "No standard upgrade or admin authority detected" : vt.textContent.startsWith("No standard upgrade or admin authority detected"))
-    && vt.textContent.includes("Heuristic score") && !out.textContent.includes("cannot be changed");
+  const vt = out.querySelector(".pf-verdict"), vb = out.querySelector("[data-pf-badge]");
+  // V7: the immutable result is neutral (never the amber warning badge); the score still says it rates this one address
+  res.pp3_immutable_headline = !!vt && vt.textContent === "No standard upgrade or admin authority detected" && !!vb && vb.getAttribute("data-variant") === "neutral"
+    && out.textContent.includes("0/100") && !!out.querySelector("[data-pf-scope]") && !out.textContent.includes("cannot be changed");
   log.length = 0;
   const ot = await clickLive(out);
   res.pp3_preflight_live_rpc_owner = !!ot && m("eth_call").length === 1 && m("eth_call")[0].params[0].data === "0x8da5cb5b"
@@ -843,6 +915,7 @@ async function liveRpcScenario() {
   try { await staleResponseScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await beaconScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await liveTimelockScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
+  try { await lateLivePayloadScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await visitorScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await liveRpcScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   process.stdout.write(JSON.stringify(res));

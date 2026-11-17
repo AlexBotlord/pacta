@@ -184,22 +184,22 @@
    "id": "https://pacta.wtf/briefs/ethena-ops-0x0ca0-0x1fe5/#radar",
    "title": "Ethena timelock: executed · Ethena USDe — RLUSD & USAT collateral onboarding",
    "url": "https://pacta.wtf/briefs/ethena-ops-0x0ca0-0x1fe5/",
-   "date_published": "2026-11-16T17:39:35Z",
-   "content_text": "Two queued EthenaMinting.addSupportedAsset calls onboard RLUSD and USAT at 200M / 20M USDe-per-block caps (stablesDeltaLimit = 0 bps). Read at finalized Ethereum block #26,429,140."
+   "date_published": "2026-11-17T11:02:47Z",
+   "content_text": "Two queued EthenaMinting.addSupportedAsset calls onboard RLUSD and USAT at 200M / 20M USDe-per-block caps (stablesDeltaLimit = 0 bps). Read at finalized Ethereum block #26,434,340."
   },
   {
    "id": "https://pacta.wtf/briefs/treehouse-op-0x2f11/#radar",
    "title": "Treehouse timelock: pending · Treehouse TREE — UUPS upgrade adding Blacklistable",
    "url": "https://pacta.wtf/briefs/treehouse-op-0x2f11/",
-   "date_published": "2026-11-16T17:39:35Z",
-   "content_text": "Upgrades the TREE governance token (not tETH) and installs a 5-of-7 Safe as blacklister: a zero-delay transfer-freeze role after execution. Read at finalized Ethereum block #26,429,140."
+   "date_published": "2026-11-17T11:02:47Z",
+   "content_text": "Upgrades the TREE governance token (not tETH) and installs a 5-of-7 Safe as blacklister: a zero-delay transfer-freeze role after execution. Read at finalized Ethereum block #26,434,340."
   },
   {
    "id": "https://pacta.wtf/briefs/etherfi-op-0x244e/#radar",
    "title": "ether.fi timelock: pending · ether.fi — LayerZero V2 delegate moved behind the 10-day timelock",
    "url": "https://pacta.wtf/briefs/etherfi-op-0x244e/",
-   "date_published": "2026-11-16T17:39:35Z",
-   "content_text": "EtherfiL1SyncPoolETH.setDelegate(EtherFiTimelock): protective hardening of the OApp's messaging configuration. Read at finalized Ethereum block #26,429,140."
+   "date_published": "2026-11-17T11:02:47Z",
+   "content_text": "EtherfiL1SyncPoolETH.setDelegate(EtherFiTimelock): protective hardening of the OApp's messaging configuration. Read at finalized Ethereum block #26,434,340."
   }
  ]
 }

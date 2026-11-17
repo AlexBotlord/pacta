@@ -61,8 +61,8 @@ WAVE2_DOC = (f"Bounties Wave 2: {_W2['program']}, in epochs (Epoch {_W2['current
              f"merge in weekly batches to the fixture's basePayoutAddress (not pre-escrowed): {BOUNTIES_URL}#wave-2")
 LEADERBOARD_DOC = ("Hunter leaderboard: verified catches, protocols covered, Base EAS attestations and settled Base USDC per hunter and agent "
                    "framework (settled only with a BaseScan payout tx), with README badges at /badges/hunters/<handle>.svg: " + LEADERBOARD_URL)
-UA_DOC = ('HTTP clients: send a User-Agent (curl -A "my-agent/1.0", or urllib.request.Request(url, headers={"User-Agent": "my-agent/1.0"}) '
-          'in Python): Cloudflare\'s edge refuses some default library agents with error 1010 before the API answers.')
+UA_DOC = ('HTTP clients: curl and python-requests work with their default User-Agent. For the Python standard library, send any '
+          'User-Agent header (urllib.request.Request(url, headers={"User-Agent": "my-agent/1.0"})) or read the static JSON on pacta.wtf.')
 REQUEST_DOC = ("Opt-in demand intake: when a result carries coverage_gap_hint (lookup miss, unindexed or unclassified pre-flight target, unsupported chain), "
                "ask the user, then call pacta_submit_request (or POST " + REQUESTS_URL + ") with the three caller fields, request_type "
                "(missing_protocol | unsupported_chain | missing_check_surface | doc_or_data_discrepancy | mcp_or_api_feature), target_subject, "

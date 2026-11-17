@@ -284,7 +284,7 @@ export function lookupProtocols(raw = {}) {
 // (EAS-attested, at least one record differs from the documentation), "rpc_observed" (RPC-pinned only, documentation not
 // assessed; never implies an EAS attestation). Byte-identical to tools/build_lookup.py badge_svg() (the site build checks).
 export const BADGE_TIERS = Object.freeze({
-  aligned: Object.freeze({ label: "Aligned · Base EAS", color: "#047857" }),
+  aligned: Object.freeze({ label: "Aligned · Base EAS", color: "#374151" }),   // neutral, never safety-green
   parameter_delta: Object.freeze({ label: "Parameter Delta", color: "#b45309" }),
   rpc_observed: Object.freeze({ label: "RPC-Observed", color: "#475569" }),
 });

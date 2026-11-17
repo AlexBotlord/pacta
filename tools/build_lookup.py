@@ -267,7 +267,8 @@ def write_all(root, docs, sp, onb, radar, brief_protocol):
 # ---- control-plane status badges: byte-identical to badgeSvg() in packages/mcp-server/src/lookup.mjs (the worker's
 # GET /v1/badges/<slug>.svg serves the same block); verify_site_v2.py compares all 53 through node.
 BADGE_TITLE = "Pacta Control Plane"
-BADGE_TIERS = {"aligned": ("Aligned · Base EAS", "#047857"), "parameter_delta": ("Parameter Delta", "#b45309"),
+# v4.5.1 R3-01: Aligned is neutral (gray-700, white text 10.3:1), never safety-green; amber stays reserved for Parameter Delta
+BADGE_TIERS = {"aligned": ("Aligned · Base EAS", "#374151"), "parameter_delta": ("Parameter Delta", "#b45309"),
                "rpc_observed": ("RPC-Observed", "#475569")}
 
 

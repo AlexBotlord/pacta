@@ -28,6 +28,8 @@ Paid in USDC on Base Mainnet in weekly batches, within 7 days of maintainer merg
 
 Ask in Community Q&A (GitHub Discussions): https://github.com/Fractal-Neurons/pacta/discussions. Questions about targets, fixtures or the MCP tools go to the Builder & Bounty Q&A thread: https://github.com/Fractal-Neurons/pacta/discussions/44
 
+*Tip: Star & Watch `Fractal-Neurons/pacta` (Releases / Issues) to get notified when new funded Wave 2 cohorts open — starring is completely optional and never affects bounty review or payout eligibility.*
+
 ## Rules
 
 - Up to 3 concurrent open CI-passing PRs per contributor; unlimited sequential slots once merged.

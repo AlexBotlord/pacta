@@ -2726,6 +2726,10 @@ def wave1_ledger_html(lb):
             f'<th>Status</th><th>Settled (Base USDC)</th></tr></thead><tbody>{"".join(rows)}</tbody></table>')
 
 
+WAVE2_WATCH_TIP = ("*Tip: Star & Watch `Fractal-Neurons/pacta` (Releases / Issues) to get notified when new funded Wave 2 cohorts open — "
+                   "starring is completely optional and never affects bounty review or payout eligibility.*")
+
+
 def wave2_master_issue_md(n_protocols):
     """bounties/WAVE2-MASTER-ISSUE.md: the single rolling GitHub issue, verbatim (the H1 is the issue title). Generated from
     tools/bounty_wave2.json so the numbers can never drift from the site."""
@@ -2761,6 +2765,8 @@ Targets already in https://pacta.wtf/api/v1/protocols.json are only eligible as 
 ## Questions
 
 Ask in Community Q&A (GitHub Discussions): {COMMUNITY_URL}. Questions about targets, fixtures or the MCP tools go to the Builder & Bounty Q&A thread: {COMMUNITY_QA_URL}
+
+{WAVE2_WATCH_TIP}
 
 ## Rules
 

@@ -136,6 +136,7 @@ function run(tree, app, loc) {
   document.nodeType = 9; document.appendChild(html);
   document.documentElement = html; document.body = body;
   document.createElement = tag => new Element(tag, {});
+  document.createElementNS = (ns, tag) => new Element(tag, {});   // SVG rosettes (namespace irrelevant in the synthetic DOM)
   document.createTextNode = t => new Text(String(t));
   document.getElementById = id => document.querySelectorAll("[id]").find(e => e.getAttribute("id") === id) || null;
   document.execCommand = () => true;
@@ -174,7 +175,7 @@ const SCOPE = "HARNESS-SCOPE-7c1e https://example.invalid/docs 0x111111111111111
 const TX = "0x" + "ab".repeat(32);
 const FORUM = "https://forum.example.invalid/t/harness-listing/1";
 const OPT = {
-  clearance: "24h Onboarding & Delta Clearance ($5,000 USDC flat)",
+  clearance: "Full Protocol Control-Plane Dossier ($2,500–$5,000 USDC, 24h SLA)",
   continuous: "Continuous Aligned Maintenance ($1,500 USDC per month)",
   api_sla: "Enterprise / High-Throughput API SLA (priced on scope)",
   community: "Community queue (free; unscheduled, typically 6–8 weeks)"
@@ -219,7 +220,7 @@ try {
   res.clearance_github_tier_exact = !!q && q.get("package_tier") === OPT.clearance && q.get("settlement_preference") === SET.invoice;
   res.clearance_brief_has_price_and_invoice = /\$5,000 USDC/.test(brief(d)) && brief(d).includes("Settlement: Option A") && !brief(d).includes("Payment:")
     && /^0x[0-9a-fA-F]{40}$/.test(treasury || "") && !brief(d).includes(treasury);
-  res.pay_summary_tracks_tier = d.getElementById("req-pay-sum").textContent === "24h Onboarding & Delta Clearance · $5,000 USDC flat";
+  res.pay_summary_tracks_tier = d.getElementById("req-pay-sum").textContent === "Full Protocol Control-Plane Dossier · $2,500–$5,000 USDC, 24h SLA";
   // (b) Option B (direct on-chain USDC): tx field + treasury shown; a valid tx hash + forum URL flow into the brief and the GitHub prefill
   settle(d, "direct");
   res.direct_shows_tx_and_treasury = d.getElementById("req-tx-field").hidden === false && d.getElementById("req-direct").hidden === false
@@ -268,6 +269,9 @@ try {
   res.prefill_selects_community = checked(p.document) === "community" && p.document.getElementById("req-pay").hidden === true;
   p = run(input.request, input.app, { path: "/request/", search: "?tier=disclosure" });
   res.prefill_unknown_tier_keeps_clearance = checked(p.document) === "clearance";
+  p = run(input.request, input.app, { path: "/request/", search: "?tier=rapid-500" });
+  res.prefill_rapid_500 = checked(p.document) === "rapid-500" && p.document.getElementById("req-pay").hidden === false
+    && ghParams(p.document) !== null && ghParams(p.document).get("package_tier") === "Rapid Single-Gap Re-Verification ($500 USDC, 24h SLA)";
   // (f2) /request/?tier=…&protocol=…&forum=…&settlement=… prefill (the conversion-card links)
   {
     const PF = "https://forum.example.invalid/t/listing-proposal/42";
@@ -310,22 +314,13 @@ try {
     const badForums = ["http://forum.example.invalid/t/1", "https://user:pw@forum.example.invalid/t/1", "https://:pw@forum.example.invalid/",
       "https://forum.example.invalid/" + "a".repeat(300), "https://forum.example.invalid/t 1", "data:text/html,hi", "//forum.example.invalid/t/1", "https:"];
     res.prefill_forum_https_only = badForums.every(f => fieldVal(run(input.request, input.app, { path: "/request/", search: "?forum=" + encodeURIComponent(f) }).document, "req-forum") === "");
-    // the homepage #request builder reads the same parameters
-    x = run(input.index, input.app, { path: "/", search: "?tier=continuous&protocol=" + slug, hash: "#request" });
-    res.prefill_homepage_request = checked(x.document) === "continuous" && box(x.document, slug).checked === true && fieldVal(x.document, "req-org") === name;
   }
-  // (g) homepage plan buttons preselect their track in #request
   p = run(input.index, input.app, { path: "/" });
-  const btn = p.document.querySelectorAll("a[data-tier]").find(a => a.getAttribute("data-tier") === "community");
-  const cev = new Event_("click"); btn.dispatchEvent(cev);
-  res.homepage_plan_button_preselects = checked(p.document) === "community";
   // (h) malformed hashes never throw during initialization; a real id still opens its drawer
   for (const h of ["#r-[unclosed", "#r-x\\", "#r-\"]", "#r-%E0%A4%A"]) {
     try { run(input.index, input.app, { path: "/", hash: h }); res["hash_ok " + h] = true; }
     catch (e) { res["hash_ok " + h] = false; res["hash_err " + h] = String(e); }
   }
-  p = run(input.index, input.app, { path: "/", hash: "#r-" + input.rowId });
-  res.valid_hash_opens_drawer = p.document.getElementById("r-" + input.rowId).classList.contains("open");
   // (i0) the hero livebar names the next ETA that has not elapsed yet (tick() runs on DOMContentLoaded)
   {
     const lb = p.document.querySelector(".livebar");
@@ -486,7 +481,7 @@ async function beaconScenario() {
       res.b_cta_clearance_brief = same(br.kinds, ["free_notify", "clearance", "clearance_invoice"]) && same(br.events, ["cta_click", "cta_click", "cta_click"]);
     }
     const hp = ctaClicks(input.index, "/");
-    res.b_cta_pricing = same(hp.kinds, ["pricing_clearance", "pricing_continuous", "pricing_api_sla"]) && same(hp.events, ["cta_click", "cta_click", "cta_click"]);
+    res.b_cta_pricing = same(hp.kinds, ["pricing_free", "pricing_rapid_500", "pricing_dossier"]) && same(hp.events, ["cta_click", "cta_click", "cta_click"]);
   }
   // 404: not_found_404 instead of page_load; paths are redacted to a closed canonical set BEFORE transmission
   // (Phase C.1): only /protocols/<safe-slug>/ keeps its slug (and t); anything else is "/404"; IP / local referrers are dropped
@@ -672,6 +667,7 @@ async function visitorScenario() {
   let reply = { status: 200, body: PF_EXAMPLE };
   const fetchMock = (url) => {
     const u = String(url);
+    if (/api\/v1\/scorecards\.json/.test(u) && input.scorecardsJson) return Promise.resolve({ status: 200, json: () => Promise.resolve(input.scorecardsJson) });
     if (/api\/v1\/index\.json/.test(u) && input.indexJson) return Promise.resolve({ status: 200, json: () => Promise.resolve(input.indexJson) });
     if (!/\/v1\/check\/preflight/.test(u)) return Promise.reject(new Error("not needed"));
     calls.push(u); const r = reply; return Promise.resolve({ status: r.status, json: () => Promise.resolve(r.body) });
@@ -679,33 +675,21 @@ async function visitorScenario() {
   const p = run(input.index, input.app, { path: "/", fetch: fetchMock });
   const d = p.document, out = d.getElementById("pf-out");
   await flush(); await flush(); await flush();
-  const hero = d.querySelector(".hero-try"), go = hero && hero.querySelector("[data-pf-scroll]");
-  res.v_hero_try = !!hero && /1 · See a live check first/.test(hero.textContent) && /What this tells you:/.test(hero.textContent)
-    && !!go && go.getAttribute("data-pf-address") === "0xA35b1B31Ce002FBF2058D22F30f95D405200A15b";
-  const conn = d.getElementById("connect");
-  res.v_connect_after = !!conn && /2 · Connect your agent \(MCP \/ REST\)/.test(conn.textContent) && conn.textContent.includes('curl -s -A "my-agent/1.0"');
+  // Edge v3 hero: three receipts; a click renders the pinned receipt instantly and runs the live check of the same contract
+  const rec = d.querySelectorAll("[data-receipt]"), go = rec[0], ro = d.getElementById("receipt-out");
   reply = { status: 200, body: { ...PF_EXAMPLE, verdict: "UNCLASSIFIED_CONTRACT_CONTROLLER", riskScore: 60, source: "live_rpc",
     assessment: { coverage: "indexed_verified", confidence: "medium", method: "Live bytecode + storage heuristic", limits: ["riskScore is a heuristic."] },
     catalogMatch: { slug: "stader-labs-ethx", name: "Stader Labs (ETHx)", url: "https://pacta.wtf/protocols/stader-labs-ethx/", classification: "parameter_delta",
       pinnedBlock: 26403676, whatDiffers: { changed: [{ parameter: "Safe threshold", observed: "3-of-6", documented: "3-of-5" }],
         matched: [{ parameter: "Timelock delay", value: "7 d" }] } } } };
   go.dispatchEvent(new Event_("click"));
+  const instant = !!ro && ro.hidden === false && ro.textContent.includes("Stader ETHx: Docs say 3-of-5 · Chain says 3-of-6 Safe")
+    && ro.textContent.includes("Base EAS attested") && ro.querySelectorAll("a").some((a) => a.getAttribute("href") === "protocols/stader-labs-ethx/");
   await flush(); await flush(); await flush();
   const t = out.textContent, link = out.querySelectorAll("a").find((a) => a.textContent === "Full record →");
-  res.v_hero_click_fetches = calls.length === 1 && calls[0].includes("address=0xA35b1B31Ce002FBF2058D22F30f95D405200A15b");
-  // V01: the above-the-fold hero form drives the same checker
-  const hf = d.querySelector("[data-hero-check]"), hin = hf && hf.querySelector('input[name="address"]');
-  const before = calls.length;
-  if (hin) { hin.value = "0xA35b1B31Ce002FBF2058D22F30f95D405200A15b"; hf.dispatchEvent(new Event_("submit")); await flush(); await flush(); await flush(); }
-  res.pp2_hero_form_runs = !!hf && calls.length === before + 1 && calls[calls.length - 1].includes("address=0xA35b1B31Ce002FBF2058D22F30f95D405200A15b")
-    && /1\d\d block-pinned checks|\d+ block-pinned checks/.test(d.querySelector("[data-statbar]").textContent);
-  // hero input mirrors aria-invalid / aria-describedby on a malformed address and clears them on a valid one
-  if (hin) {
-    hin.value = "0x123"; hf.dispatchEvent(new Event_("submit")); await flush();
-    const bad = hin.getAttribute("aria-invalid") === "true" && hin.getAttribute("aria-describedby") === "pf-msg" && !!d.getElementById("pf-msg");
-    hin.value = "0xA35b1B31Ce002FBF2058D22F30f95D405200A15b"; hf.dispatchEvent(new Event_("submit")); await flush(); await flush(); await flush();
-    res.pp4_hero_aria_invalid = bad && hin.getAttribute("aria-invalid") === null && hin.getAttribute("aria-describedby") === null;
-  }
+  res.v_hero_receipts = rec.length === 3 && instant && rec.every((b) => /^0x[0-9a-fA-F]{40}$/.test(b.getAttribute("data-pf-address") || ""))
+    && rec.map((b) => b.getAttribute("data-r-name")).join("|") === "Stader ETHx|YO Protocol|Moonwell (Base)";
+  res.v_hero_click_fetches = calls.length === 1 && calls[0].includes("address=" + go.getAttribute("data-pf-address"));
   res.v_assessment_next_to_score = t.includes("Risk 60/100") && t.includes("Confidence medium") && t.includes("Indexed & verified record")
     && t.includes("Limits: riskScore is a heuristic.");
   res.v_catalog_match = t.includes("Indexed by Pacta: Stader Labs (ETHx)") && t.includes("Changed: Safe threshold 3-of-6 observed vs 3-of-5 documented")
@@ -721,64 +705,53 @@ async function visitorScenario() {
   await flush(); await flush(); await flush();
   res.v_fallback_rendered = out.textContent.includes("PINNED CATALOG RECORD") && out.textContent.includes("Live RPC unavailable")
     && out.textContent.includes("Indexed by Pacta: Stader Labs (ETHx)") && !/HTTP 200/.test(out.textContent);
+  // the hero checker flags a malformed address on its own input (aria-invalid + aria-describedby) and clears it on a valid one
+  const pf = d.getElementById("pf-form"), pin = pf.querySelector('input[name="address"]');
+  pin.value = "0x123"; pf.dispatchEvent(new Event_("submit")); await flush();
+  const bad = pin.getAttribute("aria-invalid") === "true" && pin.getAttribute("aria-describedby") === "pf-msg" && !!d.getElementById("pf-msg");
+  pin.value = "0xA35b1B31Ce002FBF2058D22F30f95D405200A15b"; pf.dispatchEvent(new Event_("submit")); await flush(); await flush(); await flush();
+  res.e3_checker_aria_invalid = bad && pin.getAttribute("aria-invalid") === null && pin.getAttribute("aria-describedby") === null;
   const ages = d.querySelectorAll("[data-age]");
   res.v_ages = ages.length >= 2 && ages.every((a) => / \(\d+d \d+h \d+m ago\)$| \(\d+h \d+m ago\)$/.test(a.textContent));
-  // V04: the static homepage ships a curated sample; "Show all" hydrates the full inspector list and index from /api/v1/index.json
-  const nAll = (input.indexJson && input.indexJson.entries || []).length;
-  res.pp2_static_sample = d.querySelectorAll("#insp-list a[data-id]").length === 12 && d.querySelectorAll("#matrix tbody tr.rec").length === 12;
-  const ia = d.querySelector("[data-insp-all]"); if (ia) ia.dispatchEvent(new Event_("click"));
-  const xa = d.querySelector("[data-ix-all]"); if (xa) xa.dispatchEvent(new Event_("click"));
-  await flush(); await flush(); await flush();
-  const hRows = d.querySelectorAll("#matrix tbody tr.rec");
-  const EXP = { ethereum: "https://etherscan.io", base: "https://basescan.org" };
-  const byId = {}; (input.indexJson.entries || []).forEach((e) => { byId[e.id] = e; });
-  res.pp2_hydrated_index = nAll > 12 && hRows.length === nAll && d.querySelectorAll("#insp-list a[data-id]").length === nAll
-    && hRows.every((r) => {
-      const e = byId[r.getAttribute("data-id")], dr = d.getElementById("r-" + r.getAttribute("data-id"));
-      const href = EXP[e && e.chain === "base" ? "base" : "ethereum"] + "/block/" + (e && e.block_number);
-      return !!e && !!dr && dr.querySelectorAll("a").some((a) => a.getAttribute("href") === href) && dr.textContent.includes(e.block_hash ? e.block_hash.slice(0, 8) : "");
-    }) && ia.hidden === true && xa.hidden === true;
-  // inspector parity: every flagged record's What differs (app.js) equals the Python extractor's lines
-  let parity = true, n = 0;
-  const links = d.querySelectorAll("a[data-id]");
-  for (const [id, want] of Object.entries(input.whatDiffers || {})) {
-    const a = links.find((x) => x.getAttribute("data-id") === id); if (!a) { parity = false; continue; }
-    const ev = new Event_("click"); ev.target = a; d.getElementById("insp-list").dispatchEvent(ev);
-    const box = d.getElementById("insp-panel").querySelector("[data-what-differs]");
-    const got = box ? { changed: box.querySelectorAll("[data-wd-changed]").map((x) => x.textContent), matched: box.querySelectorAll("[data-wd-matched]").map((x) => x.textContent) } : null;
-    if (!got || JSON.stringify(got) !== JSON.stringify(want)) { parity = false; res.v_parity_first_diff = res.v_parity_first_diff || { id, got, want }; }
-    n++;
-  }
-  const aligned = links.find((x) => x.getAttribute("data-class") === "aligned_baseline");
-  if (aligned) { const ev = new Event_("click"); ev.target = aligned; d.getElementById("insp-list").dispatchEvent(ev); }
-  res.v_inspector_what_differs = parity && n >= 20 && !!aligned && !d.getElementById("insp-panel").querySelector("[data-what-differs]");
-  // F02: a filter that hides the selected record selects the first visible one; 0 matches -> empty state + working Clear filters
-  const iq = d.getElementById("insp-q"), panel = d.getElementById("insp-panel");
-  if (iq) {
-    iq.value = "zzz-no-such-protocol"; iq.dispatchEvent(new Event_("input"));
-    await flush(); await flush();
-    const emp = d.querySelector("[data-insp-empty]");
-    res.pp2_insp_empty_state = !!emp && emp.hidden === false && panel.hidden === true;
-    const clr = emp && emp.querySelector("[data-insp-clear]");
-    if (clr) clr.dispatchEvent(new Event_("click"));
-    await flush(); await flush();
-    res.pp2_insp_clear_filters = iq.value === "" && panel.hidden === false && !!emp && emp.hidden === true
-      && links.filter((x) => !x.parentNode.hidden).length === links.length;
-    const dl = d.querySelector('.bench-filter button[data-f="aligned_baseline"]');
-    if (dl) dl.dispatchEvent(new Event_("click"));
-    await flush(); await flush();
-    const cur = links.find((x) => x.getAttribute("aria-current") === "true");
-    res.pp2_insp_selection_follows_filter = !!cur && !cur.parentNode.hidden && cur.getAttribute("data-class") === "aligned_baseline";
-    const all = d.querySelector('.bench-filter button[data-f="all"]'); if (all) all.dispatchEvent(new Event_("click"));
-    await flush(); await flush();
-  }
-  // curator baskets on the inspector (rules from the pills): Base Ecosystem shows only Base records
-  const bb = d.querySelector('[data-insp-basket="base"]');
-  if (bb) { bb.dispatchEvent(new Event_("click")); await flush(); await flush(); }
-  const visL = d.querySelectorAll("#insp-list a[data-id]").filter((a) => !a.parentNode.hidden);
-  res.pp2_baskets_inspector = !!bb && visL.length > 0 && visL.every((a) => (byId[a.getAttribute("data-id")] || {}).chain === "base");
-  const ba = d.querySelector('[data-insp-basket="all"]'); if (ba) { ba.dispatchEvent(new Event_("click")); await flush(); await flush(); }
-  // F03: the radar header counts follow the row badges (executed never counted as queued)
+  // Edge v3 scorecards: 16 static flagship rows; search / filters / Show all hydrate every protocol from /api/v1/scorecards.json
+  const cards = (input.scorecardsJson && input.scorecardsJson.protocols) || [];
+  const rowsNow = () => d.querySelectorAll("#scorecards tr.sc-row"), visible = () => rowsNow().filter((r) => !r.hidden);
+  res.e3_static_sixteen = rowsNow().length === 16 && d.querySelectorAll("#scorecards tr.sc-drawer").length === 16
+    && rowsNow().every((r) => r.querySelector("svg.rosette") && r.querySelector(".grade"));
+  // a drawer opens / closes from its row toggle and carries the 5-factor breakdown
+  const tog0 = rowsNow()[0].querySelector(".sc-toggle"), dr0 = d.getElementById(tog0.getAttribute("aria-controls"));
+  let ev = new Event_("click"); ev.target = tog0; d.querySelector("[data-sc-body]").dispatchEvent(ev);
+  const opened = dr0.hidden === false && tog0.getAttribute("aria-expanded") === "true" && dr0.querySelectorAll("[data-factor]").length === 5;
+  ev = new Event_("click"); ev.target = tog0; d.querySelector("[data-sc-body]").dispatchEvent(ev);
+  res.e3_drawer_toggle = opened && dr0.hidden === true && tog0.getAttribute("aria-expanded") === "false";
+  d.querySelector("[data-sc-all]").dispatchEvent(new Event_("click"));
+  for (let i = 0; i < 4; i++) await flush();
+  const all = rowsNow();
+  res.e3_hydrated_all = cards.length === all.length && all.length > 16 && d.querySelector("[data-sc-all]").hidden === true
+    && all.every((r) => r.querySelector("svg.rosette") && r.querySelector("svg.rosette").querySelectorAll("path").length === 5
+      && /Upgradeability .*Timelock floor .*Signer quorum .*Emergency \/ freeze scope .*Docs-vs-chain parity/.test(r.querySelector("svg.rosette").getAttribute("aria-label") || ""))
+    && d.querySelectorAll("#scorecards tr.sc-drawer").length === cards.length;
+  const obs = cards.filter((c) => !c.easAttested).map((c) => c.slug);
+  res.e3_observed_parity_hollow = obs.length > 0 && obs.every((s) => {
+    const r = all.find((x) => x.getAttribute("data-slug") === s); const ps = r ? r.querySelector("svg.rosette").querySelectorAll("path") : [];
+    return ps.length === 5 && ps[4].getAttribute("class") === "r-u";
+  });
+  const pill = (k) => d.querySelectorAll("[data-sc-f]").find((b) => b.getAttribute("data-sc-f") === k);
+  pill("delta").dispatchEvent(new Event_("click")); await flush(); await flush();
+  const nDelta = cards.filter((c) => c.grade === "delta").length;
+  res.e3_filter_deltas = visible().length === nDelta && visible().every((r) => r.getAttribute("data-grade") === "delta") && pill("delta").getAttribute("aria-pressed") === "true";
+  pill("base").dispatchEvent(new Event_("click")); await flush(); await flush();
+  res.e3_filter_basket = visible().length === cards.filter((c) => (c.baskets || []).includes("base")).length && visible().length > 0;
+  const q = d.getElementById("sc-q");
+  pill("all").dispatchEvent(new Event_("click")); await flush();
+  const tg = visible()[0].querySelector(".sc-toggle"); ev = new Event_("click"); ev.target = tg; d.querySelector("[data-sc-body]").dispatchEvent(ev);
+  q.value = "zzz-no-such-protocol"; q.dispatchEvent(new Event_("input")); await flush(); await flush();
+  const emp = d.querySelector("[data-sc-empty]");
+  res.e3_zero_match = visible().length === 0 && emp.hidden === false && d.querySelectorAll("#scorecards tr.sc-drawer").every((x) => x.hidden);
+  emp.querySelector("[data-sc-clear]").dispatchEvent(new Event_("click")); await flush();
+  res.e3_clear_filters = q.value === "" && visible().length === cards.length && emp.hidden === true && pill("all").getAttribute("aria-pressed") === "true";
+  q.value = "usdc"; q.dispatchEvent(new Event_("input")); await flush(); await flush();
+  res.e3_search = visible().some((r) => r.getAttribute("data-slug") === "circle-usdc") && visible().length < cards.length;
   const rc = d.querySelector("[data-radar-counts]");
   res.pp2_radar_counts = !!rc && /^\d+ pending operations? across \d+ protocols? · \d+ recently executed$/.test(rc.textContent);
 }
@@ -811,7 +784,8 @@ async function liveRpcScenario() {
     return Promise.reject(new Error("not needed"));
   };
   const p = run(input.index, input.app, { path: "/", fetch: fetchMock });
-  const d = p.document, out = d.getElementById("pf-out"), panel = d.getElementById("insp-panel");
+  const d = p.document, out = d.getElementById("pf-out"), tog = d.querySelector("#scorecards .sc-toggle");
+  const panel = d.getElementById(tog.getAttribute("aria-controls"));
   for (let i = 0; i < 4; i++) await flush();
   const clickLive = async (root) => {
     const b = root.querySelector("[data-live-verify-btn]"); if (!b) return null;
@@ -819,9 +793,8 @@ async function liveRpcScenario() {
     return root.querySelector("[data-live-verify-out]").textContent;
   };
   const tail = (q) => q.params[q.params.length - 1];
-  // (1) inspector: select the first sample record (renders the sheet + button), then the record's own eth_call / slot at the fresh block
-  const first = d.querySelector("#insp-list a[data-id]");
-  if (first) { const ev = new Event_("click"); ev.target = first; d.getElementById("insp-list").dispatchEvent(ev); await flush(); }
+  // (1) scorecard drawer: opening it attaches Verify live on RPC for the protocol's lead record, read at a fresh block
+  { const ev = new Event_("click"); ev.target = tog; d.querySelector("[data-sc-body]").dispatchEvent(ev); await flush(); }
   log.length = 0;
   const it = await clickLive(panel);
   res.pp3_inspector_live_rpc = !!it && log.length === 2 && log[0].method === "eth_blockNumber" && ["eth_call", "eth_getStorageAt"].includes(log[1].method)

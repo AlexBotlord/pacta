@@ -1,5 +1,5 @@
 name: "Request a Pacta 24h Clearance, Continuous Aligned Maintenance, API SLA or Community Queue Scope"
-description: "Submit non-sensitive public scope for a 24h onboarding & delta clearance ($5,000 USDC), continuous Aligned maintenance ($1,500 USDC per month), an enterprise API SLA, or the free community queue."
+description: "Submit non-sensitive public scope for a full protocol control-plane dossier ($2,500–$5,000 USDC, 24h SLA), a $500 rapid single-gap re-verification, continuous Aligned maintenance ($1,500 USDC per month), an enterprise API SLA, or the free community queue."
 title: "[Pacta Scope] <Organization / Protocol Name>"
 labels: ["pacta-intake"]
 body:
@@ -29,7 +29,7 @@ body:
     attributes:
       label: "3. Track"
       options:
-        - "24h Onboarding & Delta Clearance ($5,000 USDC flat)"
+        - "Full Protocol Control-Plane Dossier ($2,500–$5,000 USDC, 24h SLA)"
         - "Continuous Aligned Maintenance ($1,500 USDC per month)"
         - "Enterprise / High-Throughput API SLA (priced on scope)"
         - "Rapid Single-Gap Re-Verification ($500 USDC, 24h SLA)"

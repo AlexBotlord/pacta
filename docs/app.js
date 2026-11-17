@@ -139,6 +139,163 @@ if (pres[0]) pres[0].textContent = "[![Pacta Control Plane](" + base + "/badges/
 if (pres[1]) pres[1].textContent = '<a href="' + base + "/protocols/" + slug + '/"><img src="' + base + "/badges/" + slug + '.svg" alt="Pacta Control Plane: ' + name + '" height="20"></a>';
 });
 }
+var SC_STATE = { g: "Strong", b: "Moderate", a: "Weak", n: "Not determined", u: "Uncompared" };
+var SC_GRADE = { delta: "DELTA", protective: "PROTECTIVE", aligned: "ALIGNED", observed: "OBSERVED" };
+var SC_CHAIN = { ethereum: "Ethereum", base: "Base" };
+var SVG_NS = "http://www.w3.org/2000/svg";
+function rosette(fs, size, name) {
+if (typeof document.createElementNS !== "function") return null;
+var svg = document.createElementNS(SVG_NS, "svg"), c = size / 2, r = size / 2 - 1.5;
+svg.setAttribute("class", "rosette"); svg.setAttribute("width", String(size)); svg.setAttribute("height", String(size));
+svg.setAttribute("viewBox", "0 0 " + size + " " + size); svg.setAttribute("role", "img");
+svg.setAttribute("aria-label", (name ? name + " control-plane rosette: " : "Control-plane rosette: ")
++ fs.map(function (f) { return f.label + " " + String(SC_STATE[f.state] || "").toLowerCase(); }).join("; "));
+fs.forEach(function (f, i) {
+var a0 = (-90 + 72 * i + 1.5) * Math.PI / 180, a1 = (-90 + 72 * (i + 1) - 1.5) * Math.PI / 180;
+var p = document.createElementNS(SVG_NS, "path");
+p.setAttribute("class", "r-" + (/^[gbanu]$/.test(f.state) ? f.state : "n"));
+p.setAttribute("d", "M" + c.toFixed(1) + " " + c.toFixed(1) + "L" + (c + r * Math.cos(a0)).toFixed(1) + " " + (c + r * Math.sin(a0)).toFixed(1)
++ "A" + r.toFixed(1) + " " + r.toFixed(1) + " 0 0 1 " + (c + r * Math.cos(a1)).toFixed(1) + " " + (c + r * Math.sin(a1)).toFixed(1) + "Z");
+svg.appendChild(p);
+});
+return svg;
+}
+function gradePill(card) {
+var g = SC_GRADE[card.grade] ? card.grade : "observed";
+var w = el("span", {}, [el("span", { "class": "grade g-" + g, text: SC_GRADE[g] })]);
+if (card.reconciled) w.appendChild(el("span", { "class": "grade-sub", text: "✓ Reconciled" }));
+return w;
+}
+function factorList(card) {
+var dl = el("dl", { "class": "factors" });
+(card.factors || []).forEach(function (f) {
+var st = /^[gbanu]$/.test(f.state) ? f.state : "n";
+var dd = el("dd", {}, [el("b", { text: SC_STATE[st] }), " · " + String(f.value || "")]);
+if (f.evidence) dd.appendChild(el("small", { "class": "ev", text: "Evidence: " + String(f.evidence) }));
+dl.appendChild(el("div", { "data-factor": String(f.key), "data-state": st }, [
+el("dt", {}, [el("span", { "class": "fdot r-" + st, "aria-hidden": "true" }), String(f.label)]), dd]));
+});
+return dl;
+}
+function scLive(box) {
+if (!box || box.getAttribute("data-live-ready")) return;
+box.setAttribute("data-live-ready", "1");
+var ch = box.getAttribute("data-probe-chain") === "base" ? "base" : "ethereum", target = box.getAttribute("data-probe-target") || "";
+var slot = box.getAttribute("data-probe-kind") === "eth_getStorageAt", sos = box.getAttribute("data-probe-sos") || "";
+var data = box.getAttribute("data-probe-data") || sos, sig = box.getAttribute("data-probe-sig") || "call";
+if (!ADDR_RE.test(target)) return;
+box.appendChild(liveVerifyBtn("Verify live on RPC", function () {
+return liveBlock(ch).then(function (b) {
+var call = slot ? rpcCall(ch, "eth_getStorageAt", [target, sos, b.hex]) : rpcCall(ch, "eth_call", [{ to: target, data: data }, b.hex]);
+return call.then(function (x) {
+return ["Live at block #" + b.n + " (" + b.hex + "): " + (slot ? "slot " + sos : sig), "Raw: " + String(x.result),
+"Decoded: " + decodeWord(x.result), hosts(b, x) + " · " + (b.ms + x.ms) + " ms"];
+});
+});
+}));
+}
+function scRows(card) {
+var nets = (card.chains || []).map(function (c) { return SC_CHAIN[c] || c; }).join(" · ");
+var slug = String(card.slug), did = "sc-d-" + slug;
+var tog = el("button", { "class": "sc-toggle", type: "button", "aria-expanded": "false", "aria-controls": did, text: String(card.name) });
+var ros = rosette(card.factors || [], 28, card.name);
+var row = el("tr", { "class": "sc-row", "data-slug": slug, "data-grade": String(card.grade), "data-baskets": (card.baskets || []).join(" "),
+"data-search": String(card.search || "") }, [
+el("td", {}, [tog, el("span", { "class": "sc-chain", text: nets })]), el("td", {}, [gradePill(card)]),
+el("td", {}, ros ? [ros] : [String(SC_GRADE[card.grade] || "")]), el("td", { "class": "sc-find", text: String(card.finding || "") })]);
+var p = card.probe || {};
+var live = el("div", { "class": "sc-live", "data-probe-chain": String(p.chain || ""), "data-probe-target": String(p.target_contract || ""),
+"data-probe-kind": String(p.check_type || ""), "data-probe-sos": String(p.selector_or_slot || ""), "data-probe-data": String(p.repro_calldata || ""),
+"data-probe-sig": String(p.call_signature || "") });
+var dr = el("div", { "class": "sc-dr" }, [factorList(card),
+el("p", { "class": "sc-meta", text: (card.easAttested ? "Base EAS attested" : "RPC-observed (not EAS-attested)") + " · " + card.records
++ " block-pinned " + (card.records === 1 ? "check" : "checks") + " · pinned block #" + num(card.pinnedBlock) }), live]);
+if (p.target_contract) dr.appendChild(term(castCmd(p)));
+dr.appendChild(el("p", {}, [el("a", { href: "protocols/" + slug + "/", text: "Full scorecard →" })]));
+var drawer = el("tr", { "class": "sc-drawer", id: did, hidden: "" }, [el("td", { colspan: "4" }, [dr])]);
+return [row, drawer];
+}
+function initScorecards() {
+var root = $("#scorecards"); if (!root) return;
+var body = $("[data-sc-body]", root), q = $("#sc-q", root), empty = $("[data-sc-empty]", root), more = $("[data-sc-all]", root);
+if (!body) return;
+var filt = "all", hydrated = false, loading = null;
+function rows() { return $$("tr.sc-row", body); }
+function drawerOf(r) { return $("#" + "sc-d-" + r.getAttribute("data-slug")); }
+function closeAll() {
+rows().forEach(function (r) {
+var d = drawerOf(r); if (d) d.hidden = true;
+var t = $(".sc-toggle", r); if (t) t.setAttribute("aria-expanded", "false");
+});
+}
+function apply() {
+var t = q ? String(q.value || "").trim().toLowerCase() : "", shown = 0;
+rows().forEach(function (r) {
+var g = r.getAttribute("data-grade"), bs = (r.getAttribute("data-baskets") || "").split(" ");
+var ok = (filt === "all" || (filt === "delta" ? g === "delta" : bs.indexOf(filt) >= 0))
+&& (!t || (r.getAttribute("data-search") || "").indexOf(t) >= 0);
+r.hidden = !ok; if (ok) shown++;
+var d = drawerOf(r); if (d && !ok) { d.hidden = true; var tg = $(".sc-toggle", r); if (tg) tg.setAttribute("aria-expanded", "false"); }
+});
+if (shown === 0) closeAll();
+if (empty) empty.hidden = shown !== 0;
+return shown;
+}
+function hydrate() {
+if (hydrated) return Promise.resolve(true);
+if (loading) return loading;
+if (typeof fetch !== "function") return Promise.resolve(false);
+loading = fetch(body.getAttribute("data-src") || "api/v1/scorecards.json").then(function (res) { return res.json(); }).then(function (d) {
+var cards = d && Array.isArray(d.protocols) ? d.protocols : [];
+if (!cards.length) return false;
+body.textContent = "";
+cards.forEach(function (c) { scRows(c).forEach(function (n) { body.appendChild(n); }); });
+hydrated = true;
+if (more) more.hidden = true;
+return true;
+}).catch(function () { loading = null; return false; });
+return loading;
+}
+function then(fn) { return function () { var a = arguments; hydrate().then(function () { fn.apply(null, a); }); }; }
+body.addEventListener("click", function (ev) {
+var t = ev.target && ev.target.closest ? ev.target.closest(".sc-toggle") : null; if (!t) return;
+var d = $("#" + t.getAttribute("aria-controls")); if (!d) return;
+var open = d.hidden; d.hidden = !open; t.setAttribute("aria-expanded", String(open));
+if (open) scLive($(".sc-live", d));
+});
+if (q) {
+q.addEventListener("focus", function () { hydrate(); });
+q.addEventListener("input", then(function () { apply(); }));
+}
+$$("[data-sc-f]", root).forEach(function (b) {
+b.addEventListener("click", then(function () {
+filt = b.getAttribute("data-sc-f") || "all";
+$$("[data-sc-f]", root).forEach(function (o) { o.setAttribute("aria-pressed", String(o === b)); });
+apply();
+}));
+});
+if (more) more.addEventListener("click", then(function () { apply(); }));
+var clr = empty && $("[data-sc-clear]", empty);
+if (clr) clr.addEventListener("click", function () {
+filt = "all"; if (q) q.value = "";
+$$("[data-sc-f]", root).forEach(function (o) { o.setAttribute("aria-pressed", String(o.getAttribute("data-sc-f") === "all")); });
+apply();
+});
+}
+function initReceipts() {
+var out = $("#receipt-out"); if (!out) return;
+$$("[data-receipt]").forEach(function (b) {
+b.addEventListener("click", function () {
+var href = b.getAttribute("data-r-href") || "";
+out.textContent = "";
+out.appendChild(el("b", { text: (b.getAttribute("data-r-name") || "") + ": " }));
+out.appendChild(document.createTextNode((b.getAttribute("data-r-docs") || "") + " · " + (b.getAttribute("data-r-chain") || "")
++ " · pinned at " + (b.getAttribute("data-r-net") || "") + " block #" + num(b.getAttribute("data-r-block") || 0) + " · Base EAS attested · "));
+if (/^protocols\/[a-z0-9-]+\/$/.test(href)) out.appendChild(el("a", { href: href, text: "Full record →" }));
+out.hidden = false;
+});
+});
+}
 function initHeroCheck() {
 var f = $("[data-hero-check]"), pf = $("#pf-form"); if (!f || !pf) return;
 f.addEventListener("submit", function (ev) {
@@ -570,9 +727,9 @@ apply();
 }
 var REQ_TO = "pacta@dri.network";
 var TRACK = {
-clearance: ["24h Onboarding & Delta Clearance ($5,000 USDC flat)",
-"24h Onboarding & Delta Clearance ($5,000 USDC flat)",
-"Pacta 24h clearance request", "$5,000 USDC flat"],
+clearance: ["Full Protocol Control-Plane Dossier ($2,500–$5,000 USDC, 24h SLA)",
+"Full Protocol Control-Plane Dossier ($2,500–$5,000 USDC, 24h SLA)",
+"Pacta 24h clearance request", "$2,500–$5,000 USDC (24h SLA)"],
 continuous: ["Continuous Aligned Maintenance ($1,500 USDC per month)",
 "Continuous Aligned Maintenance ($1,500 USDC per month)",
 "Pacta continuous Aligned maintenance request", "$1,500 USDC per month"],
@@ -1005,7 +1162,7 @@ $$("[data-snapshot-fallback]").forEach(function (n) { n.hidden = !stale; });
 }
 document.addEventListener("DOMContentLoaded", function () {
 initTheme(); initCopy(); initBeaconHooks(); tick(); setInterval(tick, 30000);
-initIndex(); initRequest(); initInspector(); initPreflight(); initLiveTimelocks(); initProtocolFilter(); initAges(); initRefresh(); initHeroCheck(); initBadgeWidget();
+initIndex(); initRequest(); initInspector(); initPreflight(); initLiveTimelocks(); initProtocolFilter(); initAges(); initRefresh(); initHeroCheck(); initBadgeWidget(); initScorecards(); initReceipts();
 setInterval(initAges, 60000);
 if ($("#insp-list")) loadData().catch(function () {  });
 });

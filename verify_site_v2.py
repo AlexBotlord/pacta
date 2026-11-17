@@ -218,6 +218,7 @@ def app_behaviour(appjs, request_html, index_html, row_id, beacon="", protocol_h
                           "timelockBrief": dom_tree(timelock_brief_html) if timelock_brief_html else None,
                           "protocolsIndex": dom_tree(protocols_index_html) if protocols_index_html else None,
                           "indexJson": json.loads(read("docs/api/v1/index.json")), "scorecardsJson": json.loads(read("docs/api/v1/scorecards.json")), "whatDiffers": inspector_what_differs(),
+                          "lookupJson": json.loads(read("docs/api/v1/lookup.json")),   # v4.7 W3: the command dialog + hero name lookup
                           # every published protocol slug (+ wave-2 shapes) must survive the beacon's client-side path redaction
                           "expectProtocols": X["protocols"],
                           "protocolSlugs": sorted(d for d in os.listdir(os.path.join(DOCS, "protocols")) if os.path.isdir(os.path.join(DOCS, "protocols", d)))})
@@ -1008,6 +1009,7 @@ def main(argv=None):
 
     def count_contradictions(text):
         text = re.sub(r'<table class="ix" data-bounty-slots>.*?</table>', "", text, flags=re.S)
+        text = re.sub(r'<details class="archive-details" id="wave-1-archive".*?</details>\n</article>', "", text, flags=re.S)   # v4.7 W4
         return [(m.group(0), want) for rx, want in count_rules for m in re.finditer(rx, text) if int(m.group(1).replace(",", "")) != want]
     probes = {"999 RPC-Observed": f"{X['protocols']} protocols · 999 RPC-Observed", "7 RPC-observed": "7 RPC-observed protocols",
               "79 Base-EAS attested": "79 Base-EAS attested", "158 attested checks": "158 attested checks across 24",
@@ -1020,11 +1022,11 @@ def main(argv=None):
           "llms-full.txt, SKILL.md and README (self-probe: injected 999 RPC-Observed, 79 Base-EAS, 158 checks, 85 protocols are each caught)",
           probe_ok and not cc_bad, f"probe {probe_ok}; {len(cc_files)} files; contradictions {cc_bad[:4]}")
 
-    rows = len(re.findall(r'<tr class="sc-row(?: sc-m)?"', page))   # v4.5: rows 7-16 carry sc-m (kept back below 640 px)
+    rows = len(re.findall(r'<tr class="sc-row(?: sc-m)?"', page))   # v4.7 W1: an 8-row preview, all shown below 640 px
     sys.path.insert(0, os.path.join(ROOT, "tools"))
     import build_site as BS
     check(f"homepage #scorecards ships the {len(BS.FLAGSHIP)} flagship protocols statically (every protocol hydrates from /api/v1/scorecards.json: harness)",
-          rows == len(BS.FLAGSHIP) == 16 and f'Show all {X["protocols"]} protocols' in page, f"{rows} rows")
+          rows == len(BS.FLAGSHIP) == 8 and f'data-sc-explore>Explore all {X["protocols"]} protocol scorecards{BS.ARR}</a>' in page, f"{rows} rows")
     cat_ = f"{X['protocols']} protocols + {X['briefs']} briefs"
     stale_ = {f: sorted(set(re.findall(r"\b(\d+) protocols \+ (\d+) briefs\b", read(f))) - {(str(X["protocols"]), str(X["briefs"]))})
               for f in ("docs/SKILL.md", "docs/llms.txt", "docs/llms-full.txt", "packages/mcp-server/SKILL.md")}
@@ -1416,13 +1418,15 @@ def main(argv=None):
     heroS = heroS.group(0) if heroS else ""
     audS = re.search(r'<section class="sec" id="audiences">.*?</section>', home, re.S)
     audS = audS.group(0) if audS else ""
+    hiwS = re.search(r'<section class="sec" id="how-it-works">.*?</section>', home, re.S)
+    hiwS = hiwS.group(0) if hiwS else ""
     # v4 (V2): "Protocol docs drift." alone on line 1 (<br>, each sentence unbreakable); M1/M6 subhead with the data-derived count
     hero_ok = ('<h1><span class="l">Protocol docs drift.</span><br><span class="l">The chain doesn’t.</span></h1>' in heroS
                and html.escape(BS.HOME_SUB.format(n=X["protocols"]), quote=False) in heroS
                and len(re.findall(r'class="receipt"[^>]*data-receipt data-pf-chain="(?:ethereum|base)" data-pf-address="0x[0-9a-fA-F]{40}"', heroS)) == 3
-               and f"claude mcp add --transport http pacta {MCP_}" in audS
-               and "&quot;url&quot;: &quot;" + MCP_ + "&quot;" in audS
-               and re.search(r'curl -s &quot;' + re.escape(API_) + r'/v1/check/preflight\?chain=', audS) is not None
+               and f"claude mcp add --transport http pacta {MCP_}" in hiwS
+               and "&quot;url&quot;: &quot;" + MCP_ + "&quot;" in hiwS
+               and re.search(r'curl -s &quot;' + re.escape(API_) + r'/v1/check/preflight\?chain=', hiwS) is not None
                and all(f'href="{h}"' in audS for h in ("openapi.json", "SKILL.md", "agent.json", "mcp/")))
     pf_ok = (f'class="pf hero-pf" data-api="{API_}"' in heroS and 'id="pf-form"' in heroS and 'id="pf-out"' in heroS and 'name="chain"' in heroS
              and 'name="address"' in heroS and "Check contract" in heroS and heroS.find('id="pf-form"') < heroS.find("data-proof")
@@ -1853,7 +1857,7 @@ def main(argv=None):
     app_fetch = len(re.findall(r"\bfetch\(", appjs))
     check("no cookies, no storage identifiers, no third-party requests in page scripts: localStorage only for the theme preference; app.js fetches only this site's JSON, the first-party API (data-api), the first-party /v1/briefs/live-timelocks (data-live-timelocks) and, on an explicit Verify-live-on-RPC click, the four allow-listed public RPCs",
           not js_bad and ls_keys == {"pacta-theme"} and appjs.count("localStorage") == 3 and data_api <= {API_, API_ + "/v1/requests"}
-          and app_fetch == 6 and 'fetch(api, init)' in appjs[appjs.find("function initRequest()"):] and "REQ_API_RE.test(api)" in appjs and 'fetch(document.documentElement.getAttribute("data-api") || "api/v1/index.json")' in appjs
+          and app_fetch == 7 and 'j(root + "api/v1/lookup.json")' in appjs and 'j(root + "api/v1/scorecards.json")' in appjs and 'fetch(api, init)' in appjs[appjs.find("function initRequest()"):] and "REQ_API_RE.test(api)" in appjs and 'fetch(document.documentElement.getAttribute("data-api") || "api/v1/index.json")' in appjs
           and 'fetch(body.getAttribute("data-src") || "api/v1/scorecards.json")' in appjs
           # the 4th fetch: the user-initiated "Verify live on RPC" button, POSTing JSON-RPC only to the four allow-listed public RPCs
           and "      return fetch(url, opts).then(function (res) { return res.json(); })" in appjs
@@ -2059,9 +2063,9 @@ def main(argv=None):
             not glyph_pages and not re.search("[\u2192\u2197\u2713\u2260]", read("docs/app.js")) and arrows44 > 0
             and "svg.ia { width: 0.875em; height: 0.875em; margin-left: 0.25em; vertical-align: -0.125em; }" in css43
             and res.get("v44_runtime_link_arrow_icon") is True,
-        "P2-1: the checker help line says the examples run a check too":
-            '<p class="checker-cap" id="pf-help">Free, read-only check of one contract address at the latest block. No API key, no wallet. '
-            'Runs when you press Check or pick an example below.</p>' in home43,
+        "P2-1: the checker help line says the examples run a check too (v4.7: and that a protocol or token name finds its scorecard)":
+            '<p class="checker-cap" id="pf-help">Free, read-only check of one contract address at the latest block, or type a protocol or '
+            'token (Aave, LBTC, ETHx) to find its scorecard. No API key, no wallet. Runs when you press Check or pick an example below.</p>' in home43,
         "P2-2: a Try click scrolls the form (input + result) into view, clear of the sticky top bar (harness)":
             res.get("v44_try_scrolls_form") is True and "scroll-margin-top: 72px;" in css_rule(".checker"),
         "F3a: the Try examples sit between the checker and its result (a result never pushes them off screen) (harness)":
@@ -2166,8 +2170,8 @@ def main(argv=None):
             and res.get("v45_live_checker_link") is True,
         "G-P2-3: combobox ranks prefix matches first, matches 0x addresses, a mouse pick closes it (aria-expanded=false) and clears the query (harness)":
             res.get("v45_combobox_prefix_address_click") is True,
-        "G-P2-4 / G-P2-7: 6 scorecard cards first below 640 px (any interaction shows all); /radar/ lists the operations above the legend":
-            len(re.findall(r'<tr class="sc-row sc-m"', home43)) == 10 and "#scorecards tbody:not([data-all]) tr.sc-row.sc-m { display: none; }" in css43
+        "G-P2-4 / G-P2-7 (v4.7 W1): the 8-row preview shows in full below 640 px (no row kept back); /radar/ lists the operations above the legend":
+            len(re.findall(r'<tr class="sc-row sc-m"', home43)) == 0 and "#scorecards tbody:not([data-all]) tr.sc-row.sc-m { display: none; }" in css43
             and res.get("v45_mobile_six_then_all") is True
             and 0 < radar45.find('<table class="tbl radar">') < radar45.find('<div class="cases"'),
         "G-P2-5: the teams card shows a real badge and its one-line Markdown embed":
@@ -2237,21 +2241,23 @@ def main(argv=None):
         return {**it_, "eta": None if st_ == "executed" else it_["eta"],
                 "operations": [{**o_, "done": st_ == "executed", "pending": st_ != "executed", "ready": st_ == "ready"} for o_ in it_["operations"]]}
     v46 = {
-        "radar.json: 7 items / 13 ops; 2 ready (4 ops), 4 pending (7 ops), executed (2 ops); refreshed_at (Ethereum) + refreshed_at_base (Base)":
+        "radar.json: 7 items / 13 ops (v4.7 refresh: 2 ready (4 ops), 3 pending (6 ops), executed (3 ops), Beefy executed on Base); refreshed_at (Ethereum) + refreshed_at_base (Base)":
             len(rad46["items"]) == 7 and sum(len(it["operations"]) for it in rad46["items"]) == 13
-            and [BS.item_state(it) for it in rad46["items"]].count("ready") == 2 and [BS.item_state(it) for it in rad46["items"]].count("pending") == 4
+            and [BS.item_state(it) for it in rad46["items"]].count("ready") == 2 and [BS.item_state(it) for it in rad46["items"]].count("pending") == 3
             and sum(len(it["operations"]) for it in rad46["items"] if BS.item_state(it) == "ready") == 4
-            and sum(len(it["operations"]) for it in rad46["items"] if BS.item_state(it) == "pending") == 7
-            and sum(len(it["operations"]) for it in rad46["items"] if BS.item_state(it) == "executed") == 2
+            and sum(len(it["operations"]) for it in rad46["items"] if BS.item_state(it) == "pending") == 6
+            and sum(len(it["operations"]) for it in rad46["items"] if BS.item_state(it) == "executed") == 3
+            and all(BS.item_state(it) == "executed" for it in base46)
             and r46["tag"] == rb46.get("tag") == "finalized" and len(base46) == 1 and all(it.get("protocol_slug") and it.get("chain_id") in (1, 8453) for it in rad46["items"]),
-        "counts text '2 ready (4 ops) · 4 pending (7 ops) · Executed (2 ops)' on / and /radar/":
-            BS.radar_counts_text(rad46) == "2 ready (4 ops) · 4 pending (7 ops) · Executed (2 ops)"
-            and all("data-radar-counts>2 ready (4 ops) · 4 pending (7 ops) · Executed (2 ops)</span>" in t for t in (home46, radar46)),
+        "counts text '2 ready (4 ops) · 3 pending (6 ops) · Executed (3 ops)' on / and /radar/":
+            BS.radar_counts_text(rad46) == "2 ready (4 ops) · 3 pending (6 ops) · Executed (3 ops)"
+            and all("data-radar-counts>2 ready (4 ops) · 3 pending (6 ops) · Executed (3 ops)</span>" in t for t in (home46, radar46)),
         "Base items link Basescan (never Etherscan) for the timelock on / and /radar/, carry a 'Base' tag, and the Base brief has 0 etherscan.io links":
             all(f'https://basescan.org/address/{it["timelock"]}' in t and f'etherscan.io/address/{it["timelock"]}' not in t and f'etherscan.io/address/{it["timelock"].lower()}' not in t
                 and '<span class="chain-tag">Base</span>' in t for it in base46 for t in (home46, radar46))
             and beefy46.count("https://basescan.org/") >= 10 and "etherscan.io" not in beefy46
             and "Base Mainnet (chain id 8453)" in beefy46 and "Scanner-pinned (Base finalized)" in beefy46
+            and f"Executed on Base by Finalized Block #{rb46['block_number']:,}" in beefy46
             and f'https://basescan.org/block/{rb46.get("block_number")}' in beefy46,
         "radar-live provenance names both pins (Ethereum #26,436,571-style and Base #58,747,369-style) on / and /radar/":
             all(f'Ethereum finalized block <a href="https://etherscan.io/block/{r46["block_number"]}" target="_blank" rel="noopener">#{r46["block_number"]:,}' in t
@@ -2283,6 +2289,58 @@ def main(argv=None):
     }
     check("v4.6 multi-chain radar (7 items / 13 ops, Basescan for chain id 8453, two-chain provenance, 'on Base' wording), 4 decoded briefs, 101 cards",
           all(v46.values()), str([k for k, x in v46.items() if not x]))
+
+    # v4.7 W1-W5 (external UX evaluation quick wins)
+    home47, bnt47 = pages["index.html"], pages[os.path.join("bounties", "index.html")]
+    sc47 = {c["slug"]: c for c in json.loads(read("docs/api/v1/scorecards.json"))["protocols"]}
+    rad47 = json.loads(read("docs/api/v1/radar.json"))
+    idx47 = json.loads(read("docs/api/v1/index.json"))
+    top47 = {}
+    for e_ in idx47["entries"]:
+        top47[e_.get("chain", "ethereum")] = max(top47.get(e_.get("chain", "ethereum"), 0), int(e_["block_number"]))
+    pill47 = (f'<p class="fresh" data-fresh><span class="dot" aria-hidden="true"></span><span>Pinned blocks: Ethereum #{top47["ethereum"]:,} · '
+              f'Base #{top47["base"]:,} · {X["eas_attestations"]} Base EAS batches</span></p>')
+    rpill47 = ("Radar pinned at finalized blocks: Ethereum #" + format(rad47["refreshed_at"]["block_number"], ",") + " · Base #"
+               + format(rad47["refreshed_at_base"]["block_number"], ","))
+    order47 = [sc47[s_]["grade"] for s_ in BS.FLAGSHIP]
+    rank47 = {"delta": 0, "protective": 1, "aligned": 2, "observed": 3}
+    topbar_pages47 = [t for t in pages.values() if 'class="topbar"' in t]
+    v47 = {
+        "W1: / previews 8 protocols in severity order (deltas first), 'Explore all N protocol scorecards' -> scorecards/, the radar strip -> #radar; "
+        "/scorecards/ keeps all of them (harness)":
+            len(re.findall(r'<tr class="sc-row"', home47)) == 8 and order47[0] == "delta" and order47 == sorted(order47, key=rank47.get)
+            and len(re.findall(r'<tr class="sc-row"', pages[os.path.join("scorecards", "index.html")])) == X["protocols"]
+            and 'data-tl-strip' in home47 and '<a href="#radar">See the queue' in home47 and res.get("v47_w1_preview") is True,
+        "W2: #how-it-works = 2 shadcn Tabs (risk & diligence default, AI agents & builders): steps + rosette legend + Deltas / radar / dossier CTAs; "
+        "MCP config, SKILL.md / llms.txt / OpenAPI pills, curl + cast (arrow keys, Home / End, link-to-tab: harness)":
+            'role="tablist" aria-label="Choose your audience"' in home47 and 'id="hiw-t-risk" aria-controls="hiw-p-risk" aria-selected="true"' in home47
+            and f'href="scorecards/?grade=delta">Deltas ({BS.site_numbers(idx47)["delta"]})</a>' in home47
+            and all(f'href="{h}"' in home47 for h in ("SKILL.md", "llms.txt", "openapi.json")) and 'id="hiw-legend"' in home47
+            and res.get("v47_w2_tabs") is True,
+        "W3: a search trigger (Ctrl/Cmd+K, /) in the top bar of every page; Command dialog over lookup.json + scorecards.json (protocol, token, brief, 0x); "
+        "the hero checker resolves names with Open scorecard / Run live check (harness)":
+            all('data-cmdk-open' in t and 'aria-keyshortcuts="Control+K Meta+K /"' in t for t in topbar_pages47) and len(topbar_pages47) >= 100
+            and 'maxlength="42"' not in home47 and 'placeholder="0x…, protocol or token"' in home47
+            and res.get("v47_w3_cmdk") is True and res.get("v47_w3_hero_names") is True,
+        "W4: build-pinned freshness pill on /, /scorecards/, /protocols/ (index.json pins + EAS batches) and /radar/ (radar pins); /bounties/ leads with "
+        "Wave 2, the closed Nov 15 Wave 1 collapsed at the bottom; 0 '53 currently indexed' anywhere in docs/":
+            all(pill47 in pages[r_] for r_ in ("index.html", os.path.join("scorecards", "index.html"), os.path.join("protocols", "index.html")))
+            and rpill47 in pages[os.path.join("radar", "index.html")]
+            and not [f_ for f_ in glob.glob(os.path.join(DOCS, "**", "*"), recursive=True) if os.path.isfile(f_) and not f_.endswith(".png")
+                     and "53 currently indexed" in open(f_, encoding="utf-8", errors="ignore").read()]
+            and re.search(r'<details class="archive-details" id="wave-1-archive" data-wave1-archive><summary>', bnt47) is not None
+            and bnt47.find('id="wave-2"') < bnt47.find('id="quickstart"') < bnt47.find('id="wave-1-archive"') < bnt47.find('id="wave-1"')
+            and bnt47.find('id="issues"') < bnt47.find("</details>\n</article>"),
+        "W5: the theme button is labelled (current choice, synced aria-label) >= 768 px; the mobile sheet has a Light / Dark / System row (harness)":
+            all('<span class="tb-l" data-theme-label>Theme</span>' in t and t.count("data-theme-sheet>") == 3 for t in topbar_pages47)
+            and ".theme-btn .tb-l { position: absolute; width: 1px;" not in read("docs/styles.css").split("@media (max-width: 767px)")[0]
+            and res.get("v47_w5_theme_label") is True,
+        "radar refreshed at current finalized blocks (Ethereum + Base, after the Beefy ETA); counts from the data":
+            rad47["refreshed_at"]["block_number"] > 26436571 and rad47["refreshed_at_base"]["block_number"] > 58747369
+            and f'data-radar-counts>{html.escape(BS.radar_counts_text(rad47))}</span>' in home47,
+    }
+    check("v4.7 quick wins (W1 8-row preview + radar strip, W2 audience tabs, W3 Cmd+K search + hero names, W4 freshness pill + Wave 1 archive, "
+          "W5 labelled theme toggle) + refreshed radar", all(v47.values()), str([k for k, x in v47.items() if not x]))
 
     nf = pages.get("404.html", "")
     nf_raw = nf.encode()
@@ -2664,7 +2722,9 @@ def main(argv=None):
         "issues #21-#24 via BOUNTY_ISSUE_URLS": BS.BOUNTY_ISSUE_URLS == {n: f"https://github.com/Fractal-Neurons/pacta/issues/{20 + n}" for n in (1, 2, 3, 4)}
             and all(f'href="{u}"' in bounty for u in BS.BOUNTY_ISSUE_URLS.values()),
         "slot scopes": all(html.escape(v) in bounty for v in BS.BOUNTY_SLOTS.values()),
-        "issue text verbatim (titles + bodies)": all(html.escape(i["title"], quote=False) in bounty and BS.md_html(i["body"]) in bounty for i in bd["issues"]),
+        "issue text verbatim (titles + bodies; v4.7 W4: the Nov 15 index size reads as historical)": all(html.escape(i["title"], quote=False) in bounty
+                                                                                                          and BS.wave1_md(i["body"]) in bounty for i in bd["issues"])
+            and BS.wave1_md(bd["issues"][3]["body"]) != BS.md_html(bd["issues"][3]["body"]),
         "truthful payout (receipt/1827), treasury an EOA, never a Safe": BS.BOUNTY_PAYOUT == (
             "Paid in USDC on Base Mainnet within 48h of maintainer merge from Pacta treasury (0x4348DF1BEFAffcbA248B5118B1b782B1B2bdEd14) once the winner "
             "comments their public Base 0x... address on the merged PR. Funds are not pre-escrowed in an automated contract; zero automatic on-chain payouts.")
@@ -2972,9 +3032,9 @@ def main(argv=None):
         and home_p.count('data-radar-row="executed"') == sum(1 for it in rad_p["items"] if all(o.get("done") for o in it["operations"]))
         and res.get("pp2_radar_counts") is True)
     n_el = len(re.findall(r"<[a-zA-Z]", home_p))
-    pp[f"V04 + Edge v3: slim homepage: {len(home_p.encode())} bytes < 150,000 and {n_el} elements < 2,200; 16 flagship scorecards static; every protocol hydrates from /api/v1/scorecards.json on Show all / search / filter (harness); all {X['protocols']} /protocols/<slug>/ pages static"] = (
-        len(home_p.encode()) < 150000 and n_el < 2200 and all(res.get(k) is True for k in ("e3_static_sixteen", "e3_hydrated_all", "e3_search"))
-        and f'data-sc-all>Show all {X["protocols"]} protocols' in home_p and 'href="protocols/">Browse all' in home_p
+    pp[f"V04 + Edge v3: slim homepage: {len(home_p.encode())} bytes < 150,000 and {n_el} elements < 2,200; 8 high-signal scorecards static; every protocol hydrates from /api/v1/scorecards.json on search / filter (harness); all {X['protocols']} /protocols/<slug>/ pages static"] = (
+        len(home_p.encode()) < 150000 and n_el < 2200 and all(res.get(k) is True for k in ("e3_static_preview", "e3_hydrated_all", "e3_search"))
+        and f'href="scorecards/" data-sc-explore>Explore all {X["protocols"]} protocol scorecards' in home_p and 'href="protocols/">Browse all' in home_p
         and len([r for r in pages if r.startswith("protocols" + os.sep) and r.count(os.sep) == 2]) == X["protocols"])
     pp["Curator basket pills (All · Stablecoins & RWA · ETH LST / LRT · Curated Lending & Vaults · Base Ecosystem) on /protocols/ (combined with Status x Chain x search, Clear all resets) and the homepage scorecards (harness)"] = (
         all(f'>{html.escape(lbl, quote=False)}</button>' in pages[os.path.join("protocols", "index.html")] and f'<option value="{k}">{html.escape(lbl, quote=False)}</option>' in home_p
@@ -3132,7 +3192,7 @@ def main(argv=None):
     # U2 (v4): Light / Dark / System DropdownMenu (menuitemradio + aria-checked), the button names the current choice, the .dark class
     # follows prefers-color-scheme for System, and a light / dark theme-color pair follows the OS
     e3["theme switcher: Light / Dark / System menu (menuitemradio, aria-checked), label names the current theme, .dark class follows the OS on System, theme-color pair"] = (
-        '"Theme: " + (pref === "system" ? "System" : pref === "dark" ? "Dark" : "Light")' in appjs and 'classList.toggle("dark", dark)' in appjs
+        'var word = pref === "system" ? "System" : pref === "dark" ? "Dark" : "Light";' in appjs and 'btn.setAttribute("aria-label", "Theme: " + word)' in appjs and 'classList.toggle("dark", dark)' in appjs
         and 'matchMedia("(prefers-color-scheme: dark)")' in appjs and 'matchMedia("(prefers-color-scheme: dark)")' in read("docs/theme.js")
         and all(t_.count('role="menuitemradio"') == 3 and all(f'data-theme-set="{k_}"' in t_ for k_ in ("light", "dark", "system"))
                 and '<meta name="theme-color" content="#0a0b0d" media="(prefers-color-scheme: dark)">' in t_

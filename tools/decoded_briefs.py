@@ -80,7 +80,9 @@ def check_against_radar(b, item, brief_protocol):
     assert item.get("chain_id", 1) == b["chain_id"] and item["timelock"].lower() == b["timelock"]["address"].lower(), b["slug"]
     assert [o["op_id"] for o in item["operations"]] == [o["op_id"] for o in b["operations"]], b["slug"]
     assert item["min_delay_seconds"] == b["timelock"]["getMinDelay"], b["slug"]
-    assert all(o["eta"] == x["status"]["getTimestamp"] for o, x in zip(item["operations"], b["operations"])), b["slug"]
+    # a later radar refresh may find an operation executed (isOperationDone: eta cleared); otherwise the ETA is the decoded one
+    assert all(o["eta"] == x["status"]["getTimestamp"] or (o["done"] and o["eta"] is None)
+               for o, x in zip(item["operations"], b["operations"])), b["slug"]
 
 
 def millions(wei):

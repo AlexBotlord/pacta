@@ -6020,7 +6020,7 @@
    "controllerKind": "timelock",
    "documentedDelaySeconds": null,
    "easAttested": false,
-   "eta": 1794956259,
+   "eta": null,
    "evidenceBasis": "pinned_rpc_brief",
    "kind": "brief",
    "name": "Beefy CLM USDC-VVV on Aerodrome — calm-check tolerance widened from 9 to 25 ticks",

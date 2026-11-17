@@ -2,18 +2,18 @@
   "schema": "pacta.radar.v1",
   "chain_id": 1,
   "refreshed_at": {
-    "block_number": 26436571,
-    "block_hash": "0x8f796be27dbc3affb0a0545895d8c27e7a63ac7bf438f93a4107af36f4a33599",
-    "block_timestamp": 1794940247,
-    "block_time_utc": "2026-11-17 18:30 UTC",
+    "block_number": 26438039,
+    "block_hash": "0x1b78f3f7c31cd5816085c215191aa0ec48c699c065ad3da1afafa0506e911a34",
+    "block_timestamp": 1794957911,
+    "block_time_utc": "2026-11-17 23:25 UTC",
     "tag": "finalized",
     "rpcs_cross_checked": 2
   },
   "refreshed_at_base": {
-    "block_number": 58747369,
-    "block_hash": "0x5b7a6bd3cfd87d4f06132ccd48455c7f692d3b867f5dd3f597171c4f8a8d4acb",
-    "block_timestamp": 1794939849,
-    "block_time_utc": "2026-11-17 18:24 UTC",
+    "block_number": 58835715,
+    "block_hash": "0xced5be5cb81f7695c2b81d86fe1bc1bd96fd6652ae023f0847e7decdcd3b284d",
+    "block_timestamp": 1794957518,
+    "block_time_utc": "2026-11-17 23:18 UTC",
     "tag": "finalized",
     "rpcs_cross_checked": 2
   },
@@ -74,26 +74,6 @@
         }
       ],
       "eta": 1794940187
-    },
-    {
-      "protocol": "Beefy Finance (Base)",
-      "protocol_slug": "beefy-finance-base",
-      "chain_id": 8453,
-      "title": "Beefy CLM USDC-VVV on Aerodrome — calm-check tolerance widened from 9 to 25 ticks",
-      "summary": "setDeviation(25) on the cowAeroBaseUSDC-VVV strategy (owned by the timelock): maxTickDeviation 9 -> 25 ticks, the tolerance between the pool tick and its 120 s TWAP before the strategy acts, on a tick-spacing-50 Aerodrome pool. No code change.",
-      "timelock": "0x3B60F7f25b09E71356cdFFC6475c222A466a2AC9",
-      "brief": "briefs/beefy-base-op-0x3302/",
-      "min_delay_seconds": 21600,
-      "operations": [
-        {
-          "op_id": "0x3302750e18a4bff9508c6e93386a406df9aa8d36992188e76a08ecc76bfce208",
-          "eta": 1794956259,
-          "pending": true,
-          "done": false,
-          "ready": false
-        }
-      ],
-      "eta": 1794956259
     },
     {
       "protocol": "Ethena",
@@ -179,6 +159,26 @@
         }
       ],
       "eta": 1795451951
+    },
+    {
+      "protocol": "Beefy Finance (Base)",
+      "protocol_slug": "beefy-finance-base",
+      "chain_id": 8453,
+      "title": "Beefy CLM USDC-VVV on Aerodrome — calm-check tolerance widened from 9 to 25 ticks",
+      "summary": "setDeviation(25) on the cowAeroBaseUSDC-VVV strategy (owned by the timelock): maxTickDeviation 9 -> 25 ticks, the tolerance between the pool tick and its 120 s TWAP before the strategy acts, on a tick-spacing-50 Aerodrome pool. No code change.",
+      "timelock": "0x3B60F7f25b09E71356cdFFC6475c222A466a2AC9",
+      "brief": "briefs/beefy-base-op-0x3302/",
+      "min_delay_seconds": 21600,
+      "operations": [
+        {
+          "op_id": "0x3302750e18a4bff9508c6e93386a406df9aa8d36992188e76a08ecc76bfce208",
+          "eta": null,
+          "pending": false,
+          "done": true,
+          "ready": false
+        }
+      ],
+      "eta": null
     },
     {
       "protocol": "Ethena",

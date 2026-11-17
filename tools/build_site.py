@@ -388,8 +388,8 @@ def topbar(home="", current=None):
         f'{U.icon(ic)}<span>{lbl}</span>{U.icon("check", "check")}</button>'
         for k, lbl, ic in (("light", "Light", "sun"), ("dark", "Dark", "moon"), ("system", "System", "monitor")))
     theme = (f'<div class="dd" data-theme-menu>'
-             + U.button(U.icon("sun", "i-sun") + U.icon("moon", "i-moon"), variant="ghost", size="icon",
-                        attrs='aria-haspopup="menu" aria-expanded="false" aria-controls="theme-menu" aria-label="Theme: System" data-theme-btn',
+             + U.button(U.icon("sun", "i-sun") + U.icon("moon", "i-moon") + '<span class="tb-l" data-theme-label>Theme</span>', variant="ghost",
+                        size="sm", attrs='aria-haspopup="menu" aria-expanded="false" aria-controls="theme-menu" aria-label="Theme: System" data-theme-btn',
                         cls="theme-btn")
              + f'<div data-slot="dropdown-menu-content" role="menu" id="theme-menu" aria-label="Theme" hidden>'
              f'<p data-slot="dropdown-menu-label">Theme</p>{items}</div></div>')
@@ -397,6 +397,14 @@ def topbar(home="", current=None):
                   attrs='target="_blank" rel="noopener" aria-label="Pacta source on GitHub (opens in a new tab)"', cls="gh")
     xl = U.button(U.icon("x-logo", "i-fill"), href=X_URL, variant="ghost", size="icon",
                   attrs=f'target="_blank" rel="noopener" aria-label="Pacta on X ({X_HANDLE}, opens in a new tab)"', cls="xl")
+    # v4.7 W3: the global search (Command dialog built by app.js from scorecards.json + lookup.json on first use)
+    search = U.button(U.icon("search") + '<span class="sb-l">Search</span><kbd class="sb-k" data-cmdk-kbd>Ctrl K</kbd>', variant="outline", size="sm",
+                      attrs='title="Search protocols, tokens or 0x addresses" aria-haspopup="dialog" aria-keyshortcuts="Control+K Meta+K /" data-cmdk-open',
+                      cls="search-btn")
+    sheet_theme = ('<div class="sheet-theme" role="group" aria-labelledby="sheet-theme-l"><span id="sheet-theme-l">Theme</span>'
+                   + "".join(f'<button data-slot="button" data-variant="outline" data-size="sm" type="button" aria-pressed="false" data-theme-set="{k}" '
+                             f'data-theme-sheet>{U.icon(ic)}<span>{lbl}</span></button>'
+                             for k, lbl, ic in (("light", "Light", "sun"), ("dark", "Dark", "moon"), ("system", "System", "monitor"))) + '</div>')
     menu = U.button(U.icon("menu"), variant="ghost", size="icon",
                     attrs='aria-label="Open menu" aria-haspopup="dialog" aria-expanded="false" aria-controls="nav-sheet" data-sheet-open',
                     cls="menu-btn")
@@ -406,12 +414,12 @@ def topbar(home="", current=None):
              f'<div data-slot="sheet-header"><p data-slot="sheet-title" id="nav-sheet-title">Menu</p>'
              + U.button(U.icon("x"), variant="ghost", size="icon", attrs='aria-label="Close menu" data-sheet-close')
              + f'</div><nav aria-label="Mobile">{sheet_links}<a href="{home}bounties/">Bounties</a><a href="{REPO}" target="_blank" rel="noopener">GitHub</a><a href="{X_URL}" target="_blank" rel="noopener">X ({X_HANDLE})</a></nav>'
-             f'<div class="sheet-cta">{U.button("Request a dossier", href=req, variant="default", size="lg")}</div></div></div>')
+             f'{sheet_theme}<div class="sheet-cta">{U.button("Request a dossier", href=req, variant="default", size="lg")}</div></div></div>')
     return (f'<a class="skip" href="#main">Skip to content</a>\n'
             f'<header class="topbar"><div class="wrap">'
             f'<a class="brand" href="{home or "./"}"><img src="{home}favicon.svg" alt="" width="24" height="24">PACTA<small>by Fractal Neurons</small></a>'
             f'<nav data-slot="navigation-menu" class="nav" aria-label="Primary">{links}</nav>'
-            f'<div class="tools">{theme}{gh}{xl}'
+            f'<div class="tools">{search}{theme}{gh}{xl}'
             + U.button("Request a dossier", href=req, variant="default", size="sm", cls="cta") + menu
             + f'</div></div></header>\n{sheet}')
 
@@ -1760,7 +1768,7 @@ def protocols_index_page(idx, sp=None):
 <main id="main">
 <section class="sec"><div class="wrap">
 <nav class="crumbs" aria-label="Breadcrumb"><a href="../">Pacta</a><span aria-hidden="true">/</span><span>Protocols</span></nav>
-<div class="sec-head"><h1>Protocol safety records</h1><p class="aside">{len(sp)} protocols · {n_surf} block-pinned surfaces</p></div>
+<div class="sec-head"><h1>Protocol safety records</h1>{fresh_pill(idx)}<p class="aside">{len(sp)} protocols · {n_surf} block-pinned surfaces</p></div>
 <p class="sec-intro">Who can upgrade, pause or change each protocol, pinned to canonical Ethereum and Base blocks. The {c["records"]} attested checks are anchored on Base by EAS attestations; the {n_pin} RPC-pinned records are reproducible with <code>cast</code> but not yet attested. Check any other contract live and free with <code>/v1/check/preflight</code>.</p>
 {U.alert("Aligned means the docs are accurate, not that the protocol is low-risk.", "", icon_name="info", cls="aligned-note")}
 {tools}
@@ -1816,9 +1824,11 @@ HOME_H1 = "Protocol docs drift. The chain doesn’t."
 HOME_EYEBROW = "For DeFi risk curators & diligence teams"
 HOME_SUB = ("Pacta reads who can upgrade, pause or change {n} DeFi protocols on Ethereum and Base, and flags where that differs from their "
             "docs. Every finding is pinned to a block and attested onchain.")
-FLAGSHIP = ["circle-usdc", "tether-usdt", "paypal-usd-pyusd", "stader-labs-ethx", "aave-v3-gho", "lido-steth-dual-governance",
-            "ethena-usde-susde", "morpho-blue-core", "uniswap-governance-timelock", "compound-v3-comet", "stake-dao", "yo-protocol",
-            "resupply", "moonwell-lending-base", "aerodrome-finance-base", "pendle-finance-v2"]
+# v4.7 W1: the homepage previews 8 high-signal protocols, by severity: adverse deltas first, then one protective and two aligned
+# references (the grades come from the data; build_site asserts the order). /scorecards/ and /protocols/ keep all of them.
+FLAGSHIP = ["stader-labs-ethx", "yo-protocol", "moonwell-lending-base", "ethena-usde-susde", "axelar-network",
+            "ethena-usdtb", "aave-v3-gho", "eigenlayer-core"]
+GRADE_RANK = {"delta": 0, "protective": 1, "aligned": 2, "observed": 3}
 # (slug, record id, label, "docs say", "chain says", tokens asserted in the documented / observed evidence)
 # (slug, record id, label, "docs say", "chain says", tokens asserted in the documented / observed evidence)
 RECEIPTS = [
@@ -1838,18 +1848,18 @@ EDITORIAL_FIREWALL = "Pacta never sells grades."
 def hero_checker(examples=""):
     """U3/A3: noValidate form (no native bubble), inline 0x + 40-hex validation on blur and submit, aria-invalid + aria-describedby
     to a visible destructive message, and a disabled button with a spinner while the check runs (app.js)."""
-    return (f'<div class="pf hero-pf" data-api="{API}">'
+    return (f'<div class="pf hero-pf" data-api="{API}" data-lookup="api/v1/lookup.json">'
             f'<form class="checker" id="pf-form" novalidate autocomplete="off">'
             f'<label class="sr-only" for="pf-chain">Chain</label>'
             f'<select id="pf-chain" name="chain"><option value="ethereum">Ethereum</option><option value="base">Base</option></select>'
-            f'<label class="sr-only" for="pf-address">Contract address</label>'
-            f'<input id="pf-address" type="text" name="address" placeholder="0x… contract address" maxlength="42" spellcheck="false" '
+            f'<label class="sr-only" for="pf-address">Contract address, protocol or token</label>'
+            f'<input id="pf-address" type="text" name="address" placeholder="0x…, protocol or token" maxlength="80" spellcheck="false" '
             f'autocapitalize="off" aria-describedby="pf-help">'
             + U.button('<span class="spinner" aria-hidden="true" hidden></span><span data-pf-label>Check contract</span>', variant="default",
                        size="lg", type_="submit", attrs='id="pf-submit"')
             + f'<p class="form-message" id="pf-addr-error" data-slot="form-message" hidden></p></form>'
-            f'<p class="checker-cap" id="pf-help">Free, read-only check of one contract address at the latest block. No API key, no wallet. '
-            f'Runs when you press Check or pick an example below.</p>'   # P2-1 (v4.4): the examples run a check too
+            f'<p class="checker-cap" id="pf-help">Free, read-only check of one contract address at the latest block, or type a protocol or '
+            f'token (Aave, LBTC, ETHx) to find its scorecard. No API key, no wallet. Runs when you press Check or pick an example below.</p>'   # P2-1 (v4.4): the examples run a check too
             f'<noscript><p class="note">Without JavaScript, use the free API: <code>{E(CURL)} "{E(API)}/v1/check/preflight?chain=ethereum&amp;address=0x…"</code></p></noscript>'
             f'{examples}<div class="pf-out" id="pf-out" aria-live="polite"></div></div>')
 
@@ -1881,7 +1891,7 @@ def short_search(c):
     return _SHORT_SEARCH.get(c["slug"], c["search"])
 
 
-MOBILE_FIRST_ROWS = 6   # v4.5 G-P2-4: scorecard cards shown below 640 px before "Show all"
+MOBILE_FIRST_ROWS = 8   # v4.7 W1: the 8-row preview shows in full below 640 px too (v4.5 kept 6 of 16 back)
 
 
 def sc_row(c, prefix="", short=False, mobile_more=False):
@@ -1900,6 +1910,8 @@ def scorecards_section(cards, prefix="", full=False, heading="h2"):
     filters), A5 (caption), R2 (cards below 640 px). The homepage ships the flagship rows; /scorecards/ ships all of them."""
     by = {c["slug"]: c for c in cards}
     shown = sorted(cards, key=lambda c: c["name"].lower()) if full else [by[s] for s in FLAGSHIP]
+    if not full:   # W1: severity order (deltas, then protective, then aligned references), never an aligned row first
+        assert [GRADE_RANK[c["grade"]] for c in shown] == sorted(GRADE_RANK[c["grade"]] for c in shown) and shown[0]["grade"] == "delta"
     rows = "".join(sc_row(c, prefix, short=not full, mobile_more=not full and i >= MOBILE_FIRST_ROWS) for i, c in enumerate(shown))
     n = len(cards)
     g = {k: sum(c["grade"] == k for c in cards) for k in GRADE_UI}
@@ -1908,11 +1920,13 @@ def scorecards_section(cards, prefix="", full=False, heading="h2"):
     pills = "".join(f'<button data-slot="toggle-group-item" type="button" data-sc-f="{k}" aria-pressed="{"true" if k == "all" else "false"}">'
                     f'{lbl} <span class="num">({cnt})</span></button>' for k, lbl, cnt in filt)
     baskets = "".join(f'<option value="{k}">{E(lbl)}</option>' for k, lbl, _, _ in BASKETS)
-    more = (U.button(f"Show all {n} protocols", variant="outline", attrs="data-sc-all") + f'<a href="{prefix}scorecards/">Open the full scorecards page{ARR}</a>'
+    more = (U.button(f"Explore all {n} protocol scorecards{ARR}", href=f"{prefix}scorecards/", variant="default", attrs="data-sc-explore")
             + f'<a href="{prefix}protocols/">Browse all {n} protocol pages{ARR}</a>'
             if not full else f'<a href="{prefix}protocols/">Browse all {n} protocol pages{ARR}</a><a href="{prefix}api/v1/scorecards.json">scorecards.json</a>')
     head_html = (f'<div class="sec-head"><{heading}>Protocol scorecards</{heading}><p class="aside">Docs vs chain, a five-factor control-plane '
-                 f'rosette and the main difference for each of {n} protocols. Select a row for the evidence.</p></div>')
+                 f'rosette and the main difference for each of {n} protocols. Select a row for the evidence.</p></div>' if full else
+                 f'<div class="sec-head"><{heading}>Protocol scorecards</{heading}><p class="aside">{len(shown)} of {n} protocols, highest signal '
+                 f'first: adverse deltas, then protective and aligned references. Search or filter to load all {n}.</p></div>')
     intro_line = delta_line({"delta": g["delta"], "protective": g["protective"], "protocols": n}) if full else ""   # v4.5.1 "36 of 90"
     return f"""<section class="sec" id="scorecards"><div class="wrap">
 {head_html}{intro_line}
@@ -1956,8 +1970,8 @@ def page(idx, radar):
     body = f"""<body>
 {topbar()}
 <main id="main">
-{hero_section(idx, cards)}
-{how_it_works()}
+{hero_section(idx, cards, radar)}
+{how_it_works(idx, cards, radar)}
 {scorecards_section(cards)}
 {radar_section(radar)}
 {agents_section()}
@@ -2336,6 +2350,18 @@ def md_html(text):
     return "\n".join(out)
 
 
+# v4.7 W4: the closed Wave 1 issue text names the index size of Nov 15 ("53 currently indexed protocols"); the archive states it
+# as historical so no page claims 53 indexed protocols today (tools/bounty_issues.json, the GitHub source, is unchanged)
+WAVE1_ARCHIVAL = (("53 currently indexed protocols", "53 protocols indexed on Nov 15"),)
+
+
+def wave1_md(body):
+    h = md_html(body)
+    for a, b in WAVE1_ARCHIVAL:
+        h = h.replace(a, b)
+    return h
+
+
 def bounties_page(idx, radar, bounties=None, claims=None, lb=None):
     """docs/bounties/index.html: Wave 2 (100 x $1 USDC rolling pool, live counter) on top, then the Wave 1 Genesis Archive: the
     $100 USDC capped Chain-Feed Mismatch Challenge (4 x $25 USDC) with its settlement ledger and the issue text verbatim."""
@@ -2354,7 +2380,7 @@ def bounties_page(idx, radar, bounties=None, claims=None, lb=None):
     rules = "".join(f"<li><b>{E(k)}:</b> {E(v)}</li>" for k, v in BOUNTY_RULES)
     issues = "".join(f'<details class="bounty-issue" id="slot-{i["slot"]}" data-bounty-issue="{i["slot"]}"><summary>{E(i["title"])}</summary>'
                      f'<p class="s">GitHub: <a href="{E(BOUNTY_ISSUE_URLS[i["slot"]])}" target="_blank" rel="noopener">{E(BOUNTY_ISSUE_URLS[i["slot"]])}{EXT}</a> · labels: '
-                     f'{E(", ".join(i["labels"]))}</p><div class="md">{md_html(i["body"])}</div></details>' for i in d["issues"])
+                     f'{E(", ".join(i["labels"]))}</p><div class="md">{wave1_md(i["body"])}</div></details>' for i in d["issues"])
     ld = {"@context": "https://schema.org", "@type": "WebPage", "name": f"Pacta bounties · Wave 2 Epoch {CURRENT_EPOCH}: {ACTIVE_EPOCH_SLOTS} × ${REWARD_USDC} USDC · Wave 1 Genesis Archive",
           "url": f"{BASE_URL}/bounties/",
           "isPartOf": {"@type": "WebSite", "name": "Pacta by Fractal Neurons", "url": f"{BASE_URL}/"},
@@ -2367,10 +2393,11 @@ def bounties_page(idx, radar, bounties=None, claims=None, lb=None):
 <article class="memo">
 <header><span class="tier" data-bounty-pill>{FUNDED_UNENCUMBERED_SLOTS} Funded Slots Open Now · ${E(REWARD_USDC)} USDC / Merged Finding</span>
 <p class="s" data-bounty-context>Epoch {CURRENT_EPOCH}: {ACTIVE_EPOCH_SLOTS}-slot target · {PROGRAM_CAP_SLOTS:,}-slot program · ${E(RING_FENCED_USDC)} ring-fenced for Wave 1 Slot #4</p><h1>Pacta bounties: verified on-chain control-plane mismatches</h1>
-<p class="lede">Find a live on-chain control-plane fact that contradicts a protocol's official documentation: a proxy admin, timelock delay, multisig threshold, curator or guardian role that differs from what the docs say. <b>Wave 2</b> is a {PROGRAM_CAP_SLOTS:,}-gap perpetual program at <b>${E(REWARD_USDC)} USDC per merged net-new gap</b>, opened in epochs: <b>Epoch {CURRENT_EPOCH}</b> has a target cap of {ACTIVE_EPOCH_SLOTS} slots (${E(ACTIVE_EPOCH_CAP_USDC)} USDC), of which ${E(FUNDED_UNENCUMBERED_USDC)} USDC ({FUNDED_UNENCUMBERED_SLOTS} slots) is confirmed unencumbered on-chain now. <b>Wave 1</b> (4 × $25 USDC, Nov 15 – Nov 22, 2026) is archived below with its settlement ledger. Every hunter is credited on the <a href="../leaderboard/">hunter leaderboard</a>.</p></header>
+<p class="lede">Find a live on-chain control-plane fact that contradicts a protocol's official documentation: a proxy admin, timelock delay, multisig threshold, curator or guardian role that differs from what the docs say. <b>Wave 2</b> is a {PROGRAM_CAP_SLOTS:,}-gap perpetual program at <b>${E(REWARD_USDC)} USDC per merged net-new gap</b>, opened in epochs: <b>Epoch {CURRENT_EPOCH}</b> has a target cap of {ACTIVE_EPOCH_SLOTS} slots (${E(ACTIVE_EPOCH_CAP_USDC)} USDC), of which ${E(FUNDED_UNENCUMBERED_USDC)} USDC ({FUNDED_UNENCUMBERED_SLOTS} slots) is confirmed unencumbered on-chain now. <b>Wave 1</b> (4 × $25 USDC, Nov 15 – Nov 22, 2026) is closed; its archive and settlement ledger are collapsed at the bottom of this page. Every hunter is credited on the <a href="../leaderboard/">hunter leaderboard</a>.</p></header>
 {wave2_section_html(claims, n_protocols)}<section class="memo-sec" id="quickstart"><h2>1-line Remote MCP quickstart (free)</h2>
 <div class="qs-snip"><span class="qs-l">Claude Code</span><code class="mono">{E(claude)}</code>{copy_btn(claude)}</div>
 <p>Query <code>pacta_lookup_protocol</code> (confirm the target is unindexed: a miss carries <code>coverage_gap_hint</code>), <code>pacta_check_preflight</code> and <code>pacta_scan_control_plane</code>, then pin the reads with <code>cast</code> on two RPC endpoints. Indexed protocols: <a href="../api/v1/protocols.json">/api/v1/protocols.json</a>.</p></section>
+<details class="archive-details" id="wave-1-archive" data-wave1-archive><summary><span>Archive: Wave 1 (closed, Nov 15 – Nov 22, 2026) · 4 × $25 USDC · 53 protocols indexed at the time</span></summary>
 <section class="memo-sec" id="wave-1"><h2>Wave 1 Genesis Archive · {E(BOUNTY_TITLE)}</h2>
 <p class="s" data-wave1-snapshot><b>Historical Snapshot (Pinned at 53 Protocols on Nov 15)</b>: the Wave 1 terms below are archived verbatim and refer to Pacta&#x27;s index as it stood on Nov 15, 2026; Wave 2 targets the live index (<a href="../api/v1/protocols.json">/api/v1/protocols.json</a>).</p>
 <p>Find a live on-chain control-plane fact that contradicts a protocol's official documentation (<code>parameter_delta</code>). Four slots, <b>4 × $25 USDC = $100 USDC</b> in total, first valid merged PR per slot wins. Organizer: {E(pr["organizer"])}. Window: Nov 15 – Nov 22, 2026 ({bounty_hours(pr)}h).</p>
@@ -2388,7 +2415,8 @@ def bounties_page(idx, radar, bounties=None, claims=None, lb=None):
 <p>Open the PR to <code>Fractal-Neurons/pacta</code> with the <a href="{E(BOUNTY_TEMPLATE_URL)}" target="_blank" rel="noopener">bounty_mismatch.md PR template{EXT}</a> (<a href="{E(BOUNTY_COMPARE_URL)}" target="_blank" rel="noopener">pre-filled PR{EXT}</a>). Each PR commits exactly one JSON fixture at <code data-bounty-fixture>{E(BOUNTY_FIXTURE)}</code> (keys: <a href="{E(REPO)}/blob/main/bounties/submissions/README.md" target="_blank" rel="noopener">bounties/submissions/README.md{EXT}</a>). Check both offline before you submit: <code>python3 tools/verify_bounty_submission.py --json {E(BOUNTY_FIXTURE)}</code> and <code>python3 tools/verify_bounty_submission.py --body PR_BODY.md</code> (deterministic field checks; maintainers re-run the dual-RPC replay and the HTTP 200 docs check).</p>
 <p><b>Apache-2.0:</b> by checking the grant box you grant Pacta by Fractal Neurons perpetual, irrevocable rights under Apache-2.0 to ingest, Base EAS-attest, publish on pacta.wtf, and commercialize the merged mismatch record.</p></section>
 <section class="memo-sec" id="rules"><h2>Wave 1 anti-slop, fair-play &amp; safety rules</h2><ul>{rules}</ul></section>
-<section class="memo-sec" id="issues"><h2>Wave 1 issue text (verbatim)</h2><p class="s">The four Wave 1 GitHub issues (#21–#24), word for word.</p>{issues}</section>
+<section class="memo-sec" id="issues"><h2>Wave 1 issue text (archived)</h2><p class="s">The four Wave 1 GitHub issues (#21–#24), word for word; index counts read as of Nov 15.</p>{issues}</section>
+</details>
 </article>
 <div class="memo-foot"><span>Governance and documentation mismatches only. Exploit-sensitive vulnerabilities are never published here; they go through Immunefi or Cantina bounty programmes.</span><a href="../protocols/">Indexed protocols{ARR}</a></div>
 </main>
@@ -3154,6 +3182,30 @@ def stats_cards(idx, cards):
         U.card(f'<b>{v}</b><span>{E(k)}</span><small>{E(sub)}</small>', cls="stat") for v, k, sub in items) + '</div>' + delta_line(s))
 
 
+def fresh_pill(idx, radar=None):
+    """v4.7 W4: deterministic freshness (no wall clock): the newest finalized block pinned per chain in index.json and the number
+    of Base EAS batch attestations; on /radar/ the radar's own finalized pins (one per chain)."""
+    if radar is not None:
+        txt = ("Radar pinned at finalized blocks: " + " · ".join(f'{CHAINS[ch][0]} #{p_["block_number"]:,}' for ch, p_ in radar_pins(radar))
+               + f' ({radar["refreshed_at"]["block_time_utc"]})')
+    else:
+        top = {}
+        for e in idx["entries"]:
+            top[chain_of(e)] = max(top.get(chain_of(e), 0), int(e["block_number"]))
+        txt = ("Pinned blocks: " + " · ".join(f"{CHAINS[ch][0]} #{top[ch]:,}" for ch in CHAINS if ch in top)
+               + f' · {counts(idx)["eas_n"]} Base EAS batches')
+    return f'<p class="fresh" data-fresh><span class="dot" aria-hidden="true"></span><span>{E(txt)}</span></p>'
+
+
+def radar_strip(radar, prefix=""):
+    """v4.7 W1: one compact line under the hero numbers: the queued timelock operations by state, linking to the radar."""
+    active = sum(len(it["operations"]) for it in radar["items"] if item_state(it) != "executed")
+    chains = " and ".join(CHAINS[ch][0] for ch, _ in radar_pins(radar))
+    return (f'<p class="tl-strip" data-tl-strip><span class="dot live" aria-hidden="true"></span><b>Timelock radar</b>'
+            f'<span>{active} queued operations on {E(chains)}: {E(radar_counts_text(radar))}</span>'
+            f'<a href="{prefix}#radar">See the queue{ARR}</a></p>')
+
+
 def trust_strip(prefix=""):
     reg_v = json.load(open(os.path.join(ROOT, "packages", "mcp-server", "server.json"), encoding="utf-8"))["version"]
     links = [(f"Official MCP Registry (v{reg_v})", MCP_REGISTRY_URL, True), ("Glama MCP listing", GLAMA_URL, True),
@@ -3164,7 +3216,7 @@ def trust_strip(prefix=""):
         for t, h, ext in links) + '</p>')
 
 
-def hero_section(idx, cards):
+def hero_section(idx, cards, radar):
     s = site_numbers(idx, cards)
     return f"""<section class="hero"><div class="wrap"><div class="hero-grid">
 <div class="hero-main">
@@ -3177,11 +3229,15 @@ def hero_section(idx, cards):
 {proof_card(idx)}
 </div>
 {stats_cards(idx, cards)}
+<div class="hero-meta">{fresh_pill(idx)}{radar_strip(radar)}</div>
 {trust_strip()}
 </div></section>"""
 
 
-def how_it_works(prefix=""):
+def how_it_works(idx, cards, radar, prefix=""):
+    """v4.7 W2: two audiences, one shadcn Tabs (role=tablist, roving tabindex, arrow keys / Home / End in app.js; every panel visible
+    without JavaScript). Risk & diligence teams (default): the three steps, the rosette legend and the three next steps. AI agents &
+    builders: the remote MCP config, the agent docs and a curl preflight plus a cast re-read of an indexed record."""
     steps = [("Read the docs", "We record what each protocol publishes about who can upgrade, pause or change its contracts, and how long "
                                "changes must wait."),
              ("Read the chain at a finalized block", "We read the live contracts at a finalized block on two independent RPC providers: "
@@ -3190,20 +3246,40 @@ def how_it_works(prefix=""):
                                                "command.")]
     lis = "".join(f'<li data-slot="card" class="step"><span class="step-n" aria-hidden="true">{i}</span><h3>{E(t)}</h3><p>{E(d)}</p></li>'
                   for i, (t, d) in enumerate(steps, 1))
+    s_ = site_numbers(idx, cards)
+    active = sum(len(it["operations"]) for it in radar["items"] if item_state(it) != "executed")
+    risk = (f'<ol class="steps" aria-label="How Pacta works">{lis}</ol>{rosette_legend("hiw-legend")}'
+            f'<div class="hiw-cta">' + U.button(f'Deltas ({s_["delta"]})', href=f"{prefix}scorecards/?grade=delta", variant="outline")
+            + U.button(f"Live timelock radar ({active} queued)", href=f"{prefix}radar/", variant="outline")
+            + U.button("$500 Rapid · $2,500–$5,000 24h Dossier", href=f"{prefix}request/", variant="default")
+            + f'</div><p class="links"><a href="{prefix}methodology/">Read the methodology and the full glossary{ARR}</a></p>')
+    by = {c["slug"]: c for c in cards}
+    probe = by[RECEIPTS[0][0]]["probe"]
+    verify = (f'{REST_CURL}\n\n# Re-read an indexed record yourself at its pinned block: {by[RECEIPTS[0][0]]["name"]}\n{cast_line(probe)}')
+    cursor = json.dumps({"mcpServers": {"pacta": {"url": MCP_URL}}}, indent=2)
+    pills = "".join(U.button(lbl, href=h, variant="outline", size="sm") for lbl, h in
+                    (("SKILL.md", f"{prefix}SKILL.md"), ("llms.txt", f"{prefix}llms.txt"), ("OpenAPI 3.1", f"{prefix}openapi.json"),
+                     ("MCP docs", f"{prefix}mcp/")))
+    agents = (f'<p class="s">Remote MCP over Streamable HTTP and a REST API: {E(RATE_LIMIT)}, free, no API key, no wallet. '
+              f'Remote tools: {E(REMOTE_TOOLS_DOC)}.</p>'
+              + term(f"claude mcp add --transport http pacta {MCP_URL}", "Claude Code", "Copy the Claude Code MCP install command")
+              + term(cursor, "Cursor (mcp.json)", "Copy the Cursor MCP configuration")
+              + f'<div class="hiw-pills">{pills}</div>'
+              + term(verify, "Check a contract, then verify with cast", "Copy the curl preflight and the cast verification"))
+    tabs_ = U.tabs("hiw", [("risk", "For risk & diligence teams", risk), ("agents", "For AI agents & builders", agents)], "Choose your audience")
     return f"""<section class="sec" id="how-it-works"><div class="wrap">
-<div class="sec-head"><h2>How it works</h2><p class="aside">The same three steps for every protocol.</p></div>
-<ol class="steps" aria-label="How Pacta works">{lis}</ol>
-<p class="links" style="margin-top:16px"><a href="{prefix}methodology/">Read the methodology and the full glossary{ARR}</a></p>
+<div class="sec-head"><h2>How it works</h2><p class="aside">Three steps for every protocol, and two ways to use the result.</p></div>
+{tabs_}
 </div></section>"""
 
 
 FACTOR_LETTER = {"g": "S", "b": "M", "a": "W", "n": "—", "u": "—"}
 
 
-def rosette_legend():
+def rosette_legend(id_="rosette-legend"):
     lg = "".join(f'<span class="lg"><span class="fdot r-{k}" aria-hidden="true">{FACTOR_LETTER[k]}</span>{w}</span>'
                  for k, w in (("g", "Strong"), ("b", "Moderate"), ("a", "Weak"), ("n", "Not determined")))
-    return (f'<p class="legend" id="rosette-legend"><b>Rosette</b>{lg}<span>Longer, greener slices are stronger. Clockwise from the top: '
+    return (f'<p class="legend" id="{id_}"><b>Rosette</b>{lg}<span>Longer, greener slices are stronger. Clockwise from the top: '
             f'upgradeability, timelock floor, signer quorum, emergency scope, docs-vs-chain parity.</span></p>')
 
 
@@ -3221,14 +3297,9 @@ def badge_demo(prefix=""):
 
 def agents_section(prefix=""):
     """M1: curators are the primary reader; agents and protocol teams get one card each and a route to their own page."""
-    cmd = f"claude mcp add --transport http pacta {MCP_URL}"
-    cursor = json.dumps({"mcpServers": {"pacta": {"url": MCP_URL}}}, indent=2)
-    qs = U.tabs("qs", [("mcp", "MCP", term(cmd, "Claude Code", "Copy the Claude Code MCP install command")
-                        + term(cursor, "Cursor (mcp.json)", "Copy the Cursor MCP configuration")),
-                       ("curl", "cURL", term(REST_CURL, "cURL", "Copy the cURL quickstart")),
-                       ("python", "Python", term(REST_PY, "Python (requests)", "Copy the Python requests quickstart")
-                        + term(STATIC_PY, "Python (standard library, static JSON)", "Copy the Python standard-library quickstart"))],
-                "Quickstart")
+    qs = (term(REST_PY, "Python (requests)", "Copy the Python requests quickstart")
+          + term(STATIC_PY, "Python (standard library, static JSON)", "Copy the Python standard-library quickstart")
+          + f'<p class="s" style="margin-top:12px"><a href="#hiw-t-agents" data-tab-open="hiw-t-agents">Claude Code, Cursor, curl and cast commands{ARR}</a></p>')
     agents = U.card(U.card_header("AI agents &amp; builders", f"Pre-execution contract checks over MCP or REST: {E(RATE_LIMIT)}, no key, no wallet.")
                     + f'<div data-slot="card-content">{qs}<p class="s" style="margin-top:12px">Remote MCP ({E(REMOTE_TOOLS_DOC)}) · {E(RATE_LIMIT)}.</p></div>'
                     + f'<div data-slot="card-footer" class="links"><a href="{prefix}mcp/">MCP docs{ARR}</a><a href="{prefix}openapi.json">OpenAPI 3.1</a>'
@@ -3510,7 +3581,7 @@ def scorecards_page(idx):
 {topbar("../", "scorecards/")}
 <main id="main">
 <div class="wrap" style="padding-top:32px"><nav class="crumbs" aria-label="Breadcrumb"><a href="../">Pacta</a><span aria-hidden="true">/</span><span>Scorecards</span></nav></div>
-{scorecards_section(cards, "../", full=True, heading="h1").replace('<section class="sec" id="scorecards">', '<section class="sec" id="scorecards" style="padding-top:0">', 1)}
+{scorecards_section(cards, "../", full=True, heading="h1").replace('<section class="sec" id="scorecards">', '<section class="sec" id="scorecards" style="padding-top:0">', 1).replace("</h1>", "</h1>" + fresh_pill(idx), 1)}
 </main>
 {footer(coverage_line(idx), idx["onchain_anchoring"]["commitment_registry"], "../")}
 </body></html>
@@ -3524,7 +3595,7 @@ def radar_page(idx, radar):
 {topbar("../", "radar/")}
 <main id="main">
 <div class="wrap" style="padding-top:32px"><nav class="crumbs" aria-label="Breadcrumb"><a href="../">Pacta</a><span aria-hidden="true">/</span><span>Radar</span></nav></div>
-{radar_section(radar, "../", full=True).replace('<section class="sec" id="radar"', '<section class="sec" style="padding-top:0" id="radar"', 1)}
+{radar_section(radar, "../", full=True).replace('<section class="sec" id="radar"', '<section class="sec" style="padding-top:0" id="radar"', 1).replace("</h1>", "</h1>" + fresh_pill(idx, radar), 1)}
 </main>
 {footer(coverage_line(idx), idx["onchain_anchoring"]["commitment_registry"], "../")}
 </body></html>

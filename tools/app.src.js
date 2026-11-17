@@ -36,8 +36,17 @@
     var dark = pref === "dark" || (pref === "system" && systemDark());
     document.documentElement.classList.toggle("dark", dark);
     document.documentElement.setAttribute("data-theme-pref", pref);
-    $$("[data-theme-set]").forEach(function (b) { b.setAttribute("aria-checked", String(b.getAttribute("data-theme-set") === pref)); });
-    var btn = $("[data-theme-btn]"); if (btn) btn.setAttribute("aria-label", "Theme: " + (pref === "system" ? "System" : pref === "dark" ? "Dark" : "Light"));
+    var word = pref === "system" ? "System" : pref === "dark" ? "Dark" : "Light";
+    $$("[data-theme-set]").forEach(function (b) {
+      b.setAttribute(b.hasAttribute("data-theme-sheet") ? "aria-pressed" : "aria-checked", String(b.getAttribute("data-theme-set") === pref));
+    });
+    var btn = $("[data-theme-btn]"); if (btn) btn.setAttribute("aria-label", "Theme: " + word);
+    $$("[data-theme-label]").forEach(function (n) { n.textContent = word; });   // v4.7 W5: the visible label follows theme.js state
+  }
+  function setThemePref(pref) {
+    if (pref !== "light" && pref !== "dark") pref = "system";
+    try { if (pref === "system") localStorage.removeItem(THEME_KEY); else localStorage.setItem(THEME_KEY, pref); } catch (e) { /* private mode */ }
+    applyTheme(pref);
   }
   function initTheme() {
     applyTheme(themePref());
@@ -51,10 +60,7 @@
       btn.addEventListener("click", function () { if (menu.hidden) open(); else close(false); });
       menu.addEventListener("click", function (ev) {
         var it = ev.target && ev.target.closest ? ev.target.closest("[data-theme-set]") : null; if (!it) return;
-        var pref = it.getAttribute("data-theme-set");
-        if (pref !== "light" && pref !== "dark") pref = "system";
-        try { if (pref === "system") localStorage.removeItem(THEME_KEY); else localStorage.setItem(THEME_KEY, pref); } catch (e) { /* private mode */ }
-        applyTheme(pref); close(true);
+        setThemePref(it.getAttribute("data-theme-set")); close(true);
       });
       menu.addEventListener("keydown", function (ev) {
         var items = $$("[data-theme-set]", menu), i = items.indexOf(document.activeElement);
@@ -65,6 +71,7 @@
       });
       document.addEventListener("click", function (ev) { if (!menu.hidden && root && !root.contains(ev.target)) close(false); });
     }
+    $$("[data-theme-sheet]").forEach(function (b) { b.addEventListener("click", function () { setThemePref(b.getAttribute("data-theme-set")); }); });
     try {
       var mq = window.matchMedia("(prefers-color-scheme: dark)"), follow = function () { if (themePref() === "system") applyTheme("system"); };
       if (mq.addEventListener) mq.addEventListener("change", follow); else if (mq.addListener) mq.addListener(follow);
@@ -386,6 +393,21 @@
       }));
     });
     if (more) more.addEventListener("click", then(function () { apply(); }));
+    // v4.7: /scorecards/?grade=delta|protective|aligned|observed&q=…&basket=… (closed enums; q is plain text, at most 80 chars)
+    var qs = {};
+    String(location.search || "").replace(/^\?/, "").split("&").forEach(function (kv) {
+      var i = kv.indexOf("="); if (i > 0) { try { qs[kv.slice(0, i)] = decodeURIComponent(kv.slice(i + 1).replace(/\+/g, " ")); } catch (e) { /* malformed */ } }
+    });
+    var g0 = GRADE_WORD[qs.grade] ? qs.grade : null, b0 = bsel && qs.basket && $('option[value="' + String(qs.basket).replace(/[^a-z0-9-]/g, "") + '"]', bsel) ? qs.basket : null;
+    var q0 = typeof qs.q === "string" ? qs.q.slice(0, 80) : "";
+    if (g0 || b0 || q0) {
+      then(function () {
+        if (g0) { filt = g0; $$("[data-sc-f]", root).forEach(function (o) { o.setAttribute("aria-pressed", String(o.getAttribute("data-sc-f") === g0)); }); }
+        if (b0) { bkt = b0; bsel.value = b0; }
+        if (q0 && q) q.value = q0;
+        apply();
+      })();
+    }
     var clr = empty && $("[data-sc-clear]", empty);
     if (clr) clr.addEventListener("click", function () {
       filt = "all"; bkt = "all"; if (q) q.value = ""; if (bsel) bsel.value = "all";
@@ -1400,8 +1422,48 @@
         p.appendChild(retry);
       }
     }
-    addr.addEventListener("blur", function () { var a = val(); invalid(a ? problem(a) : ""); });
-    addr.addEventListener("input", function () { if (addr.getAttribute("aria-invalid") === "true") { var a = val(); invalid(a ? problem(a) : ""); } });
+    // v4.7 W3: only an address-shaped entry (0x…) is validated as an address; a name is looked up in the catalog instead
+    function isName(a) { return !!a && !/^0x/i.test(a); }
+    addr.addEventListener("blur", function () { var a = val(); invalid(a && !isName(a) ? problem(a) : ""); });
+    var typing = null;
+    addr.addEventListener("input", function () {
+      var a = val();
+      if (addr.getAttribute("aria-invalid") === "true") invalid(a && !isName(a) ? problem(a) : "");
+      clearTimeout(typing);
+      if (isName(a) && a.length >= 2) typing = setTimeout(function () { if (val() === a) lookupNames(a); }, 250);
+      else if (!a && out.hasAttribute("data-pf-names")) { out.textContent = ""; out.removeAttribute("data-pf-names"); }
+    });
+    function lookupNames(a) {
+      var my = ++seq;
+      if (ctl) { try { ctl.abort(); } catch (e) { /* settled */ } ctl = null; }
+      busy(false); invalid("");
+      lookupData().then(function (d) {
+        if (my !== seq) return;
+        out.textContent = ""; out.setAttribute("data-pf-names", "");
+        if (!d) { msg("The protocol catalog could not be loaded. Enter a 0x… contract address instead.", "http"); return; }
+        var hits = lkFind(d, a, 5);
+        if (!hits.length) {
+          out.appendChild(el("p", { "class": "pf-msg", role: "status", "data-pf-nomatch": "" }, ["No indexed protocol or token matches \u201c" + a.slice(0, 40)
+            + "\u201d. Enter a 0x\u2026 contract address to check any contract."]));
+          return;
+        }
+        var ul = el("ul", { "class": "pf-matches", "aria-label": "Indexed protocols matching " + a.slice(0, 40) });
+        hits.forEach(function (x) {
+          var pa = x.it.preflightArgs || {}, brief = x.it.kind === "brief";
+          var run_ = el("button", { type: "button", "data-slot": "button", "data-variant": "outline", "data-size": "sm", "data-pf-run": x.slug, text: "Run live check" });
+          run_.addEventListener("click", function () {
+            if (!ADDR_RE.test(String(pa.address || ""))) return;
+            chainSel.value = pa.chain === "base" ? "base" : "ethereum"; addr.value = pa.address; addr.setAttribute("value", pa.address); run();
+          });
+          ul.appendChild(el("li", { "data-pf-match-item": x.slug }, [
+            el("span", { "class": "pm-n" }, [x.it.name, el("small", { text: lkSub(x) })]),
+            arrowLink({ href: siteUrl(x.it.url), "data-slot": "button", "data-variant": "default", "data-size": "sm" }, brief ? "Open brief" : "Open scorecard"),
+            run_]));
+        });
+        out.appendChild(el("p", { "class": "pf-msg", role: "status", text: hits.length + (hits.length === 1 ? " indexed match" : " indexed matches") + " for \u201c" + a.slice(0, 40) + "\u201d" }));
+        out.appendChild(ul);
+      });
+    }
     function run() {
       // Every submit (valid or not) supersedes the previous one: bump seq and abort any in-flight request BEFORE the
       // input checks, so a stale response can never overwrite a later validation message.
@@ -1409,7 +1471,9 @@
       if (ctl) { try { ctl.abort(); } catch (e) { /* already settled */ } ctl = null; }
       if (timer) { clearTimeout(timer); timer = null; }
       var a = val(), ch = chainSel.value === "base" ? "base" : "ethereum", p = problem(a);
+      if (isName(a)) { if (a.length >= 2) lookupNames(a); else { invalid("Type at least 2 letters of a protocol or token, or a 0x\u2026 contract address."); addr.focus(); } return; }
       if (p) { invalid(p); busy(false); out.textContent = ""; addr.focus(); return; }
+      out.removeAttribute("data-pf-names");
       invalid("");
       if (typeof fetch !== "function") { msg("This browser cannot call the API; use the cURL quickstart.", "http"); return; }
       // First-party beacon hook (docs/b.js); optional: the checker works the same without it.
@@ -1571,7 +1635,7 @@
       if (ev.shiftKey && document.activeElement === f[0]) { ev.preventDefault(); f[f.length - 1].focus(); }
       else if (!ev.shiftKey && document.activeElement === f[f.length - 1]) { ev.preventDefault(); f[0].focus(); }
     });
-    window.addEventListener("resize", function () { if (window.innerWidth >= 768) close(); });
+    window.addEventListener("resize", function () { if (window.innerWidth >= 1024) close(); });   // v4.7: the Sheet serves < 1024 px
   }
 
   // ---- Tabs (MCP / cURL / Python): roving tabindex, arrow keys, Home / End; panels hidden only once JavaScript runs ---------
@@ -1587,6 +1651,7 @@
         if (focus) t.focus();
       }
       tabs.forEach(function (t, i) {
+        t._select = function (focus) { select(t, focus); };
         t.addEventListener("click", function () { select(t, false); });
         t.addEventListener("keydown", function (ev) {
           var j = ev.key === "ArrowRight" ? i + 1 : ev.key === "ArrowLeft" ? i - 1 : ev.key === "Home" ? 0 : ev.key === "End" ? tabs.length - 1 : null;
@@ -1595,6 +1660,157 @@
         });
       });
     });
+  }
+
+  function openTab(id, scroll) {
+    var t = id ? document.getElementById(id) : null;
+    if (!t || t.getAttribute("role") !== "tab" || typeof t._select !== "function") return false;
+    t._select(false);
+    if (scroll && t.scrollIntoView) { try { t.scrollIntoView({ block: "center" }); } catch (e) { /* old browsers */ } }
+    return true;
+  }
+  function initTabLinks() {
+    $$("[data-tab-open]").forEach(function (a) {
+      a.addEventListener("click", function (ev) { if (openTab(a.getAttribute("data-tab-open"), true)) { ev.preventDefault(); document.getElementById(a.getAttribute("data-tab-open")).focus(); } });
+    });
+    var h = String(location.hash || "").slice(1);
+    if (/^[a-z0-9-]{1,40}$/.test(h)) openTab(h, false);
+  }
+  // v4.7 W4: a #fragment inside a collapsed <details> (the /bounties/ Wave 1 archive) opens it, so old links still land
+  function initDetailsHash() {
+    function go() {
+      var h = String(location.hash || "").slice(1);
+      if (!/^[A-Za-z0-9_-]{1,60}$/.test(h)) return;
+      var t = document.getElementById(h); if (!t || !t.closest) return;
+      var d = t.closest("details"), opened = false;
+      while (d) { if (!d.open) { d.open = true; opened = true; } d = d.parentElement && d.parentElement.closest ? d.parentElement.closest("details") : null; }
+      if (opened && t.scrollIntoView) { try { t.scrollIntoView({ block: "start" }); } catch (e) { /* old browsers */ } }
+    }
+    go();
+    window.addEventListener("hashchange", go);
+  }
+
+  // ---- v4.7 W3: one search over protocols, tokens, briefs and 0x addresses (lookup.json + scorecards.json, fetched on first use) --
+  var LK = null, LK_LOADING = null;
+  function lookupData() {
+    if (LK) return Promise.resolve(LK);
+    if (LK_LOADING) return LK_LOADING;
+    if (typeof fetch !== "function") return Promise.resolve(null);
+    var root = BASE + "/", j = function (u) { return fetch(u, { headers: { Accept: "application/json" } }).then(function (r) { return r.json(); }); };
+    LK_LOADING = Promise.all([j(root + "api/v1/lookup.json"), j(root + "api/v1/scorecards.json").catch(function () { return null; })]).then(function (x) {
+      var items = x[0] && Array.isArray(x[0].items) ? x[0].items : [], cards = {};
+      ((x[1] && x[1].protocols) || []).forEach(function (c) { if (c && c.slug) cards[c.slug] = c; });
+      LK = items.filter(function (it) { return it && typeof it.slug === "string" && typeof it.name === "string"; }).map(function (it) {
+        var c = cards[it.slug] || null, addrs = [it.primaryContract, it.controllerAddress].concat(it.aliasAddresses || []).concat(it.relatedContracts || [])
+          .map(function (a) { return typeof a === "string" ? a : (a && typeof a.address === "string" ? a.address : ""); })
+          .filter(function (a) { return ADDR_RE.test(a); }).map(function (a) { return a.toLowerCase(); });
+        return { it: it, card: c, name: it.name.toLowerCase(), slug: it.slug, tokens: (it.tokens || []).map(function (t) { return String(t).toLowerCase(); }),
+          addrs: addrs, search: c ? String(c.search || "").toLowerCase() : "" };
+      });
+      return LK;
+    }).catch(function () { LK_LOADING = null; return null; });
+    return LK_LOADING;
+  }
+  // rank: name / token prefix (0), word prefix (1), slug or name substring (2), contract address (3); -1 = no match
+  function lkRank(x, q) {
+    if (!q) return -1;
+    if (/^0x[0-9a-f]{4,}$/.test(q)) {
+      if (x.addrs.indexOf(q) >= 0) return 0;
+      return x.addrs.some(function (a) { return a.indexOf(q) === 0; }) || x.search.indexOf(q) >= 0 ? 3 : -1;
+    }
+    if (x.name.indexOf(q) === 0 || x.tokens.indexOf(q) >= 0) return 0;
+    if (x.tokens.some(function (t) { return t.indexOf(q) === 0; }) || x.name.split(/[^a-z0-9.]+/).some(function (w) { return w.indexOf(q) === 0; })) return 1;
+    if (x.slug.indexOf(q.replace(/\s+/g, "-")) >= 0 || x.name.indexOf(q) >= 0) return 2;
+    return x.search && q.length >= 3 && x.search.indexOf(q) >= 0 ? 2 : -1;
+  }
+  function lkFind(data, q, n) {
+    q = String(q || "").trim().toLowerCase().slice(0, 80);
+    return (data || []).map(function (x) { return { x: x, r: lkRank(x, q) }; }).filter(function (m) { return m.r >= 0; })
+      .sort(function (a, b) { return a.r - b.r || (a.x.it.kind === "brief") - (b.x.it.kind === "brief") || (a.x.name < b.x.name ? -1 : a.x.name > b.x.name ? 1 : 0); })
+      .slice(0, n).map(function (m) { return m.x; });
+  }
+  var GRADE_WORD = { delta: "Delta", protective: "Protective", aligned: "Aligned", observed: "Observed" };
+  function lkSub(x) {
+    var it = x.it, ch = it.chain === "base" ? "Base" : "Ethereum";
+    if (it.kind === "brief") return "Brief · " + ch + " · " + String(it.category || "");
+    return [x.card && GRADE_WORD[x.card.grade] ? GRADE_WORD[x.card.grade] : "", ch, x.card ? String(x.card.summary_short || "") : String(it.targetLabel || "")]
+      .filter(Boolean).join(" · ");
+  }
+  function initCmdk() {
+    var openers = $$("[data-cmdk-open]"); if (!openers.length) return;
+    var plat = (navigator && (navigator.platform || navigator.userAgent)) || "";
+    if (/Mac|iPhone|iPad/.test(plat)) $$("[data-cmdk-kbd]").forEach(function (k) { k.textContent = "\u2318K"; });
+    var dlg = null, input = null, list = null, foot = null, opts = [], active = -1, last = null, q = "";
+    function setActive(i) {
+      active = i;
+      opts.forEach(function (o, k) { o.setAttribute("aria-selected", String(k === i)); });
+      if (input) { if (opts[i]) input.setAttribute("aria-activedescendant", opts[i].id); else input.removeAttribute("aria-activedescendant"); }
+      if (opts[i] && opts[i].scrollIntoView) { try { opts[i].scrollIntoView({ block: "nearest" }); } catch (e) { /* ignore */ } }
+    }
+    function render(data) {
+      list.textContent = ""; opts = [];
+      if (!q) { foot.textContent = "Type a protocol, a token (LBTC, ETHx, USDC, USDe, GHO), a brief or a 0x address."; setActive(-1); return; }
+      if (!data) { foot.textContent = "Search is unavailable offline. Open the scorecards page instead."; setActive(-1); return; }
+      var hits = lkFind(data, q, 8);
+      hits.forEach(function (x, k) {
+        var a = el("a", { href: siteUrl(x.it.url), role: "option", id: "cmdk-o-" + k, "aria-selected": "false", "data-cmdk-item": x.slug }, [
+          el("span", { "class": "cmdk-t", text: x.it.name }), el("span", { "class": "cmdk-s", text: lkSub(x) })]);
+        list.appendChild(a); opts.push(a);
+      });
+      foot.textContent = hits.length ? hits.length + (hits.length === 1 ? " match" : " matches") + " · \u2191 \u2193 to move · Enter to open · Esc to close"
+        : "No indexed protocol, token or brief matches. Try a contract address on the homepage checker.";
+      setActive(hits.length ? 0 : -1);
+    }
+    function refresh() {
+      q = String(input.value || "").trim().toLowerCase();
+      if (LK) { render(LK); return; }
+      list.textContent = ""; opts = []; setActive(-1);
+      foot.textContent = q ? "Loading the protocol catalog…" : "Type a protocol, a token (LBTC, ETHx, USDC, USDe, GHO), a brief or a 0x address.";
+      lookupData().then(function (d) { if (dlg && !dlg.hidden) render(d); });
+    }
+    function build() {
+      input = el("input", { type: "text", id: "cmdk-q", role: "combobox", "aria-expanded": "true", "aria-controls": "cmdk-list", "aria-autocomplete": "list",
+        "aria-label": "Search protocols, tokens, briefs or 0x addresses", placeholder: "Search protocols, tokens or 0x…", autocomplete: "off", spellcheck: "false" });
+      var closeBtn = el("button", { type: "button", "data-slot": "button", "data-variant": "ghost", "data-size": "sm", "data-cmdk-close": "", "aria-label": "Close search", text: "Esc" });
+      list = el("div", { "class": "cmdk-list", id: "cmdk-list", role: "listbox", "aria-label": "Results" });
+      foot = el("p", { "class": "cmdk-foot", role: "status" });
+      var panel = el("div", { "class": "cmdk-panel" }, [el("div", { "class": "cmdk-head" }, [svgIcon("m21 21-4.3-4.3M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z"), input, closeBtn]), list, foot]);
+      dlg = el("div", { "class": "cmdk", role: "dialog", "aria-modal": "true", "aria-label": "Search Pacta", hidden: "", "data-cmdk": "" }, [panel]);
+      document.body.appendChild(dlg);
+      dlg.addEventListener("mousedown", function (ev) { if (ev.target === dlg) close(); });
+      closeBtn.addEventListener("click", function () { close(); });
+      input.addEventListener("input", refresh);
+      dlg.addEventListener("keydown", function (ev) {
+        if (ev.key === "Escape") { ev.preventDefault(); close(); }
+        else if (ev.key === "ArrowDown" && opts.length) { ev.preventDefault(); setActive((active + 1) % opts.length); }
+        else if (ev.key === "ArrowUp" && opts.length) { ev.preventDefault(); setActive((active - 1 + opts.length) % opts.length); }
+        else if (ev.key === "Enter" && ev.target === input && opts[active]) { ev.preventDefault(); location.href = opts[active].getAttribute("href"); }
+        else if (ev.key === "Tab") {   // focus stays inside the dialog
+          var f = [input, closeBtn].concat(opts), i = f.indexOf(document.activeElement);
+          ev.preventDefault(); f[(i + (ev.shiftKey ? -1 : 1) + f.length) % f.length].focus();
+        }
+      });
+    }
+    function open() {
+      if (!dlg) build();
+      if (!dlg.hidden) { input.focus(); return; }
+      last = document.activeElement; dlg.hidden = false; document.body.classList.add("cmdk-open");
+      openers.forEach(function (b) { b.setAttribute("aria-expanded", "true"); });
+      input.value = ""; refresh(); input.focus();
+    }
+    function close() {
+      if (!dlg || dlg.hidden) return;
+      dlg.hidden = true; document.body.classList.remove("cmdk-open");
+      openers.forEach(function (b) { b.setAttribute("aria-expanded", "false"); });
+      if (last && last.focus) last.focus();
+    }
+    openers.forEach(function (b) { b.setAttribute("aria-expanded", "false"); b.addEventListener("click", function () { open(); }); });
+    document.addEventListener("keydown", function (ev) {
+      var t = ev.target || {}, tag = String(t.tagName || "").toLowerCase(), typing = tag === "input" || tag === "textarea" || tag === "select" || t.isContentEditable;
+      if ((ev.metaKey || ev.ctrlKey) && !ev.altKey && String(ev.key).toLowerCase() === "k") { ev.preventDefault(); if (dlg && !dlg.hidden) close(); else open(); }
+      else if (ev.key === "/" && !typing && !ev.metaKey && !ev.ctrlKey && !ev.altKey) { ev.preventDefault(); open(); }
+    });
+    window.pactaCmdk = { open: open, close: close };   // harness / QA hook (no data, no state outside this dialog)
   }
 
   // ---- Tooltip: any [data-tip] (rosette slices) shows its label on hover and on keyboard focus (A1) ---------------------------
@@ -1765,7 +1981,7 @@
   document.addEventListener("DOMContentLoaded", function () {
     // v4.3: every feature starts on its own, so one that throws can never leave a later one (the "Try:" examples, the
     // checker, the radar) unbound; the error is re-thrown asynchronously, so it still reaches the console
-    [initTheme, initSheet, initTabs, initTooltips, initCopy, initBeaconHooks, tick, initIndex, initRequest, initInspector, initPreflight,
+    [initTheme, initSheet, initTabs, initTabLinks, initDetailsHash, initCmdk, initTooltips, initCopy, initBeaconHooks, tick, initIndex, initRequest, initInspector, initPreflight,
      initLiveTimelocks, initProtocolFilter, initAges, initRefresh, initHeroCheck, initBadgeWidget, initScorecards, initReceipts].forEach(function (f) {
       try { f(); } catch (e) { setTimeout(function () { throw e; }, 0); }
     });

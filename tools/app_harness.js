@@ -801,10 +801,10 @@ async function visitorScenario() {
     && d.getElementById("pf-addr-error").hidden === true;
   const ages = d.querySelectorAll("[data-age]");
   res.v_ages = ages.length >= 2 && ages.every((a) => / \(\d+d \d+h \d+m ago\)$| \(\d+h \d+m ago\)$/.test(a.textContent));
-  // Edge v3 scorecards: 16 static flagship rows; search / filters / Show all hydrate every protocol from /api/v1/scorecards.json
+  // Edge v3 scorecards (v4.7 W1): 8 static high-signal rows; search / filters hydrate every protocol from /api/v1/scorecards.json
   const cards = (input.scorecardsJson && input.scorecardsJson.protocols) || [];
   const rowsNow = () => d.querySelectorAll("#scorecards tr.sc-row"), visible = () => rowsNow().filter((r) => !r.hidden);
-  res.e3_static_sixteen = rowsNow().length === 16 && d.querySelectorAll("#scorecards tr.sc-drawer").length === 16
+  res.e3_static_preview = rowsNow().length === 8 && d.querySelectorAll("#scorecards tr.sc-drawer").length === 8
     && rowsNow().every((r) => r.querySelector("svg.rosette") && r.querySelector(".grade"));
   // a drawer opens / closes from its row toggle and carries the 5-factor breakdown
   const tog0 = rowsNow()[0].querySelector(".sc-toggle"), dr0 = d.getElementById(tog0.getAttribute("aria-controls"));
@@ -819,10 +819,11 @@ async function visitorScenario() {
   ev = new Event_("click"); ev.target = find0; d.querySelector("[data-sc-body]").dispatchEvent(ev);
   res.v4_whole_row_toggle = rowOpen && dr0.hidden === true && !rowsNow()[0].classList.contains("open")
     && rowsNow().every((r) => (r.querySelector(".sc-find").textContent || "").length <= 90 && !/…/.test(r.querySelector(".sc-find").textContent));
-  d.querySelector("[data-sc-all]").dispatchEvent(new Event_("click"));
+  d.querySelectorAll("[data-sc-f]").find((b) => b.getAttribute("data-sc-f") === "all").dispatchEvent(new Event_("click"));   // any filter hydrates
   for (let i = 0; i < 4; i++) await flush();
   const all = rowsNow();
-  res.e3_hydrated_all = cards.length === all.length && all.length > 16 && d.querySelector("[data-sc-all]").hidden === true
+  res.e3_hydrated_all = cards.length === all.length && all.length > 8 && !d.querySelector("[data-sc-all]")
+    && /^Explore all \d+ protocol scorecards$/.test(d.querySelector("[data-sc-explore]").textContent) && d.querySelector("[data-sc-explore]").getAttribute("href") === "scorecards/"
     && all.every((r) => r.querySelector("svg.rosette") && r.querySelector("svg.rosette").querySelectorAll("path").length === 5
       && /Upgradeability .*Timelock floor .*Signer quorum .*Emergency \/ freeze scope .*Docs-vs-chain parity/.test(r.querySelector("svg.rosette").getAttribute("aria-label") || ""))
     && d.querySelectorAll("#scorecards tr.sc-drawer").length === cards.length;
@@ -984,6 +985,73 @@ async function tryExampleScenario() {
   const b = await flow({ breakTheme: true });
   res.v43_init_isolation = b.ok && b.initErrors.length === 1 && /simulated early init failure/.test(b.initErrors[0]);
 }
+// v4.7 W1-W5: severity-ordered 8-row preview; dual-audience tabs (arrow keys, Home / End, a link opening a tab); the Ctrl/Cmd+K and
+// "/" command dialog over lookup.json + scorecards.json; the hero checker resolving a protocol / token name; the labelled theme button
+async function v47Scenario() {
+  const lkMock = (url) => /api\/v1\/lookup\.json$/.test(String(url)) ? Promise.resolve({ status: 200, json: () => Promise.resolve(input.lookupJson) })
+    : /api\/v1\/scorecards\.json$/.test(String(url)) ? Promise.resolve({ status: 200, json: () => Promise.resolve(input.scorecardsJson) })
+    : Promise.reject(new Error("not needed"));
+  const p = run(input.index, input.app, { path: "/", fetch: lkMock });
+  const d = p.document, key = (target, k, mods) => { const ev = Object.assign(new Event_("keydown"), { key: k, target }, mods || {}); target.dispatchEvent(ev); return ev; };
+  const grades = d.querySelectorAll("#scorecards tr.sc-row").map((r) => r.getAttribute("data-grade"));
+  const rank = { delta: 0, protective: 1, aligned: 2, observed: 3 };
+  res.v47_w1_preview = grades.length === 8 && grades[0] === "delta" && grades.every((g, i) => i === 0 || rank[grades[i - 1]] <= rank[g])
+    && /queued operations on Ethereum/.test((d.querySelector("[data-tl-strip]") || { textContent: "" }).textContent)
+    && (d.querySelector("[data-tl-strip] a") || { getAttribute: () => "" }).getAttribute("href") === "#radar"
+    && /^Pinned blocks: Ethereum #[\d,]+ · Base #[\d,]+ · \d+ Base EAS batches$/.test((d.querySelector("[data-fresh]") || { textContent: "" }).textContent);
+  // W2: tabs
+  const tRisk = d.getElementById("hiw-t-risk"), tAg = d.getElementById("hiw-t-agents"), pRisk = d.getElementById("hiw-p-risk"), pAg = d.getElementById("hiw-p-agents");
+  const sel = () => [tRisk.getAttribute("aria-selected"), tAg.getAttribute("aria-selected"), pRisk.hasAttribute("data-inactive"), pAg.hasAttribute("data-inactive")].join();
+  const s0 = sel(); key(tRisk, "ArrowRight"); const s1 = sel(); key(tAg, "Home"); const s2 = sel(); key(tRisk, "End"); const s3 = sel(); key(tAg, "ArrowLeft"); const s4 = sel();
+  const link = d.querySelector('[data-tab-open="hiw-t-agents"]'); link.dispatchEvent(new Event_("click")); const s5 = sel();
+  res.v47_w2_tabs = s0 === "true,false,false,true" && s1 === "false,true,true,false" && s2 === s0 && s3 === s1 && s4 === s0 && s5 === s1
+    && d.querySelector('#how-it-works [role="tablist"]') !== null && tRisk.textContent === "For risk & diligence teams" && tAg.textContent === "For AI agents & builders"
+    && /claude mcp add --transport http pacta https:\/\/pacta-x402\.pacta\.workers\.dev\/mcp/.test(pAg.textContent) && /cast call /.test(pAg.textContent)
+    && pRisk.querySelectorAll('a[data-slot="button"]').map((a) => a.getAttribute("href")).join() === "scorecards/?grade=delta,radar/,request/";
+  // W3: Ctrl+K opens the command dialog; a ticker finds the protocol and its brief; arrows move; Enter would open; Escape closes; "/" reopens
+  key(d.body, "k", { ctrlKey: true });
+  const dlg = d.querySelector("[data-cmdk]"), qi = d.getElementById("cmdk-q");
+  const opened = !!dlg && dlg.hidden === false && dlg.getAttribute("role") === "dialog" && dlg.getAttribute("aria-modal") === "true"
+    && d.querySelector("[data-cmdk-open]").getAttribute("aria-expanded") === "true";
+  qi.value = "lbtc"; const ie = new Event_("input"); ie.target = qi; qi.dispatchEvent(ie);
+  for (let i = 0; i < 6; i++) await flush();
+  const lb = d.querySelectorAll("#cmdk-list [data-cmdk-item]").map((a) => a.getAttribute("data-cmdk-item"));
+  const firstSel = (d.querySelector('#cmdk-list [aria-selected="true"]') || { getAttribute: () => "" }).getAttribute("data-cmdk-item");
+  key(qi, "ArrowDown"); const secondSel = (d.querySelector('#cmdk-list [aria-selected="true"]') || { getAttribute: () => "" }).getAttribute("data-cmdk-item");
+  qi.value = "0xaafb31780e4b9c95bc920e388f4925a874cd07af"; qi.dispatchEvent(ie); for (let i = 0; i < 3; i++) await flush();
+  const byAddr = d.querySelectorAll("#cmdk-list [data-cmdk-item]").map((a) => a.getAttribute("data-cmdk-item"));
+  qi.value = "usdc"; qi.dispatchEvent(ie); for (let i = 0; i < 3; i++) await flush();
+  const usdc = d.querySelectorAll("#cmdk-list [data-cmdk-item]").map((a) => a.getAttribute("data-cmdk-item"));
+  key(qi, "Escape"); const closed = dlg.hidden === true && d.querySelector("[data-cmdk-open]").getAttribute("aria-expanded") === "false";
+  key(d.body, "/"); const reopened = dlg.hidden === false; key(qi, "Escape");
+  const inp = d.getElementById("pf-address"); key(inp, "/"); const notFromInput = dlg.hidden === true;
+  res.v47_w3_cmdk = opened && lb[0] === "lombard-lbtc" && lb.includes("lombard-ops-0xceee-0x2f2a-0x6404") && firstSel === "lombard-lbtc" && secondSel === lb[1]
+    && byAddr[0] === "stader-labs-ethx" && usdc[0] === "circle-usdc" && closed && reopened && notFromInput
+    && d.querySelectorAll("#cmdk-list a").every((a) => /^https:\/\/pacta\.wtf\/(protocols|briefs)\/[a-z0-9-]+\/$/.test(a.getAttribute("href")));
+  // W3: the hero checker resolves a name instead of rejecting it
+  const pf = d.getElementById("pf-form"), out = d.getElementById("pf-out");
+  inp.value = "Stader"; pf.dispatchEvent(new Event_("submit")); for (let i = 0; i < 4; i++) await flush();
+  const item = out.querySelector('[data-pf-match-item="stader-labs-ethx"]');
+  const named = !!item && inp.getAttribute("aria-invalid") === null && d.getElementById("pf-addr-error").hidden === true
+    && /Open scorecard/.test(item.textContent) && item.querySelector("a").getAttribute("href") === "https://pacta.wtf/protocols/stader-labs-ethx/";
+  item.querySelector("[data-pf-run]").dispatchEvent(new Event_("click")); for (let i = 0; i < 3; i++) await flush();
+  const lkStader = input.lookupJson.items.find((x) => x.slug === "stader-labs-ethx").preflightArgs;
+  const ran = inp.value === lkStader.address && d.getElementById("pf-chain").value === lkStader.chain && !out.querySelector("[data-pf-match-item]");
+  inp.value = "zzqxj"; pf.dispatchEvent(new Event_("submit")); for (let i = 0; i < 3; i++) await flush();
+  const none = !!out.querySelector("[data-pf-nomatch]") && inp.getAttribute("aria-invalid") === null;
+  inp.value = "0x12"; pf.dispatchEvent(new Event_("submit")); await flush();
+  res.v47_w3_hero_names = named && ran && none && inp.getAttribute("aria-invalid") === "true" && inp.getAttribute("maxlength") === "80";
+  // W5: the theme button names the current choice; the mobile sheet row switches it (aria-pressed)
+  const tl = d.querySelector("[data-theme-label]"), tb = d.querySelector("[data-theme-btn]");
+  const sysOk = tl.textContent === "System" && tb.getAttribute("aria-label") === "Theme: System";
+  const light = d.querySelectorAll("[data-theme-sheet]").find((b) => b.getAttribute("data-theme-set") === "light");
+  light.dispatchEvent(new Event_("click"));
+  res.v47_w5_theme_label = sysOk && tl.textContent === "Light" && tb.getAttribute("aria-label") === "Theme: Light" && light.getAttribute("aria-pressed") === "true"
+    && d.querySelectorAll("[data-theme-sheet]").filter((b) => b.getAttribute("aria-pressed") === "true").length === 1
+    && d.querySelectorAll('#theme-menu [role="menuitemradio"]').find((b) => b.getAttribute("data-theme-set") === "light").getAttribute("aria-checked") === "true"
+    && p.document.documentElement.classList.contains("dark") === false;
+}
+
 // v4.3 N5: after a live re-check the radar header still cites ONE block number (the finalized read); the live block goes on the
 // provenance line under the table; the counts never read as a total ("Executed (N ops)")
 async function radarHeaderScenario() {
@@ -1107,8 +1175,7 @@ async function v45Scenario() {
   let p = run(input.index, input.app, { path: "/", fetch: scMock });
   let d = p.document;
   const body = d.querySelector("[data-sc-body]"), staticRows = d.querySelectorAll("#scorecards tr.sc-row");
-  const sixFirst = staticRows.length === 16 && staticRows.slice(0, 6).every((r) => !r.classList.contains("sc-m"))
-    && staticRows.slice(6).every((r) => r.classList.contains("sc-m")) && !body.hasAttribute("data-all");
+  const sixFirst = staticRows.length === 8 && staticRows.every((r) => !r.classList.contains("sc-m")) && !body.hasAttribute("data-all");   // v4.7: all 8 shown
   const q = d.getElementById("sc-q"), found = {};
   for (const [slug, a] of Object.entries(TRY)) {
     q.value = a; const ev = new Event_("input"); ev.target = q; q.dispatchEvent(ev);
@@ -1168,6 +1235,7 @@ async function v45Scenario() {
   try { await liveCardScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await tryExampleScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await radarHeaderScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
+  try { await v47Scenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { protocolFilterScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await preflightScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await staleResponseScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }

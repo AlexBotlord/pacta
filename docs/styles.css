@@ -416,6 +416,33 @@ details[open] > [data-slot="accordion-trigger"]::after, details.acc[open] > summ
 }
 [data-slot="navigation-menu"] a:hover, [data-slot="navigation-menu"] a[aria-current="page"] { background: var(--accent); color: var(--accent-foreground); text-decoration: none; }
 .tools { display: flex; align-items: center; gap: 8px; flex: none; margin-left: auto; }
+/* v4.7 W3: global search trigger (Command dialog) and W5: labelled theme button */
+.search-btn { color: var(--muted-foreground); font-weight: 500; }
+/* the header now carries search + a labelled theme button: the "by Fractal Neurons" tagline stays in the footer, titles and JSON-LD */
+.topbar .brand small { display: none; }
+.search-btn kbd { display: inline-flex; align-items: center; height: 20px; padding: 0 6px; border: 1px solid var(--border); border-radius: calc(var(--radius) - 2px); background: var(--muted); color: var(--muted-foreground); font-size: 0.75rem; font-weight: 500; }
+.theme-btn { gap: 6px; padding: 0 10px; color: var(--muted-foreground); }
+.theme-btn .tb-l { font-size: 0.875rem; font-weight: 500; }
+.sheet-theme { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 12px; padding: 12px 0 0; border-top: 1px solid var(--border); }
+.sheet-theme [data-slot="button"] { padding: 0 10px; }
+.sheet-theme > span { flex: 1 0 100%; font-size: 0.875rem; font-weight: 600; color: var(--muted-foreground); }
+.sheet-theme [aria-pressed="true"] { background: var(--accent); color: var(--accent-foreground); border-color: var(--ring); }
+.cmdk { position: fixed; inset: 0; z-index: 60; display: flex; align-items: flex-start; justify-content: center; padding: 10vh 16px 16px; background: rgba(9, 9, 11, 0.5); }
+.cmdk[hidden] { display: none; }
+.cmdk-panel { width: 100%; max-width: 600px; max-height: 76vh; display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--border); border-radius: calc(var(--radius) + 4px); background: var(--popover); color: var(--popover-foreground); box-shadow: var(--shadow-md); }
+.cmdk-head { display: flex; align-items: center; gap: 8px; padding: 0 8px 0 14px; border-bottom: 1px solid var(--border); }
+.cmdk-head svg { flex: none; width: 16px; height: 16px; color: var(--muted-foreground); }
+.cmdk-head input { flex: 1; min-width: 0; height: 52px; border: 0; background: transparent; box-shadow: none; padding: 0; font-size: 1rem; }
+.cmdk-head input:focus, .cmdk-head input:focus-visible { outline: none; box-shadow: none; }
+.cmdk-list { margin: 0; padding: 6px; list-style: none; overflow-y: auto; }
+.cmdk-list a { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; align-items: center; min-height: 44px; padding: 8px 10px; border-radius: var(--radius); color: var(--foreground); text-decoration: none; }
+.cmdk-list a[aria-selected="true"], .cmdk-list a:hover { background: var(--accent); color: var(--accent-foreground); text-decoration: none; }
+.cmdk-list .cmdk-t { font-size: 0.875rem; font-weight: 600; overflow-wrap: anywhere; }
+.cmdk-list .cmdk-s { grid-column: 1; font-size: 0.75rem; color: var(--muted-foreground); overflow-wrap: anywhere; }
+.cmdk-list [data-slot="badge"] { grid-row: 1 / span 2; grid-column: 2; }
+.cmdk-empty, .cmdk-foot { margin: 0; padding: 12px 14px; font-size: 0.75rem; color: var(--muted-foreground); }
+.cmdk-foot { border-top: 1px solid var(--border); }
+body.cmdk-open { overflow: hidden; }
 .tools .gh, .tools .xl { color: var(--muted-foreground); }
 .tools .gh svg { width: 18px; height: 18px; }
 .tools .xl svg { width: 16px; height: 16px; }
@@ -538,6 +565,31 @@ code { overflow-wrap: break-word; }
 .stat b { display: block; font-size: 1.875rem; line-height: 1.1; font-weight: 650; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
 .stat span { display: block; margin-top: 8px; font-size: 0.875rem; font-weight: 500; color: var(--foreground); }
 .stat small { display: block; margin-top: 4px; color: var(--muted-foreground); }
+/* v4.7 W4 + W1: build-pinned freshness pill and the timelock radar strip under the hero numbers */
+.hero-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 16px; }
+.fresh { display: inline-flex; align-items: center; gap: 8px; min-height: 28px; margin: 0; padding: 2px 10px; border: 1px solid var(--border); border-radius: calc(var(--radius) + 3px); background: var(--card); font-size: 0.75rem; color: var(--muted-foreground); font-variant-numeric: tabular-nums; }
+.fresh .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); flex: none; }
+.sec-head .fresh, h1 + .fresh { margin-top: 8px; }
+.tl-strip { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin: 0; font-size: 0.875rem; color: var(--muted-foreground); }
+.tl-strip b { color: var(--foreground); font-weight: 600; }
+.tl-strip a { display: inline-flex; align-items: center; min-height: 24px; }
+.agents-card p.s > a { display: inline-flex; align-items: center; min-height: 24px; }
+.hiw-cta, .hiw-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+.hiw-pills { margin: 12px 0; }
+#how-it-works .legend { margin-top: 16px; }
+#how-it-works [data-slot="tabs-content"] > .s { margin-bottom: 12px; }
+/* v4.7 W4: the closed Wave 1 archive on /bounties/ */
+details.archive-details { margin-top: 40px; border: 1px solid var(--border); border-radius: calc(var(--radius) + 2px); background: var(--card); }
+details.archive-details > summary { display: flex; align-items: center; min-height: 48px; padding: 8px 16px; cursor: pointer; font-weight: 600; list-style: none; }
+details.archive-details > summary::after { content: ""; flex: none; width: 8px; height: 8px; margin-left: auto; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); }
+details.archive-details[open] > summary::after { transform: rotate(-135deg); }
+details.archive-details > summary > span { padding-right: 12px; }
+details.archive-details > .memo-sec { padding: 0 16px 8px; }
+/* v4.7 W3: protocol / token matches under the hero checker */
+.pf-matches { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.pf-matches li { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--card); }
+.pf-matches .pm-n { flex: 1 1 220px; min-width: 0; font-weight: 600; overflow-wrap: anywhere; }
+.pf-matches .pm-n small { display: block; font-weight: 400; font-size: 0.75rem; color: var(--muted-foreground); }
 .trust { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 20px; margin-top: 20px; font-size: 0.875rem; color: var(--muted-foreground); }
 .trust a { display: inline-flex; align-items: center; min-height: 24px; color: var(--muted-foreground); text-decoration: underline; text-decoration-color: var(--input); }
 .trust a:hover { color: var(--foreground); }
@@ -868,6 +920,16 @@ html:not(.js) [data-theme-menu], html:not(.js) .menu-btn, html:not(.js) [data-li
 .ftr-brand p { max-width: var(--container-prose); }
 
 /* ---------------------------------------------------------------- responsive */
+@media (max-width: 1279px) {
+  .tools .cta { display: none; }   /* v4.7: the header CTA lives in the menu sheet and the hero below 1280 px */
+}
+/* v4.7: below 1024 px the NavigationMenu, GitHub and X move into the hamburger Sheet (with the Theme row and the CTA) */
+@media (max-width: 1023px) {
+  html:not(.js) [data-slot="navigation-menu"] { display: flex !important; position: absolute; left: 0; right: 0; top: 64px; padding: 4px 16px; overflow-x: auto; background: var(--background); border-bottom: 1px solid var(--border); }
+  [data-slot="navigation-menu"], .tools .gh, .tools .xl { display: none; }
+  .menu-btn { display: inline-flex; }
+  .search-btn kbd { display: none; }
+}
 @media (max-width: 1023px) {
   .tools .cta { display: none; }
   .brand small { display: none; }
@@ -890,6 +952,10 @@ html:not(.js) [data-theme-menu], html:not(.js) .menu-btn, html:not(.js) [data-li
   .topbar .wrap { height: 56px; }
   [data-slot="navigation-menu"], .tools .gh, .tools .xl { display: none; }
   .menu-btn { display: inline-flex; }
+  .search-btn { width: 36px; padding: 0; justify-content: center; }
+  .search-btn .sb-l, .theme-btn .tb-l { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+  .search-btn kbd { display: none; }
+  .theme-btn { width: 36px; padding: 0; justify-content: center; }
   .sec { padding-top: 48px; }
   .sec-head { grid-template-columns: minmax(0, 1fr); gap: 8px; }
   .sec-head .aside, .sec-head p { justify-self: start; text-align: left; }

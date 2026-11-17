@@ -461,8 +461,7 @@ body.sheet-open { overflow: hidden; }
 [data-slot="skeleton"] { display: inline-block; min-width: 72px; height: 22px; border-radius: var(--radius); background: var(--muted); animation: pulse 1.6s ease-in-out infinite; vertical-align: middle; }
 @keyframes pulse { 50% { opacity: .45; } }
 .js [data-live-pending] [data-opstate] { display: none; }
-.js [data-live-pending] .op-skel { display: inline-block; }
-.op-skel { display: none; }
+.js [data-live-pending] [data-skel]::before { content: ""; display: inline-block; min-width: 72px; height: 22px; border-radius: var(--radius); background: var(--muted); animation: pulse 1.6s ease-in-out infinite; vertical-align: middle; }   /* v4.6: the T1 skeleton without a per-row element (page budget) */
 .live-status { display: inline-flex; align-items: center; gap: 8px; font-size: 0.875rem; color: var(--muted-foreground); }
 .live-status .spinner { width: 14px; height: 14px; }
 
@@ -662,6 +661,13 @@ tr.sc-drawer > td { padding: 4px 16px 24px; background: color-mix(in srgb, var(-
 .radar tr.is-executed td { color: var(--muted-foreground); }
 .radar-live { margin: 0 0 16px; font-size: 0.875rem; color: var(--muted-foreground); }
 .radar-live b { color: var(--foreground); font-weight: 600; }
+/* v4.6: multi-chain radar. A subtle chain tag on Base rows; per-operation labels on /radar/ */
+.chain-tag { display: inline-flex; align-items: center; height: 18px; padding: 0 6px; border: 1px solid var(--input); border-radius: calc(var(--radius) + 4px); font-size: 0.75rem; font-weight: 600; line-height: 1; color: var(--muted-foreground); vertical-align: middle; }
+.radar .oplabels { margin: 6px 0 0; padding: 0; list-style: none; font-size: 0.75rem; color: var(--muted-foreground); }
+.radar .oplabels li { margin: 2px 0; overflow-wrap: anywhere; }
+.memo ol.calls li { overflow-wrap: anywhere; }
+.memo .card table + p, .memo .card p + table { margin-top: 12px; }
+.memo .card table + table { margin-top: 20px; }
 .prov { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-top: 16px; font-size: 0.875rem; color: var(--muted-foreground); }
 .snap-fallback { color: var(--warning); font-weight: 600; }
 .obs-age { color: var(--muted-foreground); }
@@ -917,6 +923,12 @@ html:not(.js) [data-theme-menu], html:not(.js) .menu-btn, html:not(.js) [data-li
   .ix-count { margin-left: 0; }
   table.ix, .memo table { display: block; max-width: 100%; overflow-x: auto; }
   table.ix th, table.ix td, .memo table td { overflow-wrap: normal; word-break: normal; }
+  /* v4.6: the hand-written radar briefs' 3-column verification tables stack (check, evidence, status) instead of scrolling sideways */
+  .memo table.stack, .memo table.stack tbody, .memo table.stack tr, .memo table.stack td { display: block; width: 100%; overflow-x: visible; }
+  .memo table.stack thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
+  .memo table.stack tr { padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .memo table.stack td { padding: 2px 0; border: 0; }
+  .memo table.stack td, .memo table.stack td code { overflow-wrap: anywhere; word-break: break-word; }
 }
 /* /protocols/ below 640 px: Protocol, Chain and Docs vs chain stay in view (no blind sideways scroll) */
 @media (max-width: 639px) {

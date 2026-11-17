@@ -6012,6 +6012,35 @@
   },
   {
    "baseEasUids": [],
+   "category": "Timelock radar brief (queued operations)",
+   "chain": "base",
+   "chainId": 8453,
+   "classification": "timelock_radar_brief",
+   "controllerAddress": "0x3B60F7f25b09E71356cdFFC6475c222A466a2AC9",
+   "controllerKind": "timelock",
+   "documentedDelaySeconds": null,
+   "easAttested": false,
+   "eta": 1794956259,
+   "evidenceBasis": "pinned_rpc_brief",
+   "kind": "brief",
+   "name": "Beefy CLM USDC-VVV on Aerodrome — calm-check tolerance widened from 9 to 25 ticks",
+   "observedDelaySeconds": 21600,
+   "preflightArgs": {
+    "address": "0x3B60F7f25b09E71356cdFFC6475c222A466a2AC9",
+    "chain": "base"
+   },
+   "primaryContract": "0x3B60F7f25b09E71356cdFFC6475c222A466a2AC9",
+   "relatedProtocolSlug": "beefy-finance-base",
+   "slug": "beefy-base-op-0x3302",
+   "targetLabel": "Beefy Finance (Base) timelock",
+   "tokens": [
+    "cowAeroBaseUSDC-VVV",
+    "VVV"
+   ],
+   "url": "https://pacta.wtf/briefs/beefy-base-op-0x3302/"
+  },
+  {
+   "baseEasUids": [],
    "category": "Collateral onboarding verification brief",
    "chain": "ethereum",
    "chainId": 1,
@@ -6109,6 +6138,35 @@
    "chain": "ethereum",
    "chainId": 1,
    "classification": "timelock_radar_brief",
+   "controllerAddress": "0xE8Dc0Fab349EA169283C48Ccfd09d797E6DB7c94",
+   "controllerKind": "timelock",
+   "documentedDelaySeconds": null,
+   "easAttested": false,
+   "eta": 1795011647,
+   "evidenceBasis": "pinned_rpc_brief",
+   "kind": "brief",
+   "name": "Ethena USDe — mint caps cut to 50M per block, USDm delisted, a custodian added",
+   "observedDelaySeconds": 86400,
+   "preflightArgs": {
+    "address": "0xE8Dc0Fab349EA169283C48Ccfd09d797E6DB7c94",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xE8Dc0Fab349EA169283C48Ccfd09d797E6DB7c94",
+   "relatedProtocolSlug": "ethena-usde-susde",
+   "slug": "ethena-ops-0xb028-0xca05-0x108e-0x070a",
+   "targetLabel": "Ethena timelock",
+   "tokens": [
+    "USDe",
+    "USDm"
+   ],
+   "url": "https://pacta.wtf/briefs/ethena-ops-0xb028-0xca05-0x108e-0x070a/"
+  },
+  {
+   "baseEasUids": [],
+   "category": "Timelock radar brief (queued operations)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "timelock_radar_brief",
    "controllerAddress": "0x9f26d4C958fD811A1F59B01B86Be7dFFc9d20761",
    "controllerKind": "timelock",
    "documentedDelaySeconds": null,
@@ -6162,6 +6220,35 @@
    ],
    "url": "https://pacta.wtf/briefs/kerne-kusd-base/",
    "venue": "Euler (Base) · isolated kUSD/USDC market"
+  },
+  {
+   "baseEasUids": [],
+   "category": "Timelock radar brief (queued operations)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "timelock_radar_brief",
+   "controllerAddress": "0x055E84e7FE8955E2781010B866f10Ef6E1E77e59",
+   "controllerKind": "timelock",
+   "documentedDelaySeconds": null,
+   "easAttested": false,
+   "eta": 1794940187,
+   "evidenceBasis": "pinned_rpc_brief",
+   "kind": "brief",
+   "name": "Lombard — AssetRouter, BTC.b and LBTC upgrades adding a fixed deposit fee",
+   "observedDelaySeconds": 86400,
+   "preflightArgs": {
+    "address": "0x055E84e7FE8955E2781010B866f10Ef6E1E77e59",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x055E84e7FE8955E2781010B866f10Ef6E1E77e59",
+   "relatedProtocolSlug": "lombard-lbtc",
+   "slug": "lombard-ops-0xceee-0x2f2a-0x6404",
+   "targetLabel": "Lombard timelock",
+   "tokens": [
+    "LBTC",
+    "BTC.b"
+   ],
+   "url": "https://pacta.wtf/briefs/lombard-ops-0xceee-0x2f2a-0x6404/"
   },
   {
    "baseEasUids": [],
@@ -6253,6 +6340,37 @@
     "tETH"
    ],
    "url": "https://pacta.wtf/briefs/treehouse-op-0x2f11/"
+  },
+  {
+   "baseEasUids": [],
+   "category": "Timelock radar brief (queued operations)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "timelock_radar_brief",
+   "controllerAddress": "0x88Ba032be87d5EF1fbE87336B7090767F367BF73",
+   "controllerKind": "timelock",
+   "documentedDelaySeconds": null,
+   "easAttested": false,
+   "eta": 1795451951,
+   "evidenceBasis": "pinned_rpc_brief",
+   "kind": "brief",
+   "name": "Yearn V3 — 8 new strategies added to 6 vaults with max-debt caps",
+   "observedDelaySeconds": 604800,
+   "preflightArgs": {
+    "address": "0x88Ba032be87d5EF1fbE87336B7090767F367BF73",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x88Ba032be87d5EF1fbE87336B7090767F367BF73",
+   "relatedProtocolSlug": "yearn-v3",
+   "slug": "yearn-v3-op-0x2a14",
+   "targetLabel": "Yearn V3 timelock",
+   "tokens": [
+    "yvUSDC-1",
+    "yvUSD",
+    "yvWETH-1",
+    "yvFlexUSDC"
+   ],
+   "url": "https://pacta.wtf/briefs/yearn-v3-op-0x2a14/"
   }
  ],
  "schema": "pacta.protocol_lookup_catalog.v1",
@@ -6268,9 +6386,9 @@
   "https://pacta.wtf/api/v1/radar.json"
  ],
  "totals": {
-  "briefs": 8,
+  "briefs": 12,
   "easAttestedProtocols": 86,
-  "items": 98,
+  "items": 102,
   "protocols": 90,
   "rpcObservedProtocols": 4
  }

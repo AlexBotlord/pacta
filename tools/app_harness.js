@@ -993,10 +993,17 @@ async function radarHeaderScenario() {
   };
   let live = null;
   const p0 = run(input.index, input.app, { path: "/", fetch: () => Promise.reject(new Error("offline")) });
-  const ids = p0.document.querySelectorAll("#radar [data-ops]").map((b) => (b.getAttribute("data-ops") || "").split(/\s+/).filter(Boolean));
-  const execRow = p0.document.querySelectorAll("#radar tr[data-radar-row]").map((tr) => tr.getAttribute("data-radar-row"));
-  live = { operations: ids.flatMap((g, i) => g.map((id) => ({ opId: id, live: execRow[i] === "executed" ? { status: "done", isOperationDone: true }
-    : { status: execRow[i], isOperationPending: true, isOperationDone: false }, block: { number: 26999999 } }))) };
+  // v4.6: rows tagged "Base" (chain id 8453) are re-read on Base; the live payload carries each op's chain and its own block
+  const rows0 = p0.document.querySelectorAll("#radar tr[data-radar-row]");
+  const ids = rows0.map((tr) => { const b = tr.querySelector("[data-ops]"); return ((b && b.getAttribute("data-ops")) || "").split(/\s+/).filter(Boolean); });
+  const execRow = rows0.map((tr) => tr.getAttribute("data-radar-row"));
+  const baseRow = rows0.map((tr) => !!tr.querySelector(".chain-tag"));
+  const payload = (withBase) => ({ operations: ids.flatMap((g, i) => (baseRow[i] && !withBase ? [] : g).map((id) => ({ opId: id, chain: baseRow[i] ? "base" : "ethereum",
+    live: execRow[i] === "executed" ? { status: "done", isOperationDone: true } : { status: execRow[i], isOperationPending: true, isOperationDone: false },
+    block: { number: baseRow[i] ? 58999999 : 26999999 } }))) });
+  const head0 = [".radar-head", ".livebar", "[data-radar-live]"].map((s) => (p0.document.querySelector("#radar " + s) || { textContent: "" }).textContent).join(" ");
+  const blocks0 = head0.match(/#?\d{1,3}(,\d{3}){2,}/g) || [];
+  live = payload(false);   // Ethereum operations only (e.g. a truncated live read): one Ethereum block
   const p = run(input.index, input.app, { path: "/", fetch: fetchMock });
   for (let i = 0; i < 6; i++) await flush();
   const d = p.document, head = [".radar-head", ".livebar", "[data-radar-live]"].map((s) => (d.querySelector("#radar " + s) || { textContent: "" }).textContent).join(" ");
@@ -1004,12 +1011,26 @@ async function radarHeaderScenario() {
   const pill = d.querySelector("#radar [data-prov-pill]"), asof = d.querySelector("#radar .livebar .lb-asof");
   res.v44_radar_live_pill = !!pill && pill.textContent === "Live-checked · #26,999,999" && !!asof && asof.hidden === true;
   const p0pill = p0.document.querySelector("#radar [data-prov-pill]"), p0asof = p0.document.querySelector("#radar .livebar .lb-asof");
-  res.v44_radar_pill_stays_pinned_offline = !!p0pill && p0pill.textContent === "Scanner-pinned (L1 finalized)" && !!p0asof && p0asof.hidden !== true;
-  res.v43_n5_radar_header_one_block = blocks.length === 1 && /finalized block #[\d,]+/.test(head)
+  res.v44_radar_pill_stays_pinned_offline = !!p0pill && /^Scanner-pinned \(L1( \+ Base)? finalized\)$/.test(p0pill.textContent) && !!p0asof && p0asof.hidden !== true;
+  // N5: the header still cites only the finalized read (one block per chain on the radar), never the live block
+  res.v43_n5_radar_header_one_block = blocks.length >= 1 && blocks.length === blocks0.length && blocks.every((b, i) => b === blocks0[i])
+    && blocks.length === (baseRow.some(Boolean) ? 2 : 1) && !/26,999,999|58,999,999/.test(head) && /finalized block #[\d,]+/.test(head)
     && d.querySelector("[data-live-status-text]").textContent === "Live state confirmed at the latest block"
-    && /#26,999,999/.test(d.querySelector("#radar [data-live-line]").textContent)
+    && d.querySelector("#radar [data-live-line]").textContent === "Live re-check at the latest block #26,999,999 via the free /v1/briefs/live-timelocks."
     && (execRow.includes("executed") ? / · Executed \(\d+ ops?\)$|^Executed \(\d+ ops?\)$/ : /^(?!.*Executed)/).test(d.querySelector("[data-radar-counts]").textContent)
     && !/operations\)/.test(d.querySelector("[data-radar-counts]").textContent);
+  // v4.6: a two-chain live read: Ethereum and Base blocks are kept apart (the Base block never becomes the "latest block")
+  live = payload(true);
+  const q = run(input.index, input.app, { path: "/", fetch: fetchMock });
+  for (let i = 0; i < 6; i++) await flush();
+  const qd = q.document, qpill = qd.querySelector("#radar [data-prov-pill]"), qline = qd.querySelector("#radar [data-live-line]");
+  const qhead = [".radar-head", ".livebar", "[data-radar-live]"].map((s) => (qd.querySelector("#radar " + s) || { textContent: "" }).textContent).join(" ");
+  const qBase = qd.querySelectorAll("#radar tr[data-radar-row]").filter((tr) => !!tr.querySelector(".chain-tag"));
+  res.v46_live_blocks_per_chain = baseRow.some(Boolean) && !!qpill && qpill.textContent === "Live-checked · #26,999,999 · Base #58,999,999"
+    && !!qline && qline.textContent === "Live re-check at the latest blocks Ethereum #26,999,999 and Base #58,999,999 via the free /v1/briefs/live-timelocks."
+    && qBase.length === 1 && qBase.every((tr) => tr.querySelector("[data-ops]").getAttribute("data-live") === "1")
+    && JSON.stringify(qhead.match(/#?\d{1,3}(,\d{3}){2,}/g) || []) === JSON.stringify(blocks0)
+    && qd.querySelector("[data-radar-counts]").textContent === p0.document.querySelector("[data-radar-counts]").textContent;
 }
 
 // v4.4 R-V1 / P2-2 / R-V4: verdict, metrics, then the indexed docs-vs-chain record with its badge; one visible scope sentence; the

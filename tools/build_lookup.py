@@ -81,6 +81,8 @@ TOKENS = {
     "kerne-kusd-base": ["kUSD", "Kerne"], "efix-efixdi-base": ["efixDI+", "EFIXDI", "EFIX"], "circle-cirbtc-eth": ["cirBTC", "Circle"],
     "paxos-paxgy-eth": ["PAXGy", "Paxos"], "tether-usat-eth": ["USAT", "Tether"], "ethena-ops-0x0ca0-0x1fe5": ["USDe", "RLUSD", "USAT"],
     "etherfi-op-0x244e": ["eETH", "weETH"], "treehouse-op-0x2f11": ["TREE", "tETH"],
+    "lombard-ops-0xceee-0x2f2a-0x6404": ["LBTC", "BTC.b"], "beefy-base-op-0x3302": ["cowAeroBaseUSDC-VVV", "VVV"],
+    "ethena-ops-0xb028-0xca05-0x108e-0x070a": ["USDe", "USDm"], "yearn-v3-op-0x2a14": ["yvUSDC-1", "yvUSD", "yvWETH-1", "yvFlexUSDC"],
 }
 
 
@@ -190,12 +192,13 @@ def _onboarding_item(b):
 def _radar_item(it, related):
     slug = it["brief"].rstrip("/").split("/")[-1]
     tl = _addr(it["timelock"])
+    chain = {v: k for k, v in CHAIN_IDS.items()}[it.get("chain_id", 1)]   # v4.6: Base radar items (chain_id 8453)
     return {"kind": "brief", "slug": slug, "name": it["title"], "tokens": TOKENS[slug], "category": "Timelock radar brief (queued operations)",
-            "chain": "ethereum", "chainId": 1, "primaryContract": tl, "targetLabel": f'{it["protocol"]} timelock',
+            "chain": chain, "chainId": CHAIN_IDS[chain], "primaryContract": tl, "targetLabel": f'{it["protocol"]} timelock',
             "controllerAddress": tl, "controllerKind": "timelock", "observedDelaySeconds": int(it["min_delay_seconds"]), "documentedDelaySeconds": None,
             "classification": "timelock_radar_brief", "evidenceBasis": "pinned_rpc_brief", "easAttested": False, "baseEasUids": [],
             "eta": int(it["eta"]) if it.get("eta") else None, "relatedProtocolSlug": related[slug],
-            "url": f"{BASE}/briefs/{slug}/", "preflightArgs": {"chain": "ethereum", "address": tl}}
+            "url": f"{BASE}/briefs/{slug}/", "preflightArgs": {"chain": chain, "address": tl}}
 
 
 def build_items(sp, onb, radar, brief_protocol):

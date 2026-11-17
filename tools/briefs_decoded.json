@@ -1,0 +1,2126 @@
+{
+  "schema": "pacta.decoded_briefs.v1",
+  "description": "Decoded pre-execution briefs for the queued timelock operations on the radar: scheduling logs, decoded calls, current vs new state, verified sources, risk notes and cast reproduction commands. Every value was read at the pinned finalized block on two independent public RPC endpoints that agreed (captures/decode-*.json).",
+  "pins": {
+    "ethereum": {
+      "block_number": 26436571,
+      "block_hash": "0x8f796be27dbc3affb0a0545895d8c27e7a63ac7bf438f93a4107af36f4a33599",
+      "block_timestamp": 1794940247,
+      "block_time_utc": "2026-11-17 18:30 UTC",
+      "tag": "finalized",
+      "rpcs_cross_checked": 2
+    },
+    "base": {
+      "block_number": 58747369,
+      "block_hash": "0x5b7a6bd3cfd87d4f06132ccd48455c7f692d3b867f5dd3f597171c4f8a8d4acb",
+      "block_timestamp": 1794939849,
+      "block_time_utc": "2026-11-17 18:24 UTC",
+      "tag": "finalized",
+      "rpcs_cross_checked": 2
+    }
+  },
+  "briefs": [
+    {
+      "slug": "lombard-ops-0xceee-0x2f2a-0x6404",
+      "protocol": "Lombard (LBTC)",
+      "protocol_slug": "lombard-lbtc",
+      "chain_id": 1,
+      "timelock": {
+        "address": "0x055e84e7fe8955e2781010b866f10ef6e1e77e59",
+        "getMinDelay": 86400,
+        "verified": {
+          "address": "0x055e84e7fe8955e2781010b866f10ef6e1e77e59",
+          "codeKeccak": "0x790260e19c593d086bc3677d1bd906d991d1652f5b22c90547ff8b7c57fa0332",
+          "codeBytes": 11076,
+          "sourcify": {
+            "name": "LombardTimeLock",
+            "fullyQualifiedName": "contracts/consortium/LombardTimeLock.sol:LombardTimeLock",
+            "match": "exact_match",
+            "runtimeMatch": "exact_match",
+            "compiler": "0.8.24+commit.e11b9ed9",
+            "verifiedAt": "2024-08-21T15:37:12Z",
+            "onchainBytecodeMatchesChain": true,
+            "url": "https://sourcify.dev/server/v2/contract/1/0x055e84e7fe8955e2781010b866f10ef6e1e77e59"
+          }
+        }
+      },
+      "operations": [
+        {
+          "op_id": "0xceeeff86865f11b6de2c57d4901d3ec3313edf08be6ea664989d386cb1ab18eb",
+          "label": "AssetRouter upgrade adding a fixed deposit fee",
+          "eta": 1794940187,
+          "eta_utc": "2026-11-17 18:29:47 UTC",
+          "status": {
+            "isOperation": true,
+            "isOperationPending": true,
+            "isOperationReady": true,
+            "isOperationDone": false,
+            "getTimestamp": 1794940187
+          },
+          "ready": true,
+          "predecessor": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "delay": 86400,
+          "scheduled": {
+            "block": 26429391,
+            "tx": "0xf18a01875814c62d83b089f6565c9e02a80c296fdb81306d04d44f11e795ae05",
+            "from": "0x564974801d2ffbe736ed59c9be39f6c0a4274ae6",
+            "to": "0x251a604e8e8f6906d60f8dedc5aaeb8cd38f4892",
+            "function": "Safe execTransaction",
+            "logIndexes": [
+              680
+            ]
+          },
+          "calls": [
+            {
+              "index": 0,
+              "target": "0xbf4202c8a0d852d432266dfe112ed624a1a36754",
+              "value": 0,
+              "selector": "0x9623609d",
+              "function": "upgradeAndCall(address,address,bytes)",
+              "args": {
+                "proxy": "0x9ece5fb1ab62d9075c4ec814b321e24d8ea021ac",
+                "implementation": "0xa0b400c4f63773fc8bd801a7c765d322c6ca6a1a",
+                "data": "0x"
+              },
+              "calldata": "0x9623609d0000000000000000000000009ece5fb1ab62d9075c4ec814b321e24d8ea021ac000000000000000000000000a0b400c4f63773fc8bd801a7c765d322c6ca6a1a00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000",
+              "cast_decode": "cast calldata-decode \"upgradeAndCall(address,address,bytes)\" 0x9623609d0000000000000000000000009ece5fb1ab62d9075c4ec814b321e24d8ea021ac000000000000000000000000a0b400c4f63773fc8bd801a7c765d322c6ca6a1a00000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000"
+            }
+          ]
+        },
+        {
+          "op_id": "0x2f2a342465e4d964eb240db7c573dff2f57e35b9bd3ea3798987aa327c02dd81",
+          "label": "BTC.b token upgrade that charges the deposit fee on mint",
+          "eta": 1794940187,
+          "eta_utc": "2026-11-17 18:29:47 UTC",
+          "status": {
+            "isOperation": true,
+            "isOperationPending": true,
+            "isOperationReady": true,
+            "isOperationDone": false,
+            "getTimestamp": 1794940187
+          },
+          "ready": true,
+          "predecessor": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "delay": 86400,
+          "scheduled": {
+            "block": 26429391,
+            "tx": "0xf18a01875814c62d83b089f6565c9e02a80c296fdb81306d04d44f11e795ae05",
+            "from": "0x564974801d2ffbe736ed59c9be39f6c0a4274ae6",
+            "to": "0x251a604e8e8f6906d60f8dedc5aaeb8cd38f4892",
+            "function": "Safe execTransaction",
+            "logIndexes": [
+              682
+            ]
+          },
+          "calls": [
+            {
+              "index": 0,
+              "target": "0xcee83a2bef5c7a72994826e55940c56d39e70095",
+              "value": 0,
+              "selector": "0x9623609d",
+              "function": "upgradeAndCall(address,address,bytes)",
+              "args": {
+                "proxy": "0xb0f70c0bd6fd87dbeb7c10dc692a2a6106817072",
+                "implementation": "0xdac7defa30d33b91be8a276af4067e03bcee1482",
+                "data": "0x"
+              },
+              "calldata": "0x9623609d000000000000000000000000b0f70c0bd6fd87dbeb7c10dc692a2a6106817072000000000000000000000000dac7defa30d33b91be8a276af4067e03bcee148200000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000",
+              "cast_decode": "cast calldata-decode \"upgradeAndCall(address,address,bytes)\" 0x9623609d000000000000000000000000b0f70c0bd6fd87dbeb7c10dc692a2a6106817072000000000000000000000000dac7defa30d33b91be8a276af4067e03bcee148200000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000"
+            }
+          ]
+        },
+        {
+          "op_id": "0x6404e599d016a5a5d60957a22db6919eb7409f28d7d3880cf78ac1313f167fff",
+          "label": "LBTC token upgrade; unpausing transfers moves to the manager role",
+          "eta": 1794940187,
+          "eta_utc": "2026-11-17 18:29:47 UTC",
+          "status": {
+            "isOperation": true,
+            "isOperationPending": true,
+            "isOperationReady": true,
+            "isOperationDone": false,
+            "getTimestamp": 1794940187
+          },
+          "ready": true,
+          "predecessor": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "delay": 86400,
+          "scheduled": {
+            "block": 26429391,
+            "tx": "0xf18a01875814c62d83b089f6565c9e02a80c296fdb81306d04d44f11e795ae05",
+            "from": "0x564974801d2ffbe736ed59c9be39f6c0a4274ae6",
+            "to": "0x251a604e8e8f6906d60f8dedc5aaeb8cd38f4892",
+            "function": "Safe execTransaction",
+            "logIndexes": [
+              684
+            ]
+          },
+          "calls": [
+            {
+              "index": 0,
+              "target": "0xbae061c73876952aa2c5e483b74dfa785425f879",
+              "value": 0,
+              "selector": "0x9623609d",
+              "function": "upgradeAndCall(address,address,bytes)",
+              "args": {
+                "proxy": "0x8236a87084f8b84306f72007f36f2618a5634494",
+                "implementation": "0x78c6f7b9192d72df65f68514e55df506bb2a3029",
+                "data": "0x"
+              },
+              "calldata": "0x9623609d0000000000000000000000008236a87084f8b84306f72007f36f2618a563449400000000000000000000000078c6f7b9192d72df65f68514e55df506bb2a302900000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000",
+              "cast_decode": "cast calldata-decode \"upgradeAndCall(address,address,bytes)\" 0x9623609d0000000000000000000000008236a87084f8b84306f72007f36f2618a563449400000000000000000000000078c6f7b9192d72df65f68514e55df506bb2a302900000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000"
+            }
+          ]
+        }
+      ],
+      "decoded": {
+        "upgrades": [
+          {
+            "op_id": "0xceeeff86865f11b6de2c57d4901d3ec3313edf08be6ea664989d386cb1ab18eb",
+            "proxy": "0x9ece5fb1ab62d9075c4ec814b321e24d8ea021ac",
+            "proxyName": "AssetRouter",
+            "proxyAdmin": "0xbf4202c8a0d852d432266dfe112ed624a1a36754",
+            "proxyAdminOwner": "0x055e84e7fe8955e2781010b866f10ef6e1e77e59",
+            "proxyAdminVersion": "5.0.0",
+            "eip1967AdminSlot": "0xbf4202c8a0d852d432266dfe112ed624a1a36754",
+            "currentImplementation": {
+              "address": "0x8c5f13792788d07735bc33a04a696841cb2579c1",
+              "codeKeccak": "0x7b1566d131e2889cadb3ab153211e8e7ed4c0d924a6622e6239eb05dc58374ae",
+              "codeBytes": 21713,
+              "sourcify": {
+                "name": "AssetRouter",
+                "fullyQualifiedName": "contracts/LBTC/AssetRouter.sol:AssetRouter",
+                "match": "match",
+                "runtimeMatch": "match",
+                "compiler": "0.8.24+commit.e11b9ed9",
+                "verifiedAt": "2026-11-01T07:35:07Z",
+                "onchainBytecodeMatchesChain": true,
+                "url": "https://sourcify.dev/server/v2/contract/1/0x8c5f13792788d07735bc33a04a696841cb2579c1"
+              }
+            },
+            "newImplementation": {
+              "address": "0xa0b400c4f63773fc8bd801a7c765d322c6ca6a1a",
+              "codeKeccak": "0x891d83db4a287edaaf7f0801054b4e2672ab831bbacbc829fe6662ea39b84215",
+              "codeBytes": 23193,
+              "sourcify": {
+                "name": "AssetRouter",
+                "fullyQualifiedName": "contracts/LBTC/AssetRouter.sol:AssetRouter",
+                "match": "match",
+                "runtimeMatch": "match",
+                "compiler": "0.8.24+commit.e11b9ed9",
+                "verifiedAt": "2026-11-13T16:00:35Z",
+                "onchainBytecodeMatchesChain": true,
+                "url": "https://sourcify.dev/server/v2/contract/1/0xa0b400c4f63773fc8bd801a7c765d322c6ca6a1a"
+              }
+            },
+            "initCalldataBytes": 0,
+            "proxyDefaultAdmin": "0x055e84e7fe8955e2781010b866f10ef6e1e77e59",
+            "proxyDefaultAdminDelay": 0,
+            "sourceDiff": {
+              "old": "0x8c5f13792788d07735bc33a04a696841cb2579c1",
+              "new": "0xa0b400c4f63773fc8bd801a7c765d322c6ca6a1a",
+              "contract": "AssetRouter",
+              "filesAdded": [
+                "@openzeppelin/contracts/utils/Arrays.sol",
+                "@openzeppelin/contracts/utils/Comparators.sol",
+                "@openzeppelin/contracts/utils/Panic.sol",
+                "@openzeppelin/contracts/utils/SlotDerivation.sol",
+                "@openzeppelin/contracts/utils/StorageSlot.sol",
+                "@openzeppelin/contracts/utils/structs/EnumerableSet.sol"
+              ],
+              "filesRemoved": [],
+              "projectFilesChanged": [
+                {
+                  "file": "contracts/LBTC/AssetRouter.sol",
+                  "linesAdded": 174,
+                  "linesRemoved": 32
+                },
+                {
+                  "file": "contracts/LBTC/interfaces/IAssetRouter.sol",
+                  "linesAdded": 38,
+                  "linesRemoved": 3
+                },
+                {
+                  "file": "contracts/LBTC/interfaces/IBaseLBTC.sol",
+                  "linesAdded": 7,
+                  "linesRemoved": 0
+                }
+              ],
+              "libraryFilesChanged": 13,
+              "abiAdded": [
+                "error AssetRouter_DepositFeeAboveHalfMinAmount(uint256,uint256)",
+                "error AssetRouter_DepositFeeOutOfOperatorRange(uint256)",
+                "event AssetRouter_DepositFeeChanged(address,uint256,uint256)",
+                "event AssetRouter_DepositFeeCharged(address,address,uint256)",
+                "event AssetRouter_MinRequestAmountChanged(uint256,uint256)",
+                "function DEPOSIT_FEE_OPERATOR_MAX()",
+                "function DEPOSIT_FEE_OPERATOR_MIN()",
+                "function changeDepositFee(address,uint256)",
+                "function changeMinRequestAmount(uint256)",
+                "function depositFee(address)",
+                "function maxDepositFee()",
+                "function minRequestAmount()"
+              ],
+              "abiRemoved": [
+                "event AssetRouter_DepositMinAmountChanged(address,uint256,uint256)",
+                "function changeDepositMinAmount(address,uint256)",
+                "function depositMinAmount(address)"
+              ]
+            }
+          },
+          {
+            "op_id": "0x2f2a342465e4d964eb240db7c573dff2f57e35b9bd3ea3798987aa327c02dd81",
+            "proxy": "0xb0f70c0bd6fd87dbeb7c10dc692a2a6106817072",
+            "proxyName": "BTC.b (NativeLBTC)",
+            "proxyAdmin": "0xcee83a2bef5c7a72994826e55940c56d39e70095",
+            "proxyAdminOwner": "0x055e84e7fe8955e2781010b866f10ef6e1e77e59",
+            "proxyAdminVersion": "5.0.0",
+            "eip1967AdminSlot": "0xcee83a2bef5c7a72994826e55940c56d39e70095",
+            "currentImplementation": {
+              "address": "0x1b53b6279bcba8428013aa9aad1bad6d4dd80cf4",
+              "codeKeccak": "0xe90443d7681ee89aeaa67574791bf8f1c7f55406602c7d207e594bc9ce7933b5",
+              "codeBytes": 20403,
+              "sourcify": {
+                "name": "NativeLBTC",
+                "fullyQualifiedName": "contracts/LBTC/NativeLBTC.sol:NativeLBTC",
+                "match": "match",
+                "runtimeMatch": "match",
+                "compiler": "0.8.24+commit.e11b9ed9",
+                "verifiedAt": "2026-09-05T02:05:06Z",
+                "onchainBytecodeMatchesChain": true,
+                "url": "https://sourcify.dev/server/v2/contract/1/0x1b53b6279bcba8428013aa9aad1bad6d4dd80cf4"
+              }
+            },
+            "newImplementation": {
+              "address": "0xdac7defa30d33b91be8a276af4067e03bcee1482",
+              "codeKeccak": "0xef41df9cd0dafaa5e414bd5c2397ccfa6182aafac8072477a0f29fd19dfb97a0",
+              "codeBytes": 20671,
+              "sourcify": {
+                "name": "NativeLBTC",
+                "fullyQualifiedName": "contracts/LBTC/NativeLBTC.sol:NativeLBTC",
+                "match": "match",
+                "runtimeMatch": "match",
+                "compiler": "0.8.24+commit.e11b9ed9",
+                "verifiedAt": "2026-11-13T16:04:19Z",
+                "onchainBytecodeMatchesChain": true,
+                "url": "https://sourcify.dev/server/v2/contract/1/0xdac7defa30d33b91be8a276af4067e03bcee1482"
+              }
+            },
+            "initCalldataBytes": 0,
+            "proxyDefaultAdmin": "0x055e84e7fe8955e2781010b866f10ef6e1e77e59",
+            "proxyDefaultAdminDelay": 0,
+            "token": {
+              "name": "Bitcoin",
+              "symbol": "BTC.b",
+              "decimals": 8,
+              "totalSupply": 14779168600,
+              "paused": false,
+              "assetRouter": "0x9ece5fb1ab62d9075c4ec814b321e24d8ea021ac",
+              "treasury": "0x251a604e8e8f6906d60f8dedc5aaeb8cd38f4892",
+              "totalSupplyUnits": "147.791686"
+            },
+            "sourceDiff": {
+              "old": "0x1b53b6279bcba8428013aa9aad1bad6d4dd80cf4",
+              "new": "0xdac7defa30d33b91be8a276af4067e03bcee1482",
+              "contract": "NativeLBTC",
+              "filesAdded": [
+                "@openzeppelin/contracts/utils/Panic.sol"
+              ],
+              "filesRemoved": [],
+              "projectFilesChanged": [
+                {
+                  "file": "contracts/LBTC/BaseLBTC.sol",
+                  "linesAdded": 10,
+                  "linesRemoved": 2
+                },
+                {
+                  "file": "contracts/LBTC/NativeLBTC.sol",
+                  "linesAdded": 54,
+                  "linesRemoved": 13
+                },
+                {
+                  "file": "contracts/LBTC/interfaces/IAssetRouter.sol",
+                  "linesAdded": 38,
+                  "linesRemoved": 3
+                },
+                {
+                  "file": "contracts/LBTC/interfaces/IBaseLBTC.sol",
+                  "linesAdded": 7,
+                  "linesRemoved": 0
+                }
+              ],
+              "libraryFilesChanged": 26,
+              "abiAdded": [
+                "error DepositFeeNotSupported()",
+                "event DepositFeeCharged(address,uint256)",
+                "function getDepositFee()"
+              ],
+              "abiRemoved": []
+            }
+          },
+          {
+            "op_id": "0x6404e599d016a5a5d60957a22db6919eb7409f28d7d3880cf78ac1313f167fff",
+            "proxy": "0x8236a87084f8b84306f72007f36f2618a5634494",
+            "proxyName": "LBTC (StakedLBTC)",
+            "proxyAdmin": "0xbae061c73876952aa2c5e483b74dfa785425f879",
+            "proxyAdminOwner": "0x055e84e7fe8955e2781010b866f10ef6e1e77e59",
+            "proxyAdminVersion": "5.0.0",
+            "eip1967AdminSlot": "0xbae061c73876952aa2c5e483b74dfa785425f879",
+            "currentImplementation": {
+              "address": "0xe15382bc6968a50c5ff5af193d03de6be4d0270f",
+              "codeKeccak": "0x5c346d70b52c6881cecc2e010c8dfba1268d3e6e49a7f3ae0377ed02910eb1fb",
+              "codeBytes": 18657,
+              "sourcify": {
+                "name": "StakedLBTC",
+                "fullyQualifiedName": "contracts/LBTC/StakedLBTC.sol:StakedLBTC",
+                "match": "match",
+                "runtimeMatch": "match",
+                "compiler": "0.8.24+commit.e11b9ed9",
+                "verifiedAt": "2026-09-03T02:40:41Z",
+                "onchainBytecodeMatchesChain": true,
+                "url": "https://sourcify.dev/server/v2/contract/1/0xe15382bc6968a50c5ff5af193d03de6be4d0270f"
+              }
+            },
+            "newImplementation": {
+              "address": "0x78c6f7b9192d72df65f68514e55df506bb2a3029",
+              "codeKeccak": "0x6c6e9c128042a9fe9bd2c70f6263388bf6da704419f9f3c90863ba61e2411fc2",
+              "codeBytes": 18807,
+              "sourcify": {
+                "name": "StakedLBTC",
+                "fullyQualifiedName": "contracts/LBTC/StakedLBTC.sol:StakedLBTC",
+                "match": "match",
+                "runtimeMatch": "match",
+                "compiler": "0.8.24+commit.e11b9ed9",
+                "verifiedAt": "2026-11-13T16:06:05Z",
+                "onchainBytecodeMatchesChain": true,
+                "url": "https://sourcify.dev/server/v2/contract/1/0x78c6f7b9192d72df65f68514e55df506bb2a3029"
+              }
+            },
+            "initCalldataBytes": 0,
+            "proxyDefaultAdmin": "0x055e84e7fe8955e2781010b866f10ef6e1e77e59",
+            "proxyDefaultAdminDelay": 0,
+            "token": {
+              "name": "Lombard Staked Bitcoin",
+              "symbol": "LBTC",
+              "decimals": 8,
+              "totalSupply": 603365593387,
+              "paused": false,
+              "assetRouter": "0x9ece5fb1ab62d9075c4ec814b321e24d8ea021ac",
+              "treasury": "0x251a604e8e8f6906d60f8dedc5aaeb8cd38f4892",
+              "totalSupplyUnits": "6,033.65593387"
+            },
+            "sourceDiff": {
+              "old": "0xe15382bc6968a50c5ff5af193d03de6be4d0270f",
+              "new": "0x78c6f7b9192d72df65f68514e55df506bb2a3029",
+              "contract": "StakedLBTC",
+              "filesAdded": [
+                "@openzeppelin/contracts/utils/Panic.sol"
+              ],
+              "filesRemoved": [],
+              "projectFilesChanged": [
+                {
+                  "file": "contracts/LBTC/BaseLBTC.sol",
+                  "linesAdded": 10,
+                  "linesRemoved": 2
+                },
+                {
+                  "file": "contracts/LBTC/StakedLBTC.sol",
+                  "linesAdded": 21,
+                  "linesRemoved": 3
+                },
+                {
+                  "file": "contracts/LBTC/interfaces/IAssetRouter.sol",
+                  "linesAdded": 38,
+                  "linesRemoved": 3
+                },
+                {
+                  "file": "contracts/LBTC/interfaces/IBaseLBTC.sol",
+                  "linesAdded": 7,
+                  "linesRemoved": 0
+                }
+              ],
+              "libraryFilesChanged": 26,
+              "abiAdded": [
+                "error DepositFeeNotSupported()",
+                "event DepositFeeCharged(address,uint256)",
+                "function getDepositFee()"
+              ],
+              "abiRemoved": []
+            }
+          }
+        ],
+        "assetRouter": {
+          "nativeToken": "0xb0f70c0bd6fd87dbeb7c10dc692a2a6106817072",
+          "depositMinAmount(BTC.b)": 2000,
+          "depositMinAmount(LBTC)": 115792089237316195423570985008687907853269984665640564039457584007913129639935,
+          "depositFee(BTC.b) before the upgrade": "reverts"
+        }
+      },
+      "risk_notes": [
+        "The three operations are independent (predecessor 0x0, same ETA 2026-11-17 18:29:47 UTC); any executor may run them in any order. The new BTC.b implementation reads AssetRouter.depositFee() on every proof mint, and the current AssetRouter implementation has no such function (the call reverts at the pinned block): if the BTC.b upgrade executes before the AssetRouter upgrade, BTC.b proof mints revert until the router is upgraded.",
+        "No initializer runs (upgradeAndCall with empty data). Every per-token deposit fee starts at 0, so nothing is charged on execution. The minimum stays 2,000 sats (0.00002 BTC): the storage field is renamed minRequestAmount (oz-renamed-from), and non-BTC redeems are now held to it too.",
+        "After the upgrade a non-zero fee is split off every proof mint and minted to the token treasury. OPERATOR_ROLE can set it to 100-1,000 sats per mint without the timelock. Any other value needs DEFAULT_ADMIN_ROLE (the timelock), and the fee is capped at half the minimum.",
+        "BaseLBTC.unpauseTransfers moves from DEFAULT_ADMIN_ROLE (the 1-day timelock) to MANAGER_ROLE, the role that already clears the mint/burn pause: resuming paused transfers no longer waits for the timelock.",
+        "All three were scheduled in one Safe transaction (0xf18a01875814c62d83b089f6565c9e02a80c296fdb81306d04d44f11e795ae05) sent to 0x251a604e8e8f6906d60f8dedc5aaeb8cd38f4892, the same Safe that BTC.b and LBTC name as treasury: the deposit-fee recipient after the upgrade.",
+        "AssetRouter.changeNativeToken no longer deletes the previous native token's route. Storage stays append-only: TokenConfig gains depositFee at the end of a mapped struct, and AssetRouterStorage appends maxDepositFee + feeTokens in its ERC-7201 namespace. OpenZeppelin libraries are bumped in all three implementations."
+      ],
+      "brief": "briefs/lombard-ops-0xceee-0x2f2a-0x6404/",
+      "pinned_block": {
+        "block_number": 26436571,
+        "block_hash": "0x8f796be27dbc3affb0a0545895d8c27e7a63ac7bf438f93a4107af36f4a33599",
+        "block_timestamp": 1794940247,
+        "block_time_utc": "2026-11-17 18:30 UTC",
+        "tag": "finalized",
+        "rpcs_cross_checked": 2
+      },
+      "radar_title": "Lombard — AssetRouter, BTC.b and LBTC upgrades adding a fixed deposit fee",
+      "reproduce": [
+        "cast logs --from-block 26429391 --to-block 26429391 --address 0x055e84e7fe8955e2781010b866f10ef6e1e77e59 \"CallScheduled(bytes32 indexed id,uint256 indexed index,address target,uint256 value,bytes data,bytes32 predecessor,uint256 delay)\" 0xceeeff86865f11b6de2c57d4901d3ec3313edf08be6ea664989d386cb1ab18eb --rpc-url $ETH_RPC_URL",
+        "cast receipt 0xf18a01875814c62d83b089f6565c9e02a80c296fdb81306d04d44f11e795ae05 --rpc-url $ETH_RPC_URL",
+        "cast storage 0x9ece5fb1ab62d9075c4ec814b321e24d8ea021ac 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xbf4202c8a0d852d432266dfe112ed624a1a36754 \"owner()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xbf4202c8a0d852d432266dfe112ed624a1a36754 \"UPGRADE_INTERFACE_VERSION()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast storage 0x9ece5fb1ab62d9075c4ec814b321e24d8ea021ac 0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast keccak $(cast code 0x8c5f13792788d07735bc33a04a696841cb2579c1 --block 26436571 --rpc-url $ETH_RPC_URL)",
+        "cast keccak $(cast code 0xa0b400c4f63773fc8bd801a7c765d322c6ca6a1a --block 26436571 --rpc-url $ETH_RPC_URL)",
+        "cast call 0x9ece5fb1ab62d9075c4ec814b321e24d8ea021ac \"defaultAdmin()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x9ece5fb1ab62d9075c4ec814b321e24d8ea021ac \"defaultAdminDelay()(uint48)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x055e84e7fe8955e2781010b866f10ef6e1e77e59 \"isOperation(bytes32)(bool)\" 0xceeeff86865f11b6de2c57d4901d3ec3313edf08be6ea664989d386cb1ab18eb --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x055e84e7fe8955e2781010b866f10ef6e1e77e59 \"isOperationPending(bytes32)(bool)\" 0xceeeff86865f11b6de2c57d4901d3ec3313edf08be6ea664989d386cb1ab18eb --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x055e84e7fe8955e2781010b866f10ef6e1e77e59 \"isOperationReady(bytes32)(bool)\" 0xceeeff86865f11b6de2c57d4901d3ec3313edf08be6ea664989d386cb1ab18eb --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x055e84e7fe8955e2781010b866f10ef6e1e77e59 \"isOperationDone(bytes32)(bool)\" 0xceeeff86865f11b6de2c57d4901d3ec3313edf08be6ea664989d386cb1ab18eb --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x055e84e7fe8955e2781010b866f10ef6e1e77e59 \"getTimestamp(bytes32)(uint256)\" 0xceeeff86865f11b6de2c57d4901d3ec3313edf08be6ea664989d386cb1ab18eb --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast logs --from-block 26429391 --to-block 26429391 --address 0x055e84e7fe8955e2781010b866f10ef6e1e77e59 \"CallScheduled(bytes32 indexed id,uint256 indexed index,address target,uint256 value,bytes data,bytes32 predecessor,uint256 delay)\" 0x2f2a342465e4d964eb240db7c573dff2f57e35b9bd3ea3798987aa327c02dd81 --rpc-url $ETH_RPC_URL",
+        "cast storage 0xb0f70c0bd6fd87dbeb7c10dc692a2a6106817072 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xcee83a2bef5c7a72994826e55940c56d39e70095 \"owner()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xcee83a2bef5c7a72994826e55940c56d39e70095 \"UPGRADE_INTERFACE_VERSION()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast storage 0xb0f70c0bd6fd87dbeb7c10dc692a2a6106817072 0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast keccak $(cast code 0x1b53b6279bcba8428013aa9aad1bad6d4dd80cf4 --block 26436571 --rpc-url $ETH_RPC_URL)",
+        "cast keccak $(cast code 0xdac7defa30d33b91be8a276af4067e03bcee1482 --block 26436571 --rpc-url $ETH_RPC_URL)",
+        "cast call 0xb0f70c0bd6fd87dbeb7c10dc692a2a6106817072 \"defaultAdmin()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xb0f70c0bd6fd87dbeb7c10dc692a2a6106817072 \"defaultAdminDelay()(uint48)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xb0f70c0bd6fd87dbeb7c10dc692a2a6106817072 \"name()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xb0f70c0bd6fd87dbeb7c10dc692a2a6106817072 \"symbol()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xb0f70c0bd6fd87dbeb7c10dc692a2a6106817072 \"decimals()(uint8)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xb0f70c0bd6fd87dbeb7c10dc692a2a6106817072 \"totalSupply()(uint256)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xb0f70c0bd6fd87dbeb7c10dc692a2a6106817072 \"paused()(bool)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xb0f70c0bd6fd87dbeb7c10dc692a2a6106817072 \"getAssetRouter()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xb0f70c0bd6fd87dbeb7c10dc692a2a6106817072 \"getTreasury()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x055e84e7fe8955e2781010b866f10ef6e1e77e59 \"isOperation(bytes32)(bool)\" 0x2f2a342465e4d964eb240db7c573dff2f57e35b9bd3ea3798987aa327c02dd81 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x055e84e7fe8955e2781010b866f10ef6e1e77e59 \"isOperationPending(bytes32)(bool)\" 0x2f2a342465e4d964eb240db7c573dff2f57e35b9bd3ea3798987aa327c02dd81 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x055e84e7fe8955e2781010b866f10ef6e1e77e59 \"isOperationReady(bytes32)(bool)\" 0x2f2a342465e4d964eb240db7c573dff2f57e35b9bd3ea3798987aa327c02dd81 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x055e84e7fe8955e2781010b866f10ef6e1e77e59 \"isOperationDone(bytes32)(bool)\" 0x2f2a342465e4d964eb240db7c573dff2f57e35b9bd3ea3798987aa327c02dd81 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x055e84e7fe8955e2781010b866f10ef6e1e77e59 \"getTimestamp(bytes32)(uint256)\" 0x2f2a342465e4d964eb240db7c573dff2f57e35b9bd3ea3798987aa327c02dd81 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast logs --from-block 26429391 --to-block 26429391 --address 0x055e84e7fe8955e2781010b866f10ef6e1e77e59 \"CallScheduled(bytes32 indexed id,uint256 indexed index,address target,uint256 value,bytes data,bytes32 predecessor,uint256 delay)\" 0x6404e599d016a5a5d60957a22db6919eb7409f28d7d3880cf78ac1313f167fff --rpc-url $ETH_RPC_URL",
+        "cast storage 0x8236a87084f8b84306f72007f36f2618a5634494 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xbae061c73876952aa2c5e483b74dfa785425f879 \"owner()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xbae061c73876952aa2c5e483b74dfa785425f879 \"UPGRADE_INTERFACE_VERSION()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast storage 0x8236a87084f8b84306f72007f36f2618a5634494 0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast keccak $(cast code 0xe15382bc6968a50c5ff5af193d03de6be4d0270f --block 26436571 --rpc-url $ETH_RPC_URL)",
+        "cast keccak $(cast code 0x78c6f7b9192d72df65f68514e55df506bb2a3029 --block 26436571 --rpc-url $ETH_RPC_URL)",
+        "cast call 0x8236a87084f8b84306f72007f36f2618a5634494 \"defaultAdmin()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x8236a87084f8b84306f72007f36f2618a5634494 \"defaultAdminDelay()(uint48)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x8236a87084f8b84306f72007f36f2618a5634494 \"name()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x8236a87084f8b84306f72007f36f2618a5634494 \"symbol()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x8236a87084f8b84306f72007f36f2618a5634494 \"decimals()(uint8)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x8236a87084f8b84306f72007f36f2618a5634494 \"totalSupply()(uint256)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x8236a87084f8b84306f72007f36f2618a5634494 \"paused()(bool)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x8236a87084f8b84306f72007f36f2618a5634494 \"getAssetRouter()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x8236a87084f8b84306f72007f36f2618a5634494 \"getTreasury()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x055e84e7fe8955e2781010b866f10ef6e1e77e59 \"isOperation(bytes32)(bool)\" 0x6404e599d016a5a5d60957a22db6919eb7409f28d7d3880cf78ac1313f167fff --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x055e84e7fe8955e2781010b866f10ef6e1e77e59 \"isOperationPending(bytes32)(bool)\" 0x6404e599d016a5a5d60957a22db6919eb7409f28d7d3880cf78ac1313f167fff --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x055e84e7fe8955e2781010b866f10ef6e1e77e59 \"isOperationReady(bytes32)(bool)\" 0x6404e599d016a5a5d60957a22db6919eb7409f28d7d3880cf78ac1313f167fff --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x055e84e7fe8955e2781010b866f10ef6e1e77e59 \"isOperationDone(bytes32)(bool)\" 0x6404e599d016a5a5d60957a22db6919eb7409f28d7d3880cf78ac1313f167fff --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x055e84e7fe8955e2781010b866f10ef6e1e77e59 \"getTimestamp(bytes32)(uint256)\" 0x6404e599d016a5a5d60957a22db6919eb7409f28d7d3880cf78ac1313f167fff --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x9ece5fb1ab62d9075c4ec814b321e24d8ea021ac \"nativeToken()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x9ece5fb1ab62d9075c4ec814b321e24d8ea021ac \"depositMinAmount(address)(uint256)\" 0xb0f70c0bd6fd87dbeb7c10dc692a2a6106817072 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x9ece5fb1ab62d9075c4ec814b321e24d8ea021ac \"depositMinAmount(address)(uint256)\" 0x8236a87084f8b84306f72007f36f2618a5634494 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x9ece5fb1ab62d9075c4ec814b321e24d8ea021ac \"depositFee(address)(uint256)\" 0xb0f70c0bd6fd87dbeb7c10dc692a2a6106817072 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x055e84e7fe8955e2781010b866f10ef6e1e77e59 \"getMinDelay()(uint256)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast keccak $(cast code 0x055e84e7fe8955e2781010b866f10ef6e1e77e59 --block 26436571 --rpc-url $ETH_RPC_URL)"
+      ]
+    },
+    {
+      "slug": "beefy-base-op-0x3302",
+      "protocol": "Beefy Finance (Base)",
+      "protocol_slug": "beefy-finance-base",
+      "chain_id": 8453,
+      "timelock": {
+        "address": "0x3b60f7f25b09e71356cdffc6475c222a466a2ac9",
+        "getMinDelay": 21600,
+        "verified": {
+          "address": "0x3b60f7f25b09e71356cdffc6475c222a466a2ac9",
+          "codeKeccak": "0x805333466da71e15e8b9a70193869505597184fed26b2dfbaa2c31b8080d718b",
+          "codeBytes": 7580,
+          "sourcify": {
+            "name": "TimelockController",
+            "fullyQualifiedName": "@openzeppelin-4/contracts/governance/TimelockController.sol:TimelockController",
+            "match": "exact_match",
+            "runtimeMatch": "exact_match",
+            "compiler": "0.8.19+commit.7dd6d404",
+            "verifiedAt": "2024-08-08T13:57:59Z",
+            "onchainBytecodeMatchesChain": true,
+            "url": "https://sourcify.dev/server/v2/contract/8453/0x3b60f7f25b09e71356cdffc6475c222a466a2ac9"
+          }
+        }
+      },
+      "operations": [
+        {
+          "op_id": "0x3302750e18a4bff9508c6e93386a406df9aa8d36992188e76a08ecc76bfce208",
+          "label": null,
+          "eta": 1794956259,
+          "eta_utc": "2026-11-17 22:57:39 UTC",
+          "status": {
+            "isOperation": true,
+            "isOperationPending": true,
+            "isOperationReady": false,
+            "isOperationDone": false,
+            "getTimestamp": 1794956259
+          },
+          "ready": false,
+          "predecessor": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "delay": 21600,
+          "scheduled": {
+            "block": 58721421,
+            "tx": "0xf00a23c8d9e6dc48ecc57452e642bb258b7b4d625db07dcad4234dc5d1721944",
+            "from": "0x46565eedb0bb948ae787dd105cce300f736da28e",
+            "to": "0x781388759eacb9892f60d77d9a99c9be2f7f4ada",
+            "function": "0x710a9f68",
+            "logIndexes": [
+              4
+            ]
+          },
+          "calls": [
+            {
+              "index": 0,
+              "target": "0x03f6afbcbf398e2362c93ddc846619f1b1b860d2",
+              "value": 0,
+              "selector": "0x362c28c6",
+              "function": "setDeviation(int56)",
+              "args": {
+                "_maxDeviation": 25
+              },
+              "calldata": "0x362c28c60000000000000000000000000000000000000000000000000000000000000019",
+              "cast_decode": "cast calldata-decode \"setDeviation(int56)\" 0x362c28c60000000000000000000000000000000000000000000000000000000000000019"
+            }
+          ]
+        }
+      ],
+      "decoded": {
+        "strategy": {
+          "strategy": "0x03f6afbcbf398e2362c93ddc846619f1b1b860d2",
+          "eip1967Beacon": "0x883dda584b6d4367a26f897d7bfc3e6f5dd9c7a1",
+          "beaconImplementation": {
+            "address": "0xde4e9b0e287c38d0a8cc53ade899edb159827bf1",
+            "codeKeccak": "0xd9531142f37fa8653cf138b9d3c00b10aa335ad952bdb95060c666540aa2f3cd",
+            "codeBytes": 23860,
+            "sourcify": null
+          },
+          "beaconOwner": "0x9476284d81121613da5df5c72f50853a455448f1",
+          "beaconVerified": {
+            "address": "0x883dda584b6d4367a26f897d7bfc3e6f5dd9c7a1",
+            "codeKeccak": "0xf1a9095845061eb811850a4e05c5eebcf1510e8040ee5ff6189f223c8dc3459d",
+            "codeBytes": 657,
+            "sourcify": {
+              "name": "UpgradeableBeacon",
+              "fullyQualifiedName": "lib/openzeppelin-contracts/contracts/proxy/beacon/UpgradeableBeacon.sol:UpgradeableBeacon",
+              "match": "match",
+              "runtimeMatch": "match",
+              "compiler": "0.8.24+commit.e11b9ed9",
+              "verifiedAt": "2026-10-22T09:46:10Z",
+              "onchainBytecodeMatchesChain": true,
+              "url": "https://sourcify.dev/server/v2/contract/8453/0x883dda584b6d4367a26f897d7bfc3e6f5dd9c7a1"
+            }
+          },
+          "implementationDispatches": {
+            "setDeviation(int56)": true,
+            "maxTickDeviation()": true,
+            "isCalm()": true
+          },
+          "owner": "0x3b60f7f25b09e71356cdffc6475c222a466a2ac9",
+          "maxTickDeviation": 9,
+          "twapInterval": 120,
+          "positionWidth": 60,
+          "isCalm": true,
+          "currentTick": 246120,
+          "twapTick": 246121,
+          "paused": false,
+          "vault": "0x1982bfd423c52633980e971eacb6d13c71d18919",
+          "pool": "0xc5de7f0514e7531dea5d71a30597c4cf131f533a",
+          "lpToken0": "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913",
+          "lpToken1": "0xacfe6019ed1a7dc6f7b508c02d1b04ec88cc21bf",
+          "vaultName": "Cow Aero Base USDC-VVV",
+          "vaultSymbol": "cowAeroBaseUSDC-VVV",
+          "vaultStrategy": "0x03f6afbcbf398e2362c93ddc846619f1b1b860d2",
+          "vaultOwner": "0x09d19184f46a32213df06b981122e06882b61309",
+          "poolTickSpacing": 50,
+          "token0Symbol": "USDC",
+          "token1Symbol": "VVV",
+          "beaconOwnerKind": {
+            "codeBytes": 7127,
+            "safeThreshold": null,
+            "timelockMinDelay": null
+          },
+          "beaconOwnerVerified": {
+            "address": "0x9476284d81121613da5df5c72f50853a455448f1",
+            "codeKeccak": "0x43bfb9e6522c0ac110a36d7984d395c2ef415dfa9dc9b60c1b2abf7ed6594675",
+            "codeBytes": 7127,
+            "sourcify": {
+              "name": "StrategyFactory",
+              "fullyQualifiedName": "contracts/strategies/StrategyFactory.sol:StrategyFactory",
+              "match": "exact_match",
+              "runtimeMatch": "exact_match",
+              "compiler": "0.8.23+commit.f704f362",
+              "verifiedAt": "2026-06-21T00:38:14Z",
+              "onchainBytecodeMatchesChain": true,
+              "url": "https://sourcify.dev/server/v2/contract/8453/0x9476284d81121613da5df5c72f50853a455448f1"
+            }
+          },
+          "beaconOwnerOwner": {
+            "address": "0x3b60f7f25b09e71356cdffc6475c222a466a2ac9",
+            "kind": "a timelock with a 21,600 s delay"
+          }
+        },
+        "newMaxTickDeviation": 25
+      },
+      "risk_notes": [
+        "setDeviation(25) widens the strategy's calm check from 9 to 25 ticks: how far the current pool tick may sit from its 120 s TWAP before the strategy refuses to act. The pool's tick spacing is 50. This is a looser price-manipulation guard on the USDC-VVV pool, not a code change.",
+        "At the pinned block isCalm() = true, with the tick (246,120) 1 ticks from the TWAP (246,121). The flag moves with price; after execution, moves of up to 25 ticks from the TWAP still count as calm.",
+        "The strategy is a beacon proxy. Its implementation (0xde4e9b0e287c38d0a8cc53ade899edb159827bf1) is not verified on Sourcify, though setDeviation, maxTickDeviation and isCalm are confirmed in its dispatch table. The beacon (0x883dda584b6d4367a26f897d7bfc3e6f5dd9c7a1) is controlled through Beefy's StrategyFactory (verified on Sourcify), which this timelock owns: implementation swaps also wait for the 21,600 s delay.",
+        "This is not a strategy upgrade: the selector is setDeviation(int56), not upgradeStrat(), and the vault keeps the same strategy."
+      ],
+      "brief": "briefs/beefy-base-op-0x3302/",
+      "pinned_block": {
+        "block_number": 58747369,
+        "block_hash": "0x5b7a6bd3cfd87d4f06132ccd48455c7f692d3b867f5dd3f597171c4f8a8d4acb",
+        "block_timestamp": 1794939849,
+        "block_time_utc": "2026-11-17 18:24 UTC",
+        "tag": "finalized",
+        "rpcs_cross_checked": 2
+      },
+      "radar_title": "Beefy CLM USDC-VVV on Aerodrome — calm-check tolerance widened from 9 to 25 ticks",
+      "reproduce": [
+        "cast logs --from-block 58721421 --to-block 58721421 --address 0x3b60f7f25b09e71356cdffc6475c222a466a2ac9 \"CallScheduled(bytes32 indexed id,uint256 indexed index,address target,uint256 value,bytes data,bytes32 predecessor,uint256 delay)\" 0x3302750e18a4bff9508c6e93386a406df9aa8d36992188e76a08ecc76bfce208 --rpc-url $BASE_RPC_URL",
+        "cast receipt 0xf00a23c8d9e6dc48ecc57452e642bb258b7b4d625db07dcad4234dc5d1721944 --rpc-url $BASE_RPC_URL",
+        "cast storage 0x03f6afbcbf398e2362c93ddc846619f1b1b860d2 0xa3f0ad74e5423aebfd80d3ef4346578335a9a72aeaee59ff6cb3582b35133d50 --block 58747369 --rpc-url $BASE_RPC_URL",
+        "cast call 0x883dda584b6d4367a26f897d7bfc3e6f5dd9c7a1 \"implementation()(address)\" --block 58747369 --rpc-url $BASE_RPC_URL",
+        "cast keccak $(cast code 0xde4e9b0e287c38d0a8cc53ade899edb159827bf1 --block 58747369 --rpc-url $BASE_RPC_URL)",
+        "cast call 0x883dda584b6d4367a26f897d7bfc3e6f5dd9c7a1 \"owner()(address)\" --block 58747369 --rpc-url $BASE_RPC_URL",
+        "cast keccak $(cast code 0x883dda584b6d4367a26f897d7bfc3e6f5dd9c7a1 --block 58747369 --rpc-url $BASE_RPC_URL)",
+        "cast call 0x03f6afbcbf398e2362c93ddc846619f1b1b860d2 \"owner()(address)\" --block 58747369 --rpc-url $BASE_RPC_URL",
+        "cast call 0x03f6afbcbf398e2362c93ddc846619f1b1b860d2 \"maxTickDeviation()(int56)\" --block 58747369 --rpc-url $BASE_RPC_URL",
+        "cast call 0x03f6afbcbf398e2362c93ddc846619f1b1b860d2 \"twapInterval()(uint32)\" --block 58747369 --rpc-url $BASE_RPC_URL",
+        "cast call 0x03f6afbcbf398e2362c93ddc846619f1b1b860d2 \"positionWidth()(int24)\" --block 58747369 --rpc-url $BASE_RPC_URL",
+        "cast call 0x03f6afbcbf398e2362c93ddc846619f1b1b860d2 \"isCalm()(bool)\" --block 58747369 --rpc-url $BASE_RPC_URL",
+        "cast call 0x03f6afbcbf398e2362c93ddc846619f1b1b860d2 \"currentTick()(int24)\" --block 58747369 --rpc-url $BASE_RPC_URL",
+        "cast call 0x03f6afbcbf398e2362c93ddc846619f1b1b860d2 \"twap()(int56)\" --block 58747369 --rpc-url $BASE_RPC_URL",
+        "cast call 0x03f6afbcbf398e2362c93ddc846619f1b1b860d2 \"paused()(bool)\" --block 58747369 --rpc-url $BASE_RPC_URL",
+        "cast call 0x03f6afbcbf398e2362c93ddc846619f1b1b860d2 \"vault()(address)\" --block 58747369 --rpc-url $BASE_RPC_URL",
+        "cast call 0x03f6afbcbf398e2362c93ddc846619f1b1b860d2 \"pool()(address)\" --block 58747369 --rpc-url $BASE_RPC_URL",
+        "cast call 0x03f6afbcbf398e2362c93ddc846619f1b1b860d2 \"lpToken0()(address)\" --block 58747369 --rpc-url $BASE_RPC_URL",
+        "cast call 0x03f6afbcbf398e2362c93ddc846619f1b1b860d2 \"lpToken1()(address)\" --block 58747369 --rpc-url $BASE_RPC_URL",
+        "cast call 0x1982bfd423c52633980e971eacb6d13c71d18919 \"name()(string)\" --block 58747369 --rpc-url $BASE_RPC_URL",
+        "cast call 0x1982bfd423c52633980e971eacb6d13c71d18919 \"symbol()(string)\" --block 58747369 --rpc-url $BASE_RPC_URL",
+        "cast call 0x1982bfd423c52633980e971eacb6d13c71d18919 \"strategy()(address)\" --block 58747369 --rpc-url $BASE_RPC_URL",
+        "cast call 0x1982bfd423c52633980e971eacb6d13c71d18919 \"owner()(address)\" --block 58747369 --rpc-url $BASE_RPC_URL",
+        "cast call 0xc5de7f0514e7531dea5d71a30597c4cf131f533a \"tickSpacing()(int24)\" --block 58747369 --rpc-url $BASE_RPC_URL",
+        "cast call 0x833589fcd6edb6e08f4c7c32d4f71b54bda02913 \"symbol()(string)\" --block 58747369 --rpc-url $BASE_RPC_URL",
+        "cast call 0xacfe6019ed1a7dc6f7b508c02d1b04ec88cc21bf \"symbol()(string)\" --block 58747369 --rpc-url $BASE_RPC_URL",
+        "cast keccak $(cast code 0x9476284d81121613da5df5c72f50853a455448f1 --block 58747369 --rpc-url $BASE_RPC_URL)",
+        "cast call 0x9476284d81121613da5df5c72f50853a455448f1 \"getThreshold()(uint256)\" --block 58747369 --rpc-url $BASE_RPC_URL",
+        "cast call 0x9476284d81121613da5df5c72f50853a455448f1 \"getMinDelay()(uint256)\" --block 58747369 --rpc-url $BASE_RPC_URL",
+        "cast call 0x9476284d81121613da5df5c72f50853a455448f1 \"owner()(address)\" --block 58747369 --rpc-url $BASE_RPC_URL",
+        "cast keccak $(cast code 0x3b60f7f25b09e71356cdffc6475c222a466a2ac9 --block 58747369 --rpc-url $BASE_RPC_URL)",
+        "cast call 0x3b60f7f25b09e71356cdffc6475c222a466a2ac9 \"getThreshold()(uint256)\" --block 58747369 --rpc-url $BASE_RPC_URL",
+        "cast call 0x3b60f7f25b09e71356cdffc6475c222a466a2ac9 \"getMinDelay()(uint256)\" --block 58747369 --rpc-url $BASE_RPC_URL",
+        "cast call 0x3b60f7f25b09e71356cdffc6475c222a466a2ac9 \"isOperation(bytes32)(bool)\" 0x3302750e18a4bff9508c6e93386a406df9aa8d36992188e76a08ecc76bfce208 --block 58747369 --rpc-url $BASE_RPC_URL",
+        "cast call 0x3b60f7f25b09e71356cdffc6475c222a466a2ac9 \"isOperationPending(bytes32)(bool)\" 0x3302750e18a4bff9508c6e93386a406df9aa8d36992188e76a08ecc76bfce208 --block 58747369 --rpc-url $BASE_RPC_URL",
+        "cast call 0x3b60f7f25b09e71356cdffc6475c222a466a2ac9 \"isOperationReady(bytes32)(bool)\" 0x3302750e18a4bff9508c6e93386a406df9aa8d36992188e76a08ecc76bfce208 --block 58747369 --rpc-url $BASE_RPC_URL",
+        "cast call 0x3b60f7f25b09e71356cdffc6475c222a466a2ac9 \"isOperationDone(bytes32)(bool)\" 0x3302750e18a4bff9508c6e93386a406df9aa8d36992188e76a08ecc76bfce208 --block 58747369 --rpc-url $BASE_RPC_URL",
+        "cast call 0x3b60f7f25b09e71356cdffc6475c222a466a2ac9 \"getTimestamp(bytes32)(uint256)\" 0x3302750e18a4bff9508c6e93386a406df9aa8d36992188e76a08ecc76bfce208 --block 58747369 --rpc-url $BASE_RPC_URL"
+      ]
+    },
+    {
+      "slug": "ethena-ops-0xb028-0xca05-0x108e-0x070a",
+      "protocol": "Ethena (USDe / sUSDe)",
+      "protocol_slug": "ethena-usde-susde",
+      "chain_id": 1,
+      "timelock": {
+        "address": "0xe8dc0fab349ea169283c48ccfd09d797e6db7c94",
+        "getMinDelay": 86400,
+        "verified": {
+          "address": "0xe8dc0fab349ea169283c48ccfd09d797e6db7c94",
+          "codeKeccak": "0x177b426b5063b947e06e291b7bdc6beae2d06044b7198775d91839ded0d08873",
+          "codeBytes": 15149,
+          "sourcify": {
+            "name": "EthenaTimelockController",
+            "fullyQualifiedName": "src/EthenaTimelockController.sol:EthenaTimelockController",
+            "match": "match",
+            "runtimeMatch": "match",
+            "compiler": "0.8.26+commit.8a97fa7a",
+            "verifiedAt": "2026-06-12T14:00:09Z",
+            "onchainBytecodeMatchesChain": true,
+            "url": "https://sourcify.dev/server/v2/contract/1/0xe8dc0fab349ea169283c48ccfd09d797e6db7c94"
+          }
+        }
+      },
+      "operations": [
+        {
+          "op_id": "0xb0289f92009409e09b8b87150e10486ab753b7c13d049702caca3221a622d81a",
+          "label": "mint caps cut from 200M to 50M per block",
+          "eta": 1795011647,
+          "eta_utc": "2026-11-18 14:20:47 UTC",
+          "status": {
+            "isOperation": true,
+            "isOperationPending": true,
+            "isOperationReady": false,
+            "isOperationDone": false,
+            "getTimestamp": 1795011647
+          },
+          "ready": false,
+          "predecessor": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "delay": 86400,
+          "scheduled": {
+            "block": 26435324,
+            "tx": "0xbcf11bd519b40a4b7532729e94bf586230e3357619a29d4ad219dff671214d44",
+            "from": "0x352040dc5f272563a2d6e0ef7abcd567a7440e8f",
+            "to": "0x3b0aaf6e6fcd4a7ceef8c92c32dfea9e64dc1862",
+            "function": "Safe execTransaction",
+            "logIndexes": [
+              504,
+              505,
+              506,
+              507,
+              508,
+              509,
+              510,
+              511,
+              512
+            ]
+          },
+          "calls": [
+            {
+              "index": 0,
+              "target": "0xe3490297a08d6fc8da46edb7b6142e4f461b62d3",
+              "value": 0,
+              "selector": "0x6c2cd30f",
+              "function": "setGlobalMaxMintPerBlock(uint128)",
+              "args": {
+                "_globalMaxMintPerBlock": 50000000000000000000000000
+              },
+              "calldata": "0x6c2cd30f000000000000000000000000000000000000000000295be96e64066972000000",
+              "cast_decode": "cast calldata-decode \"setGlobalMaxMintPerBlock(uint128)\" 0x6c2cd30f000000000000000000000000000000000000000000295be96e64066972000000",
+              "change": {
+                "from": "200,000,000",
+                "to": "50,000,000",
+                "unit": "USDe per block"
+              }
+            },
+            {
+              "index": 1,
+              "target": "0xe3490297a08d6fc8da46edb7b6142e4f461b62d3",
+              "value": 0,
+              "selector": "0x12a4a10e",
+              "function": "setMaxMintPerBlock(uint128,address)",
+              "args": {
+                "_maxMintPerBlock": 50000000000000000000000000,
+                "asset": "0xdac17f958d2ee523a2206206994597c13d831ec7"
+              },
+              "calldata": "0x12a4a10e000000000000000000000000000000000000000000295be96e64066972000000000000000000000000000000dac17f958d2ee523a2206206994597c13d831ec7",
+              "cast_decode": "cast calldata-decode \"setMaxMintPerBlock(uint128,address)\" 0x12a4a10e000000000000000000000000000000000000000000295be96e64066972000000000000000000000000000000dac17f958d2ee523a2206206994597c13d831ec7",
+              "asset": "USDT",
+              "change": {
+                "from": "200,000,000",
+                "to": "50,000,000",
+                "unit": "USDe per block"
+              }
+            },
+            {
+              "index": 2,
+              "target": "0xe3490297a08d6fc8da46edb7b6142e4f461b62d3",
+              "value": 0,
+              "selector": "0x12a4a10e",
+              "function": "setMaxMintPerBlock(uint128,address)",
+              "args": {
+                "_maxMintPerBlock": 50000000000000000000000000,
+                "asset": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+              },
+              "calldata": "0x12a4a10e000000000000000000000000000000000000000000295be96e64066972000000000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+              "cast_decode": "cast calldata-decode \"setMaxMintPerBlock(uint128,address)\" 0x12a4a10e000000000000000000000000000000000000000000295be96e64066972000000000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+              "asset": "USDC",
+              "change": {
+                "from": "200,000,000",
+                "to": "50,000,000",
+                "unit": "USDe per block"
+              }
+            },
+            {
+              "index": 3,
+              "target": "0xe3490297a08d6fc8da46edb7b6142e4f461b62d3",
+              "value": 0,
+              "selector": "0x12a4a10e",
+              "function": "setMaxMintPerBlock(uint128,address)",
+              "args": {
+                "_maxMintPerBlock": 50000000000000000000000000,
+                "asset": "0xec2af1c8b110a61fd9c3fa6a554a031ca9943926"
+              },
+              "calldata": "0x12a4a10e000000000000000000000000000000000000000000295be96e64066972000000000000000000000000000000ec2af1c8b110a61fd9c3fa6a554a031ca9943926",
+              "cast_decode": "cast calldata-decode \"setMaxMintPerBlock(uint128,address)\" 0x12a4a10e000000000000000000000000000000000000000000295be96e64066972000000000000000000000000000000ec2af1c8b110a61fd9c3fa6a554a031ca9943926",
+              "asset": "USDm",
+              "change": {
+                "from": "200,000,000",
+                "to": "50,000,000",
+                "unit": "USDe per block"
+              }
+            },
+            {
+              "index": 4,
+              "target": "0xe3490297a08d6fc8da46edb7b6142e4f461b62d3",
+              "value": 0,
+              "selector": "0x12a4a10e",
+              "function": "setMaxMintPerBlock(uint128,address)",
+              "args": {
+                "_maxMintPerBlock": 50000000000000000000000000,
+                "asset": "0xe343167631d89b6ffc58b88d6b7fb0228795491d"
+              },
+              "calldata": "0x12a4a10e000000000000000000000000000000000000000000295be96e64066972000000000000000000000000000000e343167631d89b6ffc58b88d6b7fb0228795491d",
+              "cast_decode": "cast calldata-decode \"setMaxMintPerBlock(uint128,address)\" 0x12a4a10e000000000000000000000000000000000000000000295be96e64066972000000000000000000000000000000e343167631d89b6ffc58b88d6b7fb0228795491d",
+              "asset": "USDG",
+              "change": {
+                "from": "200,000,000",
+                "to": "50,000,000",
+                "unit": "USDe per block"
+              }
+            },
+            {
+              "index": 5,
+              "target": "0xe3490297a08d6fc8da46edb7b6142e4f461b62d3",
+              "value": 0,
+              "selector": "0x12a4a10e",
+              "function": "setMaxMintPerBlock(uint128,address)",
+              "args": {
+                "_maxMintPerBlock": 50000000000000000000000000,
+                "asset": "0x6c3ea9036406852006290770bedfcaba0e23a0e8"
+              },
+              "calldata": "0x12a4a10e000000000000000000000000000000000000000000295be96e640669720000000000000000000000000000006c3ea9036406852006290770bedfcaba0e23a0e8",
+              "cast_decode": "cast calldata-decode \"setMaxMintPerBlock(uint128,address)\" 0x12a4a10e000000000000000000000000000000000000000000295be96e640669720000000000000000000000000000006c3ea9036406852006290770bedfcaba0e23a0e8",
+              "asset": "PYUSD",
+              "change": {
+                "from": "200,000,000",
+                "to": "50,000,000",
+                "unit": "USDe per block"
+              }
+            },
+            {
+              "index": 6,
+              "target": "0xe3490297a08d6fc8da46edb7b6142e4f461b62d3",
+              "value": 0,
+              "selector": "0x12a4a10e",
+              "function": "setMaxMintPerBlock(uint128,address)",
+              "args": {
+                "_maxMintPerBlock": 50000000000000000000000000,
+                "asset": "0xc139190f447e929f090edeb554d95abb8b18ac1c"
+              },
+              "calldata": "0x12a4a10e000000000000000000000000000000000000000000295be96e64066972000000000000000000000000000000c139190f447e929f090edeb554d95abb8b18ac1c",
+              "cast_decode": "cast calldata-decode \"setMaxMintPerBlock(uint128,address)\" 0x12a4a10e000000000000000000000000000000000000000000295be96e64066972000000000000000000000000000000c139190f447e929f090edeb554d95abb8b18ac1c",
+              "asset": "USDtb",
+              "change": {
+                "from": "200,000,000",
+                "to": "50,000,000",
+                "unit": "USDe per block"
+              }
+            },
+            {
+              "index": 7,
+              "target": "0xe3490297a08d6fc8da46edb7b6142e4f461b62d3",
+              "value": 0,
+              "selector": "0x12a4a10e",
+              "function": "setMaxMintPerBlock(uint128,address)",
+              "args": {
+                "_maxMintPerBlock": 50000000000000000000000000,
+                "asset": "0x8292bb45bf1ee4d140127049757c2e0ff06317ed"
+              },
+              "calldata": "0x12a4a10e000000000000000000000000000000000000000000295be96e640669720000000000000000000000000000008292bb45bf1ee4d140127049757c2e0ff06317ed",
+              "cast_decode": "cast calldata-decode \"setMaxMintPerBlock(uint128,address)\" 0x12a4a10e000000000000000000000000000000000000000000295be96e640669720000000000000000000000000000008292bb45bf1ee4d140127049757c2e0ff06317ed",
+              "asset": "RLUSD",
+              "change": {
+                "from": "200,000,000",
+                "to": "50,000,000",
+                "unit": "USDe per block"
+              }
+            },
+            {
+              "index": 8,
+              "target": "0xe3490297a08d6fc8da46edb7b6142e4f461b62d3",
+              "value": 0,
+              "selector": "0x12a4a10e",
+              "function": "setMaxMintPerBlock(uint128,address)",
+              "args": {
+                "_maxMintPerBlock": 50000000000000000000000000,
+                "asset": "0x07041776f5007aca2a54844f50503a18a72a8b68"
+              },
+              "calldata": "0x12a4a10e000000000000000000000000000000000000000000295be96e6406697200000000000000000000000000000007041776f5007aca2a54844f50503a18a72a8b68",
+              "cast_decode": "cast calldata-decode \"setMaxMintPerBlock(uint128,address)\" 0x12a4a10e000000000000000000000000000000000000000000295be96e6406697200000000000000000000000000000007041776f5007aca2a54844f50503a18a72a8b68",
+              "asset": "USAT",
+              "change": {
+                "from": "200,000,000",
+                "to": "50,000,000",
+                "unit": "USDe per block"
+              }
+            }
+          ]
+        },
+        {
+          "op_id": "0xca0563b0bebee6c971db36df24ef8c5802ad4007f7fb42bff2f553141c8ed835",
+          "label": "USDm removed as mint collateral",
+          "eta": 1795011731,
+          "eta_utc": "2026-11-18 14:22:11 UTC",
+          "status": {
+            "isOperation": true,
+            "isOperationPending": true,
+            "isOperationReady": false,
+            "isOperationDone": false,
+            "getTimestamp": 1795011731
+          },
+          "ready": false,
+          "predecessor": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "delay": 86400,
+          "scheduled": {
+            "block": 26435331,
+            "tx": "0xf741fef303c8d26fce0ce84892312255d3ea6279540581ec80f1a32f5ae8e48d",
+            "from": "0x352040dc5f272563a2d6e0ef7abcd567a7440e8f",
+            "to": "0x3b0aaf6e6fcd4a7ceef8c92c32dfea9e64dc1862",
+            "function": "Safe execTransaction",
+            "logIndexes": [
+              147
+            ]
+          },
+          "calls": [
+            {
+              "index": 0,
+              "target": "0xe3490297a08d6fc8da46edb7b6142e4f461b62d3",
+              "value": 0,
+              "selector": "0x1c46bc6f",
+              "function": "removeSupportedAsset(address)",
+              "args": {
+                "asset": "0xec2af1c8b110a61fd9c3fa6a554a031ca9943926"
+              },
+              "calldata": "0x1c46bc6f000000000000000000000000ec2af1c8b110a61fd9c3fa6a554a031ca9943926",
+              "cast_decode": "cast calldata-decode \"removeSupportedAsset(address)\" 0x1c46bc6f000000000000000000000000ec2af1c8b110a61fd9c3fa6a554a031ca9943926",
+              "asset": "USDm",
+              "change": {
+                "isSupportedAsset": {
+                  "from": true,
+                  "to": false
+                }
+              }
+            }
+          ]
+        },
+        {
+          "op_id": "0x108ea49a961a00e8992ad4aed2e1faea43b0a47982e0c62d63f9db03ddb4d0f4",
+          "label": "bridge rate limits set to 25M per hour on two routes",
+          "eta": 1795013567,
+          "eta_utc": "2026-11-18 14:52:47 UTC",
+          "status": {
+            "isOperation": true,
+            "isOperationPending": true,
+            "isOperationReady": false,
+            "isOperationDone": false,
+            "getTimestamp": 1795013567
+          },
+          "ready": false,
+          "predecessor": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "delay": 86400,
+          "scheduled": {
+            "block": 26435484,
+            "tx": "0x955de27d8c6ddd9ba6441d13b4e2f835565de992bddf7b973daeaf07c1050619",
+            "from": "0x352040dc5f272563a2d6e0ef7abcd567a7440e8f",
+            "to": "0x3b0aaf6e6fcd4a7ceef8c92c32dfea9e64dc1862",
+            "function": "Safe execTransaction",
+            "logIndexes": [
+              869,
+              870
+            ]
+          },
+          "calls": [
+            {
+              "index": 0,
+              "target": "0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34",
+              "value": 0,
+              "selector": "0x46f943e9",
+              "function": "setRateLimits((uint32,uint256,uint256)[])",
+              "args": {
+                "_rateLimitConfigs": [
+                  [
+                    30339,
+                    25000000000000000000000000,
+                    3600
+                  ]
+                ]
+              },
+              "calldata": "0x46f943e900000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000768300000000000000000000000000000000000000000014adf4b7320334b90000000000000000000000000000000000000000000000000000000000000000000e10",
+              "cast_decode": "cast calldata-decode \"setRateLimits((uint32,uint256,uint256)[])\" 0x46f943e900000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000768300000000000000000000000000000000000000000014adf4b7320334b90000000000000000000000000000000000000000000000000000000000000000000e10",
+              "rateLimits": [
+                {
+                  "dstEid": 30339,
+                  "peer": "0x0000000000000000000000005d3a1ff2b6bab83b63cd9ad0787074081a52ef34",
+                  "limit": {
+                    "from": "10,000,000",
+                    "to": "25,000,000"
+                  },
+                  "window": {
+                    "from": 3600,
+                    "to": 3600
+                  },
+                  "amountInFlightAtPin": "9,000,000.000000329818650355"
+                }
+              ]
+            },
+            {
+              "index": 1,
+              "target": "0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34",
+              "value": 0,
+              "selector": "0x46f943e9",
+              "function": "setRateLimits((uint32,uint256,uint256)[])",
+              "args": {
+                "_rateLimitConfigs": [
+                  [
+                    30383,
+                    25000000000000000000000000,
+                    3600
+                  ]
+                ]
+              },
+              "calldata": "0x46f943e90000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000076af00000000000000000000000000000000000000000014adf4b7320334b90000000000000000000000000000000000000000000000000000000000000000000e10",
+              "cast_decode": "cast calldata-decode \"setRateLimits((uint32,uint256,uint256)[])\" 0x46f943e90000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000076af00000000000000000000000000000000000000000014adf4b7320334b90000000000000000000000000000000000000000000000000000000000000000000e10",
+              "rateLimits": [
+                {
+                  "dstEid": 30383,
+                  "peer": "0x0000000000000000000000005d3a1ff2b6bab83b63cd9ad0787074081a52ef34",
+                  "limit": {
+                    "from": "30,000,000",
+                    "to": "25,000,000"
+                  },
+                  "window": {
+                    "from": 3600,
+                    "to": 3600
+                  },
+                  "amountInFlightAtPin": "90,087"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "op_id": "0x070a0ab4df4b4d69e23ed817c62481d267dae887ed7f7b5fbc7cffa5ff64228d",
+          "label": "a new custodian address added",
+          "eta": 1795013615,
+          "eta_utc": "2026-11-18 14:53:35 UTC",
+          "status": {
+            "isOperation": true,
+            "isOperationPending": true,
+            "isOperationReady": false,
+            "isOperationDone": false,
+            "getTimestamp": 1795013615
+          },
+          "ready": false,
+          "predecessor": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "delay": 86400,
+          "scheduled": {
+            "block": 26435488,
+            "tx": "0x86e7822351b7e364e57cee07a3f2274e3edcb44eabd4f77f8a053098d43f654f",
+            "from": "0x352040dc5f272563a2d6e0ef7abcd567a7440e8f",
+            "to": "0x3b0aaf6e6fcd4a7ceef8c92c32dfea9e64dc1862",
+            "function": "Safe execTransaction",
+            "logIndexes": [
+              324
+            ]
+          },
+          "calls": [
+            {
+              "index": 0,
+              "target": "0xe3490297a08d6fc8da46edb7b6142e4f461b62d3",
+              "value": 0,
+              "selector": "0x4be7a64b",
+              "function": "addCustodianAddress(address)",
+              "args": {
+                "custodian": "0x1c3b25019ed4e4876e7af7903cc3e1e23287c337"
+              },
+              "calldata": "0x4be7a64b0000000000000000000000001c3b25019ed4e4876e7af7903cc3e1e23287c337",
+              "cast_decode": "cast calldata-decode \"addCustodianAddress(address)\" 0x4be7a64b0000000000000000000000001c3b25019ed4e4876e7af7903cc3e1e23287c337",
+              "custodian": {
+                "isCustodianAddress": false,
+                "codeBytes": 0,
+                "kind": "EOA"
+              }
+            }
+          ]
+        }
+      ],
+      "decoded": {
+        "minting": {
+          "address": "0xe3490297a08d6fc8da46edb7b6142e4f461b62d3",
+          "verified": {
+            "address": "0xe3490297a08d6fc8da46edb7b6142e4f461b62d3",
+            "codeKeccak": "0x637a83a32c13f603b9e02f9ca0e945d1604e361693915f1ba02f29d474d67488",
+            "codeBytes": 24027,
+            "sourcify": {
+              "name": "EthenaMinting",
+              "fullyQualifiedName": "contracts/EthenaMinting.sol:EthenaMinting",
+              "match": "exact_match",
+              "runtimeMatch": "exact_match",
+              "compiler": "0.8.20+commit.a1b79de6",
+              "verifiedAt": "2024-08-08T16:26:32Z",
+              "onchainBytecodeMatchesChain": true,
+              "url": "https://sourcify.dev/server/v2/contract/1/0xe3490297a08d6fc8da46edb7b6142e4f461b62d3"
+            }
+          },
+          "owner": "0xe8dc0fab349ea169283c48ccfd09d797e6db7c94",
+          "globalMaxMintPerBlock": 200000000000000000000000000,
+          "globalMaxRedeemPerBlock": 20000000000000000000000000
+        },
+        "oftAdapter": {
+          "address": "0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34",
+          "verified": {
+            "address": "0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34",
+            "codeKeccak": "0xed981fc637bb5adfce35a0c7762dc71376a64fb74eefa5b1f01e2594d46f0537",
+            "codeBytes": 12470,
+            "sourcify": {
+              "name": "USDeOFTAdapter",
+              "fullyQualifiedName": "contracts/usde/USDeOFTAdapter.sol:USDeOFTAdapter",
+              "match": "match",
+              "runtimeMatch": "match",
+              "compiler": "0.8.22+commit.4fc1097e",
+              "verifiedAt": "2024-08-08T15:18:53Z",
+              "onchainBytecodeMatchesChain": true,
+              "url": "https://sourcify.dev/server/v2/contract/1/0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34"
+            }
+          },
+          "owner": "0xe8dc0fab349ea169283c48ccfd09d797e6db7c94",
+          "token": "0x4c9edd5852cd905f086c759e8383e09bff1e68b3"
+        },
+        "assets": {
+          "0xdac17f958d2ee523a2206206994597c13d831ec7": {
+            "symbol": "USDT",
+            "isSupportedAsset": true,
+            "isActive": true,
+            "maxMintPerBlock": 200000000000000000000000000,
+            "maxRedeemPerBlock": 20000000000000000000000000
+          },
+          "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": {
+            "symbol": "USDC",
+            "isSupportedAsset": true,
+            "isActive": true,
+            "maxMintPerBlock": 200000000000000000000000000,
+            "maxRedeemPerBlock": 20000000000000000000000000
+          },
+          "0xec2af1c8b110a61fd9c3fa6a554a031ca9943926": {
+            "symbol": "USDm",
+            "isSupportedAsset": true,
+            "isActive": true,
+            "maxMintPerBlock": 200000000000000000000000000,
+            "maxRedeemPerBlock": 20000000000000000000000000
+          },
+          "0xe343167631d89b6ffc58b88d6b7fb0228795491d": {
+            "symbol": "USDG",
+            "isSupportedAsset": true,
+            "isActive": true,
+            "maxMintPerBlock": 200000000000000000000000000,
+            "maxRedeemPerBlock": 20000000000000000000000000
+          },
+          "0x6c3ea9036406852006290770bedfcaba0e23a0e8": {
+            "symbol": "PYUSD",
+            "isSupportedAsset": true,
+            "isActive": true,
+            "maxMintPerBlock": 200000000000000000000000000,
+            "maxRedeemPerBlock": 20000000000000000000000000
+          },
+          "0xc139190f447e929f090edeb554d95abb8b18ac1c": {
+            "symbol": "USDtb",
+            "isSupportedAsset": true,
+            "isActive": true,
+            "maxMintPerBlock": 200000000000000000000000000,
+            "maxRedeemPerBlock": 20000000000000000000000000
+          },
+          "0x8292bb45bf1ee4d140127049757c2e0ff06317ed": {
+            "symbol": "RLUSD",
+            "isSupportedAsset": true,
+            "isActive": true,
+            "maxMintPerBlock": 200000000000000000000000000,
+            "maxRedeemPerBlock": 20000000000000000000000000
+          },
+          "0x07041776f5007aca2a54844f50503a18a72a8b68": {
+            "symbol": "USAT",
+            "isSupportedAsset": true,
+            "isActive": true,
+            "maxMintPerBlock": 200000000000000000000000000,
+            "maxRedeemPerBlock": 20000000000000000000000000
+          }
+        }
+      },
+      "risk_notes": [
+        "Op 0xb028 lowers the global mint cap and the per-asset caps of 8 assets (USDT, USDC, USDm, USDG, PYUSD, USDtb, RLUSD, USAT) from 200,000,000 to 50,000,000 USDe per block. This is a tightening; redeem caps are unchanged (20,000,000 per block).",
+        "Op 0xca05 removes USDm as mint / redeem collateral (removeSupportedAsset); it is supported and active at the pinned block.",
+        "Op 0x108e is two separate setRateLimits calls on the USDe OFT adapter (LayerZero): eid 30339 10,000,000 -> 25,000,000 USDe per 3600 s; eid 30383 30,000,000 -> 25,000,000 USDe per 3600 s. One route's limit rises, the other's falls.",
+        "Op 0x070a adds a custodian: an EOA (0 bytes of code) that is not yet a custodian (isCustodianAddress = false). Custodian addresses are where minted collateral is routed, so the new address deserves an owner check before execution.",
+        "All four ops are independent (predecessor 0x0) with ETAs from 2026-11-18 14:20:47 UTC to 2026-11-18 14:53:35 UTC. EthenaMinting and the OFT adapter are both owned by the timelock (minDelay 86400 s)."
+      ],
+      "brief": "briefs/ethena-ops-0xb028-0xca05-0x108e-0x070a/",
+      "pinned_block": {
+        "block_number": 26436571,
+        "block_hash": "0x8f796be27dbc3affb0a0545895d8c27e7a63ac7bf438f93a4107af36f4a33599",
+        "block_timestamp": 1794940247,
+        "block_time_utc": "2026-11-17 18:30 UTC",
+        "tag": "finalized",
+        "rpcs_cross_checked": 2
+      },
+      "radar_title": "Ethena USDe — mint caps cut to 50M per block, USDm delisted, a custodian added",
+      "reproduce": [
+        "cast call 0xe3490297a08d6fc8da46edb7b6142e4f461b62d3 \"globalConfig()(uint128,uint128)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast keccak $(cast code 0xe3490297a08d6fc8da46edb7b6142e4f461b62d3 --block 26436571 --rpc-url $ETH_RPC_URL)",
+        "cast call 0xe3490297a08d6fc8da46edb7b6142e4f461b62d3 \"owner()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast keccak $(cast code 0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34 --block 26436571 --rpc-url $ETH_RPC_URL)",
+        "cast call 0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34 \"owner()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34 \"token()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast logs --from-block 26435324 --to-block 26435324 --address 0xe8dc0fab349ea169283c48ccfd09d797e6db7c94 \"CallScheduled(bytes32 indexed id,uint256 indexed index,address target,uint256 value,bytes data,bytes32 predecessor,uint256 delay)\" 0xb0289f92009409e09b8b87150e10486ab753b7c13d049702caca3221a622d81a --rpc-url $ETH_RPC_URL",
+        "cast receipt 0xbcf11bd519b40a4b7532729e94bf586230e3357619a29d4ad219dff671214d44 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe3490297a08d6fc8da46edb7b6142e4f461b62d3 \"tokenConfig(address)(uint8,bool,uint128,uint128)\" 0xdac17f958d2ee523a2206206994597c13d831ec7 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xdac17f958d2ee523a2206206994597c13d831ec7 \"symbol()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe3490297a08d6fc8da46edb7b6142e4f461b62d3 \"isSupportedAsset(address)(bool)\" 0xdac17f958d2ee523a2206206994597c13d831ec7 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe3490297a08d6fc8da46edb7b6142e4f461b62d3 \"tokenConfig(address)(uint8,bool,uint128,uint128)\" 0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48 \"symbol()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe3490297a08d6fc8da46edb7b6142e4f461b62d3 \"isSupportedAsset(address)(bool)\" 0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe3490297a08d6fc8da46edb7b6142e4f461b62d3 \"tokenConfig(address)(uint8,bool,uint128,uint128)\" 0xec2af1c8b110a61fd9c3fa6a554a031ca9943926 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xec2af1c8b110a61fd9c3fa6a554a031ca9943926 \"symbol()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe3490297a08d6fc8da46edb7b6142e4f461b62d3 \"isSupportedAsset(address)(bool)\" 0xec2af1c8b110a61fd9c3fa6a554a031ca9943926 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe3490297a08d6fc8da46edb7b6142e4f461b62d3 \"tokenConfig(address)(uint8,bool,uint128,uint128)\" 0xe343167631d89b6ffc58b88d6b7fb0228795491d --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe343167631d89b6ffc58b88d6b7fb0228795491d \"symbol()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe3490297a08d6fc8da46edb7b6142e4f461b62d3 \"isSupportedAsset(address)(bool)\" 0xe343167631d89b6ffc58b88d6b7fb0228795491d --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe3490297a08d6fc8da46edb7b6142e4f461b62d3 \"tokenConfig(address)(uint8,bool,uint128,uint128)\" 0x6c3ea9036406852006290770bedfcaba0e23a0e8 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x6c3ea9036406852006290770bedfcaba0e23a0e8 \"symbol()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe3490297a08d6fc8da46edb7b6142e4f461b62d3 \"isSupportedAsset(address)(bool)\" 0x6c3ea9036406852006290770bedfcaba0e23a0e8 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe3490297a08d6fc8da46edb7b6142e4f461b62d3 \"tokenConfig(address)(uint8,bool,uint128,uint128)\" 0xc139190f447e929f090edeb554d95abb8b18ac1c --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xc139190f447e929f090edeb554d95abb8b18ac1c \"symbol()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe3490297a08d6fc8da46edb7b6142e4f461b62d3 \"isSupportedAsset(address)(bool)\" 0xc139190f447e929f090edeb554d95abb8b18ac1c --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe3490297a08d6fc8da46edb7b6142e4f461b62d3 \"tokenConfig(address)(uint8,bool,uint128,uint128)\" 0x8292bb45bf1ee4d140127049757c2e0ff06317ed --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x8292bb45bf1ee4d140127049757c2e0ff06317ed \"symbol()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe3490297a08d6fc8da46edb7b6142e4f461b62d3 \"isSupportedAsset(address)(bool)\" 0x8292bb45bf1ee4d140127049757c2e0ff06317ed --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe3490297a08d6fc8da46edb7b6142e4f461b62d3 \"tokenConfig(address)(uint8,bool,uint128,uint128)\" 0x07041776f5007aca2a54844f50503a18a72a8b68 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x07041776f5007aca2a54844f50503a18a72a8b68 \"symbol()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe3490297a08d6fc8da46edb7b6142e4f461b62d3 \"isSupportedAsset(address)(bool)\" 0x07041776f5007aca2a54844f50503a18a72a8b68 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe8dc0fab349ea169283c48ccfd09d797e6db7c94 \"isOperation(bytes32)(bool)\" 0xb0289f92009409e09b8b87150e10486ab753b7c13d049702caca3221a622d81a --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe8dc0fab349ea169283c48ccfd09d797e6db7c94 \"isOperationPending(bytes32)(bool)\" 0xb0289f92009409e09b8b87150e10486ab753b7c13d049702caca3221a622d81a --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe8dc0fab349ea169283c48ccfd09d797e6db7c94 \"isOperationReady(bytes32)(bool)\" 0xb0289f92009409e09b8b87150e10486ab753b7c13d049702caca3221a622d81a --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe8dc0fab349ea169283c48ccfd09d797e6db7c94 \"isOperationDone(bytes32)(bool)\" 0xb0289f92009409e09b8b87150e10486ab753b7c13d049702caca3221a622d81a --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe8dc0fab349ea169283c48ccfd09d797e6db7c94 \"getTimestamp(bytes32)(uint256)\" 0xb0289f92009409e09b8b87150e10486ab753b7c13d049702caca3221a622d81a --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast logs --from-block 26435331 --to-block 26435331 --address 0xe8dc0fab349ea169283c48ccfd09d797e6db7c94 \"CallScheduled(bytes32 indexed id,uint256 indexed index,address target,uint256 value,bytes data,bytes32 predecessor,uint256 delay)\" 0xca0563b0bebee6c971db36df24ef8c5802ad4007f7fb42bff2f553141c8ed835 --rpc-url $ETH_RPC_URL",
+        "cast receipt 0xf741fef303c8d26fce0ce84892312255d3ea6279540581ec80f1a32f5ae8e48d --rpc-url $ETH_RPC_URL",
+        "cast call 0xe8dc0fab349ea169283c48ccfd09d797e6db7c94 \"isOperation(bytes32)(bool)\" 0xca0563b0bebee6c971db36df24ef8c5802ad4007f7fb42bff2f553141c8ed835 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe8dc0fab349ea169283c48ccfd09d797e6db7c94 \"isOperationPending(bytes32)(bool)\" 0xca0563b0bebee6c971db36df24ef8c5802ad4007f7fb42bff2f553141c8ed835 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe8dc0fab349ea169283c48ccfd09d797e6db7c94 \"isOperationReady(bytes32)(bool)\" 0xca0563b0bebee6c971db36df24ef8c5802ad4007f7fb42bff2f553141c8ed835 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe8dc0fab349ea169283c48ccfd09d797e6db7c94 \"isOperationDone(bytes32)(bool)\" 0xca0563b0bebee6c971db36df24ef8c5802ad4007f7fb42bff2f553141c8ed835 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe8dc0fab349ea169283c48ccfd09d797e6db7c94 \"getTimestamp(bytes32)(uint256)\" 0xca0563b0bebee6c971db36df24ef8c5802ad4007f7fb42bff2f553141c8ed835 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast logs --from-block 26435484 --to-block 26435484 --address 0xe8dc0fab349ea169283c48ccfd09d797e6db7c94 \"CallScheduled(bytes32 indexed id,uint256 indexed index,address target,uint256 value,bytes data,bytes32 predecessor,uint256 delay)\" 0x108ea49a961a00e8992ad4aed2e1faea43b0a47982e0c62d63f9db03ddb4d0f4 --rpc-url $ETH_RPC_URL",
+        "cast receipt 0x955de27d8c6ddd9ba6441d13b4e2f835565de992bddf7b973daeaf07c1050619 --rpc-url $ETH_RPC_URL",
+        "cast call 0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34 \"rateLimits(uint32)(uint256,uint256,uint256,uint256)\" 30339 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34 \"peers(uint32)(bytes32)\" 30339 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34 \"rateLimits(uint32)(uint256,uint256,uint256,uint256)\" 30383 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x5d3a1ff2b6bab83b63cd9ad0787074081a52ef34 \"peers(uint32)(bytes32)\" 30383 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe8dc0fab349ea169283c48ccfd09d797e6db7c94 \"isOperation(bytes32)(bool)\" 0x108ea49a961a00e8992ad4aed2e1faea43b0a47982e0c62d63f9db03ddb4d0f4 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe8dc0fab349ea169283c48ccfd09d797e6db7c94 \"isOperationPending(bytes32)(bool)\" 0x108ea49a961a00e8992ad4aed2e1faea43b0a47982e0c62d63f9db03ddb4d0f4 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe8dc0fab349ea169283c48ccfd09d797e6db7c94 \"isOperationReady(bytes32)(bool)\" 0x108ea49a961a00e8992ad4aed2e1faea43b0a47982e0c62d63f9db03ddb4d0f4 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe8dc0fab349ea169283c48ccfd09d797e6db7c94 \"isOperationDone(bytes32)(bool)\" 0x108ea49a961a00e8992ad4aed2e1faea43b0a47982e0c62d63f9db03ddb4d0f4 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe8dc0fab349ea169283c48ccfd09d797e6db7c94 \"getTimestamp(bytes32)(uint256)\" 0x108ea49a961a00e8992ad4aed2e1faea43b0a47982e0c62d63f9db03ddb4d0f4 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast logs --from-block 26435488 --to-block 26435488 --address 0xe8dc0fab349ea169283c48ccfd09d797e6db7c94 \"CallScheduled(bytes32 indexed id,uint256 indexed index,address target,uint256 value,bytes data,bytes32 predecessor,uint256 delay)\" 0x070a0ab4df4b4d69e23ed817c62481d267dae887ed7f7b5fbc7cffa5ff64228d --rpc-url $ETH_RPC_URL",
+        "cast receipt 0x86e7822351b7e364e57cee07a3f2274e3edcb44eabd4f77f8a053098d43f654f --rpc-url $ETH_RPC_URL",
+        "cast keccak $(cast code 0x1c3b25019ed4e4876e7af7903cc3e1e23287c337 --block 26436571 --rpc-url $ETH_RPC_URL)",
+        "cast call 0xe3490297a08d6fc8da46edb7b6142e4f461b62d3 \"isCustodianAddress(address)(bool)\" 0x1c3b25019ed4e4876e7af7903cc3e1e23287c337 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe8dc0fab349ea169283c48ccfd09d797e6db7c94 \"isOperation(bytes32)(bool)\" 0x070a0ab4df4b4d69e23ed817c62481d267dae887ed7f7b5fbc7cffa5ff64228d --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe8dc0fab349ea169283c48ccfd09d797e6db7c94 \"isOperationPending(bytes32)(bool)\" 0x070a0ab4df4b4d69e23ed817c62481d267dae887ed7f7b5fbc7cffa5ff64228d --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe8dc0fab349ea169283c48ccfd09d797e6db7c94 \"isOperationReady(bytes32)(bool)\" 0x070a0ab4df4b4d69e23ed817c62481d267dae887ed7f7b5fbc7cffa5ff64228d --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe8dc0fab349ea169283c48ccfd09d797e6db7c94 \"isOperationDone(bytes32)(bool)\" 0x070a0ab4df4b4d69e23ed817c62481d267dae887ed7f7b5fbc7cffa5ff64228d --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe8dc0fab349ea169283c48ccfd09d797e6db7c94 \"getTimestamp(bytes32)(uint256)\" 0x070a0ab4df4b4d69e23ed817c62481d267dae887ed7f7b5fbc7cffa5ff64228d --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xe8dc0fab349ea169283c48ccfd09d797e6db7c94 \"getMinDelay()(uint256)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast keccak $(cast code 0xe8dc0fab349ea169283c48ccfd09d797e6db7c94 --block 26436571 --rpc-url $ETH_RPC_URL)"
+      ]
+    },
+    {
+      "slug": "yearn-v3-op-0x2a14",
+      "protocol": "Yearn V3",
+      "protocol_slug": "yearn-v3",
+      "chain_id": 1,
+      "timelock": {
+        "address": "0x88ba032be87d5ef1fbe87336b7090767f367bf73",
+        "getMinDelay": 604800,
+        "verified": {
+          "address": "0x88ba032be87d5ef1fbe87336b7090767f367bf73",
+          "codeKeccak": "0xace6d058f61ea9244a52bc415e71dce93ead294b1d9fc3dd89f3141e1d6a4908",
+          "codeBytes": 13082,
+          "sourcify": {
+            "name": "TimelockController",
+            "fullyQualifiedName": "lib/openzeppelin-contracts/contracts/governance/TimelockController.sol:TimelockController",
+            "match": "exact_match",
+            "runtimeMatch": "exact_match",
+            "compiler": "0.8.18+commit.87f61d96",
+            "verifiedAt": "2026-05-04T14:42:06Z",
+            "onchainBytecodeMatchesChain": true,
+            "url": "https://sourcify.dev/server/v2/contract/1/0x88ba032be87d5ef1fbe87336b7090767f367bf73"
+          }
+        }
+      },
+      "operations": [
+        {
+          "op_id": "0x2a14e386ce3da63615778466602757ea8dc25e8157aaee660213827a15efb5cf",
+          "label": null,
+          "eta": 1795451951,
+          "eta_utc": "2026-11-23 16:39:11 UTC",
+          "status": {
+            "isOperation": true,
+            "isOperationPending": true,
+            "isOperationReady": false,
+            "isOperationDone": false,
+            "getTimestamp": 1795451951
+          },
+          "ready": false,
+          "predecessor": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "delay": 604800,
+          "scheduled": {
+            "block": 26428839,
+            "tx": "0xf2ac69b26faa0ebcffcf6bdc8ea20263ca70331dc28336121a053b0d180b63ac",
+            "from": "0x700f1a984c962b447ccdb95c4c2d8074c65098a3",
+            "to": "0x40a2accbd92bca938b02010e17a5b8929b49130d",
+            "function": "multiSend(bytes)",
+            "logIndexes": [
+              413,
+              414,
+              415,
+              416,
+              417,
+              418,
+              419,
+              420,
+              421,
+              422,
+              423,
+              424,
+              425,
+              426,
+              427,
+              428
+            ]
+          },
+          "calls": [
+            {
+              "index": 0,
+              "target": "0xbe53a109b494e5c9f97b9cd39fe969be68bf6204",
+              "value": 0,
+              "selector": "0xc2e73cca",
+              "function": "add_strategy(address,bool)",
+              "args": {
+                "new_strategy": "0x774b9e40c571867ca5f5660d245467ff631126ef",
+                "add_to_queue": false
+              },
+              "calldata": "0xc2e73cca000000000000000000000000774b9e40c571867ca5f5660d245467ff631126ef0000000000000000000000000000000000000000000000000000000000000000",
+              "cast_decode": "cast calldata-decode \"add_strategy(address,bool)\" 0xc2e73cca000000000000000000000000774b9e40c571867ca5f5660d245467ff631126ef0000000000000000000000000000000000000000000000000000000000000000"
+            },
+            {
+              "index": 1,
+              "target": "0xbe53a109b494e5c9f97b9cd39fe969be68bf6204",
+              "value": 0,
+              "selector": "0xb9ddcd68",
+              "function": "update_max_debt_for_strategy(address,uint256)",
+              "args": {
+                "strategy": "0x774b9e40c571867ca5f5660d245467ff631126ef",
+                "new_max_debt": 10000000000000
+              },
+              "calldata": "0xb9ddcd68000000000000000000000000774b9e40c571867ca5f5660d245467ff631126ef000000000000000000000000000000000000000000000000000009184e72a000",
+              "cast_decode": "cast calldata-decode \"update_max_debt_for_strategy(address,uint256)\" 0xb9ddcd68000000000000000000000000774b9e40c571867ca5f5660d245467ff631126ef000000000000000000000000000000000000000000000000000009184e72a000",
+              "newMaxDebtUnits": "10,000,000 USDC"
+            },
+            {
+              "index": 2,
+              "target": "0xbe53a109b494e5c9f97b9cd39fe969be68bf6204",
+              "value": 0,
+              "selector": "0xc2e73cca",
+              "function": "add_strategy(address,bool)",
+              "args": {
+                "new_strategy": "0xcb1eb72f2a27e9ead2e2fb3f0aac7e4ee39f2eeb",
+                "add_to_queue": false
+              },
+              "calldata": "0xc2e73cca000000000000000000000000cb1eb72f2a27e9ead2e2fb3f0aac7e4ee39f2eeb0000000000000000000000000000000000000000000000000000000000000000",
+              "cast_decode": "cast calldata-decode \"add_strategy(address,bool)\" 0xc2e73cca000000000000000000000000cb1eb72f2a27e9ead2e2fb3f0aac7e4ee39f2eeb0000000000000000000000000000000000000000000000000000000000000000"
+            },
+            {
+              "index": 3,
+              "target": "0xbe53a109b494e5c9f97b9cd39fe969be68bf6204",
+              "value": 0,
+              "selector": "0xb9ddcd68",
+              "function": "update_max_debt_for_strategy(address,uint256)",
+              "args": {
+                "strategy": "0xcb1eb72f2a27e9ead2e2fb3f0aac7e4ee39f2eeb",
+                "new_max_debt": 50000000000000
+              },
+              "calldata": "0xb9ddcd68000000000000000000000000cb1eb72f2a27e9ead2e2fb3f0aac7e4ee39f2eeb00000000000000000000000000000000000000000000000000002d79883d2000",
+              "cast_decode": "cast calldata-decode \"update_max_debt_for_strategy(address,uint256)\" 0xb9ddcd68000000000000000000000000cb1eb72f2a27e9ead2e2fb3f0aac7e4ee39f2eeb00000000000000000000000000000000000000000000000000002d79883d2000",
+              "newMaxDebtUnits": "50,000,000 USDC"
+            },
+            {
+              "index": 4,
+              "target": "0x696d02db93291651ed510704c9b286841d506987",
+              "value": 0,
+              "selector": "0xc2e73cca",
+              "function": "add_strategy(address,bool)",
+              "args": {
+                "new_strategy": "0x31c92fe1def31e0a280f5a1bb7b30b4bb4b072a0",
+                "add_to_queue": false
+              },
+              "calldata": "0xc2e73cca00000000000000000000000031c92fe1def31e0a280f5a1bb7b30b4bb4b072a00000000000000000000000000000000000000000000000000000000000000000",
+              "cast_decode": "cast calldata-decode \"add_strategy(address,bool)\" 0xc2e73cca00000000000000000000000031c92fe1def31e0a280f5a1bb7b30b4bb4b072a00000000000000000000000000000000000000000000000000000000000000000"
+            },
+            {
+              "index": 5,
+              "target": "0x696d02db93291651ed510704c9b286841d506987",
+              "value": 0,
+              "selector": "0xb9ddcd68",
+              "function": "update_max_debt_for_strategy(address,uint256)",
+              "args": {
+                "strategy": "0x31c92fe1def31e0a280f5a1bb7b30b4bb4b072a0",
+                "new_max_debt": 100000000000000
+              },
+              "calldata": "0xb9ddcd6800000000000000000000000031c92fe1def31e0a280f5a1bb7b30b4bb4b072a000000000000000000000000000000000000000000000000000005af3107a4000",
+              "cast_decode": "cast calldata-decode \"update_max_debt_for_strategy(address,uint256)\" 0xb9ddcd6800000000000000000000000031c92fe1def31e0a280f5a1bb7b30b4bb4b072a000000000000000000000000000000000000000000000000000005af3107a4000",
+              "newMaxDebtUnits": "100,000,000 USDC"
+            },
+            {
+              "index": 6,
+              "target": "0x696d02db93291651ed510704c9b286841d506987",
+              "value": 0,
+              "selector": "0xc2e73cca",
+              "function": "add_strategy(address,bool)",
+              "args": {
+                "new_strategy": "0x763907df6ce37baef1b7eaf7e67e43ac59578568",
+                "add_to_queue": false
+              },
+              "calldata": "0xc2e73cca000000000000000000000000763907df6ce37baef1b7eaf7e67e43ac595785680000000000000000000000000000000000000000000000000000000000000000",
+              "cast_decode": "cast calldata-decode \"add_strategy(address,bool)\" 0xc2e73cca000000000000000000000000763907df6ce37baef1b7eaf7e67e43ac595785680000000000000000000000000000000000000000000000000000000000000000"
+            },
+            {
+              "index": 7,
+              "target": "0x696d02db93291651ed510704c9b286841d506987",
+              "value": 0,
+              "selector": "0xb9ddcd68",
+              "function": "update_max_debt_for_strategy(address,uint256)",
+              "args": {
+                "strategy": "0x763907df6ce37baef1b7eaf7e67e43ac59578568",
+                "new_max_debt": 10000000000000
+              },
+              "calldata": "0xb9ddcd68000000000000000000000000763907df6ce37baef1b7eaf7e67e43ac59578568000000000000000000000000000000000000000000000000000009184e72a000",
+              "cast_decode": "cast calldata-decode \"update_max_debt_for_strategy(address,uint256)\" 0xb9ddcd68000000000000000000000000763907df6ce37baef1b7eaf7e67e43ac59578568000000000000000000000000000000000000000000000000000009184e72a000",
+              "newMaxDebtUnits": "10,000,000 USDC"
+            },
+            {
+              "index": 8,
+              "target": "0xc56413869c6cdf96496f2b1ef801fedbdfa7ddb0",
+              "value": 0,
+              "selector": "0xc2e73cca",
+              "function": "add_strategy(address,bool)",
+              "args": {
+                "new_strategy": "0x61b1def6d44d5052dbac0ad20e4648f7f9d708d5",
+                "add_to_queue": false
+              },
+              "calldata": "0xc2e73cca00000000000000000000000061b1def6d44d5052dbac0ad20e4648f7f9d708d50000000000000000000000000000000000000000000000000000000000000000",
+              "cast_decode": "cast calldata-decode \"add_strategy(address,bool)\" 0xc2e73cca00000000000000000000000061b1def6d44d5052dbac0ad20e4648f7f9d708d50000000000000000000000000000000000000000000000000000000000000000"
+            },
+            {
+              "index": 9,
+              "target": "0xc56413869c6cdf96496f2b1ef801fedbdfa7ddb0",
+              "value": 0,
+              "selector": "0xb9ddcd68",
+              "function": "update_max_debt_for_strategy(address,uint256)",
+              "args": {
+                "strategy": "0x61b1def6d44d5052dbac0ad20e4648f7f9d708d5",
+                "new_max_debt": 10000000000000000000000
+              },
+              "calldata": "0xb9ddcd6800000000000000000000000061b1def6d44d5052dbac0ad20e4648f7f9d708d500000000000000000000000000000000000000000000021e19e0c9bab2400000",
+              "cast_decode": "cast calldata-decode \"update_max_debt_for_strategy(address,uint256)\" 0xb9ddcd6800000000000000000000000061b1def6d44d5052dbac0ad20e4648f7f9d708d500000000000000000000000000000000000000000000021e19e0c9bab2400000",
+              "newMaxDebtUnits": "10,000 WETH"
+            },
+            {
+              "index": 10,
+              "target": "0xac37729b76db6438ce62042ae1270ee574ca7571",
+              "value": 0,
+              "selector": "0xc2e73cca",
+              "function": "add_strategy(address,bool)",
+              "args": {
+                "new_strategy": "0xfedbe4377c42365b2349f85869e8464d15ba704b",
+                "add_to_queue": false
+              },
+              "calldata": "0xc2e73cca000000000000000000000000fedbe4377c42365b2349f85869e8464d15ba704b0000000000000000000000000000000000000000000000000000000000000000",
+              "cast_decode": "cast calldata-decode \"add_strategy(address,bool)\" 0xc2e73cca000000000000000000000000fedbe4377c42365b2349f85869e8464d15ba704b0000000000000000000000000000000000000000000000000000000000000000"
+            },
+            {
+              "index": 11,
+              "target": "0xac37729b76db6438ce62042ae1270ee574ca7571",
+              "value": 0,
+              "selector": "0xb9ddcd68",
+              "function": "update_max_debt_for_strategy(address,uint256)",
+              "args": {
+                "strategy": "0xfedbe4377c42365b2349f85869e8464d15ba704b",
+                "new_max_debt": 10000000000000000000000
+              },
+              "calldata": "0xb9ddcd68000000000000000000000000fedbe4377c42365b2349f85869e8464d15ba704b00000000000000000000000000000000000000000000021e19e0c9bab2400000",
+              "cast_decode": "cast calldata-decode \"update_max_debt_for_strategy(address,uint256)\" 0xb9ddcd68000000000000000000000000fedbe4377c42365b2349f85869e8464d15ba704b00000000000000000000000000000000000000000000021e19e0c9bab2400000",
+              "newMaxDebtUnits": "10,000 WETH"
+            },
+            {
+              "index": 12,
+              "target": "0x863687e4e9751b57f38b4b0eba04744c72d0f7b8",
+              "value": 0,
+              "selector": "0xc2e73cca",
+              "function": "add_strategy(address,bool)",
+              "args": {
+                "new_strategy": "0x3bf60b6cd2a0d5543fbb680a287e204b49b3544b",
+                "add_to_queue": false
+              },
+              "calldata": "0xc2e73cca0000000000000000000000003bf60b6cd2a0d5543fbb680a287e204b49b3544b0000000000000000000000000000000000000000000000000000000000000000",
+              "cast_decode": "cast calldata-decode \"add_strategy(address,bool)\" 0xc2e73cca0000000000000000000000003bf60b6cd2a0d5543fbb680a287e204b49b3544b0000000000000000000000000000000000000000000000000000000000000000"
+            },
+            {
+              "index": 13,
+              "target": "0x863687e4e9751b57f38b4b0eba04744c72d0f7b8",
+              "value": 0,
+              "selector": "0xb9ddcd68",
+              "function": "update_max_debt_for_strategy(address,uint256)",
+              "args": {
+                "strategy": "0x3bf60b6cd2a0d5543fbb680a287e204b49b3544b",
+                "new_max_debt": 10000000000000000
+              },
+              "calldata": "0xb9ddcd680000000000000000000000003bf60b6cd2a0d5543fbb680a287e204b49b3544b000000000000000000000000000000000000000000000000002386f26fc10000",
+              "cast_decode": "cast calldata-decode \"update_max_debt_for_strategy(address,uint256)\" 0xb9ddcd680000000000000000000000003bf60b6cd2a0d5543fbb680a287e204b49b3544b000000000000000000000000000000000000000000000000002386f26fc10000",
+              "newMaxDebtUnits": "10,000,000,000 USDC"
+            },
+            {
+              "index": 14,
+              "target": "0xfac55fafd0b55bfb8dd41f735efcc195ada9891f",
+              "value": 0,
+              "selector": "0xc2e73cca",
+              "function": "add_strategy(address,bool)",
+              "args": {
+                "new_strategy": "0x7f33b05c34f7384a325436263f24500679cc76c4",
+                "add_to_queue": false
+              },
+              "calldata": "0xc2e73cca0000000000000000000000007f33b05c34f7384a325436263f24500679cc76c40000000000000000000000000000000000000000000000000000000000000000",
+              "cast_decode": "cast calldata-decode \"add_strategy(address,bool)\" 0xc2e73cca0000000000000000000000007f33b05c34f7384a325436263f24500679cc76c40000000000000000000000000000000000000000000000000000000000000000"
+            },
+            {
+              "index": 15,
+              "target": "0xfac55fafd0b55bfb8dd41f735efcc195ada9891f",
+              "value": 0,
+              "selector": "0xb9ddcd68",
+              "function": "update_max_debt_for_strategy(address,uint256)",
+              "args": {
+                "strategy": "0x7f33b05c34f7384a325436263f24500679cc76c4",
+                "new_max_debt": 10000000000000000000000
+              },
+              "calldata": "0xb9ddcd680000000000000000000000007f33b05c34f7384a325436263f24500679cc76c400000000000000000000000000000000000000000000021e19e0c9bab2400000",
+              "cast_decode": "cast calldata-decode \"update_max_debt_for_strategy(address,uint256)\" 0xb9ddcd680000000000000000000000007f33b05c34f7384a325436263f24500679cc76c400000000000000000000000000000000000000000000021e19e0c9bab2400000",
+              "newMaxDebtUnits": "10,000 WETH"
+            }
+          ]
+        }
+      ],
+      "decoded": {
+        "vaults": {
+          "0xbe53a109b494e5c9f97b9cd39fe969be68bf6204": {
+            "name": "USDC-1 yVault",
+            "symbol": "yvUSDC-1",
+            "asset": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "assetSymbol": "USDC",
+            "decimals": 6,
+            "apiVersion": "3.0.2",
+            "totalAssets": "18,207,389.050153",
+            "roleManager": "0xb3bd6b2e61753c311efbcf0111f75d29706d9a41",
+            "timelockRoles": 143,
+            "timelockHolds": [
+              "ADD_STRATEGY_MANAGER",
+              "REVOKE_STRATEGY_MANAGER",
+              "FORCE_REVOKE_MANAGER",
+              "ACCOUNTANT_MANAGER",
+              "MAX_DEBT_MANAGER"
+            ]
+          },
+          "0x696d02db93291651ed510704c9b286841d506987": {
+            "name": "USD yVault",
+            "symbol": "yvUSD",
+            "asset": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "assetSymbol": "USDC",
+            "decimals": 6,
+            "apiVersion": "3.0.4",
+            "totalAssets": "13,337,182.272199",
+            "roleManager": "0xb3bd6b2e61753c311efbcf0111f75d29706d9a41",
+            "timelockRoles": 143,
+            "timelockHolds": [
+              "ADD_STRATEGY_MANAGER",
+              "REVOKE_STRATEGY_MANAGER",
+              "FORCE_REVOKE_MANAGER",
+              "ACCOUNTANT_MANAGER",
+              "MAX_DEBT_MANAGER"
+            ]
+          },
+          "0xc56413869c6cdf96496f2b1ef801fedbdfa7ddb0": {
+            "name": "WETH-1 yVault",
+            "symbol": "yvWETH-1",
+            "asset": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+            "assetSymbol": "WETH",
+            "decimals": 18,
+            "apiVersion": "3.0.2",
+            "totalAssets": "5,010.57415989616055714",
+            "roleManager": "0xb3bd6b2e61753c311efbcf0111f75d29706d9a41",
+            "timelockRoles": 143,
+            "timelockHolds": [
+              "ADD_STRATEGY_MANAGER",
+              "REVOKE_STRATEGY_MANAGER",
+              "FORCE_REVOKE_MANAGER",
+              "ACCOUNTANT_MANAGER",
+              "MAX_DEBT_MANAGER"
+            ]
+          },
+          "0xac37729b76db6438ce62042ae1270ee574ca7571": {
+            "name": "WETH-2 yVault",
+            "symbol": "yvWETH-2",
+            "asset": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+            "assetSymbol": "WETH",
+            "decimals": 18,
+            "apiVersion": "3.0.2",
+            "totalAssets": "4,232.647503057926862745",
+            "roleManager": "0xb3bd6b2e61753c311efbcf0111f75d29706d9a41",
+            "timelockRoles": 143,
+            "timelockHolds": [
+              "ADD_STRATEGY_MANAGER",
+              "REVOKE_STRATEGY_MANAGER",
+              "FORCE_REVOKE_MANAGER",
+              "ACCOUNTANT_MANAGER",
+              "MAX_DEBT_MANAGER"
+            ]
+          },
+          "0x863687e4e9751b57f38b4b0eba04744c72d0f7b8": {
+            "name": "Flex USDC yVault",
+            "symbol": "yvFlexUSDC",
+            "asset": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "assetSymbol": "USDC",
+            "decimals": 6,
+            "apiVersion": "3.0.4",
+            "totalAssets": "1,121,011.148266",
+            "roleManager": "0xb3bd6b2e61753c311efbcf0111f75d29706d9a41",
+            "timelockRoles": 143,
+            "timelockHolds": [
+              "ADD_STRATEGY_MANAGER",
+              "REVOKE_STRATEGY_MANAGER",
+              "FORCE_REVOKE_MANAGER",
+              "ACCOUNTANT_MANAGER",
+              "MAX_DEBT_MANAGER"
+            ]
+          },
+          "0xfac55fafd0b55bfb8dd41f735efcc195ada9891f": {
+            "name": "Flex WETH yVault",
+            "symbol": "yvFlexWETH",
+            "asset": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+            "assetSymbol": "WETH",
+            "decimals": 18,
+            "apiVersion": "3.1.0",
+            "totalAssets": "310.436844573601006168",
+            "roleManager": "0xb3bd6b2e61753c311efbcf0111f75d29706d9a41",
+            "timelockRoles": 143,
+            "timelockHolds": [
+              "ADD_STRATEGY_MANAGER",
+              "REVOKE_STRATEGY_MANAGER",
+              "FORCE_REVOKE_MANAGER",
+              "ACCOUNTANT_MANAGER",
+              "MAX_DEBT_MANAGER"
+            ]
+          }
+        },
+        "strategies": [
+          {
+            "vault": "0xbe53a109b494e5c9f97b9cd39fe969be68bf6204",
+            "vaultSymbol": "yvUSDC-1",
+            "strategy": "0x774b9e40c571867ca5f5660d245467ff631126ef",
+            "strategyName": "Flex siUSD/USDC Lender",
+            "strategyAsset": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "strategyApiVersion": "3.0.4",
+            "strategyManagement": "0x16388463d60ffe0661cf7f1f31a7d658ac790ff7",
+            "strategyTotalAssets": "0",
+            "strategyCodeBytes": 18202,
+            "addToQueue": false,
+            "currentParams": {
+              "activation": 0,
+              "last_report": 0,
+              "current_debt": 0,
+              "max_debt": 0
+            },
+            "newMaxDebt": 10000000000000,
+            "newMaxDebtUnits": "10,000,000 USDC"
+          },
+          {
+            "vault": "0xbe53a109b494e5c9f97b9cd39fe969be68bf6204",
+            "vaultSymbol": "yvUSDC-1",
+            "strategy": "0xcb1eb72f2a27e9ead2e2fb3f0aac7e4ee39f2eeb",
+            "strategyName": "USDC to yvUSDS-1 Depositor",
+            "strategyAsset": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "strategyApiVersion": "3.1.0",
+            "strategyManagement": "0x16388463d60ffe0661cf7f1f31a7d658ac790ff7",
+            "strategyTotalAssets": "0",
+            "strategyCodeBytes": 10123,
+            "addToQueue": false,
+            "currentParams": {
+              "activation": 0,
+              "last_report": 0,
+              "current_debt": 0,
+              "max_debt": 0
+            },
+            "newMaxDebt": 50000000000000,
+            "newMaxDebtUnits": "50,000,000 USDC"
+          },
+          {
+            "vault": "0x696d02db93291651ed510704c9b286841d506987",
+            "vaultSymbol": "yvUSD",
+            "strategy": "0x31c92fe1def31e0a280f5a1bb7b30b4bb4b072a0",
+            "strategyName": "USDC to yvUSDS-1 Depositor",
+            "strategyAsset": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "strategyApiVersion": "3.1.0",
+            "strategyManagement": "0x16388463d60ffe0661cf7f1f31a7d658ac790ff7",
+            "strategyTotalAssets": "0",
+            "strategyCodeBytes": 10123,
+            "addToQueue": false,
+            "currentParams": {
+              "activation": 0,
+              "last_report": 0,
+              "current_debt": 0,
+              "max_debt": 0
+            },
+            "newMaxDebt": 100000000000000,
+            "newMaxDebtUnits": "100,000,000 USDC"
+          },
+          {
+            "vault": "0x696d02db93291651ed510704c9b286841d506987",
+            "vaultSymbol": "yvUSD",
+            "strategy": "0x763907df6ce37baef1b7eaf7e67e43ac59578568",
+            "strategyName": "siUSD/USDC Flex Looper",
+            "strategyAsset": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "strategyApiVersion": "3.0.4",
+            "strategyManagement": "0x16388463d60ffe0661cf7f1f31a7d658ac790ff7",
+            "strategyTotalAssets": "1,020.102499",
+            "strategyCodeBytes": 23273,
+            "addToQueue": false,
+            "currentParams": {
+              "activation": 0,
+              "last_report": 0,
+              "current_debt": 0,
+              "max_debt": 0
+            },
+            "newMaxDebt": 10000000000000,
+            "newMaxDebtUnits": "10,000,000 USDC"
+          },
+          {
+            "vault": "0xc56413869c6cdf96496f2b1ef801fedbdfa7ddb0",
+            "vaultSymbol": "yvWETH-1",
+            "strategy": "0x61b1def6d44d5052dbac0ad20e4648f7f9d708d5",
+            "strategyName": "Flex wstETH/WETH Lender",
+            "strategyAsset": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+            "strategyApiVersion": "3.0.4",
+            "strategyManagement": "0x16388463d60ffe0661cf7f1f31a7d658ac790ff7",
+            "strategyTotalAssets": "0",
+            "strategyCodeBytes": 20871,
+            "addToQueue": false,
+            "currentParams": {
+              "activation": 0,
+              "last_report": 0,
+              "current_debt": 0,
+              "max_debt": 0
+            },
+            "newMaxDebt": 10000000000000000000000,
+            "newMaxDebtUnits": "10,000 WETH"
+          },
+          {
+            "vault": "0xac37729b76db6438ce62042ae1270ee574ca7571",
+            "vaultSymbol": "yvWETH-2",
+            "strategy": "0xfedbe4377c42365b2349f85869e8464d15ba704b",
+            "strategyName": "wstETH/WETH Flex Looper",
+            "strategyAsset": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+            "strategyApiVersion": "3.0.4",
+            "strategyManagement": "0x16388463d60ffe0661cf7f1f31a7d658ac790ff7",
+            "strategyTotalAssets": "0.110027625375404083",
+            "strategyCodeBytes": 24311,
+            "addToQueue": false,
+            "currentParams": {
+              "activation": 0,
+              "last_report": 0,
+              "current_debt": 0,
+              "max_debt": 0
+            },
+            "newMaxDebt": 10000000000000000000000,
+            "newMaxDebtUnits": "10,000 WETH"
+          },
+          {
+            "vault": "0x863687e4e9751b57f38b4b0eba04744c72d0f7b8",
+            "vaultSymbol": "yvFlexUSDC",
+            "strategy": "0x3bf60b6cd2a0d5543fbb680a287e204b49b3544b",
+            "strategyName": "USDC to yvUSDS-1 Depositor",
+            "strategyAsset": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+            "strategyApiVersion": "3.1.0",
+            "strategyManagement": "0x16388463d60ffe0661cf7f1f31a7d658ac790ff7",
+            "strategyTotalAssets": "0",
+            "strategyCodeBytes": 10123,
+            "addToQueue": false,
+            "currentParams": {
+              "activation": 0,
+              "last_report": 0,
+              "current_debt": 0,
+              "max_debt": 0
+            },
+            "newMaxDebt": 10000000000000000,
+            "newMaxDebtUnits": "10,000,000,000 USDC"
+          },
+          {
+            "vault": "0xfac55fafd0b55bfb8dd41f735efcc195ada9891f",
+            "vaultSymbol": "yvFlexWETH",
+            "strategy": "0x7f33b05c34f7384a325436263f24500679cc76c4",
+            "strategyName": "Flex wstETH/WETH Lender",
+            "strategyAsset": "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
+            "strategyApiVersion": "3.0.4",
+            "strategyManagement": "0x16388463d60ffe0661cf7f1f31a7d658ac790ff7",
+            "strategyTotalAssets": "0",
+            "strategyCodeBytes": 20871,
+            "addToQueue": false,
+            "currentParams": {
+              "activation": 0,
+              "last_report": 0,
+              "current_debt": 0,
+              "max_debt": 0
+            },
+            "newMaxDebt": 10000000000000000000000,
+            "newMaxDebtUnits": "10,000 WETH"
+          }
+        ]
+      },
+      "risk_notes": [
+        "One scheduleBatch of 16 calls: 8 x (add_strategy(strategy, add_to_queue=false), update_max_debt_for_strategy) across 6 vaults. None of the 8 strategies is active today (activation = 0), and each uses its vault's asset.",
+        "add_to_queue = false: the strategies do not join the default withdrawal queue. Funds move only when a DEBT_MANAGER (not held by this timelock) calls update_debt, up to the new max_debt.",
+        "Caps: yvUSDC-1 -> Flex siUSD/USDC Lender: 10,000,000 USDC; yvUSDC-1 -> USDC to yvUSDS-1 Depositor: 50,000,000 USDC; yvUSD -> USDC to yvUSDS-1 Depositor: 100,000,000 USDC; yvUSD -> siUSD/USDC Flex Looper: 10,000,000 USDC; yvWETH-1 -> Flex wstETH/WETH Lender: 10,000 WETH; yvWETH-2 -> wstETH/WETH Flex Looper: 10,000 WETH; yvFlexUSDC -> USDC to yvUSDS-1 Depositor: 10,000,000,000 USDC; yvFlexWETH -> Flex wstETH/WETH Lender: 10,000 WETH.",
+        "yvFlexUSDC -> USDC to yvUSDS-1 Depositor gets 10,000,000,000 USDC, against 1,121,011.148266 USDC in that vault: in effect uncapped.",
+        "The timelock holds ACCOUNTANT_MANAGER, ADD_STRATEGY_MANAGER, FORCE_REVOKE_MANAGER, MAX_DEBT_MANAGER, REVOKE_STRATEGY_MANAGER on every vault (roles bitmask [143]). Execution therefore needs no other role."
+      ],
+      "brief": "briefs/yearn-v3-op-0x2a14/",
+      "pinned_block": {
+        "block_number": 26436571,
+        "block_hash": "0x8f796be27dbc3affb0a0545895d8c27e7a63ac7bf438f93a4107af36f4a33599",
+        "block_timestamp": 1794940247,
+        "block_time_utc": "2026-11-17 18:30 UTC",
+        "tag": "finalized",
+        "rpcs_cross_checked": 2
+      },
+      "radar_title": "Yearn V3 — 8 new strategies added to 6 vaults with max-debt caps",
+      "reproduce": [
+        "cast logs --from-block 26428839 --to-block 26428839 --address 0x88ba032be87d5ef1fbe87336b7090767f367bf73 \"CallScheduled(bytes32 indexed id,uint256 indexed index,address target,uint256 value,bytes data,bytes32 predecessor,uint256 delay)\" 0x2a14e386ce3da63615778466602757ea8dc25e8157aaee660213827a15efb5cf --rpc-url $ETH_RPC_URL",
+        "cast receipt 0xf2ac69b26faa0ebcffcf6bdc8ea20263ca70331dc28336121a053b0d180b63ac --rpc-url $ETH_RPC_URL",
+        "cast call 0xbe53a109b494e5c9f97b9cd39fe969be68bf6204 \"decimals()(uint8)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xbe53a109b494e5c9f97b9cd39fe969be68bf6204 \"asset()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xbe53a109b494e5c9f97b9cd39fe969be68bf6204 \"name()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xbe53a109b494e5c9f97b9cd39fe969be68bf6204 \"symbol()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48 \"symbol()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xbe53a109b494e5c9f97b9cd39fe969be68bf6204 \"apiVersion()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xbe53a109b494e5c9f97b9cd39fe969be68bf6204 \"totalAssets()(uint256)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xbe53a109b494e5c9f97b9cd39fe969be68bf6204 \"role_manager()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xbe53a109b494e5c9f97b9cd39fe969be68bf6204 \"roles(address)(uint256)\" 0x88ba032be87d5ef1fbe87336b7090767f367bf73 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xbe53a109b494e5c9f97b9cd39fe969be68bf6204 \"strategies(address)(uint256,uint256,uint256,uint256)\" 0x774b9e40c571867ca5f5660d245467ff631126ef --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast keccak $(cast code 0x774b9e40c571867ca5f5660d245467ff631126ef --block 26436571 --rpc-url $ETH_RPC_URL)",
+        "cast call 0x774b9e40c571867ca5f5660d245467ff631126ef \"name()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x774b9e40c571867ca5f5660d245467ff631126ef \"asset()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x774b9e40c571867ca5f5660d245467ff631126ef \"apiVersion()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x774b9e40c571867ca5f5660d245467ff631126ef \"management()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x774b9e40c571867ca5f5660d245467ff631126ef \"totalAssets()(uint256)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xbe53a109b494e5c9f97b9cd39fe969be68bf6204 \"strategies(address)(uint256,uint256,uint256,uint256)\" 0xcb1eb72f2a27e9ead2e2fb3f0aac7e4ee39f2eeb --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast keccak $(cast code 0xcb1eb72f2a27e9ead2e2fb3f0aac7e4ee39f2eeb --block 26436571 --rpc-url $ETH_RPC_URL)",
+        "cast call 0xcb1eb72f2a27e9ead2e2fb3f0aac7e4ee39f2eeb \"name()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xcb1eb72f2a27e9ead2e2fb3f0aac7e4ee39f2eeb \"asset()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xcb1eb72f2a27e9ead2e2fb3f0aac7e4ee39f2eeb \"apiVersion()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xcb1eb72f2a27e9ead2e2fb3f0aac7e4ee39f2eeb \"management()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xcb1eb72f2a27e9ead2e2fb3f0aac7e4ee39f2eeb \"totalAssets()(uint256)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x696d02db93291651ed510704c9b286841d506987 \"decimals()(uint8)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x696d02db93291651ed510704c9b286841d506987 \"asset()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x696d02db93291651ed510704c9b286841d506987 \"name()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x696d02db93291651ed510704c9b286841d506987 \"symbol()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x696d02db93291651ed510704c9b286841d506987 \"apiVersion()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x696d02db93291651ed510704c9b286841d506987 \"totalAssets()(uint256)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x696d02db93291651ed510704c9b286841d506987 \"role_manager()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x696d02db93291651ed510704c9b286841d506987 \"roles(address)(uint256)\" 0x88ba032be87d5ef1fbe87336b7090767f367bf73 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x696d02db93291651ed510704c9b286841d506987 \"strategies(address)(uint256,uint256,uint256,uint256)\" 0x31c92fe1def31e0a280f5a1bb7b30b4bb4b072a0 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast keccak $(cast code 0x31c92fe1def31e0a280f5a1bb7b30b4bb4b072a0 --block 26436571 --rpc-url $ETH_RPC_URL)",
+        "cast call 0x31c92fe1def31e0a280f5a1bb7b30b4bb4b072a0 \"name()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x31c92fe1def31e0a280f5a1bb7b30b4bb4b072a0 \"asset()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x31c92fe1def31e0a280f5a1bb7b30b4bb4b072a0 \"apiVersion()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x31c92fe1def31e0a280f5a1bb7b30b4bb4b072a0 \"management()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x31c92fe1def31e0a280f5a1bb7b30b4bb4b072a0 \"totalAssets()(uint256)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x696d02db93291651ed510704c9b286841d506987 \"strategies(address)(uint256,uint256,uint256,uint256)\" 0x763907df6ce37baef1b7eaf7e67e43ac59578568 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast keccak $(cast code 0x763907df6ce37baef1b7eaf7e67e43ac59578568 --block 26436571 --rpc-url $ETH_RPC_URL)",
+        "cast call 0x763907df6ce37baef1b7eaf7e67e43ac59578568 \"name()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x763907df6ce37baef1b7eaf7e67e43ac59578568 \"asset()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x763907df6ce37baef1b7eaf7e67e43ac59578568 \"apiVersion()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x763907df6ce37baef1b7eaf7e67e43ac59578568 \"management()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x763907df6ce37baef1b7eaf7e67e43ac59578568 \"totalAssets()(uint256)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xc56413869c6cdf96496f2b1ef801fedbdfa7ddb0 \"decimals()(uint8)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xc56413869c6cdf96496f2b1ef801fedbdfa7ddb0 \"asset()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xc56413869c6cdf96496f2b1ef801fedbdfa7ddb0 \"name()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xc56413869c6cdf96496f2b1ef801fedbdfa7ddb0 \"symbol()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2 \"symbol()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xc56413869c6cdf96496f2b1ef801fedbdfa7ddb0 \"apiVersion()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xc56413869c6cdf96496f2b1ef801fedbdfa7ddb0 \"totalAssets()(uint256)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xc56413869c6cdf96496f2b1ef801fedbdfa7ddb0 \"role_manager()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xc56413869c6cdf96496f2b1ef801fedbdfa7ddb0 \"roles(address)(uint256)\" 0x88ba032be87d5ef1fbe87336b7090767f367bf73 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xc56413869c6cdf96496f2b1ef801fedbdfa7ddb0 \"strategies(address)(uint256,uint256,uint256,uint256)\" 0x61b1def6d44d5052dbac0ad20e4648f7f9d708d5 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast keccak $(cast code 0x61b1def6d44d5052dbac0ad20e4648f7f9d708d5 --block 26436571 --rpc-url $ETH_RPC_URL)",
+        "cast call 0x61b1def6d44d5052dbac0ad20e4648f7f9d708d5 \"name()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x61b1def6d44d5052dbac0ad20e4648f7f9d708d5 \"asset()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x61b1def6d44d5052dbac0ad20e4648f7f9d708d5 \"apiVersion()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x61b1def6d44d5052dbac0ad20e4648f7f9d708d5 \"management()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x61b1def6d44d5052dbac0ad20e4648f7f9d708d5 \"totalAssets()(uint256)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xac37729b76db6438ce62042ae1270ee574ca7571 \"decimals()(uint8)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xac37729b76db6438ce62042ae1270ee574ca7571 \"asset()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xac37729b76db6438ce62042ae1270ee574ca7571 \"name()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xac37729b76db6438ce62042ae1270ee574ca7571 \"symbol()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xac37729b76db6438ce62042ae1270ee574ca7571 \"apiVersion()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xac37729b76db6438ce62042ae1270ee574ca7571 \"totalAssets()(uint256)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xac37729b76db6438ce62042ae1270ee574ca7571 \"role_manager()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xac37729b76db6438ce62042ae1270ee574ca7571 \"roles(address)(uint256)\" 0x88ba032be87d5ef1fbe87336b7090767f367bf73 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xac37729b76db6438ce62042ae1270ee574ca7571 \"strategies(address)(uint256,uint256,uint256,uint256)\" 0xfedbe4377c42365b2349f85869e8464d15ba704b --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast keccak $(cast code 0xfedbe4377c42365b2349f85869e8464d15ba704b --block 26436571 --rpc-url $ETH_RPC_URL)",
+        "cast call 0xfedbe4377c42365b2349f85869e8464d15ba704b \"name()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xfedbe4377c42365b2349f85869e8464d15ba704b \"asset()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xfedbe4377c42365b2349f85869e8464d15ba704b \"apiVersion()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xfedbe4377c42365b2349f85869e8464d15ba704b \"management()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xfedbe4377c42365b2349f85869e8464d15ba704b \"totalAssets()(uint256)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x863687e4e9751b57f38b4b0eba04744c72d0f7b8 \"decimals()(uint8)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x863687e4e9751b57f38b4b0eba04744c72d0f7b8 \"asset()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x863687e4e9751b57f38b4b0eba04744c72d0f7b8 \"name()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x863687e4e9751b57f38b4b0eba04744c72d0f7b8 \"symbol()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x863687e4e9751b57f38b4b0eba04744c72d0f7b8 \"apiVersion()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x863687e4e9751b57f38b4b0eba04744c72d0f7b8 \"totalAssets()(uint256)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x863687e4e9751b57f38b4b0eba04744c72d0f7b8 \"role_manager()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x863687e4e9751b57f38b4b0eba04744c72d0f7b8 \"roles(address)(uint256)\" 0x88ba032be87d5ef1fbe87336b7090767f367bf73 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x863687e4e9751b57f38b4b0eba04744c72d0f7b8 \"strategies(address)(uint256,uint256,uint256,uint256)\" 0x3bf60b6cd2a0d5543fbb680a287e204b49b3544b --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast keccak $(cast code 0x3bf60b6cd2a0d5543fbb680a287e204b49b3544b --block 26436571 --rpc-url $ETH_RPC_URL)",
+        "cast call 0x3bf60b6cd2a0d5543fbb680a287e204b49b3544b \"name()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x3bf60b6cd2a0d5543fbb680a287e204b49b3544b \"asset()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x3bf60b6cd2a0d5543fbb680a287e204b49b3544b \"apiVersion()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x3bf60b6cd2a0d5543fbb680a287e204b49b3544b \"management()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x3bf60b6cd2a0d5543fbb680a287e204b49b3544b \"totalAssets()(uint256)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xfac55fafd0b55bfb8dd41f735efcc195ada9891f \"decimals()(uint8)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xfac55fafd0b55bfb8dd41f735efcc195ada9891f \"asset()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xfac55fafd0b55bfb8dd41f735efcc195ada9891f \"name()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xfac55fafd0b55bfb8dd41f735efcc195ada9891f \"symbol()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xfac55fafd0b55bfb8dd41f735efcc195ada9891f \"apiVersion()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xfac55fafd0b55bfb8dd41f735efcc195ada9891f \"totalAssets()(uint256)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xfac55fafd0b55bfb8dd41f735efcc195ada9891f \"role_manager()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xfac55fafd0b55bfb8dd41f735efcc195ada9891f \"roles(address)(uint256)\" 0x88ba032be87d5ef1fbe87336b7090767f367bf73 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xfac55fafd0b55bfb8dd41f735efcc195ada9891f \"strategies(address)(uint256,uint256,uint256,uint256)\" 0x7f33b05c34f7384a325436263f24500679cc76c4 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast keccak $(cast code 0x7f33b05c34f7384a325436263f24500679cc76c4 --block 26436571 --rpc-url $ETH_RPC_URL)",
+        "cast call 0x7f33b05c34f7384a325436263f24500679cc76c4 \"name()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x7f33b05c34f7384a325436263f24500679cc76c4 \"asset()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x7f33b05c34f7384a325436263f24500679cc76c4 \"apiVersion()(string)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x7f33b05c34f7384a325436263f24500679cc76c4 \"management()(address)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x7f33b05c34f7384a325436263f24500679cc76c4 \"totalAssets()(uint256)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x88ba032be87d5ef1fbe87336b7090767f367bf73 \"isOperation(bytes32)(bool)\" 0x2a14e386ce3da63615778466602757ea8dc25e8157aaee660213827a15efb5cf --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x88ba032be87d5ef1fbe87336b7090767f367bf73 \"isOperationPending(bytes32)(bool)\" 0x2a14e386ce3da63615778466602757ea8dc25e8157aaee660213827a15efb5cf --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x88ba032be87d5ef1fbe87336b7090767f367bf73 \"isOperationReady(bytes32)(bool)\" 0x2a14e386ce3da63615778466602757ea8dc25e8157aaee660213827a15efb5cf --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x88ba032be87d5ef1fbe87336b7090767f367bf73 \"isOperationDone(bytes32)(bool)\" 0x2a14e386ce3da63615778466602757ea8dc25e8157aaee660213827a15efb5cf --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x88ba032be87d5ef1fbe87336b7090767f367bf73 \"getTimestamp(bytes32)(uint256)\" 0x2a14e386ce3da63615778466602757ea8dc25e8157aaee660213827a15efb5cf --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x88ba032be87d5ef1fbe87336b7090767f367bf73 \"getMinDelay()(uint256)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast keccak $(cast code 0x88ba032be87d5ef1fbe87336b7090767f367bf73 --block 26436571 --rpc-url $ETH_RPC_URL)"
+      ]
+    }
+  ],
+  "recheck": [
+    {
+      "protocol": "Treehouse",
+      "brief": "briefs/treehouse-op-0x2f11/",
+      "operations": [
+        {
+          "op_id": "0x2f11dcc36860f09b9ef94585589ced1798cef603d133efecd017ce7e544c451f",
+          "eta": 1794891107,
+          "pending": true,
+          "done": false,
+          "ready": true
+        }
+      ],
+      "reproduce": [
+        "cast call 0x2225DAbFfC7F862c99477381E971E8B1FDaB467e \"getMinDelay()(uint256)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x2225DAbFfC7F862c99477381E971E8B1FDaB467e \"isOperation(bytes32)(bool)\" 0x2f11dcc36860f09b9ef94585589ced1798cef603d133efecd017ce7e544c451f --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x2225DAbFfC7F862c99477381E971E8B1FDaB467e \"isOperationPending(bytes32)(bool)\" 0x2f11dcc36860f09b9ef94585589ced1798cef603d133efecd017ce7e544c451f --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x2225DAbFfC7F862c99477381E971E8B1FDaB467e \"isOperationReady(bytes32)(bool)\" 0x2f11dcc36860f09b9ef94585589ced1798cef603d133efecd017ce7e544c451f --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x2225DAbFfC7F862c99477381E971E8B1FDaB467e \"isOperationDone(bytes32)(bool)\" 0x2f11dcc36860f09b9ef94585589ced1798cef603d133efecd017ce7e544c451f --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x2225DAbFfC7F862c99477381E971E8B1FDaB467e \"getTimestamp(bytes32)(uint256)\" 0x2f11dcc36860f09b9ef94585589ced1798cef603d133efecd017ce7e544c451f --block 26436571 --rpc-url $ETH_RPC_URL"
+      ]
+    },
+    {
+      "protocol": "ether.fi",
+      "brief": "briefs/etherfi-op-0x244e/",
+      "operations": [
+        {
+          "op_id": "0x244e3f6c3df722246c471cee58804dd34c7703fce9cee1eadc1c5a85f171359f",
+          "eta": 1795193651,
+          "pending": true,
+          "done": false,
+          "ready": false
+        }
+      ],
+      "reproduce": [
+        "cast call 0x9f26d4C958fD811A1F59B01B86Be7dFFc9d20761 \"getMinDelay()(uint256)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x9f26d4C958fD811A1F59B01B86Be7dFFc9d20761 \"isOperation(bytes32)(bool)\" 0x244e3f6c3df722246c471cee58804dd34c7703fce9cee1eadc1c5a85f171359f --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x9f26d4C958fD811A1F59B01B86Be7dFFc9d20761 \"isOperationPending(bytes32)(bool)\" 0x244e3f6c3df722246c471cee58804dd34c7703fce9cee1eadc1c5a85f171359f --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x9f26d4C958fD811A1F59B01B86Be7dFFc9d20761 \"isOperationReady(bytes32)(bool)\" 0x244e3f6c3df722246c471cee58804dd34c7703fce9cee1eadc1c5a85f171359f --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x9f26d4C958fD811A1F59B01B86Be7dFFc9d20761 \"isOperationDone(bytes32)(bool)\" 0x244e3f6c3df722246c471cee58804dd34c7703fce9cee1eadc1c5a85f171359f --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0x9f26d4C958fD811A1F59B01B86Be7dFFc9d20761 \"getTimestamp(bytes32)(uint256)\" 0x244e3f6c3df722246c471cee58804dd34c7703fce9cee1eadc1c5a85f171359f --block 26436571 --rpc-url $ETH_RPC_URL"
+      ]
+    },
+    {
+      "protocol": "Ethena",
+      "brief": "briefs/ethena-ops-0x0ca0-0x1fe5/",
+      "operations": [
+        {
+          "op_id": "0x1fe5e3e892708310bbfcf50efc03a1b8e21e0d0042035d7e8315e0cd5f26d85b",
+          "eta": null,
+          "pending": false,
+          "done": true,
+          "ready": false
+        },
+        {
+          "op_id": "0x0ca0fcc4856b87f3df9a74532bd60db58d1310c27c17e7d9bfa8a56846f57a90",
+          "eta": null,
+          "pending": false,
+          "done": true,
+          "ready": false
+        }
+      ],
+      "reproduce": [
+        "cast call 0xE8Dc0Fab349EA169283C48Ccfd09d797E6DB7c94 \"getMinDelay()(uint256)\" --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xE8Dc0Fab349EA169283C48Ccfd09d797E6DB7c94 \"isOperation(bytes32)(bool)\" 0x1fe5e3e892708310bbfcf50efc03a1b8e21e0d0042035d7e8315e0cd5f26d85b --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xE8Dc0Fab349EA169283C48Ccfd09d797E6DB7c94 \"isOperationPending(bytes32)(bool)\" 0x1fe5e3e892708310bbfcf50efc03a1b8e21e0d0042035d7e8315e0cd5f26d85b --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xE8Dc0Fab349EA169283C48Ccfd09d797E6DB7c94 \"isOperationReady(bytes32)(bool)\" 0x1fe5e3e892708310bbfcf50efc03a1b8e21e0d0042035d7e8315e0cd5f26d85b --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xE8Dc0Fab349EA169283C48Ccfd09d797E6DB7c94 \"isOperationDone(bytes32)(bool)\" 0x1fe5e3e892708310bbfcf50efc03a1b8e21e0d0042035d7e8315e0cd5f26d85b --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xE8Dc0Fab349EA169283C48Ccfd09d797E6DB7c94 \"getTimestamp(bytes32)(uint256)\" 0x1fe5e3e892708310bbfcf50efc03a1b8e21e0d0042035d7e8315e0cd5f26d85b --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xE8Dc0Fab349EA169283C48Ccfd09d797E6DB7c94 \"isOperation(bytes32)(bool)\" 0x0ca0fcc4856b87f3df9a74532bd60db58d1310c27c17e7d9bfa8a56846f57a90 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xE8Dc0Fab349EA169283C48Ccfd09d797E6DB7c94 \"isOperationPending(bytes32)(bool)\" 0x0ca0fcc4856b87f3df9a74532bd60db58d1310c27c17e7d9bfa8a56846f57a90 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xE8Dc0Fab349EA169283C48Ccfd09d797E6DB7c94 \"isOperationReady(bytes32)(bool)\" 0x0ca0fcc4856b87f3df9a74532bd60db58d1310c27c17e7d9bfa8a56846f57a90 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xE8Dc0Fab349EA169283C48Ccfd09d797E6DB7c94 \"isOperationDone(bytes32)(bool)\" 0x0ca0fcc4856b87f3df9a74532bd60db58d1310c27c17e7d9bfa8a56846f57a90 --block 26436571 --rpc-url $ETH_RPC_URL",
+        "cast call 0xE8Dc0Fab349EA169283C48Ccfd09d797E6DB7c94 \"getTimestamp(bytes32)(uint256)\" 0x0ca0fcc4856b87f3df9a74532bd60db58d1310c27c17e7d9bfa8a56846f57a90 --block 26436571 --rpc-url $ETH_RPC_URL"
+      ]
+    }
+  ],
+  "counts": {
+    "briefs": 4,
+    "operations": 9,
+    "calls": 33,
+    "radarItems": 7,
+    "radarOps": 13
+  }
+}

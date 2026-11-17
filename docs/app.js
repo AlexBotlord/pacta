@@ -98,14 +98,21 @@ OP_STATES.forEach(function (c) { b.classList.toggle(c, c === st); });
 b.setAttribute("data-opstate", st);
 b.setAttribute("data-live", "1");
 }
+function blkFmt(n) { return "#" + n.toLocaleString("en-US"); }
+function blkPill(b) { return (b.ethereum ? blkFmt(b.ethereum) : "") + (b.base ? (b.ethereum ? " · " : "") + "Base " + blkFmt(b.base) : ""); }
+function blkLine(b) {
+return b.ethereum && b.base ? "blocks Ethereum " + blkFmt(b.ethereum) + " and Base " + blkFmt(b.base)
+: "block " + (b.base ? "Base " + blkFmt(b.base) : blkFmt(b.ethereum));
+}
 function applyLiveTimelocks(j) {
 if (!j || typeof j !== "object" || !Array.isArray(j.operations)) return null;
-var by = {}, blk = null;
+var by = {}, chainOf = {}, blk = {};
 j.operations.forEach(function (op) {
 var id = op && typeof op.opId === "string" ? op.opId.toLowerCase() : "", st = liveOpState(op);
-if (/^0x[0-9a-f]{64}$/.test(id) && st) by[id] = st;
+var ch = op && op.chain === "base" ? "base" : "ethereum";
+if (/^0x[0-9a-f]{64}$/.test(id) && st) { by[id] = st; chainOf[id] = ch; }
 var n = op && op.block ? op.block.number : null;
-if (typeof n === "number" && isFinite(n) && n > 0 && (blk === null || n > blk)) blk = Math.floor(n);
+if (typeof n === "number" && isFinite(n) && n > 0 && (!blk[ch] || n > blk[ch])) blk[ch] = Math.floor(n);
 });
 var updated = 0;
 $$("[data-ops]").forEach(function (b) {
@@ -115,20 +122,21 @@ if (!sts.length || sts.some(function (s) { return !s; })) return;
 var before = b.getAttribute("data-opstate"), st = sts.every(function (s) { return s === sts[0]; }) ? sts[0] : "mixed";
 setOpState(b, st);
 updated++;
-var banner = b.closest(".poststatus"), clause = banner && $(".ps-clause", banner);
+var banner = b.closest(".poststatus"), clause = banner && $(".ps-clause", banner), bch = chainOf[ids[0]], bb = blk[bch];
 if (banner && st !== before) {
 OP_STATES.forEach(function (c) { banner.classList.toggle(c, c === st); });
-if (clause) clause.textContent = "(live re-check" + (blk !== null ? " at block #" + blk.toLocaleString("en-US") : "") + ": " + OP_LABEL[st]
+if (clause) clause.textContent = "(live re-check" + (bb ? " at " + (bch === "base" ? "Base " : "") + "block " + blkFmt(bb) : "") + ": " + OP_LABEL[st]
 + "; the finalized-block reading below is superseded)";
 }
 });
 if (updated) radarCounts();
-if (updated && blk !== null) {
+var any = !!(blk.ethereum || blk.base);
+if (updated && any) {
 $$("[data-live-line]").forEach(function (n) {
-n.textContent = "Live re-check at the latest block #" + blk.toLocaleString("en-US") + " via the free /v1/briefs/live-timelocks.";
+n.textContent = "Live re-check at the latest " + blkLine(blk) + " via the free /v1/briefs/live-timelocks.";
 });
 }
-return blk;
+return any ? blk : null;
 }
 var RADAR_ORDER = ["ready", "pending", "mixed", "unknown", "executed"];
 var RADAR_WORD = { ready: "ready", pending: "pending", mixed: "mixed", unknown: "cancelled or unknown", executed: "executed" };
@@ -1509,7 +1517,7 @@ host._t = setTimeout(function () { host.textContent = ""; }, 2400);
 function svgIcon(d) {
 if (typeof document.createElementNS !== "function") return el("span", {});
 var s = document.createElementNS(SVG_NS, "svg");
-[["class", "i"], ["viewBox", "0 0 24 24"], ["aria-hidden", "true"], ["focusable", "false"]].forEach(function (a) { s.setAttribute(a[0], a[1]); });
+[["class", "i"], ["viewBox", "0 0 24 24"], ["aria-hidden", "true"]].forEach(function (a) { s.setAttribute(a[0], a[1]); });
 var p = document.createElementNS(SVG_NS, "path"); p.setAttribute("d", d); s.appendChild(p);
 return s;
 }
@@ -1522,7 +1530,7 @@ el("p", { "class": "sc-full" }, [el("b", { text: eas ? "Chain says: " : "Chain (
 function liveSettled(ok, blk) {
 $$("[data-live-pending]").forEach(function (n) { n.removeAttribute("data-live-pending"); });
 if (ok && blk) {
-$$("[data-prov-pill]").forEach(function (n) { n.textContent = "Live-checked · #" + blk.toLocaleString("en-US"); n.setAttribute("data-live", "1"); });
+$$("[data-prov-pill]").forEach(function (n) { n.textContent = "Live-checked · " + blkPill(blk); n.setAttribute("data-live", "1"); });
 $$(".livebar .lb-asof").forEach(function (n) { n.hidden = true; });
 }
 $$("[data-live-status]").forEach(function (n) {

@@ -50,7 +50,7 @@ RESULTS = []
 EXPECT = {
     "sprints": 25, "records": 183, "eas_attestations": 25,              # index.json sprints_completed / records_indexed; Base EAS sprint UIDs
     "protocols": 90, "eas_protocols": 86, "rpc_protocols": 4,          # /protocols/ pages = EAS-attested + RPC-pinned; badges = protocols
-    "briefs": 8, "badge_tiers": {"aligned": 50, "parameter_delta": 36, "rpc_observed": 4},
+    "briefs": 12, "badge_tiers": {"aligned": 50, "parameter_delta": 36, "rpc_observed": 4},
     "base_records": 23,                                                  # index.json records with chain "base"
     "rpc_by_chain": {"ethereum": 0, "base": 4},                         # rpc-pinned.json records per chain (sum = rpc_protocols)
     "multi_attest_txs": ["1–12", "13–16", "17", "18", "19", "20", "21", "22", "23", "24", "25"],                              # attestation_coverage.eas_multi_attest_txs keys
@@ -71,7 +71,7 @@ X = EXPECT
 # sha256 of docs/api/v1/graph-manifest.json: changes only through a deliberate re-pin (a Sprint stage / stamp rewrites it after the
 # rebuild); a merged Wave 2 claim or any site-only change must leave it as is
 GRAPH_MANIFEST_SHA256 = "57d76de3b1298df78cb230735c7e95a96345c19765e873fd1e5d22c7ffb0e740"
-NON_PROTOCOL_PAGES = 26                                                  # docs/**/*.html pages that are not /protocols/<slug>/
+NON_PROTOCOL_PAGES = 30                                                  # docs/**/*.html pages that are not /protocols/<slug>/
 
 
 def check(name, ok, detail=""):
@@ -969,7 +969,9 @@ def main(argv=None):
                   and f'theme.js?v={hashlib.sha256(read("docs/theme.js").encode()).hexdigest()[:8]}"' in t for t in (open(p_, encoding="utf-8").read() for p_ in glob.glob(os.path.join(DOCS, "**", "*.html"), recursive=True)) if "<head>" in t and 'class="topbar"' in t),
           f"{len(appjs_min):,} B minified from {len(appjs):,} B")
     check('radar says "Execution window opens in" (ETA = eligibility)', "Execution window opens in" in appjs and "Executing in" not in appjs)
-    check('finality badge says "Scanner-pinned (L1 finalized)"', "Scanner-pinned (L1 finalized)" in appjs and "Scanner-pinned (L1 finalized)" in page)
+    _pin_words = " + ".join(BSM.PIN_WORD[ch_] for ch_, _ in BSM.radar_pins(json.loads(read("docs/api/v1/radar.json"))))
+    check(f'finality badge says "Scanner-pinned (L1 finalized)" (drawers); the radar pill names every chain it pins ("Scanner-pinned ({_pin_words} finalized)")',
+          "Scanner-pinned (L1 finalized)" in appjs and f"data-prov-pill>Scanner-pinned ({_pin_words} finalized)</span>" in page)
 
     # counts
     idx = json.loads(read("docs/api/v1/index.json"))
@@ -1454,7 +1456,7 @@ def main(argv=None):
           "0 'Aligned Maintenance' / 'Aligned Status' strings on the site, feeds, issue template, generator, app.js or README",
           all(tier_ok.values()) and not stale_m5, f"{tier_ok}; stale {stale_m5[:4]}")
 
-    # ---- issuer conversion callouts: 8 briefs + every protocol page (aligned -> maintenance only; delta / RPC-observed -> clearance)
+    # ---- issuer conversion callouts: every brief + every protocol page (aligned -> maintenance only; delta / RPC-observed -> clearance)
     import html as _html
     import urllib.parse as _up
     CLR_H = "Verify and reconcile the record"
@@ -1485,8 +1487,8 @@ def main(argv=None):
         pg = pages.get(os.path.join("briefs", b["slug"], "index.html"), "")
         if not callout_ok(pg, "clearance", b["asset"], b["slug"], b["forum"]["url"]):
             brief_bad.append(b["slug"])
-    check("8 brief pages carry the 'Maintaining <issuer>? Verify and reconcile the record' callout: a free public doc-update notice (tier=community, 'Submit updated docs') with equal weight next to 'Request a dossier' (tier=clearance) + invoice link, all data-cta; no 'within 24 hours' / 'Clear findings' / 'Request 24h Clearance' copy",
-          len(BS.BRIEFS) + len(onb["briefs"]) == 8 and not brief_bad, str(brief_bad))
+    check(f"{X['briefs']} brief pages carry the 'Maintaining <issuer>? Verify and reconcile the record' callout: a free public doc-update notice (tier=community, 'Submit updated docs') with equal weight next to 'Request a dossier' (tier=clearance) + invoice link, all data-cta; no 'within 24 hours' / 'Clear findings' / 'Request 24h Clearance' copy",
+          len(BS.BRIEFS) + len(onb["briefs"]) == X["briefs"] and not brief_bad, str(brief_bad))
     sp_ = BS.site_protocols(json.loads(read("docs/api/v1/index.json")))
     proto_bad, n_al, n_cl = [], 0, 0
     for name_, v in sp_.items():
@@ -1772,7 +1774,7 @@ def main(argv=None):
             for e in pin_lk["entries"]),
         "rpc_observed never aligned / parameter_delta": not [x["slug"] for x in items_lk if not x.get("easAttested") and x["classification"] in
                                                              ("aligned_baseline", "parameter_delta", "protective_delta", "mixed")],
-        "8 briefs (onboarding + radar)": sorted(x["slug"] for x in items_lk if x["kind"] == "brief") == sorted(
+        f"{X['briefs']} briefs (onboarding + radar)": sorted(x["slug"] for x in items_lk if x["kind"] == "brief") == sorted(
             [b["slug"] for b in onb_lk["briefs"]] + [i["brief"].rstrip("/").split("/")[-1] for i in rad_lk["items"]]),
         "EIP-55 + preflightArgs": all(eip55_ok(x["primaryContract"]) and (x["controllerAddress"] is None or eip55_ok(x["controllerAddress"]))
                                       and x["preflightArgs"] == {"chain": x["chain"], "address": x["primaryContract"]} for x in items_lk),
@@ -2007,10 +2009,10 @@ def main(argv=None):
                                ("plan plan-row", "api_sla")] for t in (home43, req43))
             and "grid-template-columns: repeat(3, minmax(0, 1fr))" in css_rule(".plans") and "grid-column: 1 / -1;" in css_rule(".plan-row"),
         "N4: the audience cards do not stretch to equal height (align-items: start)": "align-items: start;" in css_rule(".aud"),
-        "N5: radar counts 'Executed (N ops)' (never '(N operations)'); the radar header cites exactly one block number, the finalized read (+ harness)":
+        "N5: radar counts 'Executed (N ops)' (never '(N operations)'); the radar header cites only the finalized read (one block per chain) (+ harness)":
             BS.radar_counts_text(rad43) in rhead and "operations)" not in rhead
             and ("Executed (" in BS.radar_counts_text(rad43)) == executed43
-            and len(re.findall(r"\d{1,3}(?:,\d{3}){2,}", rhead_txt)) == 1
+            and sorted(re.findall(r"\d{1,3}(?:,\d{3}){2,}", rhead_txt)) == sorted(f'{p_["block_number"]:,}' for _, p_ in BS.radar_pins(rad43))   # v4.6: one per chain
             and f'finalized block <a href="https://etherscan.io/block/{rad43["refreshed_at"]["block_number"]}"' in rhead
             and res.get("v43_n5_radar_header_one_block") is True and res.get("pp2_radar_counts") is True,
         "N6: the #how-it-works step grid is a reset list (no inline-start padding), flush with the h2":
@@ -2068,7 +2070,7 @@ def main(argv=None):
         "F3b: the result card shows no raw enum (classification, controller kind) outside the raw JSON (harness)":
             res.get("v44_no_raw_enums_in_result") is True and 'Object.prototype.hasOwnProperty.call(CTL_LABEL, k)' in app43,
         "F5: after a live radar read the provenance pill says 'Live-checked · #<block>' and the livebar drops its pinned note (harness)":
-            '<span class="badge final" data-prov-pill>Scanner-pinned (L1 finalized)</span>' in home43
+            re.search(r'<span class="badge final" data-prov-pill>Scanner-pinned \(L1( \+ Base)? finalized\)</span>', home43) is not None   # v4.6: + Base
             and all(res.get(k) is True for k in ("v44_radar_live_pill", "v44_radar_pill_stays_pinned_offline")),
         "F6: the /request/ scope brief no longer repeats the address; 'Copy brief and address' prefixes it; secondary actions are outline":
             res.get("v44_request_brief_no_to") is True
@@ -2216,6 +2218,71 @@ def main(argv=None):
     }
     check("v4.5.1 polish (R3-01 neutral Aligned badges, R3-02 demo receipt link target, '36 of 90' reconciliation line)", all(v451.values()),
           str([k for k, x in v451.items() if not x]))
+
+    # v4.6: 7-item / 13-op multi-chain radar (Ethereum + Base), 4 decoded pre-execution briefs, 101 receipt cards + x-feed mirror
+    rad46 = json.loads(read("docs/api/v1/radar.json"))
+    home46, radar46 = pages["index.html"], pages[os.path.join("radar", "index.html")]
+    base46 = [it for it in rad46["items"] if it.get("chain_id") == 8453]
+    new46 = ["lombard-ops-0xceee-0x2f2a-0x6404", "beefy-base-op-0x3302", "ethena-ops-0xb028-0xca05-0x108e-0x070a", "yearn-v3-op-0x2a14"]
+    dec46 = json.loads(read("tools/briefs_decoded.json"))
+    dec_by46 = {b_["slug"]: b_ for b_ in dec46["briefs"]}
+    briefs46 = {sl: pages.get(os.path.join("briefs", sl, "index.html"), "") for sl in new46}
+    lk46 = {x["slug"]: x for x in json.loads(read("docs/api/v1/lookup.json"))["items"]}
+    rb46, r46 = rad46.get("refreshed_at_base") or {}, rad46["refreshed_at"]
+    cards46 = glob.glob(os.path.join(DOCS, "cards", "*.png"))
+    xf46 = json.loads(read("docs/api/v1/x-feed.json"))
+    beefy46 = briefs46["beefy-base-op-0x3302"]
+
+    def ann46(it_, st_):   # a synthetic copy of an item with every operation in state st_ (banner wording)
+        return {**it_, "eta": None if st_ == "executed" else it_["eta"],
+                "operations": [{**o_, "done": st_ == "executed", "pending": st_ != "executed", "ready": st_ == "ready"} for o_ in it_["operations"]]}
+    v46 = {
+        "radar.json: 7 items / 13 ops; 2 ready (4 ops), 4 pending (7 ops), executed (2 ops); refreshed_at (Ethereum) + refreshed_at_base (Base)":
+            len(rad46["items"]) == 7 and sum(len(it["operations"]) for it in rad46["items"]) == 13
+            and [BS.item_state(it) for it in rad46["items"]].count("ready") == 2 and [BS.item_state(it) for it in rad46["items"]].count("pending") == 4
+            and sum(len(it["operations"]) for it in rad46["items"] if BS.item_state(it) == "ready") == 4
+            and sum(len(it["operations"]) for it in rad46["items"] if BS.item_state(it) == "pending") == 7
+            and sum(len(it["operations"]) for it in rad46["items"] if BS.item_state(it) == "executed") == 2
+            and r46["tag"] == rb46.get("tag") == "finalized" and len(base46) == 1 and all(it.get("protocol_slug") and it.get("chain_id") in (1, 8453) for it in rad46["items"]),
+        "counts text '2 ready (4 ops) · 4 pending (7 ops) · Executed (2 ops)' on / and /radar/":
+            BS.radar_counts_text(rad46) == "2 ready (4 ops) · 4 pending (7 ops) · Executed (2 ops)"
+            and all("data-radar-counts>2 ready (4 ops) · 4 pending (7 ops) · Executed (2 ops)</span>" in t for t in (home46, radar46)),
+        "Base items link Basescan (never Etherscan) for the timelock on / and /radar/, carry a 'Base' tag, and the Base brief has 0 etherscan.io links":
+            all(f'https://basescan.org/address/{it["timelock"]}' in t and f'etherscan.io/address/{it["timelock"]}' not in t and f'etherscan.io/address/{it["timelock"].lower()}' not in t
+                and '<span class="chain-tag">Base</span>' in t for it in base46 for t in (home46, radar46))
+            and beefy46.count("https://basescan.org/") >= 10 and "etherscan.io" not in beefy46
+            and "Base Mainnet (chain id 8453)" in beefy46 and "Scanner-pinned (Base finalized)" in beefy46
+            and f'https://basescan.org/block/{rb46.get("block_number")}' in beefy46,
+        "radar-live provenance names both pins (Ethereum #26,436,571-style and Base #58,747,369-style) on / and /radar/":
+            all(f'Ethereum finalized block <a href="https://etherscan.io/block/{r46["block_number"]}" target="_blank" rel="noopener">#{r46["block_number"]:,}' in t
+                and f'Base finalized block <a href="https://basescan.org/block/{rb46["block_number"]}" target="_blank" rel="noopener">#{rb46["block_number"]:,}' in t
+                for t in (home46, radar46)),
+        "post-ETA banner + brief header on Base: 'Executed on Base' / 'Unexecuted on Base at Finalized Block #N' (never 'on L1')":
+            all(f"Unexecuted on Base at Finalized Block #{rb46['block_number']:,}" in BS.post_eta_banner(ann46(it, "ready"), rb46, "base")
+                and f"Executed on Base by Finalized Block #{rb46['block_number']:,}" in BS.post_eta_banner(ann46(it, "executed"), rb46, "base")
+                and "on L1" not in BS.post_eta_banner(ann46(it, "ready"), rb46, "base") for it in base46)
+            and "on L1" not in beefy46,
+        "4 new briefs: rendered from tools/briefs_decoded.json (every op id, call, risk note and reproduce command), in BRIEFS / BRIEF_PROTOCOL, sitemap, llms.txt, lookup.json + lookup.mjs":
+            dec46["schema"] == "pacta.decoded_briefs.v1" and sorted(dec_by46) == sorted(new46)
+            and all(sl in BS.BRIEFS and BS.BRIEF_PROTOCOL[sl] == dec_by46[sl]["protocol_slug"] for sl in new46)
+            and all(all(o_["op_id"] in briefs46[sl] for o_ in dec_by46[sl]["operations"])
+                    and briefs46[sl].count('<li><code>') == sum(len(o_["calls"]) for o_ in dec_by46[sl]["operations"])
+                    and all(_html.escape(n_) in briefs46[sl] for n_ in dec_by46[sl]["risk_notes"])
+                    and all(_html.escape(c_, quote=True) in briefs46[sl] for c_ in dec_by46[sl]["reproduce"])
+                    and f"<loc>{BS.BASE_URL}/briefs/{sl}/</loc>" in read("docs/sitemap.xml") and f"{BS.BASE_URL}/briefs/{sl}/" in read("docs/llms.txt")
+                    and sl in lk46 and lk46[sl]["relatedProtocolSlug"] == dec_by46[sl]["protocol_slug"]
+                    and (lk46[sl]["chain"], lk46[sl]["chainId"]) == (("base", 8453) if dec_by46[sl]["chain_id"] == 8453 else ("ethereum", 1))
+                    and f'"slug":"{sl}"' in read("packages/mcp-server/src/lookup.mjs") for sl in new46),
+        "101 receipt cards (1200x675 PNG, 11 radar) + docs/api/v1/x-feed.json (101 items) whose every card exists":
+            len(cards46) == 101 and len([c_ for c_ in cards46 if os.path.basename(c_).startswith("radar-")]) == 11
+            and len(xf46["items"]) == 101 and all(os.path.exists(os.path.join(DOCS, "cards", i_["cardFilename"])) for i_ in xf46["items"]),
+        "homepage within its 150,000 B budget (compact radar rows; /radar/ keeps summaries, labels, copy buttons and the timelock list)":
+            len(read("docs/index.html").encode()) < 150000 and '<ul class="oplabels">' in radar46 and '<ul class="oplabels">' not in home46,
+        "app.js keeps live blocks per chain (an Ethereum block is never compared with a Base block) (harness)":
+            "blk[ch] = Math.floor(n)" in appjs and res.get("v46_live_blocks_per_chain") is True,
+    }
+    check("v4.6 multi-chain radar (7 items / 13 ops, Basescan for chain id 8453, two-chain provenance, 'on Base' wording), 4 decoded briefs, 101 cards",
+          all(v46.values()), str([k for k, x in v46.items() if not x]))
 
     nf = pages.get("404.html", "")
     nf_raw = nf.encode()
@@ -2375,8 +2442,8 @@ def main(argv=None):
                  # T1 (v4.1): a payload or JSON body resolving after the 9 s fallback leaves badges, counts and status unchanged; the guard aborts
                  "t1_late_payload_after_fallback_ignored", "t1_late_json_body_after_fallback_ignored"]
     c2 = {
-        "refresh_radar computes ready": 'fin_ts = int(fin["timestamp"], 16)' in read("tools/refresh_radar.py")
-            and '"ready": bool(pending and not done and ts > 1 and fin_ts >= ts)' in read("tools/refresh_radar.py"),
+        "refresh_radar computes ready": 'self.ts = int(fin["timestamp"], 16)' in read("tools/refresh_radar.py")
+            and '"ready": bool(pending and not done and ts > 1 and ch.ts >= ts)' in read("tools/refresh_radar.py"),
         "radar.json ready consistent": ready_ok and rad["refreshed_at"]["block_number"] >= 26415856,
         "every state badge = radar state": not badge_bad,
         "Ethena: READY banner, never Executed": (not eth_ready) or (bool(banner) and banner.group(1) == "ready"
@@ -2559,8 +2626,9 @@ def main(argv=None):
             and not re.search(r"all read-only|Everything is read-only", read("docs/llms.txt") + read("docs/SKILL.md") + read("docs/llms-full.txt")),
         "mcp.json lists 7 remote tools + readOnly flags": man_["transport"]["tools"] == B2AV.REMOTE_TOOLS and len(B2AV.REMOTE_TOOLS) == 7
             and [t["name"] for t in man_["tools"] if not t["readOnly"]] == ["pacta_submit_request"],
-        "radar: live mainnet note + Etherscan links": "Every row is a live Ethereum Mainnet timelock read, no demo data" in home
-            and all(f'https://etherscan.io/address/{it["timelock"]}' in home for it in rad["items"])
+        "radar: live note + each timelock on its own chain's explorer (Etherscan / Basescan)": "Every row is a live Ethereum Mainnet" in home
+            and "timelock read, no demo data" in home
+            and all(f'{BS.EXPLORERS[BS.radar_chain(it, rad)][1]}/address/{it["timelock"]}' in home for it in rad["items"])
             and f'https://etherscan.io/block/{rad["refreshed_at"]["block_number"]}' in home,
         "GitHub repo link in every header": all(re.search(r'<a class="gh"[^>]*href="' + re.escape(BS.REPO) + '"', t) for r, t in pages.items() if 'class="topbar"' in t),
         "MCP recipes (Claude Code / OpenAI Agents SDK / LangChain, <= 10 lines) in README + SKILL.md": all(code in read("README.md") and code in read("docs/SKILL.md")

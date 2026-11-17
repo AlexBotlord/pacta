@@ -363,10 +363,13 @@ def llms_full(idx, radar, prop, onb, pinned=None):
               + (f" · brief {p['brief_url']}" if p["brief_url"] else ""),
               f"- Sentinel predicates: {', '.join(p['recommended_sentinel_predicates'])}"] + [f"- {s}" for s in p["control_plane_summary"]] + [""]
     L += ["## Queued timelock operations (from /api/v1/radar.json)",
-          f"Refreshed at finalized block {radar['refreshed_at']['block_number']} ({radar['refreshed_at']['block_time_utc']})."]
+          f"Refreshed at finalized block {radar['refreshed_at']['block_number']} ({radar['refreshed_at']['block_time_utc']})"
+          + (f"; Base items at Base finalized block {radar['refreshed_at_base']['block_number']} ({radar['refreshed_at_base']['block_time_utc']})"
+             if radar.get("refreshed_at_base") else "") + "."]
     for it in radar["items"]:
         ops = "; ".join(f"{o['op_id']} pending={str(o['pending']).lower()} eta={o['eta']}" for o in it["operations"])
-        L.append(f"- {it['protocol']}: {it['title']} · timelock {it['timelock']} ({it['min_delay_seconds']}s) · {ops}")
+        on = " · Base (chain id 8453)" if it.get("chain_id", 1) == 8453 else ""   # v4.6: multi-chain radar
+        L.append(f"- {it['protocol']}: {it['title']}{on} · timelock {it['timelock']} ({it['min_delay_seconds']}s) · {ops}")
     L += ["", "## Indexed records (from /api/v1/index.json)"]
     for e in sorted(idx["entries"], key=lambda e: (-e["sprint"], e["id"])):
         L.append(f"- {e['id']} [{e['classification']}] {e['protocol']} — {e['surface']} · Sprint {e['sprint']} · block {e['block_number']} "

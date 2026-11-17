@@ -40,7 +40,7 @@ _ICONS = {
 
 def icon(name, cls=""):
     """Lucide icon; stroke, size and caps come from the .i rule in styles.css (keeps the markup small)."""
-    return f'<svg class="i{" " + cls if cls else ""}" viewBox="0 0 24 24" aria-hidden="true" focusable="false">{_ICONS[name]}</svg>'
+    return f'<svg class="i{" " + cls if cls else ""}" viewBox="0 0 24 24" aria-hidden="true">{_ICONS[name]}</svg>'   # v4.6: no IE-era focusable="false" (page budget)
 
 
 def arrow(kind="right"):

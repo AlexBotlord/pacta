@@ -117,14 +117,22 @@
     b.setAttribute("data-opstate", st);
     b.setAttribute("data-live", "1");
   }
+  // v4.6: the radar is multi-chain. Block numbers are kept per chain (an Ethereum and a Base block are never compared).
+  function blkFmt(n) { return "#" + n.toLocaleString("en-US"); }
+  function blkPill(b) { return (b.ethereum ? blkFmt(b.ethereum) : "") + (b.base ? (b.ethereum ? " · " : "") + "Base " + blkFmt(b.base) : ""); }
+  function blkLine(b) {
+    return b.ethereum && b.base ? "blocks Ethereum " + blkFmt(b.ethereum) + " and Base " + blkFmt(b.base)
+      : "block " + (b.base ? "Base " + blkFmt(b.base) : blkFmt(b.ethereum));
+  }
   function applyLiveTimelocks(j) {
     if (!j || typeof j !== "object" || !Array.isArray(j.operations)) return null;
-    var by = {}, blk = null;
+    var by = {}, chainOf = {}, blk = {};
     j.operations.forEach(function (op) {
       var id = op && typeof op.opId === "string" ? op.opId.toLowerCase() : "", st = liveOpState(op);
-      if (/^0x[0-9a-f]{64}$/.test(id) && st) by[id] = st;
+      var ch = op && op.chain === "base" ? "base" : "ethereum";
+      if (/^0x[0-9a-f]{64}$/.test(id) && st) { by[id] = st; chainOf[id] = ch; }
       var n = op && op.block ? op.block.number : null;
-      if (typeof n === "number" && isFinite(n) && n > 0 && (blk === null || n > blk)) blk = Math.floor(n);
+      if (typeof n === "number" && isFinite(n) && n > 0 && (!blk[ch] || n > blk[ch])) blk[ch] = Math.floor(n);
     });
     var updated = 0;
     $$("[data-ops]").forEach(function (b) {
@@ -134,20 +142,21 @@
       var before = b.getAttribute("data-opstate"), st = sts.every(function (s) { return s === sts[0]; }) ? sts[0] : "mixed";
       setOpState(b, st);
       updated++;
-      var banner = b.closest(".poststatus"), clause = banner && $(".ps-clause", banner);
+      var banner = b.closest(".poststatus"), clause = banner && $(".ps-clause", banner), bch = chainOf[ids[0]], bb = blk[bch];
       if (banner && st !== before) {
         OP_STATES.forEach(function (c) { banner.classList.toggle(c, c === st); });
-        if (clause) clause.textContent = "(live re-check" + (blk !== null ? " at block #" + blk.toLocaleString("en-US") : "") + ": " + OP_LABEL[st]
+        if (clause) clause.textContent = "(live re-check" + (bb ? " at " + (bch === "base" ? "Base " : "") + "block " + blkFmt(bb) : "") + ": " + OP_LABEL[st]
           + "; the finalized-block reading below is superseded)";
       }
     });
     if (updated) radarCounts();
-    if (updated && blk !== null) {
+    var any = !!(blk.ethereum || blk.base);
+    if (updated && any) {
       $$("[data-live-line]").forEach(function (n) {
-        n.textContent = "Live re-check at the latest block #" + blk.toLocaleString("en-US") + " via the free /v1/briefs/live-timelocks.";
+        n.textContent = "Live re-check at the latest " + blkLine(blk) + " via the free /v1/briefs/live-timelocks.";
       });
     }
-    return blk;
+    return any ? blk : null;
   }
   // Radar header counts follow the badges: executed operations are never counted as queued (re-derived after a live re-check).
   // M4: radar header counts follow the rows (one per radar.json item, by state). N5 (v4.3): executed rows are counted by their
@@ -1622,7 +1631,7 @@
   function svgIcon(d) {
     if (typeof document.createElementNS !== "function") return el("span", {});
     var s = document.createElementNS(SVG_NS, "svg");
-    [["class", "i"], ["viewBox", "0 0 24 24"], ["aria-hidden", "true"], ["focusable", "false"]].forEach(function (a) { s.setAttribute(a[0], a[1]); });
+    [["class", "i"], ["viewBox", "0 0 24 24"], ["aria-hidden", "true"]].forEach(function (a) { s.setAttribute(a[0], a[1]); });
     var p = document.createElementNS(SVG_NS, "path"); p.setAttribute("d", d); s.appendChild(p);
     return s;
   }
@@ -1637,8 +1646,8 @@
   // T1: the radar's state badges stay skeletons until the live re-check settles (success, failure or timeout), then appear once
   function liveSettled(ok, blk) {
     $$("[data-live-pending]").forEach(function (n) { n.removeAttribute("data-live-pending"); });
-    if (ok && blk) {   // v4.4 (F5): the footer pill and the "Next:" line follow the live read
-      $$("[data-prov-pill]").forEach(function (n) { n.textContent = "Live-checked · #" + blk.toLocaleString("en-US"); n.setAttribute("data-live", "1"); });
+    if (ok && blk) {   // v4.4 (F5): the footer pill and the "Next:" line follow the live read (v4.6: one block per chain)
+      $$("[data-prov-pill]").forEach(function (n) { n.textContent = "Live-checked · " + blkPill(blk); n.setAttribute("data-live", "1"); });
       $$(".livebar .lb-asof").forEach(function (n) { n.hidden = true; });
     }
     $$("[data-live-status]").forEach(function (n) {

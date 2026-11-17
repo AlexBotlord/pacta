@@ -2,17 +2,189 @@
   "schema": "pacta.radar.v1",
   "chain_id": 1,
   "refreshed_at": {
-    "block_number": 26434340,
-    "block_hash": "0x546ff607f1c54cf3f5e776a26d689c751d4deb91fcf0c87e159af7ba6d077f6a",
-    "block_timestamp": 1794913367,
-    "block_time_utc": "2026-11-17 11:02 UTC",
+    "block_number": 26436571,
+    "block_hash": "0x8f796be27dbc3affb0a0545895d8c27e7a63ac7bf438f93a4107af36f4a33599",
+    "block_timestamp": 1794940247,
+    "block_time_utc": "2026-11-17 18:30 UTC",
+    "tag": "finalized",
+    "rpcs_cross_checked": 2
+  },
+  "refreshed_at_base": {
+    "block_number": 58747369,
+    "block_hash": "0x5b7a6bd3cfd87d4f06132ccd48455c7f692d3b867f5dd3f597171c4f8a8d4acb",
+    "block_timestamp": 1794939849,
+    "block_time_utc": "2026-11-17 18:24 UTC",
     "tag": "finalized",
     "rpcs_cross_checked": 2
   },
   "items": [
     {
+      "protocol": "Treehouse",
+      "protocol_slug": "treehouse-tree-teth",
+      "chain_id": 1,
+      "title": "Treehouse TREE — UUPS upgrade adding Blacklistable",
+      "summary": "Upgrades the TREE governance token (not tETH) and installs a 5-of-7 Safe as blacklister: a zero-delay transfer-freeze role after execution.",
+      "timelock": "0x2225DAbFfC7F862c99477381E971E8B1FDaB467e",
+      "brief": "briefs/treehouse-op-0x2f11/",
+      "min_delay_seconds": 432000,
+      "operations": [
+        {
+          "op_id": "0x2f11dcc36860f09b9ef94585589ced1798cef603d133efecd017ce7e544c451f",
+          "eta": 1794891107,
+          "pending": true,
+          "done": false,
+          "ready": true
+        }
+      ],
+      "eta": 1794891107
+    },
+    {
+      "protocol": "Lombard",
+      "protocol_slug": "lombard-lbtc",
+      "chain_id": 1,
+      "title": "Lombard — AssetRouter, BTC.b and LBTC upgrades adding a fixed deposit fee",
+      "summary": "Three ProxyAdmin.upgradeAndCall ops (no init call) upgrade AssetRouter, BTC.b (NativeLBTC) and LBTC (StakedLBTC): a per-token deposit fee is split off every proof mint to treasury (OPERATOR_ROLE may set 100-1,000 sats, the timelock anything up to half the minimum), a router-wide minRequestAmount replaces depositMinAmount, and unpauseTransfers moves from DEFAULT_ADMIN_ROLE to MANAGER_ROLE.",
+      "timelock": "0x055E84e7FE8955E2781010B866f10Ef6E1E77e59",
+      "brief": "briefs/lombard-ops-0xceee-0x2f2a-0x6404/",
+      "min_delay_seconds": 86400,
+      "operations": [
+        {
+          "op_id": "0xceeeff86865f11b6de2c57d4901d3ec3313edf08be6ea664989d386cb1ab18eb",
+          "eta": 1794940187,
+          "pending": true,
+          "done": false,
+          "ready": true,
+          "label": "AssetRouter upgrade adding a fixed deposit fee"
+        },
+        {
+          "op_id": "0x2f2a342465e4d964eb240db7c573dff2f57e35b9bd3ea3798987aa327c02dd81",
+          "eta": 1794940187,
+          "pending": true,
+          "done": false,
+          "ready": true,
+          "label": "BTC.b token upgrade that charges the deposit fee on mint"
+        },
+        {
+          "op_id": "0x6404e599d016a5a5d60957a22db6919eb7409f28d7d3880cf78ac1313f167fff",
+          "eta": 1794940187,
+          "pending": true,
+          "done": false,
+          "ready": true,
+          "label": "LBTC token upgrade; unpausing transfers moves to the manager role"
+        }
+      ],
+      "eta": 1794940187
+    },
+    {
+      "protocol": "Beefy Finance (Base)",
+      "protocol_slug": "beefy-finance-base",
+      "chain_id": 8453,
+      "title": "Beefy CLM USDC-VVV on Aerodrome — calm-check tolerance widened from 9 to 25 ticks",
+      "summary": "setDeviation(25) on the cowAeroBaseUSDC-VVV strategy (owned by the timelock): maxTickDeviation 9 -> 25 ticks, the tolerance between the pool tick and its 120 s TWAP before the strategy acts, on a tick-spacing-50 Aerodrome pool. No code change.",
+      "timelock": "0x3B60F7f25b09E71356cdFFC6475c222A466a2AC9",
+      "brief": "briefs/beefy-base-op-0x3302/",
+      "min_delay_seconds": 21600,
+      "operations": [
+        {
+          "op_id": "0x3302750e18a4bff9508c6e93386a406df9aa8d36992188e76a08ecc76bfce208",
+          "eta": 1794956259,
+          "pending": true,
+          "done": false,
+          "ready": false
+        }
+      ],
+      "eta": 1794956259
+    },
+    {
       "protocol": "Ethena",
-      "title": "Ethena USDe \u2014 RLUSD & USAT collateral onboarding",
+      "protocol_slug": "ethena-usde-susde",
+      "chain_id": 1,
+      "title": "Ethena USDe — mint caps cut to 50M per block, USDm delisted, a custodian added",
+      "summary": "Four ops: global and per-asset maxMintPerBlock 200M -> 50M USDe on 8 assets; removeSupportedAsset(USDm); addCustodianAddress for an EOA not yet a custodian; USDe OFT adapter setRateLimits to 25M per hour on LayerZero eids 30339 (was 10M) and 30383 (was 30M).",
+      "timelock": "0xE8Dc0Fab349EA169283C48Ccfd09d797E6DB7c94",
+      "brief": "briefs/ethena-ops-0xb028-0xca05-0x108e-0x070a/",
+      "min_delay_seconds": 86400,
+      "operations": [
+        {
+          "op_id": "0xb0289f92009409e09b8b87150e10486ab753b7c13d049702caca3221a622d81a",
+          "eta": 1795011647,
+          "pending": true,
+          "done": false,
+          "ready": false,
+          "label": "mint caps cut from 200M to 50M per block"
+        },
+        {
+          "op_id": "0xca0563b0bebee6c971db36df24ef8c5802ad4007f7fb42bff2f553141c8ed835",
+          "eta": 1795011731,
+          "pending": true,
+          "done": false,
+          "ready": false,
+          "label": "USDm removed as mint collateral"
+        },
+        {
+          "op_id": "0x108ea49a961a00e8992ad4aed2e1faea43b0a47982e0c62d63f9db03ddb4d0f4",
+          "eta": 1795013567,
+          "pending": true,
+          "done": false,
+          "ready": false,
+          "label": "bridge rate limits set to 25M per hour on two routes"
+        },
+        {
+          "op_id": "0x070a0ab4df4b4d69e23ed817c62481d267dae887ed7f7b5fbc7cffa5ff64228d",
+          "eta": 1795013615,
+          "pending": true,
+          "done": false,
+          "ready": false,
+          "label": "a new custodian address added"
+        }
+      ],
+      "eta": 1795011647
+    },
+    {
+      "protocol": "ether.fi",
+      "protocol_slug": "ether-fi-core-eeth-weeth",
+      "chain_id": 1,
+      "title": "ether.fi — LayerZero V2 delegate moved behind the 10-day timelock",
+      "summary": "EtherfiL1SyncPoolETH.setDelegate(EtherFiTimelock): protective hardening of the OApp's messaging configuration.",
+      "timelock": "0x9f26d4C958fD811A1F59B01B86Be7dFFc9d20761",
+      "brief": "briefs/etherfi-op-0x244e/",
+      "min_delay_seconds": 864000,
+      "operations": [
+        {
+          "op_id": "0x244e3f6c3df722246c471cee58804dd34c7703fce9cee1eadc1c5a85f171359f",
+          "eta": 1795193651,
+          "pending": true,
+          "done": false,
+          "ready": false
+        }
+      ],
+      "eta": 1795193651
+    },
+    {
+      "protocol": "Yearn V3",
+      "protocol_slug": "yearn-v3",
+      "chain_id": 1,
+      "title": "Yearn V3 — 8 new strategies added to 6 vaults with max-debt caps",
+      "summary": "One 16-call batch: add_strategy(strategy, add_to_queue=false) then update_max_debt_for_strategy on yvUSDC-1, yvUSD, yvWETH-1, yvWETH-2, yvFlexUSDC and yvFlexWETH (Flex siUSD and wstETH lenders / loopers, USDC-to-yvUSDS-1 depositors). Caps range from 10,000 WETH to 10B USDC (yvFlexUSDC, effectively uncapped).",
+      "timelock": "0x88Ba032be87d5EF1fbE87336B7090767F367BF73",
+      "brief": "briefs/yearn-v3-op-0x2a14/",
+      "min_delay_seconds": 604800,
+      "operations": [
+        {
+          "op_id": "0x2a14e386ce3da63615778466602757ea8dc25e8157aaee660213827a15efb5cf",
+          "eta": 1795451951,
+          "pending": true,
+          "done": false,
+          "ready": false
+        }
+      ],
+      "eta": 1795451951
+    },
+    {
+      "protocol": "Ethena",
+      "protocol_slug": "ethena-usde-susde",
+      "chain_id": 1,
+      "title": "Ethena USDe — RLUSD & USAT collateral onboarding",
       "summary": "Two queued EthenaMinting.addSupportedAsset calls onboard RLUSD and USAT at 200M / 20M USDe-per-block caps (stablesDeltaLimit = 0 bps).",
       "timelock": "0xE8Dc0Fab349EA169283C48Ccfd09d797E6DB7c94",
       "brief": "briefs/ethena-ops-0x0ca0-0x1fe5/",
@@ -34,42 +206,6 @@
         }
       ],
       "eta": null
-    },
-    {
-      "protocol": "Treehouse",
-      "title": "Treehouse TREE \u2014 UUPS upgrade adding Blacklistable",
-      "summary": "Upgrades the TREE governance token (not tETH) and installs a 5-of-7 Safe as blacklister: a zero-delay transfer-freeze role after execution.",
-      "timelock": "0x2225DAbFfC7F862c99477381E971E8B1FDaB467e",
-      "brief": "briefs/treehouse-op-0x2f11/",
-      "min_delay_seconds": 432000,
-      "operations": [
-        {
-          "op_id": "0x2f11dcc36860f09b9ef94585589ced1798cef603d133efecd017ce7e544c451f",
-          "eta": 1794891107,
-          "pending": true,
-          "done": false,
-          "ready": true
-        }
-      ],
-      "eta": 1794891107
-    },
-    {
-      "protocol": "ether.fi",
-      "title": "ether.fi \u2014 LayerZero V2 delegate moved behind the 10-day timelock",
-      "summary": "EtherfiL1SyncPoolETH.setDelegate(EtherFiTimelock): protective hardening of the OApp's messaging configuration.",
-      "timelock": "0x9f26d4C958fD811A1F59B01B86Be7dFFc9d20761",
-      "brief": "briefs/etherfi-op-0x244e/",
-      "min_delay_seconds": 864000,
-      "operations": [
-        {
-          "op_id": "0x244e3f6c3df722246c471cee58804dd34c7703fce9cee1eadc1c5a85f171359f",
-          "eta": 1795193651,
-          "pending": true,
-          "done": false,
-          "ready": false
-        }
-      ],
-      "eta": 1795193651
     }
   ]
 }

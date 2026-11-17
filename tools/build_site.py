@@ -33,6 +33,7 @@ import control_diff as CD  # noqa: E402  "What differs": changed vs matched para
 import graph_manifest as GM  # noqa: E402  docs/api/v1/graph-manifest.json (pacta.graph_manifest.v1)
 import summary_short as SS  # noqa: E402  M7: <= 90-char human "What differs" line per protocol
 import ui as U  # noqa: E402  shadcn/ui component markup (data-slot anatomy)
+import decoded_briefs as DB  # noqa: E402  v4.6: radar briefs rendered from tools/briefs_decoded.json
 
 ARR, EXT = U.arrow("right"), U.arrow("up-right")   # v4.4 (R-V4): inline icons, never a raw arrow glyph (U+2192 / U+2197) in HTML
 
@@ -74,6 +75,15 @@ BRIEFS = {
                          "delegate behind the 10-day EtherFiTimelock (ETA 2026-11-20 16:54 UTC).",
     "treehouse-op-0x2f11": "Pre-execution brief: a queued 5-day timelock operation upgrades the Treehouse TREE token (not tETH) "
                            "and installs a 5-of-7 Safe blacklister (ETA 2026-11-17 04:51 UTC).",
+    # v4.6: rendered from tools/briefs_decoded.json (decoded_briefs.py)
+    "lombard-ops-0xceee-0x2f2a-0x6404": "Pre-execution brief: three Lombard timelock operations upgrade AssetRouter, BTC.b and LBTC to add "
+                                        "a per-mint deposit fee, starting at 0 (1-day delay; ETA 2026-11-17 18:29 UTC).",
+    "beefy-base-op-0x3302": "Pre-execution brief: a queued Base timelock operation widens the Beefy CLM USDC-VVV calm check from 9 to "
+                            "25 ticks with setDeviation(25) (6-hour delay; ETA 2026-11-17 22:57 UTC).",
+    "ethena-ops-0xb028-0xca05-0x108e-0x070a": "Pre-execution brief: four Ethena timelock operations cut USDe mint caps to 50M per block, "
+                                              "delist USDm, reset two bridge limits to 25M per hour and add a custodian (ETAs 2026-11-18).",
+    "yearn-v3-op-0x2a14": "Pre-execution brief: one 16-call Yearn V3 timelock batch adds 8 strategies to 6 vaults with max-debt caps "
+                          "from 10,000 WETH to 10B USDC (7-day delay; ETA 2026-11-23 16:39 UTC).",
 }
 NAV = [("scorecards/", "Scorecards"), ("protocols/", "Protocols"), ("radar/", "Radar"), ("for-protocols/", "For protocols"),
        ("mcp/", "MCP"), ("#pricing", "Pricing")]
@@ -471,6 +481,35 @@ def explorer_link(e, kind="block"):
     name, url = EXPLORERS[chain_of(e)]
     ref = e["block_number"] if kind == "block" else e["target_contract"]
     return f'<a href="{url}/{"block" if kind == "block" else "address"}/{E(str(ref))}" target="_blank" rel="noopener">{name}{EXT}</a>'
+
+
+# v4.6: radar.json is multi-chain. An item's chain_id (else the file's) picks its finalized pin (refreshed_at for Ethereum,
+# refreshed_at_base for Base) and its explorer: Etherscan for chain id 1, Basescan for chain id 8453 (never Etherscan for Base).
+RADAR_CHAINS = {v: k for k, v in CHAIN_IDS.items()}
+PIN_WORD = {"ethereum": "L1", "base": "Base"}      # "Executed on L1" / "Unexecuted on Base at Finalized Block #…"
+PIN_KEY = {"ethereum": "refreshed_at", "base": "refreshed_at_base"}
+
+
+def radar_chain(it, radar):
+    cid = it.get("chain_id", radar.get("chain_id", 1))
+    assert cid in RADAR_CHAINS, (it.get("protocol"), cid)
+    return RADAR_CHAINS[cid]
+
+
+def radar_pin(it, radar):
+    """The finalized block an item was read at, on its own chain."""
+    return radar[PIN_KEY[radar_chain(it, radar)]]
+
+
+def radar_pins(radar):
+    """[(chain, pin)] for every chain on the radar, Ethereum first."""
+    chains = {radar_chain(it, radar) for it in radar["items"]} | {"ethereum"}
+    return [(ch, radar[PIN_KEY[ch]]) for ch in CHAINS if ch in chains]
+
+
+def xlink(chain, kind, value, text):
+    """kind = address | tx | block on the chain's own explorer."""
+    return f'<a href="{EXPLORERS[chain][1]}/{kind}/{E(str(value))}" target="_blank" rel="noopener">{text}{EXT}</a>'
 
 
 def load_pinned(path=None):
@@ -958,18 +997,19 @@ def delay_text(seconds):
     return f"{seconds // 3600}h" if seconds % 3600 == 0 else secs(seconds)
 
 
-def post_eta_banner(item, r):
-    """Prominent post-ETA status at the top of a brief once any operation's delay has elapsed (or it was executed)."""
+def post_eta_banner(item, r, chain="ethereum"):
+    """Prominent post-ETA status at the top of a brief once any operation's delay has elapsed (or it was executed).
+    v4.6: r is the item's own chain pin; Base items read "Executed on Base" / "Unexecuted on Base at Finalized Block #…"."""
     st = item_state(item)
     if st not in ("ready", "executed", "mixed"):
         return ""
     n = len(item["operations"])
     blk = f'Finalized Block #{r["block_number"]:,}'
     if st == "executed":
-        clause = f'{delay_text(item["min_delay_seconds"])} Delay Elapsed · Executed on L1 by {blk}'
+        clause = f'{delay_text(item["min_delay_seconds"])} Delay Elapsed · Executed on {PIN_WORD[chain]} by {blk}'
         detail = f'isOperationDone = true for {"the operation" if n == 1 else f"all {n} operations"}'
     elif st == "ready":
-        clause = f'{delay_text(item["min_delay_seconds"])} Delay Elapsed · Unexecuted on L1 at {blk}'
+        clause = f'{delay_text(item["min_delay_seconds"])} Delay Elapsed · Unexecuted on {PIN_WORD[chain]} at {blk}'
         detail = (f'isOperationPending = true and isOperationDone = false for {"the operation" if n == 1 else f"both operations" if n == 2 else f"all {n} operations"}: '
                   f'the timelock delay has elapsed, so execute() is callable, but {"it has" if n == 1 else "they have"} not been executed')
     else:
@@ -978,7 +1018,7 @@ def post_eta_banner(item, r):
     return (f'<div class="poststatus {st}" id="post-eta-status" data-live-timelocks="{E(LIVE_TIMELOCKS_URL)}">'
             f'<span class="label">Post-ETA Live Status</span>'
             f'<p class="ps-head"><b>Post-ETA Verification:</b> {state_badge(st, item["operations"])} <span class="ps-clause">({E(clause)})</span></p>'
-            f'<p class="s">{E(detail)}. Read at finalized block #{r["block_number"]:,} ({E(r["block_time_utc"])}) on '
+            f'<p class="s">{E(detail)}. Read at {"" if chain == "ethereum" else CHAINS[chain][0] + " "}finalized block #{r["block_number"]:,} ({E(r["block_time_utc"])}) on '
             f'{r.get("rpcs_cross_checked", 2)} independent RPCs. <span class="live-line" data-live-line></span></p></div>\n')
 
 
@@ -1002,27 +1042,52 @@ def radar_counts_text(radar):
 
 def radar_section(radar, prefix="", full=False):
     """T1: with JavaScript the state badges start as skeletons and appear once the live re-check settles (or fails), so a label never
-    changes after first paint; without JavaScript the pinned snapshot shows. R3: cards below 640 px. A5: caption."""
+    changes after first paint; without JavaScript the pinned snapshot shows. R3: cards below 640 px. A5: caption.
+    v4.6: multi-chain. Every row links its timelock on its own chain's explorer (Etherscan for chain id 1, Basescan for 8453) and a
+    subtle "Base" tag marks Base rows; the provenance names each chain's finalized block. The homepage (full=False) keeps rows compact
+    for the page budget (no summary line, no copy button); /radar/ adds the summary, copy buttons, per-operation labels and the
+    timelock list."""
     r = radar["refreshed_at"]
+    pins = radar_pins(radar)
     rows = []
     for it in radar["items"]:
-        ops = ", ".join(f'<span class="hx" title="{o["op_id"]}">{short(o["op_id"], 6, 4)}</span>' for o in it["operations"])
+        ch, pin = radar_chain(it, radar), radar_pin(it, radar)
+        n = len(it["operations"])
         st = item_state(it)
+        labelled = full and n > 1 and all(o.get("label") for o in it["operations"])
+        ops = ", ".join(f'<span class="hx" title="{o["op_id"]}">{short(o["op_id"], 6, 4)}</span>' for o in it["operations"])
+        cue = "" if ch == "ethereum" else f'<span class="chain-tag">{E(CHAINS[ch][0])}</span> '
+        tl = xlink(ch, "address", it["timelock"], f'<span class="addr">{E(short(it["timelock"]))}</span>') + (copy_btn(it["timelock"]) if full else "")
+        labels = ('<ul class="oplabels">' + "".join(f'<li><span class="hx" title="{o["op_id"]}">{short(o["op_id"], 6, 4)}</span> {E(o["label"])}</li>'
+                                                    for o in it["operations"]) + '</ul>') if labelled else ""
+        where = "" if ch == "ethereum" else f"{CHAINS[ch][0]} "
         rows.append(
             f'<tr data-radar-row="{st}"{" class=" + chr(34) + "is-executed" + chr(34) if st == "executed" else ""}>'
-            f'<td><b>{E(it["protocol"])}</b><span class="sub"><span class="op-skel" data-slot="skeleton" aria-hidden="true"></span>'
-            f'{state_badge(st, it["operations"])}</span></td>'
-            f'<td data-label="Queued operation"><span class="op">{E(it["title"])}</span><span class="sub">{E(it["summary"])}</span>'
-            f'<span class="meta">Timelock {hexref(it["timelock"])} · Operation{"s" if len(it["operations"]) > 1 else ""} {ops}</span></td>'
-            f'<td class="nowrap num hide-m" data-label="Delay">{secs(it["min_delay_seconds"])}</td>'
-            + (f'<td data-label="Execution window"><span class="countdown" data-eta="{it["eta"]}">ETA {E(utc(it["eta"]))}</span><span class="sub">{E(utc(it["eta"]))}</span></td>'
+            f'<td><b>{E(it["protocol"])}</b><span class="sub" data-skel>{state_badge(st, it["operations"])}</span></td>'
+            f'<td data-label="Queued operation"><span class="op">{E(it["title"])}</span>' + (f'<span class="sub">{E(it["summary"])}</span>' if full else "") +
+            f'<span class="meta">{cue}Timelock {tl} · '
+            + (f'Operation{"s" if n > 1 else ""} {ops}' if full and not labelled else f'{n} operation{"s" if n > 1 else ""}') + f'</span>{labels}</td>'
+            + (f'<td class="nowrap num hide-m" data-label="Delay">{secs(it["min_delay_seconds"])}</td>' if full else "")
+            + (f'<td data-label="Execution window"><span class="countdown" data-eta="{it["eta"]}">ETA {E(utc(it["eta"]))}</span><span class="sub">{E(utc(it["eta"]))}'
+               + ("" if full else f' · {secs(it["min_delay_seconds"])} delay') + '</span></td>'
                if it.get("eta") else
-               f'<td data-label="Execution window"><span class="sub">Executed: isOperationDone = true at block #{r["block_number"]:,}</span></td>') +
+               f'<td data-label="Execution window"><span class="sub">Executed: isOperationDone = true at {where}block #{pin["block_number"]:,}</span></td>') +
             f'<td class="r nowrap" data-label="Brief"><a href="{prefix}{E(it["brief"])}">Read brief{ARR}</a></td></tr>')
-    tls = "".join(f' · <a href="https://etherscan.io/address/{E(it["timelock"])}" target="_blank" rel="noopener">{E(it["protocol"])} timelock{EXT}</a>'
-                  for it in radar["items"])
-    live_note = (f'<p class="radar-live" data-radar-live><b>Every row is a live Ethereum Mainnet timelock read, no demo data</b>: read at '
-                 f'finalized block <a href="https://etherscan.io/block/{r["block_number"]}" target="_blank" rel="noopener">#{r["block_number"]:,}{EXT}</a>{tls}.</p>')
+    seen, tls = set(), ""
+    for it in radar["items"] if full else []:
+        ch = radar_chain(it, radar)
+        if (ch, it["timelock"].lower()) not in seen:
+            seen.add((ch, it["timelock"].lower()))
+            tls += " · " + xlink(ch, "address", it["timelock"], f'{E(it["protocol"])} timelock')
+    multi = len(pins) > 1
+    blocks = " and ".join(f'{CHAINS[ch][0] + " " if multi else ""}finalized block {xlink(ch, "block", p_["block_number"], "#" + format(p_["block_number"], ","))}'
+                          for ch, p_ in pins)
+    live_note = (f'<p class="radar-live" data-radar-live><b>Every row is a live '
+                 + (" or ".join(CHAINS[ch][0] if i else "Ethereum Mainnet" for i, (ch, _) in enumerate(pins)) + " timelock read")
+                 + f', no demo data</b>: read at {blocks}{tls}.</p>')
+    pill = f'Scanner-pinned ({" + ".join(PIN_WORD[ch] for ch, _ in pins)} finalized)'
+    prov_more = "".join(f' {CHAINS[ch][0]} rows: finalized block #{p_["block_number"]:,} ({E(p_["block_time_utc"])}), also cross-checked.'
+                        for ch, p_ in pins[1:])
     explain = ("" if not full else
                f'<div class="cases" style="margin-top:24px">'
                + U.card(U.card_header("States", "") + '<div data-slot="card-content"><dl class="deflist">'
@@ -1030,16 +1095,17 @@ def radar_section(radar, prefix="", full=False):
                         '<div><dt>Ready · executable now</dt><dd>The delay has elapsed and the operation is still unexecuted: anyone with the executor role can run it.</dd></div>'
                         '<div><dt>Executed</dt><dd>isOperationDone is true at the block read.</dd></div></dl></div>')
                + U.card(U.card_header("How the radar reads the chain", "") + '<div data-slot="card-content"><p class="s">State and ETAs are read at a finalized '
-                        f'Ethereum block on {r.get("rpcs_cross_checked", 2)} independent RPCs, then re-checked live in your browser through the free '
+                        + (f'block on each item\'s own chain ({", ".join(CHAINS[ch][1].split(" (")[0] for ch, _ in pins)})' if multi else 'Ethereum block')
+                        + f' on {r.get("rpcs_cross_checked", 2)} independent RPCs, then re-checked live in your browser through the free '
                         '/v1/briefs/live-timelocks endpoint. Countdowns run locally from each onchain ETA.</p></div>') + '</div>')
     return f"""<section class="sec" id="radar" data-live-timelocks="{E(LIVE_TIMELOCKS_URL)}"><div class="wrap">
 <div class="sec-head"><{"h1" if full else "h2"}>Queued timelock radar</{"h1" if full else "h2"}><p class="aside">Governance changes waiting in onchain timelocks, and when each one can execute.</p></div>
 <div class="radar-head"><span class="radar-counts" data-radar-counts>{E(radar_counts_text(radar))}</span><span class="live-status" data-live-status><span class="spinner" aria-hidden="true"></span><span data-live-status-text>Checking live chain state…</span></span><a href="{prefix}feed.xml" data-feed-subscribe>Subscribe (RSS / JSON Feed)</a></div>
 {livebar_html(radar)}
 {live_note}
-<div class="tbl-wrap"><table class="tbl radar"><caption class="sr-only">Queued timelock operations: protocol and state, operation, minimum delay, execution window and brief.</caption><thead><tr><th scope="col">Protocol</th><th scope="col">Queued operation</th><th scope="col" class="hide-m">Delay</th><th scope="col">Execution window</th><th scope="col" class="r">Brief</th></tr></thead>
+<div class="tbl-wrap"><table class="tbl radar"><caption class="sr-only">Queued timelock operations: protocol and state, operation, {"minimum delay, execution window" if full else "execution window with minimum delay"} and brief.</caption><thead><tr><th scope="col">Protocol</th><th scope="col">Queued operation</th>{'<th scope="col" class="hide-m">Delay</th>' if full else ""}<th scope="col">Execution window</th><th scope="col" class="r">Brief</th></tr></thead>
 <tbody data-live-pending>{"".join(rows)}</tbody></table></div>
-<div class="prov"><span class="badge final" data-prov-pill>Scanner-pinned (L1 finalized)</span><span data-snapshot-pinned>Snapshot pinned at {E(r["block_time_utc"])}<span class="obs-age" data-age="{r["block_timestamp"]}"></span></span><span data-last-recheck>Last live re-check: not yet</span>{U.button("Refresh", variant="outline", size="sm", attrs="data-radar-refresh")}<span class="snap-fallback" data-snapshot-fallback>Showing pinned historical snapshot</span><span>Pinned snapshot · observed {E(r["block_time_utc"])} (Mainnet finalized block #{r["block_number"]:,}) on {r.get("rpcs_cross_checked", 2)} independent RPCs. Ready means the delay has elapsed and the operation is still unexecuted.</span><span class="live-line" data-live-line></span></div>
+<div class="prov"><span class="badge final" data-prov-pill>{E(pill)}</span><span data-snapshot-pinned>Snapshot pinned at {E(r["block_time_utc"])}<span class="obs-age" data-age="{r["block_timestamp"]}"></span></span><span data-last-recheck>Last live re-check: not yet</span>{U.button("Refresh", variant="outline", size="sm", attrs="data-radar-refresh")}<span class="snap-fallback" data-snapshot-fallback>Showing pinned historical snapshot</span><span>Pinned snapshot · observed {E(r["block_time_utc"])} (Mainnet finalized block #{r["block_number"]:,}) on {r.get("rpcs_cross_checked", 2)} independent RPCs.{prov_more} Ready means the delay has elapsed and the operation is still unexecuted.</span><span class="live-line" data-live-line></span></div>
 {explain}</div></section>"""
 
 
@@ -1331,7 +1397,9 @@ def controller_dd(e):
 SLUG_RE = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
 # radar briefs -> the protocol page of the issuer they concern (the request builder checks that protocol)
 BRIEF_PROTOCOL = {"ethena-ops-0x0ca0-0x1fe5": "ethena-usde-susde", "etherfi-op-0x244e": "ether-fi-core-eeth-weeth",
-                  "treehouse-op-0x2f11": "treehouse-tree-teth"}
+                  "treehouse-op-0x2f11": "treehouse-tree-teth", "lombard-ops-0xceee-0x2f2a-0x6404": "lombard-lbtc",
+                  "beefy-base-op-0x3302": "beefy-finance-base", "ethena-ops-0xb028-0xca05-0x108e-0x070a": "ethena-usde-susde",
+                  "yearn-v3-op-0x2a14": "yearn-v3"}
 
 
 def request_href(tier, slug, forum=None, settlement=None, home="../../"):
@@ -2108,26 +2176,37 @@ def request_page(idx):
     return head("Request a dossier · Pacta", desc, f"{BASE_URL}/request/", prefix="../", og_title="Request a Pacta dossier") + "\n" + body
 
 
+DECODED = DB.load()   # v4.6: slug -> decoded brief (tools/briefs_decoded.json, the decoder's output byte-for-byte)
+
+
 def brief_page(slug, desc, idx, radar):
-    src = open(os.path.join(BRIEF_SRC, f"{slug}.html")).read()
-    title = html.unescape(re.match(r"<!-- title: (.*?) -->\n", src).group(1))   # plain text; head() escapes once
-    content = src.split("\n", 1)[1]
     item = next((it for it in radar["items"] if it["brief"].rstrip("/").endswith(slug)), None)
-    r = radar["refreshed_at"]
+    if slug in DECODED:   # v4.6: every address, amount, block and transaction comes from the decoder's JSON
+        DB.check_against_radar(DECODED[slug], item, BRIEF_PROTOCOL[slug])
+        title, content = DB.render(DECODED[slug], item, sys.modules[__name__])
+    else:
+        src = open(os.path.join(BRIEF_SRC, f"{slug}.html")).read()
+        title = html.unescape(re.match(r"<!-- title: (.*?) -->\n", src).group(1))   # plain text; head() escapes once
+        content = src.split("\n", 1)[1].replace("<table>", '<table class="stack">')   # v4.6: stacked below 640 px (styles.css)
     meta = ""
     if item:
+        ch, r = radar_chain(item, radar), radar_pin(item, radar)
+        where = "" if ch == "ethereum" else f"{CHAINS[ch][0]} "
+        blk = xlink(ch, "block", r["block_number"], f'<span class="num">#{r["block_number"]:,}</span>')
         ops = " ".join(hexref(o["op_id"], 8, 4) for o in item["operations"])
         meta = (f'<dl class="memo-meta">'
                 f'<dt>Protocol</dt><dd>{E(item["protocol"])}</dd>'
-                f'<dt>Timelock</dt><dd>{hexref(item["timelock"])} · {secs(item["min_delay_seconds"])} minimum delay</dd>'
+                f'<dt>Chain</dt><dd>{E(CHAINS[ch][1])}</dd>'
+                f'<dt>Timelock</dt><dd>{hexref(item["timelock"])} · {secs(item["min_delay_seconds"])} minimum delay · '
+                f'{xlink(ch, "address", item["timelock"], EXPLORERS[ch][0])}</dd>'
                 f'<dt>Operation{"s" if len(item["operations"]) > 1 else ""}</dt><dd>{ops}</dd>'
                 + (f'<dt>Execution window</dt><dd><span class="countdown" data-eta="{item["eta"]}">ETA {E(utc(item["eta"]))}</span> · {E(utc(item["eta"], True))}</dd>' if item.get("eta") else
-                   f'<dt>Execution</dt><dd>Executed on-chain: isOperationDone = true at finalized block <span class="num">#{r["block_number"]:,}</span></dd>') +
-                f'<dt>State</dt><dd>{state_badge(item_state(item), item["operations"])} at finalized block <span class="num">#{r["block_number"]:,}</span> ({E(r["block_time_utc"])}) '
-                f'<span class="badge final">Scanner-pinned (L1 finalized)</span></dd></dl>')
+                   f'<dt>Execution</dt><dd>Executed on-chain: isOperationDone = true at {where}finalized block {blk}</dd>') +
+                f'<dt>State</dt><dd>{state_badge(item_state(item), item["operations"])} at {where}finalized block {blk} ({E(r["block_time_utc"])}) '
+                f'<span class="badge final">Scanner-pinned ({PIN_WORD[ch]} finalized)</span></dd></dl>')
     content = content.replace("</header>", "</header>\n" + meta, 1)
     if item:
-        content = post_eta_banner(item, r) + content
+        content = post_eta_banner(item, r, ch) + content
     issuer = item["protocol"] if item else title
     content = content.rstrip("\n") + "\n" + clearance_callout(issuer, BRIEF_PROTOCOL[slug])
     c = counts(idx)
@@ -2791,7 +2870,8 @@ def llms(idx, radar):
         f"- [{BASE_URL}/api/v1/index.json]({BASE_URL}/api/v1/index.json): schema `{idx['schema']}`; `summary_metrics` (sprints_completed={c['sprints']}, records_indexed={c['records']}, parameter_deltas={c['delta']}, protective_deltas={c['protect']}, aligned_baselines={c['aligned']}); each entry has id, protocol, category, sprint, block_number, block_hash, classification, surface, target_contract, target_label, check_type, selector_or_slot, call_signature, call_args, repro_calldata, onchain_observed, documented_reference, observed/documented delay seconds, summary_doc, summary_sha256, base_eas_uid.",
         f"- [{BASE_URL}/api/v1/rpc-pinned.json]({BASE_URL}/api/v1/rpc-pinned.json): schema `{PINNED_SCHEMA}`; {len(load_pinned()['entries'])} RPC-pinned control-plane records on Ethereum and Base (block number + hash, cast reproduction). NOT EAS-attested: no sprint, summary document or Base EAS UID.",
         f"- [{BASE_URL}/api/v1/protocols.json]({BASE_URL}/api/v1/protocols.json): schema `pacta.protocols.v1`; every published protocol ({site_numbers(idx)['eas_protocols']} Base-EAS attested, {site_numbers(idx)['observed']} RPC-observed with documentationComparison not_assessed) with badge tier and URLs, Sprint ids and EAS UIDs, controller and every pinned surface (block number + hash).",
-        f"- [{BASE_URL}/api/v1/radar.json]({BASE_URL}/api/v1/radar.json): queued timelock operations, refreshed at finalized block {r['block_number']} ({r['block_time_utc']}); each operation carries pending / done / ready (delay elapsed, still unexecuted).",
+        f"- [{BASE_URL}/api/v1/radar.json]({BASE_URL}/api/v1/radar.json): queued timelock operations, refreshed at finalized block {r['block_number']} ({r['block_time_utc']})"
+        + "".join(f" and {CHAINS[ch][0]} finalized block {p_['block_number']} ({p_['block_time_utc']})" for ch, p_ in radar_pins(radar)[1:]) + "; each operation carries pending / done / ready (delay elapsed, still unexecuted).",
         f"- [{BASE_URL}/api/v1/forum-digest.json]({BASE_URL}/api/v1/forum-digest.json): schema `{FORUM_SCHEMA}`; read-only digest of active governance forum topics plus `addressIndex` (chain:address -> protocol family).", "",
         "## Live pre-execution briefs",
     ] + [f"- [{BASE_URL}/briefs/{k}/]({BASE_URL}/briefs/{k}/): {v}" for k, v in BRIEFS.items()] + [
@@ -2878,12 +2958,12 @@ def feed_items(idx, radar):
                     f"https://base.easscan.org/attestation/view/{uid}" if uid else f"{BASE_URL}/api/v1/index.json", gen,
                     f"{', '.join(names)}. {cls.count('aligned_baseline')} aligned, {cls.count('protective_delta')} protective delta, "
                     f"{cls.count('parameter_delta')} parameter delta. Summary: {REPO}/blob/main/{es[0]['summary_doc']}"))
-    r = radar["refreshed_at"]
     for it in radar["items"]:
+        r, ch = radar_pin(it, radar), radar_chain(it, radar)
         done = all(o.get("done") for o in it["operations"])
         out.append((f"{BASE_URL}/{it['brief'].strip('/')}/#radar", f"{it['protocol']} timelock: {'executed' if done else 'pending'} · {it['title']}",
                     f"{BASE_URL}/{it['brief'].strip('/')}/", iso(r["block_timestamp"]),
-                    f"{it['summary']} Read at finalized Ethereum block #{r['block_number']:,}."))
+                    f"{it['summary']} Read at finalized {CHAINS[ch][0]} block #{r['block_number']:,}."))
     return out
 
 
@@ -3449,7 +3529,7 @@ def radar_page(idx, radar):
 {footer(coverage_line(idx), idx["onchain_anchoring"]["commitment_registry"], "../")}
 </body></html>
 """
-    return head("Queued timelock radar · Pacta", "Governance changes queued in DeFi timelocks, read at a finalized Ethereum block and re-checked live.",
+    return head("Queued timelock radar · Pacta", "Governance changes queued in DeFi timelocks on Ethereum and Base, read at finalized blocks and re-checked live.",
                 f"{BASE_URL}/radar/", prefix="../", og_title="Pacta queued timelock radar") + "\n" + body
 
 

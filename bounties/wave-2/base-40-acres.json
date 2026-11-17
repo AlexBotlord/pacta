@@ -1,0 +1,86 @@
+{
+  "wave": 2,
+  "category": "protocol_mismatch",
+  "slug": "40-acres",
+  "protocol": "40 Acres",
+  "chainId": 8453,
+  "contractAddress": "0x87f18b377e625b62c708D5f6EA96EC193558EFD0",
+  "hunter": "VB-Blue",
+  "basePayoutAddress": "0xe0a3AAe6e7d042f42e82830f4eEbF426cc1270a2",
+  "mcpProof": {
+    "tool": "pacta_check_preflight",
+    "arguments": {
+      "chain": "base",
+      "address": "0x87f18b377e625b62c708D5f6EA96EC193558EFD0"
+    },
+    "result": {
+      "schema": "pacta.preflight_check.v1",
+      "chain": "base",
+      "chainId": 8453,
+      "address": "0x87f18b377e625b62c708D5f6EA96EC193558EFD0",
+      "pinnedBlock": 58642141,
+      "pinnedBlockHash": "0x98ca1a2dd6c3e0829ebc1b8c3316868fe89acaa3d7c3bb2ef04c76b7b0a31e1e",
+      "blockTimestamp": 1794918803,
+      "verdict": "MULTISIG_NO_TIMELOCK",
+      "riskScore": 55,
+      "isContract": true,
+      "isProxy": true,
+      "proxyType": "eip1967",
+      "implementation": "0xb43b30c405c61BC330227968635d130994450735",
+      "beacon": null,
+      "hasAdminSlot": false,
+      "canUpgradeZeroDelay": true,
+      "capabilities": {
+        "pause": false,
+        "blacklist": false,
+        "upgrade": true
+      },
+      "paused": null,
+      "controller": {
+        "address": "0xfF16fd3D147220E6CC002a8e4a1f942ac41DBD23",
+        "kind": "multisig_safe",
+        "safeThreshold": 2,
+        "timelockDelaySec": null,
+        "safeOwnerCount": 3,
+        "source": "owner()"
+      },
+      "roleAdminMembers": null,
+      "codeBytes": 170,
+      "method": "Batched JSON-RPC reads pinned to the block hash (EIP-1898); EIP-1967 / EIP-1822 / beacon proxies; capabilities from PUSH4 selectors in proxy + implementation bytecode (heuristic).",
+      "summary": "Controlled by a 2-of-3 Safe with no timelock: changes can land instantly once signers agree. Capabilities seen in bytecode: upgrade.",
+      "source": "live_rpc",
+      "assessment": {
+        "coverage": "unindexed_bytecode_heuristic",
+        "confidence": "medium",
+        "method": "Live bytecode + storage heuristic at the pinned block only: this contract is not in Pacta's indexed catalog (no documentation comparison).",
+        "limits": [
+          "riskScore (0-100) is a heuristic of the controller type and of pause / blacklist / upgrade capabilities read at one block; it is not an audit.",
+          "The live check reads EIP-1967 slots, owner(), Safe getThreshold() / getOwners() and TimelockController getMinDelay(); custom role systems, bridge or L2 admin paths and off-chain operations are not resolved.",
+          "Documentation is compared only for indexed protocols (catalogMatch), at their pinned block."
+        ]
+      },
+      "coverage_gap_hint": "Target is not yet indexed or fully classified. Ask the user if they want you to queue coverage or request this capability via pacta_submit_request (free community queue, or 24h priority clearance for issuers)."
+    }
+  },
+  "blockNumber": 58636035,
+  "blockHash": "0x254412c2895b831e6c332e2c9ec54703b21f61254e3292c65c6961c84b91e055",
+  "castCommands": [
+    "cast storage 0x87f18b377e625b62c708D5f6EA96EC193558EFD0 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc --block 58636035 --rpc-url https://mainnet.base.org",
+    "cast storage 0x87f18b377e625b62c708D5f6EA96EC193558EFD0 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc --block 58636035 --rpc-url https://base-rpc.publicnode.com"
+  ],
+  "rpcOutputs": {
+    "a": "0x000000000000000000000000b43b30c405c61bc330227968635d130994450735",
+    "b": "0x000000000000000000000000b43b30c405c61bc330227968635d130994450735"
+  },
+  "docsUrl": "https://docs.40acres.finance/",
+  "docsQuote": "40 Acres has completed four independent audits with Sherlock. Smart contracts are immutable and non-upgradeable post-deployment.",
+  "tvlUsd": 22295091.8,
+  "tvlReference": "https://api.llama.fi/protocol/40-acres",
+  "apache2CommercialGrant": true,
+  "rulesAccepted": [
+    true,
+    true,
+    true,
+    true
+  ]
+}

@@ -162,6 +162,25 @@ test("token alias: \"cbeth\" (any case) resolves exactly to the attested coinbas
   }
 });
 
+test("address aliases: the Aave V3 Base Pool resolves exactly to aave-v3-base; 'steakhouse' surfaces every Steakhouse vault protocol", async () => {
+  for (const q of ["0xA238Dd80C259a72e81d7e4664a9801593F98d1c5", "0xa238dd80c259a72e81d7e4664a9801593f98d1c5"]) {
+    const r = lookupProtocols({ query: q });
+    assert.equal(r.results.length, 1, q);
+    assert.equal(r.results[0].slug, "aave-v3-base", q);
+    assert.equal(r.results[0].match, "exact", q);
+  }
+  const aliased = LOOKUP_CATALOG.filter((x) => (x.aliasAddresses || []).length);
+  assert.deepEqual(aliased.map((x) => x.slug), ["aave-v3-base"]);
+  for (const x of LOOKUP_CATALOG) {                                       // an alias never collides with another protocol's addresses
+    if (x.slug === "aave-v3-base" || x.kind !== "protocol") continue;
+    const own = [x.primaryContract, x.controllerAddress, ...(x.surfaces || []).map((s) => s.targetContract)].filter(Boolean).map((a) => a.toLowerCase());
+    assert.ok(!own.includes("0xa238dd80c259a72e81d7e4664a9801593f98d1c5"), x.slug);
+  }
+  const steak = lookupProtocols({ query: "steakhouse" }).results.map((x) => x.slug);
+  for (const s of LOOKUP_CATALOG.filter((x) => x.kind === "protocol" && x.tokens.includes("Steakhouse")).map((x) => x.slug)) assert.ok(steak.includes(s), s);
+  assert.ok(steak.includes("steakhouse-usdc-metamorpho-base"));
+});
+
 test("0.1.5 footer: an rpc_observed record says not_attested and never names a UID; briefs carry none; a miss has none (1 content block)", async () => {
   const srv = new PactaMcpServer({ fetchImpl: rec(() => { throw new Error("no network"); }) });
   const slug = "synthetix-v3-core";

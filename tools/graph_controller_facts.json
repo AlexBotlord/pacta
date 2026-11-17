@@ -43,6 +43,12 @@
    "code_bytes": 3516,
    "code_keccak_hex": "e2a176e5d2bcfb214b784ec6d6733708a6376a464f203cc265c284c9f349fea3"
   },
+  "base:498581ff718922c3f8e6a244956af099b2652b2b": {
+   "code_bytes": 24009,
+   "code_keccak_hex": "83b2af6e9f3158defc2811cbcb0db71ecf8b2ba2abea39c39e370ac5c6f43eb6",
+   "owner_hex": "31fafd4889fa1269f7a13a66ee0fb458f27d72a9",
+   "pin": "base@sprint-24"
+  },
   "base:56c1a4b54921dea9a344967a8693c7e661d72968": {
    "code_bytes": 171,
    "code_keccak_hex": "b89c1b3bdf2cf8827818646bce9a8f6e372885f8c55e5c07acbd307cb133b000",
@@ -138,15 +144,65 @@
    "code_keccak_hex": "6bec2bf64f7e824109f6ed55f77dd7665801d6195e461666ad6a5342a9f6daf5",
    "owner_hex": "6ffaca7c3b38ec2d631d86e15f328ee6ef6c6226"
   },
+  "ethereum:000000000004444c5dc75cb358380d2e3de08a90": {
+   "code_bytes": 24009,
+   "code_keccak_hex": "785f1014552b7ce7d5fb7d0c970ca60edee94fd00425d7ca21609acac7ce1293",
+   "owner_hex": "1a9c8182c09f50c8318d769245bea52c32be35bc",
+   "pin": "ethereum@sprint-24"
+  },
   "ethereum:055e84e7fe8955e2781010b866f10ef6e1e77e59": {
    "code_bytes": 11076,
    "code_keccak_hex": "790260e19c593d086bc3677d1bd906d991d1652f5b22c90547ff8b7c57fa0332",
    "timelock_min_delay": 86400
   },
+  "ethereum:0a0e559bc3b0950a7e448f0d4894db195b9cf8dd": {
+   "code_bytes": 171,
+   "code_keccak_hex": "b89c1b3bdf2cf8827818646bce9a8f6e372885f8c55e5c07acbd307cb133b000",
+   "pin": "ethereum@sprint-24",
+   "safe_nonce": 141,
+   "safe_owner_hex": [
+    "c04f9610694a9e07e0d6a361bec53abeadf9cf9e",
+    "005398827d00c2951ffb52bd91164ef402bcf105",
+    "2e8c25a6f7f7f34666b998813abf97d8b617f111",
+    "5571a6fef340a9d26f1428684b9e893ea84b46ac",
+    "32e5cb1a68761a0cff88d4baa21e398422b5166e",
+    "21c1e5be991bf1544ca9759a601f66dc60083f7d",
+    "9a86713145f38cd688969c0ecc87b314b23254b2",
+    "bc27046213d34d4a153cf57a48c74d74239e8968",
+    "394e6ef80c6f4ad14a891a3987d8bd1387afa0b1",
+    "86bd534a95fb2cc36d526ba149464c4477315c32"
+   ],
+   "safe_owners": 10,
+   "safe_threshold": 5,
+   "safe_version": "1.4.1"
+  },
+  "ethereum:0aaf300e148378489a8a471dd3e9e53e30cb42e3": {
+   "code_bytes": 610,
+   "code_keccak_hex": "1149cc2daf47c5f16c22bcc43ee484e2bb8c030a6872f6474c361fb6b53c888c",
+   "owner_hex": "eb3107117fead7de89cd14d463d340a2e6917769",
+   "pin": "ethereum@sprint-24"
+  },
+  "ethereum:0b010000b7624eb9b3dfbc279673c76e9d29d5f7": {
+   "code_bytes": 9339,
+   "code_keccak_hex": "f49b5a96128c1ab45d9c656cdb44d941852f3062ed5f759cd746eb8b3261e502",
+   "pin": "ethereum@sprint-24"
+  },
+  "ethereum:0b047953451a207743fb62541b21199b95190602": {
+   "code_bytes": 5941,
+   "code_keccak_hex": "030502f93cdd3093eea5a93ff982ed37932dbb6e2415c346bdf413ea8d934c61",
+   "owner_hex": "6608920e3f6b591ec3cf15ca1ddf66fbe117f56a",
+   "pin": "ethereum@sprint-24"
+  },
   "ethereum:0d374775e962c3608b8f0a4b8b10567df739bb56": {
    "code_bytes": 1129,
    "code_keccak_hex": "e2514788bd6e4c599cb6036efdee3c2ba7e011e287c432bf1bc61bbd699fe4e2",
    "owner_hex": "6e9d65ec80d69b1f508560bc7aea5003db1f7fb7"
+  },
+  "ethereum:0e429603d3cb1dfae4e6f52add5fe82d96d77dac": {
+   "code_bytes": 344,
+   "code_keccak_hex": "b9f64e1c6866969fcadb0872f5489719277ea891dfbd2fc23c2dceb102562c52",
+   "owner_hex": "ffffffaeff0b96ea8e4f94b2253f31abdd875847",
+   "pin": "ethereum@sprint-24"
   },
   "ethereum:10101010e0c3171d894b71b3400668af311e7d94": {
    "code_bytes": 8411,
@@ -238,6 +294,12 @@
    "code_keccak_hex": "fc92b5adcf9b0a3e70e730d654c4dd362b6dd4946959cd9e8078ba183301b962",
    "pin": "ethereum@sprint-23"
   },
+  "ethereum:4094c8d36e40795ca25bfe9451f158d30614666a": {
+   "code_bytes": 5578,
+   "code_keccak_hex": "2c4d3f94af19dc53c3b1c2630d6bf41cc89fd27cbdddade2d7c47806677acb3d",
+   "owner_hex": "7e90e03654732abedf89faf87f05bcd03aceefdc",
+   "pin": "ethereum@sprint-24"
+  },
   "ethereum:41675c099f32341bf84bfc5382af534df5c7461a": {
    "code_bytes": 23579,
    "code_keccak_hex": "1fe2df852ba3299d6534ef416eefa406e56ced995bca886ab7a553e6d0c5e1c4"
@@ -264,6 +326,12 @@
    "safe_owners": 7,
    "safe_threshold": 3,
    "safe_version": "1.3.0"
+  },
+  "ethereum:44835bbba9d40deda9b64858095ecfb2693c9449": {
+   "code_bytes": 14124,
+   "code_keccak_hex": "35694879fff20a0eca4f35c0d02f50bdfa6d89afa7c464b5a847d3d6481979af",
+   "pin": "ethereum@sprint-24",
+   "timelock_min_delay": 10800
   },
   "ethereum:4691c475be804fa85f91c2d6d0adf03114de3093": {
    "code_bytes": 133,
@@ -359,10 +427,21 @@
    "code_keccak_hex": "4384ce70140f614d5c30212348980fd72510c885335850001fa2898f490352b1",
    "owner_hex": "e86399fe6d7007fdecb08a2ee1434ee677a04433"
   },
+  "ethereum:79864900a4d34fb7907de9fe404758de5a4956de": {
+   "code_bytes": 833,
+   "code_keccak_hex": "1bce65331ab220385d4fe958fc084b4d00226b85e6633941cfb690ad6b0534a6",
+   "pin": "ethereum@sprint-24"
+  },
   "ethereum:7a56e1c57c7475ccf742a1832b028f0456652f97": {
    "code_bytes": 295,
    "code_keccak_hex": "50a49085cf0d7de5064aadd040a8c1d1555f665019028fe6622cd6bfbb886b02",
    "owner_hex": "0c2bc4d2698820e12e6ebe863e7b9e2650cd5b7d"
+  },
+  "ethereum:80226fc0ee2b096224eeac085bb9a8cba1146f7d": {
+   "code_bytes": 11130,
+   "code_keccak_hex": "4159f4241b169f7b37152c6b1ea572bd7463e6a75eb8aa0aebdcf4553e1642f9",
+   "owner_hex": "44835bbba9d40deda9b64858095ecfb2693c9449",
+   "pin": "ethereum@sprint-24"
   },
   "ethereum:80608f852d152024c0a2087b16939235fec2400c": {
    "code_bytes": 171,
@@ -424,6 +503,12 @@
    "code_bytes": 13082,
    "code_keccak_hex": "ace6d058f61ea9244a52bc415e71dce93ead294b1d9fc3dd89f3141e1d6a4908",
    "timelock_min_delay": 604800
+  },
+  "ethereum:89a5d5bf00a27d55c02951e49078a5c5771051db": {
+   "code_bytes": 4544,
+   "code_keccak_hex": "87c2764784f374f114ef0f85013cde8fa161bd5d04a5edfd903e1fb8502ccd4b",
+   "owner_hex": "1a9c8182c09f50c8318d769245bea52c32be35bc",
+   "pin": "ethereum@sprint-24"
   },
   "ethereum:8c1686069474410e6243425f4a10177a94ebee11": {
    "code_bytes": 10323,
@@ -552,11 +637,23 @@
    "safe_threshold": 3,
    "safe_version": "1.3.0"
   },
+  "ethereum:b22764f98dd05c789929716d677382df22c05cb6": {
+   "code_bytes": 5193,
+   "code_keccak_hex": "1b92397d327bd586ddbfe82737c6d5b2d567e01d00734ec6b94cc2a8926e8845",
+   "owner_hex": "44835bbba9d40deda9b64858095ecfb2693c9449",
+   "pin": "ethereum@sprint-24"
+  },
   "ethereum:b27afc7844988948fbd6210aef4e1362bc2d8e6a": {
    "code_bytes": 8519,
    "code_keccak_hex": "0bf2b2c36b685686e892a29b79af6056f2aba3f668f5071122662acb0ec9ef02",
    "pin": "ethereum@sprint-22",
    "timelock_min_delay": 432000
+  },
+  "ethereum:b2f30a7c980f052f02563fb518dcc39e6bf38175": {
+   "code_bytes": 344,
+   "code_keccak_hex": "b9f64e1c6866969fcadb0872f5489719277ea891dfbd2fc23c2dceb102562c52",
+   "owner_hex": "ffffffaeff0b96ea8e4f94b2253f31abdd875847",
+   "pin": "ethereum@sprint-24"
   },
   "ethereum:b351ec0feaf4b99fdfd36b484d9ec90d0422493d": {
    "code_bytes": 171,
@@ -645,6 +742,12 @@
    "owner_hex": "4b8741c89abff2562e854899e24d67a36406ea03",
    "pin": "ethereum@sprint-21"
   },
+  "ethereum:beef01735c132ada46aa9aa4c54623caa92a64cb": {
+   "code_bytes": 19340,
+   "code_keccak_hex": "178de337f452135bd08591e764910cb3ac423a6b26f72da7c1d09f15019bdd07",
+   "owner_hex": "0a0e559bc3b0950a7e448f0d4894db195b9cf8dd",
+   "pin": "ethereum@sprint-24"
+  },
   "ethereum:c026395860db2d07ee33e05fe50ed7bd583189c7": {
    "code_bytes": 23555,
    "code_keccak_hex": "576f02c4810c5e367e809a7bfcd31b649f3c4c5b6431c4982dc7c470687977b0",
@@ -730,6 +833,17 @@
   "ethereum:cafea6063d4ec6b045d9676e58897c1f0882ca32": {
    "code_bytes": 908,
    "code_keccak_hex": "4dd396e1ed6ac2a43e9c1bfc1edb2aba51f7e66eed9cda194b0aaf0f2e63b441"
+  },
+  "ethereum:cb1622185a0c62a80494bede05ba95ef29fbf85c": {
+   "code_bytes": 21755,
+   "code_keccak_hex": "faae00154479f13f5b3a0237e1f16ffaccbc6b83650f4b85eb7ebfdf89d7e999",
+   "pin": "ethereum@sprint-24"
+  },
+  "ethereum:cdbf527842ab04da548d33eb09d03db831381fb0": {
+   "code_bytes": 7886,
+   "code_keccak_hex": "9662e044384c45a1dfbcab9ddbc8d1932c23bd720797e607b48d5f0b988ab101",
+   "pin": "ethereum@sprint-24",
+   "timelock_min_delay": 432000
   },
   "ethereum:ce0425301c85c5ea2a0873a2dee44d78e02d2316": {
    "code_bytes": 9996,
@@ -929,6 +1043,15 @@
    ],
    "timestamp": 1794874938
   },
+  "base@sprint-24": {
+   "block_hash_hex": "7b884f4d029427b5d15f71c50b128bd69ac7c6da6962ced946ca87b0b4e6e843",
+   "block_number": 58534152,
+   "rpcs": [
+    "https://mainnet.base.org",
+    "https://base-rpc.publicnode.com"
+   ],
+   "timestamp": 1794897206
+  },
   "ethereum": {
    "block_hash_hex": "556fd9a91814fe9924c866574d1490144e844861cf18c59b5031aa443cef25d5",
    "block_number": 26422627,
@@ -973,6 +1096,15 @@
     "https://rpc.mevblocker.io"
    ],
    "timestamp": 1794874967
+  },
+  "ethereum@sprint-24": {
+   "block_hash_hex": "a058ec92ccf0024822a76097f183d8e2d344d56e9539038c857e0cdaaa0ee5a7",
+   "block_number": 26433001,
+   "rpcs": [
+    "https://gateway.tenderly.co/public/mainnet",
+    "https://rpc.mevblocker.io"
+   ],
+   "timestamp": 1794897239
   }
  },
  "schema": "pacta.graph_controller_facts.v1"

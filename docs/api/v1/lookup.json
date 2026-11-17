@@ -1,6 +1,9 @@
 {
  "items": [
   {
+   "aliasAddresses": [
+    "0xA238Dd80C259a72e81d7e4664a9801593F98d1c5"
+   ],
    "baseEasUids": [
     "0xa04d9c98873fce6fffb60fe535510092f22284f3afeeb78e36e4a0c25d5ea928"
    ],

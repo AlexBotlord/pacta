@@ -1238,7 +1238,9 @@ def preflight_section():
 SLUG_OVERRIDES = {"Frax Ether (frxETH / sfrxETH)": "frax-ether-sfrxeth", "Re Protocol (reUSD / reUSDe)": "re",
                   "Balancer V2 Vault & TimelockAuthorizer": "balancer-v2-vault-timelock",
                   # Sprint 23 conversions keep their published RPC-pinned slugs
-                  "Uniswap V3 & Governance Timelock": "uniswap-governance-timelock", "Reserve Protocol (eUSD RToken)": "reserve-protocol-rtoken"}
+                  "Uniswap V3 & Governance Timelock": "uniswap-governance-timelock", "Reserve Protocol (eUSD RToken)": "reserve-protocol-rtoken",
+                  # Sprint 24 conversion keeps its published RPC-pinned slug
+                  "Centrifuge V3 Root (Base)": "centrifuge-liquidity-pools-base"}
 
 
 def protocol_slug(name):

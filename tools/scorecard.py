@@ -26,6 +26,7 @@ _GOVERNOR = re.compile(r"\bGovernor(?:Bravo|Alpha|Omega)?\b|\bDAO governance\b")
 _PROXY = re.compile(r"EIP-1967 (?:admin|implementation) (?:slot )?(?:=|resolves|is)|ProxyAdmin|AdminUpgradeabilityProxy|"
                     r"TransparentUpgradeableProxy|ERC-1967 prox|UUPS|zeppelinos\.proxy\.admin|upgradeTo")
 _IMMUTABLE = re.compile(r"\bimmutable\b|ownership renounced|owner\(\) = 0x0\b|not a proxy|no proxies")   # zero EIP-1967 slots alone is not immutability
+_BYPASS_EXEC = re.compile(r"bypasserExecuteBatch[^;]*\b(?:immediately|no delay)\b|\b(?:immediately|no delay)\b[^;]*bypasserExecuteBatch", re.I)
 _COOLDOWN = re.compile(r"cooldown|unstak|withdraw|unbond|redemption|redeem|claim|lockup", re.I)   # user exit delays, not admin timelocks
 _NODELAY = re.compile(r"no timelock")
 _BYPASS = re.compile(r"\b1-of-\d{1,2}\b[^;]*?\b(?:shared between|co-owned by|jointly owned by)\b[^;]*?\bTimelock", re.I)
@@ -199,15 +200,21 @@ def factors(records, easattested, g, facts=()):
         if d is not None:
             delays.append((d, f'{r.get("id")}: observed_delay_seconds = {d}'))
     for rid, t, _r in texts:
+        if _COOLDOWN.search(str(_r.get("surface") or "")):        # a user withdrawal / unstaking delay is not an admin timelock
+            continue
         for m in _DELAY.finditer(t):
             delays.append((int(m.group(1).replace(",", "")), f"{rid}: {_snip(t, m)}"))
+        for c in clauses(t):                                      # a role that executes without the delay (e.g. RBACTimelock bypasser)
+            if _BYPASS_EXEC.search(c):
+                delays.append((0, f"{rid}: {_clip(c)}"))
     for f in facts:
         if isinstance(f.get("timelock_min_delay"), int):
             delays.append((f["timelock_min_delay"], f'controller fact: getMinDelay() = {f["timelock_min_delay"]}s'))
     if delays:
         d, ev = min(delays)
         st = "g" if d >= 2 * DAY else "b" if d >= 3600 else "a"
-        out["timelock"] = (st, f"{_dur(d)} minimum enforced delay across control surfaces", ev)
+        out["timelock"] = (st, ("0s: a bypasser role can execute without waiting the timelock delay" if d == 0 and _BYPASS_EXEC.search(ev)
+                                else f"{_dur(d)} minimum enforced delay across control surfaces"), ev)
     else:
         out["timelock"] = ("n", "No enforced admin delay in the published records", None)
     # 3: signer quorum (lowest threshold of any controlling Safe; a key without contract code counts as 1-of-1)

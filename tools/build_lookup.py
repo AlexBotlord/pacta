@@ -114,7 +114,15 @@ CONVERTED_CONTINUITY = {
                                     "controllerAddress": "0xf2371551Fe3937Db7c750f4DfABe5c2fFFdcBf5A", "controllerKind": "contract_controller"},
     "reserve-protocol-rtoken": {"primaryContract": "0xA0d69E286B938e21CBf7E51D71F6A4c8918f482F", "targetLabel": "ReserveRToken_eUSD",
                                 "controllerAddress": None, "controllerKind": "immutable_or_role_governed"},
+    # Sprint 24 conversions (values from the published RPC-pinned lookup items)
+    "synthetix-v3-core": {"primaryContract": "0xffffffaEff0B96Ea8e4f94b2253f31abdD875847", "targetLabel": "SynthetixCoreProxy",
+                          "controllerAddress": "0xEb3107117FEAd7de89Cd14D463D340A2E6917769", "controllerKind": "multisig_safe"},
+    "centrifuge-liquidity-pools-base": {"primaryContract": "0x7Ed48C31f2fdC40d37407cBaBf0870B2b688368f", "targetLabel": "CentrifugeRoot_Base",
+                                        "controllerAddress": None, "controllerKind": "immutable_or_role_governed"},
 }
+# Extra contract addresses a protocol answers to in pacta_lookup_protocol (an exact 0x query), each verified on-chain:
+# aave-v3-base: the Aave V3 Base Pool (PoolAddressesProvider 0xe20f..d64D getPool() and Pool.ADDRESSES_PROVIDER(), Sprint 24 evidence).
+ADDRESS_ALIASES = {"aave-v3-base": ["0xA238Dd80C259a72e81d7e4664a9801593F98d1c5"]}
 
 
 def _protocol_item(name, v):
@@ -151,7 +159,8 @@ def _protocol_item(name, v):
             "pinnedBlock": max(int(e["block_number"]) for e in es),
             "relatedContracts": _related(es, {a.lower() for a in [primary, ctrl] + [e["target_contract"] for e in es] if isinstance(a, str)}),
             "whatDiffers": CD.what_differs(es),
-            "url": f"{BASE}/protocols/{v['slug']}/", "preflightArgs": {"chain": chain, "address": primary}}
+            "url": f"{BASE}/protocols/{v['slug']}/", "preflightArgs": {"chain": chain, "address": primary},
+            **({"aliasAddresses": [_addr(a) for a in ADDRESS_ALIASES[v["slug"]]]} if v["slug"] in ADDRESS_ALIASES else {})}
 
 
 def _onboarding_item(b):

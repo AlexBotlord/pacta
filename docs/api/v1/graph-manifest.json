@@ -18,7 +18,7 @@
    "index.json": "d809d71746a32872beb69893f4f8a7050039e9e6de2d3f682eeb1fb5171183e5",
    "rpc-pinned.json": "01e1f695b5ffda8270944692f77fc50288511ee7accadea1d46c1622787f7bc5",
    "graph_dependencies.json": "c32f718b692f497f33bd8e50e300b883ae1ce3316215fb5e2d01f2c235bff4fa",
-   "graph_controller_facts.json": "23d42572d9b4f1668395329e7f8c227db347c1d84016b6dadc21a5ffdd76fcf4"
+   "graph_controller_facts.json": "0cb88a45e050914f653be6a02a1796cac57117e76857bbac3e6ffad0c2f31cac"
   },
   "bounty_submissions": [
    "bounties/submissions/slot-1-stake-dao.json",
@@ -12401,5 +12401,5 @@
    "content_hash": "5677574f0f2aba204ed8b95486cc472dde027ae3a5b6fa992f319cb16a1f713b"
   }
  ],
- "manifest_sha256": "89875faba6665a899dc8722d03a44a5c93856439b3db7132415f6ecf6953b89f"
+ "manifest_sha256": "43c5a24197871aa2eb0d89f0f82ec2db432d1e75c1e33f79fb4309c98e793378"
 }

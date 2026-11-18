@@ -69,8 +69,28 @@
       "payoutTxHash": "0xac02ff3b67c0ebd17fc515d049a83a42d64f5fc784b995ba2220108f8a76dbc7"
     },
     {
+      "fixture": "ethereum-linea-bridge.json",
+      "payoutTxHash": "0x852d0e49162009e169fbdbc7d992f8cf63a5ec8189f7967e520a14f19e74a526"
+    },
+    {
+      "fixture": "ethereum-origin-ether.json",
+      "payoutTxHash": "0x772b82bc5578e7d7fb4727088a88ea87587eff538ebcb2a4c9ffd7f6a9551668"
+    },
+    {
+      "fixture": "ethereum-scroll-bridge.json",
+      "payoutTxHash": "0x5e7992ad534d12250d4b088087838c3eee056fe8cf8d6dbce8067d750f878fd8"
+    },
+    {
+      "fixture": "ethereum-upshift-axis-origin.json",
+      "payoutTxHash": "0x266442cf672bad417cf7303ac5db63fe2250d45ed6537b22f0a3d1e9b0e16d0b"
+    },
+    {
       "fixture": "ethereum-upshift.json",
       "payoutTxHash": "0x3aac64ccfe0876b14693f6390a792808aca2d534d63232a11254fe60b0c0ca8d"
+    },
+    {
+      "fixture": "ethereum-usdd.json",
+      "payoutTxHash": "0xb8eeb4b84d28dbcf8e71cd0cb06e17db441e49b669cc1536975ee8119f73bd0c"
     },
     {
       "fixture": "ethereum-vesper.json",

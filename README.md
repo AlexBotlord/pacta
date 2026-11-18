@@ -9,7 +9,7 @@
 [![Base EAS Schema](https://img.shields.io/badge/Base_EAS-0x7ff4...df83-a855f7?style=for-the-badge&labelColor=000000)](https://base.easscan.org/schema/view/0x7ff485bc1159dff3c70eefcb9dff2d65be990301760c2d53799e5a45e3badf83)
 [![Request Scope](https://img.shields.io/badge/Intake-24h_Clearance_%245k_USDC-38bdf8?style=for-the-badge&labelColor=000000)](https://github.com/Fractal-Neurons/pacta/issues/new?template=request-scan.yml&title=%5BPacta+Scope%5D+Organization+%2F+Protocol)
 [![Community](https://img.shields.io/badge/Community-GitHub_Discussions-f59e0b?style=for-the-badge&labelColor=000000)](https://github.com/Fractal-Neurons/pacta/discussions)
-[![Bounties & Leaderboard](https://img.shields.io/badge/Bounties_%26_Leaderboard-%24106_USDC_Settled-10b981?style=for-the-badge&labelColor=000000)](https://pacta.wtf/leaderboard/)
+[![Bounties & Leaderboard](https://img.shields.io/badge/Bounties_%26_Leaderboard-%24111_USDC_Settled-10b981?style=for-the-badge&labelColor=000000)](https://pacta.wtf/leaderboard/)
 
 > **Public Counterparty Snapshot Portal:** [**`https://pacta.wtf/`**](https://pacta.wtf/)  
 > **Machine-Readable Snapshot JSON (`v1`):** [**`https://pacta.wtf/api/v1/index.json`**](https://pacta.wtf/api/v1/index.json)  

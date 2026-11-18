@@ -432,8 +432,9 @@ details[open] > [data-slot="accordion-trigger"]::after, details.acc[open] > summ
 .cmdk-panel { width: 100%; max-width: 600px; max-height: 76vh; display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--border); border-radius: calc(var(--radius) + 4px); background: var(--popover); color: var(--popover-foreground); box-shadow: var(--shadow-md); }
 .cmdk-head { display: flex; align-items: center; gap: 8px; padding: 0 8px 0 14px; border-bottom: 1px solid var(--border); }
 .cmdk-head svg { flex: none; width: 16px; height: 16px; color: var(--muted-foreground); }
-.cmdk-head input { flex: 1; min-width: 0; height: 52px; border: 0; background: transparent; box-shadow: none; padding: 0; font-size: 1rem; }
-.cmdk-head input:focus, .cmdk-head input:focus-visible { outline: none; box-shadow: none; }
+.cmdk-head input { flex: 1; min-width: 0; height: 44px; margin: 4px 0; border: 0; border-radius: var(--radius); background: transparent; box-shadow: none; padding: 0 10px; font-size: 1rem; }
+.cmdk-head input:focus { outline: none; box-shadow: none; }
+.cmdk-head input:focus-visible { outline: 2px solid var(--ring); outline-offset: -2px; box-shadow: none; }   /* v4.7.1 V47-02 */
 .cmdk-list { margin: 0; padding: 6px; list-style: none; overflow-y: auto; }
 .cmdk-list a { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 12px; align-items: center; min-height: 44px; padding: 8px 10px; border-radius: var(--radius); color: var(--foreground); text-decoration: none; }
 .cmdk-list a[aria-selected="true"], .cmdk-list a:hover { background: var(--accent); color: var(--accent-foreground); text-decoration: none; }
@@ -576,6 +577,9 @@ code { overflow-wrap: break-word; }
 .agents-card p.s > a { display: inline-flex; align-items: center; min-height: 24px; }
 .hiw-cta, .hiw-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
 .hiw-pills { margin: 12px 0; }
+.hiw-agents { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.hiw-agents > div { display: grid; gap: 12px; align-content: start; min-width: 0; }
+@media (min-width: 1024px) { .hiw-agents { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 #how-it-works .legend { margin-top: 16px; }
 #how-it-works [data-slot="tabs-content"] > .s { margin-bottom: 12px; }
 /* v4.7 W4: the closed Wave 1 archive on /bounties/ */
@@ -904,6 +908,12 @@ td > a:only-child, dd > a:only-child, li > a:only-child, .pc-rows a, .radar td a
 
 /* ---------------------------------------------------------------- progressive enhancement */
 .js [data-slot="tabs-content"][data-inactive] { display: none; }
+/* v4.7.1 V47-01: stable tabs (the homepage audience tabs) keep one height: every panel shares one grid cell, the inactive one is
+   invisible, inert and aria-hidden (app.js), so switching tabs never moves the content below. Without JavaScript they stack. */
+.js [data-tabs-stable] { display: grid; grid-template-columns: minmax(0, 1fr); }
+.js [data-tabs-stable] > [data-slot="tabs-list"] { grid-row: 1; justify-self: start; }
+.js [data-tabs-stable] > [data-slot="tabs-content"] { grid-row: 2; grid-column: 1; min-width: 0; }
+.js [data-tabs-stable] > [data-slot="tabs-content"][data-inactive] { display: block; visibility: hidden; pointer-events: none; }
 html:not(.js) [data-slot="tabs-list"] { display: none; }
 html:not(.js) [data-slot="tabs-content"] + [data-slot="tabs-content"] { margin-top: 16px; }
 .theme-btn .i-moon { display: none; }

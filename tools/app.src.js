@@ -398,7 +398,8 @@
     String(location.search || "").replace(/^\?/, "").split("&").forEach(function (kv) {
       var i = kv.indexOf("="); if (i > 0) { try { qs[kv.slice(0, i)] = decodeURIComponent(kv.slice(i + 1).replace(/\+/g, " ")); } catch (e) { /* malformed */ } }
     });
-    var g0 = GRADE_WORD[qs.grade] ? qs.grade : null, b0 = bsel && qs.basket && $('option[value="' + String(qs.basket).replace(/[^a-z0-9-]/g, "") + '"]', bsel) ? qs.basket : null;
+    var g0 = GRADE_WORD[qs.grade] ? qs.grade : null, b0 = null;
+    if (bsel && typeof qs.basket === "string") $$("option", bsel).forEach(function (o) { var v = o.getAttribute("value"); if (v && v !== "all" && v === qs.basket) b0 = v; });
     var q0 = typeof qs.q === "string" ? qs.q.slice(0, 80) : "";
     if (g0 || b0 || q0) {
       then(function () {
@@ -1646,10 +1647,15 @@
         tabs.forEach(function (x) {
           var on = x === t, p = document.getElementById(x.getAttribute("aria-controls") || "");
           x.setAttribute("aria-selected", String(on)); x.setAttribute("tabindex", on ? "0" : "-1");
-          if (p) { if (on) p.removeAttribute("data-inactive"); else p.setAttribute("data-inactive", ""); }
+          if (p) {
+            if (on) { p.removeAttribute("data-inactive"); p.removeAttribute("inert"); p.removeAttribute("aria-hidden"); }
+            else { p.setAttribute("data-inactive", ""); p.setAttribute("inert", ""); p.setAttribute("aria-hidden", "true"); }
+          }
         });
         if (focus) t.focus();
       }
+      var cur = tabs.filter(function (t) { return t.getAttribute("aria-selected") === "true"; })[0] || tabs[0];
+      if (cur) select(cur, false);   // v4.7.1: the build's inactive panels get inert + aria-hidden as soon as JavaScript runs
       tabs.forEach(function (t, i) {
         t._select = function (focus) { select(t, focus); };
         t.addEventListener("click", function () { select(t, false); });

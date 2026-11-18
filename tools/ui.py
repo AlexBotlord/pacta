@@ -87,7 +87,7 @@ def alert(title_html, desc_html="", variant=None, icon_name="info", attrs="", cl
             + (f'<div data-slot="alert-description">{desc_html}</div>' if desc_html else "") + '</div>')
 
 
-def tabs(tid, items, label, selected=0):
+def tabs(tid, items, label, selected=0, stable=False):
     """shadcn Tabs (Radix anatomy): tablist + triggers (role=tab, aria-controls) + panels (role=tabpanel). items = [(key, label, html)].
     Without JavaScript every panel is visible (the .js class hides the inactive ones), so no content is ever unreachable."""
     trig = "".join(
@@ -98,7 +98,8 @@ def tabs(tid, items, label, selected=0):
         f'<div data-slot="tabs-content" role="tabpanel" id="{tid}-p-{k}" aria-labelledby="{tid}-t-{k}" tabindex="0"'
         f'{"" if i == selected else " data-inactive"}>{body}</div>'
         for i, (k, _, body) in enumerate(items))
-    return (f'<div data-slot="tabs" class="tabs" data-tabs><div data-slot="tabs-list" role="tablist" aria-label="{E(label)}">{trig}</div>'
+    # stable=True (v4.7.1): with JavaScript every panel shares one grid cell, so switching tabs never moves the content below
+    return (f'<div data-slot="tabs" class="tabs" data-tabs{" data-tabs-stable" if stable else ""}><div data-slot="tabs-list" role="tablist" aria-label="{E(label)}">{trig}</div>'
             f'{panels}</div>')
 
 

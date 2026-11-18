@@ -3260,13 +3260,15 @@ def how_it_works(idx, cards, radar, prefix=""):
     pills = "".join(U.button(lbl, href=h, variant="outline", size="sm") for lbl, h in
                     (("SKILL.md", f"{prefix}SKILL.md"), ("llms.txt", f"{prefix}llms.txt"), ("OpenAPI 3.1", f"{prefix}openapi.json"),
                      ("MCP docs", f"{prefix}mcp/")))
+    # v4.7.1: two columns from 1024 px (install | verify), so the two panels are close in height
     agents = (f'<p class="s">Remote MCP over Streamable HTTP and a REST API: {E(RATE_LIMIT)}, free, no API key, no wallet. '
               f'Remote tools: {E(REMOTE_TOOLS_DOC)}.</p>'
+              + f'<div class="hiw-pills">{pills}</div><div class="hiw-agents"><div>'
               + term(f"claude mcp add --transport http pacta {MCP_URL}", "Claude Code", "Copy the Claude Code MCP install command")
-              + term(cursor, "Cursor (mcp.json)", "Copy the Cursor MCP configuration")
-              + f'<div class="hiw-pills">{pills}</div>'
-              + term(verify, "Check a contract, then verify with cast", "Copy the curl preflight and the cast verification"))
-    tabs_ = U.tabs("hiw", [("risk", "For risk & diligence teams", risk), ("agents", "For AI agents & builders", agents)], "Choose your audience")
+              + term(cursor, "Cursor (mcp.json)", "Copy the Cursor MCP configuration") + '</div><div>'
+              + term(verify, "Check a contract, then verify with cast", "Copy the curl preflight and the cast verification") + '</div></div>')
+    tabs_ = U.tabs("hiw", [("risk", "For risk & diligence teams", risk), ("agents", "For AI agents & builders", agents)], "Choose your audience",
+                   stable=True)
     return f"""<section class="sec" id="how-it-works"><div class="wrap">
 <div class="sec-head"><h2>How it works</h2><p class="aside">Three steps for every protocol, and two ways to use the result.</p></div>
 {tabs_}

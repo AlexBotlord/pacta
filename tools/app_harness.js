@@ -1002,8 +1002,12 @@ async function v47Scenario() {
   // W2: tabs
   const tRisk = d.getElementById("hiw-t-risk"), tAg = d.getElementById("hiw-t-agents"), pRisk = d.getElementById("hiw-p-risk"), pAg = d.getElementById("hiw-p-agents");
   const sel = () => [tRisk.getAttribute("aria-selected"), tAg.getAttribute("aria-selected"), pRisk.hasAttribute("data-inactive"), pAg.hasAttribute("data-inactive")].join();
-  const s0 = sel(); key(tRisk, "ArrowRight"); const s1 = sel(); key(tAg, "Home"); const s2 = sel(); key(tRisk, "End"); const s3 = sel(); key(tAg, "ArrowLeft"); const s4 = sel();
+  // v4.7.1 V47-01: the inactive panel is inert and aria-hidden from the start, and follows every switch
+  const hid = (pn) => pn.hasAttribute("inert") && pn.getAttribute("aria-hidden") === "true";
+  const a11y0 = !hid(pRisk) && hid(pAg);
+  const s0 = sel(); key(tRisk, "ArrowRight"); const s1 = sel(); const a11y1 = hid(pRisk) && !hid(pAg); key(tAg, "Home"); const s2 = sel(); key(tRisk, "End"); const s3 = sel(); key(tAg, "ArrowLeft"); const s4 = sel();
   const link = d.querySelector('[data-tab-open="hiw-t-agents"]'); link.dispatchEvent(new Event_("click")); const s5 = sel();
+  res.v471_tabs_inert = a11y0 && a11y1 && d.querySelector("#how-it-works [data-tabs-stable]") !== null;
   res.v47_w2_tabs = s0 === "true,false,false,true" && s1 === "false,true,true,false" && s2 === s0 && s3 === s1 && s4 === s0 && s5 === s1
     && d.querySelector('#how-it-works [role="tablist"]') !== null && tRisk.textContent === "For risk & diligence teams" && tAg.textContent === "For AI agents & builders"
     && /claude mcp add --transport http pacta https:\/\/pacta-x402\.pacta\.workers\.dev\/mcp/.test(pAg.textContent) && /cast call /.test(pAg.textContent)
@@ -1050,6 +1054,29 @@ async function v47Scenario() {
     && d.querySelectorAll("[data-theme-sheet]").filter((b) => b.getAttribute("aria-pressed") === "true").length === 1
     && d.querySelectorAll('#theme-menu [role="menuitemradio"]').find((b) => b.getAttribute("data-theme-set") === "light").getAttribute("aria-checked") === "true"
     && p.document.documentElement.classList.contains("dark") === false;
+}
+
+// v4.7.1 V47-03: ?basket= (with underscores), ?grade= and ?q= select exactly what the manual controls select; unknown values are ignored
+async function v471BasketScenario() {
+  const scMock = (url) => /api\/v1\/scorecards\.json$/.test(String(url)) ? Promise.resolve({ status: 200, json: () => Promise.resolve(input.scorecardsJson) })
+    : Promise.reject(new Error("not needed"));
+  const cards = input.scorecardsJson.protocols;
+  const want = (b, g, q) => cards.filter((c) => (!b || c.baskets.includes(b)) && (!g || c.grade === g) && (!q || String(c.search || "").includes(q))).length;
+  const shown = async (search) => {
+    const p = run(input.index, input.app, { path: "/", search, fetch: scMock });
+    for (let i = 0; i < 6; i++) await flush();
+    const d = p.document;
+    return { n: d.querySelectorAll("#scorecards tr.sc-row").filter((r) => !r.hidden).length, basket: d.querySelector("[data-sc-basket]").value,
+      pressed: (d.querySelectorAll("[data-sc-f]").find((b) => b.getAttribute("aria-pressed") === "true") || { getAttribute: () => "" }).getAttribute("data-sc-f") };
+  };
+  const out = {};
+  for (const b of ["stable_rwa", "eth_lst_lrt", "lending_vaults", "base"]) out[b] = await shown("?basket=" + b);
+  const combo = await shown("?basket=eth_lst_lrt&grade=delta&q=eth");
+  const bogus = await shown("?basket=stable-rwa&grade=nope");
+  res.v471_basket_urls = ["stable_rwa", "eth_lst_lrt", "lending_vaults", "base"].every((b) => out[b].n === want(b) && out[b].basket === b && out[b].n < cards.length)
+    && out.stable_rwa.n === 27 && out.eth_lst_lrt.n === 23 && out.lending_vaults.n === 30 && out.base.n === 16
+    && combo.n === want("eth_lst_lrt", "delta", "eth") && combo.n > 0 && combo.basket === "eth_lst_lrt" && combo.pressed === "delta"
+    && bogus.n === 8 && bogus.pressed === "all";   // unknown values are ignored: the static 8-row preview stays
 }
 
 // v4.3 N5: after a live re-check the radar header still cites ONE block number (the finalized read); the live block goes on the
@@ -1236,6 +1263,7 @@ async function v45Scenario() {
   try { await tryExampleScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await radarHeaderScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await v47Scenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
+  try { await v471BasketScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { protocolFilterScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await preflightScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await staleResponseScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }

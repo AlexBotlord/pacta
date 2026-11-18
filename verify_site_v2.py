@@ -2341,6 +2341,21 @@ def main(argv=None):
     }
     check("v4.7 quick wins (W1 8-row preview + radar strip, W2 audience tabs, W3 Cmd+K search + hero names, W4 freshness pill + Wave 1 archive, "
           "W5 labelled theme toggle) + refreshed radar", all(v47.values()), str([k for k, x in v47.items() if not x]))
+    css471 = read("docs/styles.css")
+    v471 = {
+        "V47-01: the audience tabs share one grid cell once JavaScript runs (inactive panel invisible, inert, aria-hidden; stacked without JavaScript)":
+            'data-tabs data-tabs-stable><div data-slot="tabs-list" role="tablist" aria-label="Choose your audience">' in home47
+            and ".js [data-tabs-stable] > [data-slot=\"tabs-content\"] { grid-row: 2; grid-column: 1; min-width: 0; }" in css471
+            and ".js [data-tabs-stable] > [data-slot=\"tabs-content\"][data-inactive] { display: block; visibility: hidden; pointer-events: none; }" in css471
+            and 'p.setAttribute("inert", ""); p.setAttribute("aria-hidden", "true");' in appjs and res.get("v471_tabs_inert") is True,
+        "V47-02: the command input paints a 2 px inset --ring outline on :focus-visible (both themes)":
+            ".cmdk-head input:focus-visible { outline: 2px solid var(--ring); outline-offset: -2px; box-shadow: none; }" in css471
+            and ".cmdk-head input:focus, .cmdk-head input:focus-visible { outline: none" not in css471,
+        "V47-03: ?basket= keeps underscores (exact <option> values): stable_rwa 27, eth_lst_lrt 23, lending_vaults 30, base 16; combined with ?grade= and ?q= (harness)":
+            "replace(/[^a-z0-9-]/g" not in appjs and res.get("v471_basket_urls") is True,
+    }
+    check("v4.7.1 review fixes (V47-01 stable audience-tab height, V47-02 command-input focus ring, V47-03 basket URLs with underscores)",
+          all(v471.values()), str([k for k, x in v471.items() if not x]))
 
     nf = pages.get("404.html", "")
     nf_raw = nf.encode()

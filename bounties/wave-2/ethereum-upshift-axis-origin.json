@@ -8,47 +8,59 @@
   "hunter": "Zhauxxx23",
   "basePayoutAddress": "0x589304C62b6ad7f29a9a797182feDAF160a5bD3A",
   "mcpProof": {
-    "tool": "pacta_scan_control_plane",
+    "tool": "pacta_check_preflight",
     "arguments": {
       "chain": "ethereum",
-      "address": "0x101E583EE2F83a8BD0bBa202938bbadC6b8795c0"
+      "address": "0xAD958C4c0c90bf0216e0f5472F074a9AB30f595F"
     },
     "result": {
+      "schema": "pacta.preflight_check.v1",
       "chain": "ethereum",
-      "address": "0x101E583EE2F83a8BD0bBa202938bbadC6b8795c0",
-      "block": {
-        "number": 26429852,
-        "hash": "0x2cf55dfb1a642bd753020b24b2c8b3af89a7041215aea0f65619659059e39493",
-        "timestamp": 1794859343
+      "chainId": 1,
+      "address": "0xAD958C4c0c90bf0216e0f5472F074a9AB30f595F",
+      "pinnedBlock": 26442630,
+      "pinnedBlockHash": "0xa55cab96a72d234b3a897c842d7925c00c3f2581828137e10470d49bd0f9d3d9",
+      "blockTimestamp": 1795013135,
+      "verdict": "MULTISIG_NO_TIMELOCK",
+      "riskScore": 80,
+      "isContract": true,
+      "isProxy": true,
+      "proxyType": "eip1967",
+      "implementation": "0xEB5f80aCEa6060764E91c185bE93752Ab40F01c2",
+      "beacon": null,
+      "hasAdminSlot": true,
+      "canUpgradeZeroDelay": true,
+      "capabilities": {
+        "pause": false,
+        "blacklist": false,
+        "upgrade": true
       },
-      "codeBytes": 171,
-      "eip1967": {
-        "implementation": null,
-        "admin": null,
-        "beacon": null
+      "paused": null,
+      "controller": {
+        "address": "0x101E583EE2F83a8BD0bBa202938bbadC6b8795c0",
+        "kind": "multisig_safe",
+        "safeThreshold": 1,
+        "timelockDelaySec": null,
+        "safeOwnerCount": 3,
+        "proxyAdmin": "0x67702786dbCdB3eAD1756F70461DdC30BAd68e63",
+        "source": "eip1967_admin_slot"
       },
-      "owner": null,
-      "probedStatus": {
-        "eip1967Slots": "ok",
-        "owner": "reverted_or_absent",
-        "safeGetters": "ok"
+      "roleAdminMembers": null,
+      "codeBytes": 2001,
+      "method": "Batched JSON-RPC reads pinned to the block hash (EIP-1898); EIP-1967 / EIP-1822 / beacon proxies; capabilities from PUSH4 selectors in proxy + implementation bytecode (heuristic).",
+      "summary": "Controlled by a 1-of-3 Safe with no timelock: changes can land instantly once signers agree. Capabilities seen in bytecode: upgrade.",
+      "source": "live_rpc",
+      "assessment": {
+        "coverage": "unindexed_bytecode_heuristic",
+        "confidence": "medium",
+        "method": "Live bytecode + storage heuristic at the pinned block only: this contract is not in Pacta's indexed catalog (no documentation comparison).",
+        "limits": [
+          "riskScore (0-100) is a heuristic of the controller type and of pause / blacklist / upgrade capabilities read at one block; it is not an audit.",
+          "The live check reads EIP-1967 slots, owner(), Safe getThreshold() / getOwners() and TimelockController getMinDelay(); custom role systems, bridge or L2 admin paths and off-chain operations are not resolved.",
+          "Documentation is compared only for indexed protocols (catalogMatch), at their pinned block."
+        ]
       },
-      "safe": {
-        "threshold": 1,
-        "owners": [
-          "0x3fc6ABc9041bf99F9C393a726feD7690d1825e42",
-          "0x4EA4987211EbE22E83aAAFc1b38aaa6127C101eF",
-          "0x5524EBe33D9C00d7c56b609072c5D84BD7cefFD9"
-        ],
-        "ownerCount": 3,
-        "guard": null
-      },
-      "upgradeAuthority": null,
-      "ownerPrincipal": null,
-      "riskFlags": [
-        "not_eip1967_upgradeable"
-      ],
-      "summary": "OBSERVED: No EIP-1967, Ownable, or Safe single-key control detected in probed standard slots/selectors (custom AccessControl/RolesAuthority not excluded)"
+      "coverage_gap_hint": "Target is not yet indexed or fully classified. Ask the user if they want you to queue coverage or request this capability via pacta_submit_request (free community queue, or 24h priority clearance for issuers)."
     }
   },
   "blockNumber": 26429778,

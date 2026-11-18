@@ -1516,10 +1516,11 @@ def main(argv=None):
     pr = re.search(r'<section class="sec" id="pricing">.*?</section>', home, re.S)
     pricing_ok = bool(pr) and all(x in pr.group(0) for x in ("$0", "$19", "$49", "$99", "$2,500–$5,000", "$1,500", "Free scorecards, API &amp; MCP",
                                                               "Instant Contract &amp; Safe Deep-Scan", "Live Timelock &amp; Signer Webhook", "24h Mainnet Control-Plane Seal",
-                                                              "Continuous Control-Plane Monitoring", "API SLA", "60 requests / minute",
+                                                              "Continuous Control-Plane Monitoring", "API SLA", "50 free preflight / MCP checks a day, then $0.01 a call over x402",
+                                                              "data-x402-strip", "$0.02 / call", "$0.05 / call", "$0.25 / call", "$9.00 / call",
                                                               html.escape(BS.EDITORIAL_FIREWALL, quote=False)))
     req_ok = "Every scorecard, the API and the MCP server stay free" in req_page and 'id="pricing"' in req_page
-    check("pricing: #pricing = Free $0 (60 req/min) / $19 scan / $49 per month webhook / $99 seal + dossiers $2,500-$5,000 / Continuous Control-Plane Monitoring $1,500 / API SLA under the editorial firewall; /request/ carries the same",
+    check("pricing: #pricing = Free $0 (50 checks / day, then $0.01 over x402) + Agent & API x402 strip ($0.02 / $0.05 / $0.25 / $9.00) / $19 scan / $49 per month webhook / $99 seal + dossiers $2,500-$5,000 / Continuous Control-Plane Monitoring $1,500 / API SLA under the editorial firewall; /request/ carries the same",
           pricing_ok and req_ok, f"#pricing {pricing_ok}; /request/ {req_ok}")
     # unbundled #pricing: 2 cards (free; issuers with no API jargon) + one high-throughput bar below the grid
     # M4 / M5 (v4): every pricing card links its own closed tier=; Continuous Control-Plane Monitoring says the result can still be Delta; no tier name

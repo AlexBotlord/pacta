@@ -484,6 +484,20 @@ def mcp_manifest(idx, onb):
     }
 
 
+# The free agent tier and the pay-per-call x402 routes (the Worker's FREE_DAILY_PREFLIGHT_QUOTA / OVERFLOW_PRICE / X402_ROUTES).
+X402_PUBLIC = "https://pacta.fractalneurons.com"
+FREE_DAILY_QUOTA = 50
+X402_ENDPOINTS = [("/v1/x402/verdict", "0.02", "Fast safety verdict: grade A-F, riskScore, upgrade / pause / blacklist / mint flags"),
+                  ("/v1/x402/dossier", "0.05", "Control-plane dossier: Safe signers, threshold, cross-protocol signer overlap, Base EAS proof"),
+                  ("/v1/x402/calldata-sim", "0.25", "Calldata sim: timelock / Safe calls decoded and rated before signing"),
+                  ("/v1/x402/deep-scan", "9.00", "Deep scan cross-checked on two RPC operators + Base EAS ticket")]
+FREE_TIER_DOC = (f"Free agent tier: {FREE_DAILY_QUOTA} pre-flight checks per caller per UTC day (REST /v1/check/preflight and MCP "
+                 "pacta_check_preflight together; X-Meter-Limit / X-Meter-Remaining / X-Meter-Reset headers), then $0.01 per call over x402 "
+                 "(HTTP 402, USDC on Base; never a dead-end 429). Free responses carry an upgrade_x402 object listing the paid routes.")
+X402_DOC = "Pay per call with x402 (USDC on Base, POST JSON, X-PAYMENT v1 or PAYMENT-SIGNATURE v2): " + "; ".join(
+    f"{X402_PUBLIC}{p} ${usd} ({what})" for p, usd, what in X402_ENDPOINTS) + "."
+
+
 def skill_md(prop, idx):
     m = idx["summary_metrics"]
     return f"""---
@@ -509,6 +523,8 @@ or a live collateral onboarding proposal. Pacta publishes {m['records_indexed']}
 - {REQUEST_DOC}
 - {BOUNTIES_DOC}
 - {CALLER_FIELDS_DOC}
+- {FREE_TIER_DOC}
+- {X402_DOC}
 - One call: `curl -s -A "my-agent/1.0" "{X402_URL}/v1/check/preflight?chain=ethereum&address=0x..."` ({UA_DOC}) returns `verdict`, `riskScore` (0-100), proxy /
   implementation (EIP-1967, EIP-1822 or beacon), `controller` (eoa, multisig_safe, timelock, contract,
   access_control_enumerable, access_control or none), `canUpgradeZeroDelay`, `capabilities` (pause, blacklist, upgrade) and

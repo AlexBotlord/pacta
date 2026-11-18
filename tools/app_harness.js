@@ -505,8 +505,9 @@ async function beaconScenario() {
     }
     const hp = ctaClicks(input.index, "/");
     res.b_cta_pricing = same(hp.kinds, ["pricing_free", "pricing_mcp", "pricing_scan_19", "pricing_webhook_49", "pricing_seal_99",
+                                        "pricing_x402_verdict", "pricing_x402_dossier", "pricing_x402_calldata_sim", "pricing_x402_deep_scan",
                                         "pricing_clearance", "pricing_continuous", "pricing_community", "pricing_api_sla"])
-      && hp.events.length === 9 && hp.events.every((e) => e === "cta_click");
+      && hp.events.length === 13 && hp.events.every((e) => e === "cta_click");
   }
   // 404: not_found_404 instead of page_load; paths are redacted to a closed canonical set BEFORE transmission
   // (Phase C.1): only /protocols/<safe-slug>/ keeps its slug (and t); anything else is "/404"; IP / local referrers are dropped

@@ -3212,6 +3212,7 @@ def mcp_page(idx):
     cursor = json.dumps({"mcpServers": {"pacta": {"url": MCP_URL}}}, indent=2)
     tools = "".join(f"<li><code>{E(t)}</code></li>" for t in B2A.REMOTE_TOOLS)
     starter = "https://github.com/Fractal-Neurons/defi-control-plane-mcp"
+    x402_rows = "".join(f'<tr><td class="nowrap"><code>POST {E(p)}</code></td><td class="nowrap num">${E(u)}</td><td>{E(w)}</td></tr>' for p, u, w in B2A.X402_ENDPOINTS)
     install = U.tabs("mcpq", [("mcp", "MCP", term(claude, "Claude Code", "Copy the Claude Code MCP install command")
                                + term(cursor, "Cursor (mcp.json)", "Copy the Cursor MCP configuration")),
                               ("curl", "cURL", term(REST_CURL, "cURL", "Copy the cURL quickstart")),
@@ -3230,6 +3231,10 @@ def mcp_page(idx):
 <section class="memo-sec" id="tools"><h2>Tools ({E(B2A.REMOTE_TOOLS_DOC)})</h2><ul>{tools}</ul>
 <p>Indexed protocols: <a href="../api/v1/protocols.json">/api/v1/protocols.json</a> · machine-readable server card: <a href="../.well-known/mcp.json">/.well-known/mcp.json</a> · REST twin and OpenAPI 3.1: <a href="{E(OPENAPI_URL)}" target="_blank" rel="noopener">openapi.json{EXT}</a></p>
 <p class="s">The live check tool <code>pacta_check_preflight</code> rates the single contract address it is given, not the whole protocol (<a href="../methodology/#live-checker">methodology</a>).</p></section>
+<section class="memo-sec" id="x402"><h2>Free tier &amp; pay per call (x402)</h2>
+<p>{E(B2A.FREE_TIER_DOC)}</p>
+<table class="stack"><thead><tr><th class="nowrap">Route (POST JSON)</th><th class="nowrap">Price</th><th>What it returns</th></tr></thead><tbody>{x402_rows}</tbody></table>
+<p class="s">Origin: <code>{E(B2A.X402_PUBLIC)}</code> · x402 v1 (<code>X-PAYMENT</code>) or v2 (<code>PAYMENT-SIGNATURE</code>), USDC on Base to the Pacta treasury. A request without a payment header answers HTTP 402 with the exact requirements; discovery: <a href="{E(B2A.X402_PUBLIC)}/.well-known/x402">/.well-known/x402</a>. Payment never changes a classification.</p></section>
 <section class="memo-sec" id="starter"><h2>Starter kit &amp; help</h2>
 <p>Ready-to-copy client configs and stdlib examples: <a href="{E(starter)}" target="_blank" rel="noopener">Fractal-Neurons/defi-control-plane-mcp{EXT}</a>. Questions: <a href="{E(COMMUNITY_QA_URL)}" target="_blank" rel="noopener">Community Q&amp;A (Discussions){EXT}</a>.</p></section>
 </article>
@@ -3253,6 +3258,8 @@ def llms(idx, radar):
         "## Free API for agents (launch: $0, no API key, no wallet)",
         f"- Remote MCP (Streamable HTTP, zero install): {MCP_URL} · Claude Code: `claude mcp add --transport http pacta {MCP_URL}` · Cursor: `{{\"mcpServers\": {{\"pacta\": {{\"url\": \"{MCP_URL}\"}}}}}}`. Tools ({REMOTE_TOOLS_DOC}): {', '.join(B2A.REMOTE_TOOLS)}. Local stdio server: {STDIO_TOOLS_DOC}.",
         "- " + B2A.CALLER_FIELDS_DOC,
+        "- " + B2A.FREE_TIER_DOC,
+        "- " + B2A.X402_DOC,
         "- " + B2A.protocols_line(idx, load_pinned()),
         f"- One call: `{CURL} \"{API}/v1/check/preflight?chain=ethereum&address=0x...\"` returns a verdict (IMMUTABLE_NO_ADMIN, TIMELOCK_PROTECTED, ZERO_DELAY_TIMELOCK_RISK, MULTISIG_NO_TIMELOCK, INSTANT_EOA_ADMIN_RISK, UNDEPLOYED_OR_EOA, UNCLASSIFIED_CONTRACT_CONTROLLER), a 0-100 risk score, proxy / admin / timelock breakdown and pause / blacklist / upgrade capabilities, pinned to a block hash.",
         f"- [{B2A.LOOKUP_URL}?q=ethena]({B2A.LOOKUP_URL}?q=ethena): free protocol / token name lookup (MCP tool pacta_lookup_protocol). {B2A.LOOKUP_DOC}",
@@ -3701,7 +3708,7 @@ RADAR_STATE_WORD = {"ready": "ready", "pending": "pending", "mixed": "mixed", "u
 SELF_SERVE_PLANS = [   # key, title, price, note, bullets, (cta, href, kind), badge
     ("free", "Free scorecards, API & MCP", "$0", "No key, no wallet", [
         "All {n} scorecards and Base EAS proofs, free, with live re-check on demand",
-        "Preflight API and remote MCP, 60 requests / minute",
+        "50 free preflight / MCP checks a day, then $0.01 a call over x402",
         "Free doc-update queue, typically 6–8 weeks"], ("Browse scorecards", "scorecards/", "pricing_free"), None),
     ("instant-scan-19", "Instant Contract & Safe Deep-Scan", "$19", "USDC · one-time", [
         "Live multi-RPC read of any contract or Safe in under 60 s",
@@ -3716,6 +3723,7 @@ SELF_SERVE_PLANS = [   # key, title, price, note, bullets, (cta, href, kind), ba
         "Safe Transaction Builder JSON and an upstream docs PR",
         "Base EAS attestation of the observed result"], ("Book a seal", "seal/", "pricing_seal_99"), "Intro: first 5 teams"),
 ]
+X402_STRIP = [(p, u, t) for (p, u, _), t in zip(B2A.X402_ENDPOINTS, ("Fast safety verdict", "Control-plane dossier", "Calldata sim", "Deep scan + Base EAS"))]
 ENTERPRISE_STRIP = [("clearance", "Multi-contract dossiers", "$2,500–$5,000"), ("continuous", "Continuous Control-Plane Monitoring", "$1,500 / month"),
                     ("community", "Community queue", "$0"), ("api_sla", "API SLA", "custom")]
 
@@ -3732,7 +3740,11 @@ def pricing_cards(idx, home=""):
                           + extra + '</div>', cls="plan" + (" feat" if key == "instant-scan-19" else ""), attrs=f'data-plan="{key}"'))
     strip = "".join(f'<a href="{home}request/?tier={k}" data-tier="{k}" data-cta="pricing_{k.replace("-", "_")}"><b>{E(t)}</b><span>{E(p)}</span></a>'
                     for k, t, p in ENTERPRISE_STRIP)
+    x402 = "".join(f'<a href="{home}mcp/#x402" data-x402-route="{E(p)}" data-cta="pricing_x402_{p.rsplit("/", 1)[1].replace("-", "_")}"><b>{E(t)}</b><span>${E(u)} / call</span></a>'
+                   for p, u, t in X402_STRIP)
     return (f'<div class="plans" data-pricing>{"".join(out)}</div>'
+            f'<div class="ent-strip" data-x402-strip><span class="ent-l">Agent &amp; API · pay per call in USDC on Base (x402) '
+            f'<small>{B2A.FREE_DAILY_QUOTA} free preflight / MCP checks a day, then $0.01 a call: never a dead-end 429</small></span>{x402}</div>'
             f'<div class="ent-strip" data-enterprise-strip><span class="ent-l">Enterprise &amp; protocol diligence</span>{strip}</div>'
             f'<p class="note">Paid work never changes a result: dossiers, monitoring and seals can still read Delta when docs and chain diverge.</p>')
 

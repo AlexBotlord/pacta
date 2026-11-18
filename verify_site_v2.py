@@ -73,7 +73,7 @@ X = EXPECT
 # sha256 of docs/api/v1/graph-manifest.json: changes only through a deliberate re-pin (a Sprint stage / stamp rewrites it after the
 # rebuild); a merged Wave 2 claim or any site-only change must leave it as is
 GRAPH_MANIFEST_SHA256 = "0807fbca5cfb6430f1cff153ed5049803c153f7a1dab496afb82e9d7a866deb5"
-NON_PROTOCOL_PAGES = 31                                                  # docs/**/*.html pages that are not /protocols/<slug>/ (31 with the Sprint 27 brief)
+NON_PROTOCOL_PAGES = 32                                                  # docs/**/*.html pages that are not /protocols/<slug>/ (32 with the Sprint 28 brief)
 
 
 def check(name, ok, detail=""):
@@ -2236,12 +2236,12 @@ def main(argv=None):
     check("v4.5.1 polish (R3-01 neutral Aligned badges, R3-02 demo receipt link target, '36 of 90' reconciliation line)", all(v451.values()),
           str([k for k, x in v451.items() if not x]))
 
-    # v4.6: multi-chain radar (Ethereum + Base; Sprint 27 refresh: 8 items / 14 ops), decoded pre-execution briefs (5 from Sprint 27), one receipt card per protocol + radar cards + x-feed mirror
+    # v4.6: multi-chain radar (Ethereum + Base; Sprint 28 refresh: 9 items / 15 ops), decoded pre-execution briefs (6 from Sprint 28), one receipt card per protocol + radar cards + x-feed mirror
     rad46 = json.loads(read("docs/api/v1/radar.json"))
     home46, radar46 = pages["index.html"], pages[os.path.join("radar", "index.html")]
     base46 = [it for it in rad46["items"] if it.get("chain_id") == 8453]
     new46 = ["lombard-ops-0xceee-0x2f2a-0x6404", "beefy-base-op-0x3302", "ethena-ops-0xb028-0xca05-0x108e-0x070a", "yearn-v3-op-0x2a14",
-             "etherfi-liquid-op-0xf0fb"]
+             "etherfi-liquid-op-0xf0fb", "lombard-op-0xd07f"]
     dec46 = json.loads(read("tools/briefs_decoded.json"))
     dec_by46 = {b_["slug"]: b_ for b_ in dec46["briefs"]}
     briefs46 = {sl: pages.get(os.path.join("briefs", sl, "index.html"), "") for sl in new46}
@@ -2256,17 +2256,17 @@ def main(argv=None):
         return {**it_, "eta": None if st_ == "executed" else it_["eta"],
                 "operations": [{**o_, "done": st_ == "executed", "pending": st_ != "executed", "ready": st_ == "ready"} for o_ in it_["operations"]]}
     v46 = {
-        "radar.json: 8 items / 14 ops (Sprint 27 refresh: 1 ready (3 ops), 4 pending (7 ops), executed (4 ops), Beefy on Base + Treehouse on Ethereum executed); refreshed_at (Ethereum) + refreshed_at_base (Base)":
-            len(rad46["items"]) == 8 and sum(len(it["operations"]) for it in rad46["items"]) == 14
-            and [BS.item_state(it) for it in rad46["items"]].count("ready") == 1 and [BS.item_state(it) for it in rad46["items"]].count("pending") == 4
-            and sum(len(it["operations"]) for it in rad46["items"] if BS.item_state(it) == "ready") == 3
-            and sum(len(it["operations"]) for it in rad46["items"] if BS.item_state(it) == "pending") == 7
-            and sum(len(it["operations"]) for it in rad46["items"] if BS.item_state(it) == "executed") == 4
+        "radar.json: 9 items / 15 ops (Sprint 28 refresh: 0 ready, 5 pending (8 ops), executed (7 ops), Beefy on Base + Treehouse and the Lombard upgrades on Ethereum executed); refreshed_at (Ethereum) + refreshed_at_base (Base)":
+            len(rad46["items"]) == 9 and sum(len(it["operations"]) for it in rad46["items"]) == 15
+            and [BS.item_state(it) for it in rad46["items"]].count("ready") == 0 and [BS.item_state(it) for it in rad46["items"]].count("pending") == 5
+            and sum(len(it["operations"]) for it in rad46["items"] if BS.item_state(it) == "ready") == 0
+            and sum(len(it["operations"]) for it in rad46["items"] if BS.item_state(it) == "pending") == 8
+            and sum(len(it["operations"]) for it in rad46["items"] if BS.item_state(it) == "executed") == 7
             and all(BS.item_state(it) == "executed" for it in base46)
             and r46["tag"] == rb46.get("tag") == "finalized" and len(base46) == 1 and all(it.get("protocol_slug") and it.get("chain_id") in (1, 8453) for it in rad46["items"]),
-        "counts text '1 ready (3 ops) · 4 pending (7 ops) · Executed (4 ops)' on / and /radar/":
-            BS.radar_counts_text(rad46) == "1 ready (3 ops) · 4 pending (7 ops) · Executed (4 ops)"
-            and all("data-radar-counts>1 ready (3 ops) · 4 pending (7 ops) · Executed (4 ops)</span>" in t for t in (home46, radar46)),
+        "counts text '5 pending (8 ops) · Executed (7 ops)' on / and /radar/":
+            BS.radar_counts_text(rad46) == "5 pending (8 ops) · Executed (7 ops)"
+            and all("data-radar-counts>5 pending (8 ops) · Executed (7 ops)</span>" in t for t in (home46, radar46)),
         "Base items link Basescan (never Etherscan) for the timelock on / and /radar/, carry a 'Base' tag, and the Base brief has 0 etherscan.io links":
             all(f'https://basescan.org/address/{it["timelock"]}' in t and f'etherscan.io/address/{it["timelock"]}' not in t and f'etherscan.io/address/{it["timelock"].lower()}' not in t
                 and '<span class="chain-tag">Base</span>' in t for it in base46 for t in (home46, radar46))
@@ -2283,7 +2283,7 @@ def main(argv=None):
                 and f"Executed on Base by Finalized Block #{rb46['block_number']:,}" in BS.post_eta_banner(ann46(it, "executed"), rb46, "base")
                 and "on L1" not in BS.post_eta_banner(ann46(it, "ready"), rb46, "base") for it in base46)
             and "on L1" not in beefy46,
-        "5 decoded briefs: rendered from tools/briefs_decoded.json (every op id, call, risk note and reproduce command), in BRIEFS / BRIEF_PROTOCOL, sitemap, llms.txt, lookup.json + lookup.mjs":
+        "6 decoded briefs: rendered from tools/briefs_decoded.json (every op id, call, risk note and reproduce command), in BRIEFS / BRIEF_PROTOCOL, sitemap, llms.txt, lookup.json + lookup.mjs":
             dec46["schema"] == "pacta.decoded_briefs.v1" and sorted(dec_by46) == sorted(new46)
             and all(sl in BS.BRIEFS and BS.BRIEF_PROTOCOL[sl] == dec_by46[sl]["protocol_slug"] for sl in new46)
             and all(all(o_["op_id"] in briefs46[sl] for o_ in dec_by46[sl]["operations"])
@@ -2302,7 +2302,7 @@ def main(argv=None):
         "app.js keeps live blocks per chain (an Ethereum block is never compared with a Base block) (harness)":
             "blk[ch] = Math.floor(n)" in appjs and res.get("v46_live_blocks_per_chain") is True,
     }
-    check(f"v4.6 multi-chain radar (8 items / 14 ops, Basescan for chain id 8453, two-chain provenance, 'on Base' wording), 5 decoded briefs, {X['protocols'] + rad46n} cards",
+    check(f"v4.6 multi-chain radar (9 items / 15 ops, Basescan for chain id 8453, two-chain provenance, 'on Base' wording), 6 decoded briefs, {X['protocols'] + rad46n} cards",
           all(v46.values()), str([k for k, x in v46.items() if not x]))
 
     # v4.7 W1-W5 (external UX evaluation quick wins)
@@ -2826,7 +2826,7 @@ def main(argv=None):
             == ("1.00", 1_000_000, 1000, 1, 25, "25.00", "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913")
             and w2cfg["program"] == "1,000-Gap Perpetual Open-Discovery Program ($1.00 USDC / Merged Net-New Gap on Base)" and "totalSlots" not in w2cfg
             and w2cfg["settlement"]["chainId"] == 8453 and w2cfg["settlement"]["treasuryKind"] == "EOA" and VBS.checksummed(treas)
-            and VBS.W2 == w2cfg and "in epochs (Epoch 1 target cap: 25 × $1.00 USDC = $25.00 USDC; $2.00 USDC (2 slots) confirmed unencumbered on-chain now)" in read("docs/llms.txt"),
+            and VBS.W2 == w2cfg and f"in epochs (Epoch 1 target cap: 25 × $1.00 USDC = $25.00 USDC; ${BS.FUNDED_UNENCUMBERED_USDC} USDC ({BS.FUNDED_UNENCUMBERED_SLOTS} slots) confirmed unencumbered on-chain now)" in read("docs/llms.txt"),
         "Wave 1 archive source byte-identical (tools/bounty_issues.json 874df3fd...)":
             hashlib.sha256(read("tools/bounty_issues.json", "rb")).hexdigest() == "874df3fd179ad241e3f2e4a7e837e9aa07f462a8a842b25fb1803049a6b84954",
         "master issue: exact title, regenerates byte-identically, rendered verbatim on /bounties/":
@@ -2836,7 +2836,7 @@ def main(argv=None):
             and "python3 tools/verify_bounty_submission.py --json bounties/wave-2/<chain>-<slug>.json" in master and no_safe(master),
         f"live counters = merged bounties/wave-2/*.json ({n_claims - BS.PRIOR_EPOCH_SLOTS} / 25 Epoch 1 active; {n_claims} / 1,000 program)": n_claims == len(claims_)
             and f'data-wave2-counter="{n_claims - BS.PRIOR_EPOCH_SLOTS}" data-wave2-program="{n_claims}"' in bounty
-            and f"<b>{n_claims - BS.PRIOR_EPOCH_SLOTS} / 25 Epoch 1 Slots Claimed</b> · target cap $25.00 USDC · <b>$2.00 USDC (2 slots) confirmed unencumbered on-chain now</b>" in bounty
+            and f"<b>{n_claims - BS.PRIOR_EPOCH_SLOTS} / 25 Epoch 1 Slots Claimed</b> · target cap $25.00 USDC · <b>${BS.FUNDED_UNENCUMBERED_USDC} USDC ({BS.FUNDED_UNENCUMBERED_SLOTS} slots) confirmed unencumbered on-chain now</b>" in bounty
             and f"1,000-Gap Perpetual Program · $1.00 USDC / Merged Net-New Gap · {n_claims} / 1,000 program slots merged" in bounty
             and "data-wave2-epochs" in bounty and "<b>Net-new only:</b>" in bounty
             and (n_claims > 0 or "No Wave 2 slots claimed yet" in bounty),
@@ -2847,12 +2847,13 @@ def main(argv=None):
             and "3 concurrent open CI-passing PRs per contributor" in bounty and html.escape(BS.WAVE2_PAYOUT) in bounty
             and "within 7 days of maintainer merge" in BS.WAVE2_PAYOUT and "an externally owned account" in BS.WAVE2_PAYOUT
             and "basePayoutAddress" in BS.WAVE2_PAYOUT and "not pre-escrowed" in BS.WAVE2_PAYOUT and no_safe(bounty),
-        "Wave 1 Genesis Settlement Ledger (4 slots: PR #27 / #31 / #29 verified, Issue #24 in review; settled only with a real tx)":
+        "Wave 1 Genesis Settlement Ledger (4 slots: PR #27 / #31 / #29 / #32 verified, Slot #4 pending settlement; settled only with a real tx)":
             [s_["slot"] for s_ in lb_["wave1Settlements"]] == [1, 2, 3, 4]
             and [(s_["pr"], s_["hunter"], s_["protocol"]) for s_ in lb_["wave1Settlements"]] == [(27, "veriton-dev", "Stake DAO"), (31, "scavenger-osan", "Resupply"),
-                                                                                             (29, "kinshu7777", "YO Protocol"), (None, None, None)]
-            and all(f'data-w1-slot="{n}"' in bounty for n in (1, 2, 3, 4)) and all(f'/pull/{n}"' in bounty for n in (27, 31, 29))
-            and "In review through Nov 22, 2026" in bounty and bounty.count('data-settled="pending"') == sum(1 for s_ in lb_["wave1Settlements"]
+                                                                                             (29, "kinshu7777", "YO Protocol"), (32, "givemehat", "Inverse Finance (FiRM)")]
+            and all(s_["status"] == "verified" for s_ in lb_["wave1Settlements"])
+            and all(f'data-w1-slot="{n}"' in bounty for n in (1, 2, 3, 4)) and all(f'/pull/{n}"' in bounty for n in (27, 31, 29, 32))
+            and "In review through Nov 22, 2026" not in bounty and bounty.count('data-settled="pending"') == sum(1 for s_ in lb_["wave1Settlements"]
                                                                                                          if s_["status"] == "verified" and not s_["payoutTxHash"])
             and bounty.count("data-basescan-tx") == sum(1 for s_ in lb_["wave1Settlements"] if s_["payoutTxHash"]),
     }
@@ -2864,7 +2865,7 @@ def main(argv=None):
     row1 = re.search(r'<tr data-w1-slot="1">.*?</tr>', led, re.S).group(0)
     row2 = re.search(r'<tr data-w1-slot="2">.*?</tr>', led, re.S).group(0)
     refused = []
-    for bad_tx, slot_ in (("0x123", 1), ("0x" + "00" * 32, 1), ("0x" + "zz" * 32, 2), (fake, 4)):
+    for bad_tx, slot_ in (("0x123", 1), ("0x" + "00" * 32, 1), ("0x" + "zz" * 32, 2), (fake, 5)):      # Slot #5 does not exist
         try:
             SWP.stamp(lb0, {slot_: bad_tx})
         except ValueError:
@@ -2891,9 +2892,9 @@ def main(argv=None):
     st_rows = {h_["handle"]: h_ for h_ in BS.hunter_stats(st_lb, claims_)}
     w2["stamp_wave1_payouts.py: 1-command stamp -> BaseScan tx link + $25.00 USDC; pending elsewhere; bad / zero hashes, unverified slot, silent overwrite refused"] = (
         f'href="https://basescan.org/tx/{fake}"' in row1 and "$25.00 USDC" in row1 and "Settled on Base" in row1 and "$0.00 (pending settlement)" in row2
-        and len(st_changes) == 1 and refused == [1, 1, 2, 4] and loader_refuses and dry_rc == 0 and dry_same and real_rc == 0
+        and len(st_changes) == 1 and refused == [1, 1, 2, 5] and loader_refuses and dry_rc == 0 and dry_same and real_rc == 0
         and [s_["payoutTxHash"] for s_ in stamped["wave1Settlements"]] == [fake, fake, None, None] and again_rc == 2
-        and st_rows["veriton-dev"]["settled"] == 25_000_000 and st_rows["kinshu7777"]["settled"] == 0
+        and st_rows["veriton-dev"]["settled"] == 25_000_000 + BS.REWARD_ATOMIC and st_rows["kinshu7777"]["settled"] == 0   # + Wave 2 PR #54 (paid)
         and SWP.dump(lb_) == read("bounties/leaderboard.json"))
     paid_ = [s_ for s_ in lb_["wave1Settlements"] if s_["payoutTxHash"]]
     w2["Wave 1 settlements stamped: each recorded payout hash is a real 0x + 64-hex tx, linked to BaseScan with $25.00 USDC on /bounties/ and credited on /leaderboard/"] = (
@@ -3047,13 +3048,14 @@ def main(argv=None):
             and all('bounties/">Bounties</a>' in t for r, t in pages.items() if 'class="topbar"' in t),
         "Wave 1 archive labelled 'Historical Snapshot (Pinned at 53 Protocols on Nov 15)'": "<b>Historical Snapshot (Pinned at 53 Protocols on Nov 15)</b>" in bounty
             and bounty.index("data-wave1-snapshot") > bounty.index('id="wave-1"'),
-        "funded capacity = confirmed unencumbered USDC only (2 slots / $2.00; $25.00 ring-fenced for Slot #4; Epoch 1 cap is a target; build caps merged claims at it)":
-            (w2cfg["fundedUnencumberedSlots"], w2cfg["fundedUnencumberedUsdc"], w2cfg["ringFencedUsdc"]) == (2, "2.00", "25.00")
-            and (BS.FUNDED_UNENCUMBERED_SLOTS, BS.FUNDED_UNENCUMBERED_USDC, BS.EPOCH_REMAINING_USDC) == (2, "2.00", "23.00")
-            and "data-wave2-capacity" in bounty and "$25.00 USDC in the treasury is separately ring-fenced for open Wave 1 Slot #4 (Issue #24)" in bounty
-            and "Confirmed unencumbered on-chain now: **$2.00 USDC (2 slots)**" in master and "funded this epoch" not in bounty + master + read("docs/llms.txt")
+        "funded capacity = confirmed unencumbered USDC only (6 Epoch 1 slots settled on Base; 0 slots / $0.00 unencumbered; the $21.45 USDC treasury ring-fenced for Slot #4; Epoch 1 cap is a target; build caps merged claims at settled + unencumbered)":
+            (w2cfg["settledEpochSlots"], w2cfg["fundedUnencumberedSlots"], w2cfg["fundedUnencumberedUsdc"], w2cfg["ringFencedUsdc"]) == (6, 0, "0.00", "21.45")
+            and (BS.SETTLED_EPOCH_SLOTS, BS.FUNDED_UNENCUMBERED_SLOTS, BS.FUNDED_UNENCUMBERED_USDC, BS.EPOCH_REMAINING_USDC) == (6, 0, "0.00", "19.00")
+            and len(lb_["wave2Settlements"]) == 6 and all(BS.tx_ok(p_["payoutTxHash"]) for p_ in lb_["wave2Settlements"])
+            and "data-wave2-capacity" in bounty and "$21.45 USDC in the treasury is separately ring-fenced for Wave 1 Slot #4 (verified PR #32, Issue #24)" in bounty
+            and "Confirmed unencumbered on-chain now: **$0.00 USDC (0 slots)**" in master and "funded this epoch" not in bounty + master + read("docs/llms.txt")
             and not re.search(r"\bfunded epochs?\b|pays out in funded", bounty + master + read("docs/llms.txt") + read("docs/llms-full.txt") + rd_)
-            and "PRIOR_EPOCH_SLOTS + FUNDED_UNENCUMBERED_SLOTS" in read("tools/build_site.py"),
+            and "PRIOR_EPOCH_SLOTS + SETTLED_EPOCH_SLOTS + FUNDED_UNENCUMBERED_SLOTS" in read("tools/build_site.py"),
         "README: $75 settled shield (= the stamped Wave 1 ledger), @pacta/mcp-server 0.1.5, Master Issue #41, 62 EAS + 12 RPC protocols, Ethereum and Base block heights": (
             sum(25 for s_ in lb_["wave1Settlements"] if s_["payoutTxHash"]) == 75
             and "[![Bounties & Leaderboard](https://img.shields.io/badge/Bounties_%26_Leaderboard-%2475_USDC_Settled-10b981?style=for-the-badge&labelColor=000000)](https://pacta.wtf/leaderboard/)" in read("README.md")
@@ -3067,6 +3069,39 @@ def main(argv=None):
     }
     check("C1: GitHub Discussions community hub + Wave 2 master issue #41 linked from README, every footer, /bounties/, /leaderboard/, llms.txt, llms-full.txt, /llms/ and the master issue text",
           all(c1.values()), str([k for k, v in c1.items() if not v]))
+
+    # Every Wave 1 and Wave 2 hunter credit renders on its published protocol page (hunter handle + PR link + the credited record),
+    # and bounties/leaderboard.json easAttestations counts every credit across both waves
+    lbh = BS.load_leaderboard()
+    idx_ids = {e_["id"] for e_ in json.loads(read("docs/api/v1/index.json"))["entries"]}
+    hc_bad, per_hunter = [], {}
+    w1_by_slot = {int(s_["slot"]): s_ for s_ in lbh["wave1Settlements"]}
+    for f_name in sorted(os.listdir(os.path.join(ROOT, "bounties", "submissions"))):
+        if not (f_name.startswith("slot-") and f_name.endswith(".json")):
+            continue
+        fx = json.loads(read(os.path.join("bounties", "submissions", f_name)))
+        st_ = w1_by_slot[int(fx["slot"])]
+        if st_["status"] != "verified" or not fx.get("pactaSlug"):
+            continue
+        pg = os.path.join(DOCS, "protocols", fx["pactaSlug"], "index.html")
+        page_ = read(pg) if os.path.exists(pg) else ""
+        per_hunter[st_["hunter"]] = per_hunter.get(st_["hunter"], 0) + 1
+        if f'data-research-credit="{st_["hunter"]}"' not in page_ or f'/pull/{st_["pr"]}"' not in page_:
+            hc_bad.append(f'wave 1 slot {fx["slot"]} @{st_["hunter"]} on /protocols/{fx["pactaSlug"]}/')
+    w2_files = {c_["_file"]: c_ for c_ in BS.load_wave2_claims()}
+    for c_ in lbh.get("wave2Credits", []):
+        h_ = w2_files[c_["fixture"]]["hunter"]
+        pg = os.path.join(DOCS, "protocols", c_["pactaSlug"], "index.html")
+        page_ = read(pg) if os.path.exists(pg) else ""
+        per_hunter[h_] = per_hunter.get(h_, 0) + 1
+        if (f'data-research-credit="{h_}" data-research-wave="2"' not in page_ or f'/pull/{c_["pr"]}"' not in page_
+                or f'href="#{c_["record"]}"' not in page_ or f'id="{c_["record"]}"' not in page_ or c_["record"] not in idx_ids):
+            hc_bad.append(f'wave 2 PR #{c_["pr"]} @{h_} on /protocols/{c_["pactaSlug"]}/')
+    check("Wave 1 + Wave 2 hunter credits: every credit renders on its protocol page (handle, PR, credited Base-EAS record); "
+          "easAttestations = the credits across both waves",
+          not hc_bad and lbh["easAttestations"] == {h_: per_hunter[h_] for h_ in sorted(per_hunter)}
+          and set(c_["fixture"] for c_ in lbh.get("wave2Credits", [])) <= set(w2_files),
+          str(hc_bad) + " " + str((lbh["easAttestations"], per_hunter)))
 
     # ================= Website, accessibility & trust polish pack v2 (Groups 2-4: copy, radar truth, freshness, a11y, nav, feeds, meta) =================
     import xml.etree.ElementTree as ETP

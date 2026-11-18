@@ -44,18 +44,43 @@
     {
       "slot": 4,
       "issue": 24,
-      "pr": null,
-      "hunter": null,
+      "pr": 32,
+      "hunter": "givemehat",
       "agentFramework": null,
-      "protocol": null,
-      "chainId": null,
+      "protocol": "Inverse Finance (FiRM)",
+      "chainId": 1,
       "rewardUsdc": "25.00",
-      "status": "in_review",
-      "statusNote": "In review through Nov 22, 2026",
+      "status": "verified",
+      "statusNote": null,
       "payoutTxHash": null
     }
   ],
-  "wave2Settlements": [],
+  "wave2Settlements": [
+    {
+      "fixture": "base-40-acres.json",
+      "payoutTxHash": "0xddb3b12abc7db29fd1584a9c135dd9989575f8265d2bdc9fa2cfc042e3dfe4b6"
+    },
+    {
+      "fixture": "ethereum-defi-saver.json",
+      "payoutTxHash": "0xb605a9b7273cb52a1ad6886ca5bfb59cd4bba56cf07723bc2509b7c31b68432d"
+    },
+    {
+      "fixture": "ethereum-inverse-firm-borrowcontroller.json",
+      "payoutTxHash": "0xac02ff3b67c0ebd17fc515d049a83a42d64f5fc784b995ba2220108f8a76dbc7"
+    },
+    {
+      "fixture": "ethereum-upshift.json",
+      "payoutTxHash": "0x3aac64ccfe0876b14693f6390a792808aca2d534d63232a11254fe60b0c0ca8d"
+    },
+    {
+      "fixture": "ethereum-vesper.json",
+      "payoutTxHash": "0xedf2b1ca6ab2d87f866bf6230a8b7ddfda3ce76f7a2f3780eea8994de14d90ac"
+    },
+    {
+      "fixture": "ethereum-yearn-v3.json",
+      "payoutTxHash": "0x0d03facb59cdf2e1e42edd32f74787f228131d57425643529164a1c560b4186d"
+    }
+  ],
   "easAttestations": {
     "kinshu7777": 1,
     "scavenger-osan": 1,

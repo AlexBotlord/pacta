@@ -1,4 +1,4 @@
-"""v4.6: the radar pre-execution briefs rendered from tools/briefs_decoded.json (schema pacta.decoded_briefs.v1); Sprint 27 adds the fifth.
+"""v4.6: the radar pre-execution briefs rendered from tools/briefs_decoded.json (schema pacta.decoded_briefs.v1); Sprint 27 adds the fifth, Sprint 28 the sixth.
 
 tools/briefs_decoded.json is the decoder's output, committed byte-for-byte: scheduling logs, decoded calls, current vs new state,
 verified sources (Sourcify), risk notes and `cast` reproduction commands. Every value in it was read at a finalized block
@@ -67,6 +67,16 @@ EDITORIAL = {
         "badges": [("badge-cyan", "Pre-execution brief"), ("badge-amber", "Root leaves not onchain"),
                    ("badge-amber", "EOA strategist on liquidETH")],
         "state_title": "Managers, vaults and strategists at the pin",
+    },
+    "lombard-op-0xd07f": {
+        "title": "Pacta Governance Radar · Pre-Execution Brief — Lombard AssetRouter Op 0xd07f",
+        "h1": "Lombard <code>AssetRouter</code> — 2,000-Sat Deposit Fees on <code>LBTC</code> and <code>BTC.b</code>, Minimum Request Doubled",
+        "lede": ("Pre-execution decode of one 5-call LombardTimeLock batch on the upgraded AssetRouter: the router-wide minimum doubles to "
+                 "4,000 sats, every LBTC and BTC.b proof mint pays a fixed 2,000-sat deposit fee, and LBTC's redeem charge moves from "
+                 "non-Bitcoin redeems to redeems to Bitcoin."),
+        "badges": [("badge-cyan", "Pre-execution brief"), ("badge-amber", "New fee on every proof mint"),
+                   ("badge-amber", "Fee above the operator range")],
+        "state_title": "AssetRouter parameters: current vs queued",
     },
 }
 
@@ -274,6 +284,9 @@ def target_names(b):
         n[d["minting"]["address"]] = "EthenaMinting"
         n[d["oftAdapter"]["address"]] = "USDeOFTAdapter (LayerZero)"
         n.update({a: v["symbol"] for a, v in d["assets"].items()})
+    if "router" in d:
+        n[d["router"]["address"]] = d["router"]["name"]
+        n.update({a: v["symbol"] for a, v in d["tokens"].items()})
     if "managers" in d:
         n.update({m: f'{v["vaultSymbol"]} manager' for m, v in d["managers"].items()})
         n.update({v["vault"]: v["vaultSymbol"] for v in d["managers"].values()})
@@ -300,6 +313,10 @@ def call_effect(b, o, c, E):
         k = c["custodian"]
         return (f' — {E(k["kind"])} ({k["codeBytes"]} bytes of code); isCustodianAddress = '
                 f'{str(k["isCustodianAddress"]).lower()} at the pin')
+    if "lombardChange" in c:
+        x = c["lombardChange"]
+        who = f'{x["tokenSymbol"]} ' if x.get("tokenSymbol") else ""
+        return f' — {E(who)}{E(x["parameter"])}: {x["from"]:,} to {x["to"]:,} {E(x["unit"])}'
     if "root" in c:
         r = c["root"]
         to = "zero (cleared)" if int(r["to"], 16) == 0 else f'{r["to"][:6]}…{r["to"][-4:]}'
@@ -322,6 +339,14 @@ def kpis(b, F):
     """(label, value, sub-line, ok) for the four key-figure tiles; numbers from the JSON."""
     d, ops = b["decoded"], b["operations"]
     slug = b["slug"]
+    if slug == "lombard-op-0xd07f":
+        ch = {c["lombardChange"]["parameter"] + (c["lombardChange"]["tokenSymbol"] or ""): c["lombardChange"] for o in ops for c in o["calls"]}
+        lo, hi = d["router"]["depositFeeOperatorRange"]
+        mn = ch["minRequestAmount"]
+        return [("Deposit fee per proof mint", f'{ch["depositFeeLBTC"]["to"]:,} sats', f'LBTC and BTC.b · {ch["depositFeeLBTC"]["from"]:,} today', False),
+                ("Minimum request", f'{mn["from"]:,} to {mn["to"]:,} sats', "Router-wide · set first in the batch", False),
+                ("Timelock delay", F["delay"], f"ETA {F['eta']}", False),
+                ("Operator fee range", f"{lo:,}–{hi:,} sats", "The queued fee is above it: timelock only", True)]
     if slug.startswith("lombard"):
         ar = d["assetRouter"]
         return [("Operations", f"{len(ops)} proxy upgrades", "Independent · predecessor 0x0", False),
@@ -486,6 +511,32 @@ def state_etherfi_liquid(b, item, bs, xa, E):
             f'timelock\'s proposer, canceller and executor; the executor role is not open to everyone.</p>', '</div>']
 
 
+def state_lombard_fees(b, item, bs, xa, E):
+    d, ops = b["decoded"], b["operations"]
+    tl = item["timelock"].lower()
+    r, p = d["router"], d["proposer"]
+    assert r["defaultAdmin"].lower() == tl and r["owner"].lower() == tl and r["timelockIsDefaultAdmin"] and not r["timelockIsOperator"]
+    assert p["proposerIsTxTo"] and p["executorIsTxTo"] and not p["executorOpen"]
+    rows = []
+    for o in ops:
+        for c in o["calls"]:
+            x = c["lombardChange"]
+            tok = xa(x["token"], x["tokenSymbol"]) if x.get("token") else "Router-wide"
+            rows.append(f'<tr><td><code>{E(x["parameter"])}</code></td><td>{tok}</td><td>{x["from"]:,} sats</td><td>{x["to"]:,} sats</td>'
+                        f'<td>{E(x["meaning"])}</td></tr>')
+    impl = r["implementation"]
+    lo, hi = r["depositFeeOperatorRange"]
+    return ['<div class="card">',
+            f'  <p>{xa(r["address"], "AssetRouter")} runs implementation {xa(impl["address"])} ({E(impl["sourcify"]["name"])}, Sourcify '
+            f'{E(impl["sourcify"]["match"])}). Its owner() and defaultAdmin() are {xa(tl, "this timelock")} (defaultAdminDelay '
+            f'{r["defaultAdminDelay"]} s); an OPERATOR_ROLE holder may only set deposit fees from {lo:,} to {hi:,} sats. Amounts are in '
+            f'satoshis (8 decimals).</p>',
+            '  <table><thead><tr><th>Parameter</th><th>Token</th><th>Now</th><th>Queued</th><th>What it charges or limits</th></tr></thead>',
+            '  <tbody>' + "".join(rows) + '</tbody></table>',
+            f'  <p>The batch was scheduled by the {p["threshold"]}-of-{p["owners"]} Safe {xa(p["address"])} (Safe {E(p["version"])}), which is '
+            f'this timelock\'s proposer, canceller and executor; the executor role is not open to everyone.</p>', '</div>']
+
+
 STATE = {"lombard-ops-0xceee-0x2f2a-0x6404": state_lombard, "beefy-base-op-0x3302": state_beefy,
          "ethena-ops-0xb028-0xca05-0x108e-0x070a": state_ethena, "yearn-v3-op-0x2a14": state_yearn,
-         "etherfi-liquid-op-0xf0fb": state_etherfi_liquid}
+         "etherfi-liquid-op-0xf0fb": state_etherfi_liquid, "lombard-op-0xd07f": state_lombard_fees}

@@ -2362,6 +2362,275 @@
         "cast call 0xafa8c08bedb2ec1bbeb64a7ffa44c604e7cca68d \"manageRoot(address)(bytes32)\" 0x607d0c7e3578802eb46d388cb86cfba8ff657306 --block 26440366 --rpc-url $ETH_RPC_URL",
         "cast code 0xc8111d00351765c64d301cdfc1848bf5ff2e23a2 --block 26440366 --rpc-url $ETH_RPC_URL"
       ]
+    },
+    {
+      "slug": "lombard-op-0xd07f",
+      "protocol": "Lombard",
+      "protocol_slug": "lombard-lbtc",
+      "chain_id": 1,
+      "timelock": {
+        "address": "0x055e84e7fe8955e2781010b866f10ef6e1e77e59",
+        "getMinDelay": 86400,
+        "verified": {
+          "address": "0x055e84e7fe8955e2781010b866f10ef6e1e77e59",
+          "codeKeccak": "0x790260e19c593d086bc3677d1bd906d991d1652f5b22c90547ff8b7c57fa0332",
+          "codeBytes": 11076,
+          "sourcify": {
+            "name": "LombardTimeLock",
+            "fullyQualifiedName": "contracts/consortium/LombardTimeLock.sol:LombardTimeLock",
+            "match": "exact_match",
+            "runtimeMatch": "exact_match",
+            "compiler": "0.8.24+commit.e11b9ed9",
+            "verifiedAt": "2024-08-21T15:37:12Z",
+            "onchainBytecodeMatchesChain": true,
+            "url": "https://sourcify.dev/server/v2/contract/1/0x055e84e7fe8955e2781010b866f10ef6e1e77e59"
+          }
+        }
+      },
+      "operations": [
+        {
+          "op_id": "0xd07fa5ecca21af2317c073b5e59ecddce3968f694270409f76771727ea02e50a",
+          "label": null,
+          "eta": 1795077227,
+          "eta_utc": "2026-11-19 08:33:47 UTC",
+          "status": {
+            "isOperation": true,
+            "isOperationPending": true,
+            "isOperationReady": false,
+            "isOperationDone": false,
+            "getTimestamp": 1795077227
+          },
+          "ready": false,
+          "predecessor": "0xceeeff86865f11b6de2c57d4901d3ec3313edf08be6ea664989d386cb1ab18eb",
+          "delay": 86400,
+          "scheduled": {
+            "block": 26440772,
+            "tx": "0xc9c0a9bf13b6e66b6c6be81638b73eb27b7add455be905b538e1810ebe2d3421",
+            "from": "0x564974801d2ffbe736ed59c9be39f6c0a4274ae6",
+            "to": "0x251a604e8e8f6906d60f8dedc5aaeb8cd38f4892",
+            "function": "Safe execTransaction",
+            "logIndexes": [
+              1663,
+              1664,
+              1665,
+              1666,
+              1667
+            ]
+          },
+          "calls": [
+            {
+              "index": 0,
+              "target": "0x9ece5fb1ab62d9075c4ec814b321e24d8ea021ac",
+              "value": 0,
+              "selector": "0x02c71d00",
+              "function": "changeMinRequestAmount(uint256)",
+              "args": {
+                "_minRequestAmount": 4000
+              },
+              "calldata": "0x02c71d000000000000000000000000000000000000000000000000000000000000000fa0",
+              "cast_decode": "cast calldata-decode \"changeMinRequestAmount(uint256)\" 0x02c71d000000000000000000000000000000000000000000000000000000000000000fa0",
+              "lombardChange": {
+                "parameter": "minRequestAmount",
+                "token": null,
+                "tokenSymbol": null,
+                "from": 2000,
+                "to": 4000,
+                "unit": "sats",
+                "meaning": "router-wide minimum for a swap or a non-BTC redeem"
+              }
+            },
+            {
+              "index": 1,
+              "target": "0x9ece5fb1ab62d9075c4ec814b321e24d8ea021ac",
+              "value": 0,
+              "selector": "0xb357b892",
+              "function": "changeDepositFee(address,uint256)",
+              "args": {
+                "token": "0x8236a87084f8b84306f72007f36f2618a5634494",
+                "fee": 2000
+              },
+              "calldata": "0xb357b8920000000000000000000000008236a87084f8b84306f72007f36f2618a563449400000000000000000000000000000000000000000000000000000000000007d0",
+              "cast_decode": "cast calldata-decode \"changeDepositFee(address,uint256)\" 0xb357b8920000000000000000000000008236a87084f8b84306f72007f36f2618a563449400000000000000000000000000000000000000000000000000000000000007d0",
+              "lombardChange": {
+                "parameter": "depositFee",
+                "token": "0x8236a87084f8b84306f72007f36f2618a5634494",
+                "tokenSymbol": "LBTC",
+                "from": 0,
+                "to": 2000,
+                "unit": "sats",
+                "meaning": "fixed fee taken out of every proof mint, minted to the token's treasury"
+              }
+            },
+            {
+              "index": 2,
+              "target": "0x9ece5fb1ab62d9075c4ec814b321e24d8ea021ac",
+              "value": 0,
+              "selector": "0xb357b892",
+              "function": "changeDepositFee(address,uint256)",
+              "args": {
+                "token": "0xb0f70c0bd6fd87dbeb7c10dc692a2a6106817072",
+                "fee": 2000
+              },
+              "calldata": "0xb357b892000000000000000000000000b0f70c0bd6fd87dbeb7c10dc692a2a610681707200000000000000000000000000000000000000000000000000000000000007d0",
+              "cast_decode": "cast calldata-decode \"changeDepositFee(address,uint256)\" 0xb357b892000000000000000000000000b0f70c0bd6fd87dbeb7c10dc692a2a610681707200000000000000000000000000000000000000000000000000000000000007d0",
+              "lombardChange": {
+                "parameter": "depositFee",
+                "token": "0xb0f70c0bd6fd87dbeb7c10dc692a2a6106817072",
+                "tokenSymbol": "BTC.b",
+                "from": 0,
+                "to": 2000,
+                "unit": "sats",
+                "meaning": "fixed fee taken out of every proof mint, minted to the token's treasury"
+              }
+            },
+            {
+              "index": 3,
+              "target": "0x9ece5fb1ab62d9075c4ec814b321e24d8ea021ac",
+              "value": 0,
+              "selector": "0x05112d00",
+              "function": "changeRedeemFee(address,uint256)",
+              "args": {
+                "token": "0x8236a87084f8b84306f72007f36f2618a5634494",
+                "fee": 0
+              },
+              "calldata": "0x05112d000000000000000000000000008236a87084f8b84306f72007f36f2618a56344940000000000000000000000000000000000000000000000000000000000000000",
+              "cast_decode": "cast calldata-decode \"changeRedeemFee(address,uint256)\" 0x05112d000000000000000000000000008236a87084f8b84306f72007f36f2618a56344940000000000000000000000000000000000000000000000000000000000000000",
+              "lombardChange": {
+                "parameter": "redeemFee",
+                "token": "0x8236a87084f8b84306f72007f36f2618a5634494",
+                "tokenSymbol": "LBTC",
+                "from": 10000,
+                "to": 0,
+                "unit": "sats",
+                "meaning": "fee taken off redeems not bound for Bitcoin"
+              }
+            },
+            {
+              "index": 4,
+              "target": "0x9ece5fb1ab62d9075c4ec814b321e24d8ea021ac",
+              "value": 0,
+              "selector": "0xe0fbc8bc",
+              "function": "changeToNativeCommission(address,uint64)",
+              "args": {
+                "token": "0x8236a87084f8b84306f72007f36f2618a5634494",
+                "newValue": 10000
+              },
+              "calldata": "0xe0fbc8bc0000000000000000000000008236a87084f8b84306f72007f36f2618a56344940000000000000000000000000000000000000000000000000000000000002710",
+              "cast_decode": "cast calldata-decode \"changeToNativeCommission(address,uint64)\" 0xe0fbc8bc0000000000000000000000008236a87084f8b84306f72007f36f2618a56344940000000000000000000000000000000000000000000000000000000000002710",
+              "lombardChange": {
+                "parameter": "toNativeCommission",
+                "token": "0x8236a87084f8b84306f72007f36f2618a5634494",
+                "tokenSymbol": "LBTC",
+                "from": 0,
+                "to": 10000,
+                "unit": "sats",
+                "meaning": "fee deducted from redeems to Bitcoin"
+              }
+            }
+          ]
+        }
+      ],
+      "decoded": {
+        "salt": "0x55f0959c12f73b2c175fe0fe643d13682cad2297cf78015d9decd37a80d41bc5",
+        "predecessorOp": "0xceeeff86865f11b6de2c57d4901d3ec3313edf08be6ea664989d386cb1ab18eb",
+        "router": {
+          "address": "0x9ece5fb1ab62d9075c4ec814b321e24d8ea021ac",
+          "name": "AssetRouter",
+          "implementation": {
+            "address": "0xa0b400c4f63773fc8bd801a7c765d322c6ca6a1a",
+            "codeKeccak": "0x891d83db4a287edaaf7f0801054b4e2672ab831bbacbc829fe6662ea39b84215",
+            "codeBytes": 23193,
+            "sourcify": {
+              "name": "AssetRouter",
+              "fullyQualifiedName": "contracts/LBTC/AssetRouter.sol:AssetRouter",
+              "match": "match",
+              "runtimeMatch": "match",
+              "compiler": "0.8.24+commit.e11b9ed9",
+              "verifiedAt": "2026-11-13T16:00:35Z",
+              "onchainBytecodeMatchesChain": true,
+              "url": "https://sourcify.dev/server/v2/contract/1/0xa0b400c4f63773fc8bd801a7c765d322c6ca6a1a"
+            }
+          },
+          "owner": "0x055e84e7fe8955e2781010b866f10ef6e1e77e59",
+          "defaultAdmin": "0x055e84e7fe8955e2781010b866f10ef6e1e77e59",
+          "defaultAdminDelay": 0,
+          "timelockIsDefaultAdmin": true,
+          "timelockIsOperator": false,
+          "maxDepositFee": 0,
+          "depositFeeOperatorRange": [
+            100,
+            1000
+          ]
+        },
+        "tokens": {
+          "0x8236a87084f8b84306f72007f36f2618a5634494": {
+            "symbol": "LBTC",
+            "decimals": 8,
+            "name": "Lombard Staked Bitcoin"
+          },
+          "0xb0f70c0bd6fd87dbeb7c10dc692a2a6106817072": {
+            "symbol": "BTC.b",
+            "decimals": 8,
+            "name": "Bitcoin"
+          }
+        },
+        "proposer": {
+          "address": "0x251a604e8e8f6906d60f8dedc5aaeb8cd38f4892",
+          "kind": "Safe",
+          "threshold": 3,
+          "owners": 5,
+          "version": "1.3.0",
+          "proposerIsTxTo": true,
+          "cancellerIsTxTo": true,
+          "executorOpen": false,
+          "executorIsTxTo": true
+        }
+      },
+      "risk_notes": [
+        "One scheduleBatch of 5 AssetRouter calls whose predecessor is operation 0xceeeff86…18eb, the AssetRouter upgrade; it executed at block #26,440,758 (isOperationDone = true at the pin), so the batch is executable from its ETA.",
+        "minRequestAmount (the router-wide minimum for a swap or a non-BTC redeem) doubles from 2,000 sats to 4,000 sats. It is set first in the batch: the router keeps the highest deposit fee at most half of the minimum.",
+        "LBTC and BTC.b each get a fixed deposit fee of 2,000 sats on every proof mint, minted to the token's treasury (both 0 sats at the pin): exactly half of the new minimum, and above the 100 sats–1,000 sats range an OPERATOR_ROLE holder may set, so only the timelock can set it.",
+        "LBTC redeems not bound for Bitcoin stop paying redeemFee (10,000 sats to 0 sats), while LBTC redeems to Bitcoin start paying toNativeCommission (0 sats to 10,000 sats).",
+        "The 3-of-5 Safe 0x251a…4892 (Safe 1.3.0) that scheduled the batch is this timelock's proposer, canceller and executor; the executor role is not open. The timelock is the AssetRouter's owner() and defaultAdmin() (defaultAdminDelay 0 s) and holds no OPERATOR_ROLE."
+      ],
+      "brief": "briefs/lombard-op-0xd07f/",
+      "pinned_block": {
+        "block_number": 26441005,
+        "block_hash": "0xffd4780112448d0bb57761c0a7002cc426fda42fe95c589b83ed548c2a7ed6cc",
+        "block_timestamp": 1794993623,
+        "block_time_utc": "2026-11-18 09:20 UTC",
+        "tag": "finalized",
+        "rpcs_cross_checked": 2
+      },
+      "radar_title": "Lombard — LBTC and BTC.b deposit fees set to 2,000 sats; minimum request doubled",
+      "reproduce": [
+        "cast logs --from-block 26440772 --to-block 26440772 --address 0x055e84e7fe8955e2781010b866f10ef6e1e77e59 \"CallScheduled(bytes32 indexed id,uint256 indexed index,address target,uint256 value,bytes data,bytes32 predecessor,uint256 delay)\" 0xd07fa5ecca21af2317c073b5e59ecddce3968f694270409f76771727ea02e50a --rpc-url $ETH_RPC_URL",
+        "cast receipt 0xc9c0a9bf13b6e66b6c6be81638b73eb27b7add455be905b538e1810ebe2d3421 --rpc-url $ETH_RPC_URL",
+        "cast call 0x055e84e7fe8955e2781010b866f10ef6e1e77e59 \"getMinDelay()(uint256)\" --block 26441005 --rpc-url $ETH_RPC_URL",
+        "cast call 0x055e84e7fe8955e2781010b866f10ef6e1e77e59 \"isOperationPending(bytes32)(bool)\" 0xd07fa5ecca21af2317c073b5e59ecddce3968f694270409f76771727ea02e50a --block 26441005 --rpc-url $ETH_RPC_URL",
+        "cast call 0x055e84e7fe8955e2781010b866f10ef6e1e77e59 \"isOperationReady(bytes32)(bool)\" 0xd07fa5ecca21af2317c073b5e59ecddce3968f694270409f76771727ea02e50a --block 26441005 --rpc-url $ETH_RPC_URL",
+        "cast call 0x055e84e7fe8955e2781010b866f10ef6e1e77e59 \"isOperationDone(bytes32)(bool)\" 0xd07fa5ecca21af2317c073b5e59ecddce3968f694270409f76771727ea02e50a --block 26441005 --rpc-url $ETH_RPC_URL",
+        "cast call 0x055e84e7fe8955e2781010b866f10ef6e1e77e59 \"getTimestamp(bytes32)(uint256)\" 0xd07fa5ecca21af2317c073b5e59ecddce3968f694270409f76771727ea02e50a --block 26441005 --rpc-url $ETH_RPC_URL",
+        "cast call 0x055e84e7fe8955e2781010b866f10ef6e1e77e59 \"isOperationDone(bytes32)(bool)\" 0xceeeff86865f11b6de2c57d4901d3ec3313edf08be6ea664989d386cb1ab18eb --block 26441005 --rpc-url $ETH_RPC_URL",
+        "cast call 0x055e84e7fe8955e2781010b866f10ef6e1e77e59 \"hasRole(bytes32,address)(bool)\" $(cast keccak PROPOSER_ROLE) 0x251a604e8e8f6906d60f8dedc5aaeb8cd38f4892 --block 26441005 --rpc-url $ETH_RPC_URL",
+        "cast call 0x055e84e7fe8955e2781010b866f10ef6e1e77e59 \"hasRole(bytes32,address)(bool)\" $(cast keccak CANCELLER_ROLE) 0x251a604e8e8f6906d60f8dedc5aaeb8cd38f4892 --block 26441005 --rpc-url $ETH_RPC_URL",
+        "cast call 0x055e84e7fe8955e2781010b866f10ef6e1e77e59 \"hasRole(bytes32,address)(bool)\" $(cast keccak EXECUTOR_ROLE) 0x251a604e8e8f6906d60f8dedc5aaeb8cd38f4892 --block 26441005 --rpc-url $ETH_RPC_URL",
+        "cast call 0x055e84e7fe8955e2781010b866f10ef6e1e77e59 \"hasRole(bytes32,address)(bool)\" $(cast keccak EXECUTOR_ROLE) 0x0000000000000000000000000000000000000000 --block 26441005 --rpc-url $ETH_RPC_URL",
+        "cast call 0x251a604e8e8f6906d60f8dedc5aaeb8cd38f4892 \"getThreshold()(uint256)\" --block 26441005 --rpc-url $ETH_RPC_URL",
+        "cast call 0x251a604e8e8f6906d60f8dedc5aaeb8cd38f4892 \"getOwners()(address[])\" --block 26441005 --rpc-url $ETH_RPC_URL",
+        "cast storage 0x9ece5fb1ab62d9075c4ec814b321e24d8ea021ac 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc --block 26441005 --rpc-url $ETH_RPC_URL",
+        "cast call 0x9ece5fb1ab62d9075c4ec814b321e24d8ea021ac \"defaultAdmin()(address)\" --block 26441005 --rpc-url $ETH_RPC_URL",
+        "cast call 0x9ece5fb1ab62d9075c4ec814b321e24d8ea021ac \"owner()(address)\" --block 26441005 --rpc-url $ETH_RPC_URL",
+        "cast call 0x9ece5fb1ab62d9075c4ec814b321e24d8ea021ac \"defaultAdminDelay()(uint48)\" --block 26441005 --rpc-url $ETH_RPC_URL",
+        "cast call 0x9ece5fb1ab62d9075c4ec814b321e24d8ea021ac \"minRequestAmount()(uint256)\" --block 26441005 --rpc-url $ETH_RPC_URL",
+        "cast call 0x9ece5fb1ab62d9075c4ec814b321e24d8ea021ac \"maxDepositFee()(uint256)\" --block 26441005 --rpc-url $ETH_RPC_URL",
+        "cast call 0x9ece5fb1ab62d9075c4ec814b321e24d8ea021ac \"DEPOSIT_FEE_OPERATOR_MIN()(uint256)\" --block 26441005 --rpc-url $ETH_RPC_URL",
+        "cast call 0x9ece5fb1ab62d9075c4ec814b321e24d8ea021ac \"DEPOSIT_FEE_OPERATOR_MAX()(uint256)\" --block 26441005 --rpc-url $ETH_RPC_URL",
+        "cast call 0x9ece5fb1ab62d9075c4ec814b321e24d8ea021ac \"depositFee(address)(uint256)\" 0x8236a87084f8b84306f72007f36f2618a5634494 --block 26441005 --rpc-url $ETH_RPC_URL",
+        "cast call 0x9ece5fb1ab62d9075c4ec814b321e24d8ea021ac \"depositFee(address)(uint256)\" 0xb0f70c0bd6fd87dbeb7c10dc692a2a6106817072 --block 26441005 --rpc-url $ETH_RPC_URL",
+        "cast call 0x9ece5fb1ab62d9075c4ec814b321e24d8ea021ac \"tokenConfig(address)(uint256,uint256,bool)\" 0x8236a87084f8b84306f72007f36f2618a5634494 --block 26441005 --rpc-url $ETH_RPC_URL",
+        "cast call 0x9ece5fb1ab62d9075c4ec814b321e24d8ea021ac \"toNativeCommission(address)(uint64)\" 0x8236a87084f8b84306f72007f36f2618a5634494 --block 26441005 --rpc-url $ETH_RPC_URL"
+      ]
     }
   ],
   "recheck": [
@@ -2442,10 +2711,10 @@
     }
   ],
   "counts": {
-    "briefs": 5,
-    "operations": 10,
-    "calls": 38,
-    "radarItems": 8,
-    "radarOps": 14
+    "briefs": 6,
+    "operations": 11,
+    "calls": 43,
+    "radarItems": 9,
+    "radarOps": 15
   }
 }

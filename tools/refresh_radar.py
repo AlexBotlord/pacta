@@ -78,6 +78,13 @@ OPS = [
                 "The new roots' leaves are not onchain.",
      "timelock": "0xD829F278016b90FEc735F9A12Bf8b75E06102C89", "brief": "briefs/etherfi-liquid-op-0xf0fb/",
      "ops": [("0xf0fbfdb07f06c3a429b032811930fbb9b314ed8adc343b4d9ef3a60fe2975eea", None)]},
+    {"protocol": "Lombard", "protocol_slug": "lombard-lbtc", "chain_id": 1,
+     "title": "Lombard — LBTC and BTC.b deposit fees set to 2,000 sats; minimum request doubled",
+     "summary": "One 5-call batch on the upgraded AssetRouter: minRequestAmount 2,000 -> 4,000 sats, a 2,000-sat deposit fee on every "
+                "LBTC and BTC.b proof mint (half the new minimum, above the operator range), and LBTC's redeem charge moved from redeemFee "
+                "(10,000 -> 0 sats) to toNativeCommission on redeems to Bitcoin (0 -> 10,000 sats).",
+     "timelock": "0x055E84e7FE8955E2781010B866f10Ef6E1E77e59", "brief": "briefs/lombard-op-0xd07f/",
+     "ops": [("0xd07fa5ecca21af2317c073b5e59ecddce3968f694270409f76771727ea02e50a", None)]},
 ]
 RANK = {"ready": 0, "pending": 1, "mixed": 2, "unknown": 3, "executed": 4}
 

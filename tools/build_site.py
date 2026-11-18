@@ -87,6 +87,9 @@ BRIEFS = {
     # Sprint 27: fifth decoded brief
     "etherfi-liquid-op-0xf0fb": "Pre-execution brief: one 5-call ether.fi Liquid timelock batch rotates the strategist Merkle roots of the "
                                 "liquidUSD, liquidETH and liquidBTC managers and clears one (1-day delay; ETA 2026-11-19 04:47 UTC).",
+    # Sprint 28: sixth decoded brief
+    "lombard-op-0xd07f": "Pre-execution brief: one 5-call Lombard timelock batch sets a 2,000-sat deposit fee on every LBTC and BTC.b "
+                         "proof mint, doubles the router minimum to 4,000 sats and moves LBTC's redeem charge (1-day delay; ETA 2026-11-19 08:33 UTC).",
 }
 NAV = [("scorecards/", "Scorecards"), ("protocols/", "Protocols"), ("radar/", "Radar"), ("for-protocols/", "For protocols"),
        ("mcp/", "MCP"), ("#pricing", "Pricing")]
@@ -1410,7 +1413,8 @@ SLUG_RE = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
 BRIEF_PROTOCOL = {"ethena-ops-0x0ca0-0x1fe5": "ethena-usde-susde", "etherfi-op-0x244e": "ether-fi-core-eeth-weeth",
                   "treehouse-op-0x2f11": "treehouse-tree-teth", "lombard-ops-0xceee-0x2f2a-0x6404": "lombard-lbtc",
                   "beefy-base-op-0x3302": "beefy-finance-base", "ethena-ops-0xb028-0xca05-0x108e-0x070a": "ethena-usde-susde",
-                  "yearn-v3-op-0x2a14": "yearn-v3", "etherfi-liquid-op-0xf0fb": "ether-fi-liquid-veda-boringvault"}
+                  "yearn-v3-op-0x2a14": "yearn-v3", "etherfi-liquid-op-0xf0fb": "ether-fi-liquid-veda-boringvault",
+                  "lombard-op-0xd07f": "lombard-lbtc"}
 
 
 def request_href(tier, slug, forum=None, settlement=None, home="../../"):
@@ -1588,24 +1592,54 @@ def bounty_credit(slug, lb=None, sub_dir=None):
         return None
     assert len(hits) == 1, f"{slug}: {len(hits)} merged Wave 1 fixtures name this protocol"
     lb = lb or load_leaderboard()
-    s = next(x for x in lb["wave1Settlements"] if x["slot"] == hits[0]["slot"])
+    s = next(x for x in lb["wave1Settlements"] if int(x["slot"]) == int(hits[0]["slot"]))    # the Slot #4 fixture writes "slot": "4"
     assert s["status"] == "verified" and hits[0].get("apacheGrant") is True, f"{slug}: credit needs a verified, Apache-2.0-granted catch"
     return {"slot": s["slot"], "hunter": s["hunter"], "pr": s["pr"], "payoutTxHash": s["payoutTxHash"] if tx_ok(s["payoutTxHash"]) else None}
 
 
-def research_credit_html(slug, credit):
-    """Provenance section crediting the researcher (EAS-attested pages only; the records stay Pacta's own pinned re-reads)."""
-    if not credit:
+def wave2_credits(slug, lb=None, claims=None):
+    """The Wave 2 catches credited to this published protocol (bounties/leaderboard.json wave2Credits, written by the Sprint stamp
+    that attests them), each with its merged fixture's hunter and its payout tx; [] when none."""
+    lb = lb or load_leaderboard()
+    mine = [c for c in lb.get("wave2Credits", []) if c["pactaSlug"] == slug]
+    if not mine:
+        return []
+    by_file = {c["_file"]: c for c in (claims if claims is not None else load_wave2_claims())}
+    paid = {p["fixture"]: p["payoutTxHash"] for p in lb["wave2Settlements"]}
+    out = []
+    for c in sorted(mine, key=lambda c: c["pr"]):
+        f = by_file.get(c["fixture"])
+        assert f is not None and f.get("apache2CommercialGrant") is True, f"{slug}: Wave 2 credit {c['fixture']} needs a merged, Apache-2.0-granted fixture"
+        tx = paid.get(c["fixture"])
+        out.append({"hunter": f["hunter"], "pr": c["pr"], "fixture": c["fixture"], "record": c["record"], "payoutTxHash": tx if tx_ok(tx) else None})
+    return out
+
+
+def research_credit_html(slug, credit, wave2=()):
+    """Provenance section crediting the researchers (EAS-attested pages only; the records stay Pacta's own pinned re-reads): the
+    Wave 1 catch (if any) and every Wave 2 catch credited to this protocol."""
+    if not credit and not wave2:
         return ""
-    h, pr, slot, tx = credit["hunter"], credit["pr"], credit["slot"], credit["payoutTxHash"]
-    paid = (f' and paid $25.00 USDC (<a href="https://basescan.org/tx/{E(tx)}" target="_blank" rel="noopener" data-basescan-tx>tx {E(short(tx, 6, 4))}{EXT}</a>)'
-            if tx else "")
-    return (f'<section class="memo-sec" id="provenance" data-research-credit="{E(h)}"><h2>Provenance · research credit</h2>'
-            f'<p>First reported by <a href="https://github.com/{E(h)}" target="_blank" rel="noopener">@{E(h)}</a> through the Pacta Wave 1 bounty '
-            f'(<a href="{E(REPO)}/pull/{int(pr)}" target="_blank" rel="noopener">Slot #{int(slot)}, PR #{int(pr)}</a>), merged under the Apache-2.0 '
-            f'grant{paid}. Pacta then re-read every value below on two independent RPCs at its own Sprint pin and compared it with the '
-            f'documentation; the classifications and the Base EAS attestation are Pacta\'s. '
-            f'See <a href="../../leaderboard/">the leaderboard</a>.</p></section>\n')
+    tail = (f'Pacta then re-read every value below on two independent RPCs at its own Sprint pin and compared it with the '
+            f'documentation; the classifications and the Base EAS attestation are Pacta\'s. ')
+    paras = []
+    if credit:
+        h, pr, slot, tx = credit["hunter"], credit["pr"], credit["slot"], credit["payoutTxHash"]
+        paid = (f' and paid $25.00 USDC (<a href="https://basescan.org/tx/{E(tx)}" target="_blank" rel="noopener" data-basescan-tx>tx {E(short(tx, 6, 4))}{EXT}</a>)'
+                if tx else "")
+        paras.append(f'<p>First reported by <a href="https://github.com/{E(h)}" target="_blank" rel="noopener">@{E(h)}</a> through the Pacta Wave 1 bounty '
+                     f'(<a href="{E(REPO)}/pull/{int(pr)}" target="_blank" rel="noopener">Slot #{int(slot)}, PR #{int(pr)}</a>), merged under the Apache-2.0 '
+                     f'grant{paid}. {tail}See <a href="../../leaderboard/">the leaderboard</a>.</p>')
+    for c in wave2:
+        h, pr, tx = c["hunter"], c["pr"], c["payoutTxHash"]
+        paid = (f' and paid $1.00 USDC (<a href="https://basescan.org/tx/{E(tx)}" target="_blank" rel="noopener" data-basescan-tx>tx {E(short(tx, 6, 4))}{EXT}</a>)'
+                if tx else "")
+        paras.append(f'<p data-research-credit="{E(h)}" data-research-wave="2">Reported by <a href="https://github.com/{E(h)}" target="_blank" rel="noopener">@{E(h)}</a> '
+                     f'through the Pacta Wave 2 pool (<a href="{E(REPO)}/pull/{int(pr)}" target="_blank" rel="noopener">PR #{int(pr)}</a>, fixture '
+                     f'<code>{E(WAVE2["fixtureDir"])}/{E(c["fixture"])}</code>), merged under the Apache-2.0 commercial grant{paid}; credited on '
+                     f'<a href="#{E(c["record"])}">{E(c["record"])}</a>. {tail}See <a href="../../leaderboard/">the leaderboard</a>.</p>')
+    attr = f' data-research-credit="{E(credit["hunter"])}"' if credit else ""
+    return (f'<section class="memo-sec" id="provenance"{attr}><h2>Provenance · research credit</h2>' + "".join(paras) + '</section>\n')
 
 
 def protocol_page(name, entries, idx, radar, digest=None, slug=None):
@@ -1658,7 +1692,7 @@ def protocol_page(name, entries, idx, radar, digest=None, slug=None):
                       f'Machine-readable: <a href="../../api/v1/rpc-pinned.json">/api/v1/rpc-pinned.json</a>. The Base-EAS-attested Sprint records '
                       f'are in <a href="../../api/v1/index.json">/api/v1/index.json</a>.</p></section>\n')
     else:
-        provenance = research_credit_html(slug, bounty_credit(slug))
+        provenance = research_credit_html(slug, bounty_credit(slug), wave2_credits(slug))
     surfaces = f'{n} indexed {"surface" if n == 1 else "surfaces"}'
     data_url = f"{BASE_URL}/api/v1/rpc-pinned.json" if pinned else f"{BASE_URL}/api/v1/index.json"
     ld = {"@context": "https://schema.org", "@type": "Dataset", "name": f"{name} control-plane safety record",
@@ -2447,8 +2481,9 @@ ACTIVE_EPOCH_SLOTS = WAVE2["activeEpochSlots"]     # 25 in Epoch 1
 ACTIVE_EPOCH_CAP_USDC = WAVE2["activeEpochCapUsdc"]  # "25.00"
 PRIOR_EPOCH_SLOTS = WAVE2["priorEpochSlots"]       # slots filled in completed epochs (0 during Epoch 1)
 # Public capacity claims follow confirmed, unencumbered on-chain USDC only (the epoch cap is a target, not a promise):
-FUNDED_UNENCUMBERED_SLOTS = WAVE2["fundedUnencumberedSlots"]   # 2 today
-FUNDED_UNENCUMBERED_USDC = WAVE2["fundedUnencumberedUsdc"]     # "2.00"
+SETTLED_EPOCH_SLOTS = WAVE2["settledEpochSlots"]               # merged Wave 2 claims of this epoch already paid on Base (6)
+FUNDED_UNENCUMBERED_SLOTS = WAVE2["fundedUnencumberedSlots"]   # further slots confirmed unencumbered now (0 until the top-up lands)
+FUNDED_UNENCUMBERED_USDC = WAVE2["fundedUnencumberedUsdc"]     # "0.00"
 RING_FENCED_USDC, RING_FENCED_FOR = WAVE2["ringFencedUsdc"], WAVE2["ringFencedFor"]
 PROGRAM_LABEL = WAVE2["program"]
 USDC_BASE = WAVE2["settlement"]["tokenAddress"]
@@ -2456,8 +2491,9 @@ assert round(float(REWARD_USDC) * 10 ** WAVE2["settlement"]["decimals"]) == REWA
 assert f"{REWARD_ATOMIC * ACTIVE_EPOCH_SLOTS / 10 ** 6:.2f}" == ACTIVE_EPOCH_CAP_USDC
 assert 25 <= ACTIVE_EPOCH_SLOTS <= 100 and CURRENT_EPOCH >= 1 and 0 <= PRIOR_EPOCH_SLOTS
 assert PRIOR_EPOCH_SLOTS + ACTIVE_EPOCH_SLOTS <= PROGRAM_CAP_SLOTS == 1000
-assert 0 <= FUNDED_UNENCUMBERED_SLOTS <= ACTIVE_EPOCH_SLOTS and f"{REWARD_ATOMIC * FUNDED_UNENCUMBERED_SLOTS / 10 ** 6:.2f}" == FUNDED_UNENCUMBERED_USDC
-EPOCH_REMAINING_USDC = f"{REWARD_ATOMIC * (ACTIVE_EPOCH_SLOTS - FUNDED_UNENCUMBERED_SLOTS) / 10 ** 6:.2f}"
+assert 0 <= SETTLED_EPOCH_SLOTS and 0 <= FUNDED_UNENCUMBERED_SLOTS and SETTLED_EPOCH_SLOTS + FUNDED_UNENCUMBERED_SLOTS <= ACTIVE_EPOCH_SLOTS
+assert f"{REWARD_ATOMIC * FUNDED_UNENCUMBERED_SLOTS / 10 ** 6:.2f}" == FUNDED_UNENCUMBERED_USDC
+EPOCH_REMAINING_USDC = f"{REWARD_ATOMIC * (ACTIVE_EPOCH_SLOTS - SETTLED_EPOCH_SLOTS - FUNDED_UNENCUMBERED_SLOTS) / 10 ** 6:.2f}"
 assert WAVE2["settlement"]["chainId"] == 8453 and USDC_BASE == "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
 assert WAVE2["settlement"]["treasuryKind"] == "EOA"
 WAVE2_DIR = os.path.join(ROOT, *WAVE2["fixtureDir"].split("/"))
@@ -2528,7 +2564,14 @@ def load_leaderboard(path=None):
             assert s["rewardUsdc"] == "25.00"
     for p in d["wave2Settlements"]:
         assert WAVE2_NAME_RE.match(p["fixture"]) and tx_ok(p["payoutTxHash"]), p
+    assert len(d["wave2Settlements"]) == SETTLED_EPOCH_SLOTS, "tools/bounty_wave2.json settledEpochSlots must equal the paid Wave 2 settlements"
     assert all(GITHUB_USER_RE.match(h) and isinstance(n, int) and n >= 0 for h, n in d["easAttestations"].items())
+    # Wave 2 research credits (written by the Sprint stamp that attests them): the merged fixture, its PR, the published protocol
+    # page and the Base-EAS record it is credited to
+    for c in d.get("wave2Credits", []):
+        assert set(c) == {"fixture", "pr", "pactaSlug", "record"} and WAVE2_NAME_RE.match(c["fixture"]) and isinstance(c["pr"], int), c
+        assert SLUG_RE.fullmatch(c["pactaSlug"]) and SLUG_RE.fullmatch(c["record"]), c
+    assert len({c["fixture"] for c in d.get("wave2Credits", [])}) == len(d.get("wave2Credits", []))
     return d
 
 
@@ -2547,7 +2590,7 @@ def load_wave2_claims(path=None):
         assert f.get("category") in WAVE2["categories"] and GITHUB_USER_RE.match(str(f.get("hunter"))), name
         assert f.get("agentFramework") is None or FRAMEWORK_RE.match(f["agentFramework"]), name
         out.append({**f, "_file": name})
-    assert len(out) <= PRIOR_EPOCH_SLOTS + FUNDED_UNENCUMBERED_SLOTS, \
+    assert len(out) <= PRIOR_EPOCH_SLOTS + SETTLED_EPOCH_SLOTS + FUNDED_UNENCUMBERED_SLOTS, \
         "Wave 2 merged claims cannot exceed the confirmed unencumbered on-chain capacity (raise fundedUnencumberedSlots after a confirmed top-up)"
     assert len({(c["chainId"], c["contractAddress"].lower()) for c in out}) == len(out) and len({c["slug"] for c in out}) == len(out)
     return out

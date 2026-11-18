@@ -11,7 +11,9 @@ The durable Pacta protocol graph that pacta-core/packages/analytics-sync/protoco
 
 Anchor nodes (immutable text; changing facts live in edge evidence):
   pacta-proto-<slug>             one per published protocol
-  pacta-ctrl-<chain>-<addr8>     one per distinct primary / controller / surface-target contract (addr8 = address[2:10])
+  pacta-ctrl-<chain>-<addr8>     one per distinct primary / controller / surface-target contract (addr8 = address[2:10]; when two
+                                 addresses share addr8 (vanity / leading-zero addresses), the one a minted node already names keeps it
+                                 and the other gets address[2:18])
   pacta-gap-<surface id>         one per parameter_delta surface (and per merged bounty gap)
   pacta-eas-sprint-<N>           one per Base EAS sprint attestation
 
@@ -157,6 +159,12 @@ def build(root, controller_facts=None, protocols_override=None, use_minted=True)
     # use_minted=False builds the pure template (verify_site_v2 compares template builds when it perturbs facts)
     minted_path = os.path.join(root, "tools", "graph_minted.json")
     minted = _load(minted_path) if use_minted and os.path.exists(minted_path) else {"nodes": {}, "edges": []}
+    # an RPC-pinned record retired when its protocol was converted to Base-EAS records keeps its contracts governed by that
+    # protocol (tools/graph_retired.json, written by the apply script): the graph only grows
+    retired_path = os.path.join(root, "tools", "graph_retired.json")
+    retired_by = {}
+    for r in (_load(retired_path)["records"] if os.path.exists(retired_path) else []):
+        retired_by.setdefault(r["slug"], []).append(r)
     subs = sorted(glob.glob(os.path.join(root, "bounties", "submissions", "*.json")))
     observed_at = epoch(idx["generated_at"])
     records = {e["id"]: e for e in idx["entries"]}
@@ -213,15 +221,30 @@ def build(root, controller_facts=None, protocols_override=None, use_minted=True)
         touch(p["primaryContract"], "primary_contract", p.get("targetLabel"))
         if p.get("controllerAddress"):
             touch(p["controllerAddress"], "controller", None, None, p.get("controllerKind"))
+        for r in retired_by.get(p["slug"], []):
+            touch(r["target_contract"], "primary_contract", r.get("target_label"), chain=r["chain"])
+            if r.get("controller_address"):
+                touch(r["controller_address"], "controller", None, None, r.get("controller_kind"), chain=r["chain"])
         for s in p.get("surfaces") or []:
             if s.get("targetContract"):         # delta surfaces live in gap nodes; RPC-pinned surface strings are templated
                 touch(s["targetContract"], "surface_target", s.get("targetLabel"),
                       None if s.get("classification") in ("parameter_delta", "rpc_observed") else s.get("surface"), chain=s.get("chain") or ch)
-    addr8 = {}
+    # node ids: addresses sharing addr8 keep published ids stable: the address a minted node names keeps the short id (else the
+    # lowest address), every other one gets the 16-hex id
+    groups = {}
     for (ch, a) in ctrl:
-        nid = ctrl_id(ch, a)
-        assert nid not in addr8, f"addr8 collision {nid}: {addr8.get(nid)} vs {a}"
-        addr8[nid] = a
+        groups.setdefault(ctrl_id(ch, a), []).append((ch, a))
+    ctrl_ids = {}
+    for nid, members in groups.items():
+        members = sorted(members)
+        if len(members) > 1:
+            txt = (minted["nodes"].get(nid) or "").lower()
+            owner = next((m for m in members if txt and short(ctrl[m]["addr"]).lower() in txt), members[0])
+            for m in members:
+                ctrl_ids[m] = nid if m == owner else f"pacta-ctrl-{m[0]}-{m[1][2:18]}"
+        else:
+            ctrl_ids[members[0]] = nid
+    assert len(set(ctrl_ids.values())) == len(ctrl_ids), "controller node id collision"
     role_text = {"primary_contract": "primary", "controller": "controller", "surface_target": "checked"}
     by_target, by_controller = {}, {}
     for e in list(idx["entries"]) + list(pinned["entries"]):
@@ -349,7 +372,7 @@ def build(root, controller_facts=None, protocols_override=None, use_minted=True)
         text = (f"{'; '.join(labels)} {short(c['addr'])} [{CHAIN_ID[ch] if CHAIN_LABEL[ch].lower() in ' '.join(labels + names).lower() else CHAIN_LABEL[ch] + ' ' + str(CHAIN_ID[ch])}"
                 f"{', ' + roles.strip() if roles.strip() else ''}{where}] "
                 + ("; ".join(dict.fromkeys(x for x in surfaces + facts if x)) or "no direct read") + ".")
-        add_node(ctrl_id(ch, a), "controller", prose(text, MAX_TEXT_CHARS))
+        add_node(ctrl_ids[(ch, a)], "controller", prose(text, MAX_TEXT_CHARS))
 
     # ---- EAS sprint attestations
     sprint_protocols = {}
@@ -410,10 +433,12 @@ def build(root, controller_facts=None, protocols_override=None, use_minted=True)
     for p in protocols:
         src, ch = proto_id(p["slug"]), p["chain"]
         addrs = {}
-        def note(addr, role, s=None):
-            key = ((s.get("chain") or ch) if s is not None else ch, addr.lower())       # (chain, address): see touch()
-            a = addrs.setdefault(key, {"roles": set(), "surface_ids": [], "labels": set()})
+        def note(addr, role, s=None, chain=None, retired=None):
+            key = (chain or ((s.get("chain") or ch) if s is not None else ch), addr.lower())       # (chain, address): see touch()
+            a = addrs.setdefault(key, {"roles": set(), "surface_ids": [], "labels": set(), "retired": []})
             a["roles"].add(role)
+            if retired:
+                a["retired"].append(retired)
             if s is not None:
                 a["surface_ids"].append(s["id"])
                 if s.get("targetLabel"):
@@ -424,13 +449,18 @@ def build(root, controller_facts=None, protocols_override=None, use_minted=True)
         for s in p.get("surfaces") or []:
             if s.get("targetContract"):
                 note(s["targetContract"], "surface_target", s)
+        for r in retired_by.get(p["slug"], []):
+            note(r["target_contract"], "primary_contract", chain=r["chain"], retired=r["record_id"])
+            if r.get("controller_address"):
+                note(r["controller_address"], "controller", chain=r["chain"], retired=r["record_id"])
         for (ach, a), info in sorted(addrs.items()):
-            add_edge("governed_by_controller", src, ctrl_id(ach, a), {
+            add_edge("governed_by_controller", src, ctrl_ids[(ach, a.lower())], {
                 "protocol_slug": p["slug"], "chain": ach, "chain_id": p["chainId"] if ach == ch else CHAIN_ID[ach], "contract_hex": a[2:],
                 "address_roles": sorted(info["roles"]), "surface_ids": sorted(set(info["surface_ids"])),
                 "target_labels": sorted(info["labels"]), "controller_kind": p.get("controllerKind") if "controller" in info["roles"] else None,
                 "evidence_basis": p.get("evidenceBasis"), "badge_tier": p["badge"]["tier"],
-                "observed_controller": observed_controller(ach, a)})
+                "observed_controller": observed_controller(ach, a),
+                **({"retired_records": sorted(set(info["retired"]))} if info["retired"] else {})})
         for s in p.get("surfaces") or []:
             if s.get("classification") == "parameter_delta":
                 r = records.get(s["id"]) or {}

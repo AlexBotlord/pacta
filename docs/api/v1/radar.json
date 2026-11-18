@@ -2,59 +2,22 @@
   "schema": "pacta.radar.v1",
   "chain_id": 1,
   "refreshed_at": {
-    "block_number": 26440398,
-    "block_hash": "0x04e1dd75b076588c15365e881bf9c45856751f86714fe460256115f0c97acd96",
-    "block_timestamp": 1794986327,
-    "block_time_utc": "2026-11-18 07:18 UTC",
+    "block_number": 26441005,
+    "block_hash": "0xffd4780112448d0bb57761c0a7002cc426fda42fe95c589b83ed548c2a7ed6cc",
+    "block_timestamp": 1794993623,
+    "block_time_utc": "2026-11-18 09:20 UTC",
     "tag": "finalized",
     "rpcs_cross_checked": 2
   },
   "refreshed_at_base": {
-    "block_number": 58977569,
-    "block_hash": "0x00f3a8bf4d0eb9550a2ba5b417470b619c8933f15f31eb7f9d5504b4782c12c9",
-    "block_timestamp": 1794985889,
-    "block_time_utc": "2026-11-18 07:11 UTC",
+    "block_number": 59014044,
+    "block_hash": "0x7da4f477e5161ec2227307739f42327fce08bf077ea447a24322c133fd3b8d07",
+    "block_timestamp": 1794993184,
+    "block_time_utc": "2026-11-18 09:13 UTC",
     "tag": "finalized",
     "rpcs_cross_checked": 2
   },
   "items": [
-    {
-      "protocol": "Lombard",
-      "protocol_slug": "lombard-lbtc",
-      "chain_id": 1,
-      "title": "Lombard — AssetRouter, BTC.b and LBTC upgrades adding a fixed deposit fee",
-      "summary": "Three ProxyAdmin.upgradeAndCall ops (no init call) upgrade AssetRouter, BTC.b (NativeLBTC) and LBTC (StakedLBTC): a per-token deposit fee is split off every proof mint to treasury (OPERATOR_ROLE may set 100-1,000 sats, the timelock anything up to half the minimum), a router-wide minRequestAmount replaces depositMinAmount, and unpauseTransfers moves from DEFAULT_ADMIN_ROLE to MANAGER_ROLE.",
-      "timelock": "0x055E84e7FE8955E2781010B866f10Ef6E1E77e59",
-      "brief": "briefs/lombard-ops-0xceee-0x2f2a-0x6404/",
-      "min_delay_seconds": 86400,
-      "operations": [
-        {
-          "op_id": "0xceeeff86865f11b6de2c57d4901d3ec3313edf08be6ea664989d386cb1ab18eb",
-          "eta": 1794940187,
-          "pending": true,
-          "done": false,
-          "ready": true,
-          "label": "AssetRouter upgrade adding a fixed deposit fee"
-        },
-        {
-          "op_id": "0x2f2a342465e4d964eb240db7c573dff2f57e35b9bd3ea3798987aa327c02dd81",
-          "eta": 1794940187,
-          "pending": true,
-          "done": false,
-          "ready": true,
-          "label": "BTC.b token upgrade that charges the deposit fee on mint"
-        },
-        {
-          "op_id": "0x6404e599d016a5a5d60957a22db6919eb7409f28d7d3880cf78ac1313f167fff",
-          "eta": 1794940187,
-          "pending": true,
-          "done": false,
-          "ready": true,
-          "label": "LBTC token upgrade; unpausing transfers moves to the manager role"
-        }
-      ],
-      "eta": 1794940187
-    },
     {
       "protocol": "Ethena",
       "protocol_slug": "ethena-usde-susde",
@@ -121,6 +84,26 @@
       "eta": 1795063667
     },
     {
+      "protocol": "Lombard",
+      "protocol_slug": "lombard-lbtc",
+      "chain_id": 1,
+      "title": "Lombard — LBTC and BTC.b deposit fees set to 2,000 sats; minimum request doubled",
+      "summary": "One 5-call batch on the upgraded AssetRouter: minRequestAmount 2,000 -> 4,000 sats, a 2,000-sat deposit fee on every LBTC and BTC.b proof mint (half the new minimum, above the operator range), and LBTC's redeem charge moved from redeemFee (10,000 -> 0 sats) to toNativeCommission on redeems to Bitcoin (0 -> 10,000 sats).",
+      "timelock": "0x055E84e7FE8955E2781010B866f10Ef6E1E77e59",
+      "brief": "briefs/lombard-op-0xd07f/",
+      "min_delay_seconds": 86400,
+      "operations": [
+        {
+          "op_id": "0xd07fa5ecca21af2317c073b5e59ecddce3968f694270409f76771727ea02e50a",
+          "eta": 1795077227,
+          "pending": true,
+          "done": false,
+          "ready": false
+        }
+      ],
+      "eta": 1795077227
+    },
+    {
       "protocol": "ether.fi",
       "protocol_slug": "ether-fi-core-eeth-weeth",
       "chain_id": 1,
@@ -176,6 +159,43 @@
           "pending": false,
           "done": true,
           "ready": false
+        }
+      ],
+      "eta": null
+    },
+    {
+      "protocol": "Lombard",
+      "protocol_slug": "lombard-lbtc",
+      "chain_id": 1,
+      "title": "Lombard — AssetRouter, BTC.b and LBTC upgrades adding a fixed deposit fee",
+      "summary": "Three ProxyAdmin.upgradeAndCall ops (no init call) upgrade AssetRouter, BTC.b (NativeLBTC) and LBTC (StakedLBTC): a per-token deposit fee is split off every proof mint to treasury (OPERATOR_ROLE may set 100-1,000 sats, the timelock anything up to half the minimum), a router-wide minRequestAmount replaces depositMinAmount, and unpauseTransfers moves from DEFAULT_ADMIN_ROLE to MANAGER_ROLE.",
+      "timelock": "0x055E84e7FE8955E2781010B866f10Ef6E1E77e59",
+      "brief": "briefs/lombard-ops-0xceee-0x2f2a-0x6404/",
+      "min_delay_seconds": 86400,
+      "operations": [
+        {
+          "op_id": "0xceeeff86865f11b6de2c57d4901d3ec3313edf08be6ea664989d386cb1ab18eb",
+          "eta": null,
+          "pending": false,
+          "done": true,
+          "ready": false,
+          "label": "AssetRouter upgrade adding a fixed deposit fee"
+        },
+        {
+          "op_id": "0x2f2a342465e4d964eb240db7c573dff2f57e35b9bd3ea3798987aa327c02dd81",
+          "eta": null,
+          "pending": false,
+          "done": true,
+          "ready": false,
+          "label": "BTC.b token upgrade that charges the deposit fee on mint"
+        },
+        {
+          "op_id": "0x6404e599d016a5a5d60957a22db6919eb7409f28d7d3880cf78ac1313f167fff",
+          "eta": null,
+          "pending": false,
+          "done": true,
+          "ready": false,
+          "label": "LBTC token upgrade; unpausing transfers moves to the manager role"
         }
       ],
       "eta": null

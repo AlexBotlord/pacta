@@ -1,0 +1,165 @@
+{
+  "wave": 2,
+  "category": "protocol_mismatch",
+  "slug": "rocksolid-network",
+  "protocol": "RockSolid Network",
+  "chainId": 1,
+  "contractAddress": "0x5C6C0E4f7182dB1c7FbE0c7ACe8F045ACBa7B8C8",
+  "hunter": "kinshu7777",
+  "agentFramework": "claude-code",
+  "basePayoutAddress": "0x0A96Fe63357c83640445Fd1Ee9d210B334b94052",
+  "mcpProof": {
+    "tool": "pacta_check_preflight",
+    "arguments": {
+      "chain": "ethereum",
+      "address": "0x5C6C0E4f7182dB1c7FbE0c7ACe8F045ACBa7B8C8"
+    },
+    "result": {
+      "schema": "pacta.preflight_check.v1",
+      "chain": "ethereum",
+      "chainId": 1,
+      "address": "0x5C6C0E4f7182dB1c7FbE0c7ACe8F045ACBa7B8C8",
+      "pinnedBlock": 26442076,
+      "pinnedBlockHash": "0x6fe7ab9445681ea1cca231e001b4722254d55f6c2b448da911c5ce0720b37485",
+      "blockTimestamp": 1795006487,
+      "verdict": "INSTANT_EOA_ADMIN_RISK",
+      "riskScore": 90,
+      "isContract": true,
+      "isProxy": false,
+      "proxyType": null,
+      "implementation": null,
+      "beacon": null,
+      "hasAdminSlot": false,
+      "canUpgradeZeroDelay": true,
+      "capabilities": {
+        "pause": false,
+        "blacklist": false,
+        "upgrade": true
+      },
+      "paused": null,
+      "controller": {
+        "address": "0x3D4366ceA3FC7ea9aF9c1426E25D16599F8dE0da",
+        "kind": "eoa",
+        "safeThreshold": null,
+        "timelockDelaySec": null,
+        "source": "owner()"
+      },
+      "roleAdminMembers": null,
+      "codeBytes": 1973,
+      "method": "Batched JSON-RPC reads pinned to the block hash (EIP-1898); EIP-1967 / EIP-1822 / beacon proxies; capabilities from PUSH4 selectors in proxy + implementation bytecode (heuristic).",
+      "summary": "Controlled by a single externally owned account: one key can change this contract instantly. Capabilities seen in bytecode: upgrade.",
+      "source": "live_rpc",
+      "assessment": {
+        "coverage": "unindexed_bytecode_heuristic",
+        "confidence": "medium",
+        "method": "Live bytecode + storage heuristic at the pinned block only: this contract is not in Pacta's indexed catalog (no documentation comparison).",
+        "limits": [
+          "riskScore (0-100) is a heuristic of the controller type and of pause / blacklist / upgrade capabilities read at one block; it is not an audit.",
+          "The live check reads EIP-1967 slots, owner(), Safe getThreshold() / getOwners() and TimelockController getMinDelay(); custom role systems, bridge or L2 admin paths and off-chain operations are not resolved.",
+          "Documentation is compared only for indexed protocols (catalogMatch), at their pinned block."
+        ]
+      },
+      "coverage_gap_hint": "Target is not yet indexed or fully classified. Ask the user if they want you to queue coverage or request this capability via pacta_submit_request (free community queue, or 24h priority clearance for issuers)."
+    }
+  },
+  "blockNumber": 26441996,
+  "blockHash": "0x30d7997effa945f143f0d960c3b82764364787a21e1963f9e17b7bccbbda0878",
+  "castCommands": [
+    "cast call 0x5C6C0E4f7182dB1c7FbE0c7ACe8F045ACBa7B8C8 \"delay()(uint256)\" --block 26441996 --rpc-url https://gateway.tenderly.co/public/mainnet",
+    "cast call 0x5C6C0E4f7182dB1c7FbE0c7ACe8F045ACBa7B8C8 \"delay()(uint256)\" --block 26441996 --rpc-url https://ethereum-rpc.publicnode.com"
+  ],
+  "rpcOutputs": {
+    "a": "259200",
+    "b": "259200",
+    "pinnedDualRpcChainProof": {
+      "blockNumber": 26441996,
+      "blockHash": "0x30d7997effa945f143f0d960c3b82764364787a21e1963f9e17b7bccbbda0878",
+      "rpcEndpoints": [
+        "https://gateway.tenderly.co/public/mainnet",
+        "https://ethereum-rpc.publicnode.com"
+      ],
+      "reads": {
+        "rockRethVaultEip1967AdminSlot": {
+          "contract": "0x936faCdf10c8c36294e7b9d28345255539d81bc7",
+          "castCommands": [
+            "cast storage 0x936faCdf10c8c36294e7b9d28345255539d81bc7 0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103 --block 26441996 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast storage 0x936faCdf10c8c36294e7b9d28345255539d81bc7 0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103 --block 26441996 --rpc-url https://ethereum-rpc.publicnode.com"
+          ],
+          "output": "0x0000000000000000000000005c6c0e4f7182db1c7fbe0c7ace8f045acba7b8c8",
+          "decodedAddress": "0x5C6C0E4f7182dB1c7FbE0c7ACe8F045ACBa7B8C8"
+        },
+        "rockRethVaultEip1967ImplementationSlot": {
+          "contract": "0x936faCdf10c8c36294e7b9d28345255539d81bc7",
+          "castCommands": [
+            "cast storage 0x936faCdf10c8c36294e7b9d28345255539d81bc7 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc --block 26441996 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast storage 0x936faCdf10c8c36294e7b9d28345255539d81bc7 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc --block 26441996 --rpc-url https://ethereum-rpc.publicnode.com"
+          ],
+          "output": "0x0000000000000000000000008a051dd8f97b1725dc60f0f69cacc1d3e12ff92c",
+          "decodedAddress": "0x8a051dD8f97b1725dC60f0F69Cacc1D3e12ff92c"
+        },
+        "delayProxyAdminDelay": {
+          "contract": "0x5C6C0E4f7182dB1c7FbE0c7ACe8F045ACBa7B8C8",
+          "castCommands": [
+            "cast call 0x5C6C0E4f7182dB1c7FbE0c7ACe8F045ACBa7B8C8 \"delay()(uint256)\" --block 26441996 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x5C6C0E4f7182dB1c7FbE0c7ACe8F045ACBa7B8C8 \"delay()(uint256)\" --block 26441996 --rpc-url https://ethereum-rpc.publicnode.com"
+          ],
+          "output": "259200",
+          "note": "259,200 seconds (3 days) on-chain proxy upgrade timelock delay on DelayProxyAdmin vs documented 30-day timelock requirement for contract upgrades"
+        },
+        "delayProxyAdminMinDelay": {
+          "contract": "0x5C6C0E4f7182dB1c7FbE0c7ACe8F045ACBa7B8C8",
+          "castCommands": [
+            "cast call 0x5C6C0E4f7182dB1c7FbE0c7ACe8F045ACBa7B8C8 \"MIN_DELAY()(uint256)\" --block 26441996 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x5C6C0E4f7182dB1c7FbE0c7ACe8F045ACBa7B8C8 \"MIN_DELAY()(uint256)\" --block 26441996 --rpc-url https://ethereum-rpc.publicnode.com"
+          ],
+          "output": "86400"
+        },
+        "delayProxyAdminOwner": {
+          "contract": "0x5C6C0E4f7182dB1c7FbE0c7ACe8F045ACBa7B8C8",
+          "castCommands": [
+            "cast call 0x5C6C0E4f7182dB1c7FbE0c7ACe8F045ACBa7B8C8 \"owner()(address)\" --block 26441996 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x5C6C0E4f7182dB1c7FbE0c7ACe8F045ACBa7B8C8 \"owner()(address)\" --block 26441996 --rpc-url https://ethereum-rpc.publicnode.com"
+          ],
+          "output": "0x3D4366ceA3FC7ea9aF9c1426E25D16599F8dE0da",
+          "note": "Single EOA (0 bytecode bytes) owns DelayProxyAdmin and rock.rETH vault"
+        },
+        "rockRethVaultOwner": {
+          "contract": "0x936faCdf10c8c36294e7b9d28345255539d81bc7",
+          "castCommands": [
+            "cast call 0x936faCdf10c8c36294e7b9d28345255539d81bc7 \"owner()(address)\" --block 26441996 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x936faCdf10c8c36294e7b9d28345255539d81bc7 \"owner()(address)\" --block 26441996 --rpc-url https://ethereum-rpc.publicnode.com"
+          ],
+          "output": "0x3D4366ceA3FC7ea9aF9c1426E25D16599F8dE0da",
+          "note": "Fee updates are scheduled directly on the vault in-contract via FeeManager without requiring a proxy contract upgrade, contrary to the documentation stating that any change in fee structure requires a contract upgrade. FeeManager enforces a 30-day (2,592,000s) cooldown in-contract."
+        },
+        "rockRethVaultSafe": {
+          "contract": "0x936faCdf10c8c36294e7b9d28345255539d81bc7",
+          "castCommands": [
+            "cast call 0x936faCdf10c8c36294e7b9d28345255539d81bc7 \"safe()(address)\" --block 26441996 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x936faCdf10c8c36294e7b9d28345255539d81bc7 \"safe()(address)\" --block 26441996 --rpc-url https://ethereum-rpc.publicnode.com"
+          ],
+          "output": "0x9Ca1d6E730Eb9fbfD45c9FF5F0AC4E3d172d8F4d"
+        },
+        "rockRethVaultTotalAssets": {
+          "contract": "0x936faCdf10c8c36294e7b9d28345255539d81bc7",
+          "castCommands": [
+            "cast call 0x936faCdf10c8c36294e7b9d28345255539d81bc7 \"totalAssets()(uint256)\" --block 26441996 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x936faCdf10c8c36294e7b9d28345255539d81bc7 \"totalAssets()(uint256)\" --block 26441996 --rpc-url https://ethereum-rpc.publicnode.com"
+          ],
+          "output": "7953276156670223585590"
+        }
+      }
+    }
+  },
+  "docsUrl": "https://docs.rocksolid.network/for-depositors/rewards",
+  "docsQuote": "Governance: Any change requires a 30-day timelock and contract upgrade.",
+  "tvlUsd": 16853418.0,
+  "tvlReference": "https://api.llama.fi/protocol/rocksolid-network",
+  "apache2CommercialGrant": true,
+  "rulesAccepted": [
+    true,
+    true,
+    true,
+    true
+  ]
+}

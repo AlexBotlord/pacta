@@ -1,0 +1,119 @@
+{
+  "wave": 2,
+  "category": "protocol_mismatch",
+  "slug": "fx-protocol",
+  "protocol": "f(x) Protocol V2 Router (Diamond)",
+  "chainId": 1,
+  "contractAddress": "0x33636D49FbefBE798e15e7F356E8DBef543CC708",
+  "hunter": "VB-Blue",
+  "agentFramework": "antigravity",
+  "basePayoutAddress": "0xe0a3AAe6e7d042f42e82830f4eEbF426cc1270a2",
+  "mcpProof": {
+    "tool": "pacta_check_preflight",
+    "arguments": {
+      "chain": "ethereum",
+      "address": "0x33636D49FbefBE798e15e7F356E8DBef543CC708",
+      "block": "26443340"
+    },
+    "result": {
+      "schema": "pacta.preflight_check.v1",
+      "chain": "ethereum",
+      "chainId": 1,
+      "address": "0x33636D49FbefBE798e15e7F356E8DBef543CC708",
+      "pinnedBlock": 26443340,
+      "pinnedBlockHash": "0x961de8f73975cb1900394f4b6c3373899ca1e5d5038f64c2d35147c17f727d23",
+      "blockTimestamp": 1795021655,
+      "verdict": "MULTISIG_NO_TIMELOCK",
+      "riskScore": 55,
+      "isContract": true,
+      "isProxy": false,
+      "proxyType": null,
+      "implementation": null,
+      "beacon": null,
+      "hasAdminSlot": false,
+      "canUpgradeZeroDelay": false,
+      "capabilities": {
+        "pause": false,
+        "blacklist": false,
+        "upgrade": false
+      },
+      "paused": null,
+      "controller": {
+        "address": "0x26B2ec4E02ebe2F54583af25b647b1D619e67BbF",
+        "kind": "multisig_safe",
+        "safeThreshold": 6,
+        "timelockDelaySec": null,
+        "safeOwnerCount": 9,
+        "source": "owner()"
+      },
+      "roleAdminMembers": null,
+      "codeBytes": 209,
+      "method": "Batched JSON-RPC reads pinned to the block hash (EIP-1898); EIP-1967 / EIP-1822 / beacon proxies; capabilities from PUSH4 selectors in proxy + implementation bytecode (heuristic).",
+      "summary": "Controlled by a 6-of-9 Safe with no timelock: changes can land instantly once signers agree.",
+      "source": "live_rpc",
+      "assessment": {
+        "coverage": "unindexed_bytecode_heuristic",
+        "confidence": "medium",
+        "method": "Live bytecode + storage heuristic at the pinned block only: this contract is not in Pacta's indexed catalog (no documentation comparison).",
+        "limits": [
+          "riskScore (0-100) is a heuristic of the controller type and of pause / blacklist / upgrade capabilities read at one block; it is not an audit.",
+          "The live check reads EIP-1967 slots, owner(), Safe getThreshold() / getOwners() and TimelockController getMinDelay(); custom role systems, bridge or L2 admin paths and off-chain operations are not resolved.",
+          "Documentation is compared only for indexed protocols (catalogMatch), at their pinned block."
+        ]
+      },
+      "coverage_gap_hint": "Target is not yet indexed or fully classified. Ask the user if they want you to queue coverage or request this capability via pacta_submit_request (free community queue, or 24h priority clearance for issuers)."
+    }
+  },
+  "blockNumber": 26443340,
+  "blockHash": "0x961de8f73975cb1900394f4b6c3373899ca1e5d5038f64c2d35147c17f727d23",
+  "castCommands": [
+    "cast call 0x33636D49FbefBE798e15e7F356E8DBef543CC708 \"owner()(address)\" --block 26443340 --rpc-url https://ethereum-rpc.publicnode.com",
+    "cast call 0x33636D49FbefBE798e15e7F356E8DBef543CC708 \"owner()(address)\" --block 26443340 --rpc-url https://eth.drpc.org"
+  ],
+  "rpcOutputs": {
+    "a": "0x26B2ec4E02ebe2F54583af25b647b1D619e67BbF",
+    "b": "0x26B2ec4E02ebe2F54583af25b647b1D619e67BbF",
+    "pinnedDualRpcChainProof": {
+      "note": "Mismatch summary: f(x) Protocol official multisig & timelock documentation states that every queued transaction enters a mandatory 3-day (259200s) public timelock before execution, with oracle source updates as the sole documented exception. On-chain at finalized Ethereum block, the core f(x) V2 Router Diamond (which exposes DiamondCutFacet 0x221ffB180AD01213FF882ab7DE9c75E23F9efA63 among its 12 facets for instant facet/implementation upgrades) has owner() set directly to the 6-of-9 Safe (0x26B2ec4E02ebe2F54583af25b647b1D619e67BbF), bypassing the 259200s TimelockController (0x68863fb8855b04509a835082478D6E3D0bE4E61a).",
+      "facetAddresses": {
+        "castCommands": [
+          "cast call 0x33636D49FbefBE798e15e7F356E8DBef543CC708 \"facetAddresses()(address[])\" --block 26443340 --rpc-url https://ethereum-rpc.publicnode.com",
+          "cast call 0x33636D49FbefBE798e15e7F356E8DBef543CC708 \"facetAddresses()(address[])\" --block 26443340 --rpc-url https://eth.drpc.org"
+        ],
+        "output": "[0x221ffB180AD01213FF882ab7DE9c75E23F9efA63, 0x6793De5E5a329bE514B51184Db13639DC7ccf8dd, 0x14F1CbAE37F765614655967aFC51b544b8143749, 0x447d902da96A22727d0B53F215D0C387fe1AE114, 0x56afB443dE36340c32f1a461605171992480059D, 0x3cfE091C9028154cc5Cb721258E9360803B130f5, 0x24177D4ad619aE2582872D25985dcef4d1DE7Ba5, 0x9d205a512c62B14f87B13d1B2Efe9bB8073C4cf6, 0x1f844447ecF5b1523BfbADaD3d9DEA975982Ea93, 0x9F224Aa807C6FC3086eD3c552ba54bD3a8AAcE33, 0xB0c25521fB7dC1EeAd2f99132c852Ac9C715e8d6, 0xa5145ff1E321B717D5f137961FE2Dc8Ec5af31E1]"
+      },
+      "safeThreshold": {
+        "castCommands": [
+          "cast call 0x26B2ec4E02ebe2F54583af25b647b1D619e67BbF \"getThreshold()(uint256)\" --block 26443340 --rpc-url https://ethereum-rpc.publicnode.com",
+          "cast call 0x26B2ec4E02ebe2F54583af25b647b1D619e67BbF \"getThreshold()(uint256)\" --block 26443340 --rpc-url https://eth.drpc.org"
+        ],
+        "output": "6"
+      },
+      "safeOwners": {
+        "castCommands": [
+          "cast call 0x26B2ec4E02ebe2F54583af25b647b1D619e67BbF \"getOwners()(address[])\" --block 26443340 --rpc-url https://ethereum-rpc.publicnode.com",
+          "cast call 0x26B2ec4E02ebe2F54583af25b647b1D619e67BbF \"getOwners()(address[])\" --block 26443340 --rpc-url https://eth.drpc.org"
+        ],
+        "output": "[0x38a93e70b0D8343657f802C1c3Fdb06aC8F8fe99, 0x85DB62FdFA9Ee6050f8b422F74D75D2069dA102B, 0xe3522d85d37F55735e9327CD7a5cDe3abaf28E03, 0x74390470F4001Ca85D93bD546A4Ab1724359654B, 0xeF0Ca09fbf9a5f61E657Fb208b46b8685c1d4766, 0x8EcAB7B8ed8215cA52500cbf1548B9239173ef82, 0x18411aB626c9b3B3Dd5b7356574D8ff396436744, 0xcdF067F306E7a511Ef701588AFCdcff292B19282, 0xC8Be49a9b1ca1A1cc654491a7cBbD27aBfA06A81]"
+      },
+      "bypassedTimelockMinDelay": {
+        "castCommands": [
+          "cast call 0x68863fb8855b04509a835082478D6E3D0bE4E61a \"getMinDelay()(uint256)\" --block 26443340 --rpc-url https://ethereum-rpc.publicnode.com",
+          "cast call 0x68863fb8855b04509a835082478D6E3D0bE4E61a \"getMinDelay()(uint256)\" --block 26443340 --rpc-url https://eth.drpc.org"
+        ],
+        "output": "259200 [2.592e5]"
+      }
+    }
+  },
+  "docsUrl": "https://fxprotocol.gitbook.io/fx-docs/more/resources/multisig",
+  "docsQuote": "Once queued, every transaction enter a mandatory 3-day public timelock before execution giving the community time to review, question, or flag concerns.",
+  "tvlUsd": 38462306,
+  "tvlReference": "https://api.llama.fi/protocol/fx-protocol",
+  "apache2CommercialGrant": true,
+  "rulesAccepted": [
+    true,
+    true,
+    true,
+    true
+  ]
+}

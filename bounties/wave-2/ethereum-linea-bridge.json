@@ -1,0 +1,211 @@
+{
+  "wave": 2,
+  "category": "protocol_mismatch",
+  "slug": "linea-bridge",
+  "protocol": "Linea Bridge",
+  "chainId": 1,
+  "contractAddress": "0xd19d4B5d358258f05D7B411E21A1460D11B0876F",
+  "hunter": "VB-Blue",
+  "basePayoutAddress": "0xe0a3AAe6e7d042f42e82830f4eEbF426cc1270a2",
+  "mcpProof": {
+    "tool": "pacta_check_preflight",
+    "arguments": {
+      "chain": "ethereum",
+      "address": "0xd19d4B5d358258f05D7B411E21A1460D11B0876F"
+    },
+    "result": {
+      "schema": "pacta.preflight_check.v1",
+      "chain": "ethereum",
+      "chainId": 1,
+      "address": "0xd19d4B5d358258f05D7B411E21A1460D11B0876F",
+      "pinnedBlock": 26441613,
+      "pinnedBlockHash": "0x355e8c6c16fd3accb73944f774032286becc09b124da8f846ad2af58ec52296c",
+      "blockTimestamp": 1795000919,
+      "verdict": "ZERO_DELAY_TIMELOCK_RISK",
+      "riskScore": 75,
+      "isContract": true,
+      "isProxy": true,
+      "proxyType": "eip1967",
+      "implementation": "0x052b73d934E9412045Bf731574463Fd026D74645",
+      "beacon": null,
+      "hasAdminSlot": true,
+      "canUpgradeZeroDelay": true,
+      "capabilities": {
+        "pause": false,
+        "blacklist": false,
+        "upgrade": true
+      },
+      "paused": null,
+      "controller": {
+        "address": "0xd6B95c960779c72B8C6752119849318E5d550574",
+        "kind": "timelock",
+        "safeThreshold": null,
+        "timelockDelaySec": 0,
+        "proxyAdmin": "0xF5058616517C068C7b8c7EbC69FF636Ade9066d6",
+        "source": "eip1967_admin_slot"
+      },
+      "roleAdminMembers": null,
+      "codeBytes": 2227,
+      "method": "Batched JSON-RPC reads pinned to the block hash (EIP-1898); EIP-1967 / EIP-1822 / beacon proxies; capabilities from PUSH4 selectors in proxy + implementation bytecode (heuristic).",
+      "summary": "Controlled by a timelock whose minimum delay is 0 s: queued changes can execute immediately, so callers get no exit window. Additional unresolved role/authority administration surface is also present. Capabilities seen in bytecode: upgrade.",
+      "source": "live_rpc",
+      "assessment": {
+        "coverage": "unindexed_bytecode_heuristic",
+        "confidence": "medium",
+        "method": "Live bytecode + storage heuristic at the pinned block only: this contract is not in Pacta's indexed catalog (no documentation comparison).",
+        "limits": [
+          "riskScore (0-100) is a heuristic of the controller type and of pause / blacklist / upgrade capabilities read at one block; it is not an audit.",
+          "The live check reads EIP-1967 slots, owner(), Safe getThreshold() / getOwners() and TimelockController getMinDelay(); custom role systems, bridge or L2 admin paths and off-chain operations are not resolved.",
+          "Documentation is compared only for indexed protocols (catalogMatch), at their pinned block."
+        ]
+      },
+      "coverage_gap_hint": "Target is not yet indexed or fully classified. Ask the user if they want you to queue coverage or request this capability via pacta_submit_request (free community queue, or 24h priority clearance for issuers)."
+    }
+  },
+  "blockNumber": 26441549,
+  "blockHash": "0x65d12f7aa9cd2ca3ea52175823cdc8fb0f0bd4b6d020ede56222dad2d7759e91",
+  "castCommands": [
+    "cast storage 0xd19d4B5d358258f05D7B411E21A1460D11B0876F 0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103 --block 26441549 --rpc-url https://gateway.tenderly.co/public/mainnet",
+    "cast storage 0xd19d4B5d358258f05D7B411E21A1460D11B0876F 0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103 --block 26441549 --rpc-url https://eth.drpc.org"
+  ],
+  "rpcOutputs": {
+    "a": "0x000000000000000000000000f5058616517c068c7b8c7ebc69ff636ade9066d6",
+    "b": "0x000000000000000000000000f5058616517c068c7b8c7ebc69ff636ade9066d6",
+    "pinnedDualRpcChainProof": {
+      "blockNumber": 26441549,
+      "blockHash": "0x65d12f7aa9cd2ca3ea52175823cdc8fb0f0bd4b6d020ede56222dad2d7759e91",
+      "rpcEndpoints": [
+        "https://gateway.tenderly.co/public/mainnet",
+        "https://eth.drpc.org"
+      ],
+      "summary": "docs.linea.build/reference/smart-contracts/messageservice/lib/timelock claims TimeLock is the owner of all upgrades giving users an exit window before an upgrade takes place. On-chain at block 26441549, both LineaRollup (0xd19d4B5d358258f05D7B411E21A1460D11B0876F) and L1 TokenBridge (0x051F1D88f0aF5763fB888eC4378b4D8B29ea3319) use EIP-1967 ProxyAdmin 0xF5058616517C068C7b8c7EbC69FF636Ade9066d6, whose owner() is Timelock (0xd6B95c960779c72B8C6752119849318E5d550574) configured with getMinDelay() == 0 (0 seconds). The 5-of-9 Security Council Safe (0x892bb7EeD71efB060ab90140e7825d8127991DD3) holds PROPOSER_ROLE, EXECUTOR_ROLE, and CANCELLER_ROLE and can propose and execute arbitrary upgrades immediately with zero user exit window (and 3-of-5 Safe 0xB8F5524D73f549Cf14A0587a3C7810723f9c0051 also holds PROPOSER_ROLE).",
+      "reads": {
+        "lineaRollupEip1967Implementation": {
+          "castCommands": [
+            "cast storage 0xd19d4B5d358258f05D7B411E21A1460D11B0876F 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc --block 26441549 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast storage 0xd19d4B5d358258f05D7B411E21A1460D11B0876F 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc --block 26441549 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "0x000000000000000000000000052b73d934e9412045bf731574463fd026d74645",
+          "rawHex": "0x000000000000000000000000052b73d934e9412045bf731574463fd026d74645"
+        },
+        "l1TokenBridgeEip1967Admin": {
+          "castCommands": [
+            "cast storage 0x051F1D88f0aF5763fB888eC4378b4D8B29ea3319 0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103 --block 26441549 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast storage 0x051F1D88f0aF5763fB888eC4378b4D8B29ea3319 0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103 --block 26441549 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "0x000000000000000000000000f5058616517c068c7b8c7ebc69ff636ade9066d6",
+          "rawHex": "0x000000000000000000000000f5058616517c068c7b8c7ebc69ff636ade9066d6"
+        },
+        "proxyAdminOwner": {
+          "castCommands": [
+            "cast call 0xF5058616517C068C7b8c7EbC69FF636Ade9066d6 \"owner()(address)\" --block 26441549 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0xF5058616517C068C7b8c7EbC69FF636Ade9066d6 \"owner()(address)\" --block 26441549 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "0xd6B95c960779c72B8C6752119849318E5d550574",
+          "rawHex": "0x000000000000000000000000d6b95c960779c72b8c6752119849318e5d550574"
+        },
+        "timelockGetMinDelay": {
+          "castCommands": [
+            "cast call 0xd6B95c960779c72B8C6752119849318E5d550574 \"getMinDelay()(uint256)\" --block 26441549 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0xd6B95c960779c72B8C6752119849318E5d550574 \"getMinDelay()(uint256)\" --block 26441549 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "0",
+          "rawHex": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "note": "0 seconds minimum delay on OZ TimelockController (0xd6B95c960779c72B8C6752119849318E5d550574) \u2014 no user exit window"
+        },
+        "timelockHasProposerSecurityCouncil": {
+          "castCommands": [
+            "cast call 0xd6B95c960779c72B8C6752119849318E5d550574 \"hasRole(bytes32,address)(bool)\" 0xb09aa5aeb3702cfd50b6b62bc4532604938f21248a27a1d5ca736082b6819cc1 0x892bb7EeD71efB060ab90140e7825d8127991DD3 --block 26441549 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0xd6B95c960779c72B8C6752119849318E5d550574 \"hasRole(bytes32,address)(bool)\" 0xb09aa5aeb3702cfd50b6b62bc4532604938f21248a27a1d5ca736082b6819cc1 0x892bb7EeD71efB060ab90140e7825d8127991DD3 --block 26441549 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "true",
+          "rawHex": "0x0000000000000000000000000000000000000000000000000000000000000001"
+        },
+        "timelockHasExecutorSecurityCouncil": {
+          "castCommands": [
+            "cast call 0xd6B95c960779c72B8C6752119849318E5d550574 \"hasRole(bytes32,address)(bool)\" 0xd8aa0f3194971a2a116679f7c2090f6939c8d4e01a2a8d7e41d55e5351469e63 0x892bb7EeD71efB060ab90140e7825d8127991DD3 --block 26441549 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0xd6B95c960779c72B8C6752119849318E5d550574 \"hasRole(bytes32,address)(bool)\" 0xd8aa0f3194971a2a116679f7c2090f6939c8d4e01a2a8d7e41d55e5351469e63 0x892bb7EeD71efB060ab90140e7825d8127991DD3 --block 26441549 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "true",
+          "rawHex": "0x0000000000000000000000000000000000000000000000000000000000000001"
+        },
+        "timelockHasCancellerSecurityCouncil": {
+          "castCommands": [
+            "cast call 0xd6B95c960779c72B8C6752119849318E5d550574 \"hasRole(bytes32,address)(bool)\" 0xfd643c72710c63c0180259aba6b2d05451e3591a24e58b62239378085726f783 0x892bb7EeD71efB060ab90140e7825d8127991DD3 --block 26441549 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0xd6B95c960779c72B8C6752119849318E5d550574 \"hasRole(bytes32,address)(bool)\" 0xfd643c72710c63c0180259aba6b2d05451e3591a24e58b62239378085726f783 0x892bb7EeD71efB060ab90140e7825d8127991DD3 --block 26441549 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "true",
+          "rawHex": "0x0000000000000000000000000000000000000000000000000000000000000001"
+        },
+        "timelockHasProposerMultisig2": {
+          "castCommands": [
+            "cast call 0xd6B95c960779c72B8C6752119849318E5d550574 \"hasRole(bytes32,address)(bool)\" 0xb09aa5aeb3702cfd50b6b62bc4532604938f21248a27a1d5ca736082b6819cc1 0xB8F5524D73f549Cf14A0587a3C7810723f9c0051 --block 26441549 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0xd6B95c960779c72B8C6752119849318E5d550574 \"hasRole(bytes32,address)(bool)\" 0xb09aa5aeb3702cfd50b6b62bc4532604938f21248a27a1d5ca736082b6819cc1 0xB8F5524D73f549Cf14A0587a3C7810723f9c0051 --block 26441549 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "true",
+          "rawHex": "0x0000000000000000000000000000000000000000000000000000000000000001"
+        },
+        "securityCouncilGetThreshold": {
+          "castCommands": [
+            "cast call 0x892bb7EeD71efB060ab90140e7825d8127991DD3 \"getThreshold()(uint256)\" --block 26441549 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x892bb7EeD71efB060ab90140e7825d8127991DD3 \"getThreshold()(uint256)\" --block 26441549 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "5",
+          "rawHex": "0x0000000000000000000000000000000000000000000000000000000000000005"
+        },
+        "securityCouncilGetOwners": {
+          "castCommands": [
+            "cast call 0x892bb7EeD71efB060ab90140e7825d8127991DD3 \"getOwners()(address[])\" --block 26441549 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x892bb7EeD71efB060ab90140e7825d8127991DD3 \"getOwners()(address[])\" --block 26441549 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "[0x1f0cdfb6aa74293E06f3A6D3B7958b6d36563c4f, 0xD6481cC92eD746EbC679788654723Ce49D45EbeA, 0xD30373335C6d71499EE6CDcF832b5BcB731BAe8d, 0x535dE1e2A961529AA84EF208981f8cF4e7dcbdF5, 0xC263178AC471C4411abAf5c22cD4D8D67033bc82, 0x9376c137AF5124FFc39bD8940A3D88D1cd508992, 0x4CB4da1D1C198E506031C0Aa8480BA8b57C0fAD4, 0x0F4df4939a6B126a088A40B4Bbf9F30337ACBFE4, 0xB4dAebe4D01f467701F95f0196fc29033c54dBcb]",
+          "rawHex": "0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000090000000000000000000000001f0cdfb6aa74293e06f3a6d3b7958b6d36563c4f000000000000000000000000d6481cc92ed746ebc679788654723ce49d45ebea000000000000000000000000d30373335c6d71499ee6cdcf832b5bcb731bae8d000000000000000000000000535de1e2a961529aa84ef208981f8cf4e7dcbdf5000000000000000000000000c263178ac471c4411abaf5c22cd4d8d67033bc820000000000000000000000009376c137af5124ffc39bd8940a3d88d1cd5089920000000000000000000000004cb4da1d1c198e506031c0aa8480ba8b57c0fad40000000000000000000000000f4df4939a6b126a088a40b4bbf9f30337acbfe4000000000000000000000000b4daebe4d01f467701f95f0196fc29033c54dbcb"
+        },
+        "multisig2GetThreshold": {
+          "castCommands": [
+            "cast call 0xB8F5524D73f549Cf14A0587a3C7810723f9c0051 \"getThreshold()(uint256)\" --block 26441549 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0xB8F5524D73f549Cf14A0587a3C7810723f9c0051 \"getThreshold()(uint256)\" --block 26441549 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "3",
+          "rawHex": "0x0000000000000000000000000000000000000000000000000000000000000003"
+        },
+        "multisig2GetOwners": {
+          "castCommands": [
+            "cast call 0xB8F5524D73f549Cf14A0587a3C7810723f9c0051 \"getOwners()(address[])\" --block 26441549 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0xB8F5524D73f549Cf14A0587a3C7810723f9c0051 \"getOwners()(address[])\" --block 26441549 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "[0x741aAf7dB0f4960Be696CF1727b970F2FA39028c, 0x727833aB68F32a7f2ab96f15aD67336660eCBBD0, 0x7E55b79A01BD9125CD213Bc9F533d21Eb3bD68c5, 0xb275d362C8c1A226eb538FC2349ed9FA00C83AF8, 0x0645A95411C3431BB2fc58Fa61BC837FFA2e12F2]",
+          "rawHex": "0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000005000000000000000000000000741aaf7db0f4960be696cf1727b970f2fa39028c000000000000000000000000727833ab68f32a7f2ab96f15ad67336660ecbbd00000000000000000000000007e55b79a01bd9125cd213bc9f533d21eb3bd68c5000000000000000000000000b275d362c8c1a226eb538fc2349ed9fa00c83af80000000000000000000000000645a95411c3431bb2fc58fa61bc837ffa2e12f2"
+        },
+        "l1UsdcBridgeEip1967Admin": {
+          "castCommands": [
+            "cast storage 0x504A330327A089d8364C4ab3811Ee26976d388ce 0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103 --block 26441549 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast storage 0x504A330327A089d8364C4ab3811Ee26976d388ce 0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103 --block 26441549 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "0x00000000000000000000000041fad3df1b07b647d120d055259e474fe8046eb5",
+          "rawHex": "0x00000000000000000000000041fad3df1b07b647d120d055259e474fe8046eb5"
+        },
+        "l1UsdcBridgeProxyAdminOwner": {
+          "castCommands": [
+            "cast call 0x41fAD3Df1B07B647D120D055259E474fE8046eb5 \"owner()(address)\" --block 26441549 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x41fAD3Df1B07B647D120D055259E474fE8046eb5 \"owner()(address)\" --block 26441549 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "0x892bb7EeD71efB060ab90140e7825d8127991DD3",
+          "rawHex": "0x000000000000000000000000892bb7eed71efb060ab90140e7825d8127991dd3",
+          "note": "L1USDCBridge ProxyAdmin is owned directly by 5-of-9 Security Council Safe with no Timelock"
+        }
+      }
+    }
+  },
+  "docsUrl": "https://docs.linea.build/reference/smart-contracts/messageservice/lib/timelock",
+  "docsQuote": "This timelock contract will be the owner of all upgrades that gives users confidence and an ability to exit should they want to before an upgrade takes place",
+  "tvlUsd": 46086958,
+  "tvlReference": "https://api.llama.fi/protocol/linea-bridge",
+  "apache2CommercialGrant": true,
+  "rulesAccepted": [
+    true,
+    true,
+    true,
+    true
+  ]
+}

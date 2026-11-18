@@ -1110,6 +1110,8 @@ function status(text, bad) { if (st) { st.textContent = text || ""; if (bad) st.
 function setBusy(on) {
 busy = on;
 if (btn) { btn.disabled = on; if (on) btn.setAttribute("aria-busy", "true"); else btn.removeAttribute("aria-busy"); }
+if (wal) wal.disabled = on;
+$$('input[name="sku"]', form).forEach(function (r) { r.disabled = on; });
 if (spin) spin.hidden = !on;
 }
 function sync() {
@@ -1161,23 +1163,26 @@ status("Verified. Your result is below.");
 }
 function verify(retries) {
 if (busy || !validate(true)) return;
-var b = body(), ctl = typeof AbortController === "function" ? new AbortController() : null, guard = 0;
-setBusy(true); status("Checking the payment on Base…"); clearResult();
+setBusy(true); clearResult(); attempt(body(), retries);
+}
+function attempt(b, retries) {
+var ctl = typeof AbortController === "function" ? new AbortController() : null, guard = 0;
+status("Checking the payment on Base…");
 if (ctl) guard = setTimeout(function () { ctl.abort(); }, 75000);
 var opts = { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(b) };
 if (ctl) opts.signal = ctl.signal;
 fetch(api, opts).then(function (r) {
 return r.text().then(function (t) { var j = null; try { j = JSON.parse(t); } catch (e) { j = null; } return { s: r.status, j: j }; });
 }).then(function (x) {
-clearTimeout(guard); setBusy(false);
-if (x.s === 200 && x.j && typeof x.j === "object") { render(x.j, b); return; }
+clearTimeout(guard);
+if (x.s === 200 && x.j && typeof x.j === "object") { setBusy(false); render(x.j, b); return; }
 var code = x.j && typeof x.j.error === "string" ? x.j.error : "";
 if (retries > 0 && (x.s === 202 || x.s === 425 || /pending|not_found|not_confirmed|not_mined/.test(code))) {
 status("Waiting for Base to confirm the transaction…");
-setTimeout(function () { verify(retries - 1); }, 4000);
+setTimeout(function () { attempt(b, retries - 1); }, 4000);
 return;
 }
-status(coError(code, x.s), true);
+setBusy(false); status(coError(code, x.s), true);
 }).catch(function () {
 clearTimeout(guard); setBusy(false);
 status("Could not reach the verifier. Your payment is safe: keep the transaction hash and try again, or send it through the request form below.", true);
@@ -1186,6 +1191,7 @@ status("Could not reach the verifier. Your payment is safe: keep the transaction
 function pay(eth) {
 if (busy || !validate(false)) return;
 var s = CO_SKU[sku()], from = "";
+setBusy(true);
 status("Confirm the transfer of exactly " + s.amount + " USDC on Base in your wallet…");
 eth.request({ method: "eth_requestAccounts" }).then(function (a) {
 from = a && a[0] ? String(a[0]) : "";
@@ -1201,9 +1207,10 @@ return eth.request({ method: "eth_sendTransaction", params: [{ from: from, to: C
 if (!TX_RE.test(String(h || ""))) throw new Error("no hash");
 var t = form.elements.tx_hash; if (t) t.value = String(h);
 status("Transfer sent. Waiting for Base to confirm…");
-verify(15);
+clearResult(); attempt(body(), 15);
 }).catch(function (e) {
 var code = e && e.code;
+setBusy(false);
 status(code === 4001 ? "Cancelled in the wallet. Nothing was sent."
 : code === 4902 ? "Add Base (chain 8453) to your wallet, or pay by copying the address and amount above."
 : "The wallet did not send the transfer. You can pay by copying the address and amount above.", true);

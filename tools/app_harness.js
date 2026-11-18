@@ -702,7 +702,33 @@ async function checkoutScenario() {
   chain = "0x2105"; calls = [];
   p = run(input.request, input.app, { path: "/request/", win: { ethereum: eth2 }, fetch: okFetch(200, {}) }); d = p.document;
   fill(d, "target_address", ADDR); click(d.getElementById("co-wallet")); for (let i = 0; i < 8; i++) await flush();
-  res.co_wallet_cancel_sends_nothing = calls.length === 0 && /Cancelled in the wallet/.test(d.getElementById("co-status").textContent);
+  res.co_wallet_cancel_sends_nothing = calls.length === 0 && /Cancelled in the wallet/.test(d.getElementById("co-status").textContent)
+    && d.getElementById("co-wallet").disabled === false && d.querySelectorAll('input[name="sku"]').every((r) => r.disabled === false);
+  // one payment at a time: while the wallet prompt is open, more Pay clicks and a Verify submit do nothing; Pay, Verify and the SKU
+  // radios are locked, and everything unlocks once the order settles
+  let release;
+  const gate = new Promise((r) => { release = r; });
+  const wc3 = [];
+  const eth3 = { request: (a) => {
+    wc3.push(a.method);
+    if (a.method === "eth_requestAccounts") return gate.then(() => ["0x" + "ab".repeat(20)]);
+    if (a.method === "eth_chainId") return Promise.resolve("0x2105");
+    if (a.method === "eth_sendTransaction") return Promise.resolve(TXH);
+    return Promise.reject(new Error("unexpected"));
+  } };
+  calls = [];
+  p = run(input.request, input.app, { path: "/request/", win: { ethereum: eth3 }, fetch: okFetch(200, { order_id: "ord_once" }) }); d = p.document;
+  fill(d, "target_address", ADDR);
+  const w3 = d.getElementById("co-wallet"), radios3 = d.querySelectorAll('input[name="sku"]');
+  click(w3); await flush(); click(w3); click(w3); await flush();
+  const lockedDuring = w3.disabled === true && d.getElementById("co-verify").disabled === true && radios3.length === 3 && radios3.every((r) => r.disabled === true);
+  fill(d, "tx_hash", TXH); submit(d); await flush();
+  const noVerifyDuring = calls.length === 0;
+  release(); for (let i = 0; i < 8; i++) await flush();
+  res.co_wallet_single_flight = lockedDuring && noVerifyDuring && wc3.filter((m) => m === "eth_requestAccounts").length === 1
+    && wc3.filter((m) => m === "eth_sendTransaction").length === 1 && calls.length === 1
+    && w3.disabled === false && d.getElementById("co-verify").disabled === false && radios3.every((r) => r.disabled === false)
+    && d.getElementById("co-result").hidden === false;
 }
 // (j) live timelock re-check: brief pages and #radar fetch the free /v1/briefs/live-timelocks once on load and update the
 // state badges with textContent + class only; failures and malformed payloads keep the static block-pinned state.

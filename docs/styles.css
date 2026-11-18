@@ -918,8 +918,8 @@ a[data-basescan-tx] { white-space: nowrap; }
    What to check / Pay on Base / Verify and unlock; one column below 1024 px. The enterprise tracks sit in a disclosure under it. */
 .co-sec { padding-top: 40px; }
 .co-skus { margin: 0; padding: 0; border: 0; min-width: 0; }
-.co-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-.co-cards .co-card { height: 100%; padding: 16px 18px; }
+.co-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start; }
+.co-cards .co-card { padding: 16px 18px; }
 .co-card > span { display: block; min-width: 0; }
 .co-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 8px; }
 .co-head b { font-size: 1rem; }
@@ -944,10 +944,12 @@ a[data-basescan-tx] { white-space: nowrap; }
 details.ent-details > .ent-body { padding: 0 16px 16px; }
 .co-lead { margin: 0 0 16px; color: var(--muted-foreground); font-size: 0.9375rem; }
 .co-lead b { color: var(--foreground); }
-@media print {
-  html.co-print body * { visibility: hidden; }
-  html.co-print #co-result, html.co-print #co-result * { visibility: visible; }
-  html.co-print #co-result { position: absolute; left: 0; top: 0; width: 100%; }
+@media print {   /* Print report: only the receipt, on one page (every other branch leaves the layout) */
+  html.co-print body > :not(main), html.co-print main > :not(#checkout), html.co-print #checkout .wrap > :not(#co-form),
+  html.co-print #co-form > :not(#co-result), html.co-print #co-result .co-actions, html.co-print #co-result .term-h button { display: none !important; }
+  html.co-print body, html.co-print main, html.co-print .co-sec { margin: 0; padding: 0; }
+  html.co-print #co-result { margin: 0; border: 0; box-shadow: none; }
+  html.co-print #co-result pre { max-height: none; overflow: visible; }
 }
 .status { min-height: 20px; margin-top: 8px; font-size: 0.875rem; color: var(--success); }
 .actions { display: grid; gap: 8px; margin-top: 16px; }

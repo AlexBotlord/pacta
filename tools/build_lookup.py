@@ -77,6 +77,18 @@ TOKENS = {
     "circle-usdc": ["USDC"], "tether-usdt": ["USDT"], "frax-usd-frxusd": ["frxUSD", "sfrxUSD"], "paypal-usd-pyusd": ["PYUSD"],
     "steakhouse-financial-ethereum": ["steakUSDT", "steakPYUSD", "steakUSDC", "Steakhouse"], "uniswap-v4": ["UNI", "Uniswap v4", "PoolManager"], "chainlink-ccip": ["CCIP", "LINK", "Chainlink"], "obol-network": ["OBOL", "stOBOL", "Obol"],
     "layerzero-v2": ["ZRO", "LayerZero", "EndpointV2"], "wormhole-core-ntt": ["Wormhole", "NTT", "Guardian"], "railgun": ["RAIL", "Railgun"], "axelar-network": ["AXL", "Axelar", "AxelarGateway", "InterchainTokenService"],
+    # Sprint 26 promotion (bulk harvester v1.3)
+    "3f": ["3F"], "3jane-lending": ["3Jane"], "aegis-yusd": ["YUSD"], "aera-v3": ["Aera"], "alchemix-v3": ["ALCX"],
+    "anemoy-capital": ["JTRSY"], "ao-bridge": ["AO"], "arrakis-modular": ["Arrakis"], "aster-bridge": ["Aster"],
+    "autofinance": ["AUTOfinance"], "avalon-superearn": ["AVL"], "bitfi-basis": ["bfBTC"], "cian-yield-layer": ["ylstETH"],
+    "concentrator": ["CTR"], "cooler-loans": ["OHM"], "curve-dex-ethereum": ["Curve"], "derive-v3-options": ["DRV"], "frankencoin": ["FCS"],
+    "grvt-bridge": ["GRVT"], "hyperlane": ["Hyperlane"], "idex-v1": ["IDEX"], "ipor-fusion": ["IPOR"], "k3-capital": ["K3"], "kpk": ["KPK"],
+    "lighter-bridge": ["LIT"], "makina": ["Makina"], "noon": ["USN"], "origami-finance": ["SKY+"], "pancakeswap-amm-v3": ["PancakeSwap"],
+    "polygon-bridge": ["Polygon"], "rockawayx": ["eY10K"], "saturn": ["USDat"], "shift-defi": ["sdUSDC-vault"],
+    "sierra-protocol": ["xSOLY"], "sonic-gateway": ["Sonic"], "starknet-bridge": ["STRK"], "team-finance": ["SWAP"],
+    "theo-network-thusd": ["thUSD"], "tori-finance": ["trUSD"], "tornado-cash": ["TORN"], "uncx-network-v2": ["UNCX"], "usdt0": ["USDT0"],
+    "veda": ["Veda"], "vesper-v1": ["VSP"], "world-chain-bridge": ["World"], "xdai-stake-bridge": ["STAKE"], "yield-basis": ["YB"],
+    "yieldnest": ["YND"], "zama": ["Zama"], "zerobase-cedefi": ["ZBT"],
     # briefs
     "kerne-kusd-base": ["kUSD", "Kerne"], "efix-efixdi-base": ["efixDI+", "EFIXDI", "EFIX"], "circle-cirbtc-eth": ["cirBTC", "Circle"],
     "paxos-paxgy-eth": ["PAXGy", "Paxos"], "tether-usat-eth": ["USAT", "Tether"], "ethena-ops-0x0ca0-0x1fe5": ["USDe", "RLUSD", "USAT"],

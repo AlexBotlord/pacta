@@ -6,6 +6,100 @@
  "protocols": [
   {
    "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/3f.svg",
+    "svg": "https://pacta.wtf/badges/3f.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Leveraged exposure vaults over tokenized real-world assets, built on Morpho (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "3F",
+   "preflightArgs": {
+    "address": "0x54F862fa0612A8709F6Dec4A7B39AF015CD4E82E",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x54F862fa0612A8709F6Dec4A7B39AF015CD4E82E",
+   "slug": "3f",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "3f-control-plane",
+     "sprint": null,
+     "surface": "ERC1967Factory · Non-Proxy Bytecode & Controller",
+     "targetContract": "0x54F862fa0612A8709F6Dec4A7B39AF015CD4E82E",
+     "targetLabel": "ERC1967Factory"
+    }
+   ],
+   "targetLabel": "ERC1967Factory",
+   "tokens": [
+    "3F"
+   ],
+   "url": "https://pacta.wtf/protocols/3f/"
+  },
+  {
+   "badge": {
+    "label": "Aligned · Base EAS",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/3jane-lending.svg",
+    "svg": "https://pacta.wtf/badges/3jane-lending.svg",
+    "tier": "aligned"
+   },
+   "baseEasUids": [
+    "0x6692c36731ecd514fb7a92fe3de0a6770b67f68f55eece26faa669c2c84b3a08"
+   ],
+   "category": "Uncollateralized Credit Money Market (USDC) (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "aligned_baseline",
+   "controllerAddress": "0x3D3C41419Ab401cd25055E8f9421D7D96d887885",
+   "controllerKind": "timelock",
+   "documentationComparison": "compared",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "name": "3Jane Lending",
+   "preflightArgs": {
+    "address": "0x3D3C41419Ab401cd25055E8f9421D7D96d887885",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x3D3C41419Ab401cd25055E8f9421D7D96d887885",
+   "slug": "3jane-lending",
+   "sprints": [
+    26
+   ],
+   "surfaces": [
+    {
+     "baseEasUid": "0x6692c36731ecd514fb7a92fe3de0a6770b67f68f55eece26faa669c2c84b3a08",
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "3jane-lending-timelock-delay-s26",
+     "sprint": 26,
+     "surface": "3Jane Lending Upgrades admin: 7-day minimum delay, as documented",
+     "targetContract": "0x3D3C41419Ab401cd25055E8f9421D7D96d887885",
+     "targetLabel": "Upgrades admin timelock"
+    }
+   ],
+   "targetLabel": "Upgrades admin timelock",
+   "tokens": [
+    "3Jane"
+   ],
+   "url": "https://pacta.wtf/protocols/3jane-lending/"
+  },
+  {
+   "badge": {
     "label": "Aligned · Base EAS",
     "live": "https://pacta-x402.pacta.workers.dev/v1/badges/aave-v3-base.svg",
     "svg": "https://pacta.wtf/badges/aave-v3-base.svg",
@@ -179,6 +273,96 @@
   },
   {
    "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/aegis-yusd.svg",
+    "svg": "https://pacta.wtf/badges/aegis-yusd.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Funding-Rate Arbitrage Stablecoin (delta-neutral) (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": "0x4Fe78eF65BD8EDDED480efaB030BA680646503c8",
+   "controllerKind": "multisig_safe",
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "Aegis YUSD",
+   "preflightArgs": {
+    "address": "0x4274cD7277C7bb0806Bd5FE84b9aDAE466a8DA0a",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x4274cD7277C7bb0806Bd5FE84b9aDAE466a8DA0a",
+   "slug": "aegis-yusd",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "aegis-yusd-control-plane",
+     "sprint": null,
+     "surface": "YUSD · Non-Proxy Bytecode & Controller",
+     "targetContract": "0x4274cD7277C7bb0806Bd5FE84b9aDAE466a8DA0a",
+     "targetLabel": "YUSD"
+    }
+   ],
+   "targetLabel": "YUSD",
+   "tokens": [
+    "YUSD"
+   ],
+   "url": "https://pacta.wtf/protocols/aegis-yusd/"
+  },
+  {
+   "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/aera-v3.svg",
+    "svg": "https://pacta.wtf/badges/aera-v3.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Autonomous DAO Treasury Management (Gauntlet team) (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": "0xce75E223E6DbB0503D2B6f55bC5907d1A0372E2B",
+   "controllerKind": "timelock",
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "Aera V3",
+   "preflightArgs": {
+    "address": "0x29722cC9a1cACff4a15914F9bC274B46F3b90B4F",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x29722cC9a1cACff4a15914F9bC274B46F3b90B4F",
+   "slug": "aera-v3",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "aera-v3-control-plane",
+     "sprint": null,
+     "surface": "MultiDepositorVaultFactory · Non-Proxy Bytecode & Controller",
+     "targetContract": "0x29722cC9a1cACff4a15914F9bC274B46F3b90B4F",
+     "targetLabel": "MultiDepositorVaultFactory"
+    }
+   ],
+   "targetLabel": "MultiDepositorVaultFactory",
+   "tokens": [
+    "Aera"
+   ],
+   "url": "https://pacta.wtf/protocols/aera-v3/"
+  },
+  {
+   "badge": {
     "label": "Parameter Delta",
     "live": "https://pacta-x402.pacta.workers.dev/v1/badges/aerodrome-finance-base.svg",
     "svg": "https://pacta.wtf/badges/aerodrome-finance-base.svg",
@@ -288,6 +472,321 @@
     "Slipstream"
    ],
    "url": "https://pacta.wtf/protocols/aerodrome-slipstream-base/"
+  },
+  {
+   "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/alchemix-v3.svg",
+    "svg": "https://pacta.wtf/badges/alchemix-v3.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Self-Repaying Synthetic Loans (ALCX token) (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "Alchemix V3",
+   "preflightArgs": {
+    "address": "0xdBdb4d16EdA451D0503b854CF79D55697F90c8DF",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xdBdb4d16EdA451D0503b854CF79D55697F90c8DF",
+   "slug": "alchemix-v3",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "alchemix-v3-control-plane",
+     "sprint": null,
+     "surface": "Alchemix (AlchemixToken) · Non-Proxy Bytecode & Controller",
+     "targetContract": "0xdBdb4d16EdA451D0503b854CF79D55697F90c8DF",
+     "targetLabel": "Alchemix (AlchemixToken)"
+    }
+   ],
+   "targetLabel": "Alchemix (AlchemixToken)",
+   "tokens": [
+    "ALCX"
+   ],
+   "url": "https://pacta.wtf/protocols/alchemix-v3/"
+  },
+  {
+   "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/anemoy-capital.svg",
+    "svg": "https://pacta.wtf/badges/anemoy-capital.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Tokenized Fund Asset Manager (Centrifuge pools) (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "Anemoy Capital",
+   "preflightArgs": {
+    "address": "0x8c213ee79581Ff4984583C6a801e5263418C4b86",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x8c213ee79581Ff4984583C6a801e5263418C4b86",
+   "slug": "anemoy-capital",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "anemoy-capital-control-plane",
+     "sprint": null,
+     "surface": "Janus Henderson Treasury Fund (Tranche) · Non-Proxy Bytecode & Controller",
+     "targetContract": "0x8c213ee79581Ff4984583C6a801e5263418C4b86",
+     "targetLabel": "Janus Henderson Treasury Fund (Tranche)"
+    }
+   ],
+   "targetLabel": "Janus Henderson Treasury Fund (Tranche)",
+   "tokens": [
+    "JTRSY"
+   ],
+   "url": "https://pacta.wtf/protocols/anemoy-capital/"
+  },
+  {
+   "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/ao-bridge.svg",
+    "svg": "https://pacta.wtf/badges/ao-bridge.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Decentralized Supercomputer Token Bridge (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "AO Bridge",
+   "preflightArgs": {
+    "address": "0xfE08D40Eee53d64936D3128838867c867602665c",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xfE08D40Eee53d64936D3128838867c867602665c",
+   "slug": "ao-bridge",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "ao-bridge-control-plane",
+     "sprint": null,
+     "surface": "Distribution · EIP-1967 Proxy & Controller Chain",
+     "targetContract": "0xfE08D40Eee53d64936D3128838867c867602665c",
+     "targetLabel": "Distribution"
+    }
+   ],
+   "targetLabel": "Distribution",
+   "tokens": [
+    "AO"
+   ],
+   "url": "https://pacta.wtf/protocols/ao-bridge/"
+  },
+  {
+   "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/arrakis-modular.svg",
+    "svg": "https://pacta.wtf/badges/arrakis-modular.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Market-making strategy vaults for token issuers, deployed by a meta-vault factory (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": "0x5108EF86cF493905BcD35A3736e4B46DeCD7de58",
+   "controllerKind": "multisig_safe",
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "Arrakis Modular",
+   "preflightArgs": {
+    "address": "0x820FB8127a689327C863de8433278d6181123982",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x820FB8127a689327C863de8433278d6181123982",
+   "slug": "arrakis-modular",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "arrakis-modular-control-plane",
+     "sprint": null,
+     "surface": "ArrakisMetaVaultFactory · Non-Proxy Bytecode & Controller",
+     "targetContract": "0x820FB8127a689327C863de8433278d6181123982",
+     "targetLabel": "ArrakisMetaVaultFactory"
+    }
+   ],
+   "targetLabel": "ArrakisMetaVaultFactory",
+   "tokens": [
+    "Arrakis"
+   ],
+   "url": "https://pacta.wtf/protocols/arrakis-modular/"
+  },
+  {
+   "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/aster-bridge.svg",
+    "svg": "https://pacta.wtf/badges/aster-bridge.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Perpetual Exchange Deposit Vault (MEV-free trading) (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": "0x1FE3Fe2Ddd19AB58B0c56054a5AF217Afb27eCEA",
+   "controllerKind": "multisig_safe",
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "Aster Bridge",
+   "preflightArgs": {
+    "address": "0x604DD02d620633Ae427888d41bfd15e38483736E",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x604DD02d620633Ae427888d41bfd15e38483736E",
+   "slug": "aster-bridge",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "aster-bridge-control-plane",
+     "sprint": null,
+     "surface": "AstherusVault · EIP-1967 Proxy & Controller Chain",
+     "targetContract": "0x604DD02d620633Ae427888d41bfd15e38483736E",
+     "targetLabel": "AstherusVault"
+    }
+   ],
+   "targetLabel": "AstherusVault",
+   "tokens": [
+    "Aster"
+   ],
+   "url": "https://pacta.wtf/protocols/aster-bridge/"
+  },
+  {
+   "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/autofinance.svg",
+    "svg": "https://pacta.wtf/badges/autofinance.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Autonomous Liquidity Routing Pools (Autopools) (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": "0x8b4334d4812C530574Bd4F2763FcD22dE94A969B",
+   "controllerKind": "multisig_safe",
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "AUTOfinance",
+   "preflightArgs": {
+    "address": "0x2218F90A98b0C070676f249EF44834686dAa4285",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x2218F90A98b0C070676f249EF44834686dAa4285",
+   "slug": "autofinance",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "autofinance-control-plane",
+     "sprint": null,
+     "surface": "SystemRegistry · Non-Proxy Bytecode & Controller",
+     "targetContract": "0x2218F90A98b0C070676f249EF44834686dAa4285",
+     "targetLabel": "SystemRegistry"
+    }
+   ],
+   "targetLabel": "SystemRegistry",
+   "tokens": [
+    "AUTOfinance"
+   ],
+   "url": "https://pacta.wtf/protocols/autofinance/"
+  },
+  {
+   "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/avalon-superearn.svg",
+    "svg": "https://pacta.wtf/badges/avalon-superearn.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Yield Product with Real-Time APY (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": "0x1792f73b586F3e931B51826195Ff015a23C86009",
+   "controllerKind": "contract_controller",
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "Avalon Superearn",
+   "preflightArgs": {
+    "address": "0x5c8D0C48810FD37A0A824D074ee290E64f7A8Fa2",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x5c8D0C48810FD37A0A824D074ee290E64f7A8Fa2",
+   "slug": "avalon-superearn",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "avalon-superearn-control-plane",
+     "sprint": null,
+     "surface": "AVL (AvalonMintable) · EIP-1967 Proxy & Controller Chain",
+     "targetContract": "0x5c8D0C48810FD37A0A824D074ee290E64f7A8Fa2",
+     "targetLabel": "AVL (AvalonMintable)"
+    }
+   ],
+   "targetLabel": "AVL (AvalonMintable)",
+   "tokens": [
+    "AVL"
+   ],
+   "url": "https://pacta.wtf/protocols/avalon-superearn/"
   },
   {
    "badge": {
@@ -544,7 +1043,8 @@
     "tier": "parameter_delta"
    },
    "baseEasUids": [
-    "0x50058ab09e446a72e880df68ce0e0ef96bb891ccd689a99ad2cbfc7b469ae9f5"
+    "0x50058ab09e446a72e880df68ce0e0ef96bb891ccd689a99ad2cbfc7b469ae9f5",
+    "0x6692c36731ecd514fb7a92fe3de0a6770b67f68f55eece26faa669c2c84b3a08"
    ],
    "category": "Automated Yield Vaults & CLM (Base)",
    "chain": "base",
@@ -563,7 +1063,8 @@
    "primaryContract": "0xfc69704cC3cAac545cC7577009Ea4AA04F1a61Eb",
    "slug": "beefy-finance-base",
    "sprints": [
-    22
+    22,
+    26
    ],
    "surfaces": [
     {
@@ -601,6 +1102,18 @@
      "surface": "Vault owner timelock: no delay (0 seconds)",
      "targetContract": "0x09D19184F46A32213DF06b981122e06882B61309",
      "targetLabel": "BeefyVaultOwnerTimelock_Base"
+    },
+    {
+     "baseEasUid": "0x6692c36731ecd514fb7a92fe3de0a6770b67f68f55eece26faa669c2c84b3a08",
+     "blockHash": "0x732b5472c93d5c4bf65f39440097e2b0143d5875cfec028646f7f06123a20094",
+     "blockNumber": 58885628,
+     "chain": "base",
+     "classification": "aligned_baseline",
+     "id": "beefy-finance-base-clm-deviation-executed-s26",
+     "sprint": 26,
+     "surface": "CLM USDC-VVV strategy: the queued setDeviation(25) executed through the 6-hour timelock",
+     "targetContract": "0x03f6AFbcbf398E2362c93DDC846619f1b1b860d2",
+     "targetLabel": "Beefy CLM strategy cowAeroBaseUSDC-VVV"
     }
    ],
    "targetLabel": "BeefyFeeConfig_Base",
@@ -608,6 +1121,51 @@
     "BIFI"
    ],
    "url": "https://pacta.wtf/protocols/beefy-finance-base/"
+  },
+  {
+   "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/bitfi-basis.svg",
+    "svg": "https://pacta.wtf/badges/bitfi-basis.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Basis-Trade Yield Token (bfUSD issuer) (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": "0xd931401B37c3A368505E7AE6dE700f2b0ad14ac6",
+   "controllerKind": "eoa",
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "BitFi Basis",
+   "preflightArgs": {
+    "address": "0xCdFb58c8C859Cb3F62ebe9Cf2767F9e036C7fb15",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xCdFb58c8C859Cb3F62ebe9Cf2767F9e036C7fb15",
+   "slug": "bitfi-basis",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "bitfi-basis-control-plane",
+     "sprint": null,
+     "surface": "BitFi Bitcoin (Bfbtc) · EIP-1967 Proxy & Controller Chain",
+     "targetContract": "0xCdFb58c8C859Cb3F62ebe9Cf2767F9e036C7fb15",
+     "targetLabel": "BitFi Bitcoin (Bfbtc)"
+    }
+   ],
+   "targetLabel": "BitFi Bitcoin (Bfbtc)",
+   "tokens": [
+    "bfBTC"
+   ],
+   "url": "https://pacta.wtf/protocols/bitfi-basis/"
   },
   {
    "badge": {
@@ -843,6 +1401,51 @@
     "Chainlink"
    ],
    "url": "https://pacta.wtf/protocols/chainlink-ccip/"
+  },
+  {
+   "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/cian-yield-layer.svg",
+    "svg": "https://pacta.wtf/badges/cian-yield-layer.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Leveraged Staking Vault (recursive ETH) (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": "0xf24955E9D0a05222373d4555f8831f7A05e83F62",
+   "controllerKind": "contract_controller",
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "CIAN Yield Layer",
+   "preflightArgs": {
+    "address": "0xB13aa2d0345b0439b064f26B82D8dCf3f508775d",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xB13aa2d0345b0439b064f26B82D8dCf3f508775d",
+   "slug": "cian-yield-layer",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "cian-yield-layer-control-plane",
+     "sprint": null,
+     "surface": "CIAN yield layer stETH (VaultYieldETH) · EIP-1967 Proxy & Controller Chain",
+     "targetContract": "0xB13aa2d0345b0439b064f26B82D8dCf3f508775d",
+     "targetLabel": "CIAN yield layer stETH (VaultYieldETH)"
+    }
+   ],
+   "targetLabel": "CIAN yield layer stETH (VaultYieldETH)",
+   "tokens": [
+    "ylstETH"
+   ],
+   "url": "https://pacta.wtf/protocols/cian-yield-layer/"
   },
   {
    "badge": {
@@ -1105,6 +1708,51 @@
   },
   {
    "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/concentrator.svg",
+    "svg": "https://pacta.wtf/badges/concentrator.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Curve & Convex Reward Compounder (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": "0xA0FB1b11ccA5871fb0225B64308e249B97804E99",
+   "controllerKind": "multisig_safe",
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "Concentrator",
+   "preflightArgs": {
+    "address": "0xb3Ad645dB386D7F6D753B2b9C3F4B853DA6890B8",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xb3Ad645dB386D7F6D753B2b9C3F4B853DA6890B8",
+   "slug": "concentrator",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "concentrator-control-plane",
+     "sprint": null,
+     "surface": "Concentrator Token (Vyper_contract) · Non-Proxy Bytecode & Controller",
+     "targetContract": "0xb3Ad645dB386D7F6D753B2b9C3F4B853DA6890B8",
+     "targetLabel": "Concentrator Token (Vyper_contract)"
+    }
+   ],
+   "targetLabel": "Concentrator Token (Vyper_contract)",
+   "tokens": [
+    "CTR"
+   ],
+   "url": "https://pacta.wtf/protocols/concentrator/"
+  },
+  {
+   "badge": {
     "label": "Parameter Delta",
     "live": "https://pacta-x402.pacta.workers.dev/v1/badges/concrete.svg",
     "svg": "https://pacta.wtf/badges/concrete.svg",
@@ -1229,6 +1877,104 @@
   },
   {
    "badge": {
+    "label": "Aligned · Base EAS",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/cooler-loans.svg",
+    "svg": "https://pacta.wtf/badges/cooler-loans.svg",
+    "tier": "aligned"
+   },
+   "baseEasUids": [
+    "0x6692c36731ecd514fb7a92fe3de0a6770b67f68f55eece26faa669c2c84b3a08"
+   ],
+   "category": "Fixed-Term Loans against gOHM (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "aligned_baseline",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "name": "Cooler Loans",
+   "preflightArgs": {
+    "address": "0x245cc372C84B3645Bf0Ffe6538620B04a217988B",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x245cc372C84B3645Bf0Ffe6538620B04a217988B",
+   "slug": "cooler-loans",
+   "sprints": [
+    26
+   ],
+   "surfaces": [
+    {
+     "baseEasUid": "0x6692c36731ecd514fb7a92fe3de0a6770b67f68f55eece26faa669c2c84b3a08",
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "cooler-loans-safe-threshold-s26",
+     "sprint": 26,
+     "surface": "Cooler Loans multisig: 4-of-8 Safe, as documented",
+     "targetContract": "0x245cc372C84B3645Bf0Ffe6538620B04a217988B",
+     "targetLabel": "Cooler Loans Safe"
+    }
+   ],
+   "targetLabel": "Cooler Loans Safe",
+   "tokens": [
+    "OHM"
+   ],
+   "url": "https://pacta.wtf/protocols/cooler-loans/"
+  },
+  {
+   "badge": {
+    "label": "Aligned · Base EAS",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/curve-dex-ethereum.svg",
+    "svg": "https://pacta.wtf/badges/curve-dex-ethereum.svg",
+    "tier": "aligned"
+   },
+   "baseEasUids": [
+    "0x6692c36731ecd514fb7a92fe3de0a6770b67f68f55eece26faa669c2c84b3a08"
+   ],
+   "category": "Stableswap AMM Liquidity Pools (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "aligned_baseline",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "name": "Curve DEX (Ethereum)",
+   "preflightArgs": {
+    "address": "0x467947EE34aF926cF1DCac093870f613C96B1E0c",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x467947EE34aF926cF1DCac093870f613C96B1E0c",
+   "slug": "curve-dex-ethereum",
+   "sprints": [
+    26
+   ],
+   "surfaces": [
+    {
+     "baseEasUid": "0x6692c36731ecd514fb7a92fe3de0a6770b67f68f55eece26faa669c2c84b3a08",
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "curve-dex-ethereum-safe-threshold-s26",
+     "sprint": 26,
+     "surface": "Curve DEX (Ethereum) multisig: 5-of-9 Safe, as documented",
+     "targetContract": "0x467947EE34aF926cF1DCac093870f613C96B1E0c",
+     "targetLabel": "Curve DEX (Ethereum) Safe"
+    }
+   ],
+   "targetLabel": "Curve DEX (Ethereum) Safe",
+   "tokens": [
+    "Curve"
+   ],
+   "url": "https://pacta.wtf/protocols/curve-dex-ethereum/"
+  },
+  {
+   "badge": {
     "label": "Parameter Delta",
     "live": "https://pacta-x402.pacta.workers.dev/v1/badges/curve-finance-crvusd.svg",
     "svg": "https://pacta.wtf/badges/curve-finance-crvusd.svg",
@@ -1276,6 +2022,51 @@
     "CRV"
    ],
    "url": "https://pacta.wtf/protocols/curve-finance-crvusd/"
+  },
+  {
+   "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/derive-v3-options.svg",
+    "svg": "https://pacta.wtf/badges/derive-v3-options.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "zkVM Exchange Settling on Ethereum (DRV token) (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": "0xaA7b17C2539437Efa236FED262A5815358Ae2CC3",
+   "controllerKind": "contract_controller",
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "Derive V3 Options",
+   "preflightArgs": {
+    "address": "0xB1D1eae60EEA9525032a6DCb4c1CE336a1dE71BE",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xB1D1eae60EEA9525032a6DCb4c1CE336a1dE71BE",
+   "slug": "derive-v3-options",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "derive-v3-options-control-plane",
+     "sprint": null,
+     "surface": "Derive · EIP-1967 Proxy & Controller Chain",
+     "targetContract": "0xB1D1eae60EEA9525032a6DCb4c1CE336a1dE71BE",
+     "targetLabel": "Derive"
+    }
+   ],
+   "targetLabel": "Derive",
+   "tokens": [
+    "DRV"
+   ],
+   "url": "https://pacta.wtf/protocols/derive-v3-options/"
   },
   {
    "badge": {
@@ -1698,8 +2489,8 @@
    "surfaces": [
     {
      "baseEasUid": null,
-     "blockHash": "0x36147f7f0b6d2a0a94975e98b14c979034930dbe6f9905a5b0bcb2ab45ba35b0",
-     "blockNumber": 57421449,
+     "blockHash": "0x732b5472c93d5c4bf65f39440097e2b0143d5875cfec028646f7f06123a20094",
+     "blockNumber": 58885628,
      "chain": "base",
      "classification": "rpc_observed",
      "id": "extra-finance-base-control-plane",
@@ -1864,6 +2655,51 @@
     "INST"
    ],
    "url": "https://pacta.wtf/protocols/fluid-instadapp/"
+  },
+  {
+   "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/frankencoin.svg",
+    "svg": "https://pacta.wtf/badges/frankencoin.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Oracle-Free Swiss Franc Stablecoin CDP (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "Frankencoin",
+   "preflightArgs": {
+    "address": "0xDb861830D9Ae2d1fCF99fA0cfd3973de382B0B5b",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xDb861830D9Ae2d1fCF99fA0cfd3973de382B0B5b",
+   "slug": "frankencoin",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "frankencoin-control-plane",
+     "sprint": null,
+     "surface": "Frankencoin Shares (FCS) · Non-Proxy Bytecode & Controller",
+     "targetContract": "0xDb861830D9Ae2d1fCF99fA0cfd3973de382B0B5b",
+     "targetLabel": "Frankencoin Shares (FCS)"
+    }
+   ],
+   "targetLabel": "Frankencoin Shares (FCS)",
+   "tokens": [
+    "FCS"
+   ],
+   "url": "https://pacta.wtf/protocols/frankencoin/"
   },
   {
    "badge": {
@@ -2139,6 +2975,141 @@
   },
   {
    "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/grvt-bridge.svg",
+    "svg": "https://pacta.wtf/badges/grvt-bridge.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Zero-Knowledge Private Derivatives Venue (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "Grvt Bridge",
+   "preflightArgs": {
+    "address": "0xAD29F2723fcdBcF665F210F25E06f97477e417cF",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xAD29F2723fcdBcF665F210F25E06f97477e417cF",
+   "slug": "grvt-bridge",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "grvt-bridge-control-plane",
+     "sprint": null,
+     "surface": "GRVT (GRVTToken) · Non-Proxy Bytecode & Controller",
+     "targetContract": "0xAD29F2723fcdBcF665F210F25E06f97477e417cF",
+     "targetLabel": "GRVT (GRVTToken)"
+    }
+   ],
+   "targetLabel": "GRVT (GRVTToken)",
+   "tokens": [
+    "GRVT"
+   ],
+   "url": "https://pacta.wtf/protocols/grvt-bridge/"
+  },
+  {
+   "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/hyperlane.svg",
+    "svg": "https://pacta.wtf/badges/hyperlane.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Permissionless Interchain Messaging (token lockbox) (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "Hyperlane",
+   "preflightArgs": {
+    "address": "0x6D265C7dD8d76F25155F1a7687C693FDC1220D12",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x6D265C7dD8d76F25155F1a7687C693FDC1220D12",
+   "slug": "hyperlane",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "hyperlane-control-plane",
+     "sprint": null,
+     "surface": "XERC20Lockbox · Non-Proxy Bytecode & Controller",
+     "targetContract": "0x6D265C7dD8d76F25155F1a7687C693FDC1220D12",
+     "targetLabel": "XERC20Lockbox"
+    }
+   ],
+   "targetLabel": "XERC20Lockbox",
+   "tokens": [
+    "Hyperlane"
+   ],
+   "url": "https://pacta.wtf/protocols/hyperlane/"
+  },
+  {
+   "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/idex-v1.svg",
+    "svg": "https://pacta.wtf/badges/idex-v1.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Hybrid order-book exchange with on-chain settlement, first deployment (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "IDEX V1",
+   "preflightArgs": {
+    "address": "0xB705268213D593B8FD88d3FDEFF93AFF5CbDcfAE",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xB705268213D593B8FD88d3FDEFF93AFF5CbDcfAE",
+   "slug": "idex-v1",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "idex-v1-control-plane",
+     "sprint": null,
+     "surface": "IDEX Token (IDEX) · Non-Proxy Bytecode & Controller",
+     "targetContract": "0xB705268213D593B8FD88d3FDEFF93AFF5CbDcfAE",
+     "targetLabel": "IDEX Token (IDEX)"
+    }
+   ],
+   "targetLabel": "IDEX Token (IDEX)",
+   "tokens": [
+    "IDEX"
+   ],
+   "url": "https://pacta.wtf/protocols/idex-v1/"
+  },
+  {
+   "badge": {
     "label": "Parameter Delta",
     "live": "https://pacta-x402.pacta.workers.dev/v1/badges/infinifi.svg",
     "svg": "https://pacta.wtf/badges/infinifi.svg",
@@ -2280,6 +3251,100 @@
   {
    "badge": {
     "label": "Aligned · Base EAS",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/ipor-fusion.svg",
+    "svg": "https://pacta.wtf/badges/ipor-fusion.svg",
+    "tier": "aligned"
+   },
+   "baseEasUids": [
+    "0x6692c36731ecd514fb7a92fe3de0a6770b67f68f55eece26faa669c2c84b3a08"
+   ],
+   "category": "Onchain Capital Allocation Vault Factory (Base)",
+   "chain": "base",
+   "chainId": 8453,
+   "classification": "aligned_baseline",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "name": "IPOR Fusion",
+   "preflightArgs": {
+    "address": "0x1455717668fA96534f675856347A973fA907e922",
+    "chain": "base"
+   },
+   "primaryContract": "0x1455717668fA96534f675856347A973fA907e922",
+   "slug": "ipor-fusion",
+   "sprints": [
+    26
+   ],
+   "surfaces": [
+    {
+     "baseEasUid": "0x6692c36731ecd514fb7a92fe3de0a6770b67f68f55eece26faa669c2c84b3a08",
+     "blockHash": "0x732b5472c93d5c4bf65f39440097e2b0143d5875cfec028646f7f06123a20094",
+     "blockNumber": 58885628,
+     "chain": "base",
+     "classification": "aligned_baseline",
+     "id": "ipor-fusion-upgradeability-s26",
+     "sprint": 26,
+     "surface": "IPOR Fusion ERC1967Proxy: upgradeable (UUPS), as documented",
+     "targetContract": "0x1455717668fA96534f675856347A973fA907e922",
+     "targetLabel": "IPOR Fusion ERC1967Proxy"
+    }
+   ],
+   "targetLabel": "IPOR Fusion ERC1967Proxy",
+   "tokens": [
+    "IPOR"
+   ],
+   "url": "https://pacta.wtf/protocols/ipor-fusion/"
+  },
+  {
+   "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/k3-capital.svg",
+    "svg": "https://pacta.wtf/badges/k3-capital.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Institutional risk manager curating a restaking vault for liquid staking collateral (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": "0xAEb6bdd95c502390db8f52c8909F703E9Af6a346",
+   "controllerKind": "contract_controller",
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "K3 Capital",
+   "preflightArgs": {
+    "address": "0xdC47953c816531a8CA9E1D461AB53687d48EEA26",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xdC47953c816531a8CA9E1D461AB53687d48EEA26",
+   "slug": "k3-capital",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "k3-capital-control-plane",
+     "sprint": null,
+     "surface": "MigratableEntityProxy · EIP-1967 Proxy & Controller Chain",
+     "targetContract": "0xdC47953c816531a8CA9E1D461AB53687d48EEA26",
+     "targetLabel": "MigratableEntityProxy"
+    }
+   ],
+   "targetLabel": "MigratableEntityProxy",
+   "tokens": [
+    "K3"
+   ],
+   "url": "https://pacta.wtf/protocols/k3-capital/"
+  },
+  {
+   "badge": {
+    "label": "Aligned · Base EAS",
     "live": "https://pacta-x402.pacta.workers.dev/v1/badges/kelp-dao-rseth.svg",
     "svg": "https://pacta.wtf/badges/kelp-dao-rseth.svg",
     "tier": "aligned"
@@ -2339,6 +3404,51 @@
     "rsETH"
    ],
    "url": "https://pacta.wtf/protocols/kelp-dao-rseth/"
+  },
+  {
+   "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/kpk.svg",
+    "svg": "https://pacta.wtf/badges/kpk.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Onchain Asset Manager & Risk Curator (DAO treasuries) (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": "0x5912d39421109E4bf3Dc8108b403b74773bc5379",
+   "controllerKind": "contract_controller",
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "KPK",
+   "preflightArgs": {
+    "address": "0xbF3F63D8AC133B16d7D50C015036b33219Dd8D23",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xbF3F63D8AC133B16d7D50C015036b33219Dd8D23",
+   "slug": "kpk",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "kpk-control-plane",
+     "sprint": null,
+     "surface": "kpk Token · EIP-1967 Proxy & Controller Chain",
+     "targetContract": "0xbF3F63D8AC133B16d7D50C015036b33219Dd8D23",
+     "targetLabel": "kpk Token"
+    }
+   ],
+   "targetLabel": "kpk Token",
+   "tokens": [
+    "KPK"
+   ],
+   "url": "https://pacta.wtf/protocols/kpk/"
   },
   {
    "badge": {
@@ -2465,6 +3575,51 @@
     "LDO"
    ],
    "url": "https://pacta.wtf/protocols/lido-steth-dual-governance/"
+  },
+  {
+   "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/lighter-bridge.svg",
+    "svg": "https://pacta.wtf/badges/lighter-bridge.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Perpetuals Exchange Deposit Bridge (zk order book) (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "Lighter Bridge",
+   "preflightArgs": {
+    "address": "0x232CE3bd40fCd6f80f3d55A522d03f25Df784Ee2",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x232CE3bd40fCd6f80f3d55A522d03f25Df784Ee2",
+   "slug": "lighter-bridge",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "lighter-bridge-control-plane",
+     "sprint": null,
+     "surface": "Lighter · Non-Proxy Bytecode & Controller",
+     "targetContract": "0x232CE3bd40fCd6f80f3d55A522d03f25Df784Ee2",
+     "targetLabel": "Lighter"
+    }
+   ],
+   "targetLabel": "Lighter",
+   "tokens": [
+    "LIT"
+   ],
+   "url": "https://pacta.wtf/protocols/lighter-bridge/"
   },
   {
    "badge": {
@@ -2777,6 +3932,51 @@
     "MToken"
    ],
    "url": "https://pacta.wtf/protocols/m0-protocol-m/"
+  },
+  {
+   "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/makina.svg",
+    "svg": "https://pacta.wtf/badges/makina.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Execution infrastructure where asset managers run strategies as Machines (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": "0xEb78836D3aa3A0518A96fd7C9c549d0FFB7D6dA9",
+   "controllerKind": "contract_controller",
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "Makina",
+   "preflightArgs": {
+    "address": "0x8d28A69328561eF9F171c58996fEcB9F494e070c",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x8d28A69328561eF9F171c58996fEcB9F494e070c",
+   "slug": "makina",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "makina-control-plane",
+     "sprint": null,
+     "surface": "HubCoreFactory · EIP-1967 Proxy & Controller Chain",
+     "targetContract": "0x8d28A69328561eF9F171c58996fEcB9F494e070c",
+     "targetLabel": "HubCoreFactory"
+    }
+   ],
+   "targetLabel": "HubCoreFactory",
+   "tokens": [
+    "Makina"
+   ],
+   "url": "https://pacta.wtf/protocols/makina/"
   },
   {
    "badge": {
@@ -3143,6 +4343,51 @@
   },
   {
    "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/noon.svg",
+    "svg": "https://pacta.wtf/badges/noon.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Delta-Neutral Yield Stablecoin (sUSN) (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": "0x55f39512cb43111A13E8440ee3e3602e72628239",
+   "controllerKind": "contract_controller",
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "Noon",
+   "preflightArgs": {
+    "address": "0xdA67B4284609d2d48e5d10cfAc411572727dc1eD",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xdA67B4284609d2d48e5d10cfAc411572727dc1eD",
+   "slug": "noon",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "noon-control-plane",
+     "sprint": null,
+     "surface": "USN (USNUpgradeableHyperlane) · EIP-1967 Proxy & Controller Chain",
+     "targetContract": "0xdA67B4284609d2d48e5d10cfAc411572727dc1eD",
+     "targetLabel": "USN (USNUpgradeableHyperlane)"
+    }
+   ],
+   "targetLabel": "USN (USNUpgradeableHyperlane)",
+   "tokens": [
+    "USN"
+   ],
+   "url": "https://pacta.wtf/protocols/noon/"
+  },
+  {
+   "badge": {
     "label": "Parameter Delta",
     "live": "https://pacta-x402.pacta.workers.dev/v1/badges/obol-network.svg",
     "svg": "https://pacta.wtf/badges/obol-network.svg",
@@ -3282,6 +4527,51 @@
   {
    "badge": {
     "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/origami-finance.svg",
+    "svg": "https://pacta.wtf/badges/origami-finance.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Automated leverage vaults (looped auto-compounding positions) (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": "0x781B4c57100738095222bd92D37B07ed034AB696",
+   "controllerKind": "multisig_safe",
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "Origami Finance",
+   "preflightArgs": {
+    "address": "0x07c5500359161b81eb0DfFF83097d5025D3cF5A2",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x07c5500359161b81eb0DfFF83097d5025D3cF5A2",
+   "slug": "origami-finance",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "origami-finance-control-plane",
+     "sprint": null,
+     "surface": "Origami SKY+ Auto-Compounder (OrigamiDelegated4626Vault) · Non-Proxy Bytecode & Controller",
+     "targetContract": "0x07c5500359161b81eb0DfFF83097d5025D3cF5A2",
+     "targetLabel": "Origami SKY+ Auto-Compounder (OrigamiDelegated4626Vault)"
+    }
+   ],
+   "targetLabel": "Origami SKY+ Auto-Compounder (OrigamiDelegated4626Vault)",
+   "tokens": [
+    "SKY+"
+   ],
+   "url": "https://pacta.wtf/protocols/origami-finance/"
+  },
+  {
+   "badge": {
+    "label": "RPC-Observed",
     "live": "https://pacta-x402.pacta.workers.dev/v1/badges/origin-superoeth-base.svg",
     "svg": "https://pacta.wtf/badges/origin-superoeth-base.svg",
     "tier": "rpc_observed"
@@ -3307,8 +4597,8 @@
    "surfaces": [
     {
      "baseEasUid": null,
-     "blockHash": "0x36147f7f0b6d2a0a94975e98b14c979034930dbe6f9905a5b0bcb2ab45ba35b0",
-     "blockNumber": 57421449,
+     "blockHash": "0x732b5472c93d5c4bf65f39440097e2b0143d5875cfec028646f7f06123a20094",
+     "blockNumber": 58885628,
      "chain": "base",
      "classification": "rpc_observed",
      "id": "origin-superoeth-base-control-plane",
@@ -3325,6 +4615,51 @@
     "OGN"
    ],
    "url": "https://pacta.wtf/protocols/origin-superoeth-base/"
+  },
+  {
+   "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/pancakeswap-amm-v3.svg",
+    "svg": "https://pacta.wtf/badges/pancakeswap-amm-v3.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Concentrated-liquidity pool factory of a multichain swap venue first built on BNB Chain (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": "0x0f6f9A6dd9f065DC4455bb2B8e3F0CFFB6F2410c",
+   "controllerKind": "contract_controller",
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "PancakeSwap AMM V3",
+   "preflightArgs": {
+    "address": "0x0BFbCF9fa4f9C56B0F40a671Ad40E0805A091865",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x0BFbCF9fa4f9C56B0F40a671Ad40E0805A091865",
+   "slug": "pancakeswap-amm-v3",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "pancakeswap-amm-v3-control-plane",
+     "sprint": null,
+     "surface": "PlunderV3Factory · Non-Proxy Bytecode & Controller",
+     "targetContract": "0x0BFbCF9fa4f9C56B0F40a671Ad40E0805A091865",
+     "targetLabel": "PlunderV3Factory"
+    }
+   ],
+   "targetLabel": "PlunderV3Factory",
+   "tokens": [
+    "PancakeSwap"
+   ],
+   "url": "https://pacta.wtf/protocols/pancakeswap-amm-v3/"
   },
   {
    "badge": {
@@ -3460,6 +4795,55 @@
     "vePENDLE"
    ],
    "url": "https://pacta.wtf/protocols/pendle-finance-v2/"
+  },
+  {
+   "badge": {
+    "label": "Aligned · Base EAS",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/polygon-bridge.svg",
+    "svg": "https://pacta.wtf/badges/polygon-bridge.svg",
+    "tier": "aligned"
+   },
+   "baseEasUids": [
+    "0x6692c36731ecd514fb7a92fe3de0a6770b67f68f55eece26faa669c2c84b3a08"
+   ],
+   "category": "Canonical Bridge (sidechain checkpoints) (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "aligned_baseline",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "name": "Polygon Bridge",
+   "preflightArgs": {
+    "address": "0xFa7D2a996aC6350f4b56C043112Da0366a59b74c",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xFa7D2a996aC6350f4b56C043112Da0366a59b74c",
+   "slug": "polygon-bridge",
+   "sprints": [
+    26
+   ],
+   "surfaces": [
+    {
+     "baseEasUid": "0x6692c36731ecd514fb7a92fe3de0a6770b67f68f55eece26faa669c2c84b3a08",
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "polygon-bridge-safe-threshold-s26",
+     "sprint": 26,
+     "surface": "Polygon Bridge multisig: 5-of-9 Safe, as documented",
+     "targetContract": "0xFa7D2a996aC6350f4b56C043112Da0366a59b74c",
+     "targetLabel": "Polygon Bridge Safe"
+    }
+   ],
+   "targetLabel": "Polygon Bridge Safe",
+   "tokens": [
+    "Polygon"
+   ],
+   "url": "https://pacta.wtf/protocols/polygon-bridge/"
   },
   {
    "badge": {
@@ -3960,6 +5344,51 @@
   },
   {
    "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/rockawayx.svg",
+    "svg": "https://pacta.wtf/badges/rockawayx.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Risk Curator Vault (market-neutral strategies) (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": "0x12917E06b55995e7a5D73681cE491774C73b7C6a",
+   "controllerKind": "timelock",
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "RockawayX",
+   "preflightArgs": {
+    "address": "0x953972ea0C1703c58F09FB6fD2477Fdcf0FEe074",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x953972ea0C1703c58F09FB6fD2477Fdcf0FEe074",
+   "slug": "rockawayx",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "rockawayx-control-plane",
+     "sprint": null,
+     "surface": "Ember Y10K (EmberVault) · EIP-1967 Proxy & Controller Chain",
+     "targetContract": "0x953972ea0C1703c58F09FB6fD2477Fdcf0FEe074",
+     "targetLabel": "Ember Y10K (EmberVault)"
+    }
+   ],
+   "targetLabel": "Ember Y10K (EmberVault)",
+   "tokens": [
+    "eY10K"
+   ],
+   "url": "https://pacta.wtf/protocols/rockawayx/"
+  },
+  {
+   "badge": {
     "label": "Parameter Delta",
     "live": "https://pacta-x402.pacta.workers.dev/v1/badges/rocket-pool-reth.svg",
     "svg": "https://pacta.wtf/badges/rocket-pool-reth.svg",
@@ -4120,6 +5549,51 @@
   {
    "badge": {
     "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/saturn.svg",
+    "svg": "https://pacta.wtf/badges/saturn.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Bitcoin-Backed Credit Stablecoin (dual token) (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": "0xcf1072DA5f0D127AEf99136489BAd08bFa3D1A7D",
+   "controllerKind": "contract_controller",
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "Saturn",
+   "preflightArgs": {
+    "address": "0x23238f20b894f29041f48D88eE91131C395Aaa71",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x23238f20b894f29041f48D88eE91131C395Aaa71",
+   "slug": "saturn",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "saturn-control-plane",
+     "sprint": null,
+     "surface": "USDat · EIP-1967 Proxy & Controller Chain",
+     "targetContract": "0x23238f20b894f29041f48D88eE91131C395Aaa71",
+     "targetLabel": "USDat"
+    }
+   ],
+   "targetLabel": "USDat",
+   "tokens": [
+    "USDat"
+   ],
+   "url": "https://pacta.wtf/protocols/saturn/"
+  },
+  {
+   "badge": {
+    "label": "RPC-Observed",
     "live": "https://pacta-x402.pacta.workers.dev/v1/badges/seamless-protocol-base.svg",
     "svg": "https://pacta.wtf/badges/seamless-protocol-base.svg",
     "tier": "rpc_observed"
@@ -4145,8 +5619,8 @@
    "surfaces": [
     {
      "baseEasUid": null,
-     "blockHash": "0x36147f7f0b6d2a0a94975e98b14c979034930dbe6f9905a5b0bcb2ab45ba35b0",
-     "blockNumber": 57421449,
+     "blockHash": "0x732b5472c93d5c4bf65f39440097e2b0143d5875cfec028646f7f06123a20094",
+     "blockNumber": 58885628,
      "chain": "base",
      "classification": "rpc_observed",
      "id": "seamless-protocol-base-control-plane",
@@ -4161,6 +5635,96 @@
     "SEAM"
    ],
    "url": "https://pacta.wtf/protocols/seamless-protocol-base/"
+  },
+  {
+   "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/shift-defi.svg",
+    "svg": "https://pacta.wtf/badges/shift-defi.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Institutional Portfolio Yield Platform (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": "0x83B975e5F33c0251eFEA5D355A91b3d8d58E6d9a",
+   "controllerKind": "contract_controller",
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "Shift DeFi",
+   "preflightArgs": {
+    "address": "0x1d71c888961c4600cF0E31F6196b4dA7fE72e4B3",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x1d71c888961c4600cF0E31F6196b4dA7fE72e4B3",
+   "slug": "shift-defi",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "shift-defi-control-plane",
+     "sprint": null,
+     "surface": "Shift-DeFi USDC Vault (Vault) · EIP-1967 Proxy & Controller Chain",
+     "targetContract": "0x1d71c888961c4600cF0E31F6196b4dA7fE72e4B3",
+     "targetLabel": "Shift-DeFi USDC Vault (Vault)"
+    }
+   ],
+   "targetLabel": "Shift-DeFi USDC Vault (Vault)",
+   "tokens": [
+    "sdUSDC-vault"
+   ],
+   "url": "https://pacta.wtf/protocols/shift-defi/"
+  },
+  {
+   "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/sierra-protocol.svg",
+    "svg": "https://pacta.wtf/badges/sierra-protocol.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Liquid yield token issuer (SIERRA) backed by diversified yield strategies (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": "0xbd0Ca95C5A104E14E60d0868667AF174D146C9FD",
+   "controllerKind": "eoa",
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "Sierra Protocol",
+   "preflightArgs": {
+    "address": "0xe1b1252652A2FF0CC3A4214eE73d9FeD1FEa5b4f",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xe1b1252652A2FF0CC3A4214eE73d9FeD1FEa5b4f",
+   "slug": "sierra-protocol",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "sierra-protocol-control-plane",
+     "sprint": null,
+     "surface": "SOL Staking Yield Vault · Non-Proxy Bytecode & Controller",
+     "targetContract": "0xe1b1252652A2FF0CC3A4214eE73d9FeD1FEa5b4f",
+     "targetLabel": "SOL Staking Yield Vault"
+    }
+   ],
+   "targetLabel": "SOL Staking Yield Vault",
+   "tokens": [
+    "xSOLY"
+   ],
+   "url": "https://pacta.wtf/protocols/sierra-protocol/"
   },
   {
    "badge": {
@@ -4223,6 +5787,51 @@
     "SOLV"
    ],
    "url": "https://pacta.wtf/protocols/solv-protocol-solvbtc/"
+  },
+  {
+   "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/sonic-gateway.svg",
+    "svg": "https://pacta.wtf/badges/sonic-gateway.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "L1 Canonical Bridge (token deposits) (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": "0x9Fe65a5418850015a9D8ad3Ca50d6a0B9769FbE0",
+   "controllerKind": "multisig_safe",
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "Sonic Gateway",
+   "preflightArgs": {
+    "address": "0xa1E2481a9CD0Cb0447EeB1cbc26F1b3fff3bec20",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xa1E2481a9CD0Cb0447EeB1cbc26F1b3fff3bec20",
+   "slug": "sonic-gateway",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "sonic-gateway-control-plane",
+     "sprint": null,
+     "surface": "TokenDeposit · EIP-1967 Proxy & Controller Chain",
+     "targetContract": "0xa1E2481a9CD0Cb0447EeB1cbc26F1b3fff3bec20",
+     "targetLabel": "TokenDeposit"
+    }
+   ],
+   "targetLabel": "TokenDeposit",
+   "tokens": [
+    "Sonic"
+   ],
+   "url": "https://pacta.wtf/protocols/sonic-gateway/"
   },
   {
    "badge": {
@@ -4557,6 +6166,7 @@
     "tier": "aligned"
    },
    "baseEasUids": [
+    "0x6692c36731ecd514fb7a92fe3de0a6770b67f68f55eece26faa669c2c84b3a08",
     "0x7caae9c22c86ae171392def07dce83fa5da6fbf904b1ba9b5ff66a5021b16de9"
    ],
    "category": "Liquid Staking Infrastructure",
@@ -4576,7 +6186,8 @@
    "primaryContract": "0x6B5815467da09DaA7DC83Db21c9239d98Bb487b5",
    "slug": "stakewise-v3-oseth",
    "sprints": [
-    12
+    12,
+    26
    ],
    "surfaces": [
     {
@@ -4590,6 +6201,18 @@
      "surface": "Sampled Keeper Oracle Quorum, osETH Fee & LTV Configuration",
      "targetContract": "0x6B5815467da09DaA7DC83Db21c9239d98Bb487b5",
      "targetLabel": "StakeWise V3 Keeper"
+    },
+    {
+     "baseEasUid": "0x6692c36731ecd514fb7a92fe3de0a6770b67f68f55eece26faa669c2c84b3a08",
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "stakewise-v3-oseth-safe-threshold-s26",
+     "sprint": 26,
+     "surface": "StakeWise V3 (osETH) multisig: 4-of-7 Safe, as documented",
+     "targetContract": "0x144a98cb1CdBb23610501fE6108858D9B7D24934",
+     "targetLabel": "StakeWise V3 (osETH) Safe"
     }
    ],
    "targetLabel": "StakeWise V3 Keeper",
@@ -4648,6 +6271,51 @@
     "Stargate"
    ],
    "url": "https://pacta.wtf/protocols/stargate-v2/"
+  },
+  {
+   "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/starknet-bridge.svg",
+    "svg": "https://pacta.wtf/badges/starknet-bridge.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "ZK Rollup Canonical Bridge (STRK token) (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "Starknet Bridge",
+   "preflightArgs": {
+    "address": "0xCa14007Eff0dB1f8135f4C25B34De49AB0d42766",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xCa14007Eff0dB1f8135f4C25B34De49AB0d42766",
+   "slug": "starknet-bridge",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "starknet-bridge-control-plane",
+     "sprint": null,
+     "surface": "StarkNet Token · Non-Proxy Bytecode & Controller",
+     "targetContract": "0xCa14007Eff0dB1f8135f4C25B34De49AB0d42766",
+     "targetLabel": "StarkNet Token"
+    }
+   ],
+   "targetLabel": "StarkNet Token",
+   "tokens": [
+    "STRK"
+   ],
+   "url": "https://pacta.wtf/protocols/starknet-bridge/"
   },
   {
    "badge": {
@@ -4816,8 +6484,8 @@
    "surfaces": [
     {
      "baseEasUid": null,
-     "blockHash": "0x36147f7f0b6d2a0a94975e98b14c979034930dbe6f9905a5b0bcb2ab45ba35b0",
-     "blockNumber": 57421449,
+     "blockHash": "0x732b5472c93d5c4bf65f39440097e2b0143d5875cfec028646f7f06123a20094",
+     "blockNumber": 58885628,
      "chain": "base",
      "classification": "rpc_observed",
      "id": "superform-v2-base-control-plane",
@@ -5072,6 +6740,51 @@
   },
   {
    "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/team-finance.svg",
+    "svg": "https://pacta.wtf/badges/team-finance.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Token Locks & Vesting Toolkit (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": "0x088a012BF6d510aa923c814eA83807f75F7061A0",
+   "controllerKind": "multisig_safe",
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "Team Finance",
+   "preflightArgs": {
+    "address": "0xCC4304A31d09258b0029eA7FE63d032f52e44EFe",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xCC4304A31d09258b0029eA7FE63d032f52e44EFe",
+   "slug": "team-finance",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "team-finance-control-plane",
+     "sprint": null,
+     "surface": "TrustSwap Token (SwapToken) · EIP-1967 Proxy & Controller Chain",
+     "targetContract": "0xCC4304A31d09258b0029eA7FE63d032f52e44EFe",
+     "targetLabel": "TrustSwap Token (SwapToken)"
+    }
+   ],
+   "targetLabel": "TrustSwap Token (SwapToken)",
+   "tokens": [
+    "SWAP"
+   ],
+   "url": "https://pacta.wtf/protocols/team-finance/"
+  },
+  {
+   "badge": {
     "label": "Aligned · Base EAS",
     "live": "https://pacta-x402.pacta.workers.dev/v1/badges/tether-usdt.svg",
     "svg": "https://pacta.wtf/badges/tether-usdt.svg",
@@ -5133,6 +6846,51 @@
   },
   {
    "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/theo-network-thusd.svg",
+    "svg": "https://pacta.wtf/badges/theo-network-thusd.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Treasury-Backed Yield Stablecoin (thBILL collateral) (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": "0x2bB4b7E6E83FA6b77d0143dad631843cB73DCA02",
+   "controllerKind": "timelock",
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "Theo Network thUSD",
+   "preflightArgs": {
+    "address": "0xa3fE5c7596024E6811E14F029937D5bd8Ae485b3",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xa3fE5c7596024E6811E14F029937D5bd8Ae485b3",
+   "slug": "theo-network-thusd",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "theo-network-thusd-control-plane",
+     "sprint": null,
+     "surface": "thUSD · EIP-1967 Proxy & Controller Chain",
+     "targetContract": "0xa3fE5c7596024E6811E14F029937D5bd8Ae485b3",
+     "targetLabel": "thUSD"
+    }
+   ],
+   "targetLabel": "thUSD",
+   "tokens": [
+    "thUSD"
+   ],
+   "url": "https://pacta.wtf/protocols/theo-network-thusd/"
+  },
+  {
+   "badge": {
     "label": "Aligned · Base EAS",
     "live": "https://pacta-x402.pacta.workers.dev/v1/badges/threshold-network-tbtc.svg",
     "svg": "https://pacta.wtf/badges/threshold-network-tbtc.svg",
@@ -5180,6 +6938,96 @@
     "T"
    ],
    "url": "https://pacta.wtf/protocols/threshold-network-tbtc/"
+  },
+  {
+   "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/tori-finance.svg",
+    "svg": "https://pacta.wtf/badges/tori-finance.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Delta-Neutral Synthetic Dollar (staked strUSD) (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": "0x0C6Bbfd2d5666d44bf28580eDEec0263692C8316",
+   "controllerKind": "multisig_safe",
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "Tori Finance",
+   "preflightArgs": {
+    "address": "0xd0580192E98eA6CEB9c7b6191Ed2E27560911697",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xd0580192E98eA6CEB9c7b6191Ed2E27560911697",
+   "slug": "tori-finance",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "tori-finance-control-plane",
+     "sprint": null,
+     "surface": "trUSD · EIP-1967 Proxy & Controller Chain",
+     "targetContract": "0xd0580192E98eA6CEB9c7b6191Ed2E27560911697",
+     "targetLabel": "trUSD"
+    }
+   ],
+   "targetLabel": "trUSD",
+   "tokens": [
+    "trUSD"
+   ],
+   "url": "https://pacta.wtf/protocols/tori-finance/"
+  },
+  {
+   "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/tornado-cash.svg",
+    "svg": "https://pacta.wtf/badges/tornado-cash.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Privacy Pool Mixer (anonymous transfers) (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "Tornado Cash",
+   "preflightArgs": {
+    "address": "0x77777FeDdddFfC19Ff86DB637967013e6C6A116C",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x77777FeDdddFfC19Ff86DB637967013e6C6A116C",
+   "slug": "tornado-cash",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "tornado-cash-control-plane",
+     "sprint": null,
+     "surface": "TornadoCash (TORN) · Non-Proxy Bytecode & Controller",
+     "targetContract": "0x77777FeDdddFfC19Ff86DB637967013e6C6A116C",
+     "targetLabel": "TornadoCash (TORN)"
+    }
+   ],
+   "targetLabel": "TornadoCash (TORN)",
+   "tokens": [
+    "TORN"
+   ],
+   "url": "https://pacta.wtf/protocols/tornado-cash/"
   },
   {
    "badge": {
@@ -5244,6 +7092,51 @@
     "TREE"
    ],
    "url": "https://pacta.wtf/protocols/treehouse-tree-teth/"
+  },
+  {
+   "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/uncx-network-v2.svg",
+    "svg": "https://pacta.wtf/badges/uncx-network-v2.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Liquidity and team-token locker with token launch and vesting services (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": "0x60e2E1b2a317EdfC870b6Fc6886F69083FB2099a",
+   "controllerKind": "eoa",
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "UNCX Network V2",
+   "preflightArgs": {
+    "address": "0xaDB2437e6F65682B85F814fBc12FeC0508A7B1D0",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xaDB2437e6F65682B85F814fBc12FeC0508A7B1D0",
+   "slug": "uncx-network-v2",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "uncx-network-v2-control-plane",
+     "sprint": null,
+     "surface": "UniCrypt (UNCX) · Non-Proxy Bytecode & Controller",
+     "targetContract": "0xaDB2437e6F65682B85F814fBc12FeC0508A7B1D0",
+     "targetLabel": "UniCrypt (UNCX)"
+    }
+   ],
+   "targetLabel": "UniCrypt (UNCX)",
+   "tokens": [
+    "UNCX"
+   ],
+   "url": "https://pacta.wtf/protocols/uncx-network-v2/"
   },
   {
    "badge": {
@@ -5419,6 +7312,51 @@
   },
   {
    "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/usdt0.svg",
+    "svg": "https://pacta.wtf/badges/usdt0.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Omnichain Stablecoin Bridge (Tether OFT adapter) (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": "0x4de7096B2131E84Fd6b2042AD8cd9B4E43F728Fc",
+   "controllerKind": "contract_controller",
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "USDT0",
+   "preflightArgs": {
+    "address": "0x6C96dE32CEa08842dcc4058c14d3aaAD7Fa41dee",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x6C96dE32CEa08842dcc4058c14d3aaAD7Fa41dee",
+   "slug": "usdt0",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "usdt0-control-plane",
+     "sprint": null,
+     "surface": "OAdapterUpgradeable · EIP-1967 Proxy & Controller Chain",
+     "targetContract": "0x6C96dE32CEa08842dcc4058c14d3aaAD7Fa41dee",
+     "targetLabel": "OAdapterUpgradeable"
+    }
+   ],
+   "targetLabel": "OAdapterUpgradeable",
+   "tokens": [
+    "USDT0"
+   ],
+   "url": "https://pacta.wtf/protocols/usdt0/"
+  },
+  {
+   "badge": {
     "label": "Parameter Delta",
     "live": "https://pacta-x402.pacta.workers.dev/v1/badges/usual-money-usd0-usd0.svg",
     "svg": "https://pacta.wtf/badges/usual-money-usd0-usd0.svg",
@@ -5467,6 +7405,141 @@
     "USUAL"
    ],
    "url": "https://pacta.wtf/protocols/usual-money-usd0-usd0/"
+  },
+  {
+   "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/veda.svg",
+    "svg": "https://pacta.wtf/badges/veda.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "DeFi Vault Platform (BoringVault lens) (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "Veda",
+   "preflightArgs": {
+    "address": "0x5232bc0F5999f8dA604c42E1748A13a170F94A1B",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x5232bc0F5999f8dA604c42E1748A13a170F94A1B",
+   "slug": "veda",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "veda-control-plane",
+     "sprint": null,
+     "surface": "ArcticArchitectureLens · Non-Proxy Bytecode & Controller",
+     "targetContract": "0x5232bc0F5999f8dA604c42E1748A13a170F94A1B",
+     "targetLabel": "ArcticArchitectureLens"
+    }
+   ],
+   "targetLabel": "ArcticArchitectureLens",
+   "tokens": [
+    "Veda"
+   ],
+   "url": "https://pacta.wtf/protocols/veda/"
+  },
+  {
+   "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/vesper-v1.svg",
+    "svg": "https://pacta.wtf/badges/vesper-v1.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Automated yield-aggregation pools with strategy rotation (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": "0x9520b477Aa81180E6DdC006Fc09Fb6d3eb4e807A",
+   "controllerKind": "multisig_safe",
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "Vesper V1",
+   "preflightArgs": {
+    "address": "0x1b40183EFB4Dd766f11bDa7A7c3AD8982e998421",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x1b40183EFB4Dd766f11bDa7A7c3AD8982e998421",
+   "slug": "vesper-v1",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "vesper-v1-control-plane",
+     "sprint": null,
+     "surface": "VesperToken (VSP) · Non-Proxy Bytecode & Controller",
+     "targetContract": "0x1b40183EFB4Dd766f11bDa7A7c3AD8982e998421",
+     "targetLabel": "VesperToken (VSP)"
+    }
+   ],
+   "targetLabel": "VesperToken (VSP)",
+   "tokens": [
+    "VSP"
+   ],
+   "url": "https://pacta.wtf/protocols/vesper-v1/"
+  },
+  {
+   "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/world-chain-bridge.svg",
+    "svg": "https://pacta.wtf/badges/world-chain-bridge.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "OP Stack L2 Canonical Bridge (dispute-game anchor state) (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": "0xd7405BE7f3e63b094Af6C7C23D5eE33Fd82F872D",
+   "controllerKind": "contract_controller",
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "World Chain Bridge",
+   "preflightArgs": {
+    "address": "0x90BB48fe3310499Db36437dCAE642F721e32d094",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x90BB48fe3310499Db36437dCAE642F721e32d094",
+   "slug": "world-chain-bridge",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "world-chain-bridge-control-plane",
+     "sprint": null,
+     "surface": "AnchorStateRegistry · EIP-1967 Proxy & Controller Chain",
+     "targetContract": "0x90BB48fe3310499Db36437dCAE642F721e32d094",
+     "targetLabel": "AnchorStateRegistry"
+    }
+   ],
+   "targetLabel": "AnchorStateRegistry",
+   "tokens": [
+    "World"
+   ],
+   "url": "https://pacta.wtf/protocols/world-chain-bridge/"
   },
   {
    "badge": {
@@ -5557,6 +7630,51 @@
   },
   {
    "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/xdai-stake-bridge.svg",
+    "svg": "https://pacta.wtf/badges/xdai-stake-bridge.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Canonical Bridge Staking Token (multi-chain) (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": "0x0DF05ADaC0159e215111696339AD4998e5871B3D",
+   "controllerKind": "multisig_safe",
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "xDAI Stake Bridge",
+   "preflightArgs": {
+    "address": "0x0Ae055097C6d159879521C384F1D2123D1f195e6",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x0Ae055097C6d159879521C384F1D2123D1f195e6",
+   "slug": "xdai-stake-bridge",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "xdai-stake-bridge-control-plane",
+     "sprint": null,
+     "surface": "STAKE (ERC677MultiBridgeToken) · Non-Proxy Bytecode & Controller",
+     "targetContract": "0x0Ae055097C6d159879521C384F1D2123D1f195e6",
+     "targetLabel": "STAKE (ERC677MultiBridgeToken)"
+    }
+   ],
+   "targetLabel": "STAKE (ERC677MultiBridgeToken)",
+   "tokens": [
+    "STAKE"
+   ],
+   "url": "https://pacta.wtf/protocols/xdai-stake-bridge/"
+  },
+  {
+   "badge": {
     "label": "Parameter Delta",
     "live": "https://pacta-x402.pacta.workers.dev/v1/badges/yearn-v3.svg",
     "svg": "https://pacta.wtf/badges/yearn-v3.svg",
@@ -5603,6 +7721,112 @@
     "YFI"
    ],
    "url": "https://pacta.wtf/protocols/yearn-v3/"
+  },
+  {
+   "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/yield-basis.svg",
+    "svg": "https://pacta.wtf/badges/yield-basis.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Impermanent-Loss-Free Leveraged AMM Liquidity (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "Yield Basis",
+   "preflightArgs": {
+    "address": "0x01791F726B4103694969820be083196cC7c045fF",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x01791F726B4103694969820be083196cC7c045fF",
+   "slug": "yield-basis",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "yield-basis-control-plane",
+     "sprint": null,
+     "surface": "Yield Basis (YB) · Non-Proxy Bytecode & Controller",
+     "targetContract": "0x01791F726B4103694969820be083196cC7c045fF",
+     "targetLabel": "Yield Basis (YB)"
+    }
+   ],
+   "targetLabel": "Yield Basis (YB)",
+   "tokens": [
+    "YB"
+   ],
+   "url": "https://pacta.wtf/protocols/yield-basis/"
+  },
+  {
+   "badge": {
+    "label": "Parameter Delta",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/yieldnest.svg",
+    "svg": "https://pacta.wtf/badges/yieldnest.svg",
+    "tier": "parameter_delta"
+   },
+   "baseEasUids": [
+    "0x6692c36731ecd514fb7a92fe3de0a6770b67f68f55eece26faa669c2c84b3a08"
+   ],
+   "category": "Liquid Restaking Vaults (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "mixed",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "name": "YieldNest",
+   "preflightArgs": {
+    "address": "0xDF51B7843817F76220C0970eF58Ba726630028eF",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xDF51B7843817F76220C0970eF58Ba726630028eF",
+   "slug": "yieldnest",
+   "sprints": [
+    26
+   ],
+   "surfaces": [
+    {
+     "baseEasUid": "0x6692c36731ecd514fb7a92fe3de0a6770b67f68f55eece26faa669c2c84b3a08",
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "parameter_delta",
+     "id": "yieldnest-safe-threshold-df51b7-s26",
+     "sprint": 26,
+     "surface": "YNDelegator (delegates the eigenpods to the operators): docs state 2-of-3, the Safe is 2-of-4",
+     "targetContract": "0xDF51B7843817F76220C0970eF58Ba726630028eF",
+     "targetLabel": "YNDelegator Safe"
+    },
+    {
+     "baseEasUid": "0x6692c36731ecd514fb7a92fe3de0a6770b67f68f55eece26faa669c2c84b3a08",
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "aligned_baseline",
+     "id": "yieldnest-safe-threshold-s26",
+     "sprint": 26,
+     "surface": "YNSecurityCouncil (contract upgrades, role admin): 3-of-5 Safe, as documented",
+     "targetContract": "0xfcad670592a3b24869C0b51a6c6FDED4F95D6975",
+     "targetLabel": "YNSecurityCouncil Safe"
+    }
+   ],
+   "targetLabel": "YNDelegator Safe",
+   "tokens": [
+    "YND"
+   ],
+   "url": "https://pacta.wtf/protocols/yieldnest/"
   },
   {
    "badge": {
@@ -5678,6 +7902,96 @@
     "YO"
    ],
    "url": "https://pacta.wtf/protocols/yo-protocol/"
+  },
+  {
+   "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/zama.svg",
+    "svg": "https://pacta.wtf/badges/zama.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "Fully Homomorphic Encryption Network Token (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "Zama",
+   "preflightArgs": {
+    "address": "0xA12CC123ba206d4031D1c7f6223D1C2Ec249f4f3",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xA12CC123ba206d4031D1c7f6223D1C2Ec249f4f3",
+   "slug": "zama",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "zama-control-plane",
+     "sprint": null,
+     "surface": "Zama (ZamaERC20) · Non-Proxy Bytecode & Controller",
+     "targetContract": "0xA12CC123ba206d4031D1c7f6223D1C2Ec249f4f3",
+     "targetLabel": "Zama (ZamaERC20)"
+    }
+   ],
+   "targetLabel": "Zama (ZamaERC20)",
+   "tokens": [
+    "Zama"
+   ],
+   "url": "https://pacta.wtf/protocols/zama/"
+  },
+  {
+   "badge": {
+    "label": "RPC-Observed",
+    "live": "https://pacta-x402.pacta.workers.dev/v1/badges/zerobase-cedefi.svg",
+    "svg": "https://pacta.wtf/badges/zerobase-cedefi.svg",
+    "tier": "rpc_observed"
+   },
+   "baseEasUids": [],
+   "category": "zk-Proven Stablecoin Staking (Ethereum)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "rpc_observed",
+   "controllerAddress": "0xa14f20130E9a0a27D580FD30FD4bbF035a492AB2",
+   "controllerKind": "multisig_safe",
+   "documentationComparison": "not_assessed",
+   "easAttested": false,
+   "evidenceBasis": "rpc_observed",
+   "name": "ZEROBASE CeDeFi",
+   "preflightArgs": {
+    "address": "0xfAB99fCF605fD8f4593EDb70A43bA56542777777",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xfAB99fCF605fD8f4593EDb70A43bA56542777777",
+   "slug": "zerobase-cedefi",
+   "sprints": [],
+   "surfaces": [
+    {
+     "baseEasUid": null,
+     "blockHash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+     "blockNumber": 26438867,
+     "chain": "ethereum",
+     "classification": "rpc_observed",
+     "id": "zerobase-cedefi-control-plane",
+     "sprint": null,
+     "surface": "ZEROBASE · Non-Proxy Bytecode & Controller",
+     "targetContract": "0xfAB99fCF605fD8f4593EDb70A43bA56542777777",
+     "targetLabel": "ZEROBASE"
+    }
+   ],
+   "targetLabel": "ZEROBASE",
+   "tokens": [
+    "ZBT"
+   ],
+   "url": "https://pacta.wtf/protocols/zerobase-cedefi/"
   }
  ],
  "schema": "pacta.protocols.v1",
@@ -5691,13 +8005,13 @@
  },
  "totals": {
   "badgeTiers": {
-   "aligned": 50,
-   "parameter_delta": 36,
-   "rpc_observed": 4
+   "aligned": 55,
+   "parameter_delta": 37,
+   "rpc_observed": 48
   },
-  "easAttested": 86,
-  "protocols": 90,
-  "rpcObserved": 4,
-  "surfaces": 187
+  "easAttested": 92,
+  "protocols": 140,
+  "rpcObserved": 48,
+  "surfaces": 240
  }
 }

@@ -2,42 +2,22 @@
   "schema": "pacta.radar.v1",
   "chain_id": 1,
   "refreshed_at": {
-    "block_number": 26438039,
-    "block_hash": "0x1b78f3f7c31cd5816085c215191aa0ec48c699c065ad3da1afafa0506e911a34",
-    "block_timestamp": 1794957911,
-    "block_time_utc": "2026-11-17 23:25 UTC",
+    "block_number": 26439505,
+    "block_hash": "0xce3270237a669c83bf0c53468ce4eec299c89cc58c3aebf5a9cf8620103175c6",
+    "block_timestamp": 1794975575,
+    "block_time_utc": "2026-11-18 04:19 UTC",
     "tag": "finalized",
     "rpcs_cross_checked": 2
   },
   "refreshed_at_base": {
-    "block_number": 58835715,
-    "block_hash": "0xced5be5cb81f7695c2b81d86fe1bc1bd96fd6652ae023f0847e7decdcd3b284d",
-    "block_timestamp": 1794957518,
-    "block_time_utc": "2026-11-17 23:18 UTC",
+    "block_number": 58923958,
+    "block_hash": "0x675f9abbb427df456bdbdcc8256e61f1d69349257ebd883b5d429d3dd81b55bd",
+    "block_timestamp": 1794975167,
+    "block_time_utc": "2026-11-18 04:12 UTC",
     "tag": "finalized",
     "rpcs_cross_checked": 2
   },
   "items": [
-    {
-      "protocol": "Treehouse",
-      "protocol_slug": "treehouse-tree-teth",
-      "chain_id": 1,
-      "title": "Treehouse TREE — UUPS upgrade adding Blacklistable",
-      "summary": "Upgrades the TREE governance token (not tETH) and installs a 5-of-7 Safe as blacklister: a zero-delay transfer-freeze role after execution.",
-      "timelock": "0x2225DAbFfC7F862c99477381E971E8B1FDaB467e",
-      "brief": "briefs/treehouse-op-0x2f11/",
-      "min_delay_seconds": 432000,
-      "operations": [
-        {
-          "op_id": "0x2f11dcc36860f09b9ef94585589ced1798cef603d133efecd017ce7e544c451f",
-          "eta": 1794891107,
-          "pending": true,
-          "done": false,
-          "ready": true
-        }
-      ],
-      "eta": 1794891107
-    },
     {
       "protocol": "Lombard",
       "protocol_slug": "lombard-lbtc",
@@ -159,6 +139,26 @@
         }
       ],
       "eta": 1795451951
+    },
+    {
+      "protocol": "Treehouse",
+      "protocol_slug": "treehouse-tree-teth",
+      "chain_id": 1,
+      "title": "Treehouse TREE — UUPS upgrade adding Blacklistable",
+      "summary": "Upgrades the TREE governance token (not tETH) and installs a 5-of-7 Safe as blacklister: a zero-delay transfer-freeze role after execution.",
+      "timelock": "0x2225DAbFfC7F862c99477381E971E8B1FDaB467e",
+      "brief": "briefs/treehouse-op-0x2f11/",
+      "min_delay_seconds": 432000,
+      "operations": [
+        {
+          "op_id": "0x2f11dcc36860f09b9ef94585589ced1798cef603d133efecd017ce7e544c451f",
+          "eta": null,
+          "pending": false,
+          "done": true,
+          "ready": false
+        }
+      ],
+      "eta": null
     },
     {
       "protocol": "Beefy Finance (Base)",

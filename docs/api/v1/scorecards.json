@@ -2,9 +2,9 @@
  "description": "One canonical grade per published protocol (DELTA / PROTECTIVE / ALIGNED / OBSERVED) and a 5-factor control-plane rosette derived deterministically from Pacta's published records (index.json, rpc-pinned.json) and controller facts. A factor the published evidence does not decide is 'n' (not determined); docs-vs-chain parity is 'u' (uncompared) for every RPC-observed protocol. States: g strong, b moderate, a weak, n not determined, u uncompared.",
  "factorCoverage": {
   "emergency": 21,
-  "parity": 86,
-  "quorum": 67,
-  "timelock": 56,
+  "parity": 92,
+  "quorum": 92,
+  "timelock": 63,
   "upgrade": 24
  },
  "factors": [
@@ -33,17 +33,17 @@
   "aligned": {
    "label": "ALIGNED",
    "meaning": "Docs and chain match",
-   "protocols": 50
+   "protocols": 55
   },
   "delta": {
    "label": "DELTA",
    "meaning": "Docs and chain differ",
-   "protocols": 28
+   "protocols": 29
   },
   "observed": {
    "label": "OBSERVED",
    "meaning": "Chain pinned; docs not assessed",
-   "protocols": 4
+   "protocols": 48
   },
   "protective": {
    "label": "PROTECTIVE",
@@ -52,6 +52,173 @@
   }
  },
  "protocols": [
+  {
+   "baskets": [
+    "lending_vaults"
+   ],
+   "category": "Leveraged exposure vaults over tokenized real-world assets, built on Morpho (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "3F documentation is linked for reference (https://docs.3f.xyz/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "ERC1967Factory (0x54F862fa0612A8709F6Dec4A7B39AF015CD4E82E) verified on Ethereum Mainnet at canonical block #26,438,867 (1,887 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). No owner(), admin(), authority(), curator() or AccessControl admin was readable on the contract.",
+    "recordId": "3f-control-plane",
+    "surface": "ERC1967Factory · Non-Proxy Bytecode & Controller"
+   },
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "ERC1967Factory · Non-Proxy Bytecode & Controller",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "3F",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "owner()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "3f-control-plane",
+    "repro_calldata": "0x8da5cb5b",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0x8da5cb5b",
+    "target_contract": "0x54F862fa0612A8709F6Dec4A7B39AF015CD4E82E",
+    "target_label": "ERC1967Factory"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "3F control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "3f 3f leveraged exposure vaults over tokenized real-world assets, built on morpho (ethereum) 3f 0x54f862fa0612a8709f6dec4a7b39af015cd4e82e",
+   "slug": "3f",
+   "summary_short": "Non-proxy contract no readable owner or admin; docs not assessed",
+   "url": "https://pacta.wtf/protocols/3f/"
+  },
+  {
+   "baskets": [
+    "lending_vaults",
+    "stable_rwa"
+   ],
+   "category": "Uncollateralized Credit Money Market (USDC) (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "evidence": {
+    "documented": "'TimelockController (7d) | Upgrades admin' (docs.3jane.xyz/developers/addresses.md)",
+    "observed": "Upgrades admin timelock 0x3D3C41419Ab401cd25055E8f9421D7D96d887885 (Ethereum): getMinDelay() = 604800s (7 d).",
+    "recordId": "3jane-lending-timelock-delay-s26",
+    "surface": "3Jane Lending Upgrades admin: 7-day minimum delay, as documented"
+   },
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": "3jane-lending-timelock-delay-s26: observed_delay_seconds = 604800",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "g",
+     "value": "7d minimum enforced delay across control surfaces"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "3Jane Lending Upgrades admin: 7-day minimum delay, as documented",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "3Jane Lending",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "getMinDelay()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "3jane-lending-timelock-delay-s26",
+    "repro_calldata": "0xf27a0c92",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0xf27a0c92",
+    "target_contract": "0x3D3C41419Ab401cd25055E8f9421D7D96d887885",
+    "target_label": "Upgrades admin timelock"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "3Jane Lending control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "search": "3jane lending 3jane-lending uncollateralized credit money market (usdc) (ethereum) 3jane 0x3d3c41419ab401cd25055e8f9421d7d96d887885",
+   "slug": "3jane-lending",
+   "summary_short": "3Jane Lending's Upgrades admin acts through a 7-day timelock, as documented",
+   "url": "https://pacta.wtf/protocols/3jane-lending/"
+  },
   {
    "baskets": [
     "base",
@@ -308,6 +475,172 @@
   },
   {
    "baskets": [
+    "stable_rwa"
+   ],
+   "category": "Funding-Rate Arbitrage Stablecoin (delta-neutral) (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "Aegis YUSD documentation is linked for reference (https://app.aegis.im/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "YUSD (0x4274cD7277C7bb0806Bd5FE84b9aDAE466a8DA0a) verified on Ethereum Mainnet at canonical block #26,438,867 (4,903 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). Direct owner() returns Safe 3-of-5 0x4Fe78eF65BD8EDDED480efaB030BA680646503c8.",
+    "recordId": "aegis-yusd-control-plane",
+    "surface": "YUSD · Non-Proxy Bytecode & Controller"
+   },
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": "aegis-yusd-control-plane: … contract). Direct owner() returns Safe 3-of-5 0x4Fe78eF65BD8EDDED480efaB030BA680646503c8.",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 3-of-5"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "YUSD · Non-Proxy Bytecode & Controller",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Aegis YUSD",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "owner()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "aegis-yusd-control-plane",
+    "repro_calldata": "0x8da5cb5b",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0x8da5cb5b",
+    "target_contract": "0x4274cD7277C7bb0806Bd5FE84b9aDAE466a8DA0a",
+    "target_label": "YUSD"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "Aegis YUSD control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "aegis yusd aegis-yusd funding-rate arbitrage stablecoin (delta-neutral) (ethereum) yusd 0x4274cd7277c7bb0806bd5fe84b9adae466a8da0a 0x4fe78ef65bd8edded480efab030ba680646503c8",
+   "slug": "aegis-yusd",
+   "summary_short": "Non-proxy contract controlled by a 3-of-5 Safe; docs not assessed",
+   "url": "https://pacta.wtf/protocols/aegis-yusd/"
+  },
+  {
+   "baskets": [
+    "stable_rwa"
+   ],
+   "category": "Autonomous DAO Treasury Management (Gauntlet team) (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "Aera V3 documentation is linked for reference (https://docs.aera.finance/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "MultiDepositorVaultFactory (0x29722cC9a1cACff4a15914F9bC274B46F3b90B4F) verified on Ethereum Mainnet at canonical block #26,438,867 (5,465 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). Direct owner() returns timelock (1 d delay) 0xce75E223E6DbB0503D2B6f55bC5907d1A0372E2B.",
+    "recordId": "aera-v3-control-plane",
+    "surface": "MultiDepositorVaultFactory · Non-Proxy Bytecode & Controller"
+   },
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": "controller fact: getMinDelay() = 86400s",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "b",
+     "value": "1d minimum enforced delay across control surfaces"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "MultiDepositorVaultFactory · Non-Proxy Bytecode & Controller",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Aera V3",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "owner()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "aera-v3-control-plane",
+    "repro_calldata": "0x8da5cb5b",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0x8da5cb5b",
+    "target_contract": "0x29722cC9a1cACff4a15914F9bC274B46F3b90B4F",
+    "target_label": "MultiDepositorVaultFactory"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "Aera V3 control-plane rosette: Upgradeability not determined; Timelock floor moderate; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "aera v3 aera-v3 autonomous dao treasury management (gauntlet team) (ethereum) aera 0x29722cc9a1cacff4a15914f9bc274b46f3b90b4f 0xce75e223e6dbb0503d2b6f55bc5907d1a0372e2b",
+   "slug": "aera-v3",
+   "summary_short": "Non-proxy contract controlled by a timelock; docs not assessed",
+   "url": "https://pacta.wtf/protocols/aera-v3/"
+  },
+  {
+   "baskets": [
     "base"
    ],
    "category": "Base Liquidity Hub & ve(3,3) DEX",
@@ -471,6 +804,579 @@
    "slug": "aerodrome-slipstream-base",
    "summary_short": "Pool factory owner and fee managers are the 3-of-7 team Safe, as documented",
    "url": "https://pacta.wtf/protocols/aerodrome-slipstream-base/"
+  },
+  {
+   "baskets": [],
+   "category": "Self-Repaying Synthetic Loans (ALCX token) (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "Alchemix V3 documentation is linked for reference (https://docs.alchemix.fi/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "Alchemix (AlchemixToken) (0xdBdb4d16EdA451D0503b854CF79D55697F90c8DF) verified on Ethereum Mainnet at canonical block #26,438,867 (5,732 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). No owner(), admin(), authority(), curator() or AccessControl admin was readable on the contract.",
+    "recordId": "alchemix-v3-control-plane",
+    "surface": "Alchemix (AlchemixToken) · Non-Proxy Bytecode & Controller"
+   },
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "Alchemix (AlchemixToken) · Non-Proxy Bytecode & Controller",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Alchemix V3",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "owner()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "alchemix-v3-control-plane",
+    "repro_calldata": "0x8da5cb5b",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0x8da5cb5b",
+    "target_contract": "0xdBdb4d16EdA451D0503b854CF79D55697F90c8DF",
+    "target_label": "Alchemix (AlchemixToken)"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "Alchemix V3 control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "alchemix v3 alchemix-v3 self-repaying synthetic loans (alcx token) (ethereum) alcx 0xdbdb4d16eda451d0503b854cf79d55697f90c8df",
+   "slug": "alchemix-v3",
+   "summary_short": "Non-proxy contract no readable owner or admin; docs not assessed",
+   "url": "https://pacta.wtf/protocols/alchemix-v3/"
+  },
+  {
+   "baskets": [],
+   "category": "Tokenized Fund Asset Manager (Centrifuge pools) (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "Anemoy Capital documentation is linked for reference (https://www.anemoy.io/news/particula-upgrades-jtrsys-rating). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "Janus Henderson Treasury Fund (Tranche) (0x8c213ee79581Ff4984583C6a801e5263418C4b86) verified on Ethereum Mainnet at canonical block #26,438,867 (9,417 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). No owner(), admin(), authority(), curator() or AccessControl admin was readable on the contract.",
+    "recordId": "anemoy-capital-control-plane",
+    "surface": "Janus Henderson Treasury Fund (Tranche) · Non-Proxy Bytecode & Controller"
+   },
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "Janus Henderson Treasury Fund (Tranche) · Non-Proxy Bytecode & Controller",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Anemoy Capital",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "owner()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "anemoy-capital-control-plane",
+    "repro_calldata": "0x8da5cb5b",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0x8da5cb5b",
+    "target_contract": "0x8c213ee79581Ff4984583C6a801e5263418C4b86",
+    "target_label": "Janus Henderson Treasury Fund (Tranche)"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "Anemoy Capital control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "anemoy capital anemoy-capital tokenized fund asset manager (centrifuge pools) (ethereum) jtrsy 0x8c213ee79581ff4984583c6a801e5263418c4b86",
+   "slug": "anemoy-capital",
+   "summary_short": "Non-proxy contract no readable owner or admin; docs not assessed",
+   "url": "https://pacta.wtf/protocols/anemoy-capital/"
+  },
+  {
+   "baskets": [],
+   "category": "Decentralized Supercomputer Token Bridge (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "AO Bridge documentation is linked for reference (https://docs.arweave.net/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "Distribution (0xfE08D40Eee53d64936D3128838867c867602665c) verified on Ethereum Mainnet at canonical block #26,438,867 (177 bytes runtime code). EIP-1967 proxy: implementation 0x76488832A88475AF0aC223d8FD4d053177A012cc, admin slot zero. No owner(), admin(), authority(), curator() or AccessControl admin was readable on the contract.",
+    "recordId": "ao-bridge-control-plane",
+    "surface": "Distribution · EIP-1967 Proxy & Controller Chain"
+   },
+   "factors": [
+    {
+     "evidence": "ao-bridge-control-plane: is_eip1967_proxy = true",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgradeable; the delay gating the upgrade path is not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "Distribution · EIP-1967 Proxy & Controller Chain",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "AO Bridge",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "owner()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "ao-bridge-control-plane",
+    "repro_calldata": "0x8da5cb5b",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0x8da5cb5b",
+    "target_contract": "0xfE08D40Eee53d64936D3128838867c867602665c",
+    "target_label": "Distribution"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "AO Bridge control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "ao bridge ao-bridge decentralized supercomputer token bridge (ethereum) ao 0x76488832a88475af0ac223d8fd4d053177a012cc 0xfe08d40eee53d64936d3128838867c867602665c",
+   "slug": "ao-bridge",
+   "summary_short": "Upgradeable proxy no readable owner or admin; docs not assessed",
+   "url": "https://pacta.wtf/protocols/ao-bridge/"
+  },
+  {
+   "baskets": [
+    "lending_vaults"
+   ],
+   "category": "Market-making strategy vaults for token issuers, deployed by a meta-vault factory (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "Arrakis Modular documentation is linked for reference (https://docs.arrakis.finance/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "ArrakisMetaVaultFactory (0x820FB8127a689327C863de8433278d6181123982) verified on Ethereum Mainnet at canonical block #26,438,867 (21,832 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). Direct owner() returns Safe 4-of-8 0x5108EF86cF493905BcD35A3736e4B46DeCD7de58.",
+    "recordId": "arrakis-modular-control-plane",
+    "surface": "ArrakisMetaVaultFactory · Non-Proxy Bytecode & Controller"
+   },
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": "arrakis-modular-control-plane: … contract). Direct owner() returns Safe 4-of-8 0x5108EF86cF493905BcD35A3736e4B46DeCD7de58.",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 4-of-8"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "ArrakisMetaVaultFactory · Non-Proxy Bytecode & Controller",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Arrakis Modular",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "owner()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "arrakis-modular-control-plane",
+    "repro_calldata": "0x8da5cb5b",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0x8da5cb5b",
+    "target_contract": "0x820FB8127a689327C863de8433278d6181123982",
+    "target_label": "ArrakisMetaVaultFactory"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "Arrakis Modular control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "arrakis modular arrakis-modular market-making strategy vaults for token issuers, deployed by a meta-vault factory (ethereum) arrakis 0x5108ef86cf493905bcd35a3736e4b46decd7de58 0x820fb8127a689327c863de8433278d6181123982",
+   "slug": "arrakis-modular",
+   "summary_short": "Non-proxy contract controlled by a 4-of-8 Safe; docs not assessed",
+   "url": "https://pacta.wtf/protocols/arrakis-modular/"
+  },
+  {
+   "baskets": [
+    "lending_vaults"
+   ],
+   "category": "Perpetual Exchange Deposit Vault (MEV-free trading) (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "Aster Bridge documentation is linked for reference (https://docs.asterdex.com/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "AstherusVault (0x604DD02d620633Ae427888d41bfd15e38483736E) verified on Ethereum Mainnet at canonical block #26,438,867 (855 bytes runtime code). EIP-1967 proxy: implementation 0x2CC878ac49C3BF8B0f2B053af7845BA6590eEc4f, admin slot zero. DEFAULT_ADMIN_ROLE member is Safe 4-of-7 0x1FE3Fe2Ddd19AB58B0c56054a5AF217Afb27eCEA.",
+    "recordId": "aster-bridge-control-plane",
+    "surface": "AstherusVault · EIP-1967 Proxy & Controller Chain"
+   },
+   "factors": [
+    {
+     "evidence": "aster-bridge-control-plane: is_eip1967_proxy = true",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgradeable; the delay gating the upgrade path is not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": "aster-bridge-control-plane: … zero. DEFAULT_ADMIN_ROLE member is Safe 4-of-7 0x1FE3Fe2Ddd19AB58B0c56054a5AF217Afb27eCEA.",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 4-of-7"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "AstherusVault · EIP-1967 Proxy & Controller Chain",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Aster Bridge",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "owner()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "aster-bridge-control-plane",
+    "repro_calldata": "0x8da5cb5b",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0x8da5cb5b",
+    "target_contract": "0x604DD02d620633Ae427888d41bfd15e38483736E",
+    "target_label": "AstherusVault"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "Aster Bridge control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "aster bridge aster-bridge perpetual exchange deposit vault (mev-free trading) (ethereum) aster 0x1fe3fe2ddd19ab58b0c56054a5af217afb27ecea 0x2cc878ac49c3bf8b0f2b053af7845ba6590eec4f 0x604dd02d620633ae427888d41bfd15e38483736e",
+   "slug": "aster-bridge",
+   "summary_short": "Upgradeable proxy controlled by a 4-of-7 Safe; docs not assessed",
+   "url": "https://pacta.wtf/protocols/aster-bridge/"
+  },
+  {
+   "baskets": [],
+   "category": "Autonomous Liquidity Routing Pools (Autopools) (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "AUTOfinance documentation is linked for reference (https://docs.auto.finance/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "SystemRegistry (0x2218F90A98b0C070676f249EF44834686dAa4285) verified on Ethereum Mainnet at canonical block #26,438,867 (9,299 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). Direct owner() returns Safe 6-of-11 0x8b4334d4812C530574Bd4F2763FcD22dE94A969B.",
+    "recordId": "autofinance-control-plane",
+    "surface": "SystemRegistry · Non-Proxy Bytecode & Controller"
+   },
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": "autofinance-control-plane: … contract). Direct owner() returns Safe 6-of-11 0x8b4334d4812C530574Bd4F2763FcD22dE94A969B.",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 6-of-11"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "SystemRegistry · Non-Proxy Bytecode & Controller",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "AUTOfinance",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "owner()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "autofinance-control-plane",
+    "repro_calldata": "0x8da5cb5b",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0x8da5cb5b",
+    "target_contract": "0x2218F90A98b0C070676f249EF44834686dAa4285",
+    "target_label": "SystemRegistry"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "AUTOfinance control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "autofinance autofinance autonomous liquidity routing pools (autopools) (ethereum) autofinance 0x2218f90a98b0c070676f249ef44834686daa4285 0x8b4334d4812c530574bd4f2763fcd22de94a969b",
+   "slug": "autofinance",
+   "summary_short": "Non-proxy contract controlled by a 6-of-11 Safe; docs not assessed",
+   "url": "https://pacta.wtf/protocols/autofinance/"
+  },
+  {
+   "baskets": [
+    "lending_vaults"
+   ],
+   "category": "Yield Product with Real-Time APY (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "Avalon Superearn documentation is linked for reference (https://docs.avalonfinance.xyz/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "AVL (AvalonMintable) (0x5c8D0C48810FD37A0A824D074ee290E64f7A8Fa2) verified on Ethereum Mainnet at canonical block #26,438,867 (2,739 bytes runtime code). EIP-1967 proxy: implementation 0x3228995749610Bea00b59C44F8d1df21C14027F1, admin 0x1792f73b586F3e931B51826195Ff015a23C86009. The EIP-1967 admin slot holds contract ProxyAdmin 0x1792f73b586F3e931B51826195Ff015a23C86009. That controller is in turn controlled by Safe 4-of-5 0xbA7468D7ACcd1Bb2E346a003ab1713C3d8C4Da6d.",
+    "recordId": "avalon-superearn-control-plane",
+    "surface": "AVL (AvalonMintable) · EIP-1967 Proxy & Controller Chain"
+   },
+   "factors": [
+    {
+     "evidence": "avalon-superearn-control-plane: AVL (AvalonMintable) (0x5c8D0C48810FD37A0A824D074ee290E64f7A8Fa2) verified on Ethereum Mainnet at canonical block #26,438,867 (2,739 bytes runtime code). …",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgradeable; the delay gating the upgrade path is not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": "avalon-superearn-control-plane: … controller is in turn controlled by Safe 4-of-5 0xbA7468D7ACcd1Bb2E346a003ab1713C3d8C4Da6d.",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 4-of-5"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "AVL (AvalonMintable) · EIP-1967 Proxy & Controller Chain",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Avalon Superearn",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": null,
+    "chain": "ethereum",
+    "check_type": "eth_getStorageAt",
+    "extra_calls": [],
+    "id": "avalon-superearn-control-plane",
+    "repro_calldata": null,
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103",
+    "target_contract": "0x5c8D0C48810FD37A0A824D074ee290E64f7A8Fa2",
+    "target_label": "AVL (AvalonMintable)"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "Avalon Superearn control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "avalon superearn avalon-superearn yield product with real-time apy (ethereum) avl 0x1792f73b586f3e931b51826195ff015a23c86009 0x3228995749610bea00b59c44f8d1df21c14027f1 0x5c8d0c48810fd37a0a824d074ee290e64f7a8fa2 0xba7468d7accd1bb2e346a003ab1713c3d8c4da6d",
+   "slug": "avalon-superearn",
+   "summary_short": "Upgradeable proxy controlled by a 4-of-5 Safe; docs not assessed",
+   "url": "https://pacta.wtf/protocols/avalon-superearn/"
   },
   {
    "baskets": [],
@@ -780,7 +1686,7 @@
    "grade": "delta",
    "gradeLabel": "DELTA",
    "name": "Beefy Finance (Base)",
-   "pinnedBlock": 58315414,
+   "pinnedBlock": 58885628,
    "probe": {
     "block_hash": "0x5092b494a9f8555faecfaa0f49202536e0edcf26f2bdc6e25a563442258119cd",
     "block_number": 58315414,
@@ -799,12 +1705,95 @@
    "reconciled": false,
    "reconciledFrom": [],
    "reconciledTo": [],
-   "records": 3,
+   "records": 4,
    "rosetteAria": "Beefy Finance (Base) control-plane rosette: Upgradeability moderate; Timelock floor weak; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
-   "search": "beefy finance (base) beefy-finance-base automated yield vaults & clm (base) bifi 0x09d19184f46a32213df06b981122e06882b61309 0x2b0c9702a4724f2bfe7922db92c4082098533c62 0x3b60f7f25b09e71356cdffc6475c222a466a2ac9 0x6ffaca7c3b38ec2d631d86e15f328ee6ef6c6226 0xab35d11199216c7f7368080cf41bed8f3abbc4e4 0xfc69704cc3caac545cc7577009ea4aa04f1a61eb",
+   "search": "beefy finance (base) beefy-finance-base automated yield vaults & clm (base) bifi 0x03f6afbcbf398e2362c93ddc846619f1b1b860d2 0x09d19184f46a32213df06b981122e06882b61309 0x2b0c9702a4724f2bfe7922db92c4082098533c62 0x3b60f7f25b09e71356cdffc6475c222a466a2ac9 0x6ffaca7c3b38ec2d631d86e15f328ee6ef6c6226 0xab35d11199216c7f7368080cf41bed8f3abbc4e4 0xfc69704cc3caac545cc7577009ea4aa04f1a61eb",
    "slug": "beefy-finance-base",
    "summary_short": "Timelock delay: docs 6 hours · chain none",
    "url": "https://pacta.wtf/protocols/beefy-finance-base/"
+  },
+  {
+   "baskets": [
+    "lending_vaults"
+   ],
+   "category": "Basis-Trade Yield Token (bfUSD issuer) (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "BitFi Basis documentation is linked for reference (https://docs.bitfi.one/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "BitFi Bitcoin (Bfbtc) (0xCdFb58c8C859Cb3F62ebe9Cf2767F9e036C7fb15) verified on Ethereum Mainnet at canonical block #26,438,867 (163 bytes runtime code). EIP-1967 proxy: implementation 0x4ca67a794051e036eefB5Aa4b34fE2bd836069F0, admin slot zero. Direct owner() returns externally owned account (no code) 0xd931401B37c3A368505E7AE6dE700f2b0ad14ac6.",
+    "recordId": "bitfi-basis-control-plane",
+    "surface": "BitFi Bitcoin (Bfbtc) · EIP-1967 Proxy & Controller Chain"
+   },
+   "factors": [
+    {
+     "evidence": "bitfi-basis-control-plane: is_eip1967_proxy = true",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgradeable; the delay gating the upgrade path is not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": "bitfi-basis-control-plane: … admin slot zero. Direct owner() returns externally owned account (no code) 0xd931401B37c3A368505E7AE6dE700f2b0ad14ac6.",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "a",
+     "value": "Lowest controlling quorum: a single key"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "BitFi Bitcoin (Bfbtc) · EIP-1967 Proxy & Controller Chain",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "BitFi Basis",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "owner()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "bitfi-basis-control-plane",
+    "repro_calldata": "0x8da5cb5b",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0x8da5cb5b",
+    "target_contract": "0xCdFb58c8C859Cb3F62ebe9Cf2767F9e036C7fb15",
+    "target_label": "BitFi Bitcoin (Bfbtc)"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "BitFi Basis control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum weak; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "bitfi basis bitfi-basis basis-trade yield token (bfusd issuer) (ethereum) bfbtc 0x4ca67a794051e036eefb5aa4b34fe2bd836069f0 0xcdfb58c8c859cb3f62ebe9cf2767f9e036c7fb15 0xd931401b37c3a368505e7ae6de700f2b0ad14ac6",
+   "slug": "bitfi-basis",
+   "summary_short": "Upgradeable proxy controlled by a single key (EOA); docs not assessed",
+   "url": "https://pacta.wtf/protocols/bitfi-basis/"
   },
   {
    "baskets": [
@@ -1057,6 +2046,90 @@
    "slug": "chainlink-ccip",
    "summary_short": "Docs: only the MCMS proposes · chain: a 6-of-12 Safe can also propose",
    "url": "https://pacta.wtf/protocols/chainlink-ccip/"
+  },
+  {
+   "baskets": [
+    "eth_lst_lrt",
+    "lending_vaults"
+   ],
+   "category": "Leveraged Staking Vault (recursive ETH) (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "CIAN Yield Layer documentation is linked for reference (https://docs.cian.app/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "CIAN yield layer stETH (VaultYieldETH) (0xB13aa2d0345b0439b064f26B82D8dCf3f508775d) verified on Ethereum Mainnet at canonical block #26,438,867 (1,490 bytes runtime code). EIP-1967 proxy: implementation 0xA1Dc0B6A02AB091580DC57bDd5Fe8a9E577E0842, admin 0xf24955E9D0a05222373d4555f8831f7A05e83F62. The EIP-1967 admin slot holds contract ProxyAdmin 0xf24955E9D0a05222373d4555f8831f7A05e83F62. That controller is in turn controlled by Safe 3-of-4 0x261090afE1E7305474F4e3eEFCAca9964eBffFf5.",
+    "recordId": "cian-yield-layer-control-plane",
+    "surface": "CIAN yield layer stETH (VaultYieldETH) · EIP-1967 Proxy & Controller Chain"
+   },
+   "factors": [
+    {
+     "evidence": "cian-yield-layer-control-plane: CIAN yield layer stETH (VaultYieldETH) (0xB13aa2d0345b0439b064f26B82D8dCf3f508775d) verified on Ethereum Mainnet at canonical block #26,438,867 (1,490 bytes …",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgradeable; the delay gating the upgrade path is not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": "cian-yield-layer-control-plane: … controller is in turn controlled by Safe 3-of-4 0x261090afE1E7305474F4e3eEFCAca9964eBffFf5.",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 3-of-4"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "CIAN yield layer stETH (VaultYieldETH) · EIP-1967 Proxy & Controller Chain",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "CIAN Yield Layer",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": null,
+    "chain": "ethereum",
+    "check_type": "eth_getStorageAt",
+    "extra_calls": [],
+    "id": "cian-yield-layer-control-plane",
+    "repro_calldata": null,
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103",
+    "target_contract": "0xB13aa2d0345b0439b064f26B82D8dCf3f508775d",
+    "target_label": "CIAN yield layer stETH (VaultYieldETH)"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "CIAN Yield Layer control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "cian yield layer cian-yield-layer leveraged staking vault (recursive eth) (ethereum) ylsteth 0x261090afe1e7305474f4e3eefcaca9964ebffff5 0xa1dc0b6a02ab091580dc57bdd5fe8a9e577e0842 0xb13aa2d0345b0439b064f26b82d8dcf3f508775d 0xf24955e9d0a05222373d4555f8831f7a05e83f62",
+   "slug": "cian-yield-layer",
+   "summary_short": "Upgradeable proxy controlled by a 3-of-4 Safe; docs not assessed",
+   "url": "https://pacta.wtf/protocols/cian-yield-layer/"
   },
   {
    "baskets": [
@@ -1394,6 +2467,87 @@
    "url": "https://pacta.wtf/protocols/compound-v3-comet/"
   },
   {
+   "baskets": [],
+   "category": "Curve & Convex Reward Compounder (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "Concentrator documentation is linked for reference (https://docs.aladdin.club/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "Concentrator Token (Vyper_contract) (0xb3Ad645dB386D7F6D753B2b9C3F4B853DA6890B8) verified on Ethereum Mainnet at canonical block #26,438,867 (3,412 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). Direct admin() returns Safe 6-of-9 0xA0FB1b11ccA5871fb0225B64308e249B97804E99.",
+    "recordId": "concentrator-control-plane",
+    "surface": "Concentrator Token (Vyper_contract) · Non-Proxy Bytecode & Controller"
+   },
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": "concentrator-control-plane: … contract). Direct admin() returns Safe 6-of-9 0xA0FB1b11ccA5871fb0225B64308e249B97804E99.",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 6-of-9"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "Concentrator Token (Vyper_contract) · Non-Proxy Bytecode & Controller",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Concentrator",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "admin()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "concentrator-control-plane",
+    "repro_calldata": "0xf851a440",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0xf851a440",
+    "target_contract": "0xb3Ad645dB386D7F6D753B2b9C3F4B853DA6890B8",
+    "target_label": "Concentrator Token (Vyper_contract)"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "Concentrator control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "concentrator concentrator curve & convex reward compounder (ethereum) ctr 0xa0fb1b11cca5871fb0225b64308e249b97804e99 0xb3ad645db386d7f6d753b2b9c3f4b853da6890b8",
+   "slug": "concentrator",
+   "summary_short": "Non-proxy contract controlled by a 6-of-9 Safe; docs not assessed",
+   "url": "https://pacta.wtf/protocols/concentrator/"
+  },
+  {
    "baskets": [
     "lending_vaults"
    ],
@@ -1558,6 +2712,170 @@
    "url": "https://pacta.wtf/protocols/convex-finance/"
   },
   {
+   "baskets": [],
+   "category": "Fixed-Term Loans against gOHM (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "evidence": {
+    "documented": "'Threshold: 4-of-8 on Mainnet.' (docs.olympusdao.finance/main/security/multisigs)",
+    "observed": "Cooler Loans Safe 0x245cc372C84B3645Bf0Ffe6538620B04a217988B (Ethereum): getThreshold() = 4 of getOwners() = 8 owners (Safe v1.3.0).",
+    "recordId": "cooler-loans-safe-threshold-s26",
+    "surface": "Cooler Loans multisig: 4-of-8 Safe, as documented"
+   },
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": "controller fact: Safe getThreshold()",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 4-of-8"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "Cooler Loans multisig: 4-of-8 Safe, as documented",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Cooler Loans",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "getThreshold()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "cooler-loans-safe-threshold-s26",
+    "repro_calldata": "0xe75235b8",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0xe75235b8",
+    "target_contract": "0x245cc372C84B3645Bf0Ffe6538620B04a217988B",
+    "target_label": "Cooler Loans Safe"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "Cooler Loans control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "search": "cooler loans cooler-loans fixed-term loans against gohm (ethereum) ohm 0x245cc372c84b3645bf0ffe6538620b04a217988b",
+   "slug": "cooler-loans",
+   "summary_short": "The Cooler Loans multisig is a 4-of-8 Safe, as its docs state",
+   "url": "https://pacta.wtf/protocols/cooler-loans/"
+  },
+  {
+   "baskets": [
+    "stable_rwa"
+   ],
+   "category": "Stableswap AMM Liquidity Pools (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "evidence": {
+    "documented": "'The EmergencyDAO is a **5-of-9 multisig** authorized for emergency interventions.' (docs.curve.finance/user/dao/emergency-dao.md)",
+    "observed": "Curve DEX (Ethereum) Safe 0x467947EE34aF926cF1DCac093870f613C96B1E0c (Ethereum): getThreshold() = 5 of getOwners() = 9 owners (Safe v1.3.0).",
+    "recordId": "curve-dex-ethereum-safe-threshold-s26",
+    "surface": "Curve DEX (Ethereum) multisig: 5-of-9 Safe, as documented"
+   },
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": "controller fact: Safe getThreshold()",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 5-of-9"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "Curve DEX (Ethereum) multisig: 5-of-9 Safe, as documented",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Curve DEX (Ethereum)",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "getThreshold()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "curve-dex-ethereum-safe-threshold-s26",
+    "repro_calldata": "0xe75235b8",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0xe75235b8",
+    "target_contract": "0x467947EE34aF926cF1DCac093870f613C96B1E0c",
+    "target_label": "Curve DEX (Ethereum) Safe"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "Curve DEX (Ethereum) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "search": "curve dex (ethereum) curve-dex-ethereum stableswap amm liquidity pools (ethereum) curve 0x467947ee34af926cf1dcac093870f613c96b1e0c",
+   "slug": "curve-dex-ethereum",
+   "summary_short": "The Curve DEX (Ethereum) multisig is a 5-of-9 Safe, as its docs state",
+   "url": "https://pacta.wtf/protocols/curve-dex-ethereum/"
+  },
+  {
    "baskets": [
     "lending_vaults",
     "stable_rwa"
@@ -1640,6 +2958,87 @@
    "slug": "curve-finance-crvusd",
    "summary_short": "crvUSD factory admin is a LendingOwnerProxy; docs name the OwnershipAgent",
    "url": "https://pacta.wtf/protocols/curve-finance-crvusd/"
+  },
+  {
+   "baskets": [],
+   "category": "zkVM Exchange Settling on Ethereum (DRV token) (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "Derive V3 Options documentation is linked for reference (https://docs.derive.xyz/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "Derive (0xB1D1eae60EEA9525032a6DCb4c1CE336a1dE71BE) verified on Ethereum Mainnet at canonical block #26,438,867 (1,167 bytes runtime code). EIP-1967 proxy: implementation 0x4909AD99441Ea5311b90a94650C394cEa4A881B8, admin 0xaA7b17C2539437Efa236FED262A5815358Ae2CC3. The EIP-1967 admin slot holds contract ProxyAdmin 0xaA7b17C2539437Efa236FED262A5815358Ae2CC3.",
+    "recordId": "derive-v3-options-control-plane",
+    "surface": "Derive · EIP-1967 Proxy & Controller Chain"
+   },
+   "factors": [
+    {
+     "evidence": "derive-v3-options-control-plane: Derive (0xB1D1eae60EEA9525032a6DCb4c1CE336a1dE71BE) verified on Ethereum Mainnet at canonical block #26,438,867 (1,167 bytes runtime code). EIP-1967 proxy …",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgradeable; the delay gating the upgrade path is not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "Derive · EIP-1967 Proxy & Controller Chain",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Derive V3 Options",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": null,
+    "chain": "ethereum",
+    "check_type": "eth_getStorageAt",
+    "extra_calls": [],
+    "id": "derive-v3-options-control-plane",
+    "repro_calldata": null,
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103",
+    "target_contract": "0xB1D1eae60EEA9525032a6DCb4c1CE336a1dE71BE",
+    "target_label": "Derive"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "Derive V3 Options control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "derive v3 options derive-v3-options zkvm exchange settling on ethereum (drv token) (ethereum) drv 0x4909ad99441ea5311b90a94650c394cea4a881b8 0xaa7b17c2539437efa236fed262a5815358ae2cc3 0xb1d1eae60eea9525032a6dcb4c1ce336a1de71be",
+   "slug": "derive-v3-options",
+   "summary_short": "Upgradeable proxy controlled by a contract; docs not assessed",
+   "url": "https://pacta.wtf/protocols/derive-v3-options/"
   },
   {
    "baskets": [
@@ -2234,7 +3633,7 @@
    "easAttested": false,
    "evidence": {
     "documented": "Extra Finance (Base) documentation is linked for reference (https://docs.extrafi.io/; governance: https://snapshot.org/#/extrafi.eth). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
-    "observed": "ExtraLendingPool_Base (0xBB505c54D71E9e599cB8435b4F0cEEc05fC71cbD) verified on Base Mainnet at canonical block #57,421,449 (20,198 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). Direct owner() returns governance controller contract 0x5a70429e0e5c7BE9E5F83B497C18F5AC82345113.",
+    "observed": "ExtraLendingPool_Base (0xBB505c54D71E9e599cB8435b4F0cEEc05fC71cbD) verified on Base Mainnet at canonical block #58,885,628 (20,198 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). Direct owner() returns governance controller contract 0x5a70429e0e5c7BE9E5F83B497C18F5AC82345113.",
     "recordId": "extra-finance-base-control-plane",
     "surface": "ExtraLendingPool_Base · Non-Proxy Bytecode & Role Architecture"
    },
@@ -2279,10 +3678,10 @@
    "grade": "observed",
    "gradeLabel": "OBSERVED",
    "name": "Extra Finance (Base)",
-   "pinnedBlock": 57421449,
+   "pinnedBlock": 58885628,
    "probe": {
-    "block_hash": "0x36147f7f0b6d2a0a94975e98b14c979034930dbe6f9905a5b0bcb2ab45ba35b0",
-    "block_number": 57421449,
+    "block_hash": "0x732b5472c93d5c4bf65f39440097e2b0143d5875cfec028646f7f06123a20094",
+    "block_number": 58885628,
     "call_args": [],
     "call_signature": "owner()",
     "chain": "base",
@@ -2559,6 +3958,89 @@
    "slug": "fluid-instadapp",
    "summary_short": "Migration auth is live on four vaults, beyond the documented multisig scope",
    "url": "https://pacta.wtf/protocols/fluid-instadapp/"
+  },
+  {
+   "baskets": [
+    "stable_rwa"
+   ],
+   "category": "Oracle-Free Swiss Franc Stablecoin CDP (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "Frankencoin documentation is linked for reference (https://docs.frankencoin.com/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "Frankencoin Shares (FCS) (0xDb861830D9Ae2d1fCF99fA0cfd3973de382B0B5b) verified on Ethereum Mainnet at canonical block #26,438,867 (11,451 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). No owner(), admin(), authority(), curator() or AccessControl admin was readable on the contract.",
+    "recordId": "frankencoin-control-plane",
+    "surface": "Frankencoin Shares (FCS) · Non-Proxy Bytecode & Controller"
+   },
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "Frankencoin Shares (FCS) · Non-Proxy Bytecode & Controller",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Frankencoin",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "owner()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "frankencoin-control-plane",
+    "repro_calldata": "0x8da5cb5b",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0x8da5cb5b",
+    "target_contract": "0xDb861830D9Ae2d1fCF99fA0cfd3973de382B0B5b",
+    "target_label": "Frankencoin Shares (FCS)"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "Frankencoin control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "frankencoin frankencoin oracle-free swiss franc stablecoin cdp (ethereum) fcs 0xdb861830d9ae2d1fcf99fa0cfd3973de382b0b5b",
+   "slug": "frankencoin",
+   "summary_short": "Non-proxy contract no readable owner or admin; docs not assessed",
+   "url": "https://pacta.wtf/protocols/frankencoin/"
   },
   {
    "baskets": [
@@ -2898,6 +4380,249 @@
    "url": "https://pacta.wtf/protocols/grove-finance/"
   },
   {
+   "baskets": [],
+   "category": "Zero-Knowledge Private Derivatives Venue (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "Grvt Bridge documentation is linked for reference (https://grvt.io). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "GRVT (GRVTToken) (0xAD29F2723fcdBcF665F210F25E06f97477e417cF) verified on Ethereum Mainnet at canonical block #26,438,867 (3,953 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). No owner(), admin(), authority(), curator() or AccessControl admin was readable on the contract.",
+    "recordId": "grvt-bridge-control-plane",
+    "surface": "GRVT (GRVTToken) · Non-Proxy Bytecode & Controller"
+   },
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "GRVT (GRVTToken) · Non-Proxy Bytecode & Controller",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Grvt Bridge",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "owner()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "grvt-bridge-control-plane",
+    "repro_calldata": "0x8da5cb5b",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0x8da5cb5b",
+    "target_contract": "0xAD29F2723fcdBcF665F210F25E06f97477e417cF",
+    "target_label": "GRVT (GRVTToken)"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "Grvt Bridge control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "grvt bridge grvt-bridge zero-knowledge private derivatives venue (ethereum) grvt 0xad29f2723fcdbcf665f210f25e06f97477e417cf",
+   "slug": "grvt-bridge",
+   "summary_short": "Non-proxy contract no readable owner or admin; docs not assessed",
+   "url": "https://pacta.wtf/protocols/grvt-bridge/"
+  },
+  {
+   "baskets": [],
+   "category": "Permissionless Interchain Messaging (token lockbox) (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "Hyperlane documentation is linked for reference (https://docs.hyperlane.xyz/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "XERC20Lockbox (0x6D265C7dD8d76F25155F1a7687C693FDC1220D12) verified on Ethereum Mainnet at canonical block #26,438,867 (1,563 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). No owner(), admin(), authority(), curator() or AccessControl admin was readable on the contract.",
+    "recordId": "hyperlane-control-plane",
+    "surface": "XERC20Lockbox · Non-Proxy Bytecode & Controller"
+   },
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "XERC20Lockbox · Non-Proxy Bytecode & Controller",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Hyperlane",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "owner()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "hyperlane-control-plane",
+    "repro_calldata": "0x8da5cb5b",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0x8da5cb5b",
+    "target_contract": "0x6D265C7dD8d76F25155F1a7687C693FDC1220D12",
+    "target_label": "XERC20Lockbox"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "Hyperlane control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "hyperlane hyperlane permissionless interchain messaging (token lockbox) (ethereum) hyperlane 0x6d265c7dd8d76f25155f1a7687c693fdc1220d12",
+   "slug": "hyperlane",
+   "summary_short": "Non-proxy contract no readable owner or admin; docs not assessed",
+   "url": "https://pacta.wtf/protocols/hyperlane/"
+  },
+  {
+   "baskets": [],
+   "category": "Hybrid order-book exchange with on-chain settlement, first deployment (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "IDEX V1 documentation is linked for reference (). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "IDEX Token (IDEX) (0xB705268213D593B8FD88d3FDEFF93AFF5CbDcfAE) verified on Ethereum Mainnet at canonical block #26,438,867 (2,437 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). No owner(), admin(), authority(), curator() or AccessControl admin was readable on the contract.",
+    "recordId": "idex-v1-control-plane",
+    "surface": "IDEX Token (IDEX) · Non-Proxy Bytecode & Controller"
+   },
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "IDEX Token (IDEX) · Non-Proxy Bytecode & Controller",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "IDEX V1",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "owner()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "idex-v1-control-plane",
+    "repro_calldata": "0x8da5cb5b",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0x8da5cb5b",
+    "target_contract": "0xB705268213D593B8FD88d3FDEFF93AFF5CbDcfAE",
+    "target_label": "IDEX Token (IDEX)"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "IDEX V1 control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "idex v1 idex-v1 hybrid order-book exchange with on-chain settlement, first deployment (ethereum) idex 0xb705268213d593b8fd88d3fdeff93aff5cbdcfae",
+   "slug": "idex-v1",
+   "summary_short": "Non-proxy contract no readable owner or admin; docs not assessed",
+   "url": "https://pacta.wtf/protocols/idex-v1/"
+  },
+  {
    "baskets": [
     "lending_vaults",
     "stable_rwa"
@@ -3069,6 +4794,174 @@
   },
   {
    "baskets": [
+    "base",
+    "lending_vaults"
+   ],
+   "category": "Onchain Capital Allocation Vault Factory (Base)",
+   "chains": [
+    "base"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "evidence": {
+    "documented": "'The factory proxy stays at 0x1455717668fA96534f675856347A973fA907e922 ; its implementation is now IporFusionFactoryImpl 0x378fEb2E96082FB965E2BB922AEE484d07c14014 .' (ipor.io/developer-news/smart-contracts-2026-09-28-base)",
+    "observed": "IPOR Fusion ERC1967Proxy 0x1455717668fA96534f675856347A973fA907e922 (Base): EIP-1967 implementation slot = 0x378fEb2E96082FB965E2BB922AEE484d07c14014; upgradeable (EIP-1967 implementation exposing upgradeToAndCall (UUPS)).",
+    "recordId": "ipor-fusion-upgradeability-s26",
+    "surface": "IPOR Fusion ERC1967Proxy: upgradeable (UUPS), as documented"
+   },
+   "factors": [
+    {
+     "evidence": "ipor-fusion-upgradeability-s26: IPOR Fusion ERC1967Proxy 0x1455717668fA96534f675856347A973fA907e922 (Base): EIP-1967 implementation slot = 0x378fEb2E96082FB965E2BB922AEE484d07c14014",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgradeable; the delay gating the upgrade path is not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "IPOR Fusion ERC1967Proxy: upgradeable (UUPS), as documented",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "IPOR Fusion",
+   "pinnedBlock": 58885628,
+   "probe": {
+    "block_hash": "0x732b5472c93d5c4bf65f39440097e2b0143d5875cfec028646f7f06123a20094",
+    "block_number": 58885628,
+    "call_args": [],
+    "call_signature": null,
+    "chain": "base",
+    "check_type": "eth_getStorageAt",
+    "extra_calls": [],
+    "id": "ipor-fusion-upgradeability-s26",
+    "repro_calldata": null,
+    "rpc_env_var": "$BASE_RPC_URL",
+    "selector_or_slot": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+    "target_contract": "0x1455717668fA96534f675856347A973fA907e922",
+    "target_label": "IPOR Fusion ERC1967Proxy"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "IPOR Fusion control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "search": "ipor fusion ipor-fusion onchain capital allocation vault factory (base) ipor 0x1455717668fa96534f675856347a973fa907e922 0x378feb2e96082fb965e2bb922aee484d07c14014",
+   "slug": "ipor-fusion",
+   "summary_short": "The IPOR Fusion ERC1967Proxy is upgradeable (UUPS), as its docs state",
+   "url": "https://pacta.wtf/protocols/ipor-fusion/"
+  },
+  {
+   "baskets": [
+    "eth_lst_lrt",
+    "lending_vaults"
+   ],
+   "category": "Institutional risk manager curating a restaking vault for liquid staking collateral (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "K3 Capital documentation is linked for reference (https://docs.k3.capital/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "MigratableEntityProxy (0xdC47953c816531a8CA9E1D461AB53687d48EEA26) verified on Ethereum Mainnet at canonical block #26,438,867 (808 bytes runtime code). EIP-1967 proxy: implementation 0xDd649AdaB2e67cAdC2EC29d75ABe73f3Df08065c, admin 0xAEb6bdd95c502390db8f52c8909F703E9Af6a346. The EIP-1967 admin slot holds contract VaultFactory 0xAEb6bdd95c502390db8f52c8909F703E9Af6a346. That controller is in turn controlled by Safe 2-of-3 0x5721ce64Ee0D772Ce613b62D411350091C544cD0.",
+    "recordId": "k3-capital-control-plane",
+    "surface": "MigratableEntityProxy · EIP-1967 Proxy & Controller Chain"
+   },
+   "factors": [
+    {
+     "evidence": "k3-capital-control-plane: is_eip1967_proxy = true",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgradeable; the delay gating the upgrade path is not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": "k3-capital-control-plane: … controller is in turn controlled by Safe 2-of-3 0x5721ce64Ee0D772Ce613b62D411350091C544cD0.",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "b",
+     "value": "Lowest controlling quorum: 2-of-3"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "MigratableEntityProxy · EIP-1967 Proxy & Controller Chain",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "K3 Capital",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": null,
+    "chain": "ethereum",
+    "check_type": "eth_getStorageAt",
+    "extra_calls": [],
+    "id": "k3-capital-control-plane",
+    "repro_calldata": null,
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103",
+    "target_contract": "0xdC47953c816531a8CA9E1D461AB53687d48EEA26",
+    "target_label": "MigratableEntityProxy"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "K3 Capital control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum moderate; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "k3 capital k3-capital institutional risk manager curating a restaking vault for liquid staking collateral (ethereum) k3 0x5721ce64ee0d772ce613b62d411350091c544cd0 0xaeb6bdd95c502390db8f52c8909f703e9af6a346 0xdc47953c816531a8ca9e1d461ab53687d48eea26 0xdd649adab2e67cadc2ec29d75abe73f3df08065c",
+   "slug": "k3-capital",
+   "summary_short": "Upgradeable proxy controlled by a 2-of-3 Safe; docs not assessed",
+   "url": "https://pacta.wtf/protocols/k3-capital/"
+  },
+  {
+   "baskets": [
     "eth_lst_lrt"
    ],
    "category": "Liquid Restaking",
@@ -3149,6 +5042,90 @@
    "slug": "kelp-dao-rseth",
    "summary_short": "ProxyAdmin sits behind a 10-day timelock; config admin Safe as documented",
    "url": "https://pacta.wtf/protocols/kelp-dao-rseth/"
+  },
+  {
+   "baskets": [
+    "lending_vaults",
+    "stable_rwa"
+   ],
+   "category": "Onchain Asset Manager & Risk Curator (DAO treasuries) (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "KPK documentation is linked for reference (https://docs.kpk.io/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "kpk Token (0xbF3F63D8AC133B16d7D50C015036b33219Dd8D23) verified on Ethereum Mainnet at canonical block #26,438,867 (1,512 bytes runtime code). EIP-1967 proxy: implementation 0x5af203018E9043f2aAA5622C3f5014b0aa82904C, admin 0x5912d39421109E4bf3Dc8108b403b74773bc5379. The EIP-1967 admin slot holds contract ProxyAdmin 0x5912d39421109E4bf3Dc8108b403b74773bc5379. That controller is in turn controlled by timelock (1 d delay) 0xee27FAD903FeCa9e78C5075803c8833e885B2B7A.",
+    "recordId": "kpk-control-plane",
+    "surface": "kpk Token · EIP-1967 Proxy & Controller Chain"
+   },
+   "factors": [
+    {
+     "evidence": "kpk-control-plane: kpk Token (0xbF3F63D8AC133B16d7D50C015036b33219Dd8D23) verified on Ethereum Mainnet at canonical block #26,438,867 (1,512 bytes runtime code). EIP-1967 proxy …",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgradeable; the delay gating the upgrade path is not in the published records"
+    },
+    {
+     "evidence": "controller fact: getMinDelay() = 86400s",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "b",
+     "value": "1d minimum enforced delay across control surfaces"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "kpk Token · EIP-1967 Proxy & Controller Chain",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "KPK",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": null,
+    "chain": "ethereum",
+    "check_type": "eth_getStorageAt",
+    "extra_calls": [],
+    "id": "kpk-control-plane",
+    "repro_calldata": null,
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103",
+    "target_contract": "0xbF3F63D8AC133B16d7D50C015036b33219Dd8D23",
+    "target_label": "kpk Token"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "KPK control-plane rosette: Upgradeability not determined; Timelock floor moderate; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "kpk kpk onchain asset manager & risk curator (dao treasuries) (ethereum) kpk 0x5912d39421109e4bf3dc8108b403b74773bc5379 0x5af203018e9043f2aaa5622c3f5014b0aa82904c 0xbf3f63d8ac133b16d7d50c015036b33219dd8d23 0xee27fad903feca9e78c5075803c8833e885b2b7a",
+   "slug": "kpk",
+   "summary_short": "Upgradeable proxy controlled by a contract; docs not assessed",
+   "url": "https://pacta.wtf/protocols/kpk/"
   },
   {
    "baskets": [],
@@ -3313,6 +5290,87 @@
    "slug": "lido-steth-dual-governance",
    "summary_short": "Dual Governance timelock delays and committee Safes match the docs",
    "url": "https://pacta.wtf/protocols/lido-steth-dual-governance/"
+  },
+  {
+   "baskets": [],
+   "category": "Perpetuals Exchange Deposit Bridge (zk order book) (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "Lighter Bridge documentation is linked for reference (https://docs.lighter.xyz/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "Lighter (0x232CE3bd40fCd6f80f3d55A522d03f25Df784Ee2) verified on Ethereum Mainnet at canonical block #26,438,867 (4,137 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). No owner(), admin(), authority(), curator() or AccessControl admin was readable on the contract.",
+    "recordId": "lighter-bridge-control-plane",
+    "surface": "Lighter · Non-Proxy Bytecode & Controller"
+   },
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "Lighter · Non-Proxy Bytecode & Controller",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Lighter Bridge",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "owner()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "lighter-bridge-control-plane",
+    "repro_calldata": "0x8da5cb5b",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0x8da5cb5b",
+    "target_contract": "0x232CE3bd40fCd6f80f3d55A522d03f25Df784Ee2",
+    "target_label": "Lighter"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "Lighter Bridge control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "lighter bridge lighter-bridge perpetuals exchange deposit bridge (zk order book) (ethereum) lit 0x232ce3bd40fcd6f80f3d55a522d03f25df784ee2",
+   "slug": "lighter-bridge",
+   "summary_short": "Non-proxy contract no readable owner or admin; docs not assessed",
+   "url": "https://pacta.wtf/protocols/lighter-bridge/"
   },
   {
    "baskets": [
@@ -3726,6 +5784,87 @@
    "slug": "m0-protocol-m",
    "summary_short": "MToken has no proxy slots: immutable core logic, as documented",
    "url": "https://pacta.wtf/protocols/m0-protocol-m/"
+  },
+  {
+   "baskets": [],
+   "category": "Execution infrastructure where asset managers run strategies as Machines (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "Makina documentation is linked for reference (https://docs.makina.finance/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "HubCoreFactory (0x8d28A69328561eF9F171c58996fEcB9F494e070c) verified on Ethereum Mainnet at canonical block #26,438,867 (1,115 bytes runtime code). EIP-1967 proxy: implementation 0x6E969Ba0941ACD84d56B297864f6677d15ea6e29, admin 0xEb78836D3aa3A0518A96fd7C9c549d0FFB7D6dA9. The EIP-1967 admin slot holds contract contract 0xEb78836D3aa3A0518A96fd7C9c549d0FFB7D6dA9. That controller is in turn controlled by contract contract 0x0fCEfa3f1047F35521A49cD8B06faBd588665d7F.",
+    "recordId": "makina-control-plane",
+    "surface": "HubCoreFactory · EIP-1967 Proxy & Controller Chain"
+   },
+   "factors": [
+    {
+     "evidence": "makina-control-plane: is_eip1967_proxy = true",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgradeable; the delay gating the upgrade path is not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "HubCoreFactory · EIP-1967 Proxy & Controller Chain",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Makina",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": null,
+    "chain": "ethereum",
+    "check_type": "eth_getStorageAt",
+    "extra_calls": [],
+    "id": "makina-control-plane",
+    "repro_calldata": null,
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103",
+    "target_contract": "0x8d28A69328561eF9F171c58996fEcB9F494e070c",
+    "target_label": "HubCoreFactory"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "Makina control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "makina makina execution infrastructure where asset managers run strategies as machines (ethereum) makina 0x0fcefa3f1047f35521a49cd8b06fabd588665d7f 0x6e969ba0941acd84d56b297864f6677d15ea6e29 0x8d28a69328561ef9f171c58996fecb9f494e070c 0xeb78836d3aa3a0518a96fd7c9c549d0ffb7d6da9",
+   "slug": "makina",
+   "summary_short": "Upgradeable proxy controlled by a contract; docs not assessed",
+   "url": "https://pacta.wtf/protocols/makina/"
   },
   {
    "baskets": [
@@ -4311,6 +6450,90 @@
   },
   {
    "baskets": [
+    "lending_vaults",
+    "stable_rwa"
+   ],
+   "category": "Delta-Neutral Yield Stablecoin (sUSN) (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "Noon documentation is linked for reference (https://docs.noon.capital/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "USN (USNUpgradeableHyperlane) (0xdA67B4284609d2d48e5d10cfAc411572727dc1eD) verified on Ethereum Mainnet at canonical block #26,438,867 (1,159 bytes runtime code). EIP-1967 proxy: implementation 0x79FD7FE2a8EbcAE47798321b2AC97107dF3de229, admin 0x55f39512cb43111A13E8440ee3e3602e72628239. The EIP-1967 admin slot holds contract ProxyAdmin 0x55f39512cb43111A13E8440ee3e3602e72628239. That controller is in turn controlled by contract Timelock 0xE5e412C212B4FBbF550A94e7BD5e83dB0B315A7F.",
+    "recordId": "noon-control-plane",
+    "surface": "USN (USNUpgradeableHyperlane) · EIP-1967 Proxy & Controller Chain"
+   },
+   "factors": [
+    {
+     "evidence": "noon-control-plane: USN (USNUpgradeableHyperlane) (0xdA67B4284609d2d48e5d10cfAc411572727dc1eD) verified on Ethereum Mainnet at canonical block #26,438,867 (1,159 bytes runtime …",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgradeable; the delay gating the upgrade path is not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "USN (USNUpgradeableHyperlane) · EIP-1967 Proxy & Controller Chain",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Noon",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": null,
+    "chain": "ethereum",
+    "check_type": "eth_getStorageAt",
+    "extra_calls": [],
+    "id": "noon-control-plane",
+    "repro_calldata": null,
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103",
+    "target_contract": "0xdA67B4284609d2d48e5d10cfAc411572727dc1eD",
+    "target_label": "USN (USNUpgradeableHyperlane)"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "Noon control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "noon noon delta-neutral yield stablecoin (susn) (ethereum) usn 0x55f39512cb43111a13e8440ee3e3602e72628239 0x79fd7fe2a8ebcae47798321b2ac97107df3de229 0xda67b4284609d2d48e5d10cfac411572727dc1ed 0xe5e412c212b4fbbf550a94e7bd5e83db0b315a7f",
+   "slug": "noon",
+   "summary_short": "Upgradeable proxy controlled by a contract; docs not assessed",
+   "url": "https://pacta.wtf/protocols/noon/"
+  },
+  {
+   "baskets": [
     "eth_lst_lrt"
    ],
    "category": "Distributed Validator Infrastructure & Governance Token",
@@ -4479,6 +6702,89 @@
   },
   {
    "baskets": [
+    "lending_vaults"
+   ],
+   "category": "Automated leverage vaults (looped auto-compounding positions) (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "Origami Finance documentation is linked for reference (). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "Origami SKY+ Auto-Compounder (OrigamiDelegated4626Vault) (0x07c5500359161b81eb0DfFF83097d5025D3cF5A2) verified on Ethereum Mainnet at canonical block #26,438,867 (15,404 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). Direct owner() returns Safe 2-of-4 0x781B4c57100738095222bd92D37B07ed034AB696.",
+    "recordId": "origami-finance-control-plane",
+    "surface": "Origami SKY+ Auto-Compounder (OrigamiDelegated4626Vault) · Non-Proxy Bytecode & Controller"
+   },
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": "origami-finance-control-plane: … contract). Direct owner() returns Safe 2-of-4 0x781B4c57100738095222bd92D37B07ed034AB696.",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "b",
+     "value": "Lowest controlling quorum: 2-of-4"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "Origami SKY+ Auto-Compounder (OrigamiDelegated4626Vault) · Non-Proxy Bytecode & Controller",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Origami Finance",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "owner()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "origami-finance-control-plane",
+    "repro_calldata": "0x8da5cb5b",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0x8da5cb5b",
+    "target_contract": "0x07c5500359161b81eb0DfFF83097d5025D3cF5A2",
+    "target_label": "Origami SKY+ Auto-Compounder (OrigamiDelegated4626Vault)"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "Origami Finance control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum moderate; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "origami finance origami-finance automated leverage vaults (looped auto-compounding positions) (ethereum) sky+ 0x07c5500359161b81eb0dfff83097d5025d3cf5a2 0x781b4c57100738095222bd92d37b07ed034ab696",
+   "slug": "origami-finance",
+   "summary_short": "Non-proxy contract controlled by a 2-of-4 Safe; docs not assessed",
+   "url": "https://pacta.wtf/protocols/origami-finance/"
+  },
+  {
+   "baskets": [
     "base",
     "eth_lst_lrt"
    ],
@@ -4490,20 +6796,20 @@
    "easAttested": false,
    "evidence": {
     "documented": "Origin Protocol (SuperOETHb Base) documentation is linked for reference (https://docs.originprotocol.com/; governance: https://snapshot.org/#/ousdgov.eth). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
-    "observed": "SuperOETHb_VaultProxy (0xDBFeFD2e8460a6Ee4955A68582F85708BAEA60A3) verified on Base Mainnet at canonical block #57,421,449 (2,402 bytes runtime code). EIP-1967 implementation slot resolves to 0xCcd483cE093682D7D9a41e645EEb710AFaa88249, EIP-1967 admin slot = zero (UUPS / internal upgrade authority). Direct admin() returns timelock controller 0xf817cb3092179083c48c014688D98B72fB61464f with minimum delay 172,800s (2d).",
+    "observed": "SuperOETHb_VaultProxy (0xDBFeFD2e8460a6Ee4955A68582F85708BAEA60A3) verified on Base Mainnet at canonical block #58,885,628 (2,402 bytes runtime code). EIP-1967 implementation slot resolves to 0xCcd483cE093682D7D9a41e645EEb710AFaa88249, EIP-1967 admin slot = zero (UUPS / internal upgrade authority). Direct admin() returns timelock controller 0xf817cb3092179083c48c014688D98B72fB61464f with minimum delay 172,800s (2d).",
     "recordId": "origin-superoeth-base-control-plane",
     "surface": "SuperOETHb_VaultProxy · 2d Timelock Admin Path"
    },
    "factors": [
     {
-     "evidence": "origin-superoeth-base-control-plane: SuperOETHb_VaultProxy (0xDBFeFD2e8460a6Ee4955A68582F85708BAEA60A3) verified on Base Mainnet at canonical block #57,421,449 (2,402 bytes runtime code). EIP-1967 …",
+     "evidence": "origin-superoeth-base-control-plane: SuperOETHb_VaultProxy (0xDBFeFD2e8460a6Ee4955A68582F85708BAEA60A3) verified on Base Mainnet at canonical block #58,885,628 (2,402 bytes runtime code). EIP-1967 …",
      "key": "upgrade",
      "label": "Upgradeability",
      "state": "g",
      "value": "Upgradeable behind a ≥48h delay (2d)"
     },
     {
-     "evidence": "origin-superoeth-base-control-plane: SuperOETHb_VaultProxy (0xDBFeFD2e8460a6Ee4955A68582F85708BAEA60A3) verified on Base Mainnet at canonical block #57,421,449 (2,402 bytes runtime code). EIP-1967 …",
+     "evidence": "origin-superoeth-base-control-plane: SuperOETHb_VaultProxy (0xDBFeFD2e8460a6Ee4955A68582F85708BAEA60A3) verified on Base Mainnet at canonical block #58,885,628 (2,402 bytes runtime code). EIP-1967 …",
      "key": "timelock",
      "label": "Timelock floor",
      "state": "g",
@@ -4535,10 +6841,10 @@
    "grade": "observed",
    "gradeLabel": "OBSERVED",
    "name": "Origin Protocol (SuperOETHb Base)",
-   "pinnedBlock": 57421449,
+   "pinnedBlock": 58885628,
    "probe": {
-    "block_hash": "0x36147f7f0b6d2a0a94975e98b14c979034930dbe6f9905a5b0bcb2ab45ba35b0",
-    "block_number": 57421449,
+    "block_hash": "0x732b5472c93d5c4bf65f39440097e2b0143d5875cfec028646f7f06123a20094",
+    "block_number": 58885628,
     "call_args": [],
     "call_signature": "admin()",
     "chain": "base",
@@ -4565,6 +6871,87 @@
    "slug": "origin-superoeth-base",
    "summary_short": "Vault proxy admin path runs through a 2-day timelock; docs not assessed",
    "url": "https://pacta.wtf/protocols/origin-superoeth-base/"
+  },
+  {
+   "baskets": [],
+   "category": "Concentrated-liquidity pool factory of a multichain swap venue first built on BNB Chain (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "PancakeSwap AMM V3 documentation is linked for reference (https://developer.pancakeswap.finance/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "PlunderV3Factory (0x0BFbCF9fa4f9C56B0F40a671Ad40E0805A091865) verified on Ethereum Mainnet at canonical block #26,438,867 (5,151 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). Direct owner() returns contract V3OpenFeeAdapter 0x0f6f9A6dd9f065DC4455bb2B8e3F0CFFB6F2410c. That controller is in turn controlled by Safe 3-of-7 0x21835332cBDf1b3530fAE9f6Cd66FEB9477dFC02.",
+    "recordId": "pancakeswap-amm-v3-control-plane",
+    "surface": "PlunderV3Factory · Non-Proxy Bytecode & Controller"
+   },
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": "pancakeswap-amm-v3-control-plane: … controller is in turn controlled by Safe 3-of-7 0x21835332cBDf1b3530fAE9f6Cd66FEB9477dFC02.",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 3-of-7"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "PlunderV3Factory · Non-Proxy Bytecode & Controller",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "PancakeSwap AMM V3",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "owner()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "pancakeswap-amm-v3-control-plane",
+    "repro_calldata": "0x8da5cb5b",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0x8da5cb5b",
+    "target_contract": "0x0BFbCF9fa4f9C56B0F40a671Ad40E0805A091865",
+    "target_label": "PlunderV3Factory"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "PancakeSwap AMM V3 control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "pancakeswap amm v3 pancakeswap-amm-v3 concentrated-liquidity pool factory of a multichain swap venue first built on bnb chain (ethereum) pancakeswap 0x0bfbcf9fa4f9c56b0f40a671ad40e0805a091865 0x0f6f9a6dd9f065dc4455bb2b8e3f0cffb6f2410c 0x21835332cbdf1b3530fae9f6cd66feb9477dfc02",
+   "slug": "pancakeswap-amm-v3",
+   "summary_short": "Non-proxy contract controlled by a 3-of-7 Safe; docs not assessed",
+   "url": "https://pacta.wtf/protocols/pancakeswap-amm-v3/"
   },
   {
    "baskets": [
@@ -4731,6 +7118,87 @@
    "slug": "pendle-finance-v2",
    "summary_short": "Markets send 80% of swap fees to the treasury and 20% to LPs, as documented",
    "url": "https://pacta.wtf/protocols/pendle-finance-v2/"
+  },
+  {
+   "baskets": [],
+   "category": "Canonical Bridge (sidechain checkpoints) (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": true,
+   "evidence": {
+    "documented": "'**$5/9$ Multisig** `0xFa7D2a996aC6350f4b56C043112Da0366a59b74c`' (docs.polygon.technology/pos/reference/commit-chain-multisigs.md)",
+    "observed": "Polygon Bridge Safe 0xFa7D2a996aC6350f4b56C043112Da0366a59b74c (Ethereum): getThreshold() = 5 of getOwners() = 9 owners (Safe v1.4.1).",
+    "recordId": "polygon-bridge-safe-threshold-s26",
+    "surface": "Polygon Bridge multisig: 5-of-9 Safe, as documented"
+   },
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": "controller fact: Safe getThreshold()",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 5-of-9"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "finding": "Polygon Bridge multisig: 5-of-9 Safe, as documented",
+   "grade": "aligned",
+   "gradeLabel": "ALIGNED",
+   "name": "Polygon Bridge",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "getThreshold()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "polygon-bridge-safe-threshold-s26",
+    "repro_calldata": "0xe75235b8",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0xe75235b8",
+    "target_contract": "0xFa7D2a996aC6350f4b56C043112Da0366a59b74c",
+    "target_label": "Polygon Bridge Safe"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "Polygon Bridge control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
+   "search": "polygon bridge polygon-bridge canonical bridge (sidechain checkpoints) (ethereum) polygon 0xfa7d2a996ac6350f4b56c043112da0366a59b74c",
+   "slug": "polygon-bridge",
+   "summary_short": "The Polygon Bridge multisig is a 5-of-9 Safe, as its docs state",
+   "url": "https://pacta.wtf/protocols/polygon-bridge/"
   },
   {
    "baskets": [
@@ -5315,6 +7783,89 @@
   },
   {
    "baskets": [
+    "lending_vaults"
+   ],
+   "category": "Risk Curator Vault (market-neutral strategies) (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "RockawayX documentation is linked for reference (https://rockawayx.com/insights/backing-builders-rockawayxs-role-in-lidos-defi-expansion). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "Ember Y10K (EmberVault) (0x953972ea0C1703c58F09FB6fD2477Fdcf0FEe074) verified on Ethereum Mainnet at canonical block #26,438,867 (170 bytes runtime code). EIP-1967 proxy: implementation 0xd0Ac2Cd802604702DF874Bc45AEE88E8884B896D, admin slot zero. Direct owner() returns timelock (1 d delay) 0x12917E06b55995e7a5D73681cE491774C73b7C6a.",
+    "recordId": "rockawayx-control-plane",
+    "surface": "Ember Y10K (EmberVault) · EIP-1967 Proxy & Controller Chain"
+   },
+   "factors": [
+    {
+     "evidence": "rockawayx-control-plane: is_eip1967_proxy = true",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgradeable; the delay gating the upgrade path is not in the published records"
+    },
+    {
+     "evidence": "controller fact: getMinDelay() = 86400s",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "b",
+     "value": "1d minimum enforced delay across control surfaces"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "Ember Y10K (EmberVault) · EIP-1967 Proxy & Controller Chain",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "RockawayX",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "owner()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "rockawayx-control-plane",
+    "repro_calldata": "0x8da5cb5b",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0x8da5cb5b",
+    "target_contract": "0x953972ea0C1703c58F09FB6fD2477Fdcf0FEe074",
+    "target_label": "Ember Y10K (EmberVault)"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "RockawayX control-plane rosette: Upgradeability not determined; Timelock floor moderate; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "rockawayx rockawayx risk curator vault (market-neutral strategies) (ethereum) ey10k 0x12917e06b55995e7a5d73681ce491774c73b7c6a 0x953972ea0c1703c58f09fb6fd2477fdcf0fee074 0xd0ac2cd802604702df874bc45aee88e8884b896d",
+   "slug": "rockawayx",
+   "summary_short": "Upgradeable proxy controlled by a timelock; docs not assessed",
+   "url": "https://pacta.wtf/protocols/rockawayx/"
+  },
+  {
+   "baskets": [
     "eth_lst_lrt"
    ],
    "category": "Decentralized Liquid Staking",
@@ -5479,6 +8030,89 @@
   },
   {
    "baskets": [
+    "stable_rwa"
+   ],
+   "category": "Bitcoin-Backed Credit Stablecoin (dual token) (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "Saturn documentation is linked for reference (https://saturncredit.gitbook.io/saturn-docs). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "USDat (0x23238f20b894f29041f48D88eE91131C395Aaa71) verified on Ethereum Mainnet at canonical block #26,438,867 (761 bytes runtime code). EIP-1967 proxy: implementation 0x496a4A33b6181F4536203488d9a05AC1429E702c, admin 0xcf1072DA5f0D127AEf99136489BAd08bFa3D1A7D. The EIP-1967 admin slot holds contract ProxyAdmin 0xcf1072DA5f0D127AEf99136489BAd08bFa3D1A7D. That controller is in turn controlled by timelock (5 d delay) 0xfD5782E3BFF366601da3973aE30C583dE4F08A67.",
+    "recordId": "saturn-control-plane",
+    "surface": "USDat · EIP-1967 Proxy & Controller Chain"
+   },
+   "factors": [
+    {
+     "evidence": "saturn-control-plane: USDat (0x23238f20b894f29041f48D88eE91131C395Aaa71) verified on Ethereum Mainnet at canonical block #26,438,867 (761 bytes runtime code). EIP-1967 proxy …",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgradeable; the delay gating the upgrade path is not in the published records"
+    },
+    {
+     "evidence": "controller fact: getMinDelay() = 432000s",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "g",
+     "value": "5d minimum enforced delay across control surfaces"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "USDat · EIP-1967 Proxy & Controller Chain",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Saturn",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": null,
+    "chain": "ethereum",
+    "check_type": "eth_getStorageAt",
+    "extra_calls": [],
+    "id": "saturn-control-plane",
+    "repro_calldata": null,
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103",
+    "target_contract": "0x23238f20b894f29041f48D88eE91131C395Aaa71",
+    "target_label": "USDat"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "Saturn control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "saturn saturn bitcoin-backed credit stablecoin (dual token) (ethereum) usdat 0x23238f20b894f29041f48d88ee91131c395aaa71 0x496a4a33b6181f4536203488d9a05ac1429e702c 0xcf1072da5f0d127aef99136489bad08bfa3d1a7d 0xfd5782e3bff366601da3973ae30c583de4f08a67",
+   "slug": "saturn",
+   "summary_short": "Upgradeable proxy controlled by a contract; docs not assessed",
+   "url": "https://pacta.wtf/protocols/saturn/"
+  },
+  {
+   "baskets": [
     "base",
     "lending_vaults"
    ],
@@ -5490,13 +8124,13 @@
    "easAttested": false,
    "evidence": {
     "documented": "Seamless Protocol (Base) documentation is linked for reference (https://docs.seamlessprotocol.com/technical/smart-contracts; governance: https://seamlessprotocol.com/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
-    "observed": "SeamlessPoolAddressesProvider (0x0E02EB705be325407707662C6f6d3466E939f3a0) verified on Base Mainnet at canonical block #57,421,449 (9,779 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). No single-key Ownable or ProxyAdmin getter exposed on the primary entry contract; permissions follow immutable or role-scoped module architecture.",
+    "observed": "SeamlessPoolAddressesProvider (0x0E02EB705be325407707662C6f6d3466E939f3a0) verified on Base Mainnet at canonical block #58,885,628 (9,779 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). No single-key Ownable or ProxyAdmin getter exposed on the primary entry contract; permissions follow immutable or role-scoped module architecture.",
     "recordId": "seamless-protocol-base-control-plane",
     "surface": "SeamlessPoolAddressesProvider · Non-Proxy Bytecode & Role Architecture"
    },
    "factors": [
     {
-     "evidence": "seamless-protocol-base-control-plane: SeamlessPoolAddressesProvider (0x0E02EB705be325407707662C6f6d3466E939f3a0) verified on Base Mainnet at canonical block #57,421,449 (9,779 bytes runtime code). …",
+     "evidence": "seamless-protocol-base-control-plane: SeamlessPoolAddressesProvider (0x0E02EB705be325407707662C6f6d3466E939f3a0) verified on Base Mainnet at canonical block #58,885,628 (9,779 bytes runtime code). …",
      "key": "upgrade",
      "label": "Upgradeability",
      "state": "n",
@@ -5535,10 +8169,10 @@
    "grade": "observed",
    "gradeLabel": "OBSERVED",
    "name": "Seamless Protocol (Base)",
-   "pinnedBlock": 57421449,
+   "pinnedBlock": 58885628,
    "probe": {
-    "block_hash": "0x36147f7f0b6d2a0a94975e98b14c979034930dbe6f9905a5b0bcb2ab45ba35b0",
-    "block_number": 57421449,
+    "block_hash": "0x732b5472c93d5c4bf65f39440097e2b0143d5875cfec028646f7f06123a20094",
+    "block_number": 58885628,
     "call_args": [],
     "call_signature": null,
     "chain": "base",
@@ -5560,6 +8194,172 @@
    "slug": "seamless-protocol-base",
    "summary_short": "Non-proxy address provider with role-based admin; docs not assessed",
    "url": "https://pacta.wtf/protocols/seamless-protocol-base/"
+  },
+  {
+   "baskets": [
+    "lending_vaults"
+   ],
+   "category": "Institutional Portfolio Yield Platform (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "Shift DeFi documentation is linked for reference (https://docs.shiftdefi.com/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "Shift-DeFi USDC Vault (Vault) (0x1d71c888961c4600cF0E31F6196b4dA7fE72e4B3) verified on Ethereum Mainnet at canonical block #26,438,867 (1,112 bytes runtime code). EIP-1967 proxy: implementation 0x2CA2c32Cf096C9FC4B07Bf54398dBfA14258a318, admin 0x83B975e5F33c0251eFEA5D355A91b3d8d58E6d9a. The EIP-1967 admin slot holds contract ProxyAdmin 0x83B975e5F33c0251eFEA5D355A91b3d8d58E6d9a. That controller is in turn controlled by timelock (1 d delay) 0x94e67cbE0917c04237bA9a48DA2519F103D6e0d9.",
+    "recordId": "shift-defi-control-plane",
+    "surface": "Shift-DeFi USDC Vault (Vault) · EIP-1967 Proxy & Controller Chain"
+   },
+   "factors": [
+    {
+     "evidence": "shift-defi-control-plane: Shift-DeFi USDC Vault (Vault) (0x1d71c888961c4600cF0E31F6196b4dA7fE72e4B3) verified on Ethereum Mainnet at canonical block #26,438,867 (1,112 bytes runtime …",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgradeable; the delay gating the upgrade path is not in the published records"
+    },
+    {
+     "evidence": "controller fact: getMinDelay() = 86400s",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "b",
+     "value": "1d minimum enforced delay across control surfaces"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "Shift-DeFi USDC Vault (Vault) · EIP-1967 Proxy & Controller Chain",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Shift DeFi",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": null,
+    "chain": "ethereum",
+    "check_type": "eth_getStorageAt",
+    "extra_calls": [],
+    "id": "shift-defi-control-plane",
+    "repro_calldata": null,
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103",
+    "target_contract": "0x1d71c888961c4600cF0E31F6196b4dA7fE72e4B3",
+    "target_label": "Shift-DeFi USDC Vault (Vault)"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "Shift DeFi control-plane rosette: Upgradeability not determined; Timelock floor moderate; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "shift defi shift-defi institutional portfolio yield platform (ethereum) sdusdc-vault 0x1d71c888961c4600cf0e31f6196b4da7fe72e4b3 0x2ca2c32cf096c9fc4b07bf54398dbfa14258a318 0x83b975e5f33c0251efea5d355a91b3d8d58e6d9a 0x94e67cbe0917c04237ba9a48da2519f103d6e0d9",
+   "slug": "shift-defi",
+   "summary_short": "Upgradeable proxy controlled by a contract; docs not assessed",
+   "url": "https://pacta.wtf/protocols/shift-defi/"
+  },
+  {
+   "baskets": [
+    "lending_vaults"
+   ],
+   "category": "Liquid yield token issuer (SIERRA) backed by diversified yield strategies (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "Sierra Protocol documentation is linked for reference (https://docs.sierra.money/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "SOL Staking Yield Vault (0xe1b1252652A2FF0CC3A4214eE73d9FeD1FEa5b4f) verified on Ethereum Mainnet at canonical block #26,438,867 (332 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). Direct admin() returns externally owned account (no code) 0xbd0Ca95C5A104E14E60d0868667AF174D146C9FD.",
+    "recordId": "sierra-protocol-control-plane",
+    "surface": "SOL Staking Yield Vault · Non-Proxy Bytecode & Controller"
+   },
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": "sierra-protocol-control-plane: … (non-EIP-1967 contract). Direct admin() returns externally owned account (no code) 0xbd0Ca95C5A104E14E60d0868667AF174D146C9FD.",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "a",
+     "value": "Lowest controlling quorum: a single key"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "SOL Staking Yield Vault · Non-Proxy Bytecode & Controller",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Sierra Protocol",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "admin()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "sierra-protocol-control-plane",
+    "repro_calldata": "0xf851a440",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0xf851a440",
+    "target_contract": "0xe1b1252652A2FF0CC3A4214eE73d9FeD1FEa5b4f",
+    "target_label": "SOL Staking Yield Vault"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "Sierra Protocol control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum weak; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "sierra protocol sierra-protocol liquid yield token issuer (sierra) backed by diversified yield strategies (ethereum) xsoly 0xbd0ca95c5a104e14e60d0868667af174d146c9fd 0xe1b1252652a2ff0cc3a4214ee73d9fed1fea5b4f",
+   "slug": "sierra-protocol",
+   "summary_short": "Non-proxy contract controlled by a single key (EOA); docs not assessed",
+   "url": "https://pacta.wtf/protocols/sierra-protocol/"
   },
   {
    "baskets": [],
@@ -5641,6 +8441,87 @@
    "slug": "solv-protocol-solvbtc",
    "summary_short": "Beacon upgrades already wait 3 days in a timelock the docs say will be added",
    "url": "https://pacta.wtf/protocols/solv-protocol-solvbtc/"
+  },
+  {
+   "baskets": [],
+   "category": "L1 Canonical Bridge (token deposits) (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "Sonic Gateway documentation is linked for reference (https://docs.soniclabs.com/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "TokenDeposit (0xa1E2481a9CD0Cb0447EeB1cbc26F1b3fff3bec20) verified on Ethereum Mainnet at canonical block #26,438,867 (163 bytes runtime code). EIP-1967 proxy: implementation 0xAdE2eF0101278fe11490F2EE2aaD7915a094ADe9, admin slot zero. Direct owner() returns Safe 3-of-4 0x9Fe65a5418850015a9D8ad3Ca50d6a0B9769FbE0.",
+    "recordId": "sonic-gateway-control-plane",
+    "surface": "TokenDeposit · EIP-1967 Proxy & Controller Chain"
+   },
+   "factors": [
+    {
+     "evidence": "sonic-gateway-control-plane: is_eip1967_proxy = true",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgradeable; the delay gating the upgrade path is not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": "sonic-gateway-control-plane: … slot zero. Direct owner() returns Safe 3-of-4 0x9Fe65a5418850015a9D8ad3Ca50d6a0B9769FbE0.",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 3-of-4"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "TokenDeposit · EIP-1967 Proxy & Controller Chain",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Sonic Gateway",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "owner()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "sonic-gateway-control-plane",
+    "repro_calldata": "0x8da5cb5b",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0x8da5cb5b",
+    "target_contract": "0xa1E2481a9CD0Cb0447EeB1cbc26F1b3fff3bec20",
+    "target_label": "TokenDeposit"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "Sonic Gateway control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "sonic gateway sonic-gateway l1 canonical bridge (token deposits) (ethereum) sonic 0x9fe65a5418850015a9d8ad3ca50d6a0b9769fbe0 0xa1e2481a9cd0cb0447eeb1cbc26f1b3fff3bec20 0xade2ef0101278fe11490f2ee2aad7915a094ade9",
+   "slug": "sonic-gateway",
+   "summary_short": "Upgradeable proxy controlled by a 3-of-4 Safe; docs not assessed",
+   "url": "https://pacta.wtf/protocols/sonic-gateway/"
   },
   {
    "baskets": [
@@ -6092,11 +8973,11 @@
      "value": "No enforced admin delay in the published records"
     },
     {
-     "evidence": "stakewise-v3-oseth-oracle-quorum-and-ltv: … rewardsMinOracles() = 6, validatorsMinOracles() = 6 (6-of-11 oracle signature quorum); osETH (0xf1C9acDc66974dFB6dEcB12aA385b9cD01190E38) …",
+     "evidence": "controller fact: Safe getThreshold()",
      "key": "quorum",
      "label": "Signer quorum",
      "state": "g",
-     "value": "Lowest controlling quorum: 6-of-11"
+     "value": "Lowest controlling quorum: 4-of-7"
     },
     {
      "evidence": null,
@@ -6117,7 +8998,7 @@
    "grade": "aligned",
    "gradeLabel": "ALIGNED",
    "name": "StakeWise V3 (osETH)",
-   "pinnedBlock": 26403676,
+   "pinnedBlock": 26438867,
    "probe": {
     "block_hash": "0xf4246ca23c4c38d520de16080a11b5186d04c8242b2c85edcb04c455d291c3ae",
     "block_number": 26403676,
@@ -6136,9 +9017,9 @@
    "reconciled": false,
    "reconciledFrom": [],
    "reconciledTo": [],
-   "records": 1,
+   "records": 2,
    "rosetteAria": "StakeWise V3 (osETH) control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity strong",
-   "search": "stakewise v3 (oseth) stakewise-v3-oseth liquid staking infrastructure oseth swise 0x0000000000000000000000000000000000000000 0x287d1e2a8de183a8bf8f2b09fa1340fbd766eb59 0x2a261e60fb14586b474c208b1b7ac6d0f5000306 0x6b5815467da09daa7dc83db21c9239d98bb487b5 0xf1c9acdc66974dfb6decb12aa385b9cd01190e38",
+   "search": "stakewise v3 (oseth) stakewise-v3-oseth liquid staking infrastructure oseth swise 0x0000000000000000000000000000000000000000 0x144a98cb1cdbb23610501fe6108858d9b7d24934 0x287d1e2a8de183a8bf8f2b09fa1340fbd766eb59 0x2a261e60fb14586b474c208b1b7ac6d0f5000306 0x6b5815467da09daa7dc83db21c9239d98bb487b5 0xf1c9acdc66974dfb6decb12aa385b9cd01190e38",
    "slug": "stakewise-v3-oseth",
    "summary_short": "Keeper oracle quorum, osETH fee and LTV settings match the docs",
    "url": "https://pacta.wtf/protocols/stakewise-v3-oseth/"
@@ -6223,6 +9104,87 @@
    "slug": "stargate-v2",
    "summary_short": "Pools and treasurer are owned by a 5-of-7 multisig, as documented",
    "url": "https://pacta.wtf/protocols/stargate-v2/"
+  },
+  {
+   "baskets": [],
+   "category": "ZK Rollup Canonical Bridge (STRK token) (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "Starknet Bridge documentation is linked for reference (https://docs.starknet.io/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "StarkNet Token (0xCa14007Eff0dB1f8135f4C25B34De49AB0d42766) verified on Ethereum Mainnet at canonical block #26,438,867 (11,561 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). No owner(), admin(), authority(), curator() or AccessControl admin was readable on the contract.",
+    "recordId": "starknet-bridge-control-plane",
+    "surface": "StarkNet Token · Non-Proxy Bytecode & Controller"
+   },
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "StarkNet Token · Non-Proxy Bytecode & Controller",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Starknet Bridge",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "owner()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "starknet-bridge-control-plane",
+    "repro_calldata": "0x8da5cb5b",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0x8da5cb5b",
+    "target_contract": "0xCa14007Eff0dB1f8135f4C25B34De49AB0d42766",
+    "target_label": "StarkNet Token"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "Starknet Bridge control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "starknet bridge starknet-bridge zk rollup canonical bridge (strk token) (ethereum) strk 0xca14007eff0db1f8135f4c25b34de49ab0d42766",
+   "slug": "starknet-bridge",
+   "summary_short": "Non-proxy contract no readable owner or admin; docs not assessed",
+   "url": "https://pacta.wtf/protocols/starknet-bridge/"
   },
   {
    "baskets": [
@@ -6404,7 +9366,7 @@
    "easAttested": false,
    "evidence": {
     "documented": "Superform Core v2 (Base) documentation is linked for reference (https://docs.superform.xyz/deployment-addresses; governance: https://docs.superform.xyz/operate/permissions). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
-    "observed": "SuperGovernor (0xB5396ef2bF8CA360cEB4166b77AFb2bed20e74d4) verified on Base Mainnet at canonical block #57,421,449 (15,614 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). Paired protocol control contract SuperVaultAggregator (0x10AC0b33e1C4501CF3ec1cB1AE51ebfdbd2d4698, 21,772 bytes) verified live at the same block.",
+    "observed": "SuperGovernor (0xB5396ef2bF8CA360cEB4166b77AFb2bed20e74d4) verified on Base Mainnet at canonical block #58,885,628 (15,614 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). Paired protocol control contract SuperVaultAggregator (0x10AC0b33e1C4501CF3ec1cB1AE51ebfdbd2d4698, 21,772 bytes) verified live at the same block.",
     "recordId": "superform-v2-base-control-plane",
     "surface": "SuperGovernor & SuperVaultAggregator Control Plane"
    },
@@ -6449,10 +9411,10 @@
    "grade": "observed",
    "gradeLabel": "OBSERVED",
    "name": "Superform Core v2 (Base)",
-   "pinnedBlock": 57421449,
+   "pinnedBlock": 58885628,
    "probe": {
-    "block_hash": "0x36147f7f0b6d2a0a94975e98b14c979034930dbe6f9905a5b0bcb2ab45ba35b0",
-    "block_number": 57421449,
+    "block_hash": "0x732b5472c93d5c4bf65f39440097e2b0143d5875cfec028646f7f06123a20094",
+    "block_number": 58885628,
     "call_args": [],
     "call_signature": null,
     "chain": "base",
@@ -6808,6 +9770,87 @@
    "url": "https://pacta.wtf/protocols/synthetix-v3-core/"
   },
   {
+   "baskets": [],
+   "category": "Token Locks & Vesting Toolkit (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "Team Finance documentation is linked for reference (https://blog.team.finance/introducing-the-new-team-finance-security-page/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "TrustSwap Token (SwapToken) (0xCC4304A31d09258b0029eA7FE63d032f52e44EFe) verified on Ethereum Mainnet at canonical block #26,438,867 (2,240 bytes runtime code). EIP-1967 proxy: implementation 0xffe273a973c66da5b8ad6772f2476dBd6491034e, admin 0x088a012BF6d510aa923c814eA83807f75F7061A0. The EIP-1967 admin slot holds Safe 2-of-4 0x088a012BF6d510aa923c814eA83807f75F7061A0.",
+    "recordId": "team-finance-control-plane",
+    "surface": "TrustSwap Token (SwapToken) · EIP-1967 Proxy & Controller Chain"
+   },
+   "factors": [
+    {
+     "evidence": "team-finance-control-plane: is_eip1967_proxy = true",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgradeable; the delay gating the upgrade path is not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": "team-finance-control-plane: … The EIP-1967 admin slot holds Safe 2-of-4 0x088a012BF6d510aa923c814eA83807f75F7061A0.",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "b",
+     "value": "Lowest controlling quorum: 2-of-4"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "TrustSwap Token (SwapToken) · EIP-1967 Proxy & Controller Chain",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Team Finance",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": null,
+    "chain": "ethereum",
+    "check_type": "eth_getStorageAt",
+    "extra_calls": [],
+    "id": "team-finance-control-plane",
+    "repro_calldata": null,
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103",
+    "target_contract": "0xCC4304A31d09258b0029eA7FE63d032f52e44EFe",
+    "target_label": "TrustSwap Token (SwapToken)"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "Team Finance control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum moderate; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "team finance team-finance token locks & vesting toolkit (ethereum) swap 0x088a012bf6d510aa923c814ea83807f75f7061a0 0xcc4304a31d09258b0029ea7fe63d032f52e44efe 0xffe273a973c66da5b8ad6772f2476dbd6491034e",
+   "slug": "team-finance",
+   "summary_short": "Upgradeable proxy controlled by a 2-of-4 Safe; docs not assessed",
+   "url": "https://pacta.wtf/protocols/team-finance/"
+  },
+  {
    "baskets": [
     "stable_rwa"
    ],
@@ -6889,6 +9932,90 @@
    "slug": "tether-usdt",
    "summary_short": "Owner is a 3-of-6 MultiSigWallet, as documented",
    "url": "https://pacta.wtf/protocols/tether-usdt/"
+  },
+  {
+   "baskets": [
+    "lending_vaults",
+    "stable_rwa"
+   ],
+   "category": "Treasury-Backed Yield Stablecoin (thBILL collateral) (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "Theo Network thUSD documentation is linked for reference (https://app.theo.xyz/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "thUSD (0xa3fE5c7596024E6811E14F029937D5bd8Ae485b3) verified on Ethereum Mainnet at canonical block #26,438,867 (130 bytes runtime code). EIP-1967 proxy: implementation 0xCD04F57464d25F257089A286AAb47DF096d300Ad, admin slot zero. Direct owner() returns timelock (2 d delay) 0x2bB4b7E6E83FA6b77d0143dad631843cB73DCA02.",
+    "recordId": "theo-network-thusd-control-plane",
+    "surface": "thUSD · EIP-1967 Proxy & Controller Chain"
+   },
+   "factors": [
+    {
+     "evidence": "theo-network-thusd-control-plane: is_eip1967_proxy = true",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgradeable; the delay gating the upgrade path is not in the published records"
+    },
+    {
+     "evidence": "controller fact: getMinDelay() = 172800s",
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "g",
+     "value": "2d minimum enforced delay across control surfaces"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "thUSD · EIP-1967 Proxy & Controller Chain",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Theo Network thUSD",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "owner()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "theo-network-thusd-control-plane",
+    "repro_calldata": "0x8da5cb5b",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0x8da5cb5b",
+    "target_contract": "0xa3fE5c7596024E6811E14F029937D5bd8Ae485b3",
+    "target_label": "thUSD"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "Theo Network thUSD control-plane rosette: Upgradeability not determined; Timelock floor strong; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "theo network thusd theo-network-thusd treasury-backed yield stablecoin (thbill collateral) (ethereum) thusd 0x2bb4b7e6e83fa6b77d0143dad631843cb73dca02 0xa3fe5c7596024e6811e14f029937d5bd8ae485b3 0xcd04f57464d25f257089a286aab47df096d300ad",
+   "slug": "theo-network-thusd",
+   "summary_short": "Upgradeable proxy controlled by a timelock; docs not assessed",
+   "url": "https://pacta.wtf/protocols/theo-network-thusd/"
   },
   {
    "baskets": [],
@@ -6973,6 +10100,170 @@
   },
   {
    "baskets": [
+    "stable_rwa"
+   ],
+   "category": "Delta-Neutral Synthetic Dollar (staked strUSD) (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "Tori Finance documentation is linked for reference (https://docs.tori.finance/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "trUSD (0xd0580192E98eA6CEB9c7b6191Ed2E27560911697) verified on Ethereum Mainnet at canonical block #26,438,867 (170 bytes runtime code). EIP-1967 proxy: implementation 0xb1d133fE29255EB4Ac9B05d647d49cd7F05ff631, admin slot zero. Direct owner() returns Safe 3-of-5 0x0C6Bbfd2d5666d44bf28580eDEec0263692C8316.",
+    "recordId": "tori-finance-control-plane",
+    "surface": "trUSD · EIP-1967 Proxy & Controller Chain"
+   },
+   "factors": [
+    {
+     "evidence": "tori-finance-control-plane: is_eip1967_proxy = true",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgradeable; the delay gating the upgrade path is not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": "tori-finance-control-plane: … slot zero. Direct owner() returns Safe 3-of-5 0x0C6Bbfd2d5666d44bf28580eDEec0263692C8316.",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 3-of-5"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "trUSD · EIP-1967 Proxy & Controller Chain",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Tori Finance",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "owner()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "tori-finance-control-plane",
+    "repro_calldata": "0x8da5cb5b",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0x8da5cb5b",
+    "target_contract": "0xd0580192E98eA6CEB9c7b6191Ed2E27560911697",
+    "target_label": "trUSD"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "Tori Finance control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "tori finance tori-finance delta-neutral synthetic dollar (staked strusd) (ethereum) trusd 0x0c6bbfd2d5666d44bf28580edeec0263692c8316 0xb1d133fe29255eb4ac9b05d647d49cd7f05ff631 0xd0580192e98ea6ceb9c7b6191ed2e27560911697",
+   "slug": "tori-finance",
+   "summary_short": "Upgradeable proxy controlled by a 3-of-5 Safe; docs not assessed",
+   "url": "https://pacta.wtf/protocols/tori-finance/"
+  },
+  {
+   "baskets": [],
+   "category": "Privacy Pool Mixer (anonymous transfers) (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "Tornado Cash documentation is linked for reference (https://docs.tornadocash.eth.limo/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "TornadoCash (TORN) (0x77777FeDdddFfC19Ff86DB637967013e6C6A116C) verified on Ethereum Mainnet at canonical block #26,438,867 (8,839 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). No owner(), admin(), authority(), curator() or AccessControl admin was readable on the contract.",
+    "recordId": "tornado-cash-control-plane",
+    "surface": "TornadoCash (TORN) · Non-Proxy Bytecode & Controller"
+   },
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "TornadoCash (TORN) · Non-Proxy Bytecode & Controller",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Tornado Cash",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "owner()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "tornado-cash-control-plane",
+    "repro_calldata": "0x8da5cb5b",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0x8da5cb5b",
+    "target_contract": "0x77777FeDdddFfC19Ff86DB637967013e6C6A116C",
+    "target_label": "TornadoCash (TORN)"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "Tornado Cash control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "tornado cash tornado-cash privacy pool mixer (anonymous transfers) (ethereum) torn 0x77777feddddffc19ff86db637967013e6c6a116c",
+   "slug": "tornado-cash",
+   "summary_short": "Non-proxy contract no readable owner or admin; docs not assessed",
+   "url": "https://pacta.wtf/protocols/tornado-cash/"
+  },
+  {
+   "baskets": [
     "eth_lst_lrt"
    ],
    "category": "Fixed Income / LST",
@@ -7053,6 +10344,87 @@
    "slug": "treehouse-tree-teth",
    "summary_short": "TREE owner is a 5-day timelock; a blacklistable upgrade is queued",
    "url": "https://pacta.wtf/protocols/treehouse-tree-teth/"
+  },
+  {
+   "baskets": [],
+   "category": "Liquidity and team-token locker with token launch and vesting services (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "UNCX Network V2 documentation is linked for reference (https://uncx.network/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "UniCrypt (UNCX) (0xaDB2437e6F65682B85F814fBc12FeC0508A7B1D0) verified on Ethereum Mainnet at canonical block #26,438,867 (11,974 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). Direct owner() returns externally owned account (no code) 0x60e2E1b2a317EdfC870b6Fc6886F69083FB2099a.",
+    "recordId": "uncx-network-v2-control-plane",
+    "surface": "UniCrypt (UNCX) · Non-Proxy Bytecode & Controller"
+   },
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": "uncx-network-v2-control-plane: … (non-EIP-1967 contract). Direct owner() returns externally owned account (no code) 0x60e2E1b2a317EdfC870b6Fc6886F69083FB2099a.",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "a",
+     "value": "Lowest controlling quorum: a single key"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "UniCrypt (UNCX) · Non-Proxy Bytecode & Controller",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "UNCX Network V2",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "owner()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "uncx-network-v2-control-plane",
+    "repro_calldata": "0x8da5cb5b",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0x8da5cb5b",
+    "target_contract": "0xaDB2437e6F65682B85F814fBc12FeC0508A7B1D0",
+    "target_label": "UniCrypt (UNCX)"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "UNCX Network V2 control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum weak; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "uncx network v2 uncx-network-v2 liquidity and team-token locker with token launch and vesting services (ethereum) uncx 0x60e2e1b2a317edfc870b6fc6886f69083fb2099a 0xadb2437e6f65682b85f814fbc12fec0508a7b1d0",
+   "slug": "uncx-network-v2",
+   "summary_short": "Non-proxy contract controlled by a single key (EOA); docs not assessed",
+   "url": "https://pacta.wtf/protocols/uncx-network-v2/"
   },
   {
    "baskets": [],
@@ -7223,6 +10595,89 @@
    "baskets": [
     "stable_rwa"
    ],
+   "category": "Omnichain Stablecoin Bridge (Tether OFT adapter) (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "USDT0 documentation is linked for reference (https://docs.usdt0.to/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "OAdapterUpgradeable (0x6C96dE32CEa08842dcc4058c14d3aaAD7Fa41dee) verified on Ethereum Mainnet at canonical block #26,438,867 (2,739 bytes runtime code). EIP-1967 proxy: implementation 0xCD979B10A55FCdAC23ec785CE3066c6ef8a479A4, admin 0x4de7096B2131E84Fd6b2042AD8cd9B4E43F728Fc. The EIP-1967 admin slot holds contract ProxyAdmin 0x4de7096B2131E84Fd6b2042AD8cd9B4E43F728Fc. That controller is in turn controlled by Safe 3-of-5 0x4DFF9b5b0143E642a3F63a5bcf2d1C328e600bf8.",
+    "recordId": "usdt0-control-plane",
+    "surface": "OAdapterUpgradeable · EIP-1967 Proxy & Controller Chain"
+   },
+   "factors": [
+    {
+     "evidence": "usdt0-control-plane: OAdapterUpgradeable (0x6C96dE32CEa08842dcc4058c14d3aaAD7Fa41dee) verified on Ethereum Mainnet at canonical block #26,438,867 (2,739 bytes runtime code). …",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgradeable; the delay gating the upgrade path is not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": "usdt0-control-plane: … controller is in turn controlled by Safe 3-of-5 0x4DFF9b5b0143E642a3F63a5bcf2d1C328e600bf8.",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 3-of-5"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "OAdapterUpgradeable · EIP-1967 Proxy & Controller Chain",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "USDT0",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": null,
+    "chain": "ethereum",
+    "check_type": "eth_getStorageAt",
+    "extra_calls": [],
+    "id": "usdt0-control-plane",
+    "repro_calldata": null,
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103",
+    "target_contract": "0x6C96dE32CEa08842dcc4058c14d3aaAD7Fa41dee",
+    "target_label": "OAdapterUpgradeable"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "USDT0 control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "usdt0 usdt0 omnichain stablecoin bridge (tether oft adapter) (ethereum) usdt0 0x4de7096b2131e84fd6b2042ad8cd9b4e43f728fc 0x4dff9b5b0143e642a3f63a5bcf2d1c328e600bf8 0x6c96de32cea08842dcc4058c14d3aaad7fa41dee 0xcd979b10a55fcdac23ec785ce3066c6ef8a479a4",
+   "slug": "usdt0",
+   "summary_short": "Upgradeable proxy controlled by a 3-of-5 Safe; docs not assessed",
+   "url": "https://pacta.wtf/protocols/usdt0/"
+  },
+  {
+   "baskets": [
+    "stable_rwa"
+   ],
    "category": "RWA Stablecoin",
    "chains": [
     "ethereum"
@@ -7301,6 +10756,253 @@
    "slug": "usual-money-usd0-usd0",
    "summary_short": "Timelock delay: docs 3 days · chain 1 second",
    "url": "https://pacta.wtf/protocols/usual-money-usd0-usd0/"
+  },
+  {
+   "baskets": [
+    "lending_vaults"
+   ],
+   "category": "DeFi Vault Platform (BoringVault lens) (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "Veda documentation is linked for reference (https://docs.veda.tech/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "ArcticArchitectureLens (0x5232bc0F5999f8dA604c42E1748A13a170F94A1B) verified on Ethereum Mainnet at canonical block #26,438,867 (3,470 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). No owner(), admin(), authority(), curator() or AccessControl admin was readable on the contract.",
+    "recordId": "veda-control-plane",
+    "surface": "ArcticArchitectureLens · Non-Proxy Bytecode & Controller"
+   },
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "ArcticArchitectureLens · Non-Proxy Bytecode & Controller",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Veda",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "owner()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "veda-control-plane",
+    "repro_calldata": "0x8da5cb5b",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0x8da5cb5b",
+    "target_contract": "0x5232bc0F5999f8dA604c42E1748A13a170F94A1B",
+    "target_label": "ArcticArchitectureLens"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "Veda control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "veda veda defi vault platform (boringvault lens) (ethereum) veda 0x5232bc0f5999f8da604c42e1748a13a170f94a1b",
+   "slug": "veda",
+   "summary_short": "Non-proxy contract no readable owner or admin; docs not assessed",
+   "url": "https://pacta.wtf/protocols/veda/"
+  },
+  {
+   "baskets": [
+    "lending_vaults"
+   ],
+   "category": "Automated yield-aggregation pools with strategy rotation (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "Vesper V1 documentation is linked for reference (https://docs.vesper.finance/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "VesperToken (VSP) (0x1b40183EFB4Dd766f11bDa7A7c3AD8982e998421) verified on Ethereum Mainnet at canonical block #26,438,867 (15,619 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). Direct owner() returns Safe 3-of-6 0x9520b477Aa81180E6DdC006Fc09Fb6d3eb4e807A.",
+    "recordId": "vesper-v1-control-plane",
+    "surface": "VesperToken (VSP) · Non-Proxy Bytecode & Controller"
+   },
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": "vesper-v1-control-plane: … contract). Direct owner() returns Safe 3-of-6 0x9520b477Aa81180E6DdC006Fc09Fb6d3eb4e807A.",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 3-of-6"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "VesperToken (VSP) · Non-Proxy Bytecode & Controller",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Vesper V1",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "owner()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "vesper-v1-control-plane",
+    "repro_calldata": "0x8da5cb5b",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0x8da5cb5b",
+    "target_contract": "0x1b40183EFB4Dd766f11bDa7A7c3AD8982e998421",
+    "target_label": "VesperToken (VSP)"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "Vesper V1 control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "vesper v1 vesper-v1 automated yield-aggregation pools with strategy rotation (ethereum) vsp 0x1b40183efb4dd766f11bda7a7c3ad8982e998421 0x9520b477aa81180e6ddc006fc09fb6d3eb4e807a",
+   "slug": "vesper-v1",
+   "summary_short": "Non-proxy contract controlled by a 3-of-6 Safe; docs not assessed",
+   "url": "https://pacta.wtf/protocols/vesper-v1/"
+  },
+  {
+   "baskets": [],
+   "category": "OP Stack L2 Canonical Bridge (dispute-game anchor state) (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "World Chain Bridge documentation is linked for reference (https://docs.world.org/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "AnchorStateRegistry (0x90BB48fe3310499Db36437dCAE642F721e32d094) verified on Ethereum Mainnet at canonical block #26,438,867 (2,059 bytes runtime code). EIP-1967 proxy: implementation 0x8F40Cc98D694AB986F026C5383A181FCc9B6B281, admin 0xd7405BE7f3e63b094Af6C7C23D5eE33Fd82F872D. The EIP-1967 admin slot holds contract ProxyAdmin 0xd7405BE7f3e63b094Af6C7C23D5eE33Fd82F872D. That controller is in turn controlled by Safe 3-of-8 0xA4fB12D15Eb85dc9284a7df0AdBC8B696EdbbF1d.",
+    "recordId": "world-chain-bridge-control-plane",
+    "surface": "AnchorStateRegistry · EIP-1967 Proxy & Controller Chain"
+   },
+   "factors": [
+    {
+     "evidence": "world-chain-bridge-control-plane: AnchorStateRegistry (0x90BB48fe3310499Db36437dCAE642F721e32d094) verified on Ethereum Mainnet at canonical block #26,438,867 (2,059 bytes runtime code). …",
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgradeable; the delay gating the upgrade path is not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": "world-chain-bridge-control-plane: … controller is in turn controlled by Safe 3-of-8 0xA4fB12D15Eb85dc9284a7df0AdBC8B696EdbbF1d.",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 3-of-8"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "AnchorStateRegistry · EIP-1967 Proxy & Controller Chain",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "World Chain Bridge",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": null,
+    "chain": "ethereum",
+    "check_type": "eth_getStorageAt",
+    "extra_calls": [],
+    "id": "world-chain-bridge-control-plane",
+    "repro_calldata": null,
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103",
+    "target_contract": "0x90BB48fe3310499Db36437dCAE642F721e32d094",
+    "target_label": "AnchorStateRegistry"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "World Chain Bridge control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "world chain bridge world-chain-bridge op stack l2 canonical bridge (dispute-game anchor state) (ethereum) world 0x8f40cc98d694ab986f026c5383a181fcc9b6b281 0x90bb48fe3310499db36437dcae642f721e32d094 0xa4fb12d15eb85dc9284a7df0adbc8b696edbbf1d 0xd7405be7f3e63b094af6c7c23d5ee33fd82f872d",
+   "slug": "world-chain-bridge",
+   "summary_short": "Upgradeable proxy controlled by a 3-of-8 Safe; docs not assessed",
+   "url": "https://pacta.wtf/protocols/world-chain-bridge/"
   },
   {
    "baskets": [
@@ -7390,6 +11092,89 @@
   },
   {
    "baskets": [
+    "eth_lst_lrt"
+   ],
+   "category": "Canonical Bridge Staking Token (multi-chain) (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "xDAI Stake Bridge documentation is linked for reference (https://docs.gnosis.io/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "STAKE (ERC677MultiBridgeToken) (0x0Ae055097C6d159879521C384F1D2123D1f195e6) verified on Ethereum Mainnet at canonical block #26,438,867 (10,411 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). Direct owner() returns Safe 3-of-5 0x0DF05ADaC0159e215111696339AD4998e5871B3D.",
+    "recordId": "xdai-stake-bridge-control-plane",
+    "surface": "STAKE (ERC677MultiBridgeToken) · Non-Proxy Bytecode & Controller"
+   },
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": "xdai-stake-bridge-control-plane: … contract). Direct owner() returns Safe 3-of-5 0x0DF05ADaC0159e215111696339AD4998e5871B3D.",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "value": "Lowest controlling quorum: 3-of-5"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "STAKE (ERC677MultiBridgeToken) · Non-Proxy Bytecode & Controller",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "xDAI Stake Bridge",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "owner()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "xdai-stake-bridge-control-plane",
+    "repro_calldata": "0x8da5cb5b",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0x8da5cb5b",
+    "target_contract": "0x0Ae055097C6d159879521C384F1D2123D1f195e6",
+    "target_label": "STAKE (ERC677MultiBridgeToken)"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "xDAI Stake Bridge control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum strong; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "xdai stake bridge xdai-stake-bridge canonical bridge staking token (multi-chain) (ethereum) stake 0x0ae055097c6d159879521c384f1d2123d1f195e6 0x0df05adac0159e215111696339ad4998e5871b3d",
+   "slug": "xdai-stake-bridge",
+   "summary_short": "Non-proxy contract controlled by a 3-of-5 Safe; docs not assessed",
+   "url": "https://pacta.wtf/protocols/xdai-stake-bridge/"
+  },
+  {
+   "baskets": [
     "lending_vaults"
    ],
    "category": "Yield Aggregation Vaults",
@@ -7470,6 +11255,171 @@
    "slug": "yearn-v3",
    "summary_short": "Timelock delay: docs none · chain 7 days (stricter)",
    "url": "https://pacta.wtf/protocols/yearn-v3/"
+  },
+  {
+   "baskets": [],
+   "category": "Impermanent-Loss-Free Leveraged AMM Liquidity (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "Yield Basis documentation is linked for reference (https://docs.yieldbasis.com/). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "Yield Basis (YB) (0x01791F726B4103694969820be083196cC7c045fF) verified on Ethereum Mainnet at canonical block #26,438,867 (5,547 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). No owner(), admin(), authority(), curator() or AccessControl admin was readable on the contract.",
+    "recordId": "yield-basis-control-plane",
+    "surface": "Yield Basis (YB) · Non-Proxy Bytecode & Controller"
+   },
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "Yield Basis (YB) · Non-Proxy Bytecode & Controller",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Yield Basis",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "owner()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "yield-basis-control-plane",
+    "repro_calldata": "0x8da5cb5b",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0x8da5cb5b",
+    "target_contract": "0x01791F726B4103694969820be083196cC7c045fF",
+    "target_label": "Yield Basis (YB)"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "Yield Basis control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "yield basis yield-basis impermanent-loss-free leveraged amm liquidity (ethereum) yb 0x01791f726b4103694969820be083196cc7c045ff",
+   "slug": "yield-basis",
+   "summary_short": "Non-proxy contract no readable owner or admin; docs not assessed",
+   "url": "https://pacta.wtf/protocols/yield-basis/"
+  },
+  {
+   "baskets": [
+    "eth_lst_lrt",
+    "lending_vaults"
+   ],
+   "category": "Liquid Restaking Vaults (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 1,
+   "easAttested": true,
+   "evidence": {
+    "documented": "'YNDelegator 2/3 0xDF51B7843817F76220C0970eF58Ba726630028eF' / 'Delegates the EigenPods to the operators' (docs.yieldnest.finance/security/roles.md)",
+    "observed": "YNDelegator Safe 0xDF51B7843817F76220C0970eF58Ba726630028eF (Ethereum): getThreshold() = 2 of getOwners() = 4 owners (Safe v1.3.0).",
+    "recordId": "yieldnest-safe-threshold-df51b7-s26",
+    "surface": "YNDelegator (delegates the eigenpods to the operators): docs state 2-of-3, the Safe is 2-of-4"
+   },
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": "controller fact: Safe getThreshold()",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "b",
+     "value": "Lowest controlling quorum: 2-of-4"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "a",
+     "value": "Documentation differs from the chain (parameter delta)"
+    }
+   ],
+   "finding": "YNDelegator (delegates the eigenpods to the operators): docs state 2-of-3, the Safe is 2-of-4: docs say 'YNDelegator 2/3 0xDF51B7843817F76220C0970eF58Ba726630028eF' / 'Delegates the EigenPods to the operators' (docs.yieldnest.finance/security/roles.md) · chain says YNDelegator Safe 0xDF51B7843817F76220C0970eF58Ba726630028eF (Ethereum): getThreshold() = 2 of getOwners() = 4 owners (Safe v1.3.0).",
+   "grade": "delta",
+   "gradeLabel": "DELTA",
+   "name": "YieldNest",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "getThreshold()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "yieldnest-safe-threshold-df51b7-s26",
+    "repro_calldata": "0xe75235b8",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0xe75235b8",
+    "target_contract": "0xDF51B7843817F76220C0970eF58Ba726630028eF",
+    "target_label": "YNDelegator Safe"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 2,
+   "rosetteAria": "YieldNest control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum moderate; Emergency / freeze scope not determined; Docs-vs-chain parity weak",
+   "search": "yieldnest yieldnest liquid restaking vaults (ethereum) ynd 0xdf51b7843817f76220c0970ef58ba726630028ef 0xfcad670592a3b24869c0b51a6c6fded4f95d6975",
+   "slug": "yieldnest",
+   "summary_short": "Docs state a 2-of-3 YNDelegator; the YieldNest Safe is 2-of-4",
+   "url": "https://pacta.wtf/protocols/yieldnest/"
   },
   {
    "baskets": [
@@ -7554,6 +11504,171 @@
    "slug": "yo-protocol",
    "summary_short": "Timelock delay: docs 2 days · chain none",
    "url": "https://pacta.wtf/protocols/yo-protocol/"
+  },
+  {
+   "baskets": [],
+   "category": "Fully Homomorphic Encryption Network Token (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "Zama documentation is linked for reference (https://docs.zama.org/homepage). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "Zama (ZamaERC20) (0xA12CC123ba206d4031D1c7f6223D1C2Ec249f4f3) verified on Ethereum Mainnet at canonical block #26,438,867 (8,342 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). No owner(), admin(), authority(), curator() or AccessControl admin was readable on the contract.",
+    "recordId": "zama-control-plane",
+    "surface": "Zama (ZamaERC20) · Non-Proxy Bytecode & Controller"
+   },
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "Zama (ZamaERC20) · Non-Proxy Bytecode & Controller",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "Zama",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "owner()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "zama-control-plane",
+    "repro_calldata": "0x8da5cb5b",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0x8da5cb5b",
+    "target_contract": "0xA12CC123ba206d4031D1c7f6223D1C2Ec249f4f3",
+    "target_label": "Zama (ZamaERC20)"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "Zama control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum not determined; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "zama zama fully homomorphic encryption network token (ethereum) zama 0xa12cc123ba206d4031d1c7f6223d1c2ec249f4f3",
+   "slug": "zama",
+   "summary_short": "Non-proxy contract no readable owner or admin; docs not assessed",
+   "url": "https://pacta.wtf/protocols/zama/"
+  },
+  {
+   "baskets": [
+    "eth_lst_lrt",
+    "stable_rwa"
+   ],
+   "category": "zk-Proven Stablecoin Staking (Ethereum)",
+   "chains": [
+    "ethereum"
+   ],
+   "deltas": 0,
+   "easAttested": false,
+   "evidence": {
+    "documented": "ZEROBASE CeDeFi documentation is linked for reference (https://app.zerobase.pro/en). This RPC-pinned record does not compare documentation parameters with the on-chain state.",
+    "observed": "ZEROBASE (0xfAB99fCF605fD8f4593EDb70A43bA56542777777) verified on Ethereum Mainnet at canonical block #26,438,867 (23,055 bytes runtime code). EIP-1967 implementation and admin storage slots are both zero (non-EIP-1967 contract). Direct owner() returns Safe 2-of-3 0xa14f20130E9a0a27D580FD30FD4bbF035a492AB2.",
+    "recordId": "zerobase-cedefi-control-plane",
+    "surface": "ZEROBASE · Non-Proxy Bytecode & Controller"
+   },
+   "factors": [
+    {
+     "evidence": null,
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "n",
+     "value": "No enforced admin delay in the published records"
+    },
+    {
+     "evidence": "zerobase-cedefi-control-plane: … contract). Direct owner() returns Safe 2-of-3 0xa14f20130E9a0a27D580FD30FD4bbF035a492AB2.",
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "b",
+     "value": "Lowest controlling quorum: 2-of-3"
+    },
+    {
+     "evidence": null,
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "evidence": null,
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "finding": "ZEROBASE · Non-Proxy Bytecode & Controller",
+   "grade": "observed",
+   "gradeLabel": "OBSERVED",
+   "name": "ZEROBASE CeDeFi",
+   "pinnedBlock": 26438867,
+   "probe": {
+    "block_hash": "0x6c477521320837df8611249a255cb7142052874937cddb9fe568f685763458ff",
+    "block_number": 26438867,
+    "call_args": [],
+    "call_signature": "owner()",
+    "chain": "ethereum",
+    "check_type": "eth_call",
+    "extra_calls": [],
+    "id": "zerobase-cedefi-control-plane",
+    "repro_calldata": "0x8da5cb5b",
+    "rpc_env_var": "$ETH_RPC_URL",
+    "selector_or_slot": "0x8da5cb5b",
+    "target_contract": "0xfAB99fCF605fD8f4593EDb70A43bA56542777777",
+    "target_label": "ZEROBASE"
+   },
+   "reconciled": false,
+   "reconciledFrom": [],
+   "reconciledTo": [],
+   "records": 1,
+   "rosetteAria": "ZEROBASE CeDeFi control-plane rosette: Upgradeability not determined; Timelock floor not determined; Signer quorum moderate; Emergency / freeze scope not determined; Docs-vs-chain parity uncompared",
+   "search": "zerobase cedefi zerobase-cedefi zk-proven stablecoin staking (ethereum) zbt 0xa14f20130e9a0a27d580fd30fd4bbf035a492ab2 0xfab99fcf605fd8f4593edb70a43ba56542777777",
+   "slug": "zerobase-cedefi",
+   "summary_short": "Non-proxy contract controlled by a 2-of-3 Safe; docs not assessed",
+   "url": "https://pacta.wtf/protocols/zerobase-cedefi/"
   }
  ],
  "schema": "pacta.scorecards.v1"

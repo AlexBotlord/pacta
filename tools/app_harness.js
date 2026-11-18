@@ -1074,7 +1074,7 @@ async function v471BasketScenario() {
   const combo = await shown("?basket=eth_lst_lrt&grade=delta&q=eth");
   const bogus = await shown("?basket=stable-rwa&grade=nope");
   res.v471_basket_urls = ["stable_rwa", "eth_lst_lrt", "lending_vaults", "base"].every((b) => out[b].n === want(b) && out[b].basket === b && out[b].n < cards.length)
-    && out.stable_rwa.n === 56 && out.eth_lst_lrt.n === 40 && out.lending_vaults.n === 82 && out.base.n === 23
+    && out.stable_rwa.n === 69 && out.eth_lst_lrt.n === 45 && out.lending_vaults.n === 119 && out.base.n === 35
     && combo.n === want("eth_lst_lrt", "delta", "eth") && combo.n > 0 && combo.basket === "eth_lst_lrt" && combo.pressed === "delta"
     && bogus.n === 8 && bogus.pressed === "all";   // unknown values are ignored: the static 8-row preview stays
 }

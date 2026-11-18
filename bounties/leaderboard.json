@@ -52,7 +52,7 @@
       "rewardUsdc": "25.00",
       "status": "verified",
       "statusNote": null,
-      "payoutTxHash": null
+      "payoutTxHash": "0x0043441060a164895ecfae0af1cb2787fb3674acbb5f5ea9e4123b424b8cddb8"
     }
   ],
   "wave2Settlements": [
@@ -82,8 +82,50 @@
     }
   ],
   "easAttestations": {
+    "VB-Blue": 3,
+    "dankezo": 1,
+    "farmmer938-lgtm": 1,
+    "givemehat": 1,
     "kinshu7777": 1,
     "scavenger-osan": 1,
-    "veriton-dev": 1
-  }
+    "veriton-dev": 2
+  },
+  "wave2Credits": [
+    {
+      "fixture": "ethereum-upshift.json",
+      "pr": 45,
+      "pactaSlug": "upshift",
+      "record": "upshift-proxyadmin-safe-s28"
+    },
+    {
+      "fixture": "ethereum-yearn-v3.json",
+      "pr": 54,
+      "pactaSlug": "yearn-v3",
+      "record": "yearn-v3-ychad-safe-signers-s28"
+    },
+    {
+      "fixture": "base-40-acres.json",
+      "pr": 56,
+      "pactaSlug": "40-acres-base",
+      "record": "40-acres-base-upgradeability-s28"
+    },
+    {
+      "fixture": "ethereum-inverse-firm-borrowcontroller.json",
+      "pr": 69,
+      "pactaSlug": "inverse-finance-firm",
+      "record": "inverse-finance-firm-borrowcontroller-staleness-s28"
+    },
+    {
+      "fixture": "ethereum-vesper.json",
+      "pr": 70,
+      "pactaSlug": "vesper-v1",
+      "record": "vesper-v1-governor-safe-s28"
+    },
+    {
+      "fixture": "ethereum-defi-saver.json",
+      "pr": 71,
+      "pactaSlug": "defi-saver",
+      "record": "defi-saver-adminvault-owner-safe-s28"
+    }
+  ]
 }

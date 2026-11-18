@@ -121,6 +121,16 @@
       }
     },
     {
+      "slug": "40-acres-base",
+      "protocolName": "40 Acres (Base)",
+      "xHandle": null,
+      "xUrl": null,
+      "verificationSource": null,
+      "sources": [],
+      "reason": "no relevant first-party handle",
+      "candidates": {}
+    },
+    {
       "slug": "aave-v3-base",
       "protocolName": "Aave V3 (Base)",
       "xHandle": "@aave",
@@ -603,6 +613,200 @@
       }
     },
     {
+      "slug": "angle",
+      "protocolName": "Angle",
+      "xHandle": "@angleProtocol",
+      "xUrl": "https://x.com/angleProtocol",
+      "verificationSource": {
+        "evidenceId": "febc6cf43553fe8d",
+        "url": "https://angle.money/",
+        "finalUrl": "https://angle.money/",
+        "httpStatus": 200,
+        "sha256": "a4b9abcbfe26a04aedd071395bb444cc7cd64ae16e2e7c81e5a5648a2aef28be",
+        "kind": "html",
+        "provenance": "record-domain",
+        "rule": "meta[twitter:site]",
+        "offset": 3500,
+        "match": "<meta name=\"twitter:site\" content=\"@angleProtocol\" />",
+        "displayHandle": "angleProtocol"
+      },
+      "sources": [
+        {
+          "url": "https://angle.money/docs",
+          "provenance": "record"
+        },
+        {
+          "url": "https://angle.money/documentation",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://app.angle.money/docs",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://app.angle.money/documentation",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://angle.money/",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://app.angle.money/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "febc6cf43553fe8d",
+          "url": "https://angle.money/",
+          "finalUrl": "https://angle.money/",
+          "httpStatus": 200,
+          "sha256": "a4b9abcbfe26a04aedd071395bb444cc7cd64ae16e2e7c81e5a5648a2aef28be",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "meta[twitter:site]",
+          "offset": 3500,
+          "match": "<meta name=\"twitter:site\" content=\"@angleProtocol\" />",
+          "displayHandle": "angleProtocol"
+        },
+        {
+          "evidenceId": "c2639e98e74fcf37",
+          "url": "https://angle.money/docs",
+          "finalUrl": "https://angle.money/docs",
+          "httpStatus": 200,
+          "sha256": "4351bc08654fb67bc8d1436d9faf331abdb47915f875c047c3ffcb0c90f339f6",
+          "kind": "html",
+          "provenance": "record",
+          "rule": "meta[twitter:site]",
+          "offset": 2215,
+          "match": "<meta name=\"twitter:site\" content=\"@angleProtocol\" />",
+          "displayHandle": "angleProtocol"
+        },
+        {
+          "evidenceId": "4d3316ba261a1b94",
+          "url": "https://angle.money/documentation",
+          "finalUrl": "https://angle.money/documentation",
+          "httpStatus": 200,
+          "sha256": "24d89f0c445a42216db4957e955969bb045778175a4bd8abba4365c0b6aa0ff5",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "meta[twitter:site]",
+          "offset": 2215,
+          "match": "<meta name=\"twitter:site\" content=\"@angleProtocol\" />",
+          "displayHandle": "angleProtocol"
+        },
+        {
+          "evidenceId": "06d9f09daac39903",
+          "url": "https://app.angle.money/",
+          "finalUrl": "https://app.angle.money/",
+          "httpStatus": 200,
+          "sha256": "eb688952eff15d841d2d90463440c832494a1e7f07151a0495633bfbc41fc207",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "meta[twitter:site]",
+          "offset": 2146,
+          "match": "<meta name=\"twitter:site\" content=\"@angleProtocol\" />",
+          "displayHandle": "angleProtocol"
+        },
+        {
+          "evidenceId": "3193fd5b1ea2fede",
+          "url": "https://app.angle.money/docs",
+          "finalUrl": "https://app.angle.money/docs",
+          "httpStatus": 200,
+          "sha256": "eb688952eff15d841d2d90463440c832494a1e7f07151a0495633bfbc41fc207",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "meta[twitter:site]",
+          "offset": 2146,
+          "match": "<meta name=\"twitter:site\" content=\"@angleProtocol\" />",
+          "displayHandle": "angleProtocol"
+        },
+        {
+          "evidenceId": "6ffc111018eceeda",
+          "url": "https://app.angle.money/documentation",
+          "finalUrl": "https://app.angle.money/documentation",
+          "httpStatus": 200,
+          "sha256": "eb688952eff15d841d2d90463440c832494a1e7f07151a0495633bfbc41fc207",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "meta[twitter:site]",
+          "offset": 2146,
+          "match": "<meta name=\"twitter:site\" content=\"@angleProtocol\" />",
+          "displayHandle": "angleProtocol"
+        }
+      ],
+      "candidates": {
+        "angleprotocol": [
+          "angle.money"
+        ]
+      }
+    },
+    {
+      "slug": "angstrom",
+      "protocolName": "Angstrom",
+      "xHandle": "@angstromxyz",
+      "xUrl": "https://x.com/angstromxyz",
+      "verificationSource": {
+        "evidenceId": "1930369d46c796ea",
+        "url": "https://angstrom.xyz/",
+        "finalUrl": "https://angstrom.xyz/",
+        "httpStatus": 200,
+        "sha256": "1e3a388e97e1d7febfa3c4fa42aa42ec9b49b5fdcc279e89d30e0e3b78209f85",
+        "kind": "html",
+        "provenance": "record-domain",
+        "rule": "link[x.com|twitter.com profile]",
+        "offset": 534117,
+        "match": "https://x.com/angstromxyz",
+        "displayHandle": "angstromxyz"
+      },
+      "sources": [
+        {
+          "url": "https://docs.angstrom.xyz/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://angstrom.xyz/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "1930369d46c796ea",
+          "url": "https://angstrom.xyz/",
+          "finalUrl": "https://angstrom.xyz/",
+          "httpStatus": 200,
+          "sha256": "1e3a388e97e1d7febfa3c4fa42aa42ec9b49b5fdcc279e89d30e0e3b78209f85",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 534117,
+          "match": "https://x.com/angstromxyz",
+          "displayHandle": "angstromxyz"
+        },
+        {
+          "evidenceId": "54e02541b72739a1",
+          "url": "https://docs.angstrom.xyz/",
+          "finalUrl": "https://docs.angstrom.xyz/",
+          "httpStatus": 200,
+          "sha256": "7f7d526f24bf5a7e6f90e14553898ef1cfa8927b7a90df6f9e5926ee7f9a8f53",
+          "kind": "html",
+          "provenance": "record",
+          "rule": "meta[twitter:site]",
+          "offset": 1193,
+          "match": "<meta data-rh=\"true\" name=\"twitter:site\" content=\"@angstromxyz\">",
+          "displayHandle": "angstromxyz"
+        }
+      ],
+      "candidates": {
+        "angstromxyz": [
+          "angstrom.xyz"
+        ]
+      }
+    },
+    {
       "slug": "ankr",
       "protocolName": "Ankr",
       "xHandle": "@ankr",
@@ -746,6 +950,99 @@
       ],
       "reason": "no relevant first-party handle (seen, not relevant: ['ar_io_network'])",
       "candidates": {}
+    },
+    {
+      "slug": "apex-pro",
+      "protocolName": "ApeX Pro",
+      "xHandle": null,
+      "xUrl": null,
+      "verificationSource": null,
+      "sources": [
+        {
+          "url": "https://apex-pro.gitbook.io/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://apex.exchange/",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://docs.apex.exchange/",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://www.apex.exchange/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single seed-only source (needs a second independent first-party source)",
+      "candidates": {
+        "officialapexdex": [
+          "apex.exchange"
+        ]
+      }
+    },
+    {
+      "slug": "apy-finance",
+      "protocolName": "APY Finance",
+      "xHandle": "@apyfinance",
+      "xUrl": "https://x.com/apyfinance",
+      "verificationSource": {
+        "evidenceId": "ecde320a62b3377b",
+        "url": "https://docs.apy.finance/",
+        "finalUrl": "https://docs.apy.finance/",
+        "httpStatus": 200,
+        "sha256": "63e3697c90332a368ffec44c3cc18e6d406a091ca28b1a0abc0374434558d1ce",
+        "kind": "html",
+        "provenance": "record-domain",
+        "rule": "link[x.com|twitter.com profile]",
+        "offset": 136573,
+        "match": "https://twitter.com/apyfinance",
+        "displayHandle": "apyfinance"
+      },
+      "sources": [
+        {
+          "url": "https://apy.finance/docs",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://apy.finance/documentation",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://docs.apy.finance/",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://apy.finance/",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://docs.apy.finance/smart-contract-integration/liquidity-mining-pool.md",
+          "provenance": "record"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "ecde320a62b3377b",
+          "url": "https://docs.apy.finance/",
+          "finalUrl": "https://docs.apy.finance/",
+          "httpStatus": 200,
+          "sha256": "63e3697c90332a368ffec44c3cc18e6d406a091ca28b1a0abc0374434558d1ce",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 136573,
+          "match": "https://twitter.com/apyfinance",
+          "displayHandle": "apyfinance"
+        }
+      ],
+      "candidates": {
+        "apyfinance": [
+          "apy.finance"
+        ]
+      }
     },
     {
       "slug": "arkis",
@@ -913,6 +1210,152 @@
         ],
         "aster_dex": [
           "asterdex.com"
+        ]
+      }
+    },
+    {
+      "slug": "asymmetry-finance",
+      "protocolName": "Asymmetry Finance",
+      "xHandle": "@asymmetryfin",
+      "xUrl": "https://x.com/asymmetryfin",
+      "verificationSource": {
+        "evidenceId": "9f81017e96f25ffe",
+        "url": "https://asymmetry.finance/",
+        "finalUrl": "https://www.asymmetry.finance/",
+        "httpStatus": 200,
+        "sha256": "51c6b6f17bac5d209d2b359df018de606b675703131bb0889897cc7a9b5a0d74",
+        "kind": "html",
+        "provenance": "record-domain",
+        "rule": "link[x.com|twitter.com profile]",
+        "offset": 692188,
+        "match": "https://x.com/asymmetryfin",
+        "displayHandle": "asymmetryfin"
+      },
+      "sources": [
+        {
+          "url": "https://asymmetry.finance/docs",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://asymmetry.finance/documentation",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://docs.asymmetry.finance/",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://www.asymmetry.finance/docs",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://www.asymmetry.finance/documentation",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://asymmetry.finance/",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://www.asymmetry.finance/",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://docs.asymmetry.finance/developers/contracts.md",
+          "provenance": "record"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "9f81017e96f25ffe",
+          "url": "https://asymmetry.finance/",
+          "finalUrl": "https://www.asymmetry.finance/",
+          "httpStatus": 200,
+          "sha256": "51c6b6f17bac5d209d2b359df018de606b675703131bb0889897cc7a9b5a0d74",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 692188,
+          "match": "https://x.com/asymmetryfin",
+          "displayHandle": "asymmetryfin"
+        },
+        {
+          "evidenceId": "629edf537da14855",
+          "url": "https://docs.asymmetry.finance/",
+          "finalUrl": "https://docs.asymmetry.finance/",
+          "httpStatus": 200,
+          "sha256": "0f14852512cd2dbc003f31ab8617ef6bff3e08b8d65b30767773eb80d2fe7733",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 134283,
+          "match": "https://twitter.com/asymmetryfin",
+          "displayHandle": "asymmetryfin"
+        },
+        {
+          "evidenceId": "ada5c3bd496b2565",
+          "url": "https://www.asymmetry.finance/",
+          "finalUrl": "https://www.asymmetry.finance/",
+          "httpStatus": 200,
+          "sha256": "51c6b6f17bac5d209d2b359df018de606b675703131bb0889897cc7a9b5a0d74",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 692188,
+          "match": "https://x.com/asymmetryfin",
+          "displayHandle": "asymmetryfin"
+        }
+      ],
+      "candidates": {
+        "asymmetryfin": [
+          "asymmetry.finance"
+        ]
+      }
+    },
+    {
+      "slug": "augur",
+      "protocolName": "Augur",
+      "xHandle": "@AugurProject",
+      "xUrl": "https://x.com/AugurProject",
+      "verificationSource": {
+        "evidenceId": "8e074531939fe667",
+        "url": "https://augur.net/",
+        "finalUrl": "https://www.augur.net/",
+        "httpStatus": 200,
+        "sha256": "99424bee8593b88cb311bfce0db5a3e2675c8102a4f689238a162b5077e78ea6",
+        "kind": "html",
+        "provenance": "record",
+        "rule": "meta[twitter:site]",
+        "offset": 1141,
+        "match": "<meta name=\"twitter:site\" content=\"@AugurProject\">",
+        "displayHandle": "AugurProject"
+      },
+      "sources": [
+        {
+          "url": "https://augur.net/",
+          "provenance": "record"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "8e074531939fe667",
+          "url": "https://augur.net/",
+          "finalUrl": "https://www.augur.net/",
+          "httpStatus": 200,
+          "sha256": "99424bee8593b88cb311bfce0db5a3e2675c8102a4f689238a162b5077e78ea6",
+          "kind": "html",
+          "provenance": "record",
+          "rule": "meta[twitter:site]",
+          "offset": 1141,
+          "match": "<meta name=\"twitter:site\" content=\"@AugurProject\">",
+          "displayHandle": "AugurProject"
+        }
+      ],
+      "candidates": {
+        "augurproject": [
+          "augur.net"
         ]
       }
     },
@@ -1291,6 +1734,107 @@
       }
     },
     {
+      "slug": "baseline-protocol",
+      "protocolName": "Baseline Protocol",
+      "xHandle": "@BaselineMarkets",
+      "xUrl": "https://x.com/BaselineMarkets",
+      "verificationSource": {
+        "evidenceId": "6a82a0377d0c1e6f",
+        "url": "https://baseline.markets/",
+        "finalUrl": "https://www.baseline.markets/",
+        "httpStatus": 200,
+        "sha256": "d92eff05c9ff71acefdcb08c71cdc97f7353d0b1ee34765cc1bd621604e29bda",
+        "kind": "html",
+        "provenance": "record",
+        "rule": "meta[twitter:site]",
+        "offset": 1449,
+        "match": "<meta name=\"twitter:site\" content=\"@BaselineMarkets\"/>",
+        "displayHandle": "BaselineMarkets"
+      },
+      "sources": [
+        {
+          "url": "https://baseline.markets/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://baseline.markets/docs",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://docs.baseline.markets/",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://www.baseline.markets/docs",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://www.baseline.markets/",
+          "provenance": "record"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "6a82a0377d0c1e6f",
+          "url": "https://baseline.markets/",
+          "finalUrl": "https://www.baseline.markets/",
+          "httpStatus": 200,
+          "sha256": "d92eff05c9ff71acefdcb08c71cdc97f7353d0b1ee34765cc1bd621604e29bda",
+          "kind": "html",
+          "provenance": "record",
+          "rule": "meta[twitter:site]",
+          "offset": 1449,
+          "match": "<meta name=\"twitter:site\" content=\"@BaselineMarkets\"/>",
+          "displayHandle": "BaselineMarkets"
+        },
+        {
+          "evidenceId": "1454042f3ac85bb5",
+          "url": "https://baseline.markets/docs",
+          "finalUrl": "https://www.baseline.markets/docs",
+          "httpStatus": 200,
+          "sha256": "df8be20bd4a070ed21166fcfd4004d7849596dc60c138cc53cc87de6ec2d69d5",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "meta[twitter:site]",
+          "offset": 440,
+          "match": "<meta name=\"twitter:site\" content=\"@BaselineMarkets\"/>",
+          "displayHandle": "BaselineMarkets"
+        },
+        {
+          "evidenceId": "2bf4a12052f926b3",
+          "url": "https://www.baseline.markets/",
+          "finalUrl": "https://www.baseline.markets/",
+          "httpStatus": 200,
+          "sha256": "55923c1dda25a6a6516a91b6560d670018b701e7971ba36ad8ff9256a46eff76",
+          "kind": "html",
+          "provenance": "record",
+          "rule": "meta[twitter:site]",
+          "offset": 1449,
+          "match": "<meta name=\"twitter:site\" content=\"@BaselineMarkets\"/>",
+          "displayHandle": "BaselineMarkets"
+        },
+        {
+          "evidenceId": "4feb650c0367c411",
+          "url": "https://www.baseline.markets/docs",
+          "finalUrl": "https://www.baseline.markets/docs",
+          "httpStatus": 200,
+          "sha256": "3286729a83a6363dea76cfffa2321f561c00c28fcf507445fea4fc23642f62e9",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "meta[twitter:site]",
+          "offset": 440,
+          "match": "<meta name=\"twitter:site\" content=\"@BaselineMarkets\"/>",
+          "displayHandle": "BaselineMarkets"
+        }
+      ],
+      "candidates": {
+        "baselinemarkets": [
+          "baseline.markets"
+        ]
+      }
+    },
+    {
       "slug": "bedrock-unieth",
       "protocolName": "Bedrock (uniETH)",
       "xHandle": "@Bedrock_DeFi",
@@ -1427,6 +1971,16 @@
       }
     },
     {
+      "slug": "benddao-ape-staking",
+      "protocolName": "BendDAO APE Staking",
+      "xHandle": null,
+      "xUrl": null,
+      "verificationSource": null,
+      "sources": [],
+      "reason": "no relevant first-party handle",
+      "candidates": {}
+    },
+    {
       "slug": "bio-protocol",
       "protocolName": "Bio Protocol",
       "xHandle": "@bioprotocol",
@@ -1557,6 +2111,21 @@
       }
     },
     {
+      "slug": "blast-pre-launch-farm",
+      "protocolName": "Blast pre-launch Farm",
+      "xHandle": null,
+      "xUrl": null,
+      "verificationSource": null,
+      "sources": [
+        {
+          "url": "https://blast.io/",
+          "provenance": "record"
+        }
+      ],
+      "reason": "no relevant first-party handle",
+      "candidates": {}
+    },
+    {
       "slug": "blur-bids",
       "protocolName": "Blur Bids",
       "xHandle": null,
@@ -1568,6 +2137,16 @@
           "provenance": "record"
         }
       ],
+      "reason": "no relevant first-party handle",
+      "candidates": {}
+    },
+    {
+      "slug": "bmx-freestyle",
+      "protocolName": "BMX Freestyle",
+      "xHandle": null,
+      "xUrl": null,
+      "verificationSource": null,
+      "sources": [],
       "reason": "no relevant first-party handle",
       "candidates": {}
     },
@@ -2048,6 +2627,16 @@
       }
     },
     {
+      "slug": "clipper",
+      "protocolName": "Clipper",
+      "xHandle": null,
+      "xUrl": null,
+      "verificationSource": null,
+      "sources": [],
+      "reason": "no relevant first-party handle",
+      "candidates": {}
+    },
+    {
       "slug": "coinbase-wrapped-staked-eth",
       "protocolName": "Coinbase Wrapped Staked ETH",
       "xHandle": null,
@@ -2199,6 +2788,16 @@
       }
     },
     {
+      "slug": "convergence-fi",
+      "protocolName": "Convergence Fi",
+      "xHandle": null,
+      "xUrl": null,
+      "verificationSource": null,
+      "sources": [],
+      "reason": "no relevant first-party handle",
+      "candidates": {}
+    },
+    {
       "slug": "convex-finance",
       "protocolName": "Convex Finance",
       "xHandle": null,
@@ -2289,6 +2888,68 @@
       "candidates": {
         "olympusdao": [
           "olympusdao.finance"
+        ]
+      }
+    },
+    {
+      "slug": "creth2",
+      "protocolName": "CRETH2",
+      "xHandle": "@CreamdotFinance",
+      "xUrl": "https://x.com/CreamdotFinance",
+      "verificationSource": {
+        "evidenceId": "41fe467c414a2305",
+        "url": "https://cream.finance/",
+        "finalUrl": "https://cream.finance/",
+        "httpStatus": 200,
+        "sha256": "abbcef285235ed20f346adb6a8758bf2895f4cfacfe901d825b28e0bb69e9462",
+        "kind": "html",
+        "provenance": "record-domain",
+        "rule": "link[x.com|twitter.com profile]",
+        "offset": 31567,
+        "match": "https://twitter.com/CreamdotFinance",
+        "displayHandle": "CreamdotFinance"
+      },
+      "sources": [
+        {
+          "url": "https://classic.cream.finance/docs",
+          "provenance": "record"
+        },
+        {
+          "url": "https://classic.cream.finance/documentation",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://cream.finance/",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://docs.cream.finance/",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://classic.cream.finance/eth2/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "41fe467c414a2305",
+          "url": "https://cream.finance/",
+          "finalUrl": "https://cream.finance/",
+          "httpStatus": 200,
+          "sha256": "abbcef285235ed20f346adb6a8758bf2895f4cfacfe901d825b28e0bb69e9462",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 31567,
+          "match": "https://twitter.com/CreamdotFinance",
+          "displayHandle": "CreamdotFinance"
+        }
+      ],
+      "candidates": {
+        "creamdotfinance": [
+          "cream.finance"
         ]
       }
     },
@@ -2523,6 +3184,172 @@
       "candidates": {}
     },
     {
+      "slug": "debridge",
+      "protocolName": "deBridge",
+      "xHandle": "@deBridge",
+      "xUrl": "https://x.com/deBridge",
+      "verificationSource": {
+        "evidenceId": "b37c7572f188d72a",
+        "url": "https://debridge.com/",
+        "finalUrl": "https://debridge.com/",
+        "httpStatus": 200,
+        "sha256": "3e51161ab33782de47962f98d519c070eed3e4feb3152f03d99d875c59d8d9c5",
+        "kind": "html",
+        "provenance": "record",
+        "rule": "meta[twitter:site]",
+        "offset": 1241,
+        "match": "<meta name=\"twitter:site\" content=\"@deBridge\">",
+        "displayHandle": "deBridge"
+      },
+      "sources": [
+        {
+          "url": "https://debridge.com/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://docs.debridge.com/",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://app.debridge.com/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "b37c7572f188d72a",
+          "url": "https://debridge.com/",
+          "finalUrl": "https://debridge.com/",
+          "httpStatus": 200,
+          "sha256": "3e51161ab33782de47962f98d519c070eed3e4feb3152f03d99d875c59d8d9c5",
+          "kind": "html",
+          "provenance": "record",
+          "rule": "meta[twitter:site]",
+          "offset": 1241,
+          "match": "<meta name=\"twitter:site\" content=\"@deBridge\">",
+          "displayHandle": "deBridge"
+        },
+        {
+          "evidenceId": "118098d05abefeb5",
+          "url": "https://docs.debridge.com/",
+          "finalUrl": "https://docs.debridge.com/",
+          "httpStatus": 200,
+          "sha256": "0074a89a85c59449f487a5e76609936c05b368142f007464b52eaf49b8d5477e",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 116536,
+          "match": "https://x.com/debridge",
+          "displayHandle": "debridge"
+        }
+      ],
+      "candidates": {
+        "debridge": [
+          "debridge.com"
+        ]
+      }
+    },
+    {
+      "slug": "decentralized-euro",
+      "protocolName": "Decentralized Euro",
+      "xHandle": "@dEURO_com",
+      "xUrl": "https://x.com/dEURO_com",
+      "verificationSource": {
+        "evidenceId": "e62c90d873716e9c",
+        "url": "https://deuro.com/",
+        "finalUrl": "https://deuro.com/",
+        "httpStatus": 200,
+        "sha256": "6f507e585a6c56110ff77f99645ddbb8bb39e298d84963e9a4898b4354863759",
+        "kind": "html",
+        "provenance": "record-domain",
+        "rule": "link[x.com|twitter.com profile]",
+        "offset": 15570,
+        "match": "https://x.com/dEURO_com",
+        "displayHandle": "dEURO_com"
+      },
+      "sources": [
+        {
+          "url": "https://docs.deuro.com/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://deuro.com/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "e62c90d873716e9c",
+          "url": "https://deuro.com/",
+          "finalUrl": "https://deuro.com/",
+          "httpStatus": 200,
+          "sha256": "6f507e585a6c56110ff77f99645ddbb8bb39e298d84963e9a4898b4354863759",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 15570,
+          "match": "https://x.com/dEURO_com",
+          "displayHandle": "dEURO_com"
+        }
+      ],
+      "candidates": {
+        "deuro_com": [
+          "deuro.com"
+        ]
+      }
+    },
+    {
+      "slug": "defi-saver",
+      "protocolName": "DeFi Saver",
+      "xHandle": null,
+      "xUrl": null,
+      "verificationSource": null,
+      "sources": [],
+      "reason": "no relevant first-party handle",
+      "candidates": {}
+    },
+    {
+      "slug": "defil",
+      "protocolName": "DeFIL",
+      "xHandle": null,
+      "xUrl": null,
+      "verificationSource": null,
+      "sources": [],
+      "reason": "no relevant first-party handle",
+      "candidates": {}
+    },
+    {
+      "slug": "delv-yield",
+      "protocolName": "DELV Yield",
+      "xHandle": null,
+      "xUrl": null,
+      "verificationSource": null,
+      "sources": [],
+      "reason": "no relevant first-party handle",
+      "candidates": {}
+    },
+    {
+      "slug": "derivadex",
+      "protocolName": "DerivaDEX",
+      "xHandle": null,
+      "xUrl": null,
+      "verificationSource": null,
+      "sources": [
+        {
+          "url": "https://docs.derivadex.com/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://derivadex.com/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "no relevant first-party handle (seen, not relevant: ['ddx_official'])",
+      "candidates": {}
+    },
+    {
       "slug": "derive-v3-options",
       "protocolName": "Derive V3 Options",
       "xHandle": "@derivexyz",
@@ -2571,6 +3398,122 @@
           "derive.xyz"
         ]
       }
+    },
+    {
+      "slug": "dexfi-aggregator",
+      "protocolName": "DexFi Aggregator",
+      "xHandle": "@DexFinance",
+      "xUrl": "https://x.com/DexFinance",
+      "verificationSource": {
+        "evidenceId": "baf6e864e6e35ffd",
+        "url": "https://dexfi.com/",
+        "finalUrl": "https://dexfi.com/",
+        "httpStatus": 200,
+        "sha256": "041f049c093824f40c26f65276ed97a5ad40fbabb362dffb36af389d0e8dd32a",
+        "kind": "html",
+        "provenance": "record-domain",
+        "rule": "meta[twitter:site]",
+        "offset": 1503,
+        "match": "<meta name=\"twitter:site\" content=\"@DexFinance\" />",
+        "displayHandle": "DexFinance"
+      },
+      "sources": [
+        {
+          "url": "https://dexfi.com/docs",
+          "provenance": "record"
+        },
+        {
+          "url": "https://dexfi.com/documentation",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://docs.dexfi.com/",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://dexfi.com/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "baf6e864e6e35ffd",
+          "url": "https://dexfi.com/",
+          "finalUrl": "https://dexfi.com/",
+          "httpStatus": 200,
+          "sha256": "041f049c093824f40c26f65276ed97a5ad40fbabb362dffb36af389d0e8dd32a",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "meta[twitter:site]",
+          "offset": 1503,
+          "match": "<meta name=\"twitter:site\" content=\"@DexFinance\" />",
+          "displayHandle": "DexFinance"
+        },
+        {
+          "evidenceId": "565c00d6ba2b221c",
+          "url": "https://dexfi.com/docs",
+          "finalUrl": "https://dexfi.com/docs",
+          "httpStatus": 200,
+          "sha256": "041f049c093824f40c26f65276ed97a5ad40fbabb362dffb36af389d0e8dd32a",
+          "kind": "html",
+          "provenance": "record",
+          "rule": "meta[twitter:site]",
+          "offset": 1503,
+          "match": "<meta name=\"twitter:site\" content=\"@DexFinance\" />",
+          "displayHandle": "DexFinance"
+        },
+        {
+          "evidenceId": "04b009f75d5e92ef",
+          "url": "https://dexfi.com/documentation",
+          "finalUrl": "https://dexfi.com/documentation",
+          "httpStatus": 200,
+          "sha256": "041f049c093824f40c26f65276ed97a5ad40fbabb362dffb36af389d0e8dd32a",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "meta[twitter:site]",
+          "offset": 1503,
+          "match": "<meta name=\"twitter:site\" content=\"@DexFinance\" />",
+          "displayHandle": "DexFinance"
+        },
+        {
+          "evidenceId": "1e6f8b424395e2de",
+          "url": "https://docs.dexfi.com/",
+          "finalUrl": "https://docs.dexfi.com/",
+          "httpStatus": 200,
+          "sha256": "8643f3a289de1bfd119ca91e05e505428e8e8cecda960c838fdc38bfec12de97",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 128341,
+          "match": "https://x.com/DexFinance",
+          "displayHandle": "DexFinance"
+        }
+      ],
+      "candidates": {
+        "dexfinance": [
+          "dexfi.com"
+        ]
+      }
+    },
+    {
+      "slug": "diem-relay",
+      "protocolName": "DIEM Relay",
+      "xHandle": null,
+      "xUrl": null,
+      "verificationSource": null,
+      "sources": [
+        {
+          "url": "https://diem-relay.com/docs",
+          "provenance": "record"
+        },
+        {
+          "url": "https://diem-relay.com/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "no relevant first-party handle",
+      "candidates": {}
     },
     {
       "slug": "dodo-amm",
@@ -2703,6 +3646,69 @@
       "candidates": {
         "drakewell_fi": [
           "drakewell.fi"
+        ]
+      }
+    },
+    {
+      "slug": "dxsale",
+      "protocolName": "DxSale",
+      "xHandle": "@dxsale",
+      "xUrl": "https://x.com/dxsale",
+      "verificationSource": {
+        "evidenceId": "2b070dd2b5378709",
+        "url": "https://dx.app/",
+        "finalUrl": "https://www.dx.app/",
+        "httpStatus": 200,
+        "sha256": "2e4dbd2a4c30f13021acc5834c9514b4c54a0ddb48bd9888e61a6c608e9912ca",
+        "kind": "html",
+        "provenance": "record-domain",
+        "rule": "meta[twitter:site]",
+        "offset": 1119,
+        "match": "<meta property=\"twitter:site\" content=\"@dxsale\"/>",
+        "displayHandle": "dxsale"
+      },
+      "sources": [
+        {
+          "url": "https://dx.app/",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://www.dx.app/dxsecurity",
+          "provenance": "record"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "2b070dd2b5378709",
+          "url": "https://dx.app/",
+          "finalUrl": "https://www.dx.app/",
+          "httpStatus": 200,
+          "sha256": "2e4dbd2a4c30f13021acc5834c9514b4c54a0ddb48bd9888e61a6c608e9912ca",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "meta[twitter:site]",
+          "offset": 1119,
+          "match": "<meta property=\"twitter:site\" content=\"@dxsale\"/>",
+          "displayHandle": "dxsale"
+        },
+        {
+          "evidenceId": "98a1c5492c3dbaa9",
+          "url": "https://www.dx.app/dxsecurity",
+          "finalUrl": "https://www.dx.app/dxsecurity",
+          "httpStatus": 200,
+          "sha256": "ff73eae5fbccd60ca1081f7506ee3f894f2a8d5f25a5f921bc068a2f60e29113",
+          "kind": "html",
+          "provenance": "record",
+          "rule": "meta[twitter:site]",
+          "offset": 1119,
+          "match": "<meta property=\"twitter:site\" content=\"@dxsale\"/>",
+          "displayHandle": "dxsale"
+        }
+      ],
+      "candidates": {
+        "dxsale": [
+          "dx.app"
         ]
       }
     },
@@ -3018,6 +4024,110 @@
       ],
       "reason": "no relevant first-party handle",
       "candidates": {}
+    },
+    {
+      "slug": "ekubo",
+      "protocolName": "Ekubo",
+      "xHandle": "@EkuboProtocol",
+      "xUrl": "https://x.com/EkuboProtocol",
+      "verificationSource": {
+        "evidenceId": "c633f8af87860d7d",
+        "url": "https://docs.ekubo.org/",
+        "finalUrl": "https://docs.ekubo.org/",
+        "httpStatus": 200,
+        "sha256": "f5eb739815ee4282104a47290b7be1b30812c563e30dba6c6be0be54a1e221c9",
+        "kind": "html",
+        "provenance": "record",
+        "rule": "meta[twitter:site]",
+        "offset": 3820,
+        "match": "<meta name=\"twitter:site\" content=\"@EkuboProtocol\"/>",
+        "displayHandle": "EkuboProtocol"
+      },
+      "sources": [
+        {
+          "url": "https://docs.ekubo.org/",
+          "provenance": "record"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "c633f8af87860d7d",
+          "url": "https://docs.ekubo.org/",
+          "finalUrl": "https://docs.ekubo.org/",
+          "httpStatus": 200,
+          "sha256": "f5eb739815ee4282104a47290b7be1b30812c563e30dba6c6be0be54a1e221c9",
+          "kind": "html",
+          "provenance": "record",
+          "rule": "meta[twitter:site]",
+          "offset": 3820,
+          "match": "<meta name=\"twitter:site\" content=\"@EkuboProtocol\"/>",
+          "displayHandle": "EkuboProtocol"
+        }
+      ],
+      "candidates": {
+        "ekuboprotocol": [
+          "ekubo.org"
+        ]
+      }
+    },
+    {
+      "slug": "elfomofi",
+      "protocolName": "ElfomoFi",
+      "xHandle": "@Elfomo_Fi",
+      "xUrl": "https://x.com/Elfomo_Fi",
+      "verificationSource": {
+        "evidenceId": "937574e75791b68f",
+        "url": "https://docs.elfomo.fi/",
+        "finalUrl": "https://docs.elfomo.fi/",
+        "httpStatus": 200,
+        "sha256": "4ea39433f7115eb07759b793ea8c945fbfe04c54c77973961d3cb5300222de40",
+        "kind": "html",
+        "provenance": "record",
+        "rule": "link[x.com|twitter.com profile]",
+        "offset": 5932,
+        "match": "https://x.com/Elfomo_Fi",
+        "displayHandle": "Elfomo_Fi"
+      },
+      "sources": [
+        {
+          "url": "https://docs.elfomo.fi/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://elfomo.fi/docs",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://elfomo.fi/documentation",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://elfomo.fi/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "937574e75791b68f",
+          "url": "https://docs.elfomo.fi/",
+          "finalUrl": "https://docs.elfomo.fi/",
+          "httpStatus": 200,
+          "sha256": "4ea39433f7115eb07759b793ea8c945fbfe04c54c77973961d3cb5300222de40",
+          "kind": "html",
+          "provenance": "record",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 5932,
+          "match": "https://x.com/Elfomo_Fi",
+          "displayHandle": "Elfomo_Fi"
+        }
+      ],
+      "candidates": {
+        "elfomo_fi": [
+          "elfomo.fi"
+        ]
+      }
     },
     {
       "slug": "enzyme-finance",
@@ -3597,6 +4707,41 @@
       "reason": "no relevant first-party handle (seen, not relevant: ['protocol_fx'])"
     },
     {
+      "slug": "fake-world-assets-v2",
+      "protocolName": "Fake World Assets V2",
+      "xHandle": null,
+      "xUrl": null,
+      "verificationSource": null,
+      "sources": [
+        {
+          "url": "https://fwa.fun/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://fwa.fun/docs",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://fwa.fun/documentation",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://www.fwa.fun/docs",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://www.fwa.fun/documentation",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://www.fwa.fun/",
+          "provenance": "record"
+        }
+      ],
+      "reason": "no relevant first-party handle (seen, not relevant: ['token_works'])",
+      "candidates": {}
+    },
+    {
       "slug": "falcon-finance-usdf-susdf",
       "protocolName": "Falcon Finance (USDf / sUSDf)",
       "xHandle": "@falconfinance",
@@ -3659,6 +4804,125 @@
       "sources": [],
       "reason": "no relevant first-party handle",
       "candidates": {}
+    },
+    {
+      "slug": "flaunch",
+      "protocolName": "flaunch",
+      "xHandle": "@flaunchgg",
+      "xUrl": "https://x.com/flaunchgg",
+      "verificationSource": {
+        "evidenceId": "be19a81e054e8af5",
+        "url": "https://flaunch.gg/",
+        "finalUrl": "https://flaunch.gg/",
+        "httpStatus": 200,
+        "sha256": "5118385c90b98c4e80023019d1ca897df0ad7e0332ad07e72a4ddd36feb72585",
+        "kind": "html",
+        "provenance": "record-domain",
+        "rule": "meta[twitter:creator]",
+        "offset": 8456,
+        "match": "<meta name=\"twitter:creator\" content=\"@flaunchgg\"/>",
+        "displayHandle": "flaunchgg"
+      },
+      "sources": [
+        {
+          "url": "https://docs.flaunch.gg/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://flaunch.gg/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "be19a81e054e8af5",
+          "url": "https://flaunch.gg/",
+          "finalUrl": "https://flaunch.gg/",
+          "httpStatus": 200,
+          "sha256": "5118385c90b98c4e80023019d1ca897df0ad7e0332ad07e72a4ddd36feb72585",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "meta[twitter:creator]",
+          "offset": 8456,
+          "match": "<meta name=\"twitter:creator\" content=\"@flaunchgg\"/>",
+          "displayHandle": "flaunchgg"
+        }
+      ],
+      "candidates": {
+        "flaunchgg": [
+          "flaunch.gg"
+        ]
+      }
+    },
+    {
+      "slug": "flexa",
+      "protocolName": "Flexa",
+      "xHandle": null,
+      "xUrl": null,
+      "verificationSource": null,
+      "sources": [
+        {
+          "url": "https://docs.amp.xyz/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://amp.xyz/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "no relevant first-party handle",
+      "candidates": {}
+    },
+    {
+      "slug": "flokifi-locker",
+      "protocolName": "FlokiFi Locker",
+      "xHandle": "@flokifi",
+      "xUrl": "https://x.com/flokifi",
+      "verificationSource": {
+        "evidenceId": "b689ea0c633f527b",
+        "url": "https://flokifi.com/",
+        "finalUrl": "https://www.flokifi.com/",
+        "httpStatus": 200,
+        "sha256": "5f3d90b32a3f8094f5e8c0517841318492d451e2841a64c26ca72edbb8235381",
+        "kind": "html",
+        "provenance": "record-domain",
+        "rule": "link[x.com|twitter.com profile]",
+        "offset": 115338,
+        "match": "https://twitter.com/flokifi",
+        "displayHandle": "flokifi"
+      },
+      "sources": [
+        {
+          "url": "https://docs.flokifi.com/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://flokifi.com/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "b689ea0c633f527b",
+          "url": "https://flokifi.com/",
+          "finalUrl": "https://www.flokifi.com/",
+          "httpStatus": 200,
+          "sha256": "5f3d90b32a3f8094f5e8c0517841318492d451e2841a64c26ca72edbb8235381",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 115338,
+          "match": "https://twitter.com/flokifi",
+          "displayHandle": "flokifi"
+        }
+      ],
+      "candidates": {
+        "flokifi": [
+          "flokifi.com"
+        ]
+      }
     },
     {
       "slug": "fluid-instadapp",
@@ -3994,6 +5258,149 @@
       }
     },
     {
+      "slug": "friend-tech-v1",
+      "protocolName": "friend.tech V1",
+      "xHandle": "@friendtech",
+      "xUrl": "https://x.com/friendtech",
+      "verificationSource": {
+        "evidenceId": "5d3fcfb0f18961d4",
+        "url": "https://friend.tech/",
+        "finalUrl": "https://www.friend.tech/keys",
+        "httpStatus": 200,
+        "sha256": "9f677934dfcb0171c2da1d93574cd199a14283572c05d2b5721292d60741e8ba",
+        "kind": "html",
+        "provenance": "record",
+        "rule": "meta[twitter:site]",
+        "offset": 173,
+        "match": "<meta name=\"twitter:site\" content=\"friendtech\"/>",
+        "displayHandle": "friendtech"
+      },
+      "sources": [
+        {
+          "url": "https://friend.tech/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://www.friend.tech/",
+          "provenance": "record"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "5d3fcfb0f18961d4",
+          "url": "https://friend.tech/",
+          "finalUrl": "https://www.friend.tech/keys",
+          "httpStatus": 200,
+          "sha256": "9f677934dfcb0171c2da1d93574cd199a14283572c05d2b5721292d60741e8ba",
+          "kind": "html",
+          "provenance": "record",
+          "rule": "meta[twitter:site]",
+          "offset": 173,
+          "match": "<meta name=\"twitter:site\" content=\"friendtech\"/>",
+          "displayHandle": "friendtech"
+        },
+        {
+          "evidenceId": "1d43ea714e6fd9ab",
+          "url": "https://www.friend.tech/",
+          "finalUrl": "https://www.friend.tech/keys",
+          "httpStatus": 200,
+          "sha256": "9f677934dfcb0171c2da1d93574cd199a14283572c05d2b5721292d60741e8ba",
+          "kind": "html",
+          "provenance": "record",
+          "rule": "meta[twitter:site]",
+          "offset": 173,
+          "match": "<meta name=\"twitter:site\" content=\"friendtech\"/>",
+          "displayHandle": "friendtech"
+        }
+      ],
+      "candidates": {
+        "friendtech": [
+          "friend.tech"
+        ]
+      }
+    },
+    {
+      "slug": "gamma",
+      "protocolName": "Gamma",
+      "xHandle": "@GammaStrategies",
+      "xUrl": "https://x.com/GammaStrategies",
+      "verificationSource": {
+        "evidenceId": "3640fca6e85b64ba",
+        "url": "https://docs.gamma.xyz/",
+        "finalUrl": "https://docs.gamma.xyz/gamma",
+        "httpStatus": 200,
+        "sha256": "a32a901ff96b7fea672fd050a983d1f09978493e04a906118b2d163bf18251df",
+        "kind": "html",
+        "provenance": "record",
+        "rule": "link[x.com|twitter.com profile]",
+        "offset": 81419,
+        "match": "https://twitter.com/GammaStrategies",
+        "displayHandle": "GammaStrategies"
+      },
+      "sources": [
+        {
+          "url": "https://docs.gamma.xyz/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://gamma.xyz/",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://www.gamma.xyz/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "3640fca6e85b64ba",
+          "url": "https://docs.gamma.xyz/",
+          "finalUrl": "https://docs.gamma.xyz/gamma",
+          "httpStatus": 200,
+          "sha256": "a32a901ff96b7fea672fd050a983d1f09978493e04a906118b2d163bf18251df",
+          "kind": "html",
+          "provenance": "record",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 81419,
+          "match": "https://twitter.com/GammaStrategies",
+          "displayHandle": "GammaStrategies"
+        },
+        {
+          "evidenceId": "74b19d99c561acb4",
+          "url": "https://gamma.xyz/",
+          "finalUrl": "https://app.gamma.xyz/v2/vaults",
+          "httpStatus": 200,
+          "sha256": "bbb7610ba7d0312d34b9ca3a4b2fdfc0abc65cd8bc2672a5bf04f542e8268741",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 34483,
+          "match": "https://x.com/GammaStrategies",
+          "displayHandle": "GammaStrategies"
+        },
+        {
+          "evidenceId": "53913ffc6e0c7eb5",
+          "url": "https://www.gamma.xyz/",
+          "finalUrl": "https://app.gamma.xyz/v2/vaults",
+          "httpStatus": 200,
+          "sha256": "bbb7610ba7d0312d34b9ca3a4b2fdfc0abc65cd8bc2672a5bf04f542e8268741",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 34483,
+          "match": "https://x.com/GammaStrategies",
+          "displayHandle": "GammaStrategies"
+        }
+      ],
+      "candidates": {
+        "gammastrategies": [
+          "gamma.xyz"
+        ]
+      }
+    },
+    {
       "slug": "gearbox-v3-v3-1",
       "protocolName": "Gearbox V3 / V3.1",
       "xHandle": null,
@@ -4080,6 +5487,132 @@
       "candidates": {
         "guardawallet": [
           "guarda.com"
+        ]
+      }
+    },
+    {
+      "slug": "glif",
+      "protocolName": "GLIF",
+      "xHandle": "@glifio",
+      "xUrl": "https://x.com/glifio",
+      "verificationSource": {
+        "evidenceId": "7fe48a125afbdf2b",
+        "url": "https://docs.glif.io/en/developer-resources/deployed-contracts",
+        "finalUrl": "https://docs.glif.io/en/developer-resources/deployed-contracts",
+        "httpStatus": 200,
+        "sha256": "7355862932d25b46973f95f32de08326b53ce1fd01346582667d14cf7815c287",
+        "kind": "html",
+        "provenance": "record",
+        "rule": "meta[twitter:site]",
+        "offset": 1922,
+        "match": "<meta name=\"twitter:site\" content=\"@glifio\"/>",
+        "displayHandle": "glifio"
+      },
+      "sources": [
+        {
+          "url": "https://glif.io/",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://docs.glif.io/en/developer-resources/deployed-contracts",
+          "provenance": "record"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "7fe48a125afbdf2b",
+          "url": "https://docs.glif.io/en/developer-resources/deployed-contracts",
+          "finalUrl": "https://docs.glif.io/en/developer-resources/deployed-contracts",
+          "httpStatus": 200,
+          "sha256": "7355862932d25b46973f95f32de08326b53ce1fd01346582667d14cf7815c287",
+          "kind": "html",
+          "provenance": "record",
+          "rule": "meta[twitter:site]",
+          "offset": 1922,
+          "match": "<meta name=\"twitter:site\" content=\"@glifio\"/>",
+          "displayHandle": "glifio"
+        },
+        {
+          "evidenceId": "e36f62b0847be6f3",
+          "url": "https://glif.io/",
+          "finalUrl": "https://www.glif.io/en",
+          "httpStatus": 200,
+          "sha256": "73d4ddce808059cb0f9e5e025b9fe4614fa3c315502fb961faa1a8535283ff91",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "meta[twitter:site]",
+          "offset": 4138,
+          "match": "<meta name=\"twitter:site\" content=\"@glifio\"/>",
+          "displayHandle": "glifio"
+        }
+      ],
+      "candidates": {
+        "glifio": [
+          "glif.io"
+        ]
+      }
+    },
+    {
+      "slug": "goldfinch",
+      "protocolName": "Goldfinch",
+      "xHandle": "@goldfinch_fi",
+      "xUrl": "https://x.com/goldfinch_fi",
+      "verificationSource": {
+        "evidenceId": "a9670f5ee829b1b2",
+        "url": "https://docs.goldfinch.finance/",
+        "finalUrl": "https://docs.goldfinch.finance/goldfinch",
+        "httpStatus": 200,
+        "sha256": "85d58bcbddd702bf087acc1e175ee562b8523478511c6a851b741909019b6c94",
+        "kind": "html",
+        "provenance": "record",
+        "rule": "link[x.com|twitter.com profile]",
+        "offset": 99869,
+        "match": "https://x.com/goldfinch_fi",
+        "displayHandle": "goldfinch_fi"
+      },
+      "sources": [
+        {
+          "url": "https://docs.goldfinch.finance/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://goldfinch.finance/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "a9670f5ee829b1b2",
+          "url": "https://docs.goldfinch.finance/",
+          "finalUrl": "https://docs.goldfinch.finance/goldfinch",
+          "httpStatus": 200,
+          "sha256": "85d58bcbddd702bf087acc1e175ee562b8523478511c6a851b741909019b6c94",
+          "kind": "html",
+          "provenance": "record",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 99869,
+          "match": "https://x.com/goldfinch_fi",
+          "displayHandle": "goldfinch_fi"
+        },
+        {
+          "evidenceId": "e920220dcbd9e19b",
+          "url": "https://goldfinch.finance/",
+          "finalUrl": "https://www.goldfinch.finance/",
+          "httpStatus": 200,
+          "sha256": "4f023f41d5f58f990c5bb5fe8281e7bd671582fa802ed92a0fae685794df5dd0",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 69802,
+          "match": "https://x.com/goldfinch_fi",
+          "displayHandle": "goldfinch_fi"
+        }
+      ],
+      "candidates": {
+        "goldfinch_fi": [
+          "goldfinch.finance"
         ]
       }
     },
@@ -4208,6 +5741,16 @@
           "gravity.xyz"
         ]
       }
+    },
+    {
+      "slug": "gro",
+      "protocolName": "Gro",
+      "xHandle": null,
+      "xUrl": null,
+      "verificationSource": null,
+      "sources": [],
+      "reason": "no relevant first-party handle",
+      "candidates": {}
     },
     {
       "slug": "grove-finance",
@@ -4369,6 +5912,31 @@
       }
     },
     {
+      "slug": "hashport",
+      "protocolName": "Hashport",
+      "xHandle": null,
+      "xUrl": null,
+      "verificationSource": null,
+      "sources": [],
+      "reason": "no relevant first-party handle",
+      "candidates": {}
+    },
+    {
+      "slug": "hegic",
+      "protocolName": "Hegic",
+      "xHandle": null,
+      "xUrl": null,
+      "verificationSource": null,
+      "sources": [
+        {
+          "url": "https://www.hegic.co/",
+          "provenance": "record"
+        }
+      ],
+      "reason": "no relevant first-party handle",
+      "candidates": {}
+    },
+    {
       "slug": "hop-protocol",
       "protocolName": "Hop Protocol",
       "xHandle": null,
@@ -4512,6 +6080,73 @@
       }
     },
     {
+      "slug": "ichi",
+      "protocolName": "ICHI",
+      "xHandle": "@ichifoundation",
+      "xUrl": "https://x.com/ichifoundation",
+      "verificationSource": {
+        "evidenceId": "809bb4d2ece05b3f",
+        "url": "https://ichi.org/",
+        "finalUrl": "https://ichi.org/",
+        "httpStatus": 200,
+        "sha256": "4c2b9b771f51c1d02cff26d5003087bb747a6e0d73eb4edb33821f8370a2160f",
+        "kind": "html",
+        "provenance": "record-domain",
+        "rule": "link[x.com|twitter.com profile]",
+        "offset": 866765,
+        "match": "https://x.com/ichifoundation",
+        "displayHandle": "ichifoundation"
+      },
+      "sources": [
+        {
+          "url": "https://docs.ichi.org/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://ichi.org/",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://www.ichi.org/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "809bb4d2ece05b3f",
+          "url": "https://ichi.org/",
+          "finalUrl": "https://ichi.org/",
+          "httpStatus": 200,
+          "sha256": "4c2b9b771f51c1d02cff26d5003087bb747a6e0d73eb4edb33821f8370a2160f",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 866765,
+          "match": "https://x.com/ichifoundation",
+          "displayHandle": "ichifoundation"
+        },
+        {
+          "evidenceId": "9326edc10bec34f6",
+          "url": "https://www.ichi.org/",
+          "finalUrl": "https://www.ichi.org/",
+          "httpStatus": 200,
+          "sha256": "4c2b9b771f51c1d02cff26d5003087bb747a6e0d73eb4edb33821f8370a2160f",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 866765,
+          "match": "https://x.com/ichifoundation",
+          "displayHandle": "ichifoundation"
+        }
+      ],
+      "candidates": {
+        "ichifoundation": [
+          "ichi.org"
+        ]
+      }
+    },
+    {
       "slug": "idex-v1",
       "protocolName": "IDEX V1",
       "xHandle": null,
@@ -4520,6 +6155,69 @@
       "sources": [],
       "reason": "no relevant first-party handle",
       "candidates": {}
+    },
+    {
+      "slug": "idle",
+      "protocolName": "Idle",
+      "xHandle": "@idlefinance",
+      "xUrl": "https://x.com/idlefinance",
+      "verificationSource": {
+        "evidenceId": "32f0b122ace152bc",
+        "url": "https://docs.idle.finance/",
+        "finalUrl": "https://docs.idle.finance/",
+        "httpStatus": 200,
+        "sha256": "aed4c1ba5edd989f67ab1b387969eb976641a340b2317203b63533fb94ff5281",
+        "kind": "html",
+        "provenance": "record",
+        "rule": "link[x.com|twitter.com profile]",
+        "offset": 215115,
+        "match": "https://twitter.com/idlefinance",
+        "displayHandle": "idlefinance"
+      },
+      "sources": [
+        {
+          "url": "https://docs.idle.finance/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://idle.finance/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "32f0b122ace152bc",
+          "url": "https://docs.idle.finance/",
+          "finalUrl": "https://docs.idle.finance/",
+          "httpStatus": 200,
+          "sha256": "aed4c1ba5edd989f67ab1b387969eb976641a340b2317203b63533fb94ff5281",
+          "kind": "html",
+          "provenance": "record",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 215115,
+          "match": "https://twitter.com/idlefinance",
+          "displayHandle": "idlefinance"
+        },
+        {
+          "evidenceId": "e181b24f832930f3",
+          "url": "https://idle.finance/",
+          "finalUrl": "https://idle.finance/",
+          "httpStatus": 200,
+          "sha256": "536f60d9a263d97f368b9d047d411e95507670cf17b78f4d7e45ae163a018dfd",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 36032,
+          "match": "https://twitter.com/idlefinance",
+          "displayHandle": "idlefinance"
+        }
+      ],
+      "candidates": {
+        "idlefinance": [
+          "idle.finance"
+        ]
+      }
     },
     {
       "slug": "inceptionlrt-isolated-restaking",
@@ -4733,6 +6431,16 @@
       }
     },
     {
+      "slug": "interest-protocol",
+      "protocolName": "Interest Protocol",
+      "xHandle": null,
+      "xUrl": null,
+      "verificationSource": null,
+      "sources": [],
+      "reason": "no relevant first-party handle",
+      "candidates": {}
+    },
+    {
       "slug": "inverse-finance-firm",
       "protocolName": "Inverse Finance (FiRM)",
       "xHandle": "@InverseFinance",
@@ -4894,6 +6602,70 @@
       }
     },
     {
+      "slug": "jpy-defi",
+      "protocolName": "JPY DeFi",
+      "xHandle": "@JPYDeFi",
+      "xUrl": "https://x.com/JPYDeFi",
+      "verificationSource": {
+        "evidenceId": "844a558eb84e57e3",
+        "url": "https://jpydf.gitbook.io/",
+        "finalUrl": "https://jpydf.gitbook.io/jpy-defi",
+        "httpStatus": 200,
+        "sha256": "10a4417d7f173098c4d74b5ba3b1875c0e28c6407c3b7436a9f560f58011c94d",
+        "kind": "html",
+        "provenance": "record",
+        "rule": "link[x.com|twitter.com profile]",
+        "offset": 157523,
+        "match": "https://x.com/JPYDeFi",
+        "displayHandle": "JPYDeFi"
+      },
+      "sources": [
+        {
+          "url": "https://jpydf.gitbook.io/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://app.jpydf.com/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "844a558eb84e57e3",
+          "url": "https://jpydf.gitbook.io/",
+          "finalUrl": "https://jpydf.gitbook.io/jpy-defi",
+          "httpStatus": 200,
+          "sha256": "10a4417d7f173098c4d74b5ba3b1875c0e28c6407c3b7436a9f560f58011c94d",
+          "kind": "html",
+          "provenance": "record",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 157523,
+          "match": "https://x.com/JPYDeFi",
+          "displayHandle": "JPYDeFi"
+        },
+        {
+          "evidenceId": "370688e382f08fa3",
+          "url": "https://app.jpydf.com/",
+          "finalUrl": "https://app.jpydf.com/",
+          "httpStatus": 200,
+          "sha256": "4cb54c593dd1807d195f20907354511bf24fe18bc898eb52b2e28682083d6328",
+          "kind": "html",
+          "provenance": "seed",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 12179,
+          "match": "https://x.com/JPYDeFi",
+          "displayHandle": "JPYDeFi"
+        }
+      ],
+      "candidates": {
+        "jpydefi": [
+          "jpydf.com",
+          "jpydf.gitbook.io/jpy-defi"
+        ]
+      }
+    },
+    {
       "slug": "juicebox-v1",
       "protocolName": "Juicebox V1",
       "xHandle": "@juiceboxETH",
@@ -5028,6 +6800,74 @@
       }
     },
     {
+      "slug": "kine-finance",
+      "protocolName": "Kine Finance",
+      "xHandle": null,
+      "xUrl": null,
+      "verificationSource": null,
+      "sources": [],
+      "reason": "no relevant first-party handle",
+      "candidates": {}
+    },
+    {
+      "slug": "king-protocol",
+      "protocolName": "King Protocol",
+      "xHandle": "@thekingprotocol",
+      "xUrl": "https://x.com/thekingprotocol",
+      "verificationSource": {
+        "evidenceId": "a3f461c068ec9fbb",
+        "url": "https://docs.kingprotocol.org/",
+        "finalUrl": "https://docs.kingprotocol.org/",
+        "httpStatus": 200,
+        "sha256": "1f8fbdfe110c035d9b1853172a065a0a4c268def5db43fb7ad72484d70553a1f",
+        "kind": "html",
+        "provenance": "record",
+        "rule": "link[x.com|twitter.com profile]",
+        "offset": 3527,
+        "match": "https://x.com/thekingprotocol",
+        "displayHandle": "thekingprotocol"
+      },
+      "sources": [
+        {
+          "url": "https://docs.kingprotocol.org/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://kingprotocol.org/docs",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://kingprotocol.org/documentation",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://kingprotocol.org/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "a3f461c068ec9fbb",
+          "url": "https://docs.kingprotocol.org/",
+          "finalUrl": "https://docs.kingprotocol.org/",
+          "httpStatus": 200,
+          "sha256": "1f8fbdfe110c035d9b1853172a065a0a4c268def5db43fb7ad72484d70553a1f",
+          "kind": "html",
+          "provenance": "record",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 3527,
+          "match": "https://x.com/thekingprotocol",
+          "displayHandle": "thekingprotocol"
+        }
+      ],
+      "candidates": {
+        "thekingprotocol": [
+          "kingprotocol.org"
+        ]
+      }
+    },
+    {
       "slug": "kpk",
       "protocolName": "KPK",
       "xHandle": "@kpk_io",
@@ -5145,6 +6985,47 @@
       }
     },
     {
+      "slug": "kyberswap-classic",
+      "protocolName": "KyberSwap Classic",
+      "xHandle": null,
+      "xUrl": null,
+      "verificationSource": null,
+      "sources": [
+        {
+          "url": "https://docs.kyberswap.com/",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://kyberswap.com/docs",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://kyberswap.com/documentation",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://kyberswap.com/",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://docs.kyberswap.com/governance/knc-token.md",
+          "provenance": "record"
+        }
+      ],
+      "reason": "no relevant first-party handle (seen, not relevant: ['kybernetwork'])",
+      "candidates": {}
+    },
+    {
+      "slug": "landx-finance",
+      "protocolName": "LandX Finance",
+      "xHandle": null,
+      "xUrl": null,
+      "verificationSource": null,
+      "sources": [],
+      "reason": "no relevant first-party handle",
+      "candidates": {}
+    },
+    {
       "slug": "layerzero-v2",
       "protocolName": "LayerZero V2",
       "xHandle": "@layerzero_core",
@@ -5208,6 +7089,86 @@
       "candidates": {
         "layerzero_core": [
           "layerzero.network"
+        ]
+      }
+    },
+    {
+      "slug": "lazy",
+      "protocolName": "Lazy",
+      "xHandle": "@lazydotxyz",
+      "xUrl": "https://x.com/lazydotxyz",
+      "verificationSource": {
+        "evidenceId": "175bb6cb9c006f17",
+        "url": "https://getlazy.xyz/",
+        "finalUrl": "https://getlazy.xyz/",
+        "httpStatus": 200,
+        "sha256": "2865bf5ed5033df067dc6614a8d8b6e12339e34b7b496a941f003f351f96aa19",
+        "kind": "html",
+        "provenance": "record-domain",
+        "rule": "meta[twitter:site]",
+        "offset": 1339,
+        "match": "<meta name=\"twitter:site\" content=\"@lazydotxyz\" />",
+        "displayHandle": "lazydotxyz"
+      },
+      "sources": [
+        {
+          "url": "https://getlazy.xyz/docs",
+          "provenance": "record"
+        },
+        {
+          "url": "https://getlazy.xyz/documentation",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://getlazy.xyz/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "175bb6cb9c006f17",
+          "url": "https://getlazy.xyz/",
+          "finalUrl": "https://getlazy.xyz/",
+          "httpStatus": 200,
+          "sha256": "2865bf5ed5033df067dc6614a8d8b6e12339e34b7b496a941f003f351f96aa19",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "meta[twitter:site]",
+          "offset": 1339,
+          "match": "<meta name=\"twitter:site\" content=\"@lazydotxyz\" />",
+          "displayHandle": "lazydotxyz"
+        },
+        {
+          "evidenceId": "1513cbab319365af",
+          "url": "https://getlazy.xyz/docs",
+          "finalUrl": "https://getlazy.xyz/docs",
+          "httpStatus": 200,
+          "sha256": "2865bf5ed5033df067dc6614a8d8b6e12339e34b7b496a941f003f351f96aa19",
+          "kind": "html",
+          "provenance": "record",
+          "rule": "meta[twitter:site]",
+          "offset": 1339,
+          "match": "<meta name=\"twitter:site\" content=\"@lazydotxyz\" />",
+          "displayHandle": "lazydotxyz"
+        },
+        {
+          "evidenceId": "c97db437e318c7b9",
+          "url": "https://getlazy.xyz/documentation",
+          "finalUrl": "https://getlazy.xyz/documentation",
+          "httpStatus": 200,
+          "sha256": "2865bf5ed5033df067dc6614a8d8b6e12339e34b7b496a941f003f351f96aa19",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "meta[twitter:site]",
+          "offset": 1339,
+          "match": "<meta name=\"twitter:site\" content=\"@lazydotxyz\" />",
+          "displayHandle": "lazydotxyz"
+        }
+      ],
+      "candidates": {
+        "lazydotxyz": [
+          "getlazy.xyz"
         ]
       }
     },
@@ -5304,6 +7265,16 @@
           "legion.cc"
         ]
       }
+    },
+    {
+      "slug": "lendflare",
+      "protocolName": "LendFlare",
+      "xHandle": null,
+      "xUrl": null,
+      "verificationSource": null,
+      "sources": [],
+      "reason": "no relevant first-party handle",
+      "candidates": {}
     },
     {
       "slug": "lido-steth-dual-governance",
@@ -5653,6 +7624,77 @@
       }
     },
     {
+      "slug": "lusd-chickenbonds",
+      "protocolName": "LUSD ChickenBonds",
+      "xHandle": "@ChickenBonds",
+      "xUrl": "https://x.com/ChickenBonds",
+      "verificationSource": {
+        "evidenceId": "905bccad3e3c2c75",
+        "url": "https://chickenbonds.org/",
+        "finalUrl": "https://www.chickenbonds.org/",
+        "httpStatus": 200,
+        "sha256": "6475ab87a748a94b521ea4b16ba4f31ddab6ee167bb60a95c9e8a1b285851cbd",
+        "kind": "html",
+        "provenance": "record-domain",
+        "rule": "link[x.com|twitter.com profile]",
+        "offset": 11495,
+        "match": "https://twitter.com/ChickenBonds",
+        "displayHandle": "ChickenBonds"
+      },
+      "sources": [
+        {
+          "url": "https://docs.chickenbonds.org/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://liquity.gitbook.io/",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://chickenbonds.org/",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://www.chickenbonds.org/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "905bccad3e3c2c75",
+          "url": "https://chickenbonds.org/",
+          "finalUrl": "https://www.chickenbonds.org/",
+          "httpStatus": 200,
+          "sha256": "6475ab87a748a94b521ea4b16ba4f31ddab6ee167bb60a95c9e8a1b285851cbd",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 11495,
+          "match": "https://twitter.com/ChickenBonds",
+          "displayHandle": "ChickenBonds"
+        },
+        {
+          "evidenceId": "0c9dad622ca9e705",
+          "url": "https://www.chickenbonds.org/",
+          "finalUrl": "https://www.chickenbonds.org/",
+          "httpStatus": 200,
+          "sha256": "6475ab87a748a94b521ea4b16ba4f31ddab6ee167bb60a95c9e8a1b285851cbd",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 11495,
+          "match": "https://twitter.com/ChickenBonds",
+          "displayHandle": "ChickenBonds"
+        }
+      ],
+      "candidates": {
+        "chickenbonds": [
+          "chickenbonds.org"
+        ]
+      }
+    },
+    {
       "slug": "m0-protocol-m",
       "protocolName": "M0 Protocol ($M)",
       "xHandle": null,
@@ -5867,6 +7909,60 @@
         "maplefinance": [
           "gh:maple-labs",
           "maple.finance"
+        ]
+      }
+    },
+    {
+      "slug": "mcdex",
+      "protocolName": "MCDEX",
+      "xHandle": "@muxprotocol",
+      "xUrl": "https://x.com/muxprotocol",
+      "verificationSource": {
+        "evidenceId": "68c9cc23c9f13330",
+        "url": "https://mux.network/",
+        "finalUrl": "https://mux.network/",
+        "httpStatus": 200,
+        "sha256": "8cf5dfeeee141501912220353a143a3c454868c7f4edd6dea21d16b95d6d2308",
+        "kind": "html",
+        "provenance": "record-domain",
+        "rule": "meta[twitter:site]",
+        "offset": 41170,
+        "match": "<meta name=\"twitter:site\" content=\"@muxprotocol\">",
+        "displayHandle": "muxprotocol"
+      },
+      "sources": [
+        {
+          "url": "https://docs.mux.network/",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://mux.network/",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://docs.mux.network/protocol/contracts/contracts-dao.md",
+          "provenance": "record"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "68c9cc23c9f13330",
+          "url": "https://mux.network/",
+          "finalUrl": "https://mux.network/",
+          "httpStatus": 200,
+          "sha256": "8cf5dfeeee141501912220353a143a3c454868c7f4edd6dea21d16b95d6d2308",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "meta[twitter:site]",
+          "offset": 41170,
+          "match": "<meta name=\"twitter:site\" content=\"@muxprotocol\">",
+          "displayHandle": "muxprotocol"
+        }
+      ],
+      "candidates": {
+        "muxprotocol": [
+          "mux.network"
         ]
       }
     },
@@ -6472,6 +8568,29 @@
       }
     },
     {
+      "slug": "mortgagefi",
+      "protocolName": "MortgageFi",
+      "xHandle": null,
+      "xUrl": null,
+      "verificationSource": null,
+      "sources": [
+        {
+          "url": "https://mortgagefi-docs.gitbook.io/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://mortgagefi.app/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single seed-only source (needs a second independent first-party source)",
+      "candidates": {
+        "mortgagefiapp": [
+          "mortgagefi.app"
+        ]
+      }
+    },
+    {
       "slug": "multichain",
       "protocolName": "Multichain",
       "xHandle": null,
@@ -6480,6 +8599,69 @@
       "sources": [],
       "reason": "no relevant first-party handle",
       "candidates": {}
+    },
+    {
+      "slug": "nami",
+      "protocolName": "Nami",
+      "xHandle": "@namidefi",
+      "xUrl": "https://x.com/namidefi",
+      "verificationSource": {
+        "evidenceId": "5b9a1b21c42db7d5",
+        "url": "https://docs.nami.fi/",
+        "finalUrl": "https://docs.nami.fi/introduction/the-nami-ecosystem",
+        "httpStatus": 200,
+        "sha256": "4e62f943507695a8010633a2134040a02e5d847d5fac1337dcc1c694a7ffcf61",
+        "kind": "html",
+        "provenance": "record",
+        "rule": "link[x.com|twitter.com profile]",
+        "offset": 489494,
+        "match": "https://x.com/namidefi",
+        "displayHandle": "namidefi"
+      },
+      "sources": [
+        {
+          "url": "https://docs.nami.fi/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://nami.fi/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "5b9a1b21c42db7d5",
+          "url": "https://docs.nami.fi/",
+          "finalUrl": "https://docs.nami.fi/introduction/the-nami-ecosystem",
+          "httpStatus": 200,
+          "sha256": "4e62f943507695a8010633a2134040a02e5d847d5fac1337dcc1c694a7ffcf61",
+          "kind": "html",
+          "provenance": "record",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 489494,
+          "match": "https://x.com/namidefi",
+          "displayHandle": "namidefi"
+        },
+        {
+          "evidenceId": "b0a70ed373456b58",
+          "url": "https://nami.fi/",
+          "finalUrl": "https://nami.fi/",
+          "httpStatus": 200,
+          "sha256": "62f77165a3178f2e10e8cfbb9087dd104e1c22efd2e67cd0122776d29d69fd30",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 300828,
+          "match": "https://x.com/namidefi",
+          "displayHandle": "namidefi"
+        }
+      ],
+      "candidates": {
+        "namidefi": [
+          "nami.fi"
+        ]
+      }
     },
     {
       "slug": "native-credit-pool",
@@ -6589,6 +8771,90 @@
       }
     },
     {
+      "slug": "nftx",
+      "protocolName": "NFTX",
+      "xHandle": "@NFTX_",
+      "xUrl": "https://x.com/NFTX_",
+      "verificationSource": {
+        "evidenceId": "509bebc4a8e08dac",
+        "url": "https://nftx.io/",
+        "finalUrl": "https://nftx.io/",
+        "httpStatus": 200,
+        "sha256": "b734fa64c955cc9313b1518ef92d1db7a47a6eea6343176abbb65e7eaf7ebaf3",
+        "kind": "html",
+        "provenance": "record-domain",
+        "rule": "meta[twitter:site]",
+        "offset": 7960,
+        "match": "<meta name=\"twitter:site\" content=\"@NFTX_\"/>",
+        "displayHandle": "NFTX_"
+      },
+      "sources": [
+        {
+          "url": "https://docs.nftx.io/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://nftx.io/docs",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://nftx.io/documentation",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://nftx.io/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "509bebc4a8e08dac",
+          "url": "https://nftx.io/",
+          "finalUrl": "https://nftx.io/",
+          "httpStatus": 200,
+          "sha256": "b734fa64c955cc9313b1518ef92d1db7a47a6eea6343176abbb65e7eaf7ebaf3",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "meta[twitter:site]",
+          "offset": 7960,
+          "match": "<meta name=\"twitter:site\" content=\"@NFTX_\"/>",
+          "displayHandle": "NFTX_"
+        },
+        {
+          "evidenceId": "c0c027c3c6e54b46",
+          "url": "https://nftx.io/docs",
+          "finalUrl": "https://nftx.io/docs",
+          "httpStatus": 200,
+          "sha256": "649f7a1ad5be6388bc68bc4160dea9ea744fc76fb1912264506a3ffcc5e3ce85",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "meta[twitter:site]",
+          "offset": 7532,
+          "match": "<meta name=\"twitter:site\" content=\"@NFTX_\"/>",
+          "displayHandle": "NFTX_"
+        },
+        {
+          "evidenceId": "3359bc575e5dad4e",
+          "url": "https://nftx.io/documentation",
+          "finalUrl": "https://nftx.io/documentation",
+          "httpStatus": 200,
+          "sha256": "13b13f4beaf42dd0cb984fca5a87d57a98e65751b2bd7bb9964c7a1a432aab1b",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "meta[twitter:site]",
+          "offset": 7532,
+          "match": "<meta name=\"twitter:site\" content=\"@NFTX_\"/>",
+          "displayHandle": "NFTX_"
+        }
+      ],
+      "candidates": {
+        "nftx_": [
+          "nftx.io"
+        ]
+      }
+    },
+    {
       "slug": "nodedao",
       "protocolName": "NodeDAO",
       "xHandle": "@Node_DAO",
@@ -6667,6 +8933,16 @@
           "provenance": "seed"
         }
       ],
+      "reason": "no relevant first-party handle",
+      "candidates": {}
+    },
+    {
+      "slug": "nucleus",
+      "protocolName": "Nucleus",
+      "xHandle": null,
+      "xUrl": null,
+      "verificationSource": null,
+      "sources": [],
       "reason": "no relevant first-party handle",
       "candidates": {}
     },
@@ -7144,6 +9420,26 @@
       }
     },
     {
+      "slug": "outcome-finance",
+      "protocolName": "Outcome Finance",
+      "xHandle": null,
+      "xUrl": null,
+      "verificationSource": null,
+      "sources": [],
+      "reason": "no relevant first-party handle",
+      "candidates": {}
+    },
+    {
+      "slug": "overtime",
+      "protocolName": "Overtime",
+      "xHandle": null,
+      "xUrl": null,
+      "verificationSource": null,
+      "sources": [],
+      "reason": "no relevant first-party handle",
+      "candidates": {}
+    },
+    {
       "slug": "pancakeswap-amm-v3",
       "protocolName": "PancakeSwap AMM V3",
       "xHandle": "@PancakeSwap",
@@ -7198,6 +9494,77 @@
       }
     },
     {
+      "slug": "panoptic-v2",
+      "protocolName": "Panoptic V2",
+      "xHandle": "@panoptic_xyz",
+      "xUrl": "https://x.com/panoptic_xyz",
+      "verificationSource": {
+        "evidenceId": "0d878b1414d44f5f",
+        "url": "https://docs.panoptic.xyz/",
+        "finalUrl": "https://panoptic.xyz/docs/intro",
+        "httpStatus": 200,
+        "sha256": "f5321c616476df25870ef212ef9d17ef083d29cffa00f631b802f6bb21c90bd8",
+        "kind": "html",
+        "provenance": "record",
+        "rule": "meta[twitter:site]",
+        "offset": 865,
+        "match": "<meta data-rh=\"true\" name=\"twitter:site\" content=\"@panoptic_xyz\">",
+        "displayHandle": "panoptic_xyz"
+      },
+      "sources": [
+        {
+          "url": "https://docs.panoptic.xyz/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://panoptic.xyz/",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://panoptic.xyz/docs",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://app.panoptic.xyz/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "0d878b1414d44f5f",
+          "url": "https://docs.panoptic.xyz/",
+          "finalUrl": "https://panoptic.xyz/docs/intro",
+          "httpStatus": 200,
+          "sha256": "f5321c616476df25870ef212ef9d17ef083d29cffa00f631b802f6bb21c90bd8",
+          "kind": "html",
+          "provenance": "record",
+          "rule": "meta[twitter:site]",
+          "offset": 865,
+          "match": "<meta data-rh=\"true\" name=\"twitter:site\" content=\"@panoptic_xyz\">",
+          "displayHandle": "panoptic_xyz"
+        },
+        {
+          "evidenceId": "e9669f4ca574841c",
+          "url": "https://panoptic.xyz/",
+          "finalUrl": "https://panoptic.xyz/",
+          "httpStatus": 200,
+          "sha256": "a0306ff91de14a71e677b6b6701742d26980a6df7c1fbc401493d2b96f6b8876",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "meta[twitter:site]",
+          "offset": 939,
+          "match": "<meta data-rh=\"true\" name=\"twitter:site\" content=\"@panoptic_xyz\">",
+          "displayHandle": "panoptic_xyz"
+        }
+      ],
+      "candidates": {
+        "panoptic_xyz": [
+          "panoptic.xyz"
+        ]
+      }
+    },
+    {
       "slug": "paradex-bridge",
       "protocolName": "Paradex Bridge",
       "xHandle": null,
@@ -7215,6 +9582,69 @@
       ],
       "reason": "no relevant first-party handle",
       "candidates": {}
+    },
+    {
+      "slug": "parallel-protocol-v3",
+      "protocolName": "Parallel Protocol V3",
+      "xHandle": "@ParallelMoney",
+      "xUrl": "https://x.com/ParallelMoney",
+      "verificationSource": {
+        "evidenceId": "cd7ab949fe763f9b",
+        "url": "https://docs.parallel.best/",
+        "finalUrl": "https://docs.parallel.best/",
+        "httpStatus": 200,
+        "sha256": "bebd605d2ebaa6ca9a35f3eb02a9dbdcd3cacbce8c4f2223e122ff4c2865d1c1",
+        "kind": "html",
+        "provenance": "record",
+        "rule": "link[x.com|twitter.com profile]",
+        "offset": 3857,
+        "match": "https://x.com/ParallelMoney",
+        "displayHandle": "ParallelMoney"
+      },
+      "sources": [
+        {
+          "url": "https://docs.parallel.best/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://parallel.best/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "cd7ab949fe763f9b",
+          "url": "https://docs.parallel.best/",
+          "finalUrl": "https://docs.parallel.best/",
+          "httpStatus": 200,
+          "sha256": "bebd605d2ebaa6ca9a35f3eb02a9dbdcd3cacbce8c4f2223e122ff4c2865d1c1",
+          "kind": "html",
+          "provenance": "record",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 3857,
+          "match": "https://x.com/ParallelMoney",
+          "displayHandle": "ParallelMoney"
+        },
+        {
+          "evidenceId": "82e158891c98d6c9",
+          "url": "https://parallel.best/",
+          "finalUrl": "https://parallel.best/",
+          "httpStatus": 200,
+          "sha256": "6eaf72221d0adc6d2b39fb8e88a3e0282edb497e23d2f32181f76e2f26979145",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "meta[twitter:site]",
+          "offset": 58961,
+          "match": "<meta name=\"twitter:site\" content=\"@ParallelMoney\"/>",
+          "displayHandle": "ParallelMoney"
+        }
+      ],
+      "candidates": {
+        "parallelmoney": [
+          "parallel.best"
+        ]
+      }
     },
     {
       "slug": "paypal-usd-pyusd",
@@ -7280,6 +9710,56 @@
       "candidates": {
         "paxos": [
           "paxos.com"
+        ]
+      }
+    },
+    {
+      "slug": "peapods-finance",
+      "protocolName": "Peapods Finance",
+      "xHandle": "@PeapodsFinance",
+      "xUrl": "https://x.com/PeapodsFinance",
+      "verificationSource": {
+        "evidenceId": "fd9a23c66759407a",
+        "url": "https://peapods.finance/",
+        "finalUrl": "https://peapods.finance/",
+        "httpStatus": 200,
+        "sha256": "c85fa166e529e496714a0994e00067c30088cce8bbb59fdc78b2c814749ba59c",
+        "kind": "html",
+        "provenance": "record-domain",
+        "rule": "meta[twitter:site]",
+        "offset": 914,
+        "match": "<meta name=\"twitter:site\" content=\"@PeapodsFinance\"/>",
+        "displayHandle": "PeapodsFinance"
+      },
+      "sources": [
+        {
+          "url": "https://docs.peapods.finance/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://peapods.finance/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "fd9a23c66759407a",
+          "url": "https://peapods.finance/",
+          "finalUrl": "https://peapods.finance/",
+          "httpStatus": 200,
+          "sha256": "c85fa166e529e496714a0994e00067c30088cce8bbb59fdc78b2c814749ba59c",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "meta[twitter:site]",
+          "offset": 914,
+          "match": "<meta name=\"twitter:site\" content=\"@PeapodsFinance\"/>",
+          "displayHandle": "PeapodsFinance"
+        }
+      ],
+      "candidates": {
+        "peapodsfinance": [
+          "peapods.finance"
         ]
       }
     },
@@ -7630,6 +10110,157 @@
       }
     },
     {
+      "slug": "punks-terminal",
+      "protocolName": "Punks Terminal",
+      "xHandle": "@lightyearart",
+      "xUrl": "https://x.com/lightyearart",
+      "verificationSource": {
+        "evidenceId": "38d5f145b09d0276",
+        "url": "https://lightyear.build/",
+        "finalUrl": "https://lightyear.build/",
+        "httpStatus": 200,
+        "sha256": "cff5e15f543f1b307bac088210b084b5b8d63273826818f9c1f629faaa0408c2",
+        "kind": "html",
+        "provenance": "record",
+        "rule": "link[x.com|twitter.com profile]",
+        "offset": 40821,
+        "match": "https://x.com/lightyearart",
+        "displayHandle": "lightyearart"
+      },
+      "sources": [
+        {
+          "url": "https://lightyear.build/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://punks.lightyear.build/stash",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "38d5f145b09d0276",
+          "url": "https://lightyear.build/",
+          "finalUrl": "https://lightyear.build/",
+          "httpStatus": 200,
+          "sha256": "cff5e15f543f1b307bac088210b084b5b8d63273826818f9c1f629faaa0408c2",
+          "kind": "html",
+          "provenance": "record",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 40821,
+          "match": "https://x.com/lightyearart",
+          "displayHandle": "lightyearart"
+        }
+      ],
+      "candidates": {
+        "lightyearart": [
+          "lightyear.build"
+        ]
+      }
+    },
+    {
+      "slug": "quickswap-v4",
+      "protocolName": "Quickswap V4",
+      "xHandle": "@QuickswapDEX",
+      "xUrl": "https://x.com/QuickswapDEX",
+      "verificationSource": {
+        "evidenceId": "f5a855949ebf61bf",
+        "url": "https://dapp.quickswap.exchange/",
+        "finalUrl": "https://dapp.quickswap.exchange/swap",
+        "httpStatus": 200,
+        "sha256": "e06f479f64e9224f23d5e4dd307e8bb455192c37ec85383e4dd2ab48a717a43e",
+        "kind": "html",
+        "provenance": "record-domain",
+        "rule": "meta[twitter:site]",
+        "offset": 4726,
+        "match": "<meta name=\"twitter:site\" content=\"@QuickswapDEX\"/>",
+        "displayHandle": "QuickswapDEX"
+      },
+      "sources": [
+        {
+          "url": "https://dapp.quickswap.exchange/docs",
+          "provenance": "record"
+        },
+        {
+          "url": "https://dapp.quickswap.exchange/documentation",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://docs.quickswap.exchange/",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://dapp.quickswap.exchange/",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://quickswap.exchange/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "f5a855949ebf61bf",
+          "url": "https://dapp.quickswap.exchange/",
+          "finalUrl": "https://dapp.quickswap.exchange/swap",
+          "httpStatus": 200,
+          "sha256": "e06f479f64e9224f23d5e4dd307e8bb455192c37ec85383e4dd2ab48a717a43e",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "meta[twitter:site]",
+          "offset": 4726,
+          "match": "<meta name=\"twitter:site\" content=\"@QuickswapDEX\"/>",
+          "displayHandle": "QuickswapDEX"
+        },
+        {
+          "evidenceId": "d9a3e9d2a9a9ad24",
+          "url": "https://dapp.quickswap.exchange/docs",
+          "finalUrl": "https://dapp.quickswap.exchange/docs",
+          "httpStatus": 200,
+          "sha256": "b58711b5cc1708aaeb92d61bf1c6977260c1f280aee7a067928051c926f04802",
+          "kind": "html",
+          "provenance": "record",
+          "rule": "meta[twitter:site]",
+          "offset": 4281,
+          "match": "<meta name=\"twitter:site\" content=\"@QuickswapDEX\"/>",
+          "displayHandle": "QuickswapDEX"
+        },
+        {
+          "evidenceId": "7326b4463a3c3326",
+          "url": "https://dapp.quickswap.exchange/documentation",
+          "finalUrl": "https://dapp.quickswap.exchange/documentation",
+          "httpStatus": 200,
+          "sha256": "b58711b5cc1708aaeb92d61bf1c6977260c1f280aee7a067928051c926f04802",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "meta[twitter:site]",
+          "offset": 4281,
+          "match": "<meta name=\"twitter:site\" content=\"@QuickswapDEX\"/>",
+          "displayHandle": "QuickswapDEX"
+        },
+        {
+          "evidenceId": "60498c57751144f0",
+          "url": "https://quickswap.exchange/",
+          "finalUrl": "https://quickswap.exchange/",
+          "httpStatus": 200,
+          "sha256": "8657eafeb88186147ece290fb31ba1dda5635612c90ca7f93f4cdaf9df0a3c3e",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "meta[twitter:site]",
+          "offset": 3829,
+          "match": "<meta name=\"twitter:site\" content=\"@QuickswapDEX\"/>",
+          "displayHandle": "QuickswapDEX"
+        }
+      ],
+      "candidates": {
+        "quickswapdex": [
+          "quickswap.exchange"
+        ]
+      }
+    },
+    {
       "slug": "railgun",
       "protocolName": "RAILGUN",
       "xHandle": null,
@@ -7698,6 +10329,56 @@
       "candidates": {
         "re": [
           "re.xyz"
+        ]
+      }
+    },
+    {
+      "slug": "reflexer",
+      "protocolName": "Reflexer",
+      "xHandle": "@reflexerfinance",
+      "xUrl": "https://x.com/reflexerfinance",
+      "verificationSource": {
+        "evidenceId": "423b56779eccfc80",
+        "url": "https://reflexer.finance/",
+        "finalUrl": "https://reflexer.finance/",
+        "httpStatus": 200,
+        "sha256": "acc4bbed415d763dc23a239cdfc7d5737cc3cb38119644135ccff4dae1949725",
+        "kind": "html",
+        "provenance": "record-domain",
+        "rule": "meta[twitter:site]",
+        "offset": 1154,
+        "match": "<meta name=\"twitter:site\" content=\"@reflexerfinance\"/>",
+        "displayHandle": "reflexerfinance"
+      },
+      "sources": [
+        {
+          "url": "https://docs.reflexer.finance/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://reflexer.finance/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "423b56779eccfc80",
+          "url": "https://reflexer.finance/",
+          "finalUrl": "https://reflexer.finance/",
+          "httpStatus": 200,
+          "sha256": "acc4bbed415d763dc23a239cdfc7d5737cc3cb38119644135ccff4dae1949725",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "meta[twitter:site]",
+          "offset": 1154,
+          "match": "<meta name=\"twitter:site\" content=\"@reflexerfinance\"/>",
+          "displayHandle": "reflexerfinance"
+        }
+      ],
+      "candidates": {
+        "reflexerfinance": [
+          "reflexer.finance"
         ]
       }
     },
@@ -8206,6 +10887,87 @@
       }
     },
     {
+      "slug": "saffron-vaults",
+      "protocolName": "Saffron Vaults",
+      "xHandle": "@saffron",
+      "xUrl": "https://x.com/saffron",
+      "verificationSource": {
+        "evidenceId": "a1af971f068abad1",
+        "url": "https://docs.saffron.finance/",
+        "finalUrl": "https://docs.saffron.finance/introduction",
+        "httpStatus": 200,
+        "sha256": "b585417e1da18a09aff47e502d49112c2c1030af4e5ec5d533e4a82411a0f2f3",
+        "kind": "html",
+        "provenance": "record",
+        "rule": "link[x.com|twitter.com profile]",
+        "offset": 33559,
+        "match": "https://x.com/saffron",
+        "displayHandle": "saffron"
+      },
+      "sources": [
+        {
+          "url": "https://docs.saffron.finance/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://saffron.finance/docs",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://saffron.finance/documentation",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://saffron.finance/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "a1af971f068abad1",
+          "url": "https://docs.saffron.finance/",
+          "finalUrl": "https://docs.saffron.finance/introduction",
+          "httpStatus": 200,
+          "sha256": "b585417e1da18a09aff47e502d49112c2c1030af4e5ec5d533e4a82411a0f2f3",
+          "kind": "html",
+          "provenance": "record",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 33559,
+          "match": "https://x.com/saffron",
+          "displayHandle": "saffron"
+        }
+      ],
+      "candidates": {
+        "saffron": [
+          "saffron.finance"
+        ]
+      }
+    },
+    {
+      "slug": "sato",
+      "protocolName": "SATO",
+      "xHandle": null,
+      "xUrl": null,
+      "verificationSource": null,
+      "sources": [
+        {
+          "url": "https://sat0.org/docs",
+          "provenance": "record"
+        },
+        {
+          "url": "https://sat0.org/documentation",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://sat0.org/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "no relevant first-party handle",
+      "candidates": {}
+    },
+    {
       "slug": "saturn",
       "protocolName": "Saturn",
       "xHandle": null,
@@ -8361,6 +11123,105 @@
       }
     },
     {
+      "slug": "smardex-usdn",
+      "protocolName": "SMARDEX USDN",
+      "xHandle": "@SmarDex",
+      "xUrl": "https://x.com/SmarDex",
+      "verificationSource": {
+        "evidenceId": "c6de5870858eed36",
+        "url": "https://smardex.io/",
+        "finalUrl": "https://smardex.io/",
+        "httpStatus": 200,
+        "sha256": "f5a05dff12a4658d443572c3ee26b1952f445fef4606b32bf50c1fb4a6d19734",
+        "kind": "html",
+        "provenance": "record-domain",
+        "rule": "meta[twitter:site]",
+        "offset": 760,
+        "match": "<meta name=\"twitter:site\" content=\"@SmarDex\"/>",
+        "displayHandle": "SmarDex"
+      },
+      "sources": [
+        {
+          "url": "https://docs.smardex.io/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://smardex.io/docs",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://smardex.io/documentation",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://smardex.io/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "c6de5870858eed36",
+          "url": "https://smardex.io/",
+          "finalUrl": "https://smardex.io/",
+          "httpStatus": 200,
+          "sha256": "f5a05dff12a4658d443572c3ee26b1952f445fef4606b32bf50c1fb4a6d19734",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "meta[twitter:site]",
+          "offset": 760,
+          "match": "<meta name=\"twitter:site\" content=\"@SmarDex\"/>",
+          "displayHandle": "SmarDex"
+        },
+        {
+          "evidenceId": "a72366c1b573bbbd",
+          "url": "https://smardex.io/docs",
+          "finalUrl": "https://smardex.io/docs",
+          "httpStatus": 200,
+          "sha256": "f5a05dff12a4658d443572c3ee26b1952f445fef4606b32bf50c1fb4a6d19734",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "meta[twitter:site]",
+          "offset": 760,
+          "match": "<meta name=\"twitter:site\" content=\"@SmarDex\"/>",
+          "displayHandle": "SmarDex"
+        },
+        {
+          "evidenceId": "c5e892b47f016479",
+          "url": "https://smardex.io/documentation",
+          "finalUrl": "https://smardex.io/documentation",
+          "httpStatus": 200,
+          "sha256": "f5a05dff12a4658d443572c3ee26b1952f445fef4606b32bf50c1fb4a6d19734",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "meta[twitter:site]",
+          "offset": 760,
+          "match": "<meta name=\"twitter:site\" content=\"@SmarDex\"/>",
+          "displayHandle": "SmarDex"
+        }
+      ],
+      "candidates": {
+        "smardex": [
+          "smardex.io"
+        ]
+      }
+    },
+    {
+      "slug": "sofa-org",
+      "protocolName": "SOFA.org",
+      "xHandle": null,
+      "xUrl": null,
+      "verificationSource": null,
+      "sources": [
+        {
+          "url": "https://docs.sofa.org/",
+          "provenance": "record"
+        }
+      ],
+      "reason": "no relevant first-party handle",
+      "candidates": {}
+    },
+    {
       "slug": "solv-protocol-solvbtc",
       "protocolName": "Solv Protocol (SolvBTC)",
       "xHandle": null,
@@ -8381,6 +11242,29 @@
         }
       ],
       "reason": "no relevant first-party handle"
+    },
+    {
+      "slug": "sommelier",
+      "protocolName": "Sommelier",
+      "xHandle": null,
+      "xUrl": null,
+      "verificationSource": null,
+      "sources": [
+        {
+          "url": "https://sommelier-finance.gitbook.io/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://somm.finance/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single seed-only source (needs a second independent first-party source)",
+      "candidates": {
+        "sommfinance": [
+          "somm.finance"
+        ]
+      }
     },
     {
       "slug": "sonic-gateway",
@@ -8541,6 +11425,68 @@
       }
     },
     {
+      "slug": "sport-fun",
+      "protocolName": "Sport.fun",
+      "xHandle": "@sportfun",
+      "xUrl": "https://x.com/sportfun",
+      "verificationSource": {
+        "evidenceId": "e3c0354d84b685a8",
+        "url": "https://sport.fun/",
+        "finalUrl": "https://sport.fun/",
+        "httpStatus": 200,
+        "sha256": "13aaa53bdde1cdf765339c1289a2e51dc7fea73eea11f92e56a2e69c4e23c050",
+        "kind": "html",
+        "provenance": "record-domain",
+        "rule": "link[x.com|twitter.com profile]",
+        "offset": 17207,
+        "match": "https://x.com/sportfun",
+        "displayHandle": "sportfun"
+      },
+      "sources": [
+        {
+          "url": "https://docs.sport.fun/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://pro.sport.fun/docs",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://pro.sport.fun/documentation",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://pro.sport.fun/",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://sport.fun/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "e3c0354d84b685a8",
+          "url": "https://sport.fun/",
+          "finalUrl": "https://sport.fun/",
+          "httpStatus": 200,
+          "sha256": "13aaa53bdde1cdf765339c1289a2e51dc7fea73eea11f92e56a2e69c4e23c050",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 17207,
+          "match": "https://x.com/sportfun",
+          "displayHandle": "sportfun"
+        }
+      ],
+      "candidates": {
+        "sportfun": [
+          "sport.fun"
+        ]
+      }
+    },
+    {
       "slug": "ssv-network",
       "protocolName": "SSV Network",
       "xHandle": "@ssv_network",
@@ -8618,6 +11564,56 @@
         "ssv_network": [
           "gh:ssvlabs",
           "ssv.network"
+        ]
+      }
+    },
+    {
+      "slug": "stablehodl",
+      "protocolName": "StableHodl",
+      "xHandle": "@StableHodl",
+      "xUrl": "https://x.com/StableHodl",
+      "verificationSource": {
+        "evidenceId": "8ad2327a5bcf7c97",
+        "url": "https://stablehodl.com/",
+        "finalUrl": "https://stablehodl.com/",
+        "httpStatus": 200,
+        "sha256": "ceab2c466d2c7036db06c9a90bff06e6ae9ea2ac546d3141d3987e528b9c8e07",
+        "kind": "html",
+        "provenance": "record-domain",
+        "rule": "meta[twitter:site]",
+        "offset": 2766,
+        "match": "<meta name=\"twitter:site\" content=\"@StableHodl\">",
+        "displayHandle": "StableHodl"
+      },
+      "sources": [
+        {
+          "url": "https://docs.stablehodl.com/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://stablehodl.com/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "8ad2327a5bcf7c97",
+          "url": "https://stablehodl.com/",
+          "finalUrl": "https://stablehodl.com/",
+          "httpStatus": 200,
+          "sha256": "ceab2c466d2c7036db06c9a90bff06e6ae9ea2ac546d3141d3987e528b9c8e07",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "meta[twitter:site]",
+          "offset": 2766,
+          "match": "<meta name=\"twitter:site\" content=\"@StableHodl\">",
+          "displayHandle": "StableHodl"
+        }
+      ],
+      "candidates": {
+        "stablehodl": [
+          "stablehodl.com"
         ]
       }
     },
@@ -9199,6 +12195,124 @@
       }
     },
     {
+      "slug": "steakhouse-prime-usdc-base",
+      "protocolName": "Steakhouse Prime USDC (Base)",
+      "xHandle": "@SteakhouseFi",
+      "xUrl": "https://x.com/SteakhouseFi",
+      "verificationSource": {
+        "evidenceId": "82680484157fd04e",
+        "url": "https://steakhouse.financial/",
+        "finalUrl": "https://www.steakhouse.financial/",
+        "httpStatus": 200,
+        "sha256": "22c120214f4079324cb486e431f9e6455335d6ca1fa039982dcef9cc4724fd44",
+        "kind": "html",
+        "provenance": "record-domain",
+        "rule": "link[x.com|twitter.com profile]",
+        "offset": 7075,
+        "match": "https://x.com/SteakhouseFi",
+        "displayHandle": "SteakhouseFi"
+      },
+      "sources": [
+        {
+          "url": "https://steakhouse.financial/",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://steakhouse.financial/docs",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://steakhouse.notion.site/",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://www.steakhouse.financial/docs",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://www.steakhouse.financial/",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://www.steakhouse.financial/docs/risk-management/monitoring/vault-setup-and-controls",
+          "provenance": "record"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "82680484157fd04e",
+          "url": "https://steakhouse.financial/",
+          "finalUrl": "https://www.steakhouse.financial/",
+          "httpStatus": 200,
+          "sha256": "22c120214f4079324cb486e431f9e6455335d6ca1fa039982dcef9cc4724fd44",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 7075,
+          "match": "https://x.com/SteakhouseFi",
+          "displayHandle": "SteakhouseFi"
+        },
+        {
+          "evidenceId": "ebe2fe358bdfd4ab",
+          "url": "https://steakhouse.financial/docs",
+          "finalUrl": "https://www.steakhouse.financial/docs",
+          "httpStatus": 200,
+          "sha256": "d8514a730cc39bff76f9a7c1c627adeb799f71973a22e2b912c45c8afaa8edac",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 17985,
+          "match": "https://x.com/SteakhouseFi",
+          "displayHandle": "SteakhouseFi"
+        },
+        {
+          "evidenceId": "ae35564af371dd8e",
+          "url": "https://www.steakhouse.financial/",
+          "finalUrl": "https://www.steakhouse.financial/",
+          "httpStatus": 200,
+          "sha256": "0c3f6bca6eee19978111ccafaf3670baf8ccf481457180ca5cfa60d70ca18e18",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 7075,
+          "match": "https://x.com/SteakhouseFi",
+          "displayHandle": "SteakhouseFi"
+        },
+        {
+          "evidenceId": "472d06d457ba566b",
+          "url": "https://www.steakhouse.financial/docs",
+          "finalUrl": "https://www.steakhouse.financial/docs",
+          "httpStatus": 200,
+          "sha256": "d8514a730cc39bff76f9a7c1c627adeb799f71973a22e2b912c45c8afaa8edac",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 17985,
+          "match": "https://x.com/SteakhouseFi",
+          "displayHandle": "SteakhouseFi"
+        },
+        {
+          "evidenceId": "cf9ef4e8e88f27d1",
+          "url": "https://www.steakhouse.financial/docs/risk-management/monitoring/vault-setup-and-controls",
+          "finalUrl": "https://www.steakhouse.financial/docs/risk-management/monitoring/vault-setup-and-controls",
+          "httpStatus": 200,
+          "sha256": "b615b95203bc08c4d05ebb5f340abafb80ba0fc540ab7b5b4538ab66a62a7f11",
+          "kind": "html",
+          "provenance": "record",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 27377,
+          "match": "https://x.com/SteakhouseFi",
+          "displayHandle": "SteakhouseFi"
+        }
+      ],
+      "candidates": {
+        "steakhousefi": [
+          "steakhouse.financial"
+        ]
+      }
+    },
+    {
       "slug": "steakhouse-usdc-metamorpho-base",
       "protocolName": "Steakhouse USDC MetaMorpho (Base)",
       "xHandle": "@SteakhouseFi",
@@ -9453,6 +12567,33 @@
           "superform.xyz"
         ]
       }
+    },
+    {
+      "slug": "supernova-cl",
+      "protocolName": "Supernova CL",
+      "xHandle": null,
+      "xUrl": null,
+      "verificationSource": null,
+      "sources": [
+        {
+          "url": "https://docs.supernova.xyz/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://supernova.xyz/docs",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://supernova.xyz/documentation",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://supernova.xyz/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "no relevant first-party handle",
+      "candidates": {}
     },
     {
       "slug": "superstate-ustb-uscc",
@@ -9755,6 +12896,90 @@
       "candidates": {}
     },
     {
+      "slug": "synfutures-v3",
+      "protocolName": "SynFutures V3",
+      "xHandle": "@SynFuturesDefi",
+      "xUrl": "https://x.com/SynFuturesDefi",
+      "verificationSource": {
+        "evidenceId": "25c44069bba9f185",
+        "url": "https://synfutures.com/",
+        "finalUrl": "https://synfutures.com/",
+        "httpStatus": 200,
+        "sha256": "1f0f729d1a563d4e68c06699ef2dbf0f2b72989770ef48e0965266eb2d862bd5",
+        "kind": "html",
+        "provenance": "record-domain",
+        "rule": "link[x.com|twitter.com profile]",
+        "offset": 3815,
+        "match": "https://x.com/SynFuturesDefi",
+        "displayHandle": "SynFuturesDefi"
+      },
+      "sources": [
+        {
+          "url": "https://docs.synfutures.com/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://synfutures.com/docs",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://synfutures.com/documentation",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://synfutures.com/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "25c44069bba9f185",
+          "url": "https://synfutures.com/",
+          "finalUrl": "https://synfutures.com/",
+          "httpStatus": 200,
+          "sha256": "1f0f729d1a563d4e68c06699ef2dbf0f2b72989770ef48e0965266eb2d862bd5",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 3815,
+          "match": "https://x.com/SynFuturesDefi",
+          "displayHandle": "SynFuturesDefi"
+        },
+        {
+          "evidenceId": "407855ec2c41ab03",
+          "url": "https://synfutures.com/docs",
+          "finalUrl": "https://synfutures.com/docs",
+          "httpStatus": 200,
+          "sha256": "1f0f729d1a563d4e68c06699ef2dbf0f2b72989770ef48e0965266eb2d862bd5",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 3815,
+          "match": "https://x.com/SynFuturesDefi",
+          "displayHandle": "SynFuturesDefi"
+        },
+        {
+          "evidenceId": "d8ff6ba26668673f",
+          "url": "https://synfutures.com/documentation",
+          "finalUrl": "https://synfutures.com/documentation",
+          "httpStatus": 200,
+          "sha256": "1f0f729d1a563d4e68c06699ef2dbf0f2b72989770ef48e0965266eb2d862bd5",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 3815,
+          "match": "https://x.com/SynFuturesDefi",
+          "displayHandle": "SynFuturesDefi"
+        }
+      ],
+      "candidates": {
+        "synfuturesdefi": [
+          "synfutures.com"
+        ]
+      }
+    },
+    {
       "slug": "synthetix-v3-core",
       "protocolName": "Synthetix V3 Core",
       "xHandle": "@synthetix",
@@ -9855,6 +13080,73 @@
       "candidates": {
         "syntropia_ai": [
           "syntropia.ai"
+        ]
+      }
+    },
+    {
+      "slug": "taiko-bridge",
+      "protocolName": "Taiko Bridge",
+      "xHandle": "@taikoxyz",
+      "xUrl": "https://x.com/taikoxyz",
+      "verificationSource": {
+        "evidenceId": "37c708585752ffe9",
+        "url": "https://docs.taiko.xyz/",
+        "finalUrl": "https://docs.taiko.xyz/",
+        "httpStatus": 200,
+        "sha256": "3c8f26acd3cd0370ce69c0feb986ab03362947ed3b7a0bf70bd3a31089706452",
+        "kind": "html",
+        "provenance": "record",
+        "rule": "meta[twitter:site]",
+        "offset": 271,
+        "match": "<meta name=\"twitter:site\" content=\"@taikoxyz\"/>",
+        "displayHandle": "taikoxyz"
+      },
+      "sources": [
+        {
+          "url": "https://docs.taiko.xyz/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://bridge.taiko.xyz/",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://taiko.xyz/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "37c708585752ffe9",
+          "url": "https://docs.taiko.xyz/",
+          "finalUrl": "https://docs.taiko.xyz/",
+          "httpStatus": 200,
+          "sha256": "3c8f26acd3cd0370ce69c0feb986ab03362947ed3b7a0bf70bd3a31089706452",
+          "kind": "html",
+          "provenance": "record",
+          "rule": "meta[twitter:site]",
+          "offset": 271,
+          "match": "<meta name=\"twitter:site\" content=\"@taikoxyz\"/>",
+          "displayHandle": "taikoxyz"
+        },
+        {
+          "evidenceId": "2199cb9b3e6e4e86",
+          "url": "https://taiko.xyz/",
+          "finalUrl": "https://taiko.xyz/",
+          "httpStatus": 200,
+          "sha256": "d507e00caaf5fa38ce02d8ac8a9d305b027eed026a77120ff7f80901f8c8c180",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 5137,
+          "match": "https://twitter.com/taikoxyz",
+          "displayHandle": "taikoxyz"
+        }
+      ],
+      "candidates": {
+        "taikoxyz": [
+          "taiko.xyz"
         ]
       }
     },
@@ -10095,6 +13387,103 @@
       "reason": "no relevant first-party handle (seen, not relevant: ['thetnetwork'])"
     },
     {
+      "slug": "tokenworks",
+      "protocolName": "TokenWorks",
+      "xHandle": "@token_works",
+      "xUrl": "https://x.com/token_works",
+      "verificationSource": {
+        "evidenceId": "34ad35ed5c015dbe",
+        "url": "https://nftstrategy.fun/",
+        "finalUrl": "https://www.nftstrategy.fun/",
+        "httpStatus": 200,
+        "sha256": "e62a85482ad0a795cff1402be29abb6837744442cc55868ac1bd5dcfeac10eb9",
+        "kind": "html",
+        "provenance": "record",
+        "rule": "link[x.com|twitter.com profile]",
+        "offset": 316263,
+        "match": "https://x.com/token_works",
+        "displayHandle": "token_works"
+      },
+      "sources": [
+        {
+          "url": "https://nftstrategy.fun/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://nftstrategy.fun/docs",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://www.nftstrategy.fun/docs",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://www.nftstrategy.fun/",
+          "provenance": "record"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "34ad35ed5c015dbe",
+          "url": "https://nftstrategy.fun/",
+          "finalUrl": "https://www.nftstrategy.fun/",
+          "httpStatus": 200,
+          "sha256": "e62a85482ad0a795cff1402be29abb6837744442cc55868ac1bd5dcfeac10eb9",
+          "kind": "html",
+          "provenance": "record",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 316263,
+          "match": "https://x.com/token_works",
+          "displayHandle": "token_works"
+        },
+        {
+          "evidenceId": "22cc527206667193",
+          "url": "https://nftstrategy.fun/docs",
+          "finalUrl": "https://www.nftstrategy.fun/docs",
+          "httpStatus": 200,
+          "sha256": "c86fd54c608b988a929f6bf384ab636669a560ce61fc0be1e06f1c718ab6a36c",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 16862,
+          "match": "https://x.com/token_works",
+          "displayHandle": "token_works"
+        },
+        {
+          "evidenceId": "f857c1f5523df0fa",
+          "url": "https://www.nftstrategy.fun/",
+          "finalUrl": "https://www.nftstrategy.fun/",
+          "httpStatus": 200,
+          "sha256": "9df2d03b92595168c921e61176ec234d7f3c75aa6e54f2262da73b4ebfb6918e",
+          "kind": "html",
+          "provenance": "record",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 315939,
+          "match": "https://x.com/token_works",
+          "displayHandle": "token_works"
+        },
+        {
+          "evidenceId": "93b230105d5535b2",
+          "url": "https://www.nftstrategy.fun/docs",
+          "finalUrl": "https://www.nftstrategy.fun/docs",
+          "httpStatus": 200,
+          "sha256": "c86fd54c608b988a929f6bf384ab636669a560ce61fc0be1e06f1c718ab6a36c",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 16862,
+          "match": "https://x.com/token_works",
+          "displayHandle": "token_works"
+        }
+      ],
+      "candidates": {
+        "token_works": [
+          "nftstrategy.fun"
+        ]
+      }
+    },
+    {
       "slug": "tori-finance",
       "protocolName": "Tori Finance",
       "xHandle": "@tori_finance",
@@ -10227,6 +13616,69 @@
       "candidates": {
         "treehousefi": [
           "treehouse.finance"
+        ]
+      }
+    },
+    {
+      "slug": "trueo",
+      "protocolName": "Trueo",
+      "xHandle": "@Trueo_",
+      "xUrl": "https://x.com/Trueo_",
+      "verificationSource": {
+        "evidenceId": "3239586003937266",
+        "url": "https://docs.trueo.com/",
+        "finalUrl": "https://docs.trueo.com/",
+        "httpStatus": 200,
+        "sha256": "c5ee0cdd275dcab8653c586156c18d315ffb56477bb6438ab2b2b6add2039762",
+        "kind": "html",
+        "provenance": "record",
+        "rule": "link[x.com|twitter.com profile]",
+        "offset": 15524,
+        "match": "https://x.com/Trueo_",
+        "displayHandle": "Trueo_"
+      },
+      "sources": [
+        {
+          "url": "https://docs.trueo.com/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://trueo.com/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "3239586003937266",
+          "url": "https://docs.trueo.com/",
+          "finalUrl": "https://docs.trueo.com/",
+          "httpStatus": 200,
+          "sha256": "c5ee0cdd275dcab8653c586156c18d315ffb56477bb6438ab2b2b6add2039762",
+          "kind": "html",
+          "provenance": "record",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 15524,
+          "match": "https://x.com/Trueo_",
+          "displayHandle": "Trueo_"
+        },
+        {
+          "evidenceId": "12cef69432980169",
+          "url": "https://trueo.com/",
+          "finalUrl": "https://trueo.com/",
+          "httpStatus": 200,
+          "sha256": "327077ab6a7e03778480b9665989f402a47af092304cfc63e0271a2f75e3419c",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 198095,
+          "match": "https://x.com/Trueo_",
+          "displayHandle": "Trueo_"
+        }
+      ],
+      "candidates": {
+        "trueo_": [
+          "trueo.com"
         ]
       }
     },
@@ -10487,8 +13939,41 @@
       }
     },
     {
+      "slug": "unitus",
+      "protocolName": "Unitus",
+      "xHandle": null,
+      "xUrl": null,
+      "verificationSource": null,
+      "sources": [
+        {
+          "url": "https://unitus.finance/docs",
+          "provenance": "record"
+        },
+        {
+          "url": "https://unitus.finance/documentation",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://unitus.finance/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "no relevant first-party handle",
+      "candidates": {}
+    },
+    {
       "slug": "unslashed",
       "protocolName": "Unslashed",
+      "xHandle": null,
+      "xUrl": null,
+      "verificationSource": null,
+      "sources": [],
+      "reason": "no relevant first-party handle",
+      "candidates": {}
+    },
+    {
+      "slug": "upshift",
+      "protocolName": "Upshift",
       "xHandle": null,
       "xUrl": null,
       "verificationSource": null,
@@ -10741,6 +14226,185 @@
       }
     },
     {
+      "slug": "vetro",
+      "protocolName": "VETRO",
+      "xHandle": "@vetro_org",
+      "xUrl": "https://x.com/vetro_org",
+      "verificationSource": {
+        "evidenceId": "54e6dd65ea031322",
+        "url": "https://vetro.org/",
+        "finalUrl": "https://vetro.org/",
+        "httpStatus": 200,
+        "sha256": "c7434e89806b7fd918a6966354b79e199823847afe6dab1f15009dac8dee39c4",
+        "kind": "html",
+        "provenance": "record-domain",
+        "rule": "link[x.com|twitter.com profile]",
+        "offset": 331746,
+        "match": "https://x.com/vetro_org",
+        "displayHandle": "vetro_org"
+      },
+      "sources": [
+        {
+          "url": "https://docs.vetro.org/",
+          "provenance": "record"
+        },
+        {
+          "url": "https://vetro.org/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "54e6dd65ea031322",
+          "url": "https://vetro.org/",
+          "finalUrl": "https://vetro.org/",
+          "httpStatus": 200,
+          "sha256": "c7434e89806b7fd918a6966354b79e199823847afe6dab1f15009dac8dee39c4",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 331746,
+          "match": "https://x.com/vetro_org",
+          "displayHandle": "vetro_org"
+        }
+      ],
+      "candidates": {
+        "vetro_org": [
+          "vetro.org"
+        ]
+      }
+    },
+    {
+      "slug": "wan-bridge",
+      "protocolName": "Wan Bridge",
+      "xHandle": "@wanchain_org",
+      "xUrl": "https://x.com/wanchain_org",
+      "verificationSource": {
+        "evidenceId": "12b941bcbf9f8642",
+        "url": "https://docs.wanchain.org/",
+        "finalUrl": "https://docs.wanchain.org/",
+        "httpStatus": 200,
+        "sha256": "cfc44d7b0665a583544a15e4dd768d5724be5426c7d8db81c186e627fbc7fea8",
+        "kind": "html",
+        "provenance": "record-domain",
+        "rule": "link[x.com|twitter.com profile]",
+        "offset": 147240,
+        "match": "https://x.com/wanchain_org",
+        "displayHandle": "wanchain_org"
+      },
+      "sources": [
+        {
+          "url": "https://bridge.wanchain.org/docs",
+          "provenance": "record"
+        },
+        {
+          "url": "https://bridge.wanchain.org/documentation",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://docs.wanchain.org/",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://wanchain.org/",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://bridge.wanchain.org/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "12b941bcbf9f8642",
+          "url": "https://docs.wanchain.org/",
+          "finalUrl": "https://docs.wanchain.org/",
+          "httpStatus": 200,
+          "sha256": "cfc44d7b0665a583544a15e4dd768d5724be5426c7d8db81c186e627fbc7fea8",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 147240,
+          "match": "https://x.com/wanchain_org",
+          "displayHandle": "wanchain_org"
+        },
+        {
+          "evidenceId": "66c97c07f59e0e86",
+          "url": "https://wanchain.org/",
+          "finalUrl": "https://www.wanchain.org/",
+          "httpStatus": 200,
+          "sha256": "0f22ea9465458ece6a9c7aa77b5cd2581fe3c705d487242a699f05bc25a0671d",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 798705,
+          "match": "https://twitter.com/wanchain_org",
+          "displayHandle": "wanchain_org"
+        }
+      ],
+      "candidates": {
+        "wanchain_org": [
+          "wanchain.org"
+        ]
+      }
+    },
+    {
+      "slug": "whales-market",
+      "protocolName": "Whales Market",
+      "xHandle": "@WhalesMarket",
+      "xUrl": "https://x.com/WhalesMarket",
+      "verificationSource": {
+        "evidenceId": "daf130ca2d12a276",
+        "url": "https://docs.whales.market/llms-full.txt",
+        "finalUrl": "https://docs.whales.market/llms-full.txt",
+        "httpStatus": 200,
+        "sha256": "3e46b41a1b55dff30ab8e4148c4ec6c25f78b070c50b85818b05e0bfe723f428",
+        "kind": "text",
+        "provenance": "record",
+        "rule": "link[x.com|twitter.com profile]",
+        "offset": 117739,
+        "match": "https://twitter.com/WhalesMarket",
+        "displayHandle": "WhalesMarket"
+      },
+      "sources": [
+        {
+          "url": "https://docs.whales.market/",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://whales.market/",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://docs.whales.market/llms-full.txt",
+          "provenance": "record"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "daf130ca2d12a276",
+          "url": "https://docs.whales.market/llms-full.txt",
+          "finalUrl": "https://docs.whales.market/llms-full.txt",
+          "httpStatus": 200,
+          "sha256": "3e46b41a1b55dff30ab8e4148c4ec6c25f78b070c50b85818b05e0bfe723f428",
+          "kind": "text",
+          "provenance": "record",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 117739,
+          "match": "https://twitter.com/WhalesMarket",
+          "displayHandle": "WhalesMarket"
+        }
+      ],
+      "candidates": {
+        "whalesmarket": [
+          "whales.market"
+        ]
+      }
+    },
+    {
       "slug": "wildcat-protocol",
       "protocolName": "Wildcat Protocol",
       "xHandle": "@wildcatfi",
@@ -10787,6 +14451,127 @@
       "candidates": {
         "wildcatfi": [
           "wildcat.finance"
+        ]
+      }
+    },
+    {
+      "slug": "wintermute-confidential-wbtc-ethereum",
+      "protocolName": "Wintermute Confidential WBTC (Ethereum)",
+      "xHandle": "@wintermute_t",
+      "xUrl": "https://x.com/wintermute_t",
+      "verificationSource": {
+        "evidenceId": "fd3c3eec2d01101b",
+        "url": "https://armitage.wintermute.com/",
+        "finalUrl": "https://armitage.wintermute.com/",
+        "httpStatus": 200,
+        "sha256": "e5ccd0e40a9916493c8a516ac25c42407816183a45692fffc499e2559e405367",
+        "kind": "html",
+        "provenance": "record-domain",
+        "rule": "link[x.com|twitter.com profile]",
+        "offset": 230056,
+        "match": "https://x.com/wintermute_t",
+        "displayHandle": "wintermute_t"
+      },
+      "sources": [
+        {
+          "url": "https://armitage.wintermute.com/docs",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://armitage.wintermute.com/",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://armitage.wintermute.com/llms-full.txt",
+          "provenance": "record"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "fd3c3eec2d01101b",
+          "url": "https://armitage.wintermute.com/",
+          "finalUrl": "https://armitage.wintermute.com/",
+          "httpStatus": 200,
+          "sha256": "e5ccd0e40a9916493c8a516ac25c42407816183a45692fffc499e2559e405367",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 230056,
+          "match": "https://x.com/wintermute_t",
+          "displayHandle": "wintermute_t"
+        }
+      ],
+      "candidates": {
+        "wintermute_t": [
+          "wintermute.com"
+        ]
+      }
+    },
+    {
+      "slug": "woofi-earn",
+      "protocolName": "WOOFi Earn",
+      "xHandle": "@_WOOFi",
+      "xUrl": "https://x.com/_WOOFi",
+      "verificationSource": {
+        "evidenceId": "a3ef054259cb1787",
+        "url": "https://woofi.com/docs",
+        "finalUrl": "https://woofi.com/docs",
+        "httpStatus": 200,
+        "sha256": "ce0f2e9214a81b1117cf96fbf4f619153fbdcbcb73fa2085f36f1815be0dc4fe",
+        "kind": "html",
+        "provenance": "record",
+        "rule": "link[x.com|twitter.com profile]",
+        "offset": 2395,
+        "match": "https://twitter.com/_WOOFi",
+        "displayHandle": "_WOOFi"
+      },
+      "sources": [
+        {
+          "url": "https://woofi.com/docs",
+          "provenance": "record"
+        },
+        {
+          "url": "https://woofi.com/documentation",
+          "provenance": "seed"
+        },
+        {
+          "url": "https://woofi.com/en/trade/",
+          "provenance": "seed"
+        }
+      ],
+      "reason": "single relevant handle",
+      "proofs": [
+        {
+          "evidenceId": "a3ef054259cb1787",
+          "url": "https://woofi.com/docs",
+          "finalUrl": "https://woofi.com/docs",
+          "httpStatus": 200,
+          "sha256": "ce0f2e9214a81b1117cf96fbf4f619153fbdcbcb73fa2085f36f1815be0dc4fe",
+          "kind": "html",
+          "provenance": "record",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 2395,
+          "match": "https://twitter.com/_WOOFi",
+          "displayHandle": "_WOOFi"
+        },
+        {
+          "evidenceId": "04826ae94e136c2f",
+          "url": "https://woofi.com/documentation",
+          "finalUrl": "https://woofi.com/documentation",
+          "httpStatus": 200,
+          "sha256": "ce0f2e9214a81b1117cf96fbf4f619153fbdcbcb73fa2085f36f1815be0dc4fe",
+          "kind": "html",
+          "provenance": "record-domain",
+          "rule": "link[x.com|twitter.com profile]",
+          "offset": 2395,
+          "match": "https://twitter.com/_WOOFi",
+          "displayHandle": "_WOOFi"
+        }
+      ],
+      "candidates": {
+        "_woofi": [
+          "woofi.com"
         ]
       }
     },

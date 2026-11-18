@@ -1,0 +1,36 @@
+{
+ "schema": "pacta.graph_retired.v1",
+ "description": "RPC-pinned records retired when their protocol was converted to Base-EAS records. tools/graph_manifest.py keeps their contracts governed by that protocol (the graph only grows).",
+ "records": [
+  {
+   "slug": "strata-markets",
+   "chain": "ethereum",
+   "record_id": "strata-markets-control-plane",
+   "retired_at_sprint": 28,
+   "target_contract": "0x3d7d6fdf07EE548B939A80edbc9B2256d0cdc003",
+   "target_label": "Strata Senior USDe",
+   "controller_address": "0x30A17d6bcBDBF1579d6fBBA453aCf776D01fbb50",
+   "controller_kind": "contract_controller"
+  },
+  {
+   "slug": "vesper-v1",
+   "chain": "ethereum",
+   "record_id": "vesper-v1-control-plane",
+   "retired_at_sprint": 28,
+   "target_contract": "0x1b40183EFB4Dd766f11bDa7A7c3AD8982e998421",
+   "target_label": "VesperToken (VSP)",
+   "controller_address": "0x9520b477Aa81180E6DdC006Fc09Fb6d3eb4e807A",
+   "controller_kind": "multisig_safe"
+  },
+  {
+   "slug": "zircuit-staking",
+   "chain": "ethereum",
+   "record_id": "zircuit-staking-control-plane",
+   "retired_at_sprint": 28,
+   "target_contract": "0xF047ab4c75cebf0eB9ed34Ae2c186f3611aEAfa6",
+   "target_label": "ZtakingPool",
+   "controller_address": "0xacAA4Dde6c4fB90BB1948904f0308296f7C74252",
+   "controller_kind": "contract_controller"
+  }
+ ]
+}

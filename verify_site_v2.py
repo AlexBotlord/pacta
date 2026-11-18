@@ -46,14 +46,14 @@ import xml.etree.ElementTree as ET
 ROOT = os.path.dirname(os.path.abspath(__file__))
 DOCS = os.path.join(ROOT, "docs")
 RESULTS = []
-# ---- EXPECT-BEGIN: the published numbers, in one place (tools/apply_sprint27_attestation.py rewrites this block when it stamps a Sprint)
+# ---- EXPECT-BEGIN: the published numbers, in one place (tools/apply_sprint28_attestation.py rewrites this block when it stamps a Sprint)
 EXPECT = {
-    "sprints": 27, "records": 201, "eas_attestations": 27,              # index.json sprints_completed / records_indexed; Base EAS sprint UIDs
-    "protocols": 229, "eas_protocols": 99, "rpc_protocols": 130,          # /protocols/ pages = EAS-attested + RPC-pinned; badges = protocols
-    "briefs": 13, "badge_tiers": {"aligned": 61, "parameter_delta": 38, "rpc_observed": 130},
-    "base_records": 27,                                                  # index.json records with chain "base"
-    "rpc_by_chain": {"ethereum": 121, "base": 9},                         # rpc-pinned.json records per chain (sum = rpc_protocols)
-    "multi_attest_txs": ["1–12", "13–16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27"],                              # attestation_coverage.eas_multi_attest_txs keys
+    "sprints": 28, "records": 218, "eas_attestations": 28,              # index.json sprints_completed / records_indexed; Base EAS sprint UIDs
+    "protocols": 309, "eas_protocols": 113, "rpc_protocols": 196,          # /protocols/ pages = EAS-attested + RPC-pinned; badges = protocols
+    "briefs": 14, "badge_tiers": {"aligned": 69, "parameter_delta": 44, "rpc_observed": 196},
+    "base_records": 31,                                                  # index.json records with chain "base"
+    "rpc_by_chain": {"ethereum": 178, "base": 18},                         # rpc-pinned.json records per chain (sum = rpc_protocols)
+    "multi_attest_txs": ["1–12", "13–16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28"],                              # attestation_coverage.eas_multi_attest_txs keys
     "summaries": {"15": "61c0cc292cfa1fc3840277cf312383d24a6c81af56afac303afdbd84e7316cf6",
                   "16": "91b8e29301ef0e625c4ddc9eadaf5388115812f5958f90b6e0ed53a4808ba8ae",
                   "17": "2fd7ab979c6dfc3aae44f6c46c8f0397959927874ff0358574043a056d3168ea",
@@ -66,13 +66,14 @@ EXPECT = {
                   "24": "3719c5f2ae685806b428a5dea0b9b62b8969bca591271f484cb97c20cb53a36d",
                   "25": "4046bfd661f631ceedb335ad428fa8285e7906b1bed34c25a29fe894510c94bc",
                   "26": "cbf6009b33bde0e22ec37fc45720aad3dad57bfcd91f8763e6b31fdf223c583d",
-                  "27": "be4a0d34a555b52a23bf57a9852be083b669e19151323c42bb322c18f0df1d6b"},   # audits/sprint-<n>/ summary SHA-256 (attested)
+                  "27": "be4a0d34a555b52a23bf57a9852be083b669e19151323c42bb322c18f0df1d6b",
+                  "28": "062632d4abf0411664883823e185de5f974c9e989bf8497c0e8863b557b878bd"},   # audits/sprint-<n>/ summary SHA-256 (attested)
 }
 # ---- EXPECT-END
 X = EXPECT
 # sha256 of docs/api/v1/graph-manifest.json: changes only through a deliberate re-pin (a Sprint stage / stamp rewrites it after the
 # rebuild); a merged Wave 2 claim or any site-only change must leave it as is
-GRAPH_MANIFEST_SHA256 = "0807fbca5cfb6430f1cff153ed5049803c153f7a1dab496afb82e9d7a866deb5"
+GRAPH_MANIFEST_SHA256 = "3c5e6a15b920c7edcd9021e00c116d290e33508de54f9216de6e0a8b692c47af"
 NON_PROTOCOL_PAGES = 32                                                  # docs/**/*.html pages that are not /protocols/<slug>/ (32 with the Sprint 28 brief)
 
 
@@ -2366,7 +2367,7 @@ def main(argv=None):
         "V47-02: the command input paints a 2 px inset --ring outline on :focus-visible (both themes)":
             ".cmdk-head input:focus-visible { outline: 2px solid var(--ring); outline-offset: -2px; box-shadow: none; }" in css471
             and ".cmdk-head input:focus, .cmdk-head input:focus-visible { outline: none" not in css471,
-        "V47-03: ?basket= keeps underscores (exact <option> values): stable_rwa 56, eth_lst_lrt 40, lending_vaults 82, base 23; combined with ?grade= and ?q= (harness)":
+        "V47-03: ?basket= keeps underscores (exact <option> values): stable_rwa 69, eth_lst_lrt 45, lending_vaults 119, base 35; combined with ?grade= and ?q= (harness)":
             "replace(/[^a-z0-9-]/g" not in appjs and res.get("v471_basket_urls") is True,
     }
     check("v4.7.1 review fixes (V47-01 stable audience-tab height, V47-02 command-input focus ring, V47-03 basket URLs with underscores)",
@@ -3048,17 +3049,17 @@ def main(argv=None):
             and all('bounties/">Bounties</a>' in t for r, t in pages.items() if 'class="topbar"' in t),
         "Wave 1 archive labelled 'Historical Snapshot (Pinned at 53 Protocols on Nov 15)'": "<b>Historical Snapshot (Pinned at 53 Protocols on Nov 15)</b>" in bounty
             and bounty.index("data-wave1-snapshot") > bounty.index('id="wave-1"'),
-        "funded capacity = confirmed unencumbered USDC only (6 Epoch 1 slots settled on Base; 0 slots / $0.00 unencumbered; the $21.45 USDC treasury ring-fenced for Slot #4; Epoch 1 cap is a target; build caps merged claims at settled + unencumbered)":
-            (w2cfg["settledEpochSlots"], w2cfg["fundedUnencumberedSlots"], w2cfg["fundedUnencumberedUsdc"], w2cfg["ringFencedUsdc"]) == (6, 0, "0.00", "21.45")
-            and (BS.SETTLED_EPOCH_SLOTS, BS.FUNDED_UNENCUMBERED_SLOTS, BS.FUNDED_UNENCUMBERED_USDC, BS.EPOCH_REMAINING_USDC) == (6, 0, "0.00", "19.00")
+        "funded capacity = confirmed unencumbered USDC only (6 Epoch 1 slots settled on Base; 19 slots / $19.00 unencumbered completing Epoch 1; $85.12 Epoch 2+ reserve from $104.12 treasury; Wave 1 4/4 settled)":
+            (w2cfg["settledEpochSlots"], w2cfg["fundedUnencumberedSlots"], w2cfg["fundedUnencumberedUsdc"], w2cfg["ringFencedUsdc"]) == (6, 19, "19.00", "85.12")
+            and (BS.SETTLED_EPOCH_SLOTS, BS.FUNDED_UNENCUMBERED_SLOTS, BS.FUNDED_UNENCUMBERED_USDC, BS.EPOCH_REMAINING_USDC) == (6, 19, "19.00", "0.00")
             and len(lb_["wave2Settlements"]) == 6 and all(BS.tx_ok(p_["payoutTxHash"]) for p_ in lb_["wave2Settlements"])
-            and "data-wave2-capacity" in bounty and "$21.45 USDC in the treasury is separately ring-fenced for Wave 1 Slot #4 (verified PR #32, Issue #24)" in bounty
-            and "Confirmed unencumbered on-chain now: **$0.00 USDC (0 slots)**" in master and "funded this epoch" not in bounty + master + read("docs/llms.txt")
+            and "data-wave2-capacity" in bounty and "$85.12 USDC in the treasury is separately ring-fenced for subsequent Wave 2 epochs ($104.12 USDC total unencumbered in the Base treasury; Wave 1 Genesis 4/4 = $100.00 USDC is 100% settled on Base)" in bounty
+            and "Confirmed unencumbered on-chain now: **$19.00 USDC (19 slots)**" in master and "funded this epoch" not in bounty + master + read("docs/llms.txt")
             and not re.search(r"\bfunded epochs?\b|pays out in funded", bounty + master + read("docs/llms.txt") + read("docs/llms-full.txt") + rd_)
             and "PRIOR_EPOCH_SLOTS + SETTLED_EPOCH_SLOTS + FUNDED_UNENCUMBERED_SLOTS" in read("tools/build_site.py"),
-        "README: $75 settled shield (= the stamped Wave 1 ledger), @pacta/mcp-server 0.1.5, Master Issue #41, 62 EAS + 12 RPC protocols, Ethereum and Base block heights": (
-            sum(25 for s_ in lb_["wave1Settlements"] if s_["payoutTxHash"]) == 75
-            and "[![Bounties & Leaderboard](https://img.shields.io/badge/Bounties_%26_Leaderboard-%2475_USDC_Settled-10b981?style=for-the-badge&labelColor=000000)](https://pacta.wtf/leaderboard/)" in read("README.md")
+        "README: $106 settled shield (= $100 Wave 1 4/4 + $6 Wave 2), @pacta/mcp-server 0.1.5, Master Issue #41, live protocol count, Ethereum and Base block heights": (
+            sum(25 for s_ in lb_["wave1Settlements" ] if s_["payoutTxHash"]) == 100 and len(lb_["wave2Settlements"]) == 6
+            and "[![Bounties & Leaderboard](https://img.shields.io/badge/Bounties_%26_Leaderboard-%24106_USDC_Settled-10b981?style=for-the-badge&labelColor=000000)](https://pacta.wtf/leaderboard/)" in read("README.md")
             and "`@pacta/mcp-server` 0.1.5" in read("README.md") and "0.1.4" not in read("README.md")
             and json.loads(read("packages/mcp-server/package.json"))["version"] == "0.1.5"
             and "[Master Issue #41](https://github.com/Fractal-Neurons/pacta/issues/41)" in read("README.md")
@@ -3185,7 +3186,7 @@ def main(argv=None):
         "Runs when you press Check or pick an example below." in home_p and res.get("pf_no_fetch_on_load") is True
         and "anonymous first-party aggregate pageviews" in home_p
         and f'data-bounty-pill>{BS.FUNDED_UNENCUMBERED_SLOTS} Funded Slots Open Now · ${BS.REWARD_USDC} USDC / Merged Finding</span>' in read("docs/bounties/index.html")
-        and "ring-fenced for Wave 1 Slot #4" in read("docs/bounties/index.html"))
+        and "Wave 1 Genesis (4/4 = $100 USDC) 100% settled on Base" in read("docs/bounties/index.html"))
     def lum_(h):
         c = [int(h[i:i + 2], 16) / 255 for i in (1, 3, 5)]
         c = [x / 12.92 if x <= 0.03928 else ((x + 0.055) / 1.055) ** 2.4 for x in c]

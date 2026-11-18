@@ -90,6 +90,11 @@ BRIEFS = {
     # Sprint 28: sixth decoded brief
     "lombard-op-0xd07f": "Pre-execution brief: one 5-call Lombard timelock batch sets a 2,000-sat deposit fee on every LBTC and BTC.b "
                          "proof mint, doubles the router minimum to 4,000 sats and moves LBTC's redeem charge (1-day delay; ETA 2026-11-19 08:33 UTC).",
+    # seventh and eighth decoded briefs
+    "cap-op-0x3397": "Pre-execution brief: a queued Cap timelock operation upgrades the EigenLayer service manager (UUPS) so slashes pay out "
+                     "only after EigenLayer's resolution delay and rewards are USDC-only (1-day delay; ETA 2026-11-19 16:23 UTC).",
+    "compound-v3-op-0x86b4": "Pre-execution brief: Compound proposal 625 sends a Linea message that withdraws all 25.94 WETH of reserves "
+                             "from Linea cWETHv3 and bridges the ETH to the Ethereum Timelock (2-day + 1-day delays; ETA 2026-11-20 18:58 UTC).",
 }
 NAV = [("scorecards/", "Scorecards"), ("radar/", "Radar"), ("scan/", "Instant Scan"), ("#pricing", "Pricing"), ("bounties/", "Bounties"),
        ("mcp/", "MCP")]   # v2: the self-serve scan and #pricing in the bar; Protocols and For protocols stay in the footer
@@ -1553,8 +1558,9 @@ def protocol_groups(idx):
 
 
 def radar_for(name, radar):
+    """Radar items whose protocol name appears in this protocol's name as whole words ("Cap" never matches "K3 Capital")."""
     key = name.lower()
-    return [it for it in radar["items"] if it["protocol"].lower() in key or key.startswith(it["protocol"].lower())]
+    return [it for it in radar["items"] if re.search(r"(?<![a-z0-9])" + re.escape(it["protocol"].lower()) + r"(?![a-z0-9])", key)]
 
 
 # ---- governance forum digest (read-only; CONTRACTS §3) ---------------------------------------------------------------
@@ -1707,7 +1713,7 @@ BRIEF_PROTOCOL = {"ethena-ops-0x0ca0-0x1fe5": "ethena-usde-susde", "etherfi-op-0
                   "treehouse-op-0x2f11": "treehouse-tree-teth", "lombard-ops-0xceee-0x2f2a-0x6404": "lombard-lbtc",
                   "beefy-base-op-0x3302": "beefy-finance-base", "ethena-ops-0xb028-0xca05-0x108e-0x070a": "ethena-usde-susde",
                   "yearn-v3-op-0x2a14": "yearn-v3", "etherfi-liquid-op-0xf0fb": "ether-fi-liquid-veda-boringvault",
-                  "lombard-op-0xd07f": "lombard-lbtc"}
+                  "lombard-op-0xd07f": "lombard-lbtc", "cap-op-0x3397": "cap", "compound-v3-op-0x86b4": "compound-v3-comet"}
 
 
 def request_href(tier, slug, forum=None, settlement=None, home="../../"):

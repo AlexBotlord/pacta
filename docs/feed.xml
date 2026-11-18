@@ -5,7 +5,7 @@
   <subtitle>Block-pinned DeFi control-plane records (Base EAS) and queued timelock operations</subtitle>
   <link rel="self" href="https://pacta.wtf/feed.xml"/>
   <link href="https://pacta.wtf/"/>
-  <updated>2026-11-18T09:52:23Z</updated>
+  <updated>2026-11-18T21:10:47Z</updated>
   <author><name>Pacta by Fractal Neurons</name><uri>https://pacta.wtf/</uri></author>
   <entry>
     <id>https://pacta.wtf/#sprint-28</id>
@@ -204,66 +204,80 @@
     <summary>Inverse Finance (FiRM). 0 aligned, 0 protective delta, 1 parameter delta. Summary: https://github.com/Fractal-Neurons/pacta/blob/main/audits/sprint-1/block-26399876-summary.md</summary>
   </entry>
   <entry>
-    <id>https://pacta.wtf/briefs/ethena-ops-0xb028-0xca05-0x108e-0x070a/#radar</id>
-    <title>Ethena timelock: pending · Ethena USDe — mint caps cut to 50M per block, USDm delisted, a custodian added</title>
-    <link href="https://pacta.wtf/briefs/ethena-ops-0xb028-0xca05-0x108e-0x070a/"/>
-    <updated>2026-11-18T09:20:23Z</updated>
-    <summary>Four ops: global and per-asset maxMintPerBlock 200M -&gt; 50M USDe on 8 assets; removeSupportedAsset(USDm); addCustodianAddress for an EOA not yet a custodian; USDe OFT adapter setRateLimits to 25M per hour on LayerZero eids 30339 (was 10M) and 30383 (was 30M). Read at finalized Ethereum block #26,441,005.</summary>
-  </entry>
-  <entry>
     <id>https://pacta.wtf/briefs/etherfi-liquid-op-0xf0fb/#radar</id>
     <title>ether.fi Liquid timelock: pending · ether.fi Liquid — strategist Merkle roots rotated on liquidUSD, liquidETH and liquidBTC</title>
     <link href="https://pacta.wtf/briefs/etherfi-liquid-op-0xf0fb/"/>
-    <updated>2026-11-18T09:20:23Z</updated>
-    <summary>One 5-call batch of setManageRoot on the Veda ManagerWithMerkleVerification contracts of three Liquid vaults: four live strategist roots replaced (a Safe on all three vaults, an EOA on liquidETH) and the liquidUSD manager&#x27;s own root set to zero. The new roots&#x27; leaves are not onchain. Read at finalized Ethereum block #26,441,005.</summary>
+    <updated>2026-11-18T21:10:47Z</updated>
+    <summary>One 5-call batch of setManageRoot on the Veda ManagerWithMerkleVerification contracts of three Liquid vaults: four live strategist roots replaced (a Safe on all three vaults, an EOA on liquidETH) and the liquidUSD manager&#x27;s own root set to zero. The new roots&#x27; leaves are not onchain. Read at finalized Ethereum block #26,444,554.</summary>
   </entry>
   <entry>
     <id>https://pacta.wtf/briefs/lombard-op-0xd07f/#radar</id>
     <title>Lombard timelock: pending · Lombard — LBTC and BTC.b deposit fees set to 2,000 sats; minimum request doubled</title>
     <link href="https://pacta.wtf/briefs/lombard-op-0xd07f/"/>
-    <updated>2026-11-18T09:20:23Z</updated>
-    <summary>One 5-call batch on the upgraded AssetRouter: minRequestAmount 2,000 -&gt; 4,000 sats, a 2,000-sat deposit fee on every LBTC and BTC.b proof mint (half the new minimum, above the operator range), and LBTC&#x27;s redeem charge moved from redeemFee (10,000 -&gt; 0 sats) to toNativeCommission on redeems to Bitcoin (0 -&gt; 10,000 sats). Read at finalized Ethereum block #26,441,005.</summary>
+    <updated>2026-11-18T21:10:47Z</updated>
+    <summary>One 5-call batch on the upgraded AssetRouter: minRequestAmount 2,000 -&gt; 4,000 sats, a 2,000-sat deposit fee on every LBTC and BTC.b proof mint (half the new minimum, above the operator range), and LBTC&#x27;s redeem charge moved from redeemFee (10,000 -&gt; 0 sats) to toNativeCommission on redeems to Bitcoin (0 -&gt; 10,000 sats). Read at finalized Ethereum block #26,444,554.</summary>
+  </entry>
+  <entry>
+    <id>https://pacta.wtf/briefs/cap-op-0x3397/#radar</id>
+    <title>Cap timelock: pending · Cap — EigenLayer service-manager upgrade: slashes paid out only after EigenLayer&#x27;s resolution delay</title>
+    <link href="https://pacta.wtf/briefs/cap-op-0x3397/"/>
+    <updated>2026-11-18T21:10:47Z</updated>
+    <summary>upgradeToAndCall (no initializer) on Cap&#x27;s EigenServiceManager (UUPS): a slash now queues the payout, valued at slash time, and anyone completes it once EigenLayer&#x27;s slash resolution delay has passed (completeSlash); rewards become USDC-only and USDC can no longer be registered as collateral. Storage is appended only (pendingSlashes). Read at finalized Ethereum block #26,444,554.</summary>
   </entry>
   <entry>
     <id>https://pacta.wtf/briefs/etherfi-op-0x244e/#radar</id>
     <title>ether.fi timelock: pending · ether.fi — LayerZero V2 delegate moved behind the 10-day timelock</title>
     <link href="https://pacta.wtf/briefs/etherfi-op-0x244e/"/>
-    <updated>2026-11-18T09:20:23Z</updated>
-    <summary>EtherfiL1SyncPoolETH.setDelegate(EtherFiTimelock): protective hardening of the OApp&#x27;s messaging configuration. Read at finalized Ethereum block #26,441,005.</summary>
+    <updated>2026-11-18T21:10:47Z</updated>
+    <summary>EtherfiL1SyncPoolETH.setDelegate(EtherFiTimelock): protective hardening of the OApp&#x27;s messaging configuration. Read at finalized Ethereum block #26,444,554.</summary>
+  </entry>
+  <entry>
+    <id>https://pacta.wtf/briefs/compound-v3-op-0x86b4/#radar</id>
+    <title>Compound V3 timelock: pending · Compound V3 — all 25.94 WETH of reserves on Linea&#x27;s cWETHv3 withdrawn and bridged to the Ethereum Timelock</title>
+    <link href="https://pacta.wtf/briefs/compound-v3-op-0x86b4/"/>
+    <updated>2026-11-18T21:10:47Z</updated>
+    <summary>Proposal 625: the Ethereum Timelock sends one Linea message (L1 MessageService.sendMessage). On Linea the bridge receiver queues three calls behind the 1-day Linea Timelock: withdrawReserves of 25.942 WETH from Compound WETH (cWETHv3), WETH.withdraw, and L2 MessageService.sendMessage of 25.952 ETH (0.01 ETH fee) back to the Ethereum Timelock. Read at finalized Ethereum block #26,444,554.</summary>
   </entry>
   <entry>
     <id>https://pacta.wtf/briefs/yearn-v3-op-0x2a14/#radar</id>
     <title>Yearn V3 timelock: pending · Yearn V3 — 8 new strategies added to 6 vaults with max-debt caps</title>
     <link href="https://pacta.wtf/briefs/yearn-v3-op-0x2a14/"/>
-    <updated>2026-11-18T09:20:23Z</updated>
-    <summary>One 16-call batch: add_strategy(strategy, add_to_queue=false) then update_max_debt_for_strategy on yvUSDC-1, yvUSD, yvWETH-1, yvWETH-2, yvFlexUSDC and yvFlexWETH (Flex siUSD and wstETH lenders / loopers, USDC-to-yvUSDS-1 depositors). Caps range from 10,000 WETH to 10B USDC (yvFlexUSDC, effectively uncapped). Read at finalized Ethereum block #26,441,005.</summary>
+    <updated>2026-11-18T21:10:47Z</updated>
+    <summary>One 16-call batch: add_strategy(strategy, add_to_queue=false) then update_max_debt_for_strategy on yvUSDC-1, yvUSD, yvWETH-1, yvWETH-2, yvFlexUSDC and yvFlexWETH (Flex siUSD and wstETH lenders / loopers, USDC-to-yvUSDS-1 depositors). Caps range from 10,000 WETH to 10B USDC (yvFlexUSDC, effectively uncapped). Read at finalized Ethereum block #26,444,554.</summary>
+  </entry>
+  <entry>
+    <id>https://pacta.wtf/briefs/ethena-ops-0xb028-0xca05-0x108e-0x070a/#radar</id>
+    <title>Ethena timelock: pending · Ethena USDe — mint caps cut to 50M per block, USDm delisted, a custodian added</title>
+    <link href="https://pacta.wtf/briefs/ethena-ops-0xb028-0xca05-0x108e-0x070a/"/>
+    <updated>2026-11-18T21:10:47Z</updated>
+    <summary>Four ops: global and per-asset maxMintPerBlock 200M -&gt; 50M USDe on 8 assets; removeSupportedAsset(USDm); addCustodianAddress for an EOA not yet a custodian; USDe OFT adapter setRateLimits to 25M per hour on LayerZero eids 30339 (was 10M) and 30383 (was 30M). Read at finalized Ethereum block #26,444,554.</summary>
   </entry>
   <entry>
     <id>https://pacta.wtf/briefs/treehouse-op-0x2f11/#radar</id>
     <title>Treehouse timelock: executed · Treehouse TREE — UUPS upgrade adding Blacklistable</title>
     <link href="https://pacta.wtf/briefs/treehouse-op-0x2f11/"/>
-    <updated>2026-11-18T09:20:23Z</updated>
-    <summary>Upgrades the TREE governance token (not tETH) and installs a 5-of-7 Safe as blacklister: a zero-delay transfer-freeze role after execution. Read at finalized Ethereum block #26,441,005.</summary>
+    <updated>2026-11-18T21:10:47Z</updated>
+    <summary>Upgrades the TREE governance token (not tETH) and installs a 5-of-7 Safe as blacklister: a zero-delay transfer-freeze role after execution. Read at finalized Ethereum block #26,444,554.</summary>
   </entry>
   <entry>
     <id>https://pacta.wtf/briefs/lombard-ops-0xceee-0x2f2a-0x6404/#radar</id>
     <title>Lombard timelock: executed · Lombard — AssetRouter, BTC.b and LBTC upgrades adding a fixed deposit fee</title>
     <link href="https://pacta.wtf/briefs/lombard-ops-0xceee-0x2f2a-0x6404/"/>
-    <updated>2026-11-18T09:20:23Z</updated>
-    <summary>Three ProxyAdmin.upgradeAndCall ops (no init call) upgrade AssetRouter, BTC.b (NativeLBTC) and LBTC (StakedLBTC): a per-token deposit fee is split off every proof mint to treasury (OPERATOR_ROLE may set 100-1,000 sats, the timelock anything up to half the minimum), a router-wide minRequestAmount replaces depositMinAmount, and unpauseTransfers moves from DEFAULT_ADMIN_ROLE to MANAGER_ROLE. Read at finalized Ethereum block #26,441,005.</summary>
+    <updated>2026-11-18T21:10:47Z</updated>
+    <summary>Three ProxyAdmin.upgradeAndCall ops (no init call) upgrade AssetRouter, BTC.b (NativeLBTC) and LBTC (StakedLBTC): a per-token deposit fee is split off every proof mint to treasury (OPERATOR_ROLE may set 100-1,000 sats, the timelock anything up to half the minimum), a router-wide minRequestAmount replaces depositMinAmount, and unpauseTransfers moves from DEFAULT_ADMIN_ROLE to MANAGER_ROLE. Read at finalized Ethereum block #26,444,554.</summary>
   </entry>
   <entry>
     <id>https://pacta.wtf/briefs/beefy-base-op-0x3302/#radar</id>
     <title>Beefy Finance (Base) timelock: executed · Beefy CLM USDC-VVV on Aerodrome — calm-check tolerance widened from 9 to 25 ticks</title>
     <link href="https://pacta.wtf/briefs/beefy-base-op-0x3302/"/>
-    <updated>2026-11-18T09:13:04Z</updated>
-    <summary>setDeviation(25) on the cowAeroBaseUSDC-VVV strategy (owned by the timelock): maxTickDeviation 9 -&gt; 25 ticks, the tolerance between the pool tick and its 120 s TWAP before the strategy acts, on a tick-spacing-50 Aerodrome pool. No code change. Read at finalized Base block #59,014,044.</summary>
+    <updated>2026-11-18T21:09:55Z</updated>
+    <summary>setDeviation(25) on the cowAeroBaseUSDC-VVV strategy (owned by the timelock): maxTickDeviation 9 -&gt; 25 ticks, the tolerance between the pool tick and its 120 s TWAP before the strategy acts, on a tick-spacing-50 Aerodrome pool. No code change. Read at finalized Base block #59,229,098.</summary>
   </entry>
   <entry>
     <id>https://pacta.wtf/briefs/ethena-ops-0x0ca0-0x1fe5/#radar</id>
     <title>Ethena timelock: executed · Ethena USDe — RLUSD &amp; USAT collateral onboarding</title>
     <link href="https://pacta.wtf/briefs/ethena-ops-0x0ca0-0x1fe5/"/>
-    <updated>2026-11-18T09:20:23Z</updated>
-    <summary>Two queued EthenaMinting.addSupportedAsset calls onboard RLUSD and USAT at 200M / 20M USDe-per-block caps (stablesDeltaLimit = 0 bps). Read at finalized Ethereum block #26,441,005.</summary>
+    <updated>2026-11-18T21:10:47Z</updated>
+    <summary>Two queued EthenaMinting.addSupportedAsset calls onboard RLUSD and USAT at 200M / 20M USDe-per-block caps (stablesDeltaLimit = 0 bps). Read at finalized Ethereum block #26,444,554.</summary>
   </entry>
 </feed>

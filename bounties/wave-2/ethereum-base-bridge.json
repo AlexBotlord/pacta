@@ -1,0 +1,106 @@
+{
+  "wave": 2,
+  "category": "protocol_mismatch",
+  "slug": "base-bridge",
+  "protocol": "Base Bridge",
+  "chainId": 1,
+  "contractAddress": "0x0475cBCAebd9CE8AfA5025828d5b98DFb67E059E",
+  "hunter": "kinshu7777",
+  "agentFramework": "claude-code",
+  "basePayoutAddress": "0x0A96Fe63357c83640445Fd1Ee9d210B334b94052",
+  "mcpProof": {
+    "tool": "pacta_check_preflight",
+    "arguments": {
+      "chain": "ethereum",
+      "address": "0x0475cBCAebd9CE8AfA5025828d5b98DFb67E059E"
+    },
+    "result": {
+      "schema": "pacta.preflight_check.v1",
+      "chain": "ethereum",
+      "chainId": 1,
+      "address": "0x0475cBCAebd9CE8AfA5025828d5b98DFb67E059E",
+      "pinnedBlock": 26444681,
+      "pinnedBlockHash": "0x27b6c06019d189c702d6242e25e241bfdeb3c270f47fabec94246a8797a7df70",
+      "blockTimestamp": 1795037783,
+      "verdict": "MULTISIG_NO_TIMELOCK",
+      "riskScore": 55,
+      "isContract": true,
+      "isProxy": false,
+      "proxyType": null,
+      "implementation": null,
+      "beacon": null,
+      "hasAdminSlot": false,
+      "canUpgradeZeroDelay": true,
+      "capabilities": {
+        "pause": false,
+        "blacklist": false,
+        "upgrade": true
+      },
+      "paused": null,
+      "controller": {
+        "address": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+        "kind": "multisig_safe",
+        "safeThreshold": 2,
+        "timelockDelaySec": null,
+        "safeOwnerCount": 2,
+        "source": "owner()"
+      },
+      "roleAdminMembers": null,
+      "codeBytes": 6565,
+      "method": "Batched JSON-RPC reads pinned to the block hash (EIP-1898); EIP-1967 / EIP-1822 / beacon proxies; capabilities from PUSH4 selectors in proxy + implementation bytecode (heuristic).",
+      "summary": "Controlled by a 2-of-2 Safe with no timelock: changes can land instantly once signers agree. Capabilities seen in bytecode: upgrade.",
+      "source": "live_rpc",
+      "assessment": {
+        "coverage": "unindexed_bytecode_heuristic",
+        "confidence": "medium",
+        "method": "Live bytecode + storage heuristic at the pinned block only: this contract is not in Pacta's indexed catalog (no documentation comparison).",
+        "limits": [
+          "riskScore (0-100) is a heuristic of the controller type and of pause / blacklist / upgrade capabilities read at one block; it is not an audit.",
+          "The live check reads EIP-1967 slots, owner(), Safe getThreshold() / getOwners() and TimelockController getMinDelay(); custom role systems, bridge or L2 admin paths and off-chain operations are not resolved.",
+          "Documentation is compared only for indexed protocols (catalogMatch), at their pinned block."
+        ]
+      },
+      "coverage_gap_hint": "Target is not yet indexed or fully classified. Ask the user if they want you to queue coverage or request this capability via pacta_submit_request (free community queue, or 24h priority clearance for issuers)."
+    }
+  },
+  "blockNumber": 26441996,
+  "blockHash": "0x30d7997effa945f143f0d960c3b82764364787a21e1963f9e17b7bccbbda0878",
+  "castCommands": [
+    "cast call 0x0475cBCAebd9CE8AfA5025828d5b98DFb67E059E \"owner()(address)\" --block 26441996 --rpc-url https://gateway.tenderly.co/public/mainnet",
+    "cast call 0x0475cBCAebd9CE8AfA5025828d5b98DFb67E059E \"owner()(address)\" --block 26441996 --rpc-url https://ethereum-rpc.publicnode.com"
+  ],
+  "rpcOutputs": {
+    "a": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+    "b": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+    "pinnedDualRpcChainProof": {
+      "blockNumber": 26441996,
+      "blockHash": "0x30d7997effa945f143f0d960c3b82764364787a21e1963f9e17b7bccbbda0878",
+      "rpcEndpoints": [
+        "https://gateway.tenderly.co/public/mainnet",
+        "https://ethereum-rpc.publicnode.com"
+      ],
+      "reads": {
+        "proxyAdminOwner": {
+          "contract": "0x0475cBCAebd9CE8AfA5025828d5b98DFb67E059E",
+          "castCommands": [
+            "cast call 0x0475cBCAebd9CE8AfA5025828d5b98DFb67E059E \"owner()(address)\" --block 26441996 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x0475cBCAebd9CE8AfA5025828d5b98DFb67E059E \"owner()(address)\" --block 26441996 --rpc-url https://ethereum-rpc.publicnode.com"
+          ],
+          "output": "0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c",
+          "note": "L1 ProxyAdmin owner is 2-of-2 Safe 0x7bB41C3008B3f03FE483B28b8DB90e19Cf07595c instead of documented 0x5a0Aae59D09fccBdDb6C6CcEB07B7279367C3d2A"
+        }
+      }
+    }
+  },
+  "docsUrl": "https://docs.base.org/specifications/reference/configuration",
+  "docsQuote": "Authorized to update the L1 Proxy Admin.",
+  "tvlUsd": 2702319987.0,
+  "tvlReference": "https://api.llama.fi/protocol/base-bridge",
+  "apache2CommercialGrant": true,
+  "rulesAccepted": [
+    true,
+    true,
+    true,
+    true
+  ]
+}

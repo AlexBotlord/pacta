@@ -2223,7 +2223,7 @@ def main(argv=None):
     check("v4.5.1 polish (R3-01 neutral Aligned badges, R3-02 demo receipt link target, '36 of 90' reconciliation line)", all(v451.values()),
           str([k for k, x in v451.items() if not x]))
 
-    # v4.6: 7-item / 13-op multi-chain radar (Ethereum + Base), 4 decoded pre-execution briefs, 101 receipt cards + x-feed mirror
+    # v4.6: 7-item / 13-op multi-chain radar (Ethereum + Base), 4 decoded pre-execution briefs, one receipt card per protocol + 11 radar + x-feed mirror
     rad46 = json.loads(read("docs/api/v1/radar.json"))
     home46, radar46 = pages["index.html"], pages[os.path.join("radar", "index.html")]
     base46 = [it for it in rad46["items"] if it.get("chain_id") == 8453]
@@ -2235,6 +2235,7 @@ def main(argv=None):
     rb46, r46 = rad46.get("refreshed_at_base") or {}, rad46["refreshed_at"]
     cards46 = glob.glob(os.path.join(DOCS, "cards", "*.png"))
     xf46 = json.loads(read("docs/api/v1/x-feed.json"))
+    rad46n = sum(1 for i_ in xf46["items"] if i_.get("kind") == "radar_timelock")      # radar operations the feed posts (active ones)
     beefy46 = briefs46["beefy-base-op-0x3302"]
 
     def ann46(it_, st_):   # a synthetic copy of an item with every operation in state st_ (banner wording)
@@ -2279,15 +2280,15 @@ def main(argv=None):
                     and sl in lk46 and lk46[sl]["relatedProtocolSlug"] == dec_by46[sl]["protocol_slug"]
                     and (lk46[sl]["chain"], lk46[sl]["chainId"]) == (("base", 8453) if dec_by46[sl]["chain_id"] == 8453 else ("ethereum", 1))
                     and f'"slug":"{sl}"' in read("packages/mcp-server/src/lookup.mjs") for sl in new46),
-        "101 receipt cards (1200x675 PNG, 11 radar) + docs/api/v1/x-feed.json (101 items) whose every card exists":
-            len(cards46) == 101 and len([c_ for c_ in cards46 if os.path.basename(c_).startswith("radar-")]) == 11
-            and len(xf46["items"]) == 101 and all(os.path.exists(os.path.join(DOCS, "cards", i_["cardFilename"])) for i_ in xf46["items"]),
+        f"{X['protocols'] + rad46n} receipt cards (1200x675 PNG: one per protocol + {rad46n} radar operations of the feed) + docs/api/v1/x-feed.json ({X['protocols'] + rad46n} items) whose every card exists":
+            len(cards46) == X["protocols"] + rad46n and len([c_ for c_ in cards46 if os.path.basename(c_).startswith("radar-")]) == rad46n
+            and len(xf46["items"]) == X["protocols"] + rad46n and all(os.path.exists(os.path.join(DOCS, "cards", i_["cardFilename"])) for i_ in xf46["items"]),
         "homepage within its 150,000 B budget (compact radar rows; /radar/ keeps summaries, labels, copy buttons and the timelock list)":
             len(read("docs/index.html").encode()) < 150000 and '<ul class="oplabels">' in radar46 and '<ul class="oplabels">' not in home46,
         "app.js keeps live blocks per chain (an Ethereum block is never compared with a Base block) (harness)":
             "blk[ch] = Math.floor(n)" in appjs and res.get("v46_live_blocks_per_chain") is True,
     }
-    check("v4.6 multi-chain radar (7 items / 13 ops, Basescan for chain id 8453, two-chain provenance, 'on Base' wording), 4 decoded briefs, 101 cards",
+    check(f"v4.6 multi-chain radar (7 items / 13 ops, Basescan for chain id 8453, two-chain provenance, 'on Base' wording), 4 decoded briefs, {X['protocols'] + rad46n} cards",
           all(v46.values()), str([k for k, x in v46.items() if not x]))
 
     # v4.7 W1-W5 (external UX evaluation quick wins)

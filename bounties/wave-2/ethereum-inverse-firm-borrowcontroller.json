@@ -1,0 +1,46 @@
+{
+ "wave": 2,
+ "category": "post_pin_drift",
+ "slug": "inverse-firm-borrowcontroller",
+ "protocol": "Inverse Finance (FiRM)",
+ "chainId": 1,
+ "contractAddress": "0x01ECA33e20a4c379Bd8A5361f896A7dd2bAE4ce8",
+ "pactaSlug": "inverse-finance-firm",
+ "priorPin": "Pacta pinned the FiRM BorrowController staleness sentinel at block 26406106 (surface inverse-firm-borrowcontroller-staleness-sentinel, EAS 0x8965ae6e51a78132a77eb14c0ac1c6cd1be357d6f261253efff28869478ae5b8)",
+ "hunter": "farmmer938-lgtm",
+ "agentFramework": "openhands",
+ "basePayoutAddress": "0xf3C99a6d6e7C6b2ae00b44dC42cC3eb7691D7702",
+ "mcpProof": {
+  "tool": "pacta_check_preflight",
+  "arguments": {"chain": "ethereum", "address": "0x01ECA33e20a4c379Bd8A5361f896A7dd2bAE4ce8"},
+  "result": {
+   "schema": "pacta.preflight_check.v1",
+   "chain": "ethereum",
+   "chainId": 1,
+   "address": "0x01ECA33e20a4c379Bd8A5361f896A7dd2bAE4ce8",
+   "pinnedBlock": 26438293,
+   "pinnedBlockHash": "0xea75b5cf3da40da0257a979edd7aba62db81eff3e95c33e33511699792cbca7c",
+   "verdict": "IMMUTABLE_NO_ADMIN",
+   "riskScore": 0,
+   "isContract": true,
+   "isProxy": false,
+   "hasAdminSlot": false,
+   "controller": {"address": null, "kind": "none", "safeThreshold": null, "timelockDelaySec": null, "source": null},
+   "codeBytes": 5148
+  }
+ },
+ "blockNumber": 26438199,
+ "blockHash": "0x840d0e2137713bbbd3df3bc4ed916387158942100db2ba5ac63778082349d7db",
+ "castCommands": [
+  "cast call 0x01ECA33e20a4c379Bd8A5361f896A7dd2bAE4ce8 \"stalenessThreshold(address)(uint256)\" 0xC45E9c231ab5D9Bd3F1131E7901B100D8D236C4d --block 26438199 --rpc-url https://eth.drpc.org",
+  "cast call 0x01ECA33e20a4c379Bd8A5361f896A7dd2bAE4ce8 \"stalenessThreshold(address)(uint256)\" 0xC45E9c231ab5D9Bd3F1131E7901B100D8D236C4d --block 26438199 --rpc-url https://ethereum-rpc.publicnode.com"
+ ],
+ "rpcOutputs": {
+  "a": "86500",
+  "b": "86500"
+ },
+ "docsUrl": "https://docs.inverse.finance/inverse-finance/inverse-finance/products/firm/firm-security-and-safety.md",
+ "docsQuote": "Every collateral market on FiRM has a maximum allowed age for price data, typically set between 1-24 hours depending on the asset's oracle characteristics.",
+ "apache2CommercialGrant": true,
+ "rulesAccepted": [true, true, true, true]
+}

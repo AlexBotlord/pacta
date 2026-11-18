@@ -153,54 +153,6 @@ TREASURY_LABEL = "Pacta treasury (direct settlement EOA)"     # an externally ow
 # Payment rail for the clearance offer. The treasury is an externally owned account (no contract code on Base or
 # Ethereum), so the same key controls it on both chains; USDC contracts are Circle's native deployments.
 USDC = {"Base": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", "Ethereum": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"}
-# ---- Option B self-serve checkout (/request/ above the fold; the query-free aliases /scan/, /webhook/, /seal/) --------------------
-# The closed SKU set. Payment is one exact Base USDC transfer to the treasury EOA; the Worker's POST /v1/orders/verify reads the
-# transaction receipt (status 1, a Base USDC Transfer of at least the price to the treasury), refuses a reused hash and never counts
-# Pacta's own addresses as revenue. app.js carries the same payee, token and amounts as constants (the page's data-* are display only).
-ORDERS_VERIFY_API = f"{API}/v1/orders/verify"
-CHECKOUT_CHAIN_ID = 8453
-CHECKOUT_TREASURY = "0x4348DF1BEFAffcbA248B5118B1b782B1B2bdEd14"
-CHECKOUT = {   # sku -> card; "tier" is the ?tier= alias, "route" the query-free alias page
-    "instant-scan-19": {
-        "tier": "instant-19", "route": "scan", "title": "Instant Contract / Safe Deep-Scan", "price": "$19 USDC", "amount": "19.00",
-        "atomic": 19_000_000, "unit": "one-time · report in under 60 s", "tag": "Most popular",
-        "summary": "Paste an Ethereum or Base address (and a docs URL if you have one), pay 19 USDC on Base, and the live report unlocks "
-                   "on this page in under 60 seconds: proxy admin, Safe owners and threshold, timelock delay and privileged roles.",
-        "incl": ["Live multi-RPC read of the control plane", "Downloadable JSON and a printable report", "Base EAS receipt queued"],
-        "target": "Contract or Safe address", "need_target": True, "contact": "Contact", "need_contact": False,
-        "contact_ph": "Work email or @telegram"},
-    "radar-webhook-49": {
-        "tier": "webhook-49", "route": "webhook", "title": "Live Timelock & Signer-Rotation Webhook", "price": "$49 USDC", "amount": "49.00",
-        "atomic": 49_000_000, "unit": "per month (30 days)", "tag": "",
-        "summary": "Watch an indexed protocol or your own timelock or Safe. Pacta polls Ethereum and Base every 30 minutes and alerts your "
-                   "Slack, Discord, Telegram or HTTPS webhook when an operation is queued or a signer set changes, before it can execute.",
-        "incl": ["30-minute polling on Ethereum and Base", "Queued operations, signer and threshold changes", "JSON alerts to Slack, Discord, Telegram or HTTPS"],
-        "target": "Timelock or Safe address (or name a protocol below)", "need_target": False, "contact": "Alert destination", "need_contact": True,
-        "contact_ph": "https:// webhook (Slack, Discord or your own) or @telegram"},
-    "reverify-seal-99": {
-        "tier": "seal-99", "route": "seal", "title": "24h Mainnet Control-Plane Seal", "price": "$99 USDC", "amount": "99.00",
-        "atomic": 99_000_000, "unit": "intro: first 5 teams · reg. $500", "tag": "Save 80%",
-        "summary": "For a team that fixed a flagged gap or launched a new vault: a maintainer and an independent verifier re-check it on "
-                   "mainnet within 24h, with Safe Transaction Builder JSON for any remaining fix, a GitHub docs PR and a Base EAS attestation "
-                   "of the result. It reads Aligned only when chain and docs match: the fee pays for the re-check, never the grade.",
-        "incl": ["Maintainer + independent verifier, within 24h", "Safe Transaction Builder JSON and a docs PR", "Base EAS attestation of the result"],
-        "target": "Contract, vault or Safe address", "need_target": True, "contact": "Contact", "need_contact": False,
-        "contact_ph": "Work email, @telegram or GitHub handle"},
-}
-DEFAULT_SKU = "instant-scan-19"
-assert all(v["atomic"] == round(float(v["amount"]) * 10 ** 6) and v["price"] == f"${v['amount'][:-3]} USDC" for v in CHECKOUT.values())
-# query-free alias pages: sku -> (title, description, og:image card in docs/cards/ (1200 x 628) or None for og-preview.png, h1)
-CHECKOUT_PAGES = {
-    "instant-scan-19": ("Instant contract & Safe deep-scan · $19 USDC · Pacta",
-                        "Paste an Ethereum or Base address, pay 19 USDC on Base, and get a live proxy, Safe, timelock and role report on the page in under 60 seconds.",
-                        "x-card-scan19-1200x628.png", "Instant contract & Safe deep-scan"),
-    "radar-webhook-49": ("Timelock & signer-rotation webhook · $49 USDC / month · Pacta",
-                         "Alerts in Slack, Discord, Telegram or any HTTPS webhook when a watched timelock queues an operation or a Safe changes signers. 49 USDC a month on Base.",
-                         None, "Timelock & signer-rotation webhook"),
-    "reverify-seal-99": ("24h mainnet control-plane seal · $99 USDC · Pacta",
-                         "Fixed a flagged gap or launched a vault? A maintainer and an independent verifier re-check it on mainnet within 24h, with a Base EAS attestation of the result.",
-                         "x-card-seal99-1200x628.png", "24h mainnet control-plane seal"),
-}
 SOCIAL_SIZE = (1200, 628)   # X Website cards (1.91:1): og-preview.png and docs/cards/x-card-*-1200x628.png
 VULN_ROUTE = ("Exploit-sensitive vulnerabilities are never published here. They go through the protocol’s Immunefi or "
               "Cantina bounty programme.")
@@ -1290,85 +1242,6 @@ def request_builder(idx, home=""):
     return f'<div class="req"><div class="req-main">{form}{done}</div><aside class="req-side" aria-label="Other channels">{side}</aside></div>'
 
 
-def eip681(atomic):
-    """EIP-681 payment request: an exact Base USDC transfer(treasury, atomic) on chain 8453 (wallets, Safe apps, mobile QR)."""
-    return f"ethereum:{USDC['Base']}@{CHECKOUT_CHAIN_ID}/transfer?address={CHECKOUT_TREASURY}&uint256={atomic}"
-
-
-def checkout_section(idx, home="", sku=DEFAULT_SKU, h1=None, crumbs="", aside=None):
-    """The self-serve checkout: three SKU cards, the target, a pay-by-transfer panel (exact amount, treasury, EIP-681 link; an optional
-    browser-wallet transfer, never an approval) and Verify on-chain & unlock (POST /v1/orders/verify, app.js). One form, rendered on
-    /request/ and on the alias pages /scan/, /webhook/ and /seal/ with a different SKU checked."""
-    assert idx["onchain_anchoring"]["treasury_admin"] == CHECKOUT_TREASURY and sku in CHECKOUT
-    c = CHECKOUT[sku]
-    cards = "".join(
-        f'<label data-slot="radio-card" class="co-card" data-co-card="{k}"><input type="radio" name="sku" value="{k}" data-amount="{v["atomic"]}"'
-        f'{" checked" if k == sku else ""}><span><span class="co-head"><b>{E(v["title"])}</b>'
-        + (U.badge(E(v["tag"]), "info") if v["tag"] else "") + '</span>'
-        f'<span class="co-price">{E(v["price"])} <span class="s">{E(v["unit"])}</span></span><span class="sub">{E(v["summary"])}</span>'
-        '<span class="co-incl">' + "".join(f'<span>{U.icon("check")}{E(x)}</span>' for x in v["incl"]) + '</span></span></label>'
-        for k, v in CHECKOUT.items())
-    opt = lambda on, hook: f' <span class="legend-note" data-co-opt="{hook}"{" hidden" if on else ""}>· optional</span>'
-    amount_copy = copy_btn(c["amount"], "Copy", "Copy the exact USDC amount").replace("<button ", "<button data-co-amount-copy ", 1)
-    uri = eip681(c["atomic"])
-    link_copy = copy_btn(uri, "Copy payment link", "Copy the EIP-681 payment link").replace("<button ", "<button data-co-eip681-copy ", 1)
-    tag = "h1" if h1 else "h2"
-    head_ = (f'<div class="sec-head"><{tag} id="co-title">{E(h1 or "Instant self-serve verification (Base USDC)")}</{tag}>'
-             f'<p class="aside">{E(aside or "Every scorecard, the API and the MCP server stay free. These checks are paid verification work.")}</p></div>'
-             '<p class="co-lead"><b>Instant self-serve verification (Base USDC)</b> · pay on Base, paste the transaction hash, and the result '
-             'unlocks on this page. No account, no wallet connection needed.</p>')
-    steps = (
-        f'<div class="co-step" data-slot="card"><h3><span class="co-n" aria-hidden="true">1</span>What to check</h3>'
-        f'<div class="req-grid"><div class="field"><label for="co-chain">Chain</label><select id="co-chain" name="target_chain">'
-        f'<option value="ethereum" selected>Ethereum</option><option value="base">Base</option></select></div>'
-        f'<div class="field"><label for="co-target"><span data-co-target-label>{E(c["target"])}</span>{opt(c["need_target"], "target")}</label>'
-        f'<input id="co-target" name="target_address" type="text" spellcheck="false" maxlength="42" placeholder="0x…" aria-describedby="co-target-err">'
-        f'<p class="form-message" id="co-target-err" data-slot="form-message" hidden></p></div></div>'
-        f'<div class="field"><label for="co-docs">Protocol or docs URL <span class="legend-note">· optional</span></label>'
-        f'<input id="co-docs" name="protocol_or_docs" type="text" maxlength="200" placeholder="https://docs.example.fi or a protocol name" aria-describedby="co-docs-err">'
-        f'<p class="form-message" id="co-docs-err" data-slot="form-message" hidden></p></div>'
-        f'<div class="field"><label for="co-contact"><span data-co-contact-label>{E(c["contact"])}</span>{opt(c["need_contact"], "contact")}</label>'
-        f'<input id="co-contact" name="webhook_or_contact" type="text" maxlength="200" placeholder="{E(c["contact_ph"])}" aria-describedby="co-contact-hint co-contact-err">'
-        f'<p class="hint" id="co-contact-hint">Kept private for delivery; never published.</p>'
-        f'<p class="form-message" id="co-contact-err" data-slot="form-message" hidden></p></div></div>'
-        f'<div class="co-step" data-slot="card"><h3><span class="co-n" aria-hidden="true">2</span>Pay on Base</h3>'
-        f'<dl class="kv co-pay"><dt>Send exactly</dt><dd><b class="mono" data-co-amount>{c["amount"]} USDC</b>{amount_copy}</dd>'
-        f'<dt>To</dt><dd><span class="mono full">{CHECKOUT_TREASURY}</span>{copy_btn(CHECKOUT_TREASURY, "Copy", "Copy the Pacta treasury address")}'
-        f'<span class="s">Pacta treasury (an externally owned account, not a contract)</span></dd>'
-        f'<dt>Token</dt><dd>Base native USDC {hexref(USDC["Base"])}</dd><dt>Network</dt><dd>Base mainnet (chain ID {CHECKOUT_CHAIN_ID})</dd></dl>'
-        f'<div class="co-actions">' + U.button("Open in a wallet app", href=uri, variant="outline", size="sm", attrs="data-co-eip681") + link_copy
-        + U.button('<span>Pay exact USDC on Base</span>', variant="default", size="sm", attrs='id="co-wallet" hidden') + '</div>'
-        f'<p class="hint">Send it from any wallet app, your team&#x27;s treasury tooling or an exchange withdrawal on Base. The browser-wallet button makes one exact-amount USDC '
-        f'transfer on Base (chain {CHECKOUT_CHAIN_ID}); it never asks for an approval or an allowance.</p></div>'
-        f'<div class="co-step" data-slot="card"><h3><span class="co-n" aria-hidden="true">3</span>Verify and unlock</h3>'
-        f'<div class="field"><label for="co-tx">Base transaction hash</label><input id="co-tx" name="tx_hash" type="text" spellcheck="false" maxlength="66" '
-        f'placeholder="0x… (66 characters)" aria-describedby="co-tx-err"><p class="form-message" id="co-tx-err" data-slot="form-message" hidden></p></div>'
-        f'<div class="req-actions">' + U.button('<span class="spinner" aria-hidden="true" hidden></span><span>Verify on-chain &amp; unlock</span>',
-                                                variant="default", size="lg", type_="submit", attrs='id="co-verify"')
-        + '<span class="req-status" id="co-status" role="status" aria-live="polite"></span></div>'
-        f'<p class="hint">The check reads the Base transaction receipt: a USDC transfer of at least the price to the treasury. One hash unlocks one order.</p></div>')
-    result = U.card(U.card_header("Order verified", '<span data-co-r-desc>Payment confirmed on Base.</span>')
-                    + '<dl class="kv"><dt>Order</dt><dd class="mono" data-co-r-order></dd><dt>Check</dt><dd data-co-r-sku></dd>'
-                    '<dt>Payment</dt><dd data-co-r-pay></dd><dt>Status</dt><dd data-co-r-status></dd></dl>'
-                    + f'<div class="term"><div class="term-h"><span>Report (JSON)</span><button class="copy" data-slot="button" data-variant="ghost" '
-                      f'data-size="sm" type="button" data-copy-from="co-json" aria-label="Copy the report JSON">{U.icon("copy")}<span>Copy</span></button></div>'
-                      '<pre id="co-json"></pre></div><div class="co-actions">'
-                    + U.button("Download JSON", variant="outline", size="sm", attrs="data-co-download")
-                    + U.button("Print report", variant="outline", size="sm", attrs="data-co-print") + '</div>',
-                    cls="co-result", attrs='id="co-result" tabindex="-1" hidden')
-    more = (f'<p class="co-more">More than one contract, a full dossier, monitoring or the free queue: '
-            f'<a href="{home}request/#req-form">enterprise options and the free community queue{ARR}</a></p>' if h1 else "")
-    return (f'<section class="sec co-sec" id="checkout"><div class="wrap">{crumbs}{head_}'
-            f'<form class="co" id="co-form" novalidate autocomplete="off" data-api="{E(ORDERS_VERIFY_API)}" data-chain-id="{CHECKOUT_CHAIN_ID}" '
-            f'data-sku-default="{sku}">'
-            f'<fieldset class="co-skus"><legend class="sr-only">Choose a check</legend><div class="co-cards opts" role="radiogroup" aria-label="Self-serve check">{cards}</div></fieldset>'
-            f'<div class="co-steps">{steps}</div>{result}'
-            f'<noscript><p class="note">Verifying needs JavaScript. Without it, pay as above and send the transaction hash through the '
-            f'<a href="{home}request/#req-form">request form</a> or to {CONTACT}.</p></noscript>'
-            f'<p class="note co-fine">Payments are checked on Base from the transaction receipt. Transfers from Pacta&#x27;s own addresses never count as revenue. '
-            f'{E(EDITORIAL_FIREWALL)} {E(EDITORIAL_SHORT)}</p>{more}</form></div></section>')
-
-
 # A protocol whose published name does not slug to its published slug (an RPC-pinned page converted to EAS-attested keeps
 # both its name and its /protocols/ slug, so its graph anchor and page never change).
 SLUG_OVERRIDES = {"Frax Ether (frxETH / sfrxETH)": "frax-ether-sfrxeth", "Re Protocol (reUSD / reUSDe)": "re",
@@ -2344,52 +2217,23 @@ def for_protocols_page(idx):
 def request_page(idx):
     count_line = coverage_line(idx)
     reg = idx["onchain_anchoring"]["commitment_registry"]
-    desc = ("Instant Base USDC checks ($19 deep-scan, $49 / month webhook, $99 seal), a $500 re-verification, a $2,500–$5,000 dossier, "
-            "monitoring or the free queue.")   # 151 characters (G-P2-8: 150-160)
-    crumbs = ('<nav class="crumbs" aria-label="Breadcrumb"><a href="../">Pacta</a><span aria-hidden="true">/</span>'
-              '<span>Request verification</span></nav>')
+    desc = ("Request Pacta verification: the free queue, a $500 re-verification, a $2,500–$5,000 dossier, $1,500/month Continuous "
+            "Control-Plane Monitoring or an API SLA.")   # v4.5 G-P2-8: 156 characters
     body = f"""<body>
 {topbar("../")}
 <main id="main">
-{checkout_section(idx, "../", DEFAULT_SKU, h1="Request verification", crumbs=crumbs,
-                  aside="Instant self-serve checks in Base USDC first; dossiers, monitoring and the free queue below. Every scorecard, the API and the MCP server stay free.")}
 <section class="sec" id="request"><div class="wrap">
-<details class="archive-details ent-details" id="req-more" data-enterprise><summary><span>Enterprise &amp; free community queue · $500 re-verification · $2,500–$5,000 dossier · $1,500 / month monitoring · API SLA · $0 queue</span></summary>
-<div class="ent-body">
-<div class="sec-head"><h2>Request a dossier</h2><p class="aside">Every scorecard, the API and the MCP server stay free. This form is for verification work.</p></div>
+<nav class="crumbs" aria-label="Breadcrumb"><a href="../">Pacta</a><span aria-hidden="true">/</span><span>Request a dossier</span></nav>
+<div class="sec-head"><h1>Request a dossier</h1><p class="aside">Every scorecard, the API and the MCP server stay free. This form is for verification work.</p></div>
 <p class="sec-intro">Agents do not need this page: the API (<code>/v1/check/preflight</code>) and the remote MCP server (<code>{E(MCP_URL)}</code>) are free, with no key and no wallet: Remote MCP ({E(REMOTE_TOOLS_DOC)}). Pick a track and the protocols in scope, then send. You get a request ID right away. Prefer GitHub or email? The brief on the right goes there too. {E(EDITORIAL_FIREWALL)} {E(EDITORIAL_SHORT)}</p>
 {request_builder(idx, "../")}
-</div></details>
 </div></section>
 {pricing_section(idx, "../")}
 </main>
 {footer(count_line, reg, "../")}
 </body></html>
 """
-    return head("Request verification · Pacta", desc, f"{BASE_URL}/request/", prefix="../", og_title="Verify a contract or request a Pacta dossier",
-                image=f"{BASE_URL}/cards/x-card-scan19-1200x628.png", image_size=SOCIAL_SIZE) + "\n" + body
-
-
-def checkout_page(idx, sku):
-    """/scan/, /webhook/, /seal/: the /request/ checkout with one SKU checked and no query string (X Ads strips "?" from Website-card
-    URLs), each with its own 1200 x 628 social card."""
-    route = CHECKOUT[sku]["route"]
-    title, desc, card, h1 = CHECKOUT_PAGES[sku]
-    img = f"{BASE_URL}/cards/{card}" if card else f"{BASE_URL}/og-preview.png"
-    count_line = coverage_line(idx)
-    reg = idx["onchain_anchoring"]["commitment_registry"]
-    crumbs = (f'<nav class="crumbs" aria-label="Breadcrumb"><a href="../">Pacta</a><span aria-hidden="true">/</span>'
-              f'<a href="../request/">Request verification</a><span aria-hidden="true">/</span><span>{E(h1)}</span></nav>')
-    body = f"""<body>
-{topbar("../")}
-<main id="main">
-{checkout_section(idx, "../", sku, h1=h1, crumbs=crumbs)}
-</main>
-{footer(count_line, reg, "../")}
-</body></html>
-"""
-    return head(title, desc, f"{BASE_URL}/{route}/", prefix="../", og_title=title.rsplit(" · Pacta", 1)[0], image=img,
-                image_size=SOCIAL_SIZE) + "\n" + body
+    return head("Request a dossier · Pacta", desc, f"{BASE_URL}/request/", prefix="../", og_title="Request a Pacta dossier") + "\n" + body
 
 
 DECODED = DB.load()   # v4.6: slug -> decoded brief (tools/briefs_decoded.json, the decoder's output byte-for-byte)
@@ -3775,10 +3619,6 @@ def privacy_page(idx):
          'Do Not Track. A page view records the page, the referring site&#x27;s host name, the campaign tags of the link you followed '
          '(<code>utm_source</code>, <code>utm_medium</code>, <code>utm_campaign</code>, only from closed, safe patterns) and which Pacta '
          'domain served it.</p>'),
-        ("checkout", "Self-serve checkout", '<p>Verify on-chain &amp; unlock sends the check you chose, the Base transaction hash, the target '
-         'chain and address, the protocol or docs URL and, only if you enter one, a contact handle or webhook URL to Pacta&#x27;s API. The '
-         'contact or webhook is kept privately for delivery and never published. A payment on Base is public on-chain, like any transfer. '
-         'Pay exact USDC on Base talks only to the wallet in your browser; Pacta never sees your keys.</p>'),
         ("checks", "Live checks", f'<p>When you press Check, the address and chain you entered are sent to Pacta\'s API at <code>{E(API)}</code>. '
          f'"Verify live on RPC" sends read-only JSON-RPC calls from your browser directly to public RPC providers (publicnode.com, drpc.org, '
          f'base.org), which see your IP address under their own policies.</p>'),
@@ -3868,8 +3708,6 @@ def build_all():
             fh.write(text)
     w("index.html", page(idx, radar))
     w("request/index.html", request_page(idx))
-    for sku_ in CHECKOUT:                          # /scan/, /webhook/, /seal/: the checkout with one SKU checked, no query string
-        w(f"{CHECKOUT[sku_]['route']}/index.html", checkout_page(idx, sku_))
     for slug, desc in BRIEFS.items():
         w(f"briefs/{slug}/index.html", brief_page(slug, desc, idx, radar))
     onb = load_onboarding()
@@ -3915,7 +3753,7 @@ def build_all():
         w(root_name, open(os.path.join(DOCS, src_rel), encoding="utf-8").read())
     w("feed.xml", atom_feed(idx, radar))
     w("api/v1/feed.json", json_feed(idx, radar))
-    urls = ["/", "/request/", "/scan/", "/webhook/", "/seal/", "/llms.txt", "/api/v1/index.json", "/api/v1/radar.json"] + [f"/briefs/{k}/" for k in BRIEFS] + \
+    urls = ["/", "/request/", "/llms.txt", "/api/v1/index.json", "/api/v1/radar.json"] + [f"/briefs/{k}/" for k in BRIEFS] + \
         [f"/briefs/{b['slug']}/" for b in load_onboarding()["briefs"]] + (["/api/v1/onboarding.json"] if load_onboarding()["briefs"] else []) + \
         ["/api/v1/proposals.json", "/api/v1/rpc-pinned.json", "/api/v1/lookup.json", "/api/v1/protocols.json", "/api/v1/graph-manifest.json", "/integrations/vault-factories/", "/for-protocols/", "/llms/", "/llms-full.txt", "/SKILL.md", "/.well-known/agent.json", "/.well-known/mcp.json",
          "/demos/swapio-x402/", "/bounties/", "/leaderboard/", "/mcp/", "/protocols/", "/feed.xml", "/api/v1/feed.json",

@@ -914,43 +914,6 @@ table.ix td:first-child a { display: inline-flex; align-items: center; min-heigh
 .memo .lb-catches a { display: inline-flex; align-items: center; min-height: 24px; white-space: nowrap; }
 .lb-table .cp-badge { max-width: none; }
 a[data-basescan-tx] { white-space: nowrap; }
-/* v5.0: Option B self-serve checkout (#checkout on /request/ and the query-free /scan/, /webhook/, /seal/): three SKU cards, then
-   What to check / Pay on Base / Verify and unlock; one column below 1024 px. The enterprise tracks sit in a disclosure under it. */
-.co-sec { padding-top: 40px; }
-.co-skus { margin: 0; padding: 0; border: 0; min-width: 0; }
-.co-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start; }
-.co-cards .co-card { padding: 16px 18px; }
-.co-card > span { display: block; min-width: 0; }
-.co-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 8px; }
-.co-head b { font-size: 1rem; }
-.co-price { display: block; margin: 8px 0 2px; font-size: 1.5rem; font-weight: 600; line-height: 1.25; color: var(--foreground); font-variant-numeric: tabular-nums; }
-.co-price .s { display: block; font-size: 0.8125rem; font-weight: 500; color: var(--muted-foreground); }
-.co-incl { display: grid; gap: 4px; margin-top: 10px; font-size: 0.8125rem; color: var(--foreground); }
-.co-incl > span { display: flex; align-items: flex-start; gap: 6px; }
-.co-incl svg { flex: none; width: 14px; height: 14px; margin-top: 3px; color: var(--success); }
-.co-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 16px; align-items: start; }
-.co-step { padding: 20px; min-width: 0; }
-.co-step h3 { display: flex; align-items: center; gap: 8px; margin: 0 0 12px; font-size: 1rem; }
-.co-n { display: inline-grid; place-items: center; flex: none; width: 24px; height: 24px; border: 1px solid var(--border); border-radius: 50%; font-size: 0.75rem; font-weight: 600; }
-.co-step .req-grid { grid-template-columns: minmax(0, 7rem) minmax(0, 1fr); }
-.co-pay { grid-template-columns: 7rem minmax(0, 1fr); margin-top: 0; }
-.co-pay dd { overflow-wrap: anywhere; }
-.co-pay dd .s { display: block; margin-top: 4px; }
-.co-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 12px; }
-.req-status[data-bad] { color: var(--destructive); }
-.co-result { margin-top: 16px; }
-.co-result pre { max-height: 420px; overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; }
-.co-fine, .co-more { margin-top: 16px; }
-details.ent-details > .ent-body { padding: 0 16px 16px; }
-.co-lead { margin: 0 0 16px; color: var(--muted-foreground); font-size: 0.9375rem; }
-.co-lead b { color: var(--foreground); }
-@media print {   /* Print report: only the receipt, on one page (every other branch leaves the layout) */
-  html.co-print body > :not(main), html.co-print main > :not(#checkout), html.co-print #checkout .wrap > :not(#co-form),
-  html.co-print #co-form > :not(#co-result), html.co-print #co-result .co-actions, html.co-print #co-result .term-h button { display: none !important; }
-  html.co-print body, html.co-print main, html.co-print .co-sec { margin: 0; padding: 0; }
-  html.co-print #co-result { margin: 0; border: 0; box-shadow: none; }
-  html.co-print #co-result pre { max-height: none; overflow: visible; }
-}
 .status { min-height: 20px; margin-top: 8px; font-size: 0.875rem; color: var(--success); }
 .actions { display: grid; gap: 8px; margin-top: 16px; }
 .firewall { margin: 0 0 16px; font-size: 0.875rem; color: var(--muted-foreground); }
@@ -997,7 +960,6 @@ html:not(.js) [data-theme-menu], html:not(.js) .menu-btn, html:not(.js) [data-li
 }
 @media (max-width: 1023px) {
   .tools .cta { display: none; }
-  .co-cards, .co-steps { grid-template-columns: minmax(0, 1fr); }
   .brand small { display: none; }
   .hero-grid { grid-template-columns: minmax(0, 1fr); gap: 32px; }
   .hero h1 { font-size: 2.25rem; }
@@ -1013,7 +975,6 @@ html:not(.js) [data-theme-menu], html:not(.js) .menu-btn, html:not(.js) [data-li
   .pf-dl { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 767px) {
-  .co-step .req-grid { grid-template-columns: minmax(0, 1fr); }
   html:not(.js) [data-slot="navigation-menu"] { display: flex !important; position: absolute; left: 0; right: 0; top: 56px; padding: 4px 16px; overflow-x: auto; background: var(--background); border-bottom: 1px solid var(--border); }
   .wrap, .wrap-prose, .memo-wrap { padding-left: 16px; padding-right: 16px; }
   .topbar .wrap { height: 56px; }

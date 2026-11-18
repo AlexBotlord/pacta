@@ -74,7 +74,7 @@ X = EXPECT
 # sha256 of docs/api/v1/graph-manifest.json: changes only through a deliberate re-pin (a Sprint stage / stamp rewrites it after the
 # rebuild); a merged Wave 2 claim or any site-only change must leave it as is
 GRAPH_MANIFEST_SHA256 = "3c5e6a15b920c7edcd9021e00c116d290e33508de54f9216de6e0a8b692c47af"
-NON_PROTOCOL_PAGES = 35                                                  # docs/**/*.html pages that are not /protocols/<slug>/ (35: + /scan/ /webhook/ /seal/)
+NON_PROTOCOL_PAGES = 32                                                  # docs/**/*.html pages that are not /protocols/<slug>/ (32 with the Sprint 28 brief)
 
 
 def check(name, ok, detail=""):
@@ -1327,11 +1327,7 @@ def main(argv=None):
                         prefill_slug="across-protocol-hubpool",
                         timelock_brief_html=ready_fixture_brief(json.loads(read("docs/api/v1/index.json"))),
                         protocols_index_html=pages.get(os.path.join("protocols", "index.html"), ""),
-                        extra={**{v_["route"]: dom_tree(pages[os.path.join(v_["route"], "index.html")]) for v_ in BS.CHECKOUT.values()
-                                  if os.path.join(v_["route"], "index.html") in pages},
-                               "rescue": read("docs/404-rescue.js") if os.path.exists(os.path.join(DOCS, "404-rescue.js")) else "",
-                               "checkout": {"api": BS.ORDERS_VERIFY_API, "treasury": BS.CHECKOUT_TREASURY, "usdc": BS.USDC["Base"],
-                                            "skus": {k_: v_["atomic"] for k_, v_ in BS.CHECKOUT.items()}}})
+                        extra={"rescue": read("docs/404-rescue.js") if os.path.exists(os.path.join(DOCS, "404-rescue.js")) else ""})
     expected = ["default_is_clearance", "default_settlement_is_invoice", "clearance_pay_panel_shown", "invoice_hides_tx_and_direct",
                 "clearance_github_href", "clearance_github_tier_exact", "clearance_brief_has_price_and_invoice", "pay_summary_tracks_tier",
                 "direct_shows_tx_and_treasury", "tx_valid_in_brief", "tx_valid_in_github",
@@ -1903,75 +1899,10 @@ def main(argv=None):
     }
     check(f"beacon docs/b.js ({len(bjs_raw)} bytes): < 2 KB, posts only to {BEACON_URL} via sendBeacon (string body; fetch keepalive no-cors fallback), DNT gate, all 9 page events (+ live_checker_submit from app.js), no cookie/storage/fingerprint APIs",
           all(beacon_static.values()), str({k: v for k, v in beacon_static.items() if not v}))
-    # ---- Option B: self-serve Base USDC checkout, query-free alias pages, 404 stripped-? rescue, b.js campaign fields ----
-    co_pages = {"request": pages.get(os.path.join("request", "index.html"), "")}
-    co_pages.update({v_["route"]: pages.get(os.path.join(v_["route"], "index.html"), "") for v_ in BS.CHECKOUT.values()})
-    co_default = {"request": BS.DEFAULT_SKU}
-    co_default.update({v_["route"]: k_ for k_, v_ in BS.CHECKOUT.items()})
-    co_bad = []
-    for route_, t_ in co_pages.items():
-        fm_ = re.search(r'<form class="co" id="co-form".*?</form>', t_, re.S)
-        f_ = fm_.group(0) if fm_ else ""
-        radios_ = re.findall(r'<input type="radio" name="sku" value="([a-z0-9-]+)" data-amount="(\d+)"( checked)?>', f_)
-        want_ = co_default[route_]
-        if not (f_ and [r_[0] for r_ in radios_] == list(BS.CHECKOUT) and [r_[0] for r_ in radios_ if r_[2]] == [want_]
-                and all(int(r_[1]) == BS.CHECKOUT[r_[0]]["atomic"] for r_ in radios_)
-                and f'data-api="{BS.ORDERS_VERIFY_API}"' in f_ and f'data-sku-default="{want_}"' in f_
-                and f'<b class="mono" data-co-amount>{BS.CHECKOUT[want_]["amount"]} USDC</b>' in f_
-                and f'href="{html.escape(BS.eip681(BS.CHECKOUT[want_]["atomic"]))}"' in f_
-                and f'<span class="mono full">{BS.CHECKOUT_TREASURY}</span>' in f_ and BS.USDC["Base"] in f_
-                and 'id="co-wallet" hidden' in f_ and 'id="co-verify"' in f_ and 'name="tx_hash"' in f_ and t_.count('id="co-form"') == 1
-                and "Pacta never sells grades." in f_ and "data-treasury" not in f_ and "the fee pays for the re-check, never the grade" in f_):
-            co_bad.append(route_)
-    reqp_ = co_pages["request"]
-    ent_ = re.search(r'<details class="archive-details ent-details" id="req-more" data-enterprise>(.*?)</details>', reqp_, re.S)
-    ent_ok = (bool(ent_) and 0 <= reqp_.find('id="checkout"') < reqp_.find('id="req-more"')
-              and all(x_ in ent_.group(1) for x_ in ('id="req-form"', f'data-api="{BS.REQUEST_API}"', 'name="tier" value="clearance" checked',
-                                                      'name="tier" value="rapid-500"', 'name="tier" value="continuous"', 'name="tier" value="community"',
-                                                      "<h2>Request a dossier</h2>")))
-    sm_co = read("docs/sitemap.xml")
-    alias_bad = []
-    for k_, v_ in BS.CHECKOUT.items():
-        t_ = co_pages[v_["route"]]
-        img_ = f"{BS.BASE_URL}/cards/{BS.CHECKOUT_PAGES[k_][2]}" if BS.CHECKOUT_PAGES[k_][2] else f"{BS.BASE_URL}/og-preview.png"
-        if not (f'<link rel="canonical" href="{BS.BASE_URL}/{v_["route"]}/">' in t_ and f'<meta property="og:image" content="{img_}">' in t_
-                and f'<meta name="twitter:image" content="{img_}">' in t_ and '<meta property="og:image:height" content="628">' in t_
-                and f"<loc>{BS.BASE_URL}/{v_['route']}/</loc>" in sm_co and f'<h1 id="co-title">{html.escape(BS.CHECKOUT_PAGES[k_][3])}</h1>' in t_):
-            alias_bad.append(v_["route"])
-    wired_ = (f'<meta property="og:image" content="{BS.BASE_URL}/cards/x-card-scorecards-1200x628.png">' in pages.get(os.path.join("scorecards", "index.html"), "")
-              and f'<meta name="twitter:image" content="{BS.BASE_URL}/cards/x-card-scorecards-1200x628.png">' in pages.get(os.path.join("scorecards", "index.html"), "")
-              and f'<meta property="og:image" content="{BS.BASE_URL}/cards/x-card-scan19-1200x628.png">' in reqp_
-              and all(os.path.exists(os.path.join(DOCS, c_)) for c_ in SOCIAL_CARDS))
-    co_src = read("tools/app.src.js")
-    co_js = co_src[co_src.find("var CO_TREASURY"):co_src.find("function initEnterprise")]
-    co_js_ok = (f'var CO_TREASURY = "{BS.CHECKOUT_TREASURY}", CO_USDC = "{BS.USDC["Base"]}", CO_CHAIN = "0x2105";' in co_js
-                and hex(BS.CHECKOUT_CHAIN_ID) == "0x2105"
-                and all(f'"{k_}": {{ atomic: {v_["atomic"]}, amount: "{v_["amount"]}"' in co_js for k_, v_ in BS.CHECKOUT.items())
-                and all(f'"{v_["tier"]}": "{k_}"' in co_js for k_, v_ in BS.CHECKOUT.items())
-                and '"0xa9059cbb" + coPad(CO_TREASURY.slice(2).toLowerCase()) + coPad(Number(atomic).toString(16))' in co_js
-                and co_js.count('method: "eth_sendTransaction"') == 1 and "0x095ea7b3" not in co_src and "increaseAllowance" not in co_src
-                and not re.search(r'method:\s*"(?:eth_sign|personal_sign|eth_signTypedData\w*)"', co_src)
-                and co_js.count("fetch(api, opts)") == 1 and "innerHTML" not in co_js and "data-treasury" not in co_js
-                # one payment at a time: Pay, Verify and the SKU radios lock before the first wallet request (harness: single flight)
-                and "if (wal) wal.disabled = on;" in co_js and "r.disabled = on;" in co_js
-                and '["co-chain", "co-target", "co-docs", "co-contact", "co-tx"].forEach(function (id) { var x = $("#" + id); if (x) x.disabled = on; });' in co_js
-                and "var order = body(), s = CO_SKU[order.sku]" in co_js and "order.tx_hash = String(h);" in co_js and "attempt(order, 15)" in co_js
-                and "attempt(body()" not in co_js
-                and 0 <= co_js.find("setBusy(true);   // locked BEFORE the first wallet request") < co_js.find('eth.request({ method: "eth_requestAccounts" })')
-                # the receipt prints alone (display: none on every other branch) and the SKU cards size to their content
-                and ".co-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start; }" in read("docs/styles.css")
-                and "html.co-print #co-form > :not(#co-result)" in read("docs/styles.css") and "html.co-print body * { visibility: hidden; }" not in read("docs/styles.css"))
-    co_keys = ["co_request_default_19", "co_switch_updates_payment", "co_prefill_tiers", "co_prefill_seal_amount_and_docs", "co_enterprise_prefill_opens",
-               "co_alias_defaults", "co_invalid_never_fetches", "co_webhook_needs_https_destination", "co_verify_posts_exact_body", "co_result_text_only",
-               "co_errors_reported", "co_wallet_transfer_only", "co_wallet_cancel_sends_nothing", "co_wallet_single_flight",
-               "co_snapshot_and_inputs_locked", "co_contract_codes", "co_optional_fields_omitted"]
-    co_failed = [k_ for k_ in co_keys if res.get(k_) is not True]
-    check(f"Option B checkout: /request/ (above the fold; enterprise tracks + free queue in a disclosure below) and /scan/ /webhook/ /seal/ render the 3-SKU "
-          f"Base USDC checkout ($19 / $49 / $99 = 19,000,000 / 49,000,000 / 99,000,000 atomic) with the right SKU checked, an exact EIP-681 transfer to the "
-          f"treasury EOA and POST /v1/orders/verify; 1200x628 cards wired; app.js payee / token / chain / amounts are constants equal to the build's; ERC-20 "
-          f"transfer only (0xa9059cbb), never approve or sign; behaviour {len(co_keys) - len(co_failed)}/{len(co_keys)} (harness)",
-          not co_bad and ent_ok and not alias_bad and wired_ and co_js_ok and not co_failed,
-          f"pages {co_bad}; enterprise {ent_ok}; alias {alias_bad}; wired {wired_}; js {co_js_ok}; failed {co_failed[:4]}")
+    check("x-card-scorecards-1200x628.png wired on /scorecards/ and all 4 social cards present",
+          f'<meta property="og:image" content="{BS.BASE_URL}/cards/x-card-scorecards-1200x628.png">' in pages.get(os.path.join("scorecards", "index.html"), "")
+          and f'<meta name="twitter:image" content="{BS.BASE_URL}/cards/x-card-scorecards-1200x628.png">' in pages.get(os.path.join("scorecards", "index.html"), "")
+          and all(os.path.exists(os.path.join(DOCS, c_)) for c_ in SOCIAL_CARDS))
     rescue_ = read("docs/404-rescue.js") if os.path.exists(os.path.join(DOCS, "404-rescue.js")) else ""
     nf_ = pages.get("404.html", "")
     csp_at = nf_.find(f'<meta http-equiv="Content-Security-Policy" content="{BS.CSP}">')
@@ -2022,8 +1953,8 @@ def main(argv=None):
     data_api = set(re.findall(r'data-api="([^"]+)"', "".join(pages.values())))
     app_fetch = len(re.findall(r"\bfetch\(", appjs))
     check("no cookies, no storage identifiers, no third-party requests in page scripts: localStorage only for the theme preference; app.js fetches only this site's JSON, the first-party API (data-api), the first-party /v1/briefs/live-timelocks (data-live-timelocks) and, on an explicit Verify-live-on-RPC click, the four allow-listed public RPCs",
-          not js_bad and ls_keys == {"pacta-theme"} and appjs.count("localStorage") == 3 and data_api <= {API_, API_ + "/v1/requests", API_ + "/v1/orders/verify"}
-          and app_fetch == 8 and appjs[appjs.find("function initCheckout()"):].count("fetch(api, opts)") == 1 and 'j(root + "api/v1/lookup.json")' in appjs and 'j(root + "api/v1/scorecards.json")' in appjs and 'fetch(api, init)' in appjs[appjs.find("function initRequest()"):] and "REQ_API_RE.test(api)" in appjs and 'fetch(document.documentElement.getAttribute("data-api") || "api/v1/index.json")' in appjs
+          not js_bad and ls_keys == {"pacta-theme"} and appjs.count("localStorage") == 3 and data_api <= {API_, API_ + "/v1/requests"}
+          and app_fetch == 7 and 'j(root + "api/v1/lookup.json")' in appjs and 'j(root + "api/v1/scorecards.json")' in appjs and 'fetch(api, init)' in appjs[appjs.find("function initRequest()"):] and "REQ_API_RE.test(api)" in appjs and 'fetch(document.documentElement.getAttribute("data-api") || "api/v1/index.json")' in appjs
           and 'fetch(body.getAttribute("data-src") || "api/v1/scorecards.json")' in appjs
           # the 4th fetch: the user-initiated "Verify live on RPC" button, POSTing JSON-RPC only to the four allow-listed public RPCs
           and "      return fetch(url, opts).then(function (res) { return res.json(); })" in appjs
@@ -3402,8 +3333,7 @@ def main(argv=None):
         all(v >= 5.1 for v in contrast.values()) and "height: 32px" in sm_rule
         and not [r for r, t in all_pages.items() for m_ in re.finditer(r'<button class="copy"[^>]*>', t) if "aria-label=" not in m_.group(0)]
         and 'p a:not([data-slot="button"]):not(.btn):not(.copy), dd a:not([data-slot="button"]):not(.btn):not(.copy)' in css_p
-        and "<h1>Protocol safety records</h1>" in pages[os.path.join("protocols", "index.html")] and '<h1 id="co-title">Request verification</h1>' in pages[os.path.join("request", "index.html")]
-        and pages[os.path.join("request", "index.html")].count("<h1") == 1)
+        and "<h1>Protocol safety records</h1>" in pages[os.path.join("protocols", "index.html")] and "<h1>Request a dossier</h1>" in pages[os.path.join("request", "index.html")])
     ico_ = open(os.path.join(DOCS, "favicon.ico"), "rb").read() if os.path.exists(os.path.join(DOCS, "favicon.ico")) else b""
     atp_ = open(os.path.join(DOCS, "apple-touch-icon.png"), "rb").read() if os.path.exists(os.path.join(DOCS, "apple-touch-icon.png")) else b""
     pp["V02 + assets: MCP link in every header and footer, no nth-child nav hiding, brand never wraps; valid favicon.ico (16 + 32 px) and 180 px apple-touch-icon.png; referrer meta on every page"] = (

@@ -68,6 +68,24 @@ EDITORIAL = {
                    ("badge-amber", "EOA strategist on liquidETH")],
         "state_title": "Managers, vaults and strategists at the pin",
     },
+    "cap-op-0x3397": {
+        "title": "Pacta Governance Radar · Pre-Execution Brief — Cap EigenServiceManager Op 0x3397",
+        "h1": "Cap <code>EigenServiceManager</code> — Queued Upgrade Makes Slashes Pay Out After EigenLayer's Resolution Delay",
+        "lede": ("Pre-execution decode of one Cap TimelockController operation: upgradeToAndCall moves Cap's EigenLayer service manager to a "
+                 "new implementation where a slash only queues the payout, anyone completes it later, and rewards are USDC-only."),
+        "badges": [("badge-cyan", "Pre-execution brief"), ("badge-amber", "Slash payouts become two-step"),
+                   ("badge-amber", "Non-USDC rewards revert")],
+        "state_title": "Proxy, implementations and roles at the pin",
+    },
+    "compound-v3-op-0x86b4": {
+        "title": "Pacta Governance Radar · Pre-Execution Brief — Compound V3 Proposal 625 (Op 0x86b4)",
+        "h1": "Compound V3 — Proposal 625 Withdraws All 25.94 WETH of Linea <code>cWETHv3</code> Reserves to the Ethereum Timelock",
+        "lede": ("Pre-execution decode of one Compound Timelock transaction: a Linea message whose three calls, after a second 1-day timelock "
+                 "on Linea, withdraw the Compound WETH market's entire reserve balance, unwrap it and bridge the ETH back to Ethereum."),
+        "badges": [("badge-cyan", "Pre-execution brief"), ("badge-cyan", "Cross-chain: Ethereum to Linea"),
+                   ("badge-amber", "Entire reserve balance")],
+        "state_title": "Linea state at the pinned Linea block",
+    },
     "lombard-op-0xd07f": {
         "title": "Pacta Governance Radar · Pre-Execution Brief — Lombard AssetRouter Op 0xd07f",
         "h1": "Lombard <code>AssetRouter</code> — 2,000-Sat Deposit Fees on <code>LBTC</code> and <code>BTC.b</code>, Minimum Request Doubled",
@@ -92,15 +110,29 @@ def load():
     return {b["slug"]: b for b in d["briefs"]}
 
 
+LINEA = ("Lineascan", "https://lineascan.build")     # Linea-side addresses in a cross-chain brief (never Etherscan for them)
+
+
+def tl_delay(b):
+    """The timelock's delay: getMinDelay() (OpenZeppelin TimelockController) or delay() (Compound Timelock)."""
+    t = b["timelock"]
+    return t["delay"] if t.get("kind") == "compound" else t["getMinDelay"]
+
+
+def status_eta(x):
+    return x["status"]["eta"] if "queuedTransactions" in x["status"] else x["status"]["getTimestamp"]
+
+
 def check_against_radar(b, item, brief_protocol):
     """The decoded brief and its radar.json item describe the same timelock operations on the same chain."""
     assert item is not None, b["slug"]
     assert item["brief"] == b["brief"] and item["protocol_slug"] == b["protocol_slug"] == brief_protocol, b["slug"]
     assert item.get("chain_id", 1) == b["chain_id"] and item["timelock"].lower() == b["timelock"]["address"].lower(), b["slug"]
     assert [o["op_id"] for o in item["operations"]] == [o["op_id"] for o in b["operations"]], b["slug"]
-    assert item["min_delay_seconds"] == b["timelock"]["getMinDelay"], b["slug"]
-    # a later radar refresh may find an operation executed (isOperationDone: eta cleared); otherwise the ETA is the decoded one
-    assert all(o["eta"] == x["status"]["getTimestamp"] or (o["done"] and o["eta"] is None)
+    assert item["min_delay_seconds"] == tl_delay(b), b["slug"]
+    assert (item.get("timelock_kind") == "compound") == (b["timelock"].get("kind") == "compound"), b["slug"]
+    # a later radar refresh may find an operation executed (isOperationDone / ExecuteTransaction: eta cleared); otherwise the ETA is the decoded one
+    assert all(o["eta"] == status_eta(x) or (o["done"] and o["eta"] is None)
                for o, x in zip(item["operations"], b["operations"])), b["slug"]
 
 
@@ -143,6 +175,12 @@ def round2(s):
 
 def op_state(o):
     st = o["status"]
+    if "queuedTransactions" in st:   # Compound Timelock
+        if st["executed"]:
+            return "executed"
+        if o["ready"]:
+            return "ready: delay elapsed, still unexecuted"
+        return "pending (queued)" if st["queuedTransactions"] else "not queued"
     if st["isOperationDone"]:
         return "executed"
     if st["isOperationReady"]:
@@ -170,17 +208,23 @@ def render(b, item, bs):
         text = E(label) if label else f'<span class="addr">{E(short(a))}</span>'
         return f'<a href="{xbase}/address/{E(a)}" target="_blank" rel="noopener" title="{E(a)}">{text}{EXT}</a>'
 
+    def xl(a, label=None):
+        """An address on Linea (cross-chain briefs): Lineascan, EIP-55 checksummed."""
+        a = eip55(a)
+        text = E(label) if label else f'<span class="addr">{E(short(a))}</span>'
+        return f'<a href="{LINEA[1]}/address/{E(a)}" target="_blank" rel="noopener" title="{E(a)} on Linea">{text}{EXT}</a>'
+
     def xtx(h):
         return f'<a href="{xbase}/tx/{E(h)}" target="_blank" rel="noopener" title="{E(h)}"><span class="addr">{E(short(h, 8, 6))}</span>{EXT}</a>'
 
     def xblock(n):
         return f'<a href="{xbase}/block/{n}" target="_blank" rel="noopener">#{n:,}{EXT}</a>'
 
-    def arg(v):
+    def arg(v, on=None):
         if isinstance(v, bool):
             return f"<code>{str(v).lower()}</code>"
         if isinstance(v, str) and ADDR_RE.fullmatch(v):
-            return xa(v)
+            return xl(v) if on == "linea" else xa(v)
         if isinstance(v, list):
             return "[" + ", ".join(arg(x) for x in v) + "]"
         return f"<code>{E(str(v))}</code>"
@@ -190,7 +234,7 @@ def render(b, item, bs):
     cap = lambda s: s[:1].upper() + s[1:]
     etas = sorted({o["eta_utc"] for o in ops})
     eta = etas[0] if len(etas) == 1 else (f"{etas[0][:-4]}–{etas[-1][11:]}" if etas[0][:10] == etas[-1][:10] else f"{etas[0]} to {etas[-1]}")
-    facts = {"delay": dur(b["timelock"]["getMinDelay"]), "eta": eta}
+    facts = {"delay": dur(tl_delay(b)), "eta": eta}
 
     # header + key figures
     out = ['<header>', '  <div>' + "".join(f'<span class="badge {c}">{E(t)}</span>' for c, t in ed["badges"]) + '</div>',
@@ -203,7 +247,7 @@ def render(b, item, bs):
     n_ops = len(ops)
     out += ['', '<h2>1. What Is Queued</h2>', '<div class="card">',
             f'  <p>{NUM_WORD[n_ops]} operation{"s are" if n_ops > 1 else " is"} queued on {xa(tl, tl_name)}, the {E(chain_name)} timelock '
-            f'with a {E(adj(b["timelock"]["getMinDelay"]))} minimum delay. Every value on this page was read at {E(chain_name)} finalized block '
+            f'with a {E(adj(tl_delay(b)))} minimum delay. Every value on this page was read at {E(chain_name)} finalized block '
             f'{xblock(pin["block_number"])} ({E(pin["block_time_utc"])}, block hash '
             f'<span class="addr" title="{E(pin["block_hash"])}">{E(short(pin["block_hash"], 10, 6))}</span>) on '
             f'{pin["rpcs_cross_checked"]} independent public RPC endpoints that agreed.</p>', '  <ul>']
@@ -233,22 +277,23 @@ def render(b, item, bs):
     # 2. decoded calls
     out += ['', '<h2>2. Decoded Calls</h2>']
     for o in ops:
-        pred = "none" if int(o["predecessor"], 16) == 0 else o["predecessor"]
+        pred = ("proposal " + str(o["proposalId"])) if "proposalId" in o else \
+            "predecessor " + ("none" if int(o["predecessor"], 16) == 0 else o["predecessor"])
         out += [f'<h3>{E(cap(label(o)))} · <span class="addr" title="{E(o["op_id"])}">{E(short(o["op_id"], 6, 4))}</span></h3>',
                 '<div class="card">',
-                f'  <p class="s">{len(o["calls"])} call{"s" if len(o["calls"]) > 1 else ""} · predecessor {E(pred)} · delay {o["delay"]:,} s · '
+                f'  <p class="s">{len(o["calls"])} call{"s" if len(o["calls"]) > 1 else ""} · {E(pred)} · delay {o["delay"]:,} s · '
                 f'ETA {E(o["eta_utc"])}</p>', '  <ol class="calls">']
         for c in o["calls"]:
             assert c["value"] == 0, (b["slug"], c)
             fname = c["function"].split("(", 1)[0]
-            args = ", ".join(f'{E(k)} = {arg(v)}' for k, v in c["args"].items())
+            args = ", ".join(f'{E(k)} = {arg(v, c.get("argChains", {}).get(k))}' for k, v in c["args"].items())
             out.append(f'    <li><code>{E(fname)}</code>({args}) on {xa(c["target"], names.get(c["target"].lower()))}'
                        f'{call_effect(b, o, c, E)}</li>')
         out += ['  </ol>', '</div>']
 
     # 3. protocol state
     out += ['', f'<h2>3. {E(ed["state_title"])}</h2>']
-    out += STATE[b["slug"]](b, item, bs, xa, E)
+    out += STATE[b["slug"]](b, item, bs, xa, E) if b["slug"] != "compound-v3-op-0x86b4" else state_compound(b, item, bs, xa, xl, E)
 
     # 4. risk notes
     out += ['', '<h2>4. Risk Notes</h2>', '<div class="card">', '  <ul>']
@@ -274,8 +319,12 @@ def target_names(b):
     d, n = b["decoded"], {}
     if "upgrades" in d:
         for u in d["upgrades"]:
-            n[u["proxyAdmin"]] = f'ProxyAdmin of {u["proxyName"]}'
+            if u["proxyAdmin"]:
+                n[u["proxyAdmin"]] = f'ProxyAdmin of {u["proxyName"]}'
             n[u["proxy"]] = u["proxyName"]
+    if "l1" in d:
+        n[d["l1"]["messageService"]["address"]] = "Linea L1 MessageService (LineaRollup)"
+        n[d["l1"]["governor"]["address"]] = d["l1"]["governor"]["name"]
     if "strategy" in d:
         s = d["strategy"]
         n[s["strategy"]] = f'Beefy CLM strategy ({s["vaultSymbol"]})'
@@ -328,6 +377,13 @@ def call_effect(b, o, c, E):
         return f' — {E(s["vaultSymbol"])}: {E(s["strategyName"])}, not added to the default queue'
     if c["function"].startswith("setDeviation"):
         return f' — maxTickDeviation {d["strategy"]["maxTickDeviation"]} to {d["newMaxTickDeviation"]} ticks'
+    if c["function"].startswith("upgradeToAndCall"):
+        u = next(u for u in d["upgrades"] if u["op_id"] == o["op_id"])
+        assert u["initCalldataBytes"] == 0 and c["args"]["data"] == "0x"
+        return f' — {E(u["proxyName"])} (UUPS) to the queued implementation; no initializer (empty data)'
+    if c["function"].startswith("sendMessage") and "linea" in d:
+        n_ = len(d["linea"]["calls"])
+        return f' — a Linea message to the LineaBridgeReceiver carrying {n_} calls for the Linea Timelock (decoded in section 3); no fee, no value'
     if c["function"].startswith("upgradeAndCall"):
         u = next(u for u in d["upgrades"] if u["op_id"] == o["op_id"])
         assert u["initCalldataBytes"] == 0 and c["args"]["data"] == "0x"
@@ -347,6 +403,19 @@ def kpis(b, F):
                 ("Minimum request", f'{mn["from"]:,} to {mn["to"]:,} sats', "Router-wide · set first in the batch", False),
                 ("Timelock delay", F["delay"], f"ETA {F['eta']}", False),
                 ("Operator fee range", f"{lo:,}–{hi:,} sats", "The queued fee is above it: timelock only", True)]
+    if slug.startswith("cap-"):
+        u = d["upgrades"][0]
+        return [("Operation", "1 UUPS upgrade", "upgradeToAndCall · no initializer", False),
+                ("Timelock delay", F["delay"], f"ETA {F['eta']}", False),
+                ("Slash payout", "Queued", "completeSlash after EigenLayer's delay", False),
+                ("Storage", "Append-only", f"ABI +{len(u['sourceDiff']['abiAdded'])} · -{len(u['sourceDiff']['abiRemoved'])}", True)]
+    if slug.startswith("compound-"):
+        ln = d["linea"]
+        w = ln["calls"][0]
+        return [("Reserves withdrawn", f"{w['amountEth'][:w['amountEth'].index('.') + 3]} WETH", "All reserves of Linea cWETHv3 at the pin", False),
+                ("Ethereum Timelock delay", F["delay"], f"ETA {F['eta']}", False),
+                ("Then on Linea", dur(ln["localTimelock"]["delay"]), "Linea Timelock before the calls run", False),
+                ("Bridged back", f"{ln['calls'][2]['valueEth'][:ln['calls'][2]['valueEth'].index('.') + 3]} ETH", f"incl. {ln['calls'][2]['feeEth']} ETH fee", True)]
     if slug.startswith("lombard"):
         ar = d["assetRouter"]
         return [("Operations", f"{len(ops)} proxy upgrades", "Independent · predecessor 0x0", False),
@@ -537,6 +606,78 @@ def state_lombard_fees(b, item, bs, xa, E):
             f'this timelock\'s proposer, canceller and executor; the executor role is not open to everyone.</p>', '</div>']
 
 
+def state_cap(b, item, bs, xa, E):
+    d = b["decoded"]
+    tl = item["timelock"].lower()
+    u = d["upgrades"][0]
+    cur, new, sd, auth = u["currentImplementation"], u["newImplementation"], u["sourceDiff"], u["upgradeAuthority"]
+    assert u["proxyKind"] == "UUPS" and int(u["eip1967AdminSlot"], 16) == 0 and u["initCalldataBytes"] == 0
+    assert [m["address"] for m in auth["members"]] == [tl] and new["proxiableUUID"].lower() == "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc"
+    files = " · ".join(f'{os.path.basename(f["file"])} +{f["linesAdded"]} / -{f["linesRemoved"]}' for f in sd["projectFilesChanged"])
+    libs = ", ".join(os.path.basename(f) for f in sd["filesAdded"]) or "none"
+    abi = lambda xs: ", ".join(f'<code>{E(x.split(" ", 1)[1].split("(", 1)[0])}</code>' for x in xs) or "none"
+    beh = d["behaviour"]
+    rows = "".join(f'<tr><td><code>{E(k)}</code></td><td>{" · ".join(xa(m["address"], m["name"]) for m in v["members"])}</td></tr>'
+                   for k, v in d["roles"].items())
+    return [f'<h3>{E(u["proxyName"])}</h3>', '<dl class="memo-meta">',
+            f'<dt>Proxy</dt><dd>{xa(u["proxy"])} · UUPS (ERC-1967 admin slot empty)</dd>',
+            f'<dt>Upgrade authority</dt><dd>_authorizeUpgrade checks Cap AccessControl {xa(auth["accessControl"])} role <code>bytes4(0)</code> on this '
+            f'proxy; its only member is {xa(tl, "this timelock")}</dd>',
+            f'<dt>Implementation now</dt><dd>{xa(cur["address"])} · {E(cur["sourcify"]["name"])} · Sourcify {E(cur["sourcify"]["match"])}</dd>',
+            f'<dt>Queued implementation</dt><dd>{xa(new["address"])} · {E(new["sourcify"]["name"])} · Sourcify {E(new["sourcify"]["match"])} '
+            f'(verified {E(new["sourcify"]["verifiedAt"][:10])}) · proxiableUUID = the ERC-1967 implementation slot</dd>',
+            '<dt>Initializer</dt><dd>None: upgradeToAndCall with empty data</dd>',
+            f'<dt>Source diff</dt><dd>{E(files)}; OpenZeppelin files added: {E(libs)}</dd>',
+            f'<dt>ABI added</dt><dd>{abi(sd["abiAdded"])}</dd>',
+            f'<dt>ABI removed</dt><dd>{abi(sd["abiRemoved"])}</dd>',
+            f'<dt>Storage</dt><dd>{E(sd["storage"])}</dd>', '</dl>',
+            '<div class="card">',
+            f'  <p><strong>slash</strong>: today it {E(beh["slash"]["before"])}; after the upgrade it {E(beh["slash"]["after"])}.</p>',
+            f'  <p><strong>completeSlash</strong>: {E(beh["completeSlash"])}.</p>',
+            f'  <p><strong>distributeRewards</strong>: {E(beh["distributeRewards"])}. {E(beh["delegationDistributeRewards"])}.</p>',
+            f'  <p><strong>registerStrategy</strong>: {E(beh["registerStrategy"])}.</p>',
+            '  <p>Who may call the role-gated functions on this contract at the pin:</p>',
+            '  <table><thead><tr><th>Function</th><th>Role members</th></tr></thead>',
+            '  <tbody>' + rows + '</tbody></table>', '</div>']
+
+
+def state_compound(b, item, bs, xa, xl, E):
+    d = b["decoded"]
+    ln, tl = d["linea"], item["timelock"].lower()
+    pin, r, lt, cm, ms = ln["pinned_block"], ln["receiver"], ln["localTimelock"], ln["comet"], ln["l2MessageService"]
+    assert r["govTimelock"].lower() == tl and r["localTimelock"] == lt["address"] and lt["admin"] == r["address"] and cm["governor"] == lt["address"]
+    assert cm["baseToken"] == ln["weth"]["address"] and int(cm["getReservesWei"]) == int(ln["calls"][0]["args"]["amount"])
+    eth = lambda w: f'{int(w) // 10**18:,}.{int(w) % 10**18:018d}'.rstrip("0").rstrip(".")
+    lblock = f'<a href="{LINEA[1]}/block/{pin["block_number"]}" target="_blank" rel="noopener">#{pin["block_number"]:,}{bs.EXT}</a>'
+    calls = []
+    for c in ln["calls"]:
+        fn = c["signature"].split("(", 1)[0]
+        args = ", ".join(f'{E(k)} = {xl(v) if ADDR_RE.fullmatch(str(v)) else "<code>" + E(str(v)) + "</code>"}' for k, v in c["args"].items())
+        what = {0: lambda: f'withdraws {E(c["amountEth"])} WETH of reserves to the Linea Timelock',
+                1: lambda: f'unwraps {E(c["amountEth"])} WETH to ETH in the Linea Timelock',
+                2: lambda: f'sends {E(c["valueEth"])} ETH (value) to {xa(c["args"]["_to"], "the Ethereum Timelock")} with a {E(c["feeEth"])} ETH fee'}[c["index"]]()
+        name = {cm["address"]: f'{cm["name"]} ({cm["symbol"]})', ln["weth"]["address"]: ln["weth"]["symbol"], ms["address"]: "L2 MessageService"}[c["target"]]
+        calls.append(f'    <li><code translate="no">{E(fn)}</code>({args}) on {xl(c["target"], name)} — {what}</li>')   # Linea-side calls (not timelock calls)
+    return ['<div class="card">',
+            f'  <p>Read at Linea finalized block {lblock} ({E(pin["block_time_utc"])}, block hash <span class="addr" title="{E(pin["block_hash"])}">'
+            f'{E(bs.short(pin["block_hash"], 10, 6))}</span>) on {pin["rpcs_cross_checked"]} independent public Linea RPC endpoints that agreed '
+            f'(Lineascan links; reproduce with <code>$LINEA_RPC_URL</code>).</p>',
+            f'  <p>{xl(r["address"], r["name"])} accepts a message only from its govTimelock, {xa(r["govTimelock"], "this Ethereum Timelock")}, and '
+            f'queues every call on its localTimelock {xl(lt["address"], "Linea Timelock")} (delay {E(dur(lt["delay"]))}, grace period '
+            f'{E(dur(lt["GRACE_PERIOD"]))}), whose admin is the receiver. The queued calls, in order:</p>', '  <ol class="calls">'] + calls + [
+            '  </ol>', '  <table><thead><tr><th>At the Linea pin</th><th>Value</th></tr></thead><tbody>',
+            f'  <tr><td>{E(cm["name"])} ({E(cm["symbol"])}) reserves, getReserves()</td><td>{E(eth(cm["getReservesWei"]))} WETH</td></tr>',
+            f'  <tr><td>Supplied (totalSupply) / borrowed (totalBorrow)</td><td>{E(eth(cm["totalSupplyWei"]))} / {E(eth(cm["totalBorrowWei"]))} WETH</td></tr>',
+            f'  <tr><td>WETH held by the market</td><td>{E(eth(cm["wethBalanceWei"]))} WETH</td></tr>',
+            f'  <tr><td>targetReserves()</td><td>{E(eth(cm["targetReservesWei"]))} WETH</td></tr>',
+            f'  <tr><td>Linea Timelock ETH balance</td><td>{E(eth(lt["ethBalanceWei"]))} ETH</td></tr>',
+            f'  <tr><td>L2 MessageService minimumFeeInWei</td><td>{E(eth(ms["minimumFeeInWei"]))} ETH</td></tr>',
+            f'  <tr><td>L2 MessageService rate limit (limitInWei / period)</td><td>{E(eth(ms["limitInWei"]))} ETH per {E(dur(ms["periodInSeconds"]))}; '
+            f'{E(eth(ms["currentPeriodAmountInWei"]))} ETH used in the current period</td></tr>',
+            '  </tbody></table>', '</div>']
+
+
 STATE = {"lombard-ops-0xceee-0x2f2a-0x6404": state_lombard, "beefy-base-op-0x3302": state_beefy,
          "ethena-ops-0xb028-0xca05-0x108e-0x070a": state_ethena, "yearn-v3-op-0x2a14": state_yearn,
-         "etherfi-liquid-op-0xf0fb": state_etherfi_liquid, "lombard-op-0xd07f": state_lombard_fees}
+         "etherfi-liquid-op-0xf0fb": state_etherfi_liquid, "lombard-op-0xd07f": state_lombard_fees,
+         "cap-op-0x3397": state_cap, "compound-v3-op-0x86b4": state_compound}

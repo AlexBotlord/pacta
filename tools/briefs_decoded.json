@@ -1,6 +1,6 @@
 {
   "schema": "pacta.decoded_briefs.v1",
-  "description": "Decoded pre-execution briefs for the queued timelock operations on the radar: scheduling logs, decoded calls, current vs new state, verified sources, risk notes and cast reproduction commands. Every value was read at the pinned finalized block on two independent public RPC endpoints that agreed (captures/decode-*.json).",
+  "description": "Decoded pre-execution briefs for the queued timelock operations on the radar: scheduling logs, decoded calls, current vs new state, verified sources, risk notes and cast reproduction commands. Every value was read at the pinned finalized block on two independent public RPC endpoints that agreed (captures/decode-*.json). The Compound V3 brief's Linea-side values were read at a Linea finalized block on two independent Linea endpoints.",
   "pins": {
     "ethereum": {
       "block_number": 26436571,
@@ -2631,6 +2631,479 @@
         "cast call 0x9ece5fb1ab62d9075c4ec814b321e24d8ea021ac \"tokenConfig(address)(uint256,uint256,bool)\" 0x8236a87084f8b84306f72007f36f2618a5634494 --block 26441005 --rpc-url $ETH_RPC_URL",
         "cast call 0x9ece5fb1ab62d9075c4ec814b321e24d8ea021ac \"toNativeCommission(address)(uint64)\" 0x8236a87084f8b84306f72007f36f2618a5634494 --block 26441005 --rpc-url $ETH_RPC_URL"
       ]
+    },
+    {
+      "slug": "cap-op-0x3397",
+      "protocol": "Cap",
+      "protocol_slug": "cap",
+      "chain_id": 1,
+      "timelock": {
+        "address": "0xd8236031d8279d82e615af2bfab5fc0127a329ab",
+        "getMinDelay": 86400,
+        "verified": {
+          "address": "0xd8236031d8279d82e615af2bfab5fc0127a329ab",
+          "codeKeccak": "0x14d3218ce0bbf812f5a629195e1fbfb7e056e8d37686922ca07379d1ceb9c4e1",
+          "codeBytes": 6550,
+          "sourcify": {
+            "name": "TimelockController",
+            "fullyQualifiedName": "TimelockController.sol:TimelockController",
+            "match": "match",
+            "runtimeMatch": "match",
+            "compiler": "0.8.28+commit.7893614a",
+            "verifiedAt": "2026-05-05T15:41:15Z",
+            "onchainBytecodeMatchesChain": true,
+            "url": "https://sourcify.dev/server/v2/contract/1/0xd8236031d8279d82e615af2bfab5fc0127a329ab"
+          }
+        }
+      },
+      "operations": [
+        {
+          "op_id": "0x3397c542581a354278c3bfd01e0b9e853ec74e6c7a6ea1ec36e1d6e6cf7ab94a",
+          "eta": 1795105403,
+          "eta_utc": "2026-11-19 16:23:23 UTC",
+          "status": {
+            "isOperation": true,
+            "isOperationPending": true,
+            "isOperationReady": false,
+            "isOperationDone": false,
+            "getTimestamp": 1795105403
+          },
+          "ready": false,
+          "predecessor": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "delay": 86400,
+          "salt": "0x0000000000000000000000000000000000000000000000000000001795014230",
+          "scheduled": {
+            "block": 26443119,
+            "tx": "0xec214fb97b40b969b0f26322a6cc48548a276bba2acaf2bfd1c7a62ff2bbb018",
+            "from": "0xc1ab5a9593e6e1662a9a44f84df4f31fc8a76b52",
+            "to": "0xb8fc49402df3ee4f8587268fb89fda4d621a8793",
+            "function": "Safe execTransaction",
+            "logIndexes": [
+              569
+            ]
+          },
+          "calls": [
+            {
+              "index": 0,
+              "target": "0xe65c3eccd18879e103dbc96d854e376ced4cc7dd",
+              "value": 0,
+              "selector": "0x4f1ef286",
+              "function": "upgradeToAndCall(address,bytes)",
+              "args": {
+                "newImplementation": "0xcd1bfbb7a72b773813a0b5283eed3201b834e35d",
+                "data": "0x"
+              },
+              "calldata": "0x4f1ef286000000000000000000000000cd1bfbb7a72b773813a0b5283eed3201b834e35d00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000",
+              "cast_decode": "cast calldata-decode \"upgradeToAndCall(address,bytes)\" 0x4f1ef286000000000000000000000000cd1bfbb7a72b773813a0b5283eed3201b834e35d00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000"
+            }
+          ]
+        }
+      ],
+      "decoded": {
+        "upgrades": [
+          {
+            "op_id": "0x3397c542581a354278c3bfd01e0b9e853ec74e6c7a6ea1ec36e1d6e6cf7ab94a",
+            "proxy": "0xe65c3eccd18879e103dbc96d854e376ced4cc7dd",
+            "proxyName": "EigenServiceManager",
+            "proxyKind": "UUPS",
+            "proxyAdmin": null,
+            "eip1967AdminSlot": "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "eip1967ImplementationSlot": "0x0000000000000000000000000cb68924cff9f00d3d952a1b8835c44df453f68e",
+            "upgradeAuthority": {
+              "accessControl": "0x7731129a10d51e18cde607c5c115f26503d2c683",
+              "accessControlImplementation": "0x6681eb184c876d74ea3ddfae0ecee0c9c0f84bc1",
+              "check": "_authorizeUpgrade -> checkAccess(bytes4(0))",
+              "selector": "0x00000000",
+              "role": "0x000000000000000000000000e65c3eccd18879e103dbc96d854e376ced4cc7dd",
+              "members": [
+                {
+                  "address": "0xd8236031d8279d82e615af2bfab5fc0127a329ab",
+                  "name": "TimelockController (this timelock)"
+                }
+              ]
+            },
+            "currentImplementation": {
+              "address": "0x0cb68924cff9f00d3d952a1b8835c44df453f68e",
+              "codeKeccak": "0x303717b8f58a617fa16aa0eddc3e5a4e2f90971e0d79ab0435a272c9b516a250",
+              "codeBytes": 24469,
+              "sourcify": {
+                "name": "EigenServiceManager",
+                "fullyQualifiedName": "contracts/delegation/providers/eigenlayer/EigenServiceManager.sol:EigenServiceManager",
+                "match": "exact_match",
+                "runtimeMatch": "exact_match",
+                "compiler": "0.8.28+commit.7893614a",
+                "verifiedAt": "2026-08-18T14:14:01Z",
+                "onchainBytecodeMatchesChain": true,
+                "url": "https://sourcify.dev/server/v2/contract/1/0x0cb68924cff9f00d3d952a1b8835c44df453f68e"
+              }
+            },
+            "newImplementation": {
+              "address": "0xcd1bfbb7a72b773813a0b5283eed3201b834e35d",
+              "codeKeccak": "0xe2645e9ebeae8fb4d30a86ec0cafd9573833b7d146907b1f767cb954c859e819",
+              "codeBytes": 23404,
+              "proxiableUUID": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+              "sourcify": {
+                "name": "EigenServiceManager",
+                "fullyQualifiedName": "contracts/delegation/providers/eigenlayer/EigenServiceManager.sol:EigenServiceManager",
+                "match": "exact_match",
+                "runtimeMatch": "exact_match",
+                "compiler": "0.8.28+commit.7893614a",
+                "verifiedAt": "2026-11-18T15:33:44Z",
+                "onchainBytecodeMatchesChain": true,
+                "url": "https://sourcify.dev/server/v2/contract/1/0xcd1bfbb7a72b773813a0b5283eed3201b834e35d"
+              }
+            },
+            "initCalldataBytes": 0,
+            "sourceDiff": {
+              "old": "0x0cb68924cff9f00d3d952a1b8835c44df453f68e",
+              "new": "0xcd1bfbb7a72b773813a0b5283eed3201b834e35d",
+              "contract": "EigenServiceManager",
+              "filesAdded": [
+                "node_modules/@openzeppelin/contracts/utils/ReentrancyGuardTransient.sol",
+                "node_modules/@openzeppelin/contracts/utils/TransientSlot.sol"
+              ],
+              "filesRemoved": [],
+              "projectFilesChanged": [
+                {
+                  "file": "contracts/delegation/providers/eigenlayer/EigenServiceManager.sol",
+                  "linesAdded": 83,
+                  "linesRemoved": 22
+                },
+                {
+                  "file": "contracts/delegation/providers/eigenlayer/interfaces/IStrategyManager.sol",
+                  "linesAdded": 21,
+                  "linesRemoved": 0
+                },
+                {
+                  "file": "contracts/interfaces/IEigenServiceManager.sol",
+                  "linesAdded": 43,
+                  "linesRemoved": 1
+                },
+                {
+                  "file": "contracts/interfaces/IRateOracle.sol",
+                  "linesAdded": 3,
+                  "linesRemoved": 0
+                }
+              ],
+              "libraryFilesChanged": 0,
+              "abiAdded": [
+                "error InvalidCollateral()",
+                "error InvalidRewardToken()",
+                "error NoPendingSlash()",
+                "error ReentrancyGuardReentrantCall()",
+                "event SlashQueued(address,address,uint256,uint256,uint256)",
+                "function USDC()",
+                "function completeSlash(address,uint256)",
+                "function pendingSlash(address,uint256)"
+              ],
+              "abiRemoved": [],
+              "storage": "append-only: IEigenServiceManager.EigenServiceManagerStorage (ERC-7201 namespace) gains pendingSlashes at the end; ReentrancyGuardTransient uses transient storage (no persistent slot)"
+            }
+          }
+        ],
+        "roles": {
+          "slash": {
+            "selector": "0x32cfdfbf",
+            "role": "0x32cfdfbf0000000000000000e65c3eccd18879e103dbc96d854e376ced4cc7dd",
+            "members": [
+              {
+                "address": "0xf3e3eae671000612ce3fd15e1019154c1a4d693f",
+                "name": "Delegation"
+              }
+            ]
+          },
+          "distributeRewards": {
+            "selector": "0x3d11c00d",
+            "role": "0x3d11c00d0000000000000000e65c3eccd18879e103dbc96d854e376ced4cc7dd",
+            "members": [
+              {
+                "address": "0xf3e3eae671000612ce3fd15e1019154c1a4d693f",
+                "name": "Delegation"
+              }
+            ]
+          },
+          "registerStrategy": {
+            "selector": "0x2896256b",
+            "role": "0x2896256b0000000000000000e65c3eccd18879e103dbc96d854e376ced4cc7dd",
+            "members": [
+              {
+                "address": "0xa82f6f9e67e127621f3e5f3953beef926b4b5ba9",
+                "name": "EigenAgentManager"
+              }
+            ]
+          },
+          "registerOperator": {
+            "selector": "0xc63fd502",
+            "role": "0xc63fd5020000000000000000e65c3eccd18879e103dbc96d854e376ced4cc7dd",
+            "members": [
+              {
+                "address": "0x948a420b8cc1d6bfd0b6087c2e7c344a2cd0bc39",
+                "name": "AllocationManager"
+              }
+            ]
+          }
+        },
+        "behaviour": {
+          "slash": {
+            "before": "clears the slashed EigenLayer shares in the same call and transfers the collateral to the recipient (Slash event)",
+            "after": "records PendingSlash(recipient, amount valued at slash time) and emits SlashQueued; the collateral moves only in completeSlash"
+          },
+          "completeSlash": "permissionless; reverts until EigenLayer's slash resolution delay has passed or while EigenLayer is paused; pays min(pending amount, collateral available)",
+          "distributeRewards": "reverts with InvalidRewardToken for any token other than USDC (0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48)",
+          "registerStrategy": "reverts with InvalidCollateral when the strategy's underlying token is USDC",
+          "delegationDistributeRewards": "Delegation.distributeRewards(agent, asset) is permissionless, takes any asset and calls the agent network's distributeRewards(agent, asset)"
+        }
+      },
+      "risk_notes": [
+        "Slashing becomes two-step. Today slash() clears the operator's slashed EigenLayer shares and pays the collateral to the recipient in the same call. After the upgrade slash() only records a PendingSlash (recipient and the amount valued at slash time) and emits SlashQueued; the collateral reaches the recipient when anyone calls completeSlash(operator, slashId) after EigenLayer's slash resolution delay, and it reverts until then or while EigenLayer is paused.",
+        "The payout is min(amount valued at slash time, collateral this contract actually received). The source reasons that the strategy share price cannot fall before the shares are cleared, so the recipient is not short-paid; any surplus stays in the service manager.",
+        "Who can slash is unchanged: the slash role on this contract is held only by Cap's Delegation contract (0xF3E3Eae671000612CE3Fd15e1019154C1a4d693F) at the pin. A liquidation that slashes an EigenLayer-backed agent now delivers its collateral to the liquidator later, not in the liquidation transaction.",
+        "Rewards become USDC-only: distributeRewards reverts for any other token, and registerStrategy refuses a USDC collateral strategy. Delegation.distributeRewards(agent, asset) is permissionless and forwards any asset to the agent's network, so for an agent on this network it now reverts unless the asset is USDC.",
+        "No initializer runs (upgradeToAndCall with empty data). Storage is append-only: pendingSlashes is added at the end of the ERC-7201 EigenServiceManager storage struct, and the reentrancy guard on completeSlash uses transient storage.",
+        "Upgrades of this proxy are authorised only through Cap's AccessControl role bytes4(0) on this contract, whose only member at the pin is this 1-day timelock. The operation was scheduled from Cap's Developer Safe (proposer) with predecessor 0x0."
+      ],
+      "brief": "briefs/cap-op-0x3397/",
+      "pinned_block": {
+        "block_number": 26444491,
+        "block_hash": "0x42c38608ceaaa23964129901e6f0f893ef18d2f6a38885d2af576332481c7df0",
+        "block_timestamp": 1795035467,
+        "block_time_utc": "2026-11-18 20:57 UTC",
+        "tag": "finalized",
+        "rpcs_cross_checked": 2
+      },
+      "radar_title": "Cap — EigenLayer service-manager upgrade: slashes paid out only after EigenLayer's resolution delay",
+      "reproduce": [
+        "cast logs --from-block 26443119 --to-block 26443119 --address 0xd8236031d8279d82e615af2bfab5fc0127a329ab \"CallScheduled(bytes32 indexed id,uint256 indexed index,address target,uint256 value,bytes data,bytes32 predecessor,uint256 delay)\" 0x3397c542581a354278c3bfd01e0b9e853ec74e6c7a6ea1ec36e1d6e6cf7ab94a --rpc-url $ETH_RPC_URL",
+        "cast receipt 0xec214fb97b40b969b0f26322a6cc48548a276bba2acaf2bfd1c7a62ff2bbb018 --rpc-url $ETH_RPC_URL",
+        "cast call 0xd8236031d8279d82e615af2bfab5fc0127a329ab \"isOperation(bytes32)(bool)\" 0x3397c542581a354278c3bfd01e0b9e853ec74e6c7a6ea1ec36e1d6e6cf7ab94a --block 26444491 --rpc-url $ETH_RPC_URL",
+        "cast call 0xd8236031d8279d82e615af2bfab5fc0127a329ab \"isOperationPending(bytes32)(bool)\" 0x3397c542581a354278c3bfd01e0b9e853ec74e6c7a6ea1ec36e1d6e6cf7ab94a --block 26444491 --rpc-url $ETH_RPC_URL",
+        "cast call 0xd8236031d8279d82e615af2bfab5fc0127a329ab \"isOperationReady(bytes32)(bool)\" 0x3397c542581a354278c3bfd01e0b9e853ec74e6c7a6ea1ec36e1d6e6cf7ab94a --block 26444491 --rpc-url $ETH_RPC_URL",
+        "cast call 0xd8236031d8279d82e615af2bfab5fc0127a329ab \"isOperationDone(bytes32)(bool)\" 0x3397c542581a354278c3bfd01e0b9e853ec74e6c7a6ea1ec36e1d6e6cf7ab94a --block 26444491 --rpc-url $ETH_RPC_URL",
+        "cast call 0xd8236031d8279d82e615af2bfab5fc0127a329ab \"getTimestamp(bytes32)(uint256)\" 0x3397c542581a354278c3bfd01e0b9e853ec74e6c7a6ea1ec36e1d6e6cf7ab94a --block 26444491 --rpc-url $ETH_RPC_URL",
+        "cast call 0xd8236031d8279d82e615af2bfab5fc0127a329ab \"getMinDelay()(uint256)\" --block 26444491 --rpc-url $ETH_RPC_URL",
+        "cast storage 0xe65c3eccd18879e103dbc96d854e376ced4cc7dd 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc --block 26444491 --rpc-url $ETH_RPC_URL",
+        "cast storage 0xe65c3eccd18879e103dbc96d854e376ced4cc7dd 0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103 --block 26444491 --rpc-url $ETH_RPC_URL",
+        "cast call 0xcd1bfbb7a72b773813a0b5283eed3201b834e35d \"proxiableUUID()(bytes32)\" --block 26444491 --rpc-url $ETH_RPC_URL",
+        "cast keccak $(cast code 0x0cb68924cff9f00d3d952a1b8835c44df453f68e --block 26444491 --rpc-url $ETH_RPC_URL)",
+        "cast keccak $(cast code 0xcd1bfbb7a72b773813a0b5283eed3201b834e35d --block 26444491 --rpc-url $ETH_RPC_URL)",
+        "cast storage 0xe65c3eccd18879e103dbc96d854e376ced4cc7dd 0xb413d65cb88f23816c329284a0d3eb15a99df7963ab7402ade4c5da22bff6b00 --block 26444491 --rpc-url $ETH_RPC_URL",
+        "cast call 0x7731129a10d51e18cde607c5c115f26503d2c683 \"getRoleMembers(bytes32)(address[])\" 0x000000000000000000000000e65c3eccd18879e103dbc96d854e376ced4cc7dd --block 26444491 --rpc-url $ETH_RPC_URL",
+        "cast call 0x7731129a10d51e18cde607c5c115f26503d2c683 \"getRoleMembers(bytes32)(address[])\" 0x32cfdfbf0000000000000000e65c3eccd18879e103dbc96d854e376ced4cc7dd --block 26444491 --rpc-url $ETH_RPC_URL",
+        "cast call 0x7731129a10d51e18cde607c5c115f26503d2c683 \"getRoleMembers(bytes32)(address[])\" 0x3d11c00d0000000000000000e65c3eccd18879e103dbc96d854e376ced4cc7dd --block 26444491 --rpc-url $ETH_RPC_URL",
+        "cast call 0x7731129a10d51e18cde607c5c115f26503d2c683 \"getRoleMembers(bytes32)(address[])\" 0x2896256b0000000000000000e65c3eccd18879e103dbc96d854e376ced4cc7dd --block 26444491 --rpc-url $ETH_RPC_URL",
+        "cast call 0x7731129a10d51e18cde607c5c115f26503d2c683 \"getRoleMembers(bytes32)(address[])\" 0xc63fd5020000000000000000e65c3eccd18879e103dbc96d854e376ced4cc7dd --block 26444491 --rpc-url $ETH_RPC_URL"
+      ]
+    },
+    {
+      "slug": "compound-v3-op-0x86b4",
+      "protocol": "Compound V3",
+      "protocol_slug": "compound-v3-comet",
+      "chain_id": 1,
+      "timelock": {
+        "address": "0x6d903f6003cca6255d85cca4d3b5e5146dc33925",
+        "kind": "compound",
+        "delay": 172800,
+        "GRACE_PERIOD": 1209600,
+        "admin": "0x309a862bbc1a00e45506cb8a802d1ff10004c8c0",
+        "verified": {
+          "address": "0x6d903f6003cca6255d85cca4d3b5e5146dc33925",
+          "codeKeccak": "0x78d36c8468d3af5a49c072e6ae2de71779fe97ef5866b6d6197046024fd14d04",
+          "codeBytes": 5988,
+          "sourcify": {
+            "name": "Timelock",
+            "fullyQualifiedName": "Timelock.sol:Timelock",
+            "match": "match",
+            "runtimeMatch": "match",
+            "compiler": "0.5.8+commit.23d335f2",
+            "verifiedAt": "2025-06-22T21:49:55Z",
+            "onchainBytecodeMatchesChain": true,
+            "url": "https://sourcify.dev/server/v2/contract/1/0x6d903f6003cca6255d85cca4d3b5e5146dc33925"
+          }
+        }
+      },
+      "operations": [
+        {
+          "op_id": "0x86b41fd84764a2e73ccd29c1e33c93497a70d7e84b7445804752980fa039fee0",
+          "eta": 1795201103,
+          "eta_utc": "2026-11-20 18:58:23 UTC",
+          "status": {
+            "queuedTransactions": true,
+            "eta": 1795201103,
+            "gracePeriodEnds": 1796410703,
+            "gracePeriodEndsUtc": "2026-12-04 18:58:23 UTC",
+            "executed": false
+          },
+          "ready": false,
+          "delay": 172800,
+          "proposalId": 625,
+          "scheduled": {
+            "block": 26443894,
+            "tx": "0x949a364cfd692d52a4f5217cae22f1e72a822967c6e6ee5fec8b238af144a2ef",
+            "from": "0x9f771c534f12d711a91f1ad5bb8b4941b5252768",
+            "to": "0x309a862bbc1a00e45506cb8a802d1ff10004c8c0",
+            "function": "CompoundGovernor queue(625)",
+            "logIndexes": [
+              626
+            ]
+          },
+          "calls": [
+            {
+              "index": 0,
+              "target": "0xd19d4b5d358258f05d7b411e21a1460d11b0876f",
+              "value": 0,
+              "selector": "0x9f3ce55a",
+              "function": "sendMessage(address,uint256,bytes)",
+              "args": {
+                "_to": "0x1f71901daf98d70b4baf40de080321e5c2676856",
+                "_fee": 0,
+                "_calldata": "1,216-byte Compound bridge proposal: 3 Linea calls (section 3)"
+              },
+              "argChains": {
+                "_to": "linea"
+              },
+              "calldata": "0x9f3ce55a0000000000000000000000001f71901daf98d70b4baf40de080321e5c26768560000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000004c00000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001800000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000000000000000300000000000000000000000060f2058379716a64a7a5d29219397e79bc552194000000000000000000000000e5d7c2a44ffddf6b295a15c148167daaaf5cf34f000000000000000000000000508ca82df566dcd1b0de8296e70a96332cd644ec000000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001682839ab8daca74f0000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000217769746864726177526573657276657328616464726573732c75696e743235362900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001177697468647261772875696e7432353629000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002273656e644d65737361676528616464726573732c75696e743235362c6279746573290000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000400000000000000000000000004a900f81deda753bbbab12453b3775d5f26df6f30000000000000000000000000000000000000000000000016804b2b91deba74f00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000016804b2b91deba74f00000000000000000000000000000000000000000000000000000000000000800000000000000000000000006d903f6003cca6255d85cca4d3b5e5146dc33925000000000000000000000000000000000000000000000000002386f26fc1000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000",
+              "cast_decode": "cast calldata-decode \"sendMessage(address,uint256,bytes)\" 0x9f3ce55a0000000000000000000000001f71901daf98d70b4baf40de080321e5c26768560000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000004c00000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001800000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000000000000000300000000000000000000000060f2058379716a64a7a5d29219397e79bc552194000000000000000000000000e5d7c2a44ffddf6b295a15c148167daaaf5cf34f000000000000000000000000508ca82df566dcd1b0de8296e70a96332cd644ec000000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001682839ab8daca74f0000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000217769746864726177526573657276657328616464726573732c75696e743235362900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001177697468647261772875696e7432353629000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002273656e644d65737361676528616464726573732c75696e743235362c6279746573290000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000400000000000000000000000004a900f81deda753bbbab12453b3775d5f26df6f30000000000000000000000000000000000000000000000016804b2b91deba74f00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000016804b2b91deba74f00000000000000000000000000000000000000000000000000000000000000800000000000000000000000006d903f6003cca6255d85cca4d3b5e5146dc33925000000000000000000000000000000000000000000000000002386f26fc1000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000"
+            }
+          ]
+        }
+      ],
+      "decoded": {
+        "l1": {
+          "messageService": {
+            "address": "0xd19d4b5d358258f05d7b411e21a1460d11b0876f",
+            "name": "LineaRollup (L1 MessageService, behind a TransparentUpgradeableProxy)"
+          },
+          "governor": {
+            "address": "0x309a862bbc1a00e45506cb8a802d1ff10004c8c0",
+            "name": "CompoundGovernor"
+          }
+        },
+        "linea": {
+          "chainId": 59144,
+          "pinned_block": {
+            "block_number": 32643467,
+            "block_hash": "0x94888249aa17f6b7fef2b1b9e6c018cf29d80d2d60f495e666cd534d55690db8",
+            "block_timestamp": 1795031262,
+            "block_time_utc": "2026-11-18 19:47 UTC",
+            "tag": "finalized",
+            "rpcs_cross_checked": 2
+          },
+          "receiver": {
+            "address": "0x1f71901daf98d70b4baf40de080321e5c2676856",
+            "name": "LineaBridgeReceiver",
+            "govTimelock": "0x6d903f6003cca6255d85cca4d3b5e5146dc33925",
+            "localTimelock": "0x4a900f81deda753bbbab12453b3775d5f26df6f3",
+            "messageService": "0x508ca82df566dcd1b0de8296e70a96332cd644ec"
+          },
+          "localTimelock": {
+            "address": "0x4a900f81deda753bbbab12453b3775d5f26df6f3",
+            "name": "Timelock",
+            "delay": 86400,
+            "GRACE_PERIOD": 1209600,
+            "admin": "0x1f71901daf98d70b4baf40de080321e5c2676856",
+            "ethBalanceWei": "16655898522808438"
+          },
+          "comet": {
+            "address": "0x60f2058379716a64a7a5d29219397e79bc552194",
+            "name": "Compound WETH",
+            "symbol": "cWETHv3",
+            "baseToken": "0xe5d7c2a44ffddf6b295a15c148167daaaf5cf34f",
+            "governor": "0x4a900f81deda753bbbab12453b3775d5f26df6f3",
+            "implementation": "0x3510d3b38a2ef3f7a12cb69ba6f3dc9c6a1971a3",
+            "getReservesWei": "25942056261701576527",
+            "totalSupplyWei": "501501817301800258",
+            "totalBorrowWei": "0",
+            "targetReservesWei": "5000000000000000000000",
+            "wethBalanceWei": "26443558079003376785"
+          },
+          "weth": {
+            "address": "0xe5d7c2a44ffddf6b295a15c148167daaaf5cf34f",
+            "symbol": "WETH",
+            "decimals": 18
+          },
+          "l2MessageService": {
+            "address": "0x508ca82df566dcd1b0de8296e70a96332cd644ec",
+            "implementation": "0x9976fd7eddb78156a002de74c9158e884702273d",
+            "name": "L2MessageService",
+            "minimumFeeInWei": "100000000000000",
+            "limitInWei": "8000000000000000000000",
+            "periodInSeconds": 86400,
+            "currentPeriodAmountInWei": "291819900000000000000"
+          },
+          "calls": [
+            {
+              "index": 0,
+              "target": "0x60f2058379716a64a7a5d29219397e79bc552194",
+              "value": "0",
+              "signature": "withdrawReserves(address,uint256)",
+              "args": {
+                "to": "0x4a900f81deda753bbbab12453b3775d5f26df6f3",
+                "amount": "25942056261701576527"
+              },
+              "amountEth": "25.942056261701576527"
+            },
+            {
+              "index": 1,
+              "target": "0xe5d7c2a44ffddf6b295a15c148167daaaf5cf34f",
+              "value": "0",
+              "signature": "withdraw(uint256)",
+              "args": {
+                "wad": "25942056261701576527"
+              },
+              "amountEth": "25.942056261701576527"
+            },
+            {
+              "index": 2,
+              "target": "0x508ca82df566dcd1b0de8296e70a96332cd644ec",
+              "value": "25952056261701576527",
+              "valueEth": "25.952056261701576527",
+              "signature": "sendMessage(address,uint256,bytes)",
+              "args": {
+                "_to": "0x6d903f6003cca6255d85cca4d3b5e5146dc33925",
+                "_fee": "10000000000000000",
+                "_calldata": "0x"
+              },
+              "feeEth": "0.01"
+            }
+          ]
+        }
+      },
+      "risk_notes": [
+        "This is not a Base operation: the target is Linea's L1 MessageService (LineaRollup), and the message goes to Compound's LineaBridgeReceiver on Linea, which accepts it only from this Ethereum Timelock (govTimelock).",
+        "The whole reserve balance moves: Compound WETH (cWETHv3) on Linea held 25.942056261701576527 WETH of reserves at the Linea pin, exactly the 25.942056261701576527 WETH that withdrawReserves requests. Reserves only change with market activity (no borrows at the pin), so a lower balance at execution would make withdrawReserves revert on Linea.",
+        "Two delays stack: the 2-day Ethereum Timelock (ETA 2026-11-20 18:58:23 UTC), then the receiver queues the three Linea calls behind the 1-day Linea Timelock, executable by anyone via executeProposal within its 14-day grace period.",
+        "The L2 message sends 25.952056261701576527 ETH: the 25.942056261701576527 ETH unwrapped plus the 0.01 ETH fee. The Linea Timelock held 0.016655898522808438 ETH of its own at the pin, enough for the fee; with less, the third call reverts. The ETH reaches the Ethereum Timelock only after the Linea-to-Ethereum message is claimed on L1.",
+        "The Ethereum-side message prepays no fee (_fee = 0) and no value: delivery on Linea follows Linea's message-service claiming rules.",
+        "Proposal 625 was queued by CompoundGovernor (the Timelock's admin) at block 26,443,894; anyone may execute it from the ETA for the 14-day grace period. The radar reads queuedTransactions(txHash) and the Timelock's ExecuteTransaction / CancelTransaction logs."
+      ],
+      "brief": "briefs/compound-v3-op-0x86b4/",
+      "pinned_block": {
+        "block_number": 26444491,
+        "block_hash": "0x42c38608ceaaa23964129901e6f0f893ef18d2f6a38885d2af576332481c7df0",
+        "block_timestamp": 1795035467,
+        "block_time_utc": "2026-11-18 20:57 UTC",
+        "tag": "finalized",
+        "rpcs_cross_checked": 2
+      },
+      "radar_title": "Compound V3 — all 25.94 WETH of reserves on Linea's cWETHv3 withdrawn and bridged to the Ethereum Timelock",
+      "reproduce": [
+        "cast logs --from-block 26443894 --to-block 26443894 --address 0x6d903f6003cca6255d85cca4d3b5e5146dc33925 \"QueueTransaction(bytes32 indexed txHash,address indexed target,uint256 value,string signature,bytes data,uint256 eta)\" 0x86b41fd84764a2e73ccd29c1e33c93497a70d7e84b7445804752980fa039fee0 --rpc-url $ETH_RPC_URL",
+        "cast receipt 0x949a364cfd692d52a4f5217cae22f1e72a822967c6e6ee5fec8b238af144a2ef --rpc-url $ETH_RPC_URL",
+        "cast call 0x6d903f6003cca6255d85cca4d3b5e5146dc33925 \"queuedTransactions(bytes32)(bool)\" 0x86b41fd84764a2e73ccd29c1e33c93497a70d7e84b7445804752980fa039fee0 --block 26444491 --rpc-url $ETH_RPC_URL",
+        "cast call 0x6d903f6003cca6255d85cca4d3b5e5146dc33925 \"delay()(uint256)\" --block 26444491 --rpc-url $ETH_RPC_URL",
+        "cast call 0x6d903f6003cca6255d85cca4d3b5e5146dc33925 \"GRACE_PERIOD()(uint256)\" --block 26444491 --rpc-url $ETH_RPC_URL",
+        "cast call 0x6d903f6003cca6255d85cca4d3b5e5146dc33925 \"admin()(address)\" --block 26444491 --rpc-url $ETH_RPC_URL",
+        "cast keccak $(cast abi-encode \"f(address,uint256,string,bytes,uint256)\" 0xd19d4b5d358258f05d7b411e21a1460d11b0876f 0 \"\" 0x9f3ce55a0000000000000000000000001f71901daf98d70b4baf40de080321e5c26768560000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000004c00000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001800000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000000000000000300000000000000000000000060f2058379716a64a7a5d29219397e79bc552194000000000000000000000000e5d7c2a44ffddf6b295a15c148167daaaf5cf34f000000000000000000000000508ca82df566dcd1b0de8296e70a96332cd644ec000000000000000000000000000000000000000000000000000000000000000300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001682839ab8daca74f0000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000217769746864726177526573657276657328616464726573732c75696e743235362900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001177697468647261772875696e7432353629000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002273656e644d65737361676528616464726573732c75696e743235362c6279746573290000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000c0000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000400000000000000000000000004a900f81deda753bbbab12453b3775d5f26df6f30000000000000000000000000000000000000000000000016804b2b91deba74f00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000016804b2b91deba74f00000000000000000000000000000000000000000000000000000000000000800000000000000000000000006d903f6003cca6255d85cca4d3b5e5146dc33925000000000000000000000000000000000000000000000000002386f26fc1000000000000000000000000000000000000000000000000000000000000000000600000000000000000000000000000000000000000000000000000000000000000 1795201103)",
+        "cast call 0x60f2058379716a64a7a5d29219397e79bc552194 \"getReserves()(int256)\" --block 32643467 --rpc-url $LINEA_RPC_URL",
+        "cast call 0x60f2058379716a64a7a5d29219397e79bc552194 \"baseToken()(address)\" --block 32643467 --rpc-url $LINEA_RPC_URL",
+        "cast call 0x60f2058379716a64a7a5d29219397e79bc552194 \"governor()(address)\" --block 32643467 --rpc-url $LINEA_RPC_URL",
+        "cast call 0x60f2058379716a64a7a5d29219397e79bc552194 \"totalBorrow()(uint256)\" --block 32643467 --rpc-url $LINEA_RPC_URL",
+        "cast call 0x1f71901daf98d70b4baf40de080321e5c2676856 \"govTimelock()(address)\" --block 32643467 --rpc-url $LINEA_RPC_URL",
+        "cast call 0x1f71901daf98d70b4baf40de080321e5c2676856 \"localTimelock()(address)\" --block 32643467 --rpc-url $LINEA_RPC_URL",
+        "cast call 0x4a900f81deda753bbbab12453b3775d5f26df6f3 \"delay()(uint256)\" --block 32643467 --rpc-url $LINEA_RPC_URL",
+        "cast balance 0x4a900f81deda753bbbab12453b3775d5f26df6f3 --block 32643467 --rpc-url $LINEA_RPC_URL",
+        "cast call 0x508ca82df566dcd1b0de8296e70a96332cd644ec \"minimumFeeInWei()(uint256)\" --block 32643467 --rpc-url $LINEA_RPC_URL"
+      ]
     }
   ],
   "recheck": [
@@ -2711,10 +3184,10 @@
     }
   ],
   "counts": {
-    "briefs": 6,
-    "operations": 11,
-    "calls": 43,
-    "radarItems": 9,
-    "radarOps": 15
+    "briefs": 8,
+    "operations": 13,
+    "calls": 45,
+    "radarItems": 11,
+    "radarOps": 17
   }
 }

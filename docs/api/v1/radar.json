@@ -2,67 +2,22 @@
   "schema": "pacta.radar.v1",
   "chain_id": 1,
   "refreshed_at": {
-    "block_number": 26441005,
-    "block_hash": "0xffd4780112448d0bb57761c0a7002cc426fda42fe95c589b83ed548c2a7ed6cc",
-    "block_timestamp": 1794993623,
-    "block_time_utc": "2026-11-18 09:20 UTC",
+    "block_number": 26444554,
+    "block_hash": "0x9c20da2dad18b142f2bfd3d17fc678ffa7658be942a13a800e7f2f59402921aa",
+    "block_timestamp": 1795036247,
+    "block_time_utc": "2026-11-18 21:10 UTC",
     "tag": "finalized",
     "rpcs_cross_checked": 2
   },
   "refreshed_at_base": {
-    "block_number": 59014044,
-    "block_hash": "0x7da4f477e5161ec2227307739f42327fce08bf077ea447a24322c133fd3b8d07",
-    "block_timestamp": 1794993184,
-    "block_time_utc": "2026-11-18 09:13 UTC",
+    "block_number": 59229098,
+    "block_hash": "0xbf29afe7cc944eea894688e9491a752bf64a5e79311f7725a5237ff20461d320",
+    "block_timestamp": 1795036195,
+    "block_time_utc": "2026-11-18 21:09 UTC",
     "tag": "finalized",
     "rpcs_cross_checked": 2
   },
   "items": [
-    {
-      "protocol": "Ethena",
-      "protocol_slug": "ethena-usde-susde",
-      "chain_id": 1,
-      "title": "Ethena USDe — mint caps cut to 50M per block, USDm delisted, a custodian added",
-      "summary": "Four ops: global and per-asset maxMintPerBlock 200M -> 50M USDe on 8 assets; removeSupportedAsset(USDm); addCustodianAddress for an EOA not yet a custodian; USDe OFT adapter setRateLimits to 25M per hour on LayerZero eids 30339 (was 10M) and 30383 (was 30M).",
-      "timelock": "0xE8Dc0Fab349EA169283C48Ccfd09d797E6DB7c94",
-      "brief": "briefs/ethena-ops-0xb028-0xca05-0x108e-0x070a/",
-      "min_delay_seconds": 86400,
-      "operations": [
-        {
-          "op_id": "0xb0289f92009409e09b8b87150e10486ab753b7c13d049702caca3221a622d81a",
-          "eta": 1795011647,
-          "pending": true,
-          "done": false,
-          "ready": false,
-          "label": "mint caps cut from 200M to 50M per block"
-        },
-        {
-          "op_id": "0xca0563b0bebee6c971db36df24ef8c5802ad4007f7fb42bff2f553141c8ed835",
-          "eta": 1795011731,
-          "pending": true,
-          "done": false,
-          "ready": false,
-          "label": "USDm removed as mint collateral"
-        },
-        {
-          "op_id": "0x108ea49a961a00e8992ad4aed2e1faea43b0a47982e0c62d63f9db03ddb4d0f4",
-          "eta": 1795013567,
-          "pending": true,
-          "done": false,
-          "ready": false,
-          "label": "bridge rate limits set to 25M per hour on two routes"
-        },
-        {
-          "op_id": "0x070a0ab4df4b4d69e23ed817c62481d267dae887ed7f7b5fbc7cffa5ff64228d",
-          "eta": 1795013615,
-          "pending": true,
-          "done": false,
-          "ready": false,
-          "label": "a new custodian address added"
-        }
-      ],
-      "eta": 1795011647
-    },
     {
       "protocol": "ether.fi Liquid",
       "protocol_slug": "ether-fi-liquid-veda-boringvault",
@@ -104,6 +59,26 @@
       "eta": 1795077227
     },
     {
+      "protocol": "Cap",
+      "protocol_slug": "cap",
+      "chain_id": 1,
+      "title": "Cap — EigenLayer service-manager upgrade: slashes paid out only after EigenLayer's resolution delay",
+      "summary": "upgradeToAndCall (no initializer) on Cap's EigenServiceManager (UUPS): a slash now queues the payout, valued at slash time, and anyone completes it once EigenLayer's slash resolution delay has passed (completeSlash); rewards become USDC-only and USDC can no longer be registered as collateral. Storage is appended only (pendingSlashes).",
+      "timelock": "0xD8236031d8279d82E615aF2BFab5FC0127A329ab",
+      "brief": "briefs/cap-op-0x3397/",
+      "min_delay_seconds": 86400,
+      "operations": [
+        {
+          "op_id": "0x3397c542581a354278c3bfd01e0b9e853ec74e6c7a6ea1ec36e1d6e6cf7ab94a",
+          "eta": 1795105403,
+          "pending": true,
+          "done": false,
+          "ready": false
+        }
+      ],
+      "eta": 1795105403
+    },
+    {
       "protocol": "ether.fi",
       "protocol_slug": "ether-fi-core-eeth-weeth",
       "chain_id": 1,
@@ -124,6 +99,27 @@
       "eta": 1795193651
     },
     {
+      "protocol": "Compound V3",
+      "protocol_slug": "compound-v3-comet",
+      "chain_id": 1,
+      "title": "Compound V3 — all 25.94 WETH of reserves on Linea's cWETHv3 withdrawn and bridged to the Ethereum Timelock",
+      "summary": "Proposal 625: the Ethereum Timelock sends one Linea message (L1 MessageService.sendMessage). On Linea the bridge receiver queues three calls behind the 1-day Linea Timelock: withdrawReserves of 25.942 WETH from Compound WETH (cWETHv3), WETH.withdraw, and L2 MessageService.sendMessage of 25.952 ETH (0.01 ETH fee) back to the Ethereum Timelock.",
+      "timelock": "0x6d903f6003cca6255D85CcA4D3B5E5146dC33925",
+      "brief": "briefs/compound-v3-op-0x86b4/",
+      "timelock_kind": "compound",
+      "min_delay_seconds": 172800,
+      "operations": [
+        {
+          "op_id": "0x86b41fd84764a2e73ccd29c1e33c93497a70d7e84b7445804752980fa039fee0",
+          "eta": 1795201103,
+          "pending": true,
+          "done": false,
+          "ready": false
+        }
+      ],
+      "eta": 1795201103
+    },
+    {
       "protocol": "Yearn V3",
       "protocol_slug": "yearn-v3",
       "chain_id": 1,
@@ -142,6 +138,51 @@
         }
       ],
       "eta": 1795451951
+    },
+    {
+      "protocol": "Ethena",
+      "protocol_slug": "ethena-usde-susde",
+      "chain_id": 1,
+      "title": "Ethena USDe — mint caps cut to 50M per block, USDm delisted, a custodian added",
+      "summary": "Four ops: global and per-asset maxMintPerBlock 200M -> 50M USDe on 8 assets; removeSupportedAsset(USDm); addCustodianAddress for an EOA not yet a custodian; USDe OFT adapter setRateLimits to 25M per hour on LayerZero eids 30339 (was 10M) and 30383 (was 30M).",
+      "timelock": "0xE8Dc0Fab349EA169283C48Ccfd09d797E6DB7c94",
+      "brief": "briefs/ethena-ops-0xb028-0xca05-0x108e-0x070a/",
+      "min_delay_seconds": 86400,
+      "operations": [
+        {
+          "op_id": "0xb0289f92009409e09b8b87150e10486ab753b7c13d049702caca3221a622d81a",
+          "eta": 1795011647,
+          "pending": true,
+          "done": false,
+          "ready": true,
+          "label": "mint caps cut from 200M to 50M per block"
+        },
+        {
+          "op_id": "0xca0563b0bebee6c971db36df24ef8c5802ad4007f7fb42bff2f553141c8ed835",
+          "eta": 1795011731,
+          "pending": true,
+          "done": false,
+          "ready": true,
+          "label": "USDm removed as mint collateral"
+        },
+        {
+          "op_id": "0x108ea49a961a00e8992ad4aed2e1faea43b0a47982e0c62d63f9db03ddb4d0f4",
+          "eta": 1795013567,
+          "pending": true,
+          "done": false,
+          "ready": true,
+          "label": "bridge rate limits set to 25M per hour on two routes"
+        },
+        {
+          "op_id": "0x070a0ab4df4b4d69e23ed817c62481d267dae887ed7f7b5fbc7cffa5ff64228d",
+          "eta": null,
+          "pending": false,
+          "done": true,
+          "ready": false,
+          "label": "a new custodian address added"
+        }
+      ],
+      "eta": 1795011647
     },
     {
       "protocol": "Treehouse",

@@ -8,6 +8,13 @@ or Basescan) are built from this file, so they always state the exact block each
   python3 tools/refresh_radar.py                 # rewrite docs/api/v1/radar.json
   python3 tools/refresh_radar.py --out <path>    # write elsewhere (dry run)
 
+Two timelock kinds are read (both on two endpoints that must agree):
+  - OpenZeppelin TimelockController (default): getMinDelay(), getTimestamp(id), isOperationPending(id), isOperationDone(id).
+  - Compound Timelock ("kind": "compound", e.g. the Compound governance Timelock): delay(), GRACE_PERIOD() and
+    queuedTransactions(txHash). The ETA is re-read from the QueueTransaction log at the item's queue_block (its txHash must match),
+    and an ExecuteTransaction / CancelTransaction log for the txHash between queue_block and the pin marks it executed / cancelled.
+    pending = queuedTransactions(txHash); ready = queued and ETA <= pin time <= ETA + GRACE_PERIOD; done = an ExecuteTransaction log.
+
 Item order: ready first, then pending by ETA, then anything else, executed last.
 """
 
@@ -21,7 +28,15 @@ OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "docs", "ap
 # chain_id -> (key in radar.json, expected eth_chainId, two independent public RPC endpoints)
 CHAINS = {1: ("refreshed_at", "0x1", ["https://rpc.mevblocker.io", "https://gateway.tenderly.co/public/mainnet"]),
           8453: ("refreshed_at_base", "0x2105", ["https://gateway.tenderly.co/public/base", "https://base-rpc.publicnode.com"])}
-SEL = {"getTimestamp": "0xd45c4435", "isOperationPending": "0x584b153e", "isOperationDone": "0x2ab0f529", "getMinDelay": "0xf27a0c92"}
+SEL = {"getTimestamp": "0xd45c4435", "isOperationPending": "0x584b153e", "isOperationDone": "0x2ab0f529", "getMinDelay": "0xf27a0c92",
+       # Compound Timelock (GovernorBravo's): delay(), GRACE_PERIOD(), queuedTransactions(bytes32)
+       "delay": "0x6a42b8f8", "GRACE_PERIOD": "0xc1a287e2", "queuedTransactions": "0xf2b06537"}
+# Compound Timelock events: QueueTransaction / ExecuteTransaction / CancelTransaction(bytes32 indexed txHash, address indexed target,
+# uint value, string signature, bytes data, uint eta)
+TOPIC = {"queue": "0x76e2796dc3a81d57b0e8504b647febcbeeb5f4af818e164f11eef8131a6a763f",
+         "execute": "0xa560e3198060a2f10670c1ec5b403077ea6ae93ca8de1c32b451dc1a943cd6e7",
+         "cancel": "0x2fffc091a501fd91bfbff27141450d3acb40fb8e6d8382b243ec7a812a3aaf87"}
+LOG_SPAN = 5000   # eth_getLogs block range per request (public endpoints cap the range)
 # ops: (op_id, label or None). Timelock addresses are EIP-55 (a wrong-checksum mixed-case address is skipped by the live re-check).
 OPS = [
     {"protocol": "Treehouse", "protocol_slug": "treehouse-tree-teth", "chain_id": 1,
@@ -78,6 +93,20 @@ OPS = [
                 "The new roots' leaves are not onchain.",
      "timelock": "0xD829F278016b90FEc735F9A12Bf8b75E06102C89", "brief": "briefs/etherfi-liquid-op-0xf0fb/",
      "ops": [("0xf0fbfdb07f06c3a429b032811930fbb9b314ed8adc343b4d9ef3a60fe2975eea", None)]},
+    {"protocol": "Cap", "protocol_slug": "cap", "chain_id": 1,
+     "title": "Cap — EigenLayer service-manager upgrade: slashes paid out only after EigenLayer's resolution delay",
+     "summary": "upgradeToAndCall (no initializer) on Cap's EigenServiceManager (UUPS): a slash now queues the payout, valued at slash "
+                "time, and anyone completes it once EigenLayer's slash resolution delay has passed (completeSlash); rewards become "
+                "USDC-only and USDC can no longer be registered as collateral. Storage is appended only (pendingSlashes).",
+     "timelock": "0xD8236031d8279d82E615aF2BFab5FC0127A329ab", "brief": "briefs/cap-op-0x3397/",
+     "ops": [("0x3397c542581a354278c3bfd01e0b9e853ec74e6c7a6ea1ec36e1d6e6cf7ab94a", None)]},
+    {"protocol": "Compound V3", "protocol_slug": "compound-v3-comet", "chain_id": 1, "kind": "compound", "queue_block": 26443894,
+     "title": "Compound V3 — all 25.94 WETH of reserves on Linea's cWETHv3 withdrawn and bridged to the Ethereum Timelock",
+     "summary": "Proposal 625: the Ethereum Timelock sends one Linea message (L1 MessageService.sendMessage). On Linea the bridge "
+                "receiver queues three calls behind the 1-day Linea Timelock: withdrawReserves of 25.942 WETH from Compound WETH "
+                "(cWETHv3), WETH.withdraw, and L2 MessageService.sendMessage of 25.952 ETH (0.01 ETH fee) back to the Ethereum Timelock.",
+     "timelock": "0x6d903f6003cca6255D85CcA4D3B5E5146dC33925", "brief": "briefs/compound-v3-op-0x86b4/",
+     "ops": [("0x86b41fd84764a2e73ccd29c1e33c93497a70d7e84b7445804752980fa039fee0", None)]},
     {"protocol": "Lombard", "protocol_slug": "lombard-lbtc", "chain_id": 1,
      "title": "Lombard — LBTC and BTC.b deposit fees set to 2,000 sats; minimum request doubled",
      "summary": "One 5-call batch on the upgraded AssetRouter: minRequestAmount 2,000 -> 4,000 sats, a 2,000-sat deposit fee on every "
@@ -128,6 +157,39 @@ class Chain:
     def call(self, to, data):
         return int(self.both("eth_call", [{"to": to, "data": data}, self.pin]), 16)
 
+    def logs(self, address, topics, frm, to=None):
+        """eth_getLogs on both endpoints (consensus fields only), in LOG_SPAN chunks from block frm to the pin."""
+        out, to = [], self.meta["block_number"] if to is None else to
+        key = lambda x: (x["blockHash"], x["transactionHash"], x["logIndex"], x["address"].lower(), x["topics"], x["data"], x.get("removed", False))
+        while frm <= to:
+            end = min(frm + LOG_SPAN - 1, to)
+            got = [sorted((key(x) for x in rpc(u, "eth_getLogs", [{"address": address, "topics": topics, "fromBlock": hex(frm), "toBlock": hex(end)}])),
+                          key=lambda k: (k[0], k[2])) for u in self.rpcs]
+            if got[0] != got[1]:
+                raise RuntimeError(f"RPC disagreement on eth_getLogs {address} {frm}-{end}")
+            out += [k for k in got[0] if not k[6]]
+            frm = end + 1
+        return out
+
+
+def compound_ops(ch, o):
+    """Compound Timelock: (delay, ops) at the pin. The ETA comes from the QueueTransaction log; its txHash must be the op id."""
+    delay, grace = ch.call(o["timelock"], SEL["delay"]), ch.call(o["timelock"], SEL["GRACE_PERIOD"])
+    ops = []
+    for op, label in o["ops"]:
+        q = ch.logs(o["timelock"], [TOPIC["queue"], op], o["queue_block"], o["queue_block"])
+        if len(q) != 1:
+            raise RuntimeError(f"{o['protocol']}: expected one QueueTransaction {op} at block {o['queue_block']}, got {len(q)}")
+        eta = int(q[0][5][2 + 64 * 3: 2 + 64 * 4], 16)   # data = (value, signature offset, data offset, eta, ...)
+        queued = ch.call(o["timelock"], SEL["queuedTransactions"] + op[2:]) == 1
+        done = bool(ch.logs(o["timelock"], [TOPIC["execute"], op], o["queue_block"]))
+        cancelled = bool(ch.logs(o["timelock"], [TOPIC["cancel"], op], o["queue_block"]))
+        if done and cancelled:
+            raise RuntimeError(f"{o['protocol']}: {op} both executed and cancelled")
+        ops.append({"op_id": op, "eta": None if done else eta, "pending": queued, "done": done,
+                    "ready": bool(queued and not done and eta <= ch.ts <= eta + grace), **({"label": label} if label else {})})
+    return delay, ops
+
 
 def state(ops):
     s = {"executed" if o["done"] else "ready" if o["ready"] else "pending" if o["pending"] else "unknown" for o in ops}
@@ -142,6 +204,12 @@ def main():
     items = []
     for o in OPS:
         ch = chains[o["chain_id"]]
+        if o.get("kind") == "compound":
+            delay, ops = compound_ops(ch, o)
+            items.append({**{k: o[k] for k in ("protocol", "protocol_slug", "chain_id", "title", "summary", "timelock", "brief")},
+                          "timelock_kind": "compound", "min_delay_seconds": delay, "operations": ops,
+                          "eta": min((x["eta"] for x in ops if x["eta"]), default=None)})
+            continue
         delay = ch.call(o["timelock"], SEL["getMinDelay"])
         ops = []
         for op, label in o["ops"]:

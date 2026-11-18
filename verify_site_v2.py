@@ -46,14 +46,14 @@ import xml.etree.ElementTree as ET
 ROOT = os.path.dirname(os.path.abspath(__file__))
 DOCS = os.path.join(ROOT, "docs")
 RESULTS = []
-# ---- EXPECT-BEGIN: the published numbers, in one place (tools/apply_sprint26_attestation.py rewrites this block when it stamps a Sprint)
+# ---- EXPECT-BEGIN: the published numbers, in one place (tools/apply_sprint27_attestation.py rewrites this block when it stamps a Sprint)
 EXPECT = {
-    "sprints": 26, "records": 192, "eas_attestations": 26,              # index.json sprints_completed / records_indexed; Base EAS sprint UIDs
-    "protocols": 140, "eas_protocols": 92, "rpc_protocols": 48,          # /protocols/ pages = EAS-attested + RPC-pinned; badges = protocols
-    "briefs": 12, "badge_tiers": {"aligned": 55, "parameter_delta": 37, "rpc_observed": 48},
-    "base_records": 25,                                                  # index.json records with chain "base"
-    "rpc_by_chain": {"ethereum": 44, "base": 4},                         # rpc-pinned.json records per chain (sum = rpc_protocols)
-    "multi_attest_txs": ["1–12", "13–16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26"],                              # attestation_coverage.eas_multi_attest_txs keys
+    "sprints": 27, "records": 201, "eas_attestations": 27,              # index.json sprints_completed / records_indexed; Base EAS sprint UIDs
+    "protocols": 229, "eas_protocols": 99, "rpc_protocols": 130,          # /protocols/ pages = EAS-attested + RPC-pinned; badges = protocols
+    "briefs": 13, "badge_tiers": {"aligned": 61, "parameter_delta": 38, "rpc_observed": 130},
+    "base_records": 27,                                                  # index.json records with chain "base"
+    "rpc_by_chain": {"ethereum": 121, "base": 9},                         # rpc-pinned.json records per chain (sum = rpc_protocols)
+    "multi_attest_txs": ["1–12", "13–16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27"],                              # attestation_coverage.eas_multi_attest_txs keys
     "summaries": {"15": "61c0cc292cfa1fc3840277cf312383d24a6c81af56afac303afdbd84e7316cf6",
                   "16": "91b8e29301ef0e625c4ddc9eadaf5388115812f5958f90b6e0ed53a4808ba8ae",
                   "17": "2fd7ab979c6dfc3aae44f6c46c8f0397959927874ff0358574043a056d3168ea",
@@ -65,13 +65,14 @@ EXPECT = {
                   "23": "98ac27b6847e96920e3479f7692adaa4056e2f21c94fae30624edf1442faea59",
                   "24": "3719c5f2ae685806b428a5dea0b9b62b8969bca591271f484cb97c20cb53a36d",
                   "25": "4046bfd661f631ceedb335ad428fa8285e7906b1bed34c25a29fe894510c94bc",
-                  "26": "cbf6009b33bde0e22ec37fc45720aad3dad57bfcd91f8763e6b31fdf223c583d"},   # audits/sprint-<n>/ summary SHA-256 (attested)
+                  "26": "cbf6009b33bde0e22ec37fc45720aad3dad57bfcd91f8763e6b31fdf223c583d",
+                  "27": "be4a0d34a555b52a23bf57a9852be083b669e19151323c42bb322c18f0df1d6b"},   # audits/sprint-<n>/ summary SHA-256 (attested)
 }
 # ---- EXPECT-END
 X = EXPECT
 # sha256 of docs/api/v1/graph-manifest.json: changes only through a deliberate re-pin (a Sprint stage / stamp rewrites it after the
 # rebuild); a merged Wave 2 claim or any site-only change must leave it as is
-GRAPH_MANIFEST_SHA256 = "12637bad50abb5b02ca349e29a8de8b4a336719212e3bcb05f4eaa11751265f3"
+GRAPH_MANIFEST_SHA256 = "0807fbca5cfb6430f1cff153ed5049803c153f7a1dab496afb82e9d7a866deb5"
 NON_PROTOCOL_PAGES = 31                                                  # docs/**/*.html pages that are not /protocols/<slug>/ (31 with the Sprint 27 brief)
 
 
@@ -2365,7 +2366,7 @@ def main(argv=None):
         "V47-02: the command input paints a 2 px inset --ring outline on :focus-visible (both themes)":
             ".cmdk-head input:focus-visible { outline: 2px solid var(--ring); outline-offset: -2px; box-shadow: none; }" in css471
             and ".cmdk-head input:focus, .cmdk-head input:focus-visible { outline: none" not in css471,
-        "V47-03: ?basket= keeps underscores (exact <option> values): stable_rwa 39, eth_lst_lrt 28, lending_vaults 49, base 17; combined with ?grade= and ?q= (harness)":
+        "V47-03: ?basket= keeps underscores (exact <option> values): stable_rwa 56, eth_lst_lrt 40, lending_vaults 82, base 23; combined with ?grade= and ?q= (harness)":
             "replace(/[^a-z0-9-]/g" not in appjs and res.get("v471_basket_urls") is True,
     }
     check("v4.7.1 review fixes (V47-01 stable audience-tab height, V47-02 command-input focus ring, V47-03 basket URLs with underscores)",

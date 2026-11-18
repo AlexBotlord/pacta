@@ -1,0 +1,1 @@
+(function(w,L){var m=/^\/(website-test\/)?(scorecards|request|scan|seal|webhook|radar|bounties|leaderboard|methodology|protocols(?:\/[a-z0-9-]+)?)\/((?:utm_[a-z]+|tier|ref)=.+)$/.exec(L.pathname);if(m){w.pactaRescued=1;L.replace("/"+(m[1]||"")+m[2]+"/?"+m[3]+(L.search?"&"+L.search.slice(1):"")+L.hash)}})(window,location);

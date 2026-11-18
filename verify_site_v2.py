@@ -7,7 +7,7 @@
 Checks: <head> budget (<body> before byte 3000; OG + X tags inside the first 1.2 KB of <head>), zero data:image blobs,
 required Open Graph / X card / canonical tags, zero "Security Quarantine" wording, count parity (sprints / records)
 across index.html, llms.txt, README.md and /api/v1/index.json, summary SHA-256 digests, EIP-55 checksums, matrix row
-count, og-preview.png = 1200x630 PNG, favicon sizes, discovery files (llms.txt, robots.txt, sitemap.xml,
+count, og-preview.png = 1200x628 PNG, favicon sizes, discovery files (llms.txt, robots.txt, sitemap.xml,
 .well-known/security.txt, .nojekyll), brief metadata, radar freshness, HTML tag balance, and a deny-list of private
 identifiers that must never appear on the public site.
 
@@ -74,7 +74,7 @@ X = EXPECT
 # sha256 of docs/api/v1/graph-manifest.json: changes only through a deliberate re-pin (a Sprint stage / stamp rewrites it after the
 # rebuild); a merged Wave 2 claim or any site-only change must leave it as is
 GRAPH_MANIFEST_SHA256 = "3c5e6a15b920c7edcd9021e00c116d290e33508de54f9216de6e0a8b692c47af"
-NON_PROTOCOL_PAGES = 32                                                  # docs/**/*.html pages that are not /protocols/<slug>/ (32 with the Sprint 28 brief)
+NON_PROTOCOL_PAGES = 35                                                  # docs/**/*.html pages that are not /protocols/<slug>/ (35: + /scan/ /webhook/ /seal/)
 
 
 def check(name, ok, detail=""):
@@ -201,6 +201,50 @@ class Tree(html.parser.HTMLParser):
         self.stack[-1][2].append(data)
 
 
+def png_rgb(path):
+    """Minimal stdlib PNG decoder (8-bit RGB / RGBA, not interlaced): (width, height, channels, unfiltered rows)."""
+    import zlib
+    raw = open(path, "rb").read()
+    assert raw[:8] == b"\x89PNG\r\n\x1a\n"
+    pos, idat, hdr = 8, b"", None
+    while pos < len(raw):
+        n = struct.unpack(">I", raw[pos:pos + 4])[0]
+        tag, data = raw[pos + 4:pos + 8], raw[pos + 8:pos + 8 + n]
+        pos += 12 + n
+        if tag == b"IHDR":
+            hdr = struct.unpack(">IIBBBBB", data)
+        elif tag == b"IDAT":
+            idat += data
+        elif tag == b"IEND":
+            break
+    w, h, depth, ctype, _, _, interlace = hdr
+    assert depth == 8 and ctype in (2, 6) and interlace == 0
+    ch = 3 if ctype == 2 else 4
+    stride, buf = w * ch, zlib.decompress(idat)
+    rows, prev = [], bytearray(stride)
+    for y in range(h):
+        f = buf[y * (stride + 1)]
+        line = bytearray(buf[y * (stride + 1) + 1:(y + 1) * (stride + 1)])
+        for i in range(stride):
+            a, b, c = (line[i - ch] if i >= ch else 0), prev[i], (prev[i - ch] if i >= ch else 0)
+            if f == 1:
+                line[i] = (line[i] + a) & 255
+            elif f == 2:
+                line[i] = (line[i] + b) & 255
+            elif f == 3:
+                line[i] = (line[i] + ((a + b) >> 1)) & 255
+            elif f == 4:
+                q = a + b - c
+                pa, pb, pc = abs(q - a), abs(q - b), abs(q - c)
+                line[i] = (line[i] + (a if pa <= pb and pa <= pc else b if pb <= pc else c)) & 255
+        rows.append(bytes(line))
+        prev = line
+    return w, h, ch, rows
+
+
+SOCIAL_CARDS = ["og-preview.png", "cards/x-card-scorecards-1200x628.png", "cards/x-card-scan19-1200x628.png", "cards/x-card-seal99-1200x628.png"]
+
+
 def dom_tree(text):
     t = Tree()
     t.feed(text)
@@ -208,7 +252,8 @@ def dom_tree(text):
 
 
 def app_behaviour(appjs, request_html, index_html, row_id, beacon="", protocol_html="", protocol_slug="", notfound_html="",
-                  clearance_html="", clearance_slug="", brief_html="", brief_slug="", prefill_slug="", timelock_brief_html="", protocols_index_html=""):
+                  clearance_html="", clearance_slug="", brief_html="", brief_slug="", prefill_slug="", timelock_brief_html="", protocols_index_html="",
+                  extra=None):
     """Run docs/app.js (and the docs/b.js beacon) under node against a synthetic DOM of the real pages. No network, no listener, no files."""
     node = shutil.which("node")
     if not node:
@@ -224,7 +269,8 @@ def app_behaviour(appjs, request_html, index_html, row_id, beacon="", protocol_h
                           "lookupJson": json.loads(read("docs/api/v1/lookup.json")),   # v4.7 W3: the command dialog + hero name lookup
                           # every published protocol slug (+ wave-2 shapes) must survive the beacon's client-side path redaction
                           "expectProtocols": X["protocols"],
-                          "protocolSlugs": sorted(d for d in os.listdir(os.path.join(DOCS, "protocols")) if os.path.isdir(os.path.join(DOCS, "protocols", d)))})
+                          "protocolSlugs": sorted(d for d in os.listdir(os.path.join(DOCS, "protocols")) if os.path.isdir(os.path.join(DOCS, "protocols", d))),
+                          **(extra or {})})
     out = subprocess.run([node, os.path.join(ROOT, "tools", "app_harness.js")], input=payload, capture_output=True, text=True, timeout=120)
     try:
         return json.loads(out.stdout)
@@ -903,7 +949,7 @@ def main(argv=None):
     check("zero data:image/ blobs in index.html", b"data:image/" not in raw)
     req = ['<meta charset="utf-8">', 'name="viewport"', "<title>", 'name="description"', f'<link rel="canonical" href="{base}/">',
            'property="og:type"', 'property="og:site_name"', 'property="og:title"', 'property="og:description"', f'property="og:url" content="{base}/"',
-           f'property="og:image" content="{base}/og-preview.png"', 'property="og:image:width" content="1200"', 'property="og:image:height" content="630"',
+           f'property="og:image" content="{base}/og-preview.png"', 'property="og:image:width" content="1200"', 'property="og:image:height" content="628"',
            'name="twitter:card" content="summary_large_image"', 'name="twitter:title"', 'name="twitter:description"',
            '<meta name="theme-color" content="#f7f7f5" media="(prefers-color-scheme: light)">', '<meta name="theme-color" content="#0a0b0d" media="(prefers-color-scheme: dark)">',
            'rel="preload" href="fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin',
@@ -1087,8 +1133,20 @@ def main(argv=None):
 
     # assets
     og = read("docs/og-preview.png", "rb")
-    check("og-preview.png is a 1200x630 PNG", og[:8] == b"\x89PNG\r\n\x1a\n" and og[12:16] == b"IHDR" and struct.unpack(">II", og[16:24]) == (1200, 630),
-          f"{len(og)} bytes")
+    soc_bad = {}
+    for rel_ in SOCIAL_CARDS:   # X Website cards: 1.91:1, nothing within 96 px of the sides or 120 px of the bottom (X's headline pill)
+        try:
+            w_, h_, ch_, rows_ = png_rgb(os.path.join(DOCS, rel_))
+            bg_ = rows_[0][:ch_]
+            side_ = all(r_[:96 * ch_] == bg_ * 96 and r_[-96 * ch_:] == bg_ * 96 for r_ in rows_)
+            bottom_ = all(r_ == bg_ * w_ for r_ in rows_[h_ - 120:])
+            ink_ = sum(1 for r_ in rows_[:h_ - 120] if r_ != bg_ * w_)
+            if not ((w_, h_) == (1200, 628) and side_ and bottom_ and ink_ > 200):
+                soc_bad[rel_] = ((w_, h_), side_, bottom_, ink_)
+        except Exception as e_:   # noqa: BLE001 - reported as a failed check
+            soc_bad[rel_] = str(e_)[:80]
+    check("social cards: og-preview.png + cards/x-card-{scorecards,scan19,seal99}-1200x628.png are 1200x628 (1.91:1) PNGs with >= 96 px clear left / right "
+          "and >= 120 px clear bottom (pixel-checked: background only; tools/make_og.py)", og[:8] == b"\x89PNG\r\n\x1a\n" and not soc_bad, str(soc_bad))
     fav = read("docs/favicon.png", "rb")
     check("favicon.png is a PNG < 2 KB", fav[:8] == b"\x89PNG\r\n\x1a\n" and len(fav) < 2048, f"{len(fav)} bytes {struct.unpack('>II', fav[16:24])}")
     svg = read("docs/favicon.svg", "rb")
@@ -1227,7 +1285,7 @@ def main(argv=None):
     for rel, lp in parsed.items():
         dups += [f"{rel}#{d}" for d in lp.dups]
         for h in lp.hrefs:
-            if re.match(r"^(https?:|mailto:|data:|javascript:)", h) or h.startswith("//"):
+            if re.match(r"^(https?:|mailto:|data:|javascript:|ethereum:)", h) or h.startswith("//"):
                 continue
             path, _, frag = h.partition("#")
             path = path.split("?")[0]
@@ -1267,7 +1325,12 @@ def main(argv=None):
                         brief_html=pages.get(os.path.join("briefs", "kerne-kusd-base", "index.html"), ""), brief_slug="kerne-kusd-base",
                         prefill_slug="across-protocol-hubpool",
                         timelock_brief_html=ready_fixture_brief(json.loads(read("docs/api/v1/index.json"))),
-                        protocols_index_html=pages.get(os.path.join("protocols", "index.html"), ""))
+                        protocols_index_html=pages.get(os.path.join("protocols", "index.html"), ""),
+                        extra={**{v_["route"]: dom_tree(pages[os.path.join(v_["route"], "index.html")]) for v_ in BS.CHECKOUT.values()
+                                  if os.path.join(v_["route"], "index.html") in pages},
+                               "rescue": read("docs/404-rescue.js") if os.path.exists(os.path.join(DOCS, "404-rescue.js")) else "",
+                               "checkout": {"api": BS.ORDERS_VERIFY_API, "treasury": BS.CHECKOUT_TREASURY, "usdc": BS.USDC["Base"],
+                                            "skus": {k_: v_["atomic"] for k_, v_ in BS.CHECKOUT.items()}}})
     expected = ["default_is_clearance", "default_settlement_is_invoice", "clearance_pay_panel_shown", "invoice_hides_tx_and_direct",
                 "clearance_github_href", "clearance_github_tier_exact", "clearance_brief_has_price_and_invoice", "pay_summary_tracks_tier",
                 "direct_shows_tx_and_treasury", "tx_valid_in_brief", "tx_valid_in_github",
@@ -1825,7 +1888,7 @@ def main(argv=None):
     b_urls = set(re.findall(r"https?://[^\s\"'`)]+", bjs))
     b_events = {"page_load", "scroll_50", "scroll_90", "copy_mcp_url", "copy_curl", "copy_skill_md", "cta_click", "protocol_view", "not_found_404"}
     beacon_static = {
-        "size < 1500 bytes": 0 < len(bjs_raw) < 1500,
+        "size < 2048 bytes": 0 < len(bjs_raw) < 2048,
         # https://pacta.wtf only appears as the string compared with the page's <link rel="canonical"> (never requested)
         "only the first-party endpoint": b_urls - {"https://pacta.wtf"} == {BEACON_URL} and bjs.count("https://pacta.wtf") == 1,
         "sendBeacon(url, string) + keepalive no-cors fallback": "sendBeacon(U,b)" in bjs.replace(" ", "") and "JSON.stringify" in bjs
@@ -1837,8 +1900,86 @@ def main(argv=None):
         "no cookie / storage / fingerprint APIs": not re.search(r"cookie|localStorage|sessionStorage|indexedDB|userAgent|canvas|crypto|Math\.random|Date\.now",
                                                                 re.sub(r"/\*.*?\*/", "", bjs, flags=re.S)),
     }
-    check(f"beacon docs/b.js ({len(bjs_raw)} bytes): < 1.5 KB, posts only to {BEACON_URL} via sendBeacon (string body; fetch keepalive no-cors fallback), DNT gate, all 9 page events (+ live_checker_submit from app.js), no cookie/storage/fingerprint APIs",
+    check(f"beacon docs/b.js ({len(bjs_raw)} bytes): < 2 KB, posts only to {BEACON_URL} via sendBeacon (string body; fetch keepalive no-cors fallback), DNT gate, all 9 page events (+ live_checker_submit from app.js), no cookie/storage/fingerprint APIs",
           all(beacon_static.values()), str({k: v for k, v in beacon_static.items() if not v}))
+    # ---- Option B: self-serve Base USDC checkout, query-free alias pages, 404 stripped-? rescue, b.js campaign fields ----
+    co_pages = {"request": pages.get(os.path.join("request", "index.html"), "")}
+    co_pages.update({v_["route"]: pages.get(os.path.join(v_["route"], "index.html"), "") for v_ in BS.CHECKOUT.values()})
+    co_default = {"request": BS.DEFAULT_SKU}
+    co_default.update({v_["route"]: k_ for k_, v_ in BS.CHECKOUT.items()})
+    co_bad = []
+    for route_, t_ in co_pages.items():
+        fm_ = re.search(r'<form class="co" id="co-form".*?</form>', t_, re.S)
+        f_ = fm_.group(0) if fm_ else ""
+        radios_ = re.findall(r'<input type="radio" name="sku" value="([a-z0-9-]+)" data-amount="(\d+)"( checked)?>', f_)
+        want_ = co_default[route_]
+        if not (f_ and [r_[0] for r_ in radios_] == list(BS.CHECKOUT) and [r_[0] for r_ in radios_ if r_[2]] == [want_]
+                and all(int(r_[1]) == BS.CHECKOUT[r_[0]]["atomic"] for r_ in radios_)
+                and f'data-api="{BS.ORDERS_VERIFY_API}"' in f_ and f'data-sku-default="{want_}"' in f_
+                and f'<b class="mono" data-co-amount>{BS.CHECKOUT[want_]["amount"]} USDC</b>' in f_
+                and f'href="{html.escape(BS.eip681(BS.CHECKOUT[want_]["atomic"]))}"' in f_
+                and f'<span class="mono full">{BS.CHECKOUT_TREASURY}</span>' in f_ and BS.USDC["Base"] in f_
+                and 'id="co-wallet" hidden' in f_ and 'id="co-verify"' in f_ and 'name="tx_hash"' in f_ and t_.count('id="co-form"') == 1
+                and "Pacta never sells grades." in f_ and "data-treasury" not in f_ and "the fee pays for the re-check, never the grade" in f_):
+            co_bad.append(route_)
+    reqp_ = co_pages["request"]
+    ent_ = re.search(r'<details class="archive-details ent-details" id="req-more" data-enterprise>(.*?)</details>', reqp_, re.S)
+    ent_ok = (bool(ent_) and 0 <= reqp_.find('id="checkout"') < reqp_.find('id="req-more"')
+              and all(x_ in ent_.group(1) for x_ in ('id="req-form"', f'data-api="{BS.REQUEST_API}"', 'name="tier" value="clearance" checked',
+                                                      'name="tier" value="rapid-500"', 'name="tier" value="continuous"', 'name="tier" value="community"',
+                                                      "<h2>Request a dossier</h2>")))
+    sm_co = read("docs/sitemap.xml")
+    alias_bad = []
+    for k_, v_ in BS.CHECKOUT.items():
+        t_ = co_pages[v_["route"]]
+        img_ = f"{BS.BASE_URL}/cards/{BS.CHECKOUT_PAGES[k_][2]}" if BS.CHECKOUT_PAGES[k_][2] else f"{BS.BASE_URL}/og-preview.png"
+        if not (f'<link rel="canonical" href="{BS.BASE_URL}/{v_["route"]}/">' in t_ and f'<meta property="og:image" content="{img_}">' in t_
+                and f'<meta name="twitter:image" content="{img_}">' in t_ and '<meta property="og:image:height" content="628">' in t_
+                and f"<loc>{BS.BASE_URL}/{v_['route']}/</loc>" in sm_co and f'<h1 id="co-title">{html.escape(BS.CHECKOUT_PAGES[k_][3])}</h1>' in t_):
+            alias_bad.append(v_["route"])
+    wired_ = (f'<meta property="og:image" content="{BS.BASE_URL}/cards/x-card-scorecards-1200x628.png">' in pages.get(os.path.join("scorecards", "index.html"), "")
+              and f'<meta name="twitter:image" content="{BS.BASE_URL}/cards/x-card-scorecards-1200x628.png">' in pages.get(os.path.join("scorecards", "index.html"), "")
+              and f'<meta property="og:image" content="{BS.BASE_URL}/cards/x-card-scan19-1200x628.png">' in reqp_
+              and all(os.path.exists(os.path.join(DOCS, c_)) for c_ in SOCIAL_CARDS))
+    co_src = read("tools/app.src.js")
+    co_js = co_src[co_src.find("var CO_TREASURY"):co_src.find("function initEnterprise")]
+    co_js_ok = (f'var CO_TREASURY = "{BS.CHECKOUT_TREASURY}", CO_USDC = "{BS.USDC["Base"]}", CO_CHAIN = "0x2105";' in co_js
+                and hex(BS.CHECKOUT_CHAIN_ID) == "0x2105"
+                and all(f'"{k_}": {{ atomic: {v_["atomic"]}, amount: "{v_["amount"]}"' in co_js for k_, v_ in BS.CHECKOUT.items())
+                and all(f'"{v_["tier"]}": "{k_}"' in co_js for k_, v_ in BS.CHECKOUT.items())
+                and '"0xa9059cbb" + coPad(CO_TREASURY.slice(2).toLowerCase()) + coPad(Number(atomic).toString(16))' in co_js
+                and co_js.count('method: "eth_sendTransaction"') == 1 and "0x095ea7b3" not in co_src and "increaseAllowance" not in co_src
+                and not re.search(r'method:\s*"(?:eth_sign|personal_sign|eth_signTypedData\w*)"', co_src)
+                and co_js.count("fetch(api, opts)") == 1 and "innerHTML" not in co_js and "data-treasury" not in co_js)
+    co_keys = ["co_request_default_19", "co_switch_updates_payment", "co_prefill_tiers", "co_prefill_seal_amount_and_docs", "co_enterprise_prefill_opens",
+               "co_alias_defaults", "co_invalid_never_fetches", "co_webhook_needs_https_destination", "co_verify_posts_exact_body", "co_result_text_only",
+               "co_errors_reported", "co_wallet_transfer_only", "co_wallet_cancel_sends_nothing"]
+    co_failed = [k_ for k_ in co_keys if res.get(k_) is not True]
+    check(f"Option B checkout: /request/ (above the fold; enterprise tracks + free queue in a disclosure below) and /scan/ /webhook/ /seal/ render the 3-SKU "
+          f"Base USDC checkout ($19 / $49 / $99 = 19,000,000 / 49,000,000 / 99,000,000 atomic) with the right SKU checked, an exact EIP-681 transfer to the "
+          f"treasury EOA and POST /v1/orders/verify; 1200x628 cards wired; app.js payee / token / chain / amounts are constants equal to the build's; ERC-20 "
+          f"transfer only (0xa9059cbb), never approve or sign; behaviour {len(co_keys) - len(co_failed)}/{len(co_keys)} (harness)",
+          not co_bad and ent_ok and not alias_bad and wired_ and co_js_ok and not co_failed,
+          f"pages {co_bad}; enterprise {ent_ok}; alias {alias_bad}; wired {wired_}; js {co_js_ok}; failed {co_failed[:4]}")
+    rescue_ = read("docs/404-rescue.js") if os.path.exists(os.path.join(DOCS, "404-rescue.js")) else ""
+    nf_ = pages.get("404.html", "")
+    csp_at = nf_.find(f'<meta http-equiv="Content-Security-Policy" content="{BS.CSP}">')
+    r_at, b_at = nf_.find('<script src="/404-rescue.js"></script>'), nf_.find('<script src="/b.js" defer></script>')
+    r_keys = ["r_rescues_known_routes", "r_leaves_everything_else", "b_v5_rescued_sends_nothing"]
+    check("404.html stripped-? rescue: docs/404-rescue.js (same origin, right after the CSP meta, before b.js) sends /<route>/<utm_*|tier|ref>=... on the "
+          "known routes to /<route>/?... with location.replace (also under /website-test/), leaves every other path alone; the beacon stays silent (harness)",
+          rescue_ == BS.RESCUE_JS and 0 <= csp_at < r_at < b_at and sum(t_.count("404-rescue.js") for t_ in pages.values()) == 1
+          and r'^\/(website-test\/)?(scorecards|request|scan|seal|webhook|radar|bounties|leaderboard|methodology|protocols(?:\/[a-z0-9-]+)?)\/((?:utm_[a-z]+|tier|ref)=.+)$' in rescue_
+          and "L.replace(" in rescue_ and "w.pactaRescued=1" in rescue_ and "&&!w.pactaRescued" in bjs and all(res.get(k_) is True for k_ in r_keys),
+          f"csp {csp_at} rescue {r_at} b.js {b_at}; failed {[k_ for k_ in r_keys if res.get(k_) is not True]}")
+    b5_keys = ["b_v5_routes", "b_v5_campaign_fields", "b_v5_host"]
+    check("b.js v5.0: first-class routes (/scorecards/ /radar/ /bounties/ /leaderboard/ /methodology/ /scan/ /seal/ /webhook/ + the v4 set); allowlisted m "
+          "(paid | paid_search | organic), c (^[a-z0-9_-]{1,32}$, no secret words, no 12-hex run) and h (com | wtf) on first-load events (harness)",
+          r"/^\/(protocols|scorecards|radar|bounties|leaderboard|methodology|request|scan|seal|webhook|briefs|llms)$/" in bjs
+          and r'/^(paid|paid_search|organic)$/.test(u=G("medium"))&&(b.m=u)' in bjs
+          and r'/^[a-z\d_-]{1,32}$/.test(u=G("campaign"))&&!D.test(u)&&!/[\da-f]{12}/.test(u)&&(b.c=u)' in bjs
+          and r'b.h=/\.com$/.test(L.hostname)?"com":"wtf"' in bjs and all(res.get(k_) is True for k_ in b5_keys),
+          str([k_ for k_ in b5_keys if res.get(k_) is not True]))
     script_re = re.compile(r'<script\b([^>]*)>(.*?)</script>', re.S)
     no_beacon, third, bad_inline = [], [], []
     for rel, text in sorted(pages.items()):
@@ -1870,8 +2011,8 @@ def main(argv=None):
     data_api = set(re.findall(r'data-api="([^"]+)"', "".join(pages.values())))
     app_fetch = len(re.findall(r"\bfetch\(", appjs))
     check("no cookies, no storage identifiers, no third-party requests in page scripts: localStorage only for the theme preference; app.js fetches only this site's JSON, the first-party API (data-api), the first-party /v1/briefs/live-timelocks (data-live-timelocks) and, on an explicit Verify-live-on-RPC click, the four allow-listed public RPCs",
-          not js_bad and ls_keys == {"pacta-theme"} and appjs.count("localStorage") == 3 and data_api <= {API_, API_ + "/v1/requests"}
-          and app_fetch == 7 and 'j(root + "api/v1/lookup.json")' in appjs and 'j(root + "api/v1/scorecards.json")' in appjs and 'fetch(api, init)' in appjs[appjs.find("function initRequest()"):] and "REQ_API_RE.test(api)" in appjs and 'fetch(document.documentElement.getAttribute("data-api") || "api/v1/index.json")' in appjs
+          not js_bad and ls_keys == {"pacta-theme"} and appjs.count("localStorage") == 3 and data_api <= {API_, API_ + "/v1/requests", API_ + "/v1/orders/verify"}
+          and app_fetch == 8 and appjs[appjs.find("function initCheckout()"):].count("fetch(api, opts)") == 1 and 'j(root + "api/v1/lookup.json")' in appjs and 'j(root + "api/v1/scorecards.json")' in appjs and 'fetch(api, init)' in appjs[appjs.find("function initRequest()"):] and "REQ_API_RE.test(api)" in appjs and 'fetch(document.documentElement.getAttribute("data-api") || "api/v1/index.json")' in appjs
           and 'fetch(body.getAttribute("data-src") || "api/v1/scorecards.json")' in appjs
           # the 4th fetch: the user-initiated "Verify live on RPC" button, POSTing JSON-RPC only to the four allow-listed public RPCs
           and "      return fetch(url, opts).then(function (res) { return res.json(); })" in appjs
@@ -2128,7 +2269,8 @@ def main(argv=None):
     gen_html45 = {r_: t for r_, t in pages.items() if r_.endswith(".html") and not r_.startswith(os.path.join("demos", ""))}
     # item 16: the cards are 1200x675 PNGs, one per protocol page (+ the radar cards the feed names)
     import struct as _st45
-    cards45 = {os.path.basename(c_)[:-4]: open(c_, "rb").read(24) for c_ in glob.glob(os.path.join(DOCS, "cards", "*.png"))}
+    cards45 = {os.path.basename(c_)[:-4]: open(c_, "rb").read(24) for c_ in glob.glob(os.path.join(DOCS, "cards", "*.png"))
+               if not os.path.basename(c_).startswith("x-card-")}
     proto_slugs45 = {r_.split(os.sep)[1] for r_ in pages if r_.startswith("protocols" + os.sep) and r_.count(os.sep) == 2}
     card_ok45 = (bool(cards45) and proto_slugs45 <= set(cards45)
                  and all(b[:8] == b"\x89PNG\r\n\x1a\n" and _st45.unpack(">II", b[16:24]) == (1200, 675) for b in cards45.values()))
@@ -2201,13 +2343,13 @@ def main(argv=None):
             and "flat" not in remed45 and "$5,000 USDC` flat" not in readme45,
         "OpenAPI: the published snapshot (docs/api/v1/openapi.json) carries the Worker's /v1/x-feed":
             "/v1/x-feed" in json.loads(read("docs/api/v1/openapi.json"))["paths"],
-        "16: every protocol page shares its own 1200x675 card (og:image + twitter:image); other pages keep og-preview.png 1200x630":
+        "16: every protocol page shares its own 1200x675 card (og:image + twitter:image); other pages use og-preview.png or their own 1200x628 social card":
             card_ok45 and all(
                 f'<meta property="og:image" content="https://pacta.wtf/cards/{slug}.png">' in t
                 and '<meta property="og:image:width" content="1200">' in t and '<meta property="og:image:height" content="675">' in t
                 and f'<meta name="twitter:image" content="https://pacta.wtf/cards/{slug}.png">' in t
                 for slug, t in ((r_.split(os.sep)[1], t) for r_, t in pages.items() if r_.startswith("protocols" + os.sep) and r_.count(os.sep) == 2))
-            and '<meta property="og:image" content="https://pacta.wtf/og-preview.png">' in home43 and '<meta property="og:image:height" content="630">' in home43,
+            and '<meta property="og:image" content="https://pacta.wtf/og-preview.png">' in home43 and '<meta property="og:image:height" content="628">' in home43,
         "16: docs/api/v1/x-feed.json + x-handles.json mirror /v1/x-feed: every item's card exists, kinds match the grades, counts match the data":
             xfeed_ok45,
     }
@@ -2248,7 +2390,7 @@ def main(argv=None):
     briefs46 = {sl: pages.get(os.path.join("briefs", sl, "index.html"), "") for sl in new46}
     lk46 = {x["slug"]: x for x in json.loads(read("docs/api/v1/lookup.json"))["items"]}
     rb46, r46 = rad46.get("refreshed_at_base") or {}, rad46["refreshed_at"]
-    cards46 = glob.glob(os.path.join(DOCS, "cards", "*.png"))
+    cards46 = [c_ for c_ in glob.glob(os.path.join(DOCS, "cards", "*.png")) if not os.path.basename(c_).startswith("x-card-")]
     xf46 = json.loads(read("docs/api/v1/x-feed.json"))
     rad46n = sum(1 for i_ in xf46["items"] if i_.get("kind") == "radar_timelock")      # radar operations the feed posts (active ones)
     beefy46 = briefs46["beefy-base-op-0x3302"]
@@ -3249,7 +3391,8 @@ def main(argv=None):
         all(v >= 5.1 for v in contrast.values()) and "height: 32px" in sm_rule
         and not [r for r, t in all_pages.items() for m_ in re.finditer(r'<button class="copy"[^>]*>', t) if "aria-label=" not in m_.group(0)]
         and 'p a:not([data-slot="button"]):not(.btn):not(.copy), dd a:not([data-slot="button"]):not(.btn):not(.copy)' in css_p
-        and "<h1>Protocol safety records</h1>" in pages[os.path.join("protocols", "index.html")] and "<h1>Request a dossier</h1>" in pages[os.path.join("request", "index.html")])
+        and "<h1>Protocol safety records</h1>" in pages[os.path.join("protocols", "index.html")] and '<h1 id="co-title">Request verification</h1>' in pages[os.path.join("request", "index.html")]
+        and pages[os.path.join("request", "index.html")].count("<h1") == 1)
     ico_ = open(os.path.join(DOCS, "favicon.ico"), "rb").read() if os.path.exists(os.path.join(DOCS, "favicon.ico")) else b""
     atp_ = open(os.path.join(DOCS, "apple-touch-icon.png"), "rb").read() if os.path.exists(os.path.join(DOCS, "apple-touch-icon.png")) else b""
     pp["V02 + assets: MCP link in every header and footer, no nth-child nav hiding, brand never wraps; valid favicon.ico (16 + 32 px) and 180 px apple-touch-icon.png; referrer meta on every page"] = (

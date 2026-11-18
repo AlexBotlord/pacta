@@ -148,12 +148,14 @@ function run(tree, app, loc) {
   html.scrollHeight = 4000;
   const winListeners = {}, zero = [];
   if (loc.breakTheme) html.classList.toggle = () => { throw new Error("simulated early init failure (theme)"); };
-  const location = { href: "https://pacta.wtf" + loc.path + (loc.search || "") + (loc.hash || ""), search: loc.search || "", hash: loc.hash || "",
-    pathname: loc.path, protocol: loc.protocol || "https:", hostname: "pacta.wtf" };
+  const host = loc.hostname || "pacta.wtf";
+  const location = { href: "https://" + host + loc.path + (loc.search || "") + (loc.hash || ""), search: loc.search || "", hash: loc.hash || "",
+    pathname: loc.path, protocol: loc.protocol || "https:", hostname: host };
   const window = {
     addEventListener: (t, fn) => { (winListeners[t] = winListeners[t] || []).push(fn); }, isSecureContext: false, location,
     scrollY: 0, innerHeight: 800
   };
+  Object.assign(window, loc.win || {});   // v5.0: window.ethereum (checkout wallet mock), pactaRescued (404 rescue)
   // navigator.sendBeacon is a recording mock (no network); loc.nav overrides it (e.g. doNotTrack, or no sendBeacon at all)
   const beacons = [];
   const navigator = Object.assign({ sendBeacon: (url, body) => { beacons.push({ url, body }); return true; } }, loc.nav || {});
@@ -439,7 +441,7 @@ async function beaconScenario() {
   // page_load: referrer host + utm_source, string body to the first-party endpoint, nothing else on load
   let p = run(input.index, input.app, { path: "/", search: "?utm_source=Twitter&x=1", referrer: "https://news.ycombinator.com/item?id=1", beacon: B });
   res.b_page_load_payload = p.beacons.length === 1 && p.beacons[0].url === BEACON && typeof p.beacons[0].body === "string"
-    && same(p.events()[0], { v: 1, e: "page_load", p: "/", r: "news.ycombinator.com", u: "twitter" });
+    && same(p.events()[0], { v: 1, h: "wtf", e: "page_load", p: "/", r: "news.ycombinator.com", u: "twitter" });
   res.b_hook_exposed = typeof p.window.pactaBeacon === "function";
   // copy hooks, by what the button copies / the link points to
   const d = p.document, n0 = p.beacons.length;
@@ -477,7 +479,7 @@ async function beaconScenario() {
   if (input.protocol) {
     const path = "/protocols/" + input.protocolSlug + "/";
     p = run(input.protocol, input.app, { path, referrer: "https://pacta.wtf/protocols/", beacon: B });
-    res.b_protocol_view = same(p.events(), [{ v: 1, e: "page_load", p: path, r: "self", t: input.protocolSlug }, { v: 1, e: "protocol_view", p: path, t: input.protocolSlug }]);
+    res.b_protocol_view = same(p.events(), [{ v: 1, h: "wtf", e: "page_load", p: path, r: "self", t: input.protocolSlug }, { v: 1, e: "protocol_view", p: path, t: input.protocolSlug }]);
     const termBtn = p.document.querySelectorAll("button[data-copy-term]").find(b => /^curl /.test(b.closest(".term").querySelector("pre").textContent));
     const n2 = p.beacons.length; click(termBtn);
     const foot = p.document.querySelector(".memo-foot a"); click(foot);
@@ -507,15 +509,15 @@ async function beaconScenario() {
   // (Phase C.1): only /protocols/<safe-slug>/ keeps its slug (and t); anything else is "/404"; IP / local referrers are dropped
   if (input.notfound) {
     p = run(input.notfound, input.app, { path: "/protocols/pendle-finance-v2", search: "?utm_source=newsletter", referrer: "https://github.com/x/y?z=1", beacon: B });
-    res.b_not_found_404 = same(p.events(), [{ v: 1, e: "not_found_404", p: "/404", r: "github.com", u: "newsletter" }]);   // Phase C.2: every 404 is "/404", never a slug
+    res.b_not_found_404 = same(p.events(), [{ v: 1, h: "wtf", e: "not_found_404", p: "/404", r: "github.com", u: "newsletter" }]);   // Phase C.2: every 404 is "/404", never a slug
     const spec = run(input.notfound, input.app, { path: "/reset/alice%40example.org/private-token", referrer: "https://192.0.2.44/secret", beacon: B });
     const spec2 = run(input.notfound, input.app, { path: "/protocols/pendle-finance-v2", referrer: "https://github.com/some/repo", beacon: B });
-    res.b_c1_spec_payloads = same(spec.events(), [{ v: 1, e: "not_found_404", p: "/404" }])
-      && same(spec2.events(), [{ v: 1, e: "not_found_404", p: "/404", r: "github.com" }])
-      && same(run(input.notfound, input.app, { path: "/protocols/alice-jones", beacon: B }).events(), [{ v: 1, e: "not_found_404", p: "/404" }]);   // Codex F1 probe
+    res.b_c1_spec_payloads = same(spec.events(), [{ v: 1, h: "wtf", e: "not_found_404", p: "/404" }])
+      && same(spec2.events(), [{ v: 1, h: "wtf", e: "not_found_404", p: "/404", r: "github.com" }])
+      && same(run(input.notfound, input.app, { path: "/protocols/alice-jones", beacon: B }).events(), [{ v: 1, h: "wtf", e: "not_found_404", p: "/404" }]);   // Codex F1 probe
     const redact = [["/protocols/no-such-protocol/extra", "/404"], ["/protocols/alice%40example.org", "/404"], ["/protocols/reset-token", "/404"],
       ["/users/john/secret", "/404"], ["/briefs/etherfi-op-0x244e/", "/404"], ["/a@b/" + "x".repeat(200), "/404"], ["/protocols/Aave", "/404"]];
-    res.b_not_found_path_sanitised = redact.every(([path, want]) => { const e = run(input.notfound, input.app, { path, beacon: B }).events(); return same(e, [{ v: 1, e: "not_found_404", p: want }]); });
+    res.b_not_found_path_sanitised = redact.every(([path, want]) => { const e = run(input.notfound, input.app, { path, beacon: B }).events(); return same(e, [{ v: 1, h: "wtf", e: "not_found_404", p: want }]); });
     const ref = (r) => run(input.index, input.app, { path: "/", referrer: r, beacon: B }).events()[0];
     res.b_c1_referrers_redacted = ["https://192.0.2.44/", "https://10.0.0.1:8080/x", "https://[::1]/", "https://localhost/", "https://box.local/",
       "https://printer.lan/", "https://192-0-2-44.nip.io/", "https://c0a8002c.sslip.io/", "https://2130706433/", "https://0x7f000001/", "http://intranet/",
@@ -531,7 +533,7 @@ async function beaconScenario() {
     res.b_c1_all_protocol_slugs_kept = pages.length === input.expectProtocols && pages.length === input.protocolSlugs.length && pages.every((e, i) => e.p === "/protocols/" + input.protocolSlugs[i] + "/" && e.t === input.protocolSlugs[i]);
     const mismatch = run(input.protocol, input.app, { path: "/protocols/alice-jones/", beacon: B }).events()[0];
     const brief = run(pageFor("https://pacta.wtf/briefs/etherfi-op-0x244e/"), input.app, { path: "/briefs/etherfi-op-0x244e/", beacon: B }).events()[0];
-    res.b_c2_slug_only_from_canonical = same(mismatch, { v: 1, e: "page_load", p: "/other" }) && same(brief, { v: 1, e: "page_load", p: "/briefs/etherfi-op-0x244e/" })
+    res.b_c2_slug_only_from_canonical = same(mismatch, { v: 1, h: "wtf", e: "page_load", p: "/other" }) && same(brief, { v: 1, h: "wtf", e: "page_load", p: "/briefs/etherfi-op-0x244e/" })
       && same(run(input.protocol, input.app, { path: "/protocols/" + input.protocolSlug + "/index.html", beacon: B }).events()[0].p, "/protocols/" + input.protocolSlug + "/");
     const views = [["/request", "/request/"], ["/protocols", "/protocols/"], ["/llms", "/llms/"], ["/llms/index.html", "/llms/"], ["/llms/x", "/other"], ["/briefs/etherfi-op-0x244e/", "/other"],
       ["/protocols/aave-v3-gho/", "/other"], ["/demos/swapio-x402/", "/other"], ["/reset/alice%40example.org/x", "/other"]];   // index page: canonical is "/"
@@ -557,7 +559,7 @@ async function beaconScenario() {
   p = run(input.index, input.app, { path: "/", beacon: B, nav: { sendBeacon: undefined }, fetch: rec });
   await flush();
   res.b_fetch_fallback = sent.length === 1 && sent[0][0] === BEACON && sent[0][1].method === "POST" && sent[0][1].keepalive === true
-    && sent[0][1].mode === "no-cors" && same(JSON.parse(sent[0][1].body), { v: 1, e: "page_load", p: "/" });
+    && sent[0][1].mode === "no-cors" && same(JSON.parse(sent[0][1].body), { v: 1, h: "wtf", e: "page_load", p: "/" });
   // no cookies, no storage: the beacon run never touches document.cookie or localStorage
   let touched = false;
   const trap = { get: () => { touched = true; return ""; }, set: () => { touched = true; } };
@@ -565,6 +567,142 @@ async function beaconScenario() {
   Object.defineProperty(t0.document, "cookie", trap);
   click(t0.document.querySelectorAll("button[data-copy], button[data-copy-term]")[0]);
   res.b_no_cookie_access = !touched && t0.events().length >= 1;
+  // v5.0: first-class routes, allowlisted campaign tags (m, c), the serving host (h), and nothing once the 404 page rescued a URL
+  const ev0 = (o) => run(input.index, null, Object.assign({ path: "/", beacon: B }, o)).events()[0];
+  res.b_v5_routes = [["/scorecards/", "/scorecards/"], ["/radar", "/radar/"], ["/bounties/", "/bounties/"], ["/leaderboard/", "/leaderboard/"],
+    ["/methodology/", "/methodology/"], ["/scan/", "/scan/"], ["/seal/index.html", "/seal/"], ["/webhook/", "/webhook/"], ["/pricing/", "/other"],
+    ["/about/", "/other"], ["/scan/x", "/other"]].every(([path, want]) => ev0({ path }).p === want);
+  res.b_v5_campaign_fields = same(ev0({ search: "?utm_source=x&utm_medium=paid&utm_campaign=Launch_Q4" }), { v: 1, e: "page_load", p: "/", u: "x", m: "paid", c: "launch_q4", h: "wtf" })
+    && ev0({ search: "?utm_medium=paid_search" }).m === "paid_search" && ev0({ search: "?utm_medium=Organic" }).m === "organic"
+    && ["cpc", "email", "paid%20x", "paid-search", "", "paidx"].every((m) => !("m" in ev0({ search: "?utm_medium=" + m })))
+    && ["0xdeadbeefcafe", "deadbeefcafe12", "user-123456", "reset_token", "x".repeat(33), "launch%20q4", "a.b", "mail_drop", "12345"]
+      .every((c) => !("c" in ev0({ search: "?utm_campaign=" + c })));
+  res.b_v5_host = ev0({ hostname: "pacta.fractalneurons.com" }).h === "com" && ev0({ hostname: "pacta.fractalneurons.com", referrer: "https://pacta.fractalneurons.com/" }).r === "self"
+    && ev0({}).h === "wtf" && ev0({ hostname: "pacta-fractalneurons.pages.dev" }).h === "wtf";
+  res.b_v5_rescued_sends_nothing = run(input.index, null, { path: "/", beacon: B, win: { pactaRescued: 1 } }).beacons.length === 0;
+}
+// (o) 404.html stripped-"?" rescue (docs/404-rescue.js): a known route + a stripped query goes back to /<route>/?<query>; nothing else moves
+function rescueScenario() {
+  if (!input.rescue) { res.r_error = "no rescue source"; return; }
+  const go = (pathname, search, hash) => {
+    const w = {}; let to = null;
+    const L = { pathname, search: search || "", hash: hash || "", replace: (u) => { to = u; } };
+    vm.runInNewContext(input.rescue, { window: w, location: L });
+    return [to, w.pactaRescued === 1];
+  };
+  const ok = [["/scorecards/utm_source=x&utm_medium=paid&utm_campaign=d2", "", "", "/scorecards/?utm_source=x&utm_medium=paid&utm_campaign=d2"],
+    ["/website-test/request/tier=seal-99", "", "", "/website-test/request/?tier=seal-99"], ["/protocols/aave-v3-gho/ref=x", "", "", "/protocols/aave-v3-gho/?ref=x"],
+    ["/scan/utm_campaign=launch", "?b=1", "#checkout", "/scan/?utm_campaign=launch&b=1#checkout"], ["/seal/tier=seal-99", "", "", "/seal/?tier=seal-99"],
+    ["/webhook/utm_source=x", "", "", "/webhook/?utm_source=x"], ["/methodology/ref=hn", "", "", "/methodology/?ref=hn"],
+    ["/leaderboard/utm_source=x", "", "", "/leaderboard/?utm_source=x"], ["/protocols/utm_source=x", "", "", "/protocols/?utm_source=x"]];
+  res.r_rescues_known_routes = ok.every(([p_, s_, h_, want]) => { const [to, flag] = go(p_, s_, h_); return to === want && flag; });
+  const no = ["/scorecards/foo=1", "/evil/utm_source=x", "/scorecards/utm_source=", "//evil.example/scorecards/utm_source=x", "/scorecards/",
+    "/protocols/Aave/utm_source=x", "/pricing/utm_source=x", "/scorecards/x/utm_source=y", "/website-test/evil/utm_source=x", "/scorecardsutm_source=x"];
+  res.r_leaves_everything_else = no.every((p_) => { const [to, flag] = go(p_); return to === null && !flag; });
+}
+// (p) Option B self-serve checkout (#checkout): closed SKU enum, exact EIP-681 transfer links, validation before any request, the
+//     orders/verify POST body, a text-only result, error paths and the browser-wallet path (chain switch, ERC-20 transfer only)
+async function checkoutScenario() {
+  const C = input.checkout;
+  if (!C || !input.request) { res.co_error = "no checkout input"; return; }
+  const eip = (a) => "ethereum:" + C.usdc + "@8453/transfer?address=" + C.treasury + "&uint256=" + a;
+  const pad = (h) => h.padStart(64, "0");
+  const coChecked = (d) => (d.querySelector('input[name="sku"]:checked') || { getAttribute: () => null }).getAttribute("value");
+  const pickSku = (d, v) => {
+    const r = d.querySelectorAll('input[name="sku"]').find(x => x.getAttribute("value") === v); r.checked = true;
+    const ev = new Event_("change"); ev.target = r; r.dispatchEvent(ev);
+  };
+  const fill = (d, name, v) => { d.getElementById("co-form").elements[name].value = v; };
+  const submit = (d) => { const ev = new Event_("submit"); d.getElementById("co-form").dispatchEvent(ev); return ev; };
+  const amount = (d) => d.querySelector("[data-co-amount]").textContent;
+  const link = (d) => d.querySelector("[data-co-eip681]").getAttribute("href");
+  const ADDR = "0x" + "12".repeat(20), TXH = "0x" + "cd".repeat(32);
+  let p = run(input.request, input.app, { path: "/request/" }), d = p.document;
+  res.co_request_default_19 = coChecked(d) === "instant-scan-19" && amount(d) === "19.00 USDC" && link(d) === eip(C.skus["instant-scan-19"])
+    && d.getElementById("co-wallet").hidden === true && d.getElementById("co-result").hidden === true && !d.getElementById("req-more").hasAttribute("open");
+  pickSku(d, "radar-webhook-49");
+  res.co_switch_updates_payment = amount(d) === "49.00 USDC" && link(d) === eip(C.skus["radar-webhook-49"])
+    && d.querySelector("[data-co-amount-copy]").getAttribute("data-copy") === "49.00"
+    && d.querySelector("[data-co-eip681-copy]").getAttribute("data-copy") === eip(C.skus["radar-webhook-49"])
+    && d.querySelector("[data-co-contact-label]").textContent === "Alert destination"
+    && d.querySelector('[data-co-opt="contact"]').hidden === true && d.querySelector('[data-co-opt="target"]').hidden === false;
+  const tierOf = (q, tree, path) => coChecked(run(tree || input.request, input.app, { path: path || "/request/", search: q }).document);
+  res.co_prefill_tiers = tierOf("?tier=seal-99") === "reverify-seal-99" && tierOf("?tier=webhook-49") === "radar-webhook-49"
+    && tierOf("?tier=instant-19") === "instant-scan-19" && tierOf("?sku=reverify-seal-99") === "reverify-seal-99"
+    && tierOf("?tier=seal-99%22%3E%3Cimg") === "instant-scan-19" && tierOf("?tier=clearance") === "instant-scan-19";
+  p = run(input.request, input.app, { path: "/request/", search: "?tier=seal-99&protocol=Aave%20V3" });
+  res.co_prefill_seal_amount_and_docs = amount(p.document) === "99.00 USDC" && link(p.document) === eip(C.skus["reverify-seal-99"])
+    && p.document.getElementById("co-docs").value === "Aave V3" && !p.document.getElementById("req-more").hasAttribute("open");
+  res.co_enterprise_prefill_opens = run(input.request, input.app, { path: "/request/", search: "?tier=clearance&protocol=Aave" }).document.getElementById("req-more").hasAttribute("open")
+    && run(input.request, input.app, { path: "/request/", hash: "#request" }).document.getElementById("req-more").hasAttribute("open");
+  res.co_alias_defaults = !!(input.scan && input.seal && input.webhook)
+    && tierOf("", input.scan, "/scan/") === "instant-scan-19" && tierOf("", input.seal, "/seal/") === "reverify-seal-99"
+    && tierOf("", input.webhook, "/webhook/") === "radar-webhook-49" && amount(run(input.seal, input.app, { path: "/seal/" }).document) === "99.00 USDC";
+  // validation before any request
+  let calls = [];
+  const okFetch = (status, body) => (url, opts) => {
+    calls.push([url, opts]);
+    return Promise.resolve({ status, ok: status === 200, text: () => Promise.resolve(typeof body === "string" ? body : JSON.stringify(body)) });
+  };
+  p = run(input.request, input.app, { path: "/request/", fetch: okFetch(200, {}) }); d = p.document;
+  let ev = submit(d); await flush();
+  const noFetch1 = calls.length === 0 && ev.defaultPrevented === true && d.getElementById("co-target-err").hidden === false && d.getElementById("co-tx-err").hidden === false;
+  fill(d, "target_address", "0x1234"); fill(d, "tx_hash", TXH); submit(d); await flush();
+  res.co_invalid_never_fetches = noFetch1 && calls.length === 0 && /40 hexadecimal/.test(d.getElementById("co-target-err").textContent);
+  pickSku(d, "radar-webhook-49"); fill(d, "target_address", ""); fill(d, "protocol_or_docs", "Aave"); fill(d, "webhook_or_contact", "http://hooks.example.invalid/x");
+  submit(d); await flush();
+  const httpRefused = calls.length === 0 && d.getElementById("co-contact-err").hidden === false;
+  fill(d, "webhook_or_contact", ""); submit(d); await flush();
+  res.co_webhook_needs_https_destination = httpRefused && calls.length === 0 && /alerts/.test(d.getElementById("co-contact-err").textContent);
+  // a valid order: one POST with exactly the contract body; the result is text only
+  calls = [];
+  const okBody = { order_id: "ord_harness_1", status: "verified <img src=x onerror=alert(1)>", report: { proxy_admin: "0x" + "ef".repeat(20) } };
+  p = run(input.request, input.app, { path: "/request/", fetch: okFetch(200, okBody) }); d = p.document;
+  d.getElementById("co-chain").value = "base";
+  fill(d, "target_address", ADDR); fill(d, "protocol_or_docs", "https://docs.example.invalid"); fill(d, "webhook_or_contact", "@harness"); fill(d, "tx_hash", TXH);
+  submit(d); await flush(); await flush();
+  const sent0 = calls[0] ? JSON.parse(calls[0][1].body) : null;
+  res.co_verify_posts_exact_body = calls.length === 1 && calls[0][0] === C.api && calls[0][1].method === "POST"
+    && same(sent0, { sku: "instant-scan-19", tx_hash: TXH, chain: "base", target_chain: "base", target_address: ADDR, protocol_or_docs: "https://docs.example.invalid", webhook_or_contact: "@harness" });
+  const out = d.getElementById("co-result"), payA = out.querySelector("[data-co-r-pay] a");
+  res.co_result_text_only = out.hidden === false && d.querySelector("[data-co-r-order]").textContent === "ord_harness_1"
+    && d.querySelector("[data-co-r-status]").textContent.includes("<img src=x") && out.querySelectorAll("img").length === 0
+    && d.getElementById("co-json").textContent.includes('"proxy_admin"') && !!payA && payA.getAttribute("href") === "https://basescan.org/tx/" + TXH;
+  // errors: a reused hash (409) and an unreachable verifier
+  p = run(input.request, input.app, { path: "/request/", fetch: okFetch(409, { error: "tx_already_used" }) }); d = p.document;
+  fill(d, "target_address", ADDR); fill(d, "tx_hash", TXH); submit(d); await flush(); await flush();
+  const used = /already unlocked another order/.test(d.getElementById("co-status").textContent) && d.getElementById("co-result").hidden === true;
+  p = run(input.request, input.app, { path: "/request/", fetch: () => Promise.reject(new Error("offline")) }); d = p.document;
+  fill(d, "target_address", ADDR); fill(d, "tx_hash", TXH); submit(d); await flush(); await flush();
+  res.co_errors_reported = used && /Could not reach the verifier/.test(d.getElementById("co-status").textContent) && d.getElementById("co-result").hidden === true;
+  // wallet: switch to Base, ONE eth_sendTransaction = USDC.transfer(treasury, exact amount), then the hash is verified
+  const wcalls = [];
+  let chain = "0x1";
+  const eth = { request: (a) => {
+    wcalls.push(a);
+    if (a.method === "eth_requestAccounts") return Promise.resolve(["0x" + "ab".repeat(20)]);
+    if (a.method === "eth_chainId") return Promise.resolve(chain);
+    if (a.method === "wallet_switchEthereumChain") { chain = a.params[0].chainId; return Promise.resolve(null); }
+    if (a.method === "eth_sendTransaction") return Promise.resolve(TXH);
+    return Promise.reject(Object.assign(new Error("unexpected"), { code: -1 }));
+  } };
+  calls = [];
+  p = run(input.request, input.app, { path: "/request/", search: "?tier=seal-99", win: { ethereum: eth }, fetch: okFetch(200, { order_id: "ord_w" }) }); d = p.document;
+  const wal = d.getElementById("co-wallet");
+  fill(d, "target_address", ADDR); click(wal);
+  for (let i = 0; i < 8; i++) await flush();
+  const send = wcalls.find((a) => a.method === "eth_sendTransaction");
+  const want = "0xa9059cbb" + pad(C.treasury.slice(2).toLowerCase()) + pad(C.skus["reverify-seal-99"].toString(16));
+  const body1 = calls[0] ? JSON.parse(calls[0][1].body) : {};
+  res.co_wallet_transfer_only = wal.hidden === false && wcalls.some((a) => a.method === "wallet_switchEthereumChain" && a.params[0].chainId === "0x2105")
+    && !!send && same(send.params, [{ from: "0x" + "ab".repeat(20), to: C.usdc, value: "0x0", data: want }])
+    && wcalls.filter((a) => a.method === "eth_sendTransaction").length === 1 && !wcalls.some((a) => /approve|allowance|sign/i.test(a.method))
+    && d.getElementById("co-tx").value === TXH && calls.length === 1 && body1.tx_hash === TXH && body1.sku === "reverify-seal-99";
+  const eth2 = { request: (a) => a.method === "eth_sendTransaction" ? Promise.reject(Object.assign(new Error("denied"), { code: 4001 })) : eth.request(a) };
+  chain = "0x2105"; calls = [];
+  p = run(input.request, input.app, { path: "/request/", win: { ethereum: eth2 }, fetch: okFetch(200, {}) }); d = p.document;
+  fill(d, "target_address", ADDR); click(d.getElementById("co-wallet")); for (let i = 0; i < 8; i++) await flush();
+  res.co_wallet_cancel_sends_nothing = calls.length === 0 && /Cancelled in the wallet/.test(d.getElementById("co-status").textContent);
 }
 // (j) live timelock re-check: brief pages and #radar fetch the free /v1/briefs/live-timelocks once on load and update the
 // state badges with textContent + class only; failures and malformed payloads keep the static block-pinned state.
@@ -1268,6 +1406,8 @@ async function v45Scenario() {
   try { await preflightScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await staleResponseScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await beaconScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
+  try { rescueScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
+  try { await checkoutScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await liveTimelockScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await lateLivePayloadScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await basePathScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }

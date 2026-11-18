@@ -1740,8 +1740,9 @@ def protocols_index_page(idx, sp=None):
 
     def attrs(n, v):
         chains = " ".join(sorted({e.get("chain", "ethereum") for e in v["entries"]}))
-        text = " ".join([n, v["slug"], v["entries"][0]["category"], chains] + [e["target_contract"] for e in v["entries"]]).lower()
-        bk = " ".join(baskets_of(v["entries"][0]["category"], chains.split()))
+        cats = sorted({e["category"] for e in v["entries"]})   # every surface's category, so the text filter finds secondary ones too
+        text = " ".join([n, v["slug"]] + cats + [chains] + [e["target_contract"] for e in v["entries"]]).lower()
+        bk = " ".join(cards[v["slug"]]["baskets"])   # the canonical scorecard baskets (identical to /scorecards/ and scorecards.json)
         return f' data-ptier="{cards[v["slug"]]["grade"]}" data-pchains="{E(chains)}" data-pbaskets="{bk}" data-psearch="{E(text)}"'
 
     g = {k: sum(x["grade"] == k for x in cards.values()) for k in GRADE_UI}

@@ -2387,6 +2387,14 @@ def main(argv=None):
     check(f"protocol pages: every Base-EAS-attested record card links its attestation ({n_eas_pages} pages, short UID text, full UID in href); "
           "RPC-pinned pages carry 0 base.easscan.org attestation links", n_eas_pages > 0 and not eas_bad, str(eas_bad[:6]))
 
+    # /protocols/ basket filters and /scorecards/ basket counts never diverge: every row's data-pbaskets set equals scorecards.json
+    sc_bk = {c_["slug"]: set(c_["baskets"]) for c_ in json.loads(read("docs/api/v1/scorecards.json"))["protocols"]}
+    pidx_rows = re.findall(r'<tr data-ptier="[^"]*" data-pchains="[^"]*" data-pbaskets="([^"]*)"[^>]*><td><a href="([a-z0-9-]+)/">',
+                           pages[os.path.join("protocols", "index.html")])
+    bk_bad = [slug_ for bks_, slug_ in pidx_rows if set(bks_.split()) != sc_bk.get(slug_, {"<missing>"})]
+    check(f"/protocols/ basket parity: all {len(pidx_rows)} rows carry exactly their scorecards.json baskets (data-pbaskets set equality)",
+          len(pidx_rows) == len(sc_bk) == X["protocols"] and not bk_bad, str(bk_bad[:6]))
+
     nf = pages.get("404.html", "")
     nf_raw = nf.encode()
     nf_h, nf_b = nf_raw.find(b"<head>"), nf_raw.find(b"<body")

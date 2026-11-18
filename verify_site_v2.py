@@ -1954,13 +1954,17 @@ def main(argv=None):
                 and co_js.count("fetch(api, opts)") == 1 and "innerHTML" not in co_js and "data-treasury" not in co_js
                 # one payment at a time: Pay, Verify and the SKU radios lock before the first wallet request (harness: single flight)
                 and "if (wal) wal.disabled = on;" in co_js and "r.disabled = on;" in co_js
+                and '["co-chain", "co-target", "co-docs", "co-contact", "co-tx"].forEach(function (id) { var x = $("#" + id); if (x) x.disabled = on; });' in co_js
+                and "var order = body(), s = CO_SKU[order.sku]" in co_js and "order.tx_hash = String(h);" in co_js and "attempt(order, 15)" in co_js
+                and "attempt(body()" not in co_js
                 and 0 <= co_js.find("setBusy(true);   // locked BEFORE the first wallet request") < co_js.find('eth.request({ method: "eth_requestAccounts" })')
                 # the receipt prints alone (display: none on every other branch) and the SKU cards size to their content
                 and ".co-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start; }" in read("docs/styles.css")
                 and "html.co-print #co-form > :not(#co-result)" in read("docs/styles.css") and "html.co-print body * { visibility: hidden; }" not in read("docs/styles.css"))
     co_keys = ["co_request_default_19", "co_switch_updates_payment", "co_prefill_tiers", "co_prefill_seal_amount_and_docs", "co_enterprise_prefill_opens",
                "co_alias_defaults", "co_invalid_never_fetches", "co_webhook_needs_https_destination", "co_verify_posts_exact_body", "co_result_text_only",
-               "co_errors_reported", "co_wallet_transfer_only", "co_wallet_cancel_sends_nothing", "co_wallet_single_flight"]
+               "co_errors_reported", "co_wallet_transfer_only", "co_wallet_cancel_sends_nothing", "co_wallet_single_flight",
+               "co_snapshot_and_inputs_locked", "co_contract_codes", "co_optional_fields_omitted"]
     co_failed = [k_ for k_ in co_keys if res.get(k_) is not True]
     check(f"Option B checkout: /request/ (above the fold; enterprise tracks + free queue in a disclosure below) and /scan/ /webhook/ /seal/ render the 3-SKU "
           f"Base USDC checkout ($19 / $49 / $99 = 19,000,000 / 49,000,000 / 99,000,000 atomic) with the right SKU checked, an exact EIP-681 transfer to the "

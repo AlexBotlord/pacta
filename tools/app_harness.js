@@ -729,6 +729,49 @@ async function checkoutScenario() {
     && wc3.filter((m) => m === "eth_sendTransaction").length === 1 && calls.length === 1
     && w3.disabled === false && d.getElementById("co-verify").disabled === false && radios3.every((r) => r.disabled === false)
     && d.getElementById("co-result").hidden === false;
+  // the order is frozen at Pay: the order fields are locked during the prompt, and even a forced change never reaches the POST
+  let release4;
+  const gate4 = new Promise((r) => { release4 = r; });
+  const eth4 = { request: (a) => {
+    if (a.method === "eth_requestAccounts") return gate4.then(() => ["0x" + "ab".repeat(20)]);
+    if (a.method === "eth_chainId") return Promise.resolve("0x2105");
+    if (a.method === "eth_sendTransaction") return Promise.resolve(TXH);
+    return Promise.reject(new Error("unexpected"));
+  } };
+  calls = [];
+  p = run(input.request, input.app, { path: "/request/", win: { ethereum: eth4 }, fetch: okFetch(200, { order_id: "ord_frozen" }) }); d = p.document;
+  fill(d, "target_address", ADDR); fill(d, "protocol_or_docs", "https://docs.example.invalid/a"); fill(d, "webhook_or_contact", "@harness");
+  click(d.getElementById("co-wallet")); await flush();
+  const ids4 = ["co-chain", "co-target", "co-docs", "co-contact", "co-tx"];
+  const locked4 = ids4.every((id) => d.getElementById(id).disabled === true);
+  fill(d, "target_address", "0x" + "99".repeat(20)); fill(d, "protocol_or_docs", "https://evil.example.invalid"); fill(d, "webhook_or_contact", "@other");
+  release4(); for (let i = 0; i < 8; i++) await flush();
+  const b4 = calls[0] ? JSON.parse(calls[0][1].body) : {};
+  res.co_snapshot_and_inputs_locked = locked4 && calls.length === 1
+    && same(b4, { sku: "instant-scan-19", tx_hash: TXH, chain: "base", target_chain: "ethereum", target_address: ADDR, protocol_or_docs: "https://docs.example.invalid/a", webhook_or_contact: "@harness" })
+    && ids4.every((id) => d.getElementById(id).disabled === false);
+  // the Worker's order codes: poll codes keep the order locked and waiting; final codes unlock with a specific message
+  const codeRun = async (status, error) => {
+    calls = [];
+    const q = run(input.request, input.app, { path: "/request/", fetch: okFetch(status, error === null ? "Not Found" : { error }) }), qd = q.document;
+    fill(qd, "target_address", ADDR); fill(qd, "tx_hash", TXH); submit(qd); await flush(); await flush();
+    return { st: qd.getElementById("co-status").textContent, locked: qd.getElementById("co-verify").disabled === true, shown: qd.getElementById("co-result").hidden === false, n: calls.length };
+  };
+  const polls = [[425, "tx_not_confirmed"], [404, "tx_not_found"], [502, "order_rpc_unavailable"], [503, "order_not_recorded"], [503, "report_unavailable"], [409, "payment_in_progress"]];
+  const finals = [[402, "insufficient_amount", /below the price/], [402, "tx_failed", /failed on Base/], [409, "providers_disagree", /disagree/],
+    [409, "tx_already_used", /already unlocked/], [400, "invalid_order", /refused the request/], [503, "orders_unavailable", /unavailable right now/],
+    [404, null, /not available yet/]];
+  let pollsOk = true, finalsOk = true;
+  for (const [st_, er_] of polls) { const r_ = await codeRun(st_, er_); pollsOk = pollsOk && r_.n === 1 && r_.locked && !r_.shown && /Waiting for Base/.test(r_.st); }
+  for (const [st_, er_, re_] of finals) { const r_ = await codeRun(st_, er_); finalsOk = finalsOk && r_.n === 1 && !r_.locked && !r_.shown && re_.test(r_.st); }
+  res.co_contract_codes = pollsOk && finalsOk;
+  // empty optional fields stay out of the body (the API refuses target_address "")
+  calls = [];
+  p = run(input.request, input.app, { path: "/request/", search: "?tier=webhook-49", fetch: okFetch(200, { order_id: "ord_w49" }) }); d = p.document;
+  fill(d, "protocol_or_docs", "Aave"); fill(d, "webhook_or_contact", "https://hooks.example.invalid/x"); fill(d, "tx_hash", TXH);
+  submit(d); await flush(); await flush();
+  res.co_optional_fields_omitted = calls.length === 1
+    && same(JSON.parse(calls[0][1].body), { sku: "radar-webhook-49", tx_hash: TXH, chain: "base", target_chain: "ethereum", protocol_or_docs: "Aave", webhook_or_contact: "https://hooks.example.invalid/x" });
 }
 // (j) live timelock re-check: brief pages and #radar fetch the free /v1/briefs/live-timelocks once on load and update the
 // state badges with textContent + class only; failures and malformed payloads keep the static block-pinned state.

@@ -1070,12 +1070,20 @@ needTarget: true, contact: "Contact", needContact: false, ph: "Work email, @tele
 var CO_TIER = { "instant-19": "instant-scan-19", "webhook-49": "radar-webhook-49", "seal-99": "reverify-seal-99" };
 var CO_ERR = {
 tx_already_used: "This transaction hash already unlocked another order.",
-insufficient_amount: "The transfer is below the price of this check. Send the exact amount shown.",
-wrong_recipient: "That transaction does not pay the Pacta treasury shown above.",
-wrong_token: "That transaction is not a Base USDC transfer.",
+insufficient_amount: "The transfer is below the price of this check. Send the exact amount shown, to the treasury shown.",
 tx_failed: "That transaction failed on Base.",
-bad_request: "The verifier refused the request. Check the fields above."
+providers_disagree: "Two Base RPC providers disagree about this transaction. Wait a minute, then press Verify again.",
+tx_not_found: "Base has not indexed this transaction yet. Wait a minute, then press Verify again with the same hash.",
+tx_not_confirmed: "The transaction is not confirmed on Base yet. Wait a minute, then press Verify again with the same hash.",
+order_rpc_unavailable: "Base RPC providers did not answer. Press Verify again in a minute with the same hash.",
+report_unavailable: "Your payment is recorded; the order is not finished yet. Press Verify again with the same hash.",
+order_not_recorded: "Your payment is recorded; the order is not finished yet. Press Verify again with the same hash.",
+order_not_settled: "Your payment is recorded; the order is not finished yet. Press Verify again with the same hash.",
+orders_unavailable: "Checkout verification is unavailable right now. Keep the transaction hash: send it through the request form below.",
+invalid_order: "The verifier refused the request. Check the fields above.",
+rate_limited: "Too many attempts. Wait a minute, then try again."
 };
+var CO_RETRY = /^(tx_not_found|tx_not_confirmed|order_rpc_unavailable|report_unavailable|order_not_recorded|order_not_settled|payment_in_progress)$/;
 var CO_ADDR = /^0x[0-9a-fA-F]{40}$/;
 function coSkuFrom(search) {
 var q, t, s;
@@ -1112,6 +1120,7 @@ busy = on;
 if (btn) { btn.disabled = on; if (on) btn.setAttribute("aria-busy", "true"); else btn.removeAttribute("aria-busy"); }
 if (wal) wal.disabled = on;
 $$('input[name="sku"]', form).forEach(function (r) { r.disabled = on; });
+["co-chain", "co-target", "co-docs", "co-contact", "co-tx"].forEach(function (id) { var x = $("#" + id); if (x) x.disabled = on; });
 if (spin) spin.hidden = !on;
 }
 function sync() {
@@ -1140,13 +1149,16 @@ err("co-target", "co-target-err", tErr); err("co-contact", "co-contact-err", cEr
 return ok;
 }
 function body() {
-return { sku: sku(), tx_hash: val("tx_hash"), chain: "base", target_chain: val("target_chain") === "base" ? "base" : "ethereum",
-target_address: val("target_address"), protocol_or_docs: cleanText(val("protocol_or_docs"), 200),
-webhook_or_contact: cleanText(val("webhook_or_contact"), 200) };
+var o = { sku: sku(), tx_hash: val("tx_hash"), chain: "base", target_chain: val("target_chain") === "base" ? "base" : "ethereum" };
+var t = val("target_address"), d = cleanText(val("protocol_or_docs"), 200), c = cleanText(val("webhook_or_contact"), 200);
+if (t) o.target_address = t;
+if (d) o.protocol_or_docs = d;
+if (c) o.webhook_or_contact = c;
+return o;
 }
 function coError(code, http) {
 var c = /^[a-z0-9_]{1,40}$/.test(code || "") ? code : "";
-return CO_ERR[c] || (http === 404 ? "The verifier is not available yet. Keep the transaction hash: send it through the request form below and the team confirms it."
+return CO_ERR[c] || (http === 404 && !c ? "The verifier is not available yet. Keep the transaction hash: send it through the request form below and the team confirms it."
 : "Not verified (HTTP " + http + (c ? ", " + c : "") + "). Keep the transaction hash and try again.");
 }
 function row(sel, kids) { var d = $(sel, res); if (!d) return; d.textContent = ""; [].concat(kids).forEach(function (k) { d.appendChild(typeof k === "string" ? document.createTextNode(k) : k); }); }
@@ -1163,7 +1175,8 @@ status("Verified. Your result is below.");
 }
 function verify(retries) {
 if (busy || !validate(true)) return;
-setBusy(true); clearResult(); attempt(body(), retries);
+var order = body();
+setBusy(true); clearResult(); attempt(order, retries);
 }
 function attempt(b, retries) {
 var ctl = typeof AbortController === "function" ? new AbortController() : null, guard = 0;
@@ -1177,7 +1190,7 @@ return r.text().then(function (t) { var j = null; try { j = JSON.parse(t); } cat
 clearTimeout(guard);
 if (x.s === 200 && x.j && typeof x.j === "object") { setBusy(false); render(x.j, b); return; }
 var code = x.j && typeof x.j.error === "string" ? x.j.error : "";
-if (retries > 0 && (x.s === 202 || x.s === 425 || /pending|not_found|not_confirmed|not_mined/.test(code))) {
+if (retries > 0 && (x.s === 202 || x.s === 425 || CO_RETRY.test(code))) {
 status("Waiting for Base to confirm the transaction…");
 setTimeout(function () { attempt(b, retries - 1); }, 4000);
 return;
@@ -1190,7 +1203,7 @@ status("Could not reach the verifier. Your payment is safe: keep the transaction
 }
 function pay(eth) {
 if (busy || !validate(false)) return;
-var s = CO_SKU[sku()], from = "";
+var order = body(), s = CO_SKU[order.sku], from = "";
 setBusy(true);
 status("Confirm the transfer of exactly " + s.amount + " USDC on Base in your wallet…");
 eth.request({ method: "eth_requestAccounts" }).then(function (a) {
@@ -1207,7 +1220,8 @@ return eth.request({ method: "eth_sendTransaction", params: [{ from: from, to: C
 if (!TX_RE.test(String(h || ""))) throw new Error("no hash");
 var t = form.elements.tx_hash; if (t) t.value = String(h);
 status("Transfer sent. Waiting for Base to confirm…");
-clearResult(); attempt(body(), 15);
+order.tx_hash = String(h);
+clearResult(); attempt(order, 15);
 }).catch(function (e) {
 var code = e && e.code;
 setBusy(false);

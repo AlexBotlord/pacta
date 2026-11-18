@@ -1,0 +1,132 @@
+{
+  "wave": 2,
+  "category": "protocol_mismatch",
+  "slug": "origin-ether",
+  "protocol": "Origin Ether (OETH)",
+  "chainId": 1,
+  "contractAddress": "0x4FF1b9D9ba8558F5EAfCec096318eA0d8b541971",
+  "hunter": "kinshu7777",
+  "agentFramework": "claude-code",
+  "basePayoutAddress": "0x0A96Fe63357c83640445Fd1Ee9d210B334b94052",
+  "mcpProof": {
+    "tool": "pacta_scan_control_plane",
+    "arguments": {
+      "chain": "ethereum",
+      "address": "0x4FF1b9D9ba8558F5EAfCec096318eA0d8b541971"
+    },
+    "result": {
+      "chain": "ethereum",
+      "address": "0x4FF1b9D9ba8558F5EAfCec096318eA0d8b541971",
+      "block": {
+        "number": 26442077,
+        "hash": "0x8f50e310e9209d4e3c2cf6a47c8bd9f33207f209ec2549bffdb82d22e51cc424",
+        "timestamp": 1795006499
+      },
+      "codeBytes": 171,
+      "eip1967": {
+        "implementation": null,
+        "admin": null,
+        "beacon": null
+      },
+      "owner": null,
+      "probedStatus": {
+        "eip1967Slots": "ok",
+        "owner": "reverted_or_absent",
+        "safeGetters": "ok"
+      },
+      "safe": {
+        "threshold": 2,
+        "owners": [
+          "0x052c01a2a88fa6Cba8Fc2DBEf39a442A140a35e3",
+          "0x397729229B3d824Ca1B93e6E25e7CB197973df33",
+          "0x15ff3859Af506d6e4D7e5FDf335628Fc1e3ef1CE",
+          "0x6AC8d65Dc698aE07263E3A98Aa698C33060b4A13",
+          "0xFdf6C62D170A1943D89cAB0B9fA2FA6ee0550190",
+          "0x9990C10ceb3c3d1E08060EAc7e977279Fd7A5920",
+          "0xEF4Cb0D9ce195d18858c62E1d49504438D937276",
+          "0x091994E67ed0Be1527A83c7A16f8B74Ca9a53D53"
+        ],
+        "ownerCount": 8,
+        "guard": null
+      },
+      "upgradeAuthority": null,
+      "ownerPrincipal": null,
+      "riskFlags": [
+        "not_eip1967_upgradeable"
+      ],
+      "summary": "OBSERVED: No EIP-1967, Ownable, or Safe single-key control detected in probed standard slots/selectors (custom AccessControl/RolesAuthority not excluded)"
+    }
+  },
+  "blockNumber": 26441996,
+  "blockHash": "0x30d7997effa945f143f0d960c3b82764364787a21e1963f9e17b7bccbbda0878",
+  "castCommands": [
+    "cast call 0x4FF1b9D9ba8558F5EAfCec096318eA0d8b541971 \"getOwners()(address[])\" --block 26441996 --rpc-url https://gateway.tenderly.co/public/mainnet",
+    "cast call 0x4FF1b9D9ba8558F5EAfCec096318eA0d8b541971 \"getOwners()(address[])\" --block 26441996 --rpc-url https://ethereum-rpc.publicnode.com"
+  ],
+  "rpcOutputs": {
+    "a": "[0x052c01a2a88fa6Cba8Fc2DBEf39a442A140a35e3, 0x397729229B3d824Ca1B93e6E25e7CB197973df33, 0x15ff3859Af506d6e4D7e5FDf335628Fc1e3ef1CE, 0x6AC8d65Dc698aE07263E3A98Aa698C33060b4A13, 0xFdf6C62D170A1943D89cAB0B9fA2FA6ee0550190, 0x9990C10ceb3c3d1E08060EAc7e977279Fd7A5920, 0xEF4Cb0D9ce195d18858c62E1d49504438D937276, 0x091994E67ed0Be1527A83c7A16f8B74Ca9a53D53]",
+    "b": "[0x052c01a2a88fa6Cba8Fc2DBEf39a442A140a35e3, 0x397729229B3d824Ca1B93e6E25e7CB197973df33, 0x15ff3859Af506d6e4D7e5FDf335628Fc1e3ef1CE, 0x6AC8d65Dc698aE07263E3A98Aa698C33060b4A13, 0xFdf6C62D170A1943D89cAB0B9fA2FA6ee0550190, 0x9990C10ceb3c3d1E08060EAc7e977279Fd7A5920, 0xEF4Cb0D9ce195d18858c62E1d49504438D937276, 0x091994E67ed0Be1527A83c7A16f8B74Ca9a53D53]",
+    "pinnedDualRpcChainProof": {
+      "blockNumber": 26441996,
+      "blockHash": "0x30d7997effa945f143f0d960c3b82764364787a21e1963f9e17b7bccbbda0878",
+      "rpcEndpoints": [
+        "https://gateway.tenderly.co/public/mainnet",
+        "https://ethereum-rpc.publicnode.com"
+      ],
+      "reads": {
+        "guardianSafeGetOwners": {
+          "contract": "0x4FF1b9D9ba8558F5EAfCec096318eA0d8b541971",
+          "castCommands": [
+            "cast call 0x4FF1b9D9ba8558F5EAfCec096318eA0d8b541971 \"getOwners()(address[])\" --block 26441996 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x4FF1b9D9ba8558F5EAfCec096318eA0d8b541971 \"getOwners()(address[])\" --block 26441996 --rpc-url https://ethereum-rpc.publicnode.com"
+          ],
+          "output": "[0x052c01a2a88fa6Cba8Fc2DBEf39a442A140a35e3, 0x397729229B3d824Ca1B93e6E25e7CB197973df33, 0x15ff3859Af506d6e4D7e5FDf335628Fc1e3ef1CE, 0x6AC8d65Dc698aE07263E3A98Aa698C33060b4A13, 0xFdf6C62D170A1943D89cAB0B9fA2FA6ee0550190, 0x9990C10ceb3c3d1E08060EAc7e977279Fd7A5920, 0xEF4Cb0D9ce195d18858c62E1d49504438D937276, 0x091994E67ed0Be1527A83c7A16f8B74Ca9a53D53]",
+          "note": "2-of-8 Gnosis Safe on Ethereum (8 owners) vs documented 'Guardian (2 of 9 Safe) for each yield token'"
+        },
+        "guardianSafeGetThreshold": {
+          "contract": "0x4FF1b9D9ba8558F5EAfCec096318eA0d8b541971",
+          "castCommands": [
+            "cast call 0x4FF1b9D9ba8558F5EAfCec096318eA0d8b541971 \"getThreshold()(uint256)\" --block 26441996 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x4FF1b9D9ba8558F5EAfCec096318eA0d8b541971 \"getThreshold()(uint256)\" --block 26441996 --rpc-url https://ethereum-rpc.publicnode.com"
+          ],
+          "output": "2"
+        },
+        "oethVaultProxyStrategistAddr": {
+          "contract": "0x39254033945AA2E4809Cc2977E7087BEE48bd7Ab",
+          "castCommands": [
+            "cast call 0x39254033945AA2E4809Cc2977E7087BEE48bd7Ab \"strategistAddr()(address)\" --block 26441996 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x39254033945AA2E4809Cc2977E7087BEE48bd7Ab \"strategistAddr()(address)\" --block 26441996 --rpc-url https://ethereum-rpc.publicnode.com"
+          ],
+          "output": "0x4FF1b9D9ba8558F5EAfCec096318eA0d8b541971"
+        },
+        "oethVaultProxyGovernor": {
+          "contract": "0x39254033945AA2E4809Cc2977E7087BEE48bd7Ab",
+          "castCommands": [
+            "cast call 0x39254033945AA2E4809Cc2977E7087BEE48bd7Ab \"governor()(address)\" --block 26441996 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x39254033945AA2E4809Cc2977E7087BEE48bd7Ab \"governor()(address)\" --block 26441996 --rpc-url https://ethereum-rpc.publicnode.com"
+          ],
+          "output": "0x35918cDE7233F2dD33fA41ae3Cb6aE0e42E0e69F"
+        },
+        "oethVaultProxyTotalValue": {
+          "contract": "0x39254033945AA2E4809Cc2977E7087BEE48bd7Ab",
+          "castCommands": [
+            "cast call 0x39254033945AA2E4809Cc2977E7087BEE48bd7Ab \"totalValue()(uint256)\" --block 26441996 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x39254033945AA2E4809Cc2977E7087BEE48bd7Ab \"totalValue()(uint256)\" --block 26441996 --rpc-url https://ethereum-rpc.publicnode.com"
+          ],
+          "output": "34093354928858584698588"
+        }
+      }
+    }
+  },
+  "docsUrl": "https://docs.originprotocol.com/yield-bearing-tokens/core-concepts/yield-smoothing",
+  "docsQuote": "This smoothing feature is configured by two variables that are managed by the Guardian (2 of 9 Safe) for each yield token:",
+  "tvlUsd": 39461520.0,
+  "tvlReference": "https://api.llama.fi/protocol/origin-ether",
+  "apache2CommercialGrant": true,
+  "rulesAccepted": [
+    true,
+    true,
+    true,
+    true
+  ]
+}

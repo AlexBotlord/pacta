@@ -1,0 +1,183 @@
+{
+  "wave": 2,
+  "category": "protocol_mismatch",
+  "slug": "vesper",
+  "protocol": "Vesper",
+  "chainId": 1,
+  "contractAddress": "0x9520b477Aa81180E6DdC006Fc09Fb6d3eb4e807A",
+  "hunter": "VB-Blue",
+  "basePayoutAddress": "0xe0a3AAe6e7d042f42e82830f4eEbF426cc1270a2",
+  "mcpProof": {
+    "tool": "pacta_scan_control_plane",
+    "arguments": {
+      "chain": "ethereum",
+      "address": "0x9520b477Aa81180E6DdC006Fc09Fb6d3eb4e807A"
+    },
+    "result": {
+      "chain": "ethereum",
+      "address": "0x9520b477Aa81180E6DdC006Fc09Fb6d3eb4e807A",
+      "block": {
+        "number": 26439762,
+        "hash": "0x162174a639155ca54aad82e6a1fb2c4fe3a0484fb8b3a4dd4b956752c69b7151",
+        "timestamp": 1794978671
+      },
+      "codeBytes": 170,
+      "eip1967": {
+        "implementation": null,
+        "admin": null,
+        "beacon": null
+      },
+      "owner": null,
+      "probedStatus": {
+        "eip1967Slots": "ok",
+        "owner": "reverted_or_absent",
+        "safeGetters": "ok"
+      },
+      "safe": {
+        "threshold": 3,
+        "owners": [
+          "0xa13011197D6793453d86eBCD3B13Cc49A234C339",
+          "0xc7909D2aF033475137D1c749F87Be56462aA392A",
+          "0xb3983cDdBa4B127960A4cDD531AB989264509e23",
+          "0xB5AbDABE50b5193d4dB92a16011792B22bA3Ef51",
+          "0x25FCe091c5b51edEfc7a4A0E765f10ed032e804F",
+          "0xf3e996C8cd4ab3fDad381584D5Bd90C01Ec3C082"
+        ],
+        "ownerCount": 6,
+        "guard": null
+      },
+      "upgradeAuthority": null,
+      "ownerPrincipal": null,
+      "riskFlags": [
+        "not_eip1967_upgradeable"
+      ],
+      "summary": "OBSERVED: No EIP-1967, Ownable, or Safe single-key control detected in probed standard slots/selectors (custom AccessControl/RolesAuthority not excluded)"
+    }
+  },
+  "blockNumber": 26439632,
+  "blockHash": "0xf44066267d136ddd789fd1e65593996c37a26b78ea670dc8cb267b4fb4798130",
+  "castCommands": [
+    "cast call 0x9520b477Aa81180E6DdC006Fc09Fb6d3eb4e807A \"getOwners()(address[])\" --block 26439632 --rpc-url https://gateway.tenderly.co/public/mainnet",
+    "cast call 0x9520b477Aa81180E6DdC006Fc09Fb6d3eb4e807A \"getOwners()(address[])\" --block 26439632 --rpc-url https://rpc.mevblocker.io"
+  ],
+  "rpcOutputs": {
+    "a": "[0xa13011197D6793453d86eBCD3B13Cc49A234C339, 0xc7909D2aF033475137D1c749F87Be56462aA392A, 0xb3983cDdBa4B127960A4cDD531AB989264509e23, 0xB5AbDABE50b5193d4dB92a16011792B22bA3Ef51, 0x25FCe091c5b51edEfc7a4A0E765f10ed032e804F, 0xf3e996C8cd4ab3fDad381584D5Bd90C01Ec3C082]",
+    "b": "[0xa13011197D6793453d86eBCD3B13Cc49A234C339, 0xc7909D2aF033475137D1c749F87Be56462aA392A, 0xb3983cDdBa4B127960A4cDD531AB989264509e23, 0xB5AbDABE50b5193d4dB92a16011792B22bA3Ef51, 0x25FCe091c5b51edEfc7a4A0E765f10ed032e804F, 0xf3e996C8cd4ab3fDad381584D5Bd90C01Ec3C082]",
+    "pinnedDualRpcChainProof": {
+      "blockNumber": 26439632,
+      "blockHash": "0xf44066267d136ddd789fd1e65593996c37a26b78ea670dc8cb267b4fb4798130",
+      "rpcEndpoints": [
+        "https://gateway.tenderly.co/public/mainnet",
+        "https://rpc.mevblocker.io"
+      ],
+      "reads": {
+        "safeGetThreshold": {
+          "castCommands": [
+            "cast call 0x9520b477Aa81180E6DdC006Fc09Fb6d3eb4e807A \"getThreshold()(uint256)\" --block 26439632 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x9520b477Aa81180E6DdC006Fc09Fb6d3eb4e807A \"getThreshold()(uint256)\" --block 26439632 --rpc-url https://rpc.mevblocker.io"
+          ],
+          "output": "3"
+        },
+        "safeVersion": {
+          "castCommands": [
+            "cast call 0x9520b477Aa81180E6DdC006Fc09Fb6d3eb4e807A \"VERSION()(string)\" --block 26439632 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x9520b477Aa81180E6DdC006Fc09Fb6d3eb4e807A \"VERSION()(string)\" --block 26439632 --rpc-url https://rpc.mevblocker.io"
+          ],
+          "output": "\"1.3.0\""
+        },
+        "vesperUsdUsdcYieldVaultGovernor": {
+          "contract": "0x3aEd4dd0b5ba616156Fa352274670c18D2Ec2A81",
+          "castCommands": [
+            "cast call 0x3aEd4dd0b5ba616156Fa352274670c18D2Ec2A81 \"governor()(address)\" --block 26439632 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x3aEd4dd0b5ba616156Fa352274670c18D2Ec2A81 \"governor()(address)\" --block 26439632 --rpc-url https://rpc.mevblocker.io"
+          ],
+          "output": "0x9520b477Aa81180E6DdC006Fc09Fb6d3eb4e807A"
+        },
+        "vesperUsdUsdcYieldVaultOwner": {
+          "castCommands": [
+            "cast call 0x3aEd4dd0b5ba616156Fa352274670c18D2Ec2A81 \"owner()(address)\" --block 26439632 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x3aEd4dd0b5ba616156Fa352274670c18D2Ec2A81 \"owner()(address)\" --block 26439632 --rpc-url https://rpc.mevblocker.io"
+          ],
+          "output": "0x9520b477Aa81180E6DdC006Fc09Fb6d3eb4e807A"
+        },
+        "vesperUsdUsdcYieldVaultTotalDebt": {
+          "castCommands": [
+            "cast call 0x3aEd4dd0b5ba616156Fa352274670c18D2Ec2A81 \"totalDebt()(uint256)\" --block 26439632 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x3aEd4dd0b5ba616156Fa352274670c18D2Ec2A81 \"totalDebt()(uint256)\" --block 26439632 --rpc-url https://rpc.mevblocker.io"
+          ],
+          "output": "8131545552447 [8.131e12]"
+        },
+        "vesperUsdUsdcYieldVaultTotalSupply": {
+          "castCommands": [
+            "cast call 0x3aEd4dd0b5ba616156Fa352274670c18D2Ec2A81 \"totalSupply()(uint256)\" --block 26439632 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x3aEd4dd0b5ba616156Fa352274670c18D2Ec2A81 \"totalSupply()(uint256)\" --block 26439632 --rpc-url https://rpc.mevblocker.io"
+          ],
+          "output": "8029507320675129056276203 [8.029e24]"
+        },
+        "vaEthPoolGovernor": {
+          "contract": "0xd1C117319B3595fbc39b471AB1fd485629eb05F2",
+          "castCommands": [
+            "cast call 0xd1C117319B3595fbc39b471AB1fd485629eb05F2 \"governor()(address)\" --block 26439632 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0xd1C117319B3595fbc39b471AB1fd485629eb05F2 \"governor()(address)\" --block 26439632 --rpc-url https://rpc.mevblocker.io"
+          ],
+          "output": "0x9520b477Aa81180E6DdC006Fc09Fb6d3eb4e807A"
+        },
+        "vaEthPoolTotalDebt": {
+          "castCommands": [
+            "cast call 0xd1C117319B3595fbc39b471AB1fd485629eb05F2 \"totalDebt()(uint256)\" --block 26439632 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0xd1C117319B3595fbc39b471AB1fd485629eb05F2 \"totalDebt()(uint256)\" --block 26439632 --rpc-url https://rpc.mevblocker.io"
+          ],
+          "output": "944192636121619754369 [9.441e20]"
+        },
+        "vaEthPoolTokensHere": {
+          "castCommands": [
+            "cast call 0xd1C117319B3595fbc39b471AB1fd485629eb05F2 \"tokensHere()(uint256)\" --block 26439632 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0xd1C117319B3595fbc39b471AB1fd485629eb05F2 \"tokensHere()(uint256)\" --block 26439632 --rpc-url https://rpc.mevblocker.io"
+          ],
+          "output": "11033744704683103691 [1.103e19]"
+        },
+        "vesperEthWethYieldVaultGovernor": {
+          "contract": "0x025a05f1967521806BB4c8a10Ba4b8c00A794F65",
+          "castCommands": [
+            "cast call 0x025a05f1967521806BB4c8a10Ba4b8c00A794F65 \"governor()(address)\" --block 26439632 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x025a05f1967521806BB4c8a10Ba4b8c00A794F65 \"governor()(address)\" --block 26439632 --rpc-url https://rpc.mevblocker.io"
+          ],
+          "output": "0x9520b477Aa81180E6DdC006Fc09Fb6d3eb4e807A"
+        },
+        "vesperEthWethYieldVaultTotalDebt": {
+          "castCommands": [
+            "cast call 0x025a05f1967521806BB4c8a10Ba4b8c00A794F65 \"totalDebt()(uint256)\" --block 26439632 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x025a05f1967521806BB4c8a10Ba4b8c00A794F65 \"totalDebt()(uint256)\" --block 26439632 --rpc-url https://rpc.mevblocker.io"
+          ],
+          "output": "83489977844426466633 [8.348e19]"
+        },
+        "stakedVesperUsdOwner": {
+          "contract": "0x7473Da16F17abA0D920605e1F9560A99a6F6314A",
+          "castCommands": [
+            "cast call 0x7473Da16F17abA0D920605e1F9560A99a6F6314A \"owner()(address)\" --block 26439632 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x7473Da16F17abA0D920605e1F9560A99a6F6314A \"owner()(address)\" --block 26439632 --rpc-url https://rpc.mevblocker.io"
+          ],
+          "output": "0x9520b477Aa81180E6DdC006Fc09Fb6d3eb4e807A"
+        },
+        "stakedVesperUsdTotalSupply": {
+          "castCommands": [
+            "cast call 0x7473Da16F17abA0D920605e1F9560A99a6F6314A \"totalSupply()(uint256)\" --block 26439632 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x7473Da16F17abA0D920605e1F9560A99a6F6314A \"totalSupply()(uint256)\" --block 26439632 --rpc-url https://rpc.mevblocker.io"
+          ],
+          "output": "8025607397866608558889066 [8.025e24]"
+        }
+      }
+    }
+  },
+  "docsUrl": "https://docs.vesper.finance/vesper-pools-and-strategies/vespers-modular-pool-architecture",
+  "docsQuote": "Multisig is a contract where n people vote on transaction before it gets executed. The Vesper multisig has 5 signers and requires 3 yes votes for a transaction to execute.",
+  "tvlUsd": 70800110.0,
+  "tvlReference": "https://api.llama.fi/protocol/vesper",
+  "apache2CommercialGrant": true,
+  "rulesAccepted": [
+    true,
+    true,
+    true,
+    true
+  ]
+}

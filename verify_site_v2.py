@@ -3114,7 +3114,7 @@ def main(argv=None):
         f'href="https://basescan.org/tx/{fake}"' in row1 and "$25.00 USDC" in row1 and "Settled on Base" in row1 and "$0.00 (pending settlement)" in row2
         and len(st_changes) == 1 and refused == [1, 1, 2, 5] and loader_refuses and dry_rc == 0 and dry_same and real_rc == 0
         and [s_["payoutTxHash"] for s_ in stamped["wave1Settlements"]] == [fake, fake, None, None] and again_rc == 2
-        and st_rows["veriton-dev"]["settled"] == 25_000_000 + BS.REWARD_ATOMIC and st_rows["kinshu7777"]["settled"] == BS.REWARD_ATOMIC   # + Wave 2 PR #54 (paid); kinshu7777: only Wave 2 PR #77 (paid) once Wave 1 is unstamped
+        and st_rows["veriton-dev"]["settled"] == 25_000_000 + BS.REWARD_ATOMIC and st_rows["kinshu7777"]["settled"] == 2 * BS.REWARD_ATOMIC   # + Wave 2 PR #54 (paid); kinshu7777: Wave 2 PRs #77 + #76 (paid) once Wave 1 is unstamped
         and SWP.dump(lb_) == read("bounties/leaderboard.json"))
     paid_ = [s_ for s_ in lb_["wave1Settlements"] if s_["payoutTxHash"]]
     w2["Wave 1 settlements stamped: each recorded payout hash is a real 0x + 64-hex tx, linked to BaseScan with $25.00 USDC on /bounties/ and credited on /leaderboard/"] = (
@@ -3306,17 +3306,17 @@ def main(argv=None):
             and all('bounties/">Bounties</a>' in t for r, t in pages.items() if 'class="topbar"' in t),
         "Wave 1 archive labelled 'Historical Snapshot (Pinned at 53 Protocols on Nov 15)'": "<b>Historical Snapshot (Pinned at 53 Protocols on Nov 15)</b>" in bounty
             and bounty.index("data-wave1-snapshot") > bounty.index('id="wave-1"'),
-        "funded capacity = confirmed unencumbered USDC only (11 Epoch 1 slots settled on Base; 14 slots / $14.00 unencumbered completing Epoch 1; $85.12 Epoch 2+ reserve from $99.12 treasury; Wave 1 4/4 settled)":
-            (w2cfg["settledEpochSlots"], w2cfg["fundedUnencumberedSlots"], w2cfg["fundedUnencumberedUsdc"], w2cfg["ringFencedUsdc"]) == (11, 14, "14.00", "85.12")
-            and (BS.SETTLED_EPOCH_SLOTS, BS.FUNDED_UNENCUMBERED_SLOTS, BS.FUNDED_UNENCUMBERED_USDC, BS.EPOCH_REMAINING_USDC) == (11, 14, "14.00", "0.00")
-            and len(lb_["wave2Settlements"]) == 11 and all(BS.tx_ok(p_["payoutTxHash"]) for p_ in lb_["wave2Settlements"])
-            and "data-wave2-capacity" in bounty and "$85.12 USDC in the treasury is separately ring-fenced for subsequent Wave 2 epochs ($99.12 USDC total unencumbered in the Base treasury; Wave 1 Genesis 4/4 = $100.00 USDC is 100% settled on Base)" in bounty
-            and "Confirmed unencumbered on-chain now: **$14.00 USDC (14 slots)**" in master and "funded this epoch" not in bounty + master + read("docs/llms.txt")
+        "funded capacity = confirmed unencumbered USDC only (12 Epoch 1 slots settled on Base; 13 slots / $13.00 unencumbered completing Epoch 1; $66.07 Epoch 2+ reserve from $79.07 treasury; Wave 1 4/4 settled)":
+            (w2cfg["settledEpochSlots"], w2cfg["fundedUnencumberedSlots"], w2cfg["fundedUnencumberedUsdc"], w2cfg["ringFencedUsdc"]) == (12, 13, "13.00", "66.07")
+            and (BS.SETTLED_EPOCH_SLOTS, BS.FUNDED_UNENCUMBERED_SLOTS, BS.FUNDED_UNENCUMBERED_USDC, BS.EPOCH_REMAINING_USDC) == (12, 13, "13.00", "0.00")
+            and len(lb_["wave2Settlements"]) == 12 and all(BS.tx_ok(p_["payoutTxHash"]) for p_ in lb_["wave2Settlements"])
+            and "data-wave2-capacity" in bounty and "$66.07 USDC in the treasury is separately ring-fenced for subsequent Wave 2 epochs ($79.07 USDC total unencumbered in the Base treasury; Wave 1 Genesis 4/4 = $100.00 USDC is 100% settled on Base)" in bounty
+            and "Confirmed unencumbered on-chain now: **$13.00 USDC (13 slots)**" in master and "funded this epoch" not in bounty + master + read("docs/llms.txt")
             and not re.search(r"\bfunded epochs?\b|pays out in funded", bounty + master + read("docs/llms.txt") + read("docs/llms-full.txt") + rd_)
             and "PRIOR_EPOCH_SLOTS + SETTLED_EPOCH_SLOTS + FUNDED_UNENCUMBERED_SLOTS" in read("tools/build_site.py"),
-        "README: $111 settled shield (= $100 Wave 1 4/4 + $11 Wave 2), @pacta/mcp-server 0.1.5, Master Issue #41, live protocol count, Ethereum and Base block heights": (
-            sum(25 for s_ in lb_["wave1Settlements" ] if s_["payoutTxHash"]) == 100 and len(lb_["wave2Settlements"]) == 11
-            and "[![Bounties & Leaderboard](https://img.shields.io/badge/Bounties_%26_Leaderboard-%24111_USDC_Settled-10b981?style=for-the-badge&labelColor=000000)](https://pacta.wtf/leaderboard/)" in read("README.md")
+        "README: $112 settled shield (= $100 Wave 1 4/4 + $12 Wave 2), @pacta/mcp-server 0.1.5, Master Issue #41, live protocol count, Ethereum and Base block heights": (
+            sum(25 for s_ in lb_["wave1Settlements" ] if s_["payoutTxHash"]) == 100 and len(lb_["wave2Settlements"]) == 12
+            and "[![Bounties & Leaderboard](https://img.shields.io/badge/Bounties_%26_Leaderboard-%24112_USDC_Settled-10b981?style=for-the-badge&labelColor=000000)](https://pacta.wtf/leaderboard/)" in read("README.md")
             and "`@pacta/mcp-server` 0.1.5" in read("README.md") and "0.1.4" not in read("README.md")
             and json.loads(read("packages/mcp-server/package.json"))["version"] == "0.1.5"
             and "[Master Issue #41](https://github.com/Fractal-Neurons/pacta/issues/41)" in read("README.md")

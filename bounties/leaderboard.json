@@ -77,6 +77,10 @@
       "payoutTxHash": "0x772b82bc5578e7d7fb4727088a88ea87587eff538ebcb2a4c9ffd7f6a9551668"
     },
     {
+      "fixture": "ethereum-rocksolid-network.json",
+      "payoutTxHash": "0xe62d61dc2e935407a5432cd41df009b4d5b73d0fd5026a5b7762dd218cf25248"
+    },
+    {
       "fixture": "ethereum-scroll-bridge.json",
       "payoutTxHash": "0x5e7992ad534d12250d4b088087838c3eee056fe8cf8d6dbce8067d750f878fd8"
     },

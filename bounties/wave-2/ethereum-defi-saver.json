@@ -1,0 +1,252 @@
+{
+  "wave": 2,
+  "category": "protocol_mismatch",
+  "slug": "defi-saver",
+  "protocol": "DeFi Saver",
+  "chainId": 1,
+  "contractAddress": "0x25eFA336886C74eA8E282ac466BdCd0199f85BB9",
+  "hunter": "VB-Blue",
+  "basePayoutAddress": "0xe0a3AAe6e7d042f42e82830f4eEbF426cc1270a2",
+  "mcpProof": {
+    "tool": "pacta_scan_control_plane",
+    "arguments": {
+      "chain": "ethereum",
+      "address": "0x25eFA336886C74eA8E282ac466BdCd0199f85BB9"
+    },
+    "result": {
+      "chain": "ethereum",
+      "address": "0x25eFA336886C74eA8E282ac466BdCd0199f85BB9",
+      "block": {
+        "number": 26440223,
+        "hash": "0x7a925e38b1aea331377cc2b1b65e812339f528e6f854c0ef1dea035fd4877465",
+        "timestamp": 1794984203
+      },
+      "codeBytes": 170,
+      "eip1967": {
+        "implementation": null,
+        "admin": null,
+        "beacon": null
+      },
+      "owner": null,
+      "probedStatus": {
+        "eip1967Slots": "ok",
+        "owner": "reverted_or_absent",
+        "safeGetters": "ok"
+      },
+      "safe": {
+        "threshold": 3,
+        "owners": [
+          "0x8A3D66A2BD7f3e2D09C9608FbD16CE3FF99388A8",
+          "0xD5dea6048465d4D4786d149eAe1967273783C163",
+          "0x9fb32a80045d58d6BBe66c03c79650c21b72Af48",
+          "0xDA5Ae43e179987a66B9831F92223567e1F38BE7D",
+          "0x6Ab2b49670d00b2D13b40b42DA74dee3D8e6b396",
+          "0x2F5591019ffD0e86B61104d34335A03C2db31eaF"
+        ],
+        "ownerCount": 6,
+        "guard": null
+      },
+      "upgradeAuthority": null,
+      "ownerPrincipal": null,
+      "riskFlags": [
+        "not_eip1967_upgradeable"
+      ],
+      "summary": "OBSERVED: No EIP-1967, Ownable, or Safe single-key control detected in probed standard slots/selectors (custom AccessControl/RolesAuthority not excluded)"
+    }
+  },
+  "blockNumber": 26440112,
+  "blockHash": "0x0eb2bada286712801d2d7e10fd23b7220d10eab94aed841c8feef2b76384585a",
+  "castCommands": [
+    "cast call 0x25eFA336886C74eA8E282ac466BdCd0199f85BB9 \"getOwners()(address[])\" --block 26440112 --rpc-url https://gateway.tenderly.co/public/mainnet",
+    "cast call 0x25eFA336886C74eA8E282ac466BdCd0199f85BB9 \"getOwners()(address[])\" --block 26440112 --rpc-url https://eth.drpc.org"
+  ],
+  "rpcOutputs": {
+    "a": "[0x8A3D66A2BD7f3e2D09C9608FbD16CE3FF99388A8, 0xD5dea6048465d4D4786d149eAe1967273783C163, 0x9fb32a80045d58d6BBe66c03c79650c21b72Af48, 0xDA5Ae43e179987a66B9831F92223567e1F38BE7D, 0x6Ab2b49670d00b2D13b40b42DA74dee3D8e6b396, 0x2F5591019ffD0e86B61104d34335A03C2db31eaF]",
+    "b": "[0x8A3D66A2BD7f3e2D09C9608FbD16CE3FF99388A8, 0xD5dea6048465d4D4786d149eAe1967273783C163, 0x9fb32a80045d58d6BBe66c03c79650c21b72Af48, 0xDA5Ae43e179987a66B9831F92223567e1F38BE7D, 0x6Ab2b49670d00b2D13b40b42DA74dee3D8e6b396, 0x2F5591019ffD0e86B61104d34335A03C2db31eaF]",
+    "pinnedDualRpcChainProof": {
+      "blockNumber": 26440112,
+      "blockHash": "0x0eb2bada286712801d2d7e10fd23b7220d10eab94aed841c8feef2b76384585a",
+      "rpcEndpoints": [
+        "https://gateway.tenderly.co/public/mainnet",
+        "https://eth.drpc.org"
+      ],
+      "sourcifyVerificationChainId1": {
+        "0xCCf3d848e08b94478Ed8f46fFead3008faF581fD": "exact_match (AdminVault.sol)",
+        "0x287778F121F134C66212FB16c9b53eC991D32f5b": "match (DFSRegistry.sol)",
+        "0x25eFA336886C74eA8E282ac466BdCd0199f85BB9": "match (GnosisSafeProxy v1.1.1)",
+        "0xBc841B0dE0b93205e912CFBBd1D0c160A1ec6F00": "match (GnosisSafeProxy v1.3.0)",
+        "0x3727C31D4D4c5270290FFb20C4C358C84c0792C9": "match (StrategyExecutor.sol)",
+        "0x6e7dEde13E011Eee74E0c731A06c158377fc1Cae": "match (RecipeExecutor.sol)"
+      },
+      "reads": {
+        "adminSafeGetThreshold": {
+          "castCommands": [
+            "cast call 0x25eFA336886C74eA8E282ac466BdCd0199f85BB9 \"getThreshold()(uint256)\" --block 26440112 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x25eFA336886C74eA8E282ac466BdCd0199f85BB9 \"getThreshold()(uint256)\" --block 26440112 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "3",
+          "note": "3-of-6 Admin multisig (50.0% quorum) vs documented 2/3 multisig (Admin) (66.7% quorum)"
+        },
+        "adminSafeVersion": {
+          "castCommands": [
+            "cast call 0x25eFA336886C74eA8E282ac466BdCd0199f85BB9 \"VERSION()(string)\" --block 26440112 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x25eFA336886C74eA8E282ac466BdCd0199f85BB9 \"VERSION()(string)\" --block 26440112 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "\"1.1.1\""
+        },
+        "adminSafeGuardSlot": {
+          "castCommands": [
+            "cast storage 0x25eFA336886C74eA8E282ac466BdCd0199f85BB9 0x4a204f620c8c5ccdca3fd54d003badd85ba500436a431f0cbda4f558c93c34c8 --block 26440112 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast storage 0x25eFA336886C74eA8E282ac466BdCd0199f85BB9 0x4a204f620c8c5ccdca3fd54d003badd85ba500436a431f0cbda4f558c93c34c8 --block 26440112 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "0x0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "adminSafeFallbackHandlerSlot": {
+          "castCommands": [
+            "cast storage 0x25eFA336886C74eA8E282ac466BdCd0199f85BB9 0x6c9a6c4a39284e37ed1cf53d337577d14212a4870fb976a4366c693b939918d5 --block 26440112 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast storage 0x25eFA336886C74eA8E282ac466BdCd0199f85BB9 0x6c9a6c4a39284e37ed1cf53d337577d14212a4870fb976a4366c693b939918d5 --block 26440112 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "0x000000000000000000000000d5d82b6addc9027b22dca772aa68d5d74cdbdf44"
+        },
+        "adminSafeNonce": {
+          "castCommands": [
+            "cast call 0x25eFA336886C74eA8E282ac466BdCd0199f85BB9 \"nonce()(uint256)\" --block 26440112 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x25eFA336886C74eA8E282ac466BdCd0199f85BB9 \"nonce()(uint256)\" --block 26440112 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "176"
+        },
+        "adminVaultAdmin": {
+          "castCommands": [
+            "cast call 0xCCf3d848e08b94478Ed8f46fFead3008faF581fD \"admin()(address)\" --block 26440112 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0xCCf3d848e08b94478Ed8f46fFead3008faF581fD \"admin()(address)\" --block 26440112 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "0x25eFA336886C74eA8E282ac466BdCd0199f85BB9"
+        },
+        "adminVaultOwner": {
+          "castCommands": [
+            "cast call 0xCCf3d848e08b94478Ed8f46fFead3008faF581fD \"owner()(address)\" --block 26440112 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0xCCf3d848e08b94478Ed8f46fFead3008faF581fD \"owner()(address)\" --block 26440112 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "0xBc841B0dE0b93205e912CFBBd1D0c160A1ec6F00"
+        },
+        "ownerSafeGetThreshold": {
+          "castCommands": [
+            "cast call 0xBc841B0dE0b93205e912CFBBd1D0c160A1ec6F00 \"getThreshold()(uint256)\" --block 26440112 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0xBc841B0dE0b93205e912CFBBd1D0c160A1ec6F00 \"getThreshold()(uint256)\" --block 26440112 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "3",
+          "note": "3-of-6 Owner multisig (50.0% quorum) vs documented 3/5 multisig (Owner) (60.0% quorum)"
+        },
+        "ownerSafeGetOwners": {
+          "castCommands": [
+            "cast call 0xBc841B0dE0b93205e912CFBBd1D0c160A1ec6F00 \"getOwners()(address[])\" --block 26440112 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0xBc841B0dE0b93205e912CFBBd1D0c160A1ec6F00 \"getOwners()(address[])\" --block 26440112 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "[0x09b5195b7fc47Ed425F2C04Cb51bbC7D8128829f, 0xFCb1819f86ee2Ed134f488231A0760da9C64Ffcf, 0x35eF91eBf8FC3AC514a4401fec10b54Aa01c6952, 0xd6c989fe352EB5489c72377588f7E165a06AB383, 0x6F6c0194A67c2727c61370e76042B3D92F3AC35E, 0x575F0F46C427EE49dC1fE04874e661dB161AC54E]"
+        },
+        "ownerSafeVersion": {
+          "castCommands": [
+            "cast call 0xBc841B0dE0b93205e912CFBBd1D0c160A1ec6F00 \"VERSION()(string)\" --block 26440112 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0xBc841B0dE0b93205e912CFBBd1D0c160A1ec6F00 \"VERSION()(string)\" --block 26440112 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "\"1.3.0\""
+        },
+        "ownerSafeGuardSlot": {
+          "castCommands": [
+            "cast storage 0xBc841B0dE0b93205e912CFBBd1D0c160A1ec6F00 0x4a204f620c8c5ccdca3fd54d003badd85ba500436a431f0cbda4f558c93c34c8 --block 26440112 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast storage 0xBc841B0dE0b93205e912CFBBd1D0c160A1ec6F00 0x4a204f620c8c5ccdca3fd54d003badd85ba500436a431f0cbda4f558c93c34c8 --block 26440112 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "0x0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "dfsRegistryAdminVault": {
+          "castCommands": [
+            "cast call 0x287778F121F134C66212FB16c9b53eC991D32f5b \"adminVault()(address)\" --block 26440112 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x287778F121F134C66212FB16c9b53eC991D32f5b \"adminVault()(address)\" --block 26440112 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "0xCCf3d848e08b94478Ed8f46fFead3008faF581fD"
+        },
+        "dfsRegistryStrategyExecutor": {
+          "castCommands": [
+            "cast call 0x287778F121F134C66212FB16c9b53eC991D32f5b \"getAddr(bytes4)(address)\" 0x0c1dc439 --block 26440112 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x287778F121F134C66212FB16c9b53eC991D32f5b \"getAddr(bytes4)(address)\" 0x0c1dc439 --block 26440112 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "0x3727C31D4D4c5270290FFb20C4C358C84c0792C9"
+        },
+        "strategyExecutorAdminVault": {
+          "castCommands": [
+            "cast call 0x3727C31D4D4c5270290FFb20C4C358C84c0792C9 \"adminVault()(address)\" --block 26440112 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x3727C31D4D4c5270290FFb20C4C358C84c0792C9 \"adminVault()(address)\" --block 26440112 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "0xCCf3d848e08b94478Ed8f46fFead3008faF581fD"
+        },
+        "dfsRegistryRecipeExecutor": {
+          "castCommands": [
+            "cast call 0x287778F121F134C66212FB16c9b53eC991D32f5b \"getAddr(bytes4)(address)\" 0x4c69ee1e --block 26440112 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x287778F121F134C66212FB16c9b53eC991D32f5b \"getAddr(bytes4)(address)\" 0x4c69ee1e --block 26440112 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "0x6e7dEde13E011Eee74E0c731A06c158377fc1Cae"
+        },
+        "recipeExecutorAdminVault": {
+          "castCommands": [
+            "cast call 0x6e7dEde13E011Eee74E0c731A06c158377fc1Cae \"adminVault()(address)\" --block 26440112 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x6e7dEde13E011Eee74E0c731A06c158377fc1Cae \"adminVault()(address)\" --block 26440112 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "0xCCf3d848e08b94478Ed8f46fFead3008faF581fD"
+        },
+        "dfsRegistryTxSaverExecutor": {
+          "castCommands": [
+            "cast call 0x287778F121F134C66212FB16c9b53eC991D32f5b \"getAddr(bytes4)(address)\" 0x91bfbd87 --block 26440112 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x287778F121F134C66212FB16c9b53eC991D32f5b \"getAddr(bytes4)(address)\" 0x91bfbd87 --block 26440112 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "0x0651b2A5Ce8eE9A861cd93C768fBe13a7771de1b"
+        },
+        "txSaverExecutorAdminVault": {
+          "castCommands": [
+            "cast call 0x0651b2A5Ce8eE9A861cd93C768fBe13a7771de1b \"adminVault()(address)\" --block 26440112 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x0651b2A5Ce8eE9A861cd93C768fBe13a7771de1b \"adminVault()(address)\" --block 26440112 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "0xCCf3d848e08b94478Ed8f46fFead3008faF581fD"
+        },
+        "dfsRegistryBotAuth": {
+          "castCommands": [
+            "cast call 0x287778F121F134C66212FB16c9b53eC991D32f5b \"getAddr(bytes4)(address)\" 0xa267eb4d --block 26440112 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x287778F121F134C66212FB16c9b53eC991D32f5b \"getAddr(bytes4)(address)\" 0xa267eb4d --block 26440112 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "0x537a021F3647a64A5a1FEFB7C4D5a5A6DCaE6b9f"
+        },
+        "botAuthAdminVault": {
+          "castCommands": [
+            "cast call 0x537a021F3647a64A5a1FEFB7C4D5a5A6DCaE6b9f \"adminVault()(address)\" --block 26440112 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x537a021F3647a64A5a1FEFB7C4D5a5A6DCaE6b9f \"adminVault()(address)\" --block 26440112 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "0xCCf3d848e08b94478Ed8f46fFead3008faF581fD"
+        },
+        "subStorageAdminVault": {
+          "castCommands": [
+            "cast call 0x1612fc28Ee0AB882eC99842Cde0Fc77ff0691e90 \"adminVault()(address)\" --block 26440112 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x1612fc28Ee0AB882eC99842Cde0Fc77ff0691e90 \"adminVault()(address)\" --block 26440112 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "0xCCf3d848e08b94478Ed8f46fFead3008faF581fD"
+        },
+        "dfsProxyRegistryV2AdminVault": {
+          "castCommands": [
+            "cast call 0x0cCB1F91beb8590949880D2a61C26C11d6280319 \"adminVault()(address)\" --block 26440112 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x0cCB1F91beb8590949880D2a61C26C11d6280319 \"adminVault()(address)\" --block 26440112 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "0xCCf3d848e08b94478Ed8f46fFead3008faF581fD"
+        }
+      }
+    }
+  },
+  "docsUrl": "https://docs.defisaver.com/protocol/security-and-audits/admin-access-control",
+  "docsQuote": "Automation contracts are upgradeable, with any upgrades being locked behind a 24h timelock which can be activated by a 2/3 multisig (Admin) with actual upgrades initiable by a different 3/5 multisig (Owner).",
+  "tvlUsd": 198925450.0,
+  "tvlReference": "https://api.llama.fi/protocol/defi-saver",
+  "apache2CommercialGrant": true,
+  "rulesAccepted": [
+    true,
+    true,
+    true,
+    true
+  ]
+}

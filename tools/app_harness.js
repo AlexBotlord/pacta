@@ -155,7 +155,8 @@ function run(tree, app, loc) {
     addEventListener: (t, fn) => { (winListeners[t] = winListeners[t] || []).push(fn); }, isSecureContext: false, location,
     scrollY: 0, innerHeight: 800
   };
-  Object.assign(window, loc.win || {});   // v5.0: window.ethereum (checkout wallet mock), pactaRescued (404 rescue)
+  Object.assign(window, loc.win || {});
+  location.replace = (u) => { location.replaced = String(u); };   // v2: the /request/ ?tier= forward   // v5.0: window.ethereum (checkout wallet mock), pactaRescued (404 rescue)
   // navigator.sendBeacon is a recording mock (no network); loc.nav overrides it (e.g. doNotTrack, or no sendBeacon at all)
   const beacons = [];
   const navigator = Object.assign({ sendBeacon: (url, body) => { beacons.push({ url, body }); return true; } }, loc.nav || {});
@@ -495,15 +496,17 @@ async function beaconScenario() {
     res.b_cta_aligned_maintenance = same(al.kinds, ["continuous", "continuous_invoice"]) && same(al.events, ["cta_click", "cta_click"]);
     if (input.clearanceProtocol) {
       const cl = ctaClicks(input.clearanceProtocol, "/protocols/" + input.clearanceSlug + "/");
-      res.b_cta_clearance_protocol = same(cl.kinds, ["free_notify", "clearance", "clearance_invoice"]) && same(cl.events, ["cta_click", "cta_click", "cta_click"]);
+      res.b_cta_clearance_protocol = same(cl.kinds, ["seal_99", "scan_19", "free_notify", "clearance", "clearance_invoice"])
+        && same(cl.events, ["cta_click", "cta_click", "cta_click", "cta_click", "cta_click"]);
     }
     if (input.brief) {
       const br = ctaClicks(input.brief, "/briefs/" + input.briefSlug + "/");
       res.b_cta_clearance_brief = same(br.kinds, ["free_notify", "clearance", "clearance_invoice"]) && same(br.events, ["cta_click", "cta_click", "cta_click"]);
     }
     const hp = ctaClicks(input.index, "/");
-    res.b_cta_pricing = same(hp.kinds, ["pricing_community", "pricing_rapid_500", "pricing_clearance", "pricing_continuous", "pricing_api_sla"])
-      && same(hp.events, ["cta_click", "cta_click", "cta_click", "cta_click", "cta_click"]);
+    res.b_cta_pricing = same(hp.kinds, ["pricing_free", "pricing_mcp", "pricing_scan_19", "pricing_webhook_49", "pricing_seal_99",
+                                        "pricing_clearance", "pricing_continuous", "pricing_community", "pricing_api_sla"])
+      && hp.events.length === 9 && hp.events.every((e) => e === "cta_click");
   }
   // 404: not_found_404 instead of page_load; paths are redacted to a closed canonical set BEFORE transmission
   // (Phase C.1): only /protocols/<safe-slug>/ keeps its slug (and t); anything else is "/404"; IP / local referrers are dropped
@@ -591,13 +594,14 @@ function rescueScenario() {
     return [to, w.pactaRescued === 1];
   };
   const ok = [["/scorecards/utm_source=x&utm_medium=paid&utm_campaign=d2", "", "", "/scorecards/?utm_source=x&utm_medium=paid&utm_campaign=d2"],
-    ["/website-test/request/tier=seal-99", "", "", "/website-test/request/?tier=seal-99"], ["/protocols/aave-v3-gho/ref=x", "", "", "/protocols/aave-v3-gho/?ref=x"],
+    ["/website-test/request/tier=seal-99", "", "", "/website-test/request/?tier=seal-99"],
+    ["/public/web/option-b-v2/seal/tier=seal-99", "", "", "/public/web/option-b-v2/seal/?tier=seal-99"], ["/protocols/aave-v3-gho/ref=x", "", "", "/protocols/aave-v3-gho/?ref=x"],
     ["/scan/utm_campaign=launch", "?b=1", "#checkout", "/scan/?utm_campaign=launch&b=1#checkout"], ["/seal/tier=seal-99", "", "", "/seal/?tier=seal-99"],
     ["/webhook/utm_source=x", "", "", "/webhook/?utm_source=x"], ["/methodology/ref=hn", "", "", "/methodology/?ref=hn"],
     ["/leaderboard/utm_source=x", "", "", "/leaderboard/?utm_source=x"], ["/protocols/utm_source=x", "", "", "/protocols/?utm_source=x"]];
   res.r_rescues_known_routes = ok.every(([p_, s_, h_, want]) => { const [to, flag] = go(p_, s_, h_); return to === want && flag; });
   const no = ["/scorecards/foo=1", "/evil/utm_source=x", "/scorecards/utm_source=", "//evil.example/scorecards/utm_source=x", "/scorecards/",
-    "/protocols/Aave/utm_source=x", "/pricing/utm_source=x", "/scorecards/x/utm_source=y", "/website-test/evil/utm_source=x", "/scorecardsutm_source=x"];
+    "/protocols/Aave/utm_source=x", "/pricing/utm_source=x", "/scorecards/x/utm_source=y", "/website-test/evil/utm_source=x", "/public/web/other/scan/utm_source=x", "/scorecardsutm_source=x"];
   res.r_leaves_everything_else = no.every((p_) => { const [to, flag] = go(p_); return to === null && !flag; });
 }
 // (p) Option B self-serve checkout (#checkout): closed SKU enum, exact EIP-681 transfer links, validation before any request, the
@@ -1292,6 +1296,187 @@ async function v45Scenario() {
     && out.textContent.includes("Heuristic score") && !out.textContent.includes("Risk score");
 }
 
+// (q) Option B v2: one product per page (/scan/, /webhook/, /seal/): exact amount + EIP-681 link, ONE primary action (a browser-wallet
+//     transfer, or the manual drawer without a wallet), the order frozen at Pay, every control locked in flight, the API's order codes
+async function checkoutScenario() {
+  const C = input.checkout;
+  if (!C || !input.scan || !input.webhook || !input.seal) { res.co_error = "no checkout input"; return; }
+  const eip = (a) => "ethereum:" + C.usdc + "@8453/transfer?address=" + C.treasury + "&uint256=" + a;
+  const pad = (h) => h.padStart(64, "0");
+  const ADDR = "0x" + "12".repeat(20), TXH = "0x" + "cd".repeat(32);
+  const submit = (d) => { const ev = new Event_("submit"); d.getElementById("co-form").dispatchEvent(ev); return ev; };
+  const setv = (d, id, v) => { d.getElementById(id).value = v; };
+  const page = (tree, path, o) => run(tree, input.app, Object.assign({ path }, o || {}));
+  let calls = [];
+  const okFetch = (status, body) => (url, opts) => {
+    calls.push([url, opts]);
+    return Promise.resolve({ status, ok: status === 200, text: () => Promise.resolve(typeof body === "string" ? body : JSON.stringify(body)),
+                             json: () => Promise.resolve(typeof body === "string" ? {} : body) });
+  };
+  const shape = (d, sku) => {
+    const f = d.getElementById("co-form"), m = d.getElementById("co-manual");
+    return f.getAttribute("data-sku") === sku && d.querySelectorAll('input[name="sku"]').length === 0
+      && d.querySelector("[data-co-amount]").textContent === C.amounts[sku] + " USDC"
+      && d.querySelector("[data-co-eip681]").getAttribute("href") === eip(C.skus[sku])
+      && d.getElementById("co-wallet").hidden === false && !m.hasAttribute("open") && d.getElementById("co-result").hidden === true;
+  };
+  res.co_single_sku_pages = shape(page(input.scan, "/scan/").document, "instant-scan-19") && shape(page(input.webhook, "/webhook/").document, "radar-webhook-49")
+    && shape(page(input.seal, "/seal/").document, "reverify-seal-99");
+  // no browser wallet: the primary action checks the order first, then opens the manual transfer drawer (never a dead button)
+  calls = [];
+  let p = page(input.scan, "/scan/", { fetch: okFetch(200, {}) }), d = p.document;
+  click(d.getElementById("co-wallet"));
+  const blocked = !d.getElementById("co-manual").hasAttribute("open") && d.getElementById("co-target-err").hidden === false;
+  setv(d, "pf-address", ADDR); click(d.getElementById("co-wallet"));
+  res.co_no_wallet_opens_drawer = blocked && d.getElementById("co-manual").hasAttribute("open")
+    && /No browser wallet/.test(d.getElementById("co-status").textContent) && calls.length === 0;
+  // /scan/: an example chip fills the scanner and runs the free live check; the order then uses that target
+  calls = [];
+  p = page(input.scan, "/scan/", { fetch: okFetch(200, { order_id: "ord_chip" }) }); d = p.document;
+  const chip = d.querySelectorAll("[data-receipt]")[0], chipAddr = chip.getAttribute("data-pf-address");
+  click(chip); await flush(); await flush();
+  const pfCall = calls.find((c) => /\/v1\/check\/preflight\?/.test(String(c[0])));
+  setv(d, "co-tx", TXH); submit(d); await flush(); await flush();
+  const post = calls.find((c) => c[0] === C.api);
+  res.co_scan_chip_previews_and_orders = d.getElementById("pf-address").value === chipAddr && !!pfCall && String(pfCall[0]).includes(chipAddr)
+    && !!post && JSON.parse(post[1].body).target_address === chipAddr && JSON.parse(post[1].body).sku === "instant-scan-19";
+  // the exact contract body; the result is text only
+  calls = [];
+  const okBody = { order_id: "ord_harness_1", status: "verified <img src=x onerror=alert(1)>", report: { proxy_admin: "0x" + "ef".repeat(20) } };
+  p = page(input.scan, "/scan/", { fetch: okFetch(200, okBody) }); d = p.document;
+  setv(d, "pf-chain", "base"); setv(d, "pf-address", ADDR); setv(d, "co-docs", "https://docs.example.invalid"); setv(d, "co-contact", "@harness"); setv(d, "co-tx", TXH);
+  submit(d); await flush(); await flush();
+  const b0 = calls[0] ? JSON.parse(calls[0][1].body) : null;
+  res.co_verify_posts_exact_body = calls.length === 1 && calls[0][0] === C.api && calls[0][1].method === "POST"
+    && same(b0, { sku: "instant-scan-19", tx_hash: TXH, chain: "base", target_chain: "base", target_address: ADDR, protocol_or_docs: "https://docs.example.invalid", webhook_or_contact: "@harness" });
+  const out = d.getElementById("co-result"), payA = out.querySelector("[data-co-r-pay] a");
+  res.co_result_text_only = out.hidden === false && d.querySelector("[data-co-r-order]").textContent === "ord_harness_1"
+    && d.querySelector("[data-co-r-status]").textContent.includes("<img src=x") && out.querySelectorAll("img").length === 0
+    && d.getElementById("co-json").textContent.includes('"proxy_admin"') && !!payA && payA.getAttribute("href") === "https://basescan.org/tx/" + TXH;
+  // the Worker's order codes: poll codes keep the order locked and waiting; final codes unlock with a specific message
+  const codeRun = async (status, error) => {
+    calls = [];
+    const q = page(input.scan, "/scan/", { fetch: okFetch(status, error === null ? "Not Found" : { error }) }), qd = q.document;
+    setv(qd, "pf-address", ADDR); setv(qd, "co-tx", TXH); submit(qd); await flush(); await flush();
+    return { st: qd.getElementById("co-status").textContent, locked: qd.getElementById("co-verify").disabled === true, shown: qd.getElementById("co-result").hidden === false, n: calls.length };
+  };
+  const polls = [[425, "tx_not_confirmed"], [404, "tx_not_found"], [502, "order_rpc_unavailable"], [503, "order_not_recorded"], [503, "report_unavailable"], [409, "payment_in_progress"]];
+  const finals = [[402, "insufficient_amount", /below the price/], [402, "tx_failed", /failed on Base/], [409, "providers_disagree", /disagree/],
+    [409, "tx_already_used", /already unlocked/], [400, "invalid_order", /refused the request/], [503, "orders_unavailable", /unavailable right now/],
+    [404, null, /not available yet/]];
+  let pollsOk = true, finalsOk = true;
+  for (const [st_, er_] of polls) { const r_ = await codeRun(st_, er_); pollsOk = pollsOk && r_.n === 1 && r_.locked && !r_.shown && /Waiting for Base/.test(r_.st); }
+  for (const [st_, er_, re_] of finals) { const r_ = await codeRun(st_, er_); finalsOk = finalsOk && r_.n === 1 && !r_.locked && !r_.shown && re_.test(r_.st); }
+  res.co_contract_codes = pollsOk && finalsOk;
+  p = page(input.scan, "/scan/", { fetch: () => Promise.reject(new Error("offline")) }); d = p.document;
+  setv(d, "pf-address", ADDR); setv(d, "co-tx", TXH); submit(d); await flush(); await flush();
+  res.co_errors_reported = /Could not reach the verifier/.test(d.getElementById("co-status").textContent) && d.getElementById("co-result").hidden === true;
+  // wallet (/seal/): switch to Base, ONE eth_sendTransaction = USDC.transfer(treasury, exact amount), then the frozen order is verified
+  const wcalls = [];
+  let chain = "0x1";
+  const eth = { request: (a) => {
+    wcalls.push(a);
+    if (a.method === "eth_requestAccounts") return Promise.resolve(["0x" + "ab".repeat(20)]);
+    if (a.method === "eth_chainId") return Promise.resolve(chain);
+    if (a.method === "wallet_switchEthereumChain") { chain = a.params[0].chainId; return Promise.resolve(null); }
+    if (a.method === "eth_sendTransaction") return Promise.resolve(TXH);
+    return Promise.reject(Object.assign(new Error("unexpected"), { code: -1 }));
+  } };
+  calls = [];
+  p = page(input.seal, "/seal/", { win: { ethereum: eth }, fetch: okFetch(200, { order_id: "ord_w" }) }); d = p.document;
+  setv(d, "co-target", ADDR); setv(d, "co-contact", "@team"); click(d.getElementById("co-wallet"));
+  for (let i = 0; i < 8; i++) await flush();
+  const send = wcalls.find((a) => a.method === "eth_sendTransaction");
+  const want = "0xa9059cbb" + pad(C.treasury.slice(2).toLowerCase()) + pad(C.skus["reverify-seal-99"].toString(16));
+  const body1 = calls[0] ? JSON.parse(calls[0][1].body) : {};
+  res.co_wallet_transfer_only = wcalls.some((a) => a.method === "wallet_switchEthereumChain" && a.params[0].chainId === "0x2105")
+    && !!send && same(send.params, [{ from: "0x" + "ab".repeat(20), to: C.usdc, value: "0x0", data: want }])
+    && wcalls.filter((a) => a.method === "eth_sendTransaction").length === 1 && !wcalls.some((a) => /approve|allowance|sign/i.test(a.method))
+    && d.getElementById("co-tx").value === TXH && calls.length === 1 && body1.tx_hash === TXH && body1.sku === "reverify-seal-99"
+    && body1.target_address === ADDR && body1.webhook_or_contact === "@team";
+  const eth2 = { request: (a) => a.method === "eth_sendTransaction" ? Promise.reject(Object.assign(new Error("denied"), { code: 4001 })) : eth.request(a) };
+  chain = "0x2105"; calls = [];
+  p = page(input.scan, "/scan/", { win: { ethereum: eth2 }, fetch: okFetch(200, {}) }); d = p.document;
+  setv(d, "pf-address", ADDR); click(d.getElementById("co-wallet")); for (let i = 0; i < 8; i++) await flush();
+  res.co_wallet_cancel_sends_nothing = calls.filter((c) => c[0] === C.api).length === 0 && /Cancelled in the wallet/.test(d.getElementById("co-status").textContent)
+    && d.getElementById("co-wallet").disabled === false && d.getElementById("pf-address").disabled === false;
+  // one payment at a time, and the order frozen at Pay: while the prompt is open every control is locked (the scanner, the chips and
+  // the order fields too); a forced change during the prompt never reaches the POST; everything unlocks once it settles
+  let release;
+  const gate = new Promise((r) => { release = r; });
+  const wc3 = [];
+  const eth3 = { request: (a) => {
+    wc3.push(a.method);
+    if (a.method === "eth_requestAccounts") return gate.then(() => ["0x" + "ab".repeat(20)]);
+    if (a.method === "eth_chainId") return Promise.resolve("0x2105");
+    if (a.method === "eth_sendTransaction") return Promise.resolve(TXH);
+    return Promise.reject(new Error("unexpected"));
+  } };
+  calls = [];
+  p = page(input.scan, "/scan/", { win: { ethereum: eth3 }, fetch: okFetch(200, { order_id: "ord_once" }) }); d = p.document;
+  setv(d, "pf-address", ADDR); setv(d, "co-docs", "https://docs.example.invalid/a"); setv(d, "co-contact", "@harness");
+  const w3 = d.getElementById("co-wallet");
+  click(w3); await flush(); click(w3); click(w3); await flush();
+  const ids3 = ["co-wallet", "co-verify", "pf-address", "pf-chain", "pf-submit", "co-docs", "co-contact", "co-tx"];
+  const locked3 = ids3.every((id) => d.getElementById(id).disabled === true) && d.querySelectorAll("[data-receipt]").every((b) => b.disabled === true);
+  setv(d, "pf-address", "0x" + "99".repeat(20)); setv(d, "co-docs", "https://evil.example.invalid"); setv(d, "co-contact", "@other");
+  setv(d, "co-tx", TXH); submit(d); await flush();
+  const noVerifyDuring = calls.filter((c) => c[0] === C.api).length === 0;
+  release(); for (let i = 0; i < 8; i++) await flush();
+  const posts3 = calls.filter((c) => c[0] === C.api), b3 = posts3[0] ? JSON.parse(posts3[0][1].body) : {};
+  res.co_wallet_single_flight = locked3 && noVerifyDuring && wc3.filter((m) => m === "eth_requestAccounts").length === 1
+    && wc3.filter((m) => m === "eth_sendTransaction").length === 1 && posts3.length === 1
+    && ids3.every((id) => d.getElementById(id).disabled === false) && d.getElementById("co-result").hidden === false;
+  res.co_snapshot_and_inputs_locked = locked3 && posts3.length === 1
+    && same(b3, { sku: "instant-scan-19", tx_hash: TXH, chain: "base", target_chain: "ethereum", target_address: ADDR, protocol_or_docs: "https://docs.example.invalid/a", webhook_or_contact: "@harness" });
+  // /webhook/: quick picks fill the timelock / Safe and the protocol; the destination is required and must be https; empty fields stay out
+  calls = [];
+  p = page(input.webhook, "/webhook/", { fetch: okFetch(200, { order_id: "ord_w49" }) }); d = p.document;
+  const picks = d.querySelectorAll("[data-co-pick]");
+  const ethena = picks.find((b) => b.textContent === "Ethena"), aave = picks.find((b) => b.textContent === "Aave v3");
+  click(ethena);
+  const ethOk = /^0x[0-9a-fA-F]{40}$/.test(ethena.getAttribute("data-address")) && d.getElementById("co-target").value === ethena.getAttribute("data-address")
+    && d.getElementById("co-docs").value === ethena.getAttribute("data-protocol") && ethena.getAttribute("aria-pressed") === "true";
+  // one visible target field: the pick shows the protocol name (never a hex) and the short controller in the hint; typing an
+  // address or a name fills exactly one of the two hidden order fields; a bad address is reported on the visible field
+  const watchEl = d.getElementById("co-watch"), hintEl = d.querySelector("[data-co-watch-hint]");
+  const watchPick = !!watchEl && watchEl.value === ethena.getAttribute("data-protocol") && !/0x[0-9a-fA-F]{40}/.test(watchEl.value)
+    && hintEl.textContent.indexOf(ethena.getAttribute("data-address").slice(0, 6) + "…") !== -1;
+  setField(d, "co-watch", ADDR);
+  const typedAddr = d.getElementById("co-target").value === ADDR && d.getElementById("co-docs").value === "" && ethena.getAttribute("aria-pressed") === "false";
+  setField(d, "co-watch", "Morpho");
+  const typedName = d.getElementById("co-target").value === "" && d.getElementById("co-docs").value === "Morpho";
+  setField(d, "co-watch", "0x12"); setv(d, "co-contact", "https://hooks.example.invalid/x"); setv(d, "co-tx", TXH); submit(d); await flush();
+  const badAddr = calls.length === 0 && d.getElementById("co-target-err").hidden === false && watchEl.getAttribute("aria-invalid") === "true";
+  res.co_webhook_single_target = watchPick && typedAddr && typedName && badAddr
+    && d.getElementById("co-target").getAttribute("type") === "hidden" && d.getElementById("co-docs").getAttribute("type") === "hidden";
+  click(aave);
+  const aaveOk = d.getElementById("co-target").value === "" && d.getElementById("co-docs").value === aave.getAttribute("data-protocol") && ethena.getAttribute("aria-pressed") === "false";
+  setv(d, "co-contact", "http://hooks.example.invalid/x"); setv(d, "co-tx", TXH); submit(d); await flush();
+  const httpRefused = calls.length === 0 && d.getElementById("co-contact-err").hidden === false;
+  setv(d, "co-contact", ""); submit(d); await flush();
+  const contactNeeded = calls.length === 0 && /alerts should go/.test(d.getElementById("co-contact-err").textContent);
+  setv(d, "co-contact", "https://hooks.example.invalid/x"); submit(d); await flush(); await flush();
+  res.co_webhook_picks_and_rules = ethOk && aaveOk && httpRefused && contactNeeded && calls.length === 1
+    && same(JSON.parse(calls[0][1].body), { sku: "radar-webhook-49", tx_hash: TXH, chain: "base", target_chain: "ethereum", protocol_or_docs: aave.getAttribute("data-protocol"),
+                                             webhook_or_contact: "https://hooks.example.invalid/x" });
+  // /seal/?protocol=<slug> (the protocol pages' seal link): the indexed contract and name come from the public catalog
+  const lkFetch = (url) => {
+    const u = String(url);
+    if (/api\/v1\/lookup\.json$/.test(u)) return Promise.resolve({ status: 200, ok: true, json: () => Promise.resolve(input.lookupJson) });
+    if (/api\/v1\/scorecards\.json$/.test(u)) return Promise.resolve({ status: 200, ok: true, json: () => Promise.resolve(input.scorecardsJson) });
+    return Promise.reject(new Error("not needed"));
+  };
+  p = page(input.seal, "/seal/", { search: "?protocol=stader-labs-ethx", fetch: lkFetch }); d = p.document;
+  for (let i = 0; i < 4; i++) await flush();
+  const stx = input.lookupJson.items.find((i) => i.slug === "stader-labs-ethx");
+  res.co_seal_protocol_prefill = d.getElementById("co-target").value === stx.preflightArgs.address && d.getElementById("co-docs").value === stx.name;
+  // /request/?tier=seal-99 forwards to the seal page (keeping the protocol); an enterprise tier stays on /request/
+  const lr = run(input.request, input.app, { path: "/request/", search: "?tier=seal-99&protocol=stader-labs-ethx" });
+  const lr2 = run(input.request, input.app, { path: "/request/", search: "?tier=clearance" });
+  res.co_request_launcher_forward = lr.location.replaced === "../seal/?protocol=stader-labs-ethx" && !lr2.location.replaced
+    && lr.document.querySelectorAll("[data-launcher] a").length === 3;
+}
 (async () => {
   try { await v45Scenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await requestBriefScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
@@ -1305,6 +1490,7 @@ async function v45Scenario() {
   try { await staleResponseScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await beaconScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { rescueScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
+  try { await checkoutScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await liveTimelockScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await lateLivePayloadScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await basePathScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }

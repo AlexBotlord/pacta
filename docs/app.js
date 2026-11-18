@@ -1057,6 +1057,236 @@ if ((a.getAttribute("href") || "").charAt(0) === "#") { preselect(a.getAttribute
 prefill(readPrefill(location.search));
 update();
 }
+var CO_TREASURY = "0x4348DF1BEFAffcbA248B5118B1b782B1B2bdEd14", CO_USDC = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", CO_CHAIN = "0x2105";
+var CO_SKU = {
+"instant-scan-19": { atomic: 19000000, amount: "19.00", route: "scan", label: "Instant Contract & Safe Deep-Scan", needTarget: true, needContact: false },
+"radar-webhook-49": { atomic: 49000000, amount: "49.00", route: "webhook", label: "Live Timelock & Signer Webhook", needTarget: false, needContact: true,
+contactMissing: "Enter where the alerts should go." },
+"reverify-seal-99": { atomic: 99000000, amount: "99.00", route: "seal", label: "24h Mainnet Control-Plane Seal", needTarget: true, needContact: true,
+contactMissing: "Enter a team contact so the verifiers can reach you." }
+};
+var CO_TIER = { "instant-19": "instant-scan-19", "webhook-49": "radar-webhook-49", "seal-99": "reverify-seal-99" };
+var CO_ERR = {
+tx_already_used: "This transaction hash already unlocked another order.",
+insufficient_amount: "The transfer is below the price. Send the exact amount shown, to the treasury shown.",
+tx_failed: "That transaction failed on Base.",
+providers_disagree: "Two Base RPC providers disagree about this transaction. Wait a minute, then press Verify again.",
+tx_not_found: "Base has not indexed this transaction yet. Wait a minute, then press Verify again with the same hash.",
+tx_not_confirmed: "The transaction is not confirmed on Base yet. Wait a minute, then press Verify again with the same hash.",
+order_rpc_unavailable: "Base RPC providers did not answer. Press Verify again in a minute with the same hash.",
+report_unavailable: "Your payment is recorded; the order is not finished yet. Press Verify again with the same hash.",
+order_not_recorded: "Your payment is recorded; the order is not finished yet. Press Verify again with the same hash.",
+order_not_settled: "Your payment is recorded; the order is not finished yet. Press Verify again with the same hash.",
+orders_unavailable: "Checkout verification is unavailable right now. Keep the transaction hash and send it through the request form.",
+invalid_order: "The verifier refused the request. Check the fields above.",
+rate_limited: "Too many attempts. Wait a minute, then try again."
+};
+var CO_RETRY = /^(tx_not_found|tx_not_confirmed|order_rpc_unavailable|report_unavailable|order_not_recorded|order_not_settled|payment_in_progress)$/;
+var CO_ADDR = /^0x[0-9a-fA-F]{40}$/;
+function coSkuFrom(search) {
+var q, t, s;
+try { q = new URLSearchParams(search || ""); } catch (e) { return ""; }
+t = q.get("tier"); s = q.get("sku");
+return own(CO_TIER, t) ? CO_TIER[t] : own(CO_SKU, s) ? s : own(CO_SKU, t) ? t : "";
+}
+function coPad(hex) { return ("0000000000000000000000000000000000000000000000000000000000000000" + hex).slice(-64); }
+function coTransferData(atomic) { return "0xa9059cbb" + coPad(CO_TREASURY.slice(2).toLowerCase()) + coPad(Number(atomic).toString(16)); }
+function coContactOk(v) {
+if (!v) return true;
+if (/^[a-z][a-z0-9+.-]*:/i.test(v)) { try { var u = new URL(v); return u.protocol === "https:" && !u.username && !u.password && !!u.hostname; } catch (e) { return false; } }
+return v.length <= 200;
+}
+function initCheckout() {
+var form = $("#co-form"); if (!form) return;
+var k = form.getAttribute("data-sku"); if (!own(CO_SKU, k)) return;
+var s = CO_SKU[k], api = form.getAttribute("data-api") || "", st = $("#co-status"), res = $("#co-result"), btn = $("#co-verify"), wal = $("#co-wallet");
+var drawer = $("#co-manual"), spin = btn ? $(".spinner", btn) : null, busy = false, report = null, pfF = $("#pf-form");
+function fld(n) {
+var x = form.elements[n];
+if (x) return x;
+if (pfF && n === "target_address") return $('input[name="address"]', pfF);
+if (pfF && n === "target_chain") return $('select[name="chain"]', pfF);
+return null;
+}
+function val(n) { var x = fld(n); return x ? String(x.value || "").trim() : ""; }
+var watch = $("#co-watch", form), watchHint = $("[data-co-watch-hint]", form), watchTip = watchHint ? watchHint.textContent : "";
+function syncWatch() {
+var v = String(watch.value || "").trim(), t = fld("target_address"), d = fld("protocol_or_docs");
+if (/^0x/i.test(v)) { if (t) t.value = v; if (d) d.value = ""; }
+else { if (t) t.value = ""; if (d) d.value = cleanText(v, 80); }
+$$("[data-co-pick]", form).forEach(function (o) { o.setAttribute("aria-pressed", "false"); });
+if (watchHint) watchHint.textContent = watchTip;
+}
+if (watch) watch.addEventListener("input", syncWatch);
+function err(inp, errId, text) {
+var m = $("#" + errId);
+if (m) { m.textContent = text || ""; m.hidden = !text; }
+if (inp) { if (text) inp.setAttribute("aria-invalid", "true"); else inp.removeAttribute("aria-invalid"); }
+}
+function status(text, bad) { if (st) { st.textContent = text || ""; if (bad) st.setAttribute("data-bad", ""); else st.removeAttribute("data-bad"); } }
+function lockables() {
+return [btn, wal].concat($$("input, select, textarea", form)).concat(pfF ? $$("input, select, button", pfF) : []).concat($$("[data-receipt], [data-co-pick]"));
+}
+function setBusy(on) {
+busy = on;
+lockables().forEach(function (x) { if (x) x.disabled = on; });
+if (btn) { if (on) btn.setAttribute("aria-busy", "true"); else btn.removeAttribute("aria-busy"); }
+if (spin) spin.hidden = !on;
+}
+function clearResult() { if (res) res.hidden = true; report = null; }
+function validate(needTx) {
+var t = val("target_address"), d = val("protocol_or_docs"), c = val("webhook_or_contact"), tx = val("tx_hash"), ok = true;
+var tErr = t ? (CO_ADDR.test(t) ? "" : "Enter a 0x address: 0x followed by 40 hexadecimal characters.")
+: s.needTarget ? "Enter the contract or Safe address." : (d ? "" : "Pick a protocol, or enter a timelock or Safe address.");
+var cErr = c ? (coContactOk(c) ? "" : "Use an https:// webhook URL, an email or a @handle.") : s.needContact ? s.contactMissing : "";
+var xErr = needTx ? (TX_RE.test(tx) ? "" : (tx ? "A Base transaction hash is 0x followed by 64 hexadecimal characters." : "Paste the Base transaction hash of your payment.")) : "";
+var tIn = watch || fld("target_address"), cIn = fld("webhook_or_contact"), xIn = fld("tx_hash");
+err(tIn, "co-target-err", tErr); err(cIn, "co-contact-err", cErr); err(xIn, "co-tx-err", xErr);
+[[tIn, tErr], [cIn, cErr], [xIn, xErr]].some(function (p) { if (p[1]) { if (p[0] && p[0].focus) p[0].focus(); ok = false; return true; } return false; });
+return ok;
+}
+function body() {
+var o = { sku: k, tx_hash: val("tx_hash"), chain: "base", target_chain: val("target_chain") === "base" ? "base" : "ethereum" };
+var t = val("target_address"), d = cleanText(val("protocol_or_docs"), 200), c = cleanText(val("webhook_or_contact"), 200);
+if (t) o.target_address = t;
+if (d) o.protocol_or_docs = d;
+if (c) o.webhook_or_contact = c;
+return o;
+}
+function coError(code, http) {
+var c = /^[a-z0-9_]{1,40}$/.test(code || "") ? code : "";
+return CO_ERR[c] || (http === 404 && !c ? "The verifier is not available yet. Keep the transaction hash and send it through the request form."
+: "Not verified (HTTP " + http + (c ? ", " + c : "") + "). Keep the transaction hash and try again.");
+}
+function row(sel, kids) { var d = $(sel, res); if (!d) return; d.textContent = ""; [].concat(kids).forEach(function (x) { d.appendChild(typeof x === "string" ? document.createTextNode(x) : x); }); }
+function render(j, b) {
+var order = j.order_id || j.orderId || j.id || "", stx = String(j.status || "verified");
+report = j;
+row("[data-co-r-order]", String(order || "—").slice(0, 80));
+row("[data-co-r-sku]", s.label + " · " + s.amount + " USDC");
+row("[data-co-r-pay]", [arrowLink({ href: "https://basescan.org/tx/" + b.tx_hash, target: "_blank", rel: "noopener" }, "tx " + short(b.tx_hash, 6, 4), "up-right")]);
+row("[data-co-r-status]", stx.slice(0, 60));
+var pre = $("#co-json"); if (pre) pre.textContent = JSON.stringify(j, null, 2);
+if (res) { res.hidden = false; if (res.focus) res.focus(); }
+status("Verified. Your result is below.");
+}
+function verify(retries) {
+if (busy || !validate(true)) return;
+var order = body();
+setBusy(true); clearResult(); attempt(order, retries);
+}
+function attempt(b, retries) {
+var ctl = typeof AbortController === "function" ? new AbortController() : null, guard = 0;
+status("Checking the payment on Base…");
+if (ctl) guard = setTimeout(function () { ctl.abort(); }, 75000);
+var opts = { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(b) };
+if (ctl) opts.signal = ctl.signal;
+fetch(api, opts).then(function (r) {
+return r.text().then(function (t) { var j = null; try { j = JSON.parse(t); } catch (e) { j = null; } return { s: r.status, j: j }; });
+}).then(function (x) {
+clearTimeout(guard);
+if (x.s === 200 && x.j && typeof x.j === "object") { setBusy(false); render(x.j, b); return; }
+var code = x.j && typeof x.j.error === "string" ? x.j.error : "";
+if (retries > 0 && (x.s === 202 || x.s === 425 || CO_RETRY.test(code))) {
+status("Waiting for Base to confirm the transaction…");
+setTimeout(function () { attempt(b, retries - 1); }, 4000);
+return;
+}
+setBusy(false); status(coError(code, x.s), true);
+}).catch(function () {
+clearTimeout(guard); setBusy(false);
+status("Could not reach the verifier. Your payment is safe: keep the transaction hash and try again, or send it through the request form.", true);
+});
+}
+function pay(eth) {
+if (busy || !validate(false)) return;
+var order = body(), from = "";
+setBusy(true);
+status("Confirm the transfer of exactly " + s.amount + " USDC on Base in your wallet…");
+eth.request({ method: "eth_requestAccounts" }).then(function (a) {
+from = a && a[0] ? String(a[0]) : "";
+if (!CO_ADDR.test(from)) throw new Error("no account");
+return eth.request({ method: "eth_chainId" });
+}).then(function (c) {
+if (String(c).toLowerCase() === CO_CHAIN) return c;
+return eth.request({ method: "wallet_switchEthereumChain", params: [{ chainId: CO_CHAIN }] }).then(function () { return eth.request({ method: "eth_chainId" }); });
+}).then(function (c) {
+if (String(c).toLowerCase() !== CO_CHAIN) throw new Error("wrong chain");
+return eth.request({ method: "eth_sendTransaction", params: [{ from: from, to: CO_USDC, value: "0x0", data: coTransferData(s.atomic) }] });
+}).then(function (h) {
+if (!TX_RE.test(String(h || ""))) throw new Error("no hash");
+var t = fld("tx_hash"); if (t) t.value = String(h);
+status("Transfer sent. Waiting for Base to confirm…");
+order.tx_hash = String(h);
+clearResult(); attempt(order, 15);
+}).catch(function (e) {
+var code = e && e.code;
+setBusy(false);
+status(code === 4001 ? "Cancelled in the wallet. Nothing was sent."
+: code === 4902 ? "Add Base (chain 8453) to your wallet, or pay with the manual transfer below."
+: "The wallet did not send the transfer. You can pay with the manual transfer below.", true);
+});
+}
+function manual() {
+if (busy || !validate(false)) return;
+if (drawer) { drawer.setAttribute("open", ""); try { drawer.scrollIntoView({ block: "nearest" }); } catch (e) {  } }
+status("No browser wallet here. Send exactly " + s.amount + " USDC on Base to the address below, then paste the transaction hash.");
+var t = fld("tx_hash"); if (t && t.focus) t.focus();
+}
+if (wal) wal.addEventListener("click", function () {
+var eth = window.ethereum;
+if (eth && typeof eth.request === "function") pay(eth); else manual();
+});
+form.addEventListener("submit", function (ev) { ev.preventDefault(); verify(5); });
+$$("[data-co-pick]", form).forEach(function (b) {
+b.addEventListener("click", function () {
+if (busy) return;
+var ch = fld("target_chain"), t = fld("target_address"), d = fld("protocol_or_docs"), a = b.getAttribute("data-address") || "";
+if (ch) ch.value = b.getAttribute("data-chain") === "base" ? "base" : "ethereum";
+if (t) t.value = CO_ADDR.test(a) ? a : "";
+if (d) d.value = cleanText(b.getAttribute("data-protocol"), 80);
+if (watch) watch.value = cleanText(b.getAttribute("data-protocol"), 80);
+if (watchHint) watchHint.textContent = CO_ADDR.test(a)
+? "Alerts watch its indexed controller " + short(a, 6, 4) + " on " + (b.getAttribute("data-chain") === "base" ? "Base" : "Ethereum") + "."
+: "Alerts cover the protocol's indexed timelocks and Safes.";
+$$("[data-co-pick]", form).forEach(function (o) { o.setAttribute("aria-pressed", String(o === b)); });
+err(watch || t, "co-target-err", "");
+});
+});
+var pf = readPrefill(location.search);
+if (pf.protocol && !pfF) {
+var d0 = fld("protocol_or_docs"); if (d0 && !d0.value) d0.value = pf.protocol;
+if (watch && !watch.value) watch.value = pf.protocol;
+lookupData().then(function (d) {
+var hit = (d || []).filter(function (x) { return x.slug === pf.protocol; })[0], it = hit && hit.it;
+if (!it || busy) return;
+var a = k === "radar-webhook-49" ? it.controllerAddress : ((it.preflightArgs && it.preflightArgs.address) || it.primaryContract);
+var ch = fld("target_chain"), t = fld("target_address"), dd = fld("protocol_or_docs");
+if (ch && !val("target_address")) ch.value = it.chain === "base" ? "base" : "ethereum";
+if (t && !t.value && CO_ADDR.test(String(a || ""))) t.value = String(a);
+if (dd && dd.value === pf.protocol) dd.value = cleanText(it.name, 80);
+if (watch && watch.value === pf.protocol) watch.value = cleanText(it.name, 80);
+});
+}
+var dl = $("[data-co-download]", form), pr = $("[data-co-print]", form);
+if (dl) dl.addEventListener("click", function () {
+if (!report || typeof Blob !== "function" || !URL.createObjectURL) return;
+var a = document.createElement("a"), u = URL.createObjectURL(new Blob([JSON.stringify(report, null, 2)], { type: "application/json" }));
+a.setAttribute("href", u); a.setAttribute("download", "pacta-" + k + ".json"); document.body.appendChild(a); a.click(); a.remove();
+setTimeout(function () { URL.revokeObjectURL(u); }, 1000);
+});
+if (pr) pr.addEventListener("click", function () {
+var h = document.documentElement; h.classList.add("co-print");
+try { window.print(); } finally { h.classList.remove("co-print"); }
+});
+}
+function initLauncher() {
+var bar = $("[data-launcher]"), k = coSkuFrom(location.search); if (!bar || !k) return;
+var a = $('a[data-sku="' + k + '"]', bar); if (!a) return;
+var p = readPrefill(location.search), href = a.getAttribute("href") + (p.protocol ? "?protocol=" + encodeURIComponent(p.protocol) : "");
+a.setAttribute("aria-current", "true");
+try { location.replace(href); } catch (e) {  }
+}
 var ADDR_RE = /^0x[0-9a-fA-F]{40}$/;
 var SLOT_IMPL = "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc";
 var SLOT_BEACON = "0xa3f0ad74e5423aebfd80d3ef4346578335a9a72aeaee59ff6cb3582b35133d50";
@@ -1850,7 +2080,7 @@ return !!it;
 };
 }
 document.addEventListener("DOMContentLoaded", function () {
-[initTheme, initSheet, initTabs, initTabLinks, initDetailsHash, initCmdk, initTooltips, initCopy, initBeaconHooks, tick, initIndex, initRequest, initInspector, initPreflight,
+[initTheme, initSheet, initTabs, initTabLinks, initDetailsHash, initCmdk, initTooltips, initCopy, initBeaconHooks, tick, initIndex, initRequest, initLauncher, initCheckout, initInspector, initPreflight,
 initLiveTimelocks, initProtocolFilter, initAges, initRefresh, initHeroCheck, initBadgeWidget, initScorecards, initReceipts].forEach(function (f) {
 try { f(); } catch (e) { setTimeout(function () { throw e; }, 0); }
 });

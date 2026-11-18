@@ -91,8 +91,8 @@ BRIEFS = {
     "lombard-op-0xd07f": "Pre-execution brief: one 5-call Lombard timelock batch sets a 2,000-sat deposit fee on every LBTC and BTC.b "
                          "proof mint, doubles the router minimum to 4,000 sats and moves LBTC's redeem charge (1-day delay; ETA 2026-11-19 08:33 UTC).",
 }
-NAV = [("scorecards/", "Scorecards"), ("protocols/", "Protocols"), ("radar/", "Radar"), ("for-protocols/", "For protocols"),
-       ("mcp/", "MCP"), ("#pricing", "Pricing")]
+NAV = [("scorecards/", "Scorecards"), ("radar/", "Radar"), ("scan/", "Instant Scan"), ("#pricing", "Pricing"), ("bounties/", "Bounties"),
+       ("mcp/", "MCP")]   # v2: the self-serve scan and #pricing in the bar; Protocols and For protocols stay in the footer
 # Brand / RAG disambiguation (receipt/1817): the exact line in llms.txt, llms-full.txt, /llms/ and the Organization JSON-LD.
 DISAMBIGUATION = B2A.DISAMBIGUATION
 BRAND = B2A.BRAND
@@ -153,6 +153,46 @@ TREASURY_LABEL = "Pacta treasury (direct settlement EOA)"     # an externally ow
 # Payment rail for the clearance offer. The treasury is an externally owned account (no contract code on Base or
 # Ethereum), so the same key controls it on both chains; USDC contracts are Circle's native deployments.
 USDC = {"Base": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", "Ethereum": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"}
+# ---- Option B v2: three self-serve products, each with its own page (/scan/, /webhook/, /seal/) and one Base USDC checkout --------
+# Payment is ONE exact Base USDC transfer to the treasury; POST /v1/orders/verify reads the transaction receipt. app.js carries the
+# same payee, token, chain and amounts as constants: the page's data-* attributes are display only and never decide where money goes.
+ORDERS_VERIFY_API = f"{API}/v1/orders/verify"
+CHECKOUT_CHAIN_ID = 8453
+CHECKOUT_TREASURY = "0x4348DF1BEFAffcbA248B5118B1b782B1B2bdEd14"
+CHECKOUT = {   # sku -> product page; "tier" is the /request/?tier= alias that forwards to the page
+    "instant-scan-19": {
+        "tier": "instant-19", "route": "scan", "amount": "19.00", "atomic": 19_000_000, "price": "$19 USDC", "unit": "one-time · Base mainnet",
+        "badge": "Instant self-serve · under 60 s", "h1": "Instant Contract & Safe Deep-Scan", "label": "Instant Contract & Safe Deep-Scan",
+        "lede": "A live multi-RPC read of any Ethereum or Base contract or Safe: proxy and implementation chain, Safe signers, threshold "
+                "and guard, timelock delay and privileged roles, unlocked on this page in under 60 seconds.",
+        "cta": "Pay $19 USDC on Base & Unlock Full Report",
+        "title": "Instant contract & Safe deep-scan · $19 USDC · Pacta", "card": "x-card-scan19-1200x628.png",
+        "desc": "Paste an Ethereum or Base address, pay 19 USDC on Base, and get a live proxy, Safe, timelock and role report on the page in under 60 seconds."},
+    "radar-webhook-49": {
+        "tier": "webhook-49", "route": "webhook", "amount": "49.00", "atomic": 49_000_000, "price": "$49 USDC", "unit": "per month · Base mainnet",
+        "badge": "Live alerts · Slack, Telegram, Discord, HTTPS", "h1": "Live Timelock & Signer Alerts", "label": "Live Timelock & Signer Webhook",
+        "lede": "Pacta polls the timelocks and Safes you choose every 30 minutes on Ethereum and Base, and alerts you when an operation "
+                "is queued or a signer set changes, before it can execute.",
+        "cta": "Pay $49 USDC on Base & Activate Webhook",
+        "title": "Live timelock & signer alerts · $49 USDC / month · Pacta", "card": None,
+        "desc": "Slack, Telegram, Discord or HTTPS alerts when a watched timelock queues an operation or a Safe changes signers. 49 USDC a month on Base."},
+    "reverify-seal-99": {
+        "tier": "seal-99", "route": "seal", "amount": "99.00", "atomic": 99_000_000, "price": "$99 USDC", "unit": "vs $500 regular · Base mainnet",
+        "badge": "Save 80% · intro for the first 5 teams", "h1": "24h Mainnet Control-Plane Seal", "label": "24h Mainnet Control-Plane Seal",
+        "lede": "For a team that fixed a flagged gap or launched a new vault: a maintainer and an independent verifier re-check it on "
+                "mainnet within 24h, and you get a Base EAS attestation of the result.",
+        "cta": "Pay $99 USDC on Base & Book 24h Re-Verification",
+        "title": "24h mainnet control-plane seal · $99 USDC · Pacta", "card": "x-card-seal99-1200x628.png",
+        "desc": "Fixed a flagged gap or launched a vault? A maintainer and an independent verifier re-check it on mainnet within 24h, with a Base EAS attestation of the result."},
+}
+assert all(v["atomic"] == round(float(v["amount"]) * 10 ** 6) and v["price"] == f"${v['amount'][:-3]} USDC" for v in CHECKOUT.values())
+SEAL_GUARANTEE = ("The fee pays for the 24-hour mainnet re-verification work, never the grade: your attestation reads Aligned when "
+                  "on-chain controls match the published documentation, and Delta when they do not.")
+# real indexed contracts behind the example chips (resolved from api/v1/lookup.json at build time)
+SCAN_SAMPLE_CHIPS = ("getMinDelay()", "PROPOSER_ROLE", "DEFAULT_ADMIN_ROLE", "MINTER_ROLE")
+SCAN_CHIPS = [("Ethena", "ethena-usde-susde"), ("Stader", "stader-labs-ethx"), ("Morpho", "morpho-blue-core")]
+WEBHOOK_PICKS = [("Ethena", "ethena-usde-susde"), ("Morpho", "morpho-blue-core"), ("Aave v3", "aave-v3-gho"), ("Treehouse", "treehouse-tree-teth")]
+ALERT_EXAMPLE = "lombard-op-0xd07f"     # the alert preview is built from this decoded radar brief
 SOCIAL_SIZE = (1200, 628)   # X Website cards (1.91:1): og-preview.png and docs/cards/x-card-*-1200x628.png
 VULN_ROUTE = ("Exploit-sensitive vulnerabilities are never published here. They go through the protocol’s Immunefi or "
               "Cantina bounty programme.")
@@ -233,7 +273,7 @@ CSP = ("default-src 'self';script-src 'self';style-src 'self' 'unsafe-inline';im
 # U2: Light / Dark / System on a .dark class; System (the default) follows prefers-color-scheme. Legacy values map: slate -> dark, paper -> light.
 # X Ads strips the "?" from a Website-card URL (/scorecards/utm_source=x... then lands on 404.html): 404.html loads this first
 # (render-blocking, same origin) and sends a stripped query on a known route back to /<route>/?<query> with location.replace.
-RESCUE_JS = ('(function(w,L){var m=/^\\/(website-test\\/)?(scorecards|request|scan|seal|webhook|radar|bounties|leaderboard|methodology|'
+RESCUE_JS = ('(function(w,L){var m=/^\\/((?:website-test|public\\/web\\/option-b-v2)\\/)?(scorecards|request|scan|seal|webhook|radar|bounties|leaderboard|methodology|'
              'protocols(?:\\/[a-z0-9-]+)?)\\/((?:utm_[a-z]+|tier|ref)=.+)$/.exec(L.pathname);'
              'if(m){w.pactaRescued=1;L.replace("/"+(m[1]||"")+m[2]+"/?"+m[3]+(L.search?"&"+L.search.slice(1):"")+L.hash)}})(window,location);\n')
 THEME_JS = ('(function(){var d=document.documentElement,t="system",m=false;d.classList.add("js");'
@@ -443,7 +483,8 @@ def footer(count_line, reg, home=""):
                       for l, h, ext in links)
         return f'<div><h2>{title}</h2><ul>{lis}</ul></div>'
     product = [("Scorecards", f"{home}scorecards/", 0), ("Protocols", f"{home}protocols/", 0), ("Timelock radar", f"{home}radar/", 0),
-               ("Pricing", nav_href(home, "#pricing"), 0), ("For protocols", f"{home}for-protocols/", 0), ("Bounties", f"{home}bounties/", 0),
+               ("Pricing", nav_href(home, "#pricing"), 0), ("Instant scan", f"{home}scan/", 0), ("Timelock webhooks", f"{home}webhook/", 0),
+               ("24h mainnet seal", f"{home}seal/", 0), ("For protocols", f"{home}for-protocols/", 0), ("Bounties", f"{home}bounties/", 0),
                ("Leaderboard", f"{home}leaderboard/", 0)]
     agents = [("MCP server", f"{home}mcp/", 0), ("llms.txt", f"{home}llms.txt", 0), ("llms.txt (HTML)", f"{home}llms/", 0),
               ("SKILL.md", f"{home}SKILL.md", 0), ("OpenAPI 3.1", f"{home}api/v1/openapi.json", 0), ("JSON API", f"{home}api/v1/index.json", 0),
@@ -784,7 +825,7 @@ def utc_iso(ts):
     return dt.datetime.fromtimestamp(int(ts), dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-def what_differs_html(entries, compact=False):
+def what_differs_html(entries, compact=False, seal_cta=False):
     """Visitor review P1 (understanding): the "What differs" callout on every page with a flagged record: discrepant parameters
     first, matched ones below. V8: each value is a whole-word excerpt with the full verbatim record text one click away.
     V7: amber only when a looser-than-documented (parameter_delta) record is present; protective-only pages use the info palette."""
@@ -813,9 +854,11 @@ def what_differs_html(entries, compact=False):
     mt = "".join(f'<li data-wd-matched>{E(m["parameter"])}: {E(m["value"])}</li>' for m in wd["matched"])
     tag = "div" if compact else "section"
     protective = all(c.get("classification") == "protective_delta" for c in wd["changed"])
+    wd_cta = (f'<p class="wd-cta">Protocol maintainer and fixed this gap? <a href="#seal-cta" data-cta="seal_wd">Get it re-verified on mainnet in 24h{ARR}</a></p>'
+              if seal_cta and not protective else "")
     return (f'<{tag} class="{"memo-sec " if not compact else ""}whatdiffers{" protective" if protective else ""}" data-what-differs><h2 class="wd-h">What differs</h2>'
             f'<p class="wd-l">Changed / discrepant</p><ul class="wd-changed">{"".join(items)}</ul>'
-            + (f'<p class="wd-l">Matched</p><ul class="wd-matched">{mt}</ul>' if mt else "") + f'</{tag}>\n')
+            + (f'<p class="wd-l">Matched</p><ul class="wd-matched">{mt}</ul>' if mt else "") + wd_cta + f'</{tag}>\n')
 
 
 def editorial_box():
@@ -849,16 +892,21 @@ def sheet(e):
             + term(cast_line(e)))
 
 
-HEX64 = re.compile(r"0x[0-9a-fA-F]{64}(?![0-9a-fA-F])")
+HEX64 = re.compile(r"0x[0-9a-fA-F]{64}(?![0-9a-fA-F])|(?<![0-9A-Za-z])0x[0-9a-fA-F]{40}(?![0-9a-fA-F])")
+ADDR40 = re.compile(r"0x[0-9a-fA-F]{40}")
 
 
 def prose(text):
     """Escape record prose for display; 32-byte hashes (tx / op / block ids) are shortened with the full value in a
-    tooltip, so a 66-character token can never force a mid-hash wrap. The JSON feed keeps the full text."""
+    tooltip, so a 66-character token can never force a mid-hash wrap. 20-byte addresses stay complete (readers copy
+    them) in a no-wrap span sized to fit the column. The JSON feed keeps the full text."""
     out, last = [], 0
     for m in HEX64.finditer(text):
         out.append(E(text[last:m.start()]))
-        out.append(f'<span class="hx" title="{m.group(0)}">{E(short(m.group(0), 8, 6))}</span>')
+        if len(m.group(0)) == 42:
+            out.append(f'<span class="hx-a">{m.group(0)}</span>')
+        else:
+            out.append(f'<span class="hx" title="{m.group(0)}">{E(short(m.group(0), 8, 6))}</span>')
         last = m.end()
     out.append(E(text[last:]))
     return "".join(out)
@@ -1242,6 +1290,245 @@ def request_builder(idx, home=""):
     return f'<div class="req"><div class="req-main">{form}{done}</div><aside class="req-side" aria-label="Other channels">{side}</aside></div>'
 
 
+def launcher_links(home):
+    """/request/: the three self-serve products above the dossier builder (?tier=instant-19 | webhook-49 | seal-99 forwards there)."""
+    sub = {"instant-scan-19": "under 60 s", "radar-webhook-49": "Slack, Telegram, HTTPS", "reverify-seal-99": "first 5 teams"}
+    price = {"instant-scan-19": "$19", "radar-webhook-49": "$49 / mo", "reverify-seal-99": "$99"}
+    name = {"instant-scan-19": "Instant scan", "radar-webhook-49": "Live webhook", "reverify-seal-99": "24h mainnet seal"}
+    return "".join(f'<a class="launch" href="{home}{v["route"]}/" data-sku="{k}" data-cta="launch_{v["route"]}"><span class="l-n">{name[k]}{ARR}</span>'
+                   f'<span class="l-p"><b>{price[k]}</b><small>{sub[k]}</small></span></a>' for k, v in CHECKOUT.items())
+
+
+def eip681(atomic):
+    """EIP-681 payment request: an exact Base USDC transfer(treasury, atomic) on chain 8453 (wallet apps, Safe apps, mobile QR)."""
+    return f"ethereum:{USDC['Base']}@{CHECKOUT_CHAIN_ID}/transfer?address={CHECKOUT_TREASURY}&uint256={atomic}"
+
+
+def lookup_items():
+    return {i["slug"]: i for i in json.load(open(os.path.join(DOCS, "api", "v1", "lookup.json")))["items"]}
+
+
+def short_addr(a):
+    return a[:6] + "…" + a[-4:]
+
+
+def manual_drawer(c):
+    """The manual / Safe / CLI path, collapsed by default: the exact amount, the treasury as a one-line pill (full value copied), the
+    EIP-681 link and the transaction-hash check."""
+    uri = eip681(c["atomic"])
+    amount_copy = copy_btn(c["amount"], "Copy", f"Copy the exact USDC amount ({c['amount']})")
+    addr_copy = copy_btn(CHECKOUT_TREASURY, "Copy address", "Copy the full Pacta treasury address")
+    link_copy = copy_btn(uri, "Copy link", "Copy the EIP-681 payment link")
+    return (f'<details class="co-manual" id="co-manual"><summary>Paying from a Safe multisig, CLI, or mobile wallet? Transfer manually{ARR}</summary>'
+            f'<div class="co-manual-b"><dl class="co-kv">'
+            f'<dt>Amount</dt><dd><b class="mono" data-co-amount>{c["amount"]} USDC</b> on Base{amount_copy}</dd>'
+            f'<dt>Network</dt><dd>Base mainnet · chain ID {CHECKOUT_CHAIN_ID} · native USDC <span class="addr-pill mono" title="{USDC["Base"]}">{short_addr(USDC["Base"])}</span></dd>'
+            f'<dt>Send to</dt><dd><span class="addr-pill mono" title="{CHECKOUT_TREASURY}" data-co-treasury>{short_addr(CHECKOUT_TREASURY)}</span>{addr_copy}</dd></dl>'
+            f'<div class="co-actions">' + U.button("Open in wallet app", href=uri, variant="outline", size="sm", attrs="data-co-eip681") + link_copy + '</div>'
+            f'<div class="field"><label for="co-tx">Base transaction hash</label><input id="co-tx" name="tx_hash" type="text" spellcheck="false" maxlength="66" '
+            f'placeholder="0x…" aria-describedby="co-tx-err"><p class="form-message" id="co-tx-err" data-slot="form-message" hidden></p></div>'
+            + U.button('<span class="spinner" aria-hidden="true" hidden></span><span>Verify on-chain &amp; unlock</span>', variant="outline", type_="submit",
+                       attrs='id="co-verify"')
+            + '</div></details>')
+
+
+def receipt_card():
+    return U.card(U.card_header("Order verified", '<span data-co-r-desc>Payment confirmed on Base.</span>')
+                  + '<dl class="kv"><dt>Order</dt><dd class="mono" data-co-r-order></dd><dt>Product</dt><dd data-co-r-sku></dd>'
+                  '<dt>Payment</dt><dd data-co-r-pay></dd><dt>Status</dt><dd data-co-r-status></dd></dl>'
+                  + f'<div class="term"><div class="term-h"><span>Report (JSON)</span><button class="copy" data-slot="button" data-variant="ghost" '
+                    f'data-size="sm" type="button" data-copy-from="co-json" aria-label="Copy the report JSON">{U.icon("copy")}<span>Copy</span></button></div>'
+                    '<pre id="co-json"></pre></div><div class="co-actions">'
+                  + U.button("Download JSON", variant="outline", size="sm", attrs="data-co-download")
+                  + U.button("Print report", variant="outline", size="sm", attrs="data-co-print") + '</div>',
+                  cls="co-result", attrs='id="co-result" tabindex="-1" hidden')
+
+
+def field(id_, name, label, ph, optional=False, maxlength=200, help_=""):
+    opt = ' <span class="legend-note">· optional</span>' if optional else ""
+    return (f'<div class="field"><label for="{id_}">{label}{opt}</label>'
+            f'<input id="{id_}" name="{name}" type="text" maxlength="{maxlength}" placeholder="{E(ph)}" aria-describedby="{id_}-err">'
+            + (f'<p class="hint">{help_}</p>' if help_ else "")
+            + f'<p class="form-message" id="{id_}-err" data-slot="form-message" hidden></p></div>')
+
+
+def chain_target(target_label, optional=False):
+    return (f'<div class="co-row"><div class="field co-chain-f"><label for="co-chain">Chain</label><select id="co-chain" name="target_chain">'
+            f'<option value="ethereum" selected>Ethereum</option><option value="base">Base</option></select></div>'
+            + field("co-target", "target_address", target_label, "0x…", optional, 42) + '</div>')
+
+
+def scan_checker(lk):
+    """/scan/: the free live preflight check (the homepage checker) is the scanner: chips fill a real indexed contract and run it."""
+    chips = []
+    for label, slug in SCAN_CHIPS:
+        it = lk[slug]
+        ch, addr = LIVE_CHECK_TARGET.get(slug, (it["preflightArgs"]["chain"], it["preflightArgs"]["address"]))
+        chips.append(U.button(E(label), variant="outline", size="sm", cls="receipt",
+                              attrs=f'data-receipt data-pf-chain="{ch}" data-pf-address="{addr}" aria-label="Try {E(label)}: run a free live check of its indexed contract"'))
+    examples = (f'<div class="try"><div class="try-row" role="group" aria-label="Example contracts"><span class="try-l">Try:</span>{"".join(chips)}</div></div>')
+    cap = ("Free preview first: Check runs the read-only live check of this contract at the latest block. The $19 report adds the multi-RPC "
+           "deep-scan, Safe signer overlap, a printable report and a queued Base EAS receipt.")
+    return hero_checker(examples, prefix="../", cap=cap, label="Contract or Safe address", cta_variant="outline")
+
+
+def scan_preview(idx, lk):
+    """/scan/: a sample unlocked report from Pacta's published Stader ETHx record: the rosette, status pills, the record's own
+    role and getter names and the three deliverables. Every value comes from the record; nothing is illustrative."""
+    import scorecard as SC
+    r = next(x for x in receipt_data(idx) if x["slug"] == "stader-labs-ethx")
+    it, card = lk["stader-labs-ethx"], card_for(idx, "stader-labs-ethx")
+    uid = (it.get("baseEasUids") or [""])[0]
+    secs = it["observedDelaySeconds"]
+    days = secs // 86400
+    onchain, docs = r["chain"].replace("Manager Safe is ", ""), r["docs"].replace("Manager Safe is ", "")
+    pills = (U.badge("EIP-1967 proxy", "neutral") + U.badge(f"Delta · {E(onchain)} on chain vs {E(docs)} docs", "warning")
+             + U.badge(f"{days}d timelock · {secs:,} s", "success"))
+    chips = "".join(f'<code class="sel-chip">{E(s_)}</code>' for s_ in SCAN_SAMPLE_CHIPS)
+    deliv = ('<span class="dl-badge">SHA-256 JSON receipt</span><span class="dl-badge">1-page printable report</span>'
+             + (f'<a class="dl-badge" href="https://base.easscan.org/attestation/view/{uid}" target="_blank" rel="noopener">Base EAS {short(uid, 6, 4)}{EXT}</a>'
+                if uid else ""))
+    return (f'<div class="pv-card" data-slot="card" data-preview="scan"><div class="pv-head"><span class="pv-k">Sample unlocked report</span>'
+            f'<span class="pv-t">Stader ETHx · Ethereum · block #{int(r["e"]["block_number"]):,}</span></div>'
+            f'<div class="pv-score">{SC.rosette_svg(card["factors"], 56, card["name"])}<div class="pv-pills">{pills}</div></div>'
+            f'<ol class="pv-rows"><li><b>Proxy &amp; implementation chain</b><span>Admin behind a {days}-day TimelockController '
+            f'<span class="addr-pill mono" title="{it["controllerAddress"]}">{short_addr(it["controllerAddress"])}</span></span></li>'
+            f'<li><b>Safe quorum &amp; cross-protocol signer overlap</b><span>getThreshold() and getOwners() read live; signers matched against every indexed Safe</span></li>'
+            f'<li><b>Roles &amp; live bytecode capabilities</b><span class="sel-row">{chips}</span></li></ol>'
+            f'<div class="pv-deliv-row" aria-label="Deliverables">{deliv}</div>'
+            f'<p class="pv-foot">Built from Pacta&#x27;s published Stader ETHx record. Your report covers the contract you enter.</p></div>')
+
+def webhook_preview():
+    b = DECODED[ALERT_EXAMPLE]
+    op = b["operations"][0]
+    calls = op["calls"]
+    tl = b["timelock"]["address"]
+    first = calls[0]
+    ch = first.get("lombardChange") or {}
+    change = f': {ch.get("from"):,} to {ch.get("to"):,} {E(ch.get("unit") or "")}' if isinstance(ch.get("from"), int) and isinstance(ch.get("to"), int) else ""
+    payload = json.dumps({"event": "timelock_queued", "protocol": b["protocol"], "chain": "ethereum", "block": op["scheduled"]["block"],
+                          "calls": len(calls), "first_call": first["function"], "eta_utc": op["eta_utc"]}, indent=2, ensure_ascii=False)
+    return (f'<div class="pv-card" data-slot="card" data-preview="webhook"><div class="pv-head"><span class="pv-k pv-alert">Timelock queued · Ethereum #{op["scheduled"]["block"]:,}</span>'
+            f'<span class="pv-t">{E(b["protocol"])} · {E(b["timelock"]["verified"]["sourcify"]["name"])} <span class="addr-pill mono" title="{tl}">{short_addr(tl)}</span></span></div>'
+            f'<ol class="pv-rows"><li><b>Decoded action</b><span><code>{E(first["function"])}</code><span>{change.lstrip(": ") if change else ""} · +{len(calls) - 1} more calls in the batch</span></span></li>'
+            f'<li><b>Earliest execution</b><span><span class="countdown" data-eta="{op["eta"]}">ETA {E(op["eta_utc"])}</span></span></li>'
+            f'<li><b>Signer watch</b><span>Scheduled by Safe <span class="addr-pill mono" title="{op["scheduled"]["to"]}">{short_addr(op["scheduled"]["to"])}</span> via execTransaction · owner or threshold changes alert too</span></li></ol>'
+            f'<div class="pv-msg"><span class="pv-k">Slack / Telegram</span><p>Lombard timelock queued a {len(calls)}-call batch at Ethereum #{op["scheduled"]["block"]:,}: '
+            f'{E(first["function"].split("(")[0])} and {len(calls) - 1} more. Executable from {E(op["eta_utc"])}.</p></div>'
+            f'<div class="term"><div class="term-h"><span>HTTPS webhook (JSON)</span></div><pre>{E(payload)}</pre></div>'
+            f'<p class="pv-foot">A real radar observation: <a href="../{b["brief"]}">the decoded Lombard brief{ARR}</a></p></div>')
+
+
+def seal_preview(idx, lk):
+    import scorecard as SC
+    demo = card_for(idx, BADGE_DEMO)
+    it = lk[BADGE_DEMO]
+    uid = (it.get("baseEasUids") or [""])[0]
+    r = next(x for x in receipt_data(idx) if x["slug"] == "stader-labs-ethx")
+    label = LK.BADGE_TIERS["aligned"][0]
+    width = (len(LK.BADGE_TITLE) + len(label)) * 7 + 24
+    stb = ('{\n  "version": "1.0", "chainId": "1",\n  "meta": {"name": "Pacta seal: remaining step"},\n'
+           '  "transactions": [\n    {"to": "0x…", "value": "0", "data": "0x…"}\n  ]\n}')
+    return (f'<div class="pv-card" data-slot="card" data-preview="seal"><div class="pv-head"><span class="pv-k">The three seal deliverables</span>'
+            f'<span class="pv-t">Examples from published Pacta records</span></div>'
+            f'<div class="pv-deliv"><div class="pv-d"><span class="pv-n" aria-hidden="true">1</span><div><b>Verified Base EAS attestation seal</b>'
+            f'<div class="pv-seal">{SC.rosette_svg(demo["factors"], 48, demo["name"])}<div><span>{E(demo["name"])} · {E(demo["gradeLabel"])} · 5-factor rosette</span>'
+            f'<img class="cp-badge" src="../badges/{BADGE_DEMO}.svg" alt="{E(LK.BADGE_TITLE)}: {E(label)}" width="{width}" height="20">'
+            + (f'<a href="https://base.easscan.org/attestation/view/{uid}" target="_blank" rel="noopener">EAS {short(uid, 6, 4)}{EXT}</a>' if uid else "")
+            + '</div></div></div></div>'
+            f'<div class="pv-d"><span class="pv-n" aria-hidden="true">2</span><div><b>Safe Transaction Builder JSON</b><span class="s">When a parameter, timelock or owner step still has to be queued.</span>'
+            f'<pre class="pv-pre">{E(stb)}</pre></div></div>'
+            f'<div class="pv-d"><span class="pv-n" aria-hidden="true">3</span><div><b>Upstream documentation PR</b><span class="s">Aligning the published docs with live contract storage.</span>'
+            f'<pre class="pv-pre pv-diff"><span class="del">- {E(r["docs"])}</span>\n<span class="add">+ {E(r["chain"])} (on chain at block #{int(r["e"]["block_number"]):,})</span></pre></div></div></div>'
+            f'<p class="pv-foot">Examples from Pacta&#x27;s published Aave V3 / GHO and Stader ETHx records; yours cover the contract you book.</p></div>')
+
+
+def product_page(idx, sku):
+    """/scan/, /webhook/, /seal/: one product per page. Left: the order and ONE primary action (a 1-click wallet transfer, or the
+    manual drawer when there is no browser wallet); right: a preview of what the payment unlocks, built from real Pacta records."""
+    c, lk = CHECKOUT[sku], lookup_items()
+    count_line = coverage_line(idx)
+    reg = idx["onchain_anchoring"]["commitment_registry"]
+    crumbs = (f'<nav class="crumbs" aria-label="Breadcrumb"><a href="../">Pacta</a><span aria-hidden="true">/</span>'
+              f'<a href="../#pricing">Pricing</a><span aria-hidden="true">/</span><span>{E(c["h1"])}</span></nav>')
+    head_ = (f'<div class="pd-head"><span data-slot="badge" data-variant="info">{E(c["badge"])}</span><h1 id="co-title">{E(c["h1"])}</h1>'
+             f'<p class="pd-lede">{E(c["lede"])}</p><p class="pd-price"><b>{E(c["price"])}</b><span>{E(c["unit"])}</span></p></div>')
+    if sku == "instant-scan-19":
+        pre, fields = scan_checker(lk), (f'<p class="form-message co-target-msg" id="co-target-err" data-slot="form-message" hidden></p>'
+                                         + '<div class="co-row2">'
+                                         + field("co-docs", "protocol_or_docs", "Docs URL", "https://docs.example.fi", True)
+                                         + field("co-contact", "webhook_or_contact", "Delivery email or @telegram", "you@team.xyz or @handle", True)
+                                         + '</div>')
+        preview = scan_preview(idx, lk)
+    elif sku == "radar-webhook-49":
+        picks = "".join(U.button(E(label), variant="outline", size="sm", cls="pick",
+                                 attrs=(f'data-co-pick data-chain="{lk[s]["chain"]}" data-address="{lk[s].get("controllerAddress") or ""}" '
+                                        f'data-protocol="{E(lk[s]["name"])}" aria-pressed="false"'))
+                        for label, s in WEBHOOK_PICKS)
+        pre = ""
+        fields = (f'<div class="try"><div class="try-row" role="group" aria-label="Quick picks"><span class="try-l">Watch:</span>{picks}</div></div>'
+                  + '<div class="co-row"><div class="field co-chain-f"><label for="co-chain">Chain</label><select id="co-chain" name="target_chain">'
+                    '<option value="ethereum" selected>Ethereum</option><option value="base">Base</option></select></div>'
+                    '<div class="field"><label for="co-watch">Timelock, Safe or protocol</label>'
+                    '<input id="co-watch" type="text" maxlength="80" spellcheck="false" autocapitalize="off" '
+                    'placeholder="0x… address, or a protocol (Lombard)" aria-describedby="co-watch-hint co-target-err">'
+                    '<p class="hint" id="co-watch-hint" data-co-watch-hint>Pick a protocol above or paste a timelock or Safe address.</p>'
+                    '<p class="form-message" id="co-target-err" data-slot="form-message" hidden></p></div></div>'
+                    '<input type="hidden" id="co-target" name="target_address"><input type="hidden" id="co-docs" name="protocol_or_docs">'
+                  + field("co-contact", "webhook_or_contact", "Alert destination", "Webhook URL or @telegram",
+                          help_="Kept private for delivery, never published."))
+        preview = webhook_preview()
+    else:
+        pre = ""
+        fields = (chain_target("Contract, vault or Safe address")
+                  + field("co-docs", "protocol_or_docs", "Docs URL or PR", "https://github.com/… or docs URL", True)
+                  + field("co-contact", "webhook_or_contact", "Team contact", "Work email, @telegram or GitHub handle",
+                          help_="Kept private for delivery, never published."))
+        preview = seal_preview(idx, lk)
+    guarantee = (f'<p class="co-guarantee" data-co-guarantee>{U.icon("scale")}<span>{E(SEAL_GUARANTEE)}</span></p>' if sku == "reverify-seal-99" else "")
+    form = (f'<form class="co" id="co-form" novalidate autocomplete="off" data-api="{E(ORDERS_VERIFY_API)}" data-sku="{sku}" data-chain-id="{CHECKOUT_CHAIN_ID}">'
+            f'{fields}<div class="co-cta">'
+            + U.button(f'<span>{E(c["cta"])}</span>', variant="default", size="lg", attrs='id="co-wallet" data-co-pay')
+            + '<span class="req-status" id="co-status" role="status" aria-live="polite"></span></div>'
+            f'<p class="co-assure">One exact USDC transfer on Base. No approvals, no allowances, no account.</p>{guarantee}'
+            f'{manual_drawer(c)}{receipt_card()}'
+            f'<noscript><p class="note">Paying needs JavaScript. Without it, open the manual transfer above and send the transaction hash '
+            f'through the <a href="../request/">request form</a> or to {CONTACT}.</p></noscript></form>')
+    steps = (f'<section class="sec pd-how" id="how"><div class="wrap"><ol class="pd-steps">'
+             f'<li><b>1 · Enter the target</b><span>The contract, Safe or protocol, and where to deliver.</span></li>'
+             f'<li><b>2 · Pay {E(c["amount"])} USDC on Base</b><span>One click in a browser wallet, or a manual transfer from a Safe, CLI or phone.</span></li>'
+             f'<li><b>3 · Unlock</b><span>The verifier reads the Base receipt and unlocks the result on this page, with a printable receipt.</span></li></ol>'
+             f'<p class="note">{E(EDITORIAL_FIREWALL)} {E(EDITORIAL_SHORT)} Need several contracts, a full dossier or SLA monitoring? '
+             f'<a href="../request/">Enterprise &amp; protocol diligence{ARR}</a></p></div></section>')
+    body = f"""<body>
+{topbar("../", c["route"] + "/")}
+<main id="main">
+<section class="sec pd-sec" id="checkout"><div class="wrap">{crumbs}
+<div class="pd"><div class="pd-main">{head_}{pre}{form}</div><aside class="pd-preview" aria-label="What the payment unlocks">{preview}</aside></div>
+</div></section>
+{steps}
+</main>
+{footer(count_line, reg, "../")}
+</body></html>
+"""
+    img = f"{BASE_URL}/cards/{c['card']}" if c["card"] else f"{BASE_URL}/og-preview.png"
+    return head(c["title"], c["desc"], f"{BASE_URL}/{c['route']}/", prefix="../", og_title=c["title"].rsplit(" · Pacta", 1)[0], image=img,
+                image_size=SOCIAL_SIZE) + "\n" + body
+
+
+def maintainer_card(name, slug, forum=None, home="../../"):
+    """Delta / RPC-observed protocol pages: one maintainer card, after the editorial firewall. Left: the $99 seal re-checks a fix
+    (the card's one solid button) and /scan/ checks an unindexed contract; right: the free doc-update notice and the dossier."""
+    return (f'<section class="memo-sec convert maint" id="seal-cta"><span class="label">For maintainers and issuers</span>'
+            f'<div class="maint-grid"><div class="maint-paid"><h2>Fixed this gap? 24h mainnet re-verification ($99 intro)</h2>'
+            f'<p>A maintainer and an independent verifier re-check {E(name)} on mainnet within 24h and attest the result on Base. '
+            f'{E(SEAL_GUARANTEE)}</p><div class="convert-cta">'
+            + U.button("Book $99 seal", href=f"{home}seal/?protocol={slug}", variant="default", attrs='data-cta="seal_99"')
+            + U.button("Scan a contract", href=f"{home}scan/", variant="outline", attrs='data-cta="scan_19"')
+            + '</div></div><div class="maint-free" id="issuer-clearance">' + clearance_body(name, slug, forum, home, dossier="outline")
+            + '</div></div></section>\n')
+
+
 # A protocol whose published name does not slug to its published slug (an RPC-pinned page converted to EAS-attested keeps
 # both its name and its /protocols/ slug, so its graph anchor and page never change).
 SLUG_OVERRIDES = {"Frax Ether (frxETH / sfrxETH)": "frax-ether-sfrxeth", "Re Protocol (reUSD / reUSDe)": "re",
@@ -1444,20 +1731,25 @@ DOSSIER_CTA = "Request a dossier"
 FREE_NOTIFY_CTA = "Submit updated docs"
 
 
-def clearance_callout(name, slug, forum=None, home="../../"):
-    """Issuer path on delta / RPC-observed pages: the paid dossier buys verification work, never an outcome; the free public
-    notification path sits next to it with equal weight. U7: two- to three-word CTAs."""
-    return (f'<section class="memo-sec convert" id="issuer-clearance"><span class="label">For issuers and maintainers</span>'
-            f'<h2>Maintaining {E(name)}? Verify and reconcile the record</h2>'
+def clearance_body(name, slug, forum=None, home="../../", dossier="default"):
+    """The issuer path: a free public doc-update notice with equal standing next to the paid dossier, which buys verification
+    work, never an outcome. U7: two- to three-word CTAs."""
+    return (f'<h2>Maintaining {E(name)}? Verify and reconcile the record</h2>'
             f'<p>Two paths, both public. A free doc-update notice asks the maintainers to correct the documentation or the onchain '
             f'parameter; anyone can send it. A Full Control-Plane Dossier ({E(CLEARANCE_PRICE)}, 24h SLA) re-reads the multisig and '
             f'timelock control planes on archive RPCs and prepares an upstream docs reconciliation PR. Either way the classification '
             f'changes only when the onchain state or the documentation aligns at a new finalized block.</p>'
             f'<div class="convert-cta">'
             + U.button(E(FREE_NOTIFY_CTA), href=request_href("community", slug, forum, home=home), variant="outline", attrs='data-cta="free_notify"')
-            + U.button(E(DOSSIER_CTA), href=request_href("clearance", slug, forum, home=home), variant="default", attrs='data-cta="clearance"')
+            + U.button(E(DOSSIER_CTA), href=request_href("clearance", slug, forum, home=home), variant=dossier, attrs='data-cta="clearance"')
             + f'</div><p class="s">Need procurement paperwork? <a href="{E(request_href("clearance", slug, forum, "invoice", home))}" '
-              f'data-cta="clearance_invoice">Request a commercial invoice (PDF)</a>.</p></section>\n')
+              f'data-cta="clearance_invoice">Request a commercial invoice (PDF)</a>.</p>')
+
+
+def clearance_callout(name, slug, forum=None, home="../../"):
+    """Issuer path on the decoded briefs (protocol pages fold it into maintainer_card)."""
+    return (f'<section class="memo-sec convert" id="issuer-clearance"><span class="label">For issuers and maintainers</span>'
+            + clearance_body(name, slug, forum, home) + '</section>\n')
 
 
 def maintenance_callout(name, slug, home="../../"):
@@ -1723,9 +2015,10 @@ def protocol_page(name, entries, idx, radar, digest=None, slug=None):
     pin_clause = (f"with its controller and timelock state pinned to a canonical {chain_txt} block over archive JSON-RPC (not EAS-attested; "
                   f"documentation parameters are linked, not compared)" if pinned
                   else f"{'' if n == 1 else 'each '}pinned to a canonical {chain_txt} block and compared with what the protocol documents")
-    codes = ", ".join(f'<code class="mono">{E(t)}</code>' for t in targets)
+    codes = ", ".join(f'<span class="addr-pill mono" title="{t}">{short_addr(t)}</span>{copy_btn(t, "Copy", "Copy the contract address " + t)}'
+                      if ADDR40.fullmatch(t) else f'<code class="mono">{E(t)}</code>' for t in targets)
     lede = (f'{n} indexed control-plane {"surface" if n == 1 else "surfaces"} for {E(name)}, {pin_clause}. '
-            f'{"Contract" if len(targets) == 1 else "Contracts"}: {codes}.')
+            f'{"Contract" if len(targets) == 1 else "Contracts"}: {codes}{"" if targets and ADDR40.fullmatch(targets[-1]) else "."}')
     forum = first.get("governance_url") if pinned else None
     tier = "rpc_observed" if pinned else ("aligned" if is_aligned_page(entries) else "parameter_delta")
     badge_html = badge_section(name, slug, tier)
@@ -1733,7 +2026,7 @@ def protocol_page(name, entries, idx, radar, digest=None, slug=None):
         callout = maintenance_callout(name, slug)
         foot = f'<a href="{E(request_href("continuous", slug))}">Continuous Control-Plane Monitoring · {E(MONITORING_PRICE)}{ARR}</a>'
     else:
-        callout = clearance_callout(name, slug, forum)
+        callout = maintainer_card(name, slug, forum)
         foot = f'<a href="{E(request_href("clearance", slug, forum))}">Request a dossier (24h SLA){ARR}</a>'
     live = live_check_tabs(first.get("chain", "ethereum"), first["target_contract"])
     body = f"""<body>
@@ -1743,7 +2036,7 @@ def protocol_page(name, entries, idx, radar, digest=None, slug=None):
 <article class="memo">
 <header><span class="tier">{E(cat)}</span><h1>{E(title)}</h1>
 <p class="lede">{lede}</p></header>
-{what_differs_html(entries)}{scorecard_section(card_for(idx, slug))}<section class="memo-sec" id="live-check"><h2>Check it live (free)</h2><p>The pre-flight API re-reads the controller, proxy and capabilities of one contract at the latest block. No key, no wallet. The score rates that single contract, not the whole protocol.</p>
+{what_differs_html(entries, seal_cta=not is_aligned_page(entries))}{scorecard_section(card_for(idx, slug))}<section class="memo-sec" id="live-check"><h2>Check it live (free)</h2><p>The pre-flight API re-reads the controller, proxy and capabilities of one contract at the latest block. No key, no wallet. The score rates that single contract, not the whole protocol.</p>
 {live}</section>
 {provenance}{governance_section(name, digest)}{records}{ops}{editorial_box()}{badge_html}{callout}</article>
 <div class="memo-foot"><span>Read-only onchain analysis. Not investment advice. Exploit-sensitive vulnerabilities are never published here; they go through Immunefi or Cantina bounty programmes.</span>{foot}</div>
@@ -1891,21 +2184,23 @@ EAS_SCHEMA_VIEW = "https://base.easscan.org/schema/view/0x7ff485bc1159dff3c70eef
 EDITORIAL_FIREWALL = "Pacta never sells grades."
 
 
-def hero_checker(examples=""):
+def hero_checker(examples="", prefix="", cap=None, label="Contract address, protocol or token", cta_variant="default"):
     """U3/A3: noValidate form (no native bubble), inline 0x + 40-hex validation on blur and submit, aria-invalid + aria-describedby
     to a visible destructive message, and a disabled button with a spinner while the check runs (app.js)."""
-    return (f'<div class="pf hero-pf" data-api="{API}" data-lookup="api/v1/lookup.json">'
+    return (f'<div class="pf hero-pf" data-api="{API}" data-lookup="{prefix}api/v1/lookup.json">'
             f'<form class="checker" id="pf-form" novalidate autocomplete="off">'
             f'<label class="sr-only" for="pf-chain">Chain</label>'
             f'<select id="pf-chain" name="chain"><option value="ethereum">Ethereum</option><option value="base">Base</option></select>'
-            f'<label class="sr-only" for="pf-address">Contract address, protocol or token</label>'
+            f'<label class="sr-only" for="pf-address">{E(label)}</label>'
             f'<input id="pf-address" type="text" name="address" placeholder="0x…, protocol or token" maxlength="80" spellcheck="false" '
             f'autocapitalize="off" aria-describedby="pf-help">'
-            + U.button('<span class="spinner" aria-hidden="true" hidden></span><span data-pf-label>Check contract</span>', variant="default",
+            + U.button('<span class="spinner" aria-hidden="true" hidden></span><span data-pf-label>Check contract</span>', variant=cta_variant,
                        size="lg", type_="submit", attrs='id="pf-submit"')
             + f'<p class="form-message" id="pf-addr-error" data-slot="form-message" hidden></p></form>'
-            f'<p class="checker-cap" id="pf-help">Free, read-only check of one contract address at the latest block, or type a protocol or '
-            f'token (Aave, LBTC, ETHx) to find its scorecard. No API key, no wallet. Runs when you press Check or pick an example below.</p>'   # P2-1 (v4.4): the examples run a check too
+            + (f'<p class="checker-cap" id="pf-help">{E(cap)}</p>' if cap else
+               f'<p class="checker-cap" id="pf-help">Free, read-only check of one contract address at the latest block, or type a protocol or '
+               f'token (Aave, LBTC, ETHx) to find its scorecard. No API key, no wallet. Runs when you press Check or pick an example below.</p>')   # P2-1 (v4.4): the examples run a check too
+            +
             f'<noscript><p class="note">Without JavaScript, use the free API: <code>{E(CURL)} "{E(API)}/v1/check/preflight?chain=ethereum&amp;address=0x…"</code></p></noscript>'
             f'{examples}<div class="pf-out" id="pf-out" aria-live="polite"></div></div>')
 
@@ -2225,7 +2520,8 @@ def request_page(idx):
 <section class="sec" id="request"><div class="wrap">
 <nav class="crumbs" aria-label="Breadcrumb"><a href="../">Pacta</a><span aria-hidden="true">/</span><span>Request a dossier</span></nav>
 <div class="sec-head"><h1>Request a dossier</h1><p class="aside">Every scorecard, the API and the MCP server stay free. This form is for verification work.</p></div>
-<p class="sec-intro">Agents do not need this page: the API (<code>/v1/check/preflight</code>) and the remote MCP server (<code>{E(MCP_URL)}</code>) are free, with no key and no wallet: Remote MCP ({E(REMOTE_TOOLS_DOC)}). Pick a track and the protocols in scope, then send. You get a request ID right away. Prefer GitHub or email? The brief on the right goes there too. {E(EDITORIAL_FIREWALL)} {E(EDITORIAL_SHORT)}</p>
+<nav class="launcher" aria-label="Instant self-serve checks" data-launcher>{launcher_links("../")}</nav>
+<p class="sec-intro">Agents do not need this page: the API (<code>/v1/check/preflight</code>) and the <a href="../mcp/">remote MCP server</a> (<code>{E(MCP_URL)}</code>) are free, with no key and no wallet. Remote MCP ({E(REMOTE_TOOLS_DOC)}). Pick a track and the protocols in scope; you get a request ID right away. {E(EDITORIAL_FIREWALL)} {E(EDITORIAL_SHORT)}</p>
 {request_builder(idx, "../")}
 </div></section>
 {pricing_section(idx, "../")}
@@ -3395,23 +3691,44 @@ RADAR_STATE_ORDER = ("ready", "pending", "mixed", "unknown", "executed")
 RADAR_STATE_WORD = {"ready": "ready", "pending": "pending", "mixed": "mixed", "unknown": "cancelled or unknown", "executed": "executed"}
 
 
-# N3 (v4.3): Free is a full-width row above the three protocol-team tiers (a 3-column card grid) and the Enterprise API a full-width
-# row below; the tier set and order stay identical on / and /request/ (M4)
-PLAN_ROWS = ("community", "api_sla")
+# v2 #pricing: four self-serve products in one grid (2 x 2 on tablets, one column on phones), then the enterprise strip
+SELF_SERVE_PLANS = [   # key, title, price, note, bullets, (cta, href, kind), badge
+    ("free", "Free scorecards, API & MCP", "$0", "No key, no wallet", [
+        "All {n} scorecards and Base EAS proofs, free, with live re-check on demand",
+        "Preflight API and remote MCP, 60 requests / minute",
+        "Free doc-update queue, typically 6–8 weeks"], ("Browse scorecards", "scorecards/", "pricing_free"), None),
+    ("instant-scan-19", "Instant Contract & Safe Deep-Scan", "$19", "USDC · one-time", [
+        "Live multi-RPC read of any contract or Safe in under 60 s",
+        "Proxy chain, Safe signers and threshold, timelock and roles",
+        "Printable report and a queued Base EAS receipt"], ("Start a scan", "scan/", "pricing_scan_19"), "Most popular"),
+    ("radar-webhook-49", "Live Timelock & Signer Webhook", "$49", "USDC / month", [
+        "Timelocks and Safes polled every 30 minutes on Ethereum and Base",
+        "Alerts before queued upgrades or signer rotations execute",
+        "Slack, Telegram, Discord or any HTTPS webhook"], ("Set up alerts", "webhook/", "pricing_webhook_49"), None),
+    ("reverify-seal-99", "24h Mainnet Control-Plane Seal", "$99", "USDC · regular $500", [
+        "Maintainer and independent verifier re-check within 24h",
+        "Safe Transaction Builder JSON and an upstream docs PR",
+        "Base EAS attestation of the observed result"], ("Book a seal", "seal/", "pricing_seal_99"), "Intro: first 5 teams"),
+]
+ENTERPRISE_STRIP = [("clearance", "Multi-contract dossiers", "$2,500–$5,000"), ("continuous", "Continuous Control-Plane Monitoring", "$1,500 / month"),
+                    ("community", "Community queue", "$0"), ("api_sla", "API SLA", "custom")]
 
 
 def pricing_cards(idx, home=""):
     n = site_numbers(idx)["protocols"]
-    req = f"{home}request/"
     out = []
-    for key, price, note, bullets, cta, feat in PRICING:
-        t = TRACKS[key]
+    for key, title, price, note, bullets, (cta, href, kind), badge in SELF_SERVE_PLANS:
         lis = "".join(f"<li>{E(b.format(n=n))}</li>" for b in bullets)
-        out.append(U.card(f'<h3 data-slot="card-title">{E(t[0])}</h3><p class="price">{E(price)}<small>{E(note)}</small></p><ul>{lis}</ul>'
-                          + U.button(E(cta), href=f"{req}?tier={key}", variant="default" if feat else "outline",
-                                     attrs=f'data-tier="{key}" data-cta="pricing_{key.replace("-", "_")}"'),
-                          cls="plan" + (" plan-row" if key in PLAN_ROWS else "") + (" feat" if feat else ""), attrs=f'data-plan="{key}"'))
-    return f'<div class="plans" data-pricing>{"".join(out)}</div>'
+        extra = (f'<a class="plan-alt" href="{home}mcp/" data-cta="pricing_mcp">MCP docs{ARR}</a>' if key == "free" else "")
+        out.append(U.card((U.badge(E(badge), "info") if badge else "") + f'<h3 data-slot="card-title">{E(title)}</h3>'
+                          f'<p class="price">{E(price)}<small>{E(note)}</small></p><ul>{lis}</ul><div class="plan-cta">'
+                          + U.button(E(cta), href=f"{home}{href}", variant="default" if key == "instant-scan-19" else "outline", attrs=f'data-cta="{kind}"')
+                          + extra + '</div>', cls="plan" + (" feat" if key == "instant-scan-19" else ""), attrs=f'data-plan="{key}"'))
+    strip = "".join(f'<a href="{home}request/?tier={k}" data-tier="{k}" data-cta="pricing_{k.replace("-", "_")}"><b>{E(t)}</b><span>{E(p)}</span></a>'
+                    for k, t, p in ENTERPRISE_STRIP)
+    return (f'<div class="plans" data-pricing>{"".join(out)}</div>'
+            f'<div class="ent-strip" data-enterprise-strip><span class="ent-l">Enterprise &amp; protocol diligence</span>{strip}</div>'
+            f'<p class="note">Paid work never changes a result: dossiers, monitoring and seals can still read Delta when docs and chain diverge.</p>')
 
 
 HEX40 = re.compile(r"0x[0-9a-fA-F]{40}")
@@ -3619,6 +3936,10 @@ def privacy_page(idx):
          'Do Not Track. A page view records the page, the referring site&#x27;s host name, the campaign tags of the link you followed '
          '(<code>utm_source</code>, <code>utm_medium</code>, <code>utm_campaign</code>, only from closed, safe patterns) and which Pacta '
          'domain served it.</p>'),
+        ("checkout", "Self-serve checkout", '<p>Verify on-chain &amp; unlock sends the product, the Base transaction hash, the target '
+         'chain and address, the protocol or docs URL and, only if you enter one, a contact handle or webhook URL to Pacta&#x27;s API. The '
+         'contact or webhook is kept privately for delivery and never published. A payment on Base is public on-chain, like any transfer. '
+         'Pay on Base talks only to the wallet in your browser; Pacta never sees your keys.</p>'),
         ("checks", "Live checks", f'<p>When you press Check, the address and chain you entered are sent to Pacta\'s API at <code>{E(API)}</code>. '
          f'"Verify live on RPC" sends read-only JSON-RPC calls from your browser directly to public RPC providers (publicnode.com, drpc.org, '
          f'base.org), which see your IP address under their own policies.</p>'),
@@ -3672,7 +3993,7 @@ def radar_page(idx, radar):
 {topbar("../", "radar/")}
 <main id="main">
 <div class="wrap" style="padding-top:32px"><nav class="crumbs" aria-label="Breadcrumb"><a href="../">Pacta</a><span aria-hidden="true">/</span><span>Radar</span></nav></div>
-{radar_section(radar, "../", full=True).replace('<section class="sec" id="radar"', '<section class="sec" style="padding-top:0" id="radar"', 1).replace("</h1>", "</h1>" + fresh_pill(idx, radar), 1)}
+{radar_section(radar, "../", full=True).replace('<section class="sec" id="radar"', '<section class="sec" style="padding-top:0" id="radar"', 1).replace("</h1>", "</h1>" + fresh_pill(idx, radar), 1).replace('<div class="radar-head">', webhook_banner("../") + '<div class="radar-head">', 1)}
 </main>
 {footer(coverage_line(idx), idx["onchain_anchoring"]["commitment_registry"], "../")}
 </body></html>
@@ -3681,9 +4002,14 @@ def radar_page(idx, radar):
                 f"{BASE_URL}/radar/", prefix="../", og_title="Pacta queued timelock radar") + "\n" + body
 
 
+def webhook_banner(home):
+    return (f'<div class="radar-cta" data-webhook-cta>{U.icon("info")}<span>Want real-time alerts before a timelock executes? Slack, Telegram, '
+            f'Discord or HTTPS webhooks, $49 / month. <a href="{home}webhook/" data-cta="radar_webhook_49">Set up alerts{ARR}</a></span></div>')
+
+
 def pricing_redirect_page():
     """T5: /pricing/ lands on the pricing section of the homepage (static meta refresh; a link for no-refresh clients)."""
-    t, d, img = "Pricing · Pacta", "Pacta pricing: free data and API, $500 re-verification, $2,500–$5,000 dossier, $1,500 / month Continuous Control-Plane Monitoring, API SLA.", f"{BASE_URL}/og-preview.png"
+    t, d, img = "Pricing · Pacta", "Pacta pricing: free data and API, a $19 instant scan, $49 / month webhook alerts, a $99 24h seal, dossiers and SLA monitoring.", f"{BASE_URL}/og-preview.png"
     return ('<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
             f'<title>{E(t)}</title><meta name="description" content="{E(d)}">'
             f'<meta property="og:type" content="website"><meta property="og:site_name" content="Pacta by Fractal Neurons">'
@@ -3720,6 +4046,8 @@ def build_all():
     w("llms/index.html", llms_html(idx, llms_text))
     sp = site_protocols(idx, pinned)
     LK.write_all(ROOT, DOCS, sp, onb, radar, BRIEF_PROTOCOL)   # api/v1/lookup.json + packages/mcp-server/src/lookup.mjs catalog
+    for sku_ in CHECKOUT:                          # v2: /scan/, /webhook/, /seal/ (they read the fresh lookup.json for real example targets)
+        w(f"{CHECKOUT[sku_]['route']}/index.html", product_page(idx, sku_))
     GM.write(ROOT, DOCS)                          # api/v1/graph-manifest.json: durable protocol graph (from protocols/index/rpc-pinned.json)
     digest = load_forum_digest()                  # data/forum-digest.json (optional; missing = empty digest)
     w("api/v1/forum-digest.json", forum_digest_json(idx, digest, pinned))
@@ -3753,7 +4081,7 @@ def build_all():
         w(root_name, open(os.path.join(DOCS, src_rel), encoding="utf-8").read())
     w("feed.xml", atom_feed(idx, radar))
     w("api/v1/feed.json", json_feed(idx, radar))
-    urls = ["/", "/request/", "/llms.txt", "/api/v1/index.json", "/api/v1/radar.json"] + [f"/briefs/{k}/" for k in BRIEFS] + \
+    urls = ["/", "/request/", "/scan/", "/webhook/", "/seal/", "/llms.txt", "/api/v1/index.json", "/api/v1/radar.json"] + [f"/briefs/{k}/" for k in BRIEFS] + \
         [f"/briefs/{b['slug']}/" for b in load_onboarding()["briefs"]] + (["/api/v1/onboarding.json"] if load_onboarding()["briefs"] else []) + \
         ["/api/v1/proposals.json", "/api/v1/rpc-pinned.json", "/api/v1/lookup.json", "/api/v1/protocols.json", "/api/v1/graph-manifest.json", "/integrations/vault-factories/", "/for-protocols/", "/llms/", "/llms-full.txt", "/SKILL.md", "/.well-known/agent.json", "/.well-known/mcp.json",
          "/demos/swapio-x402/", "/bounties/", "/leaderboard/", "/mcp/", "/protocols/", "/feed.xml", "/api/v1/feed.json",

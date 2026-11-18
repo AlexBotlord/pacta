@@ -1,0 +1,87 @@
+{
+  "wave": 2,
+  "category": "protocol_mismatch",
+  "slug": "upshift-axis-origin",
+  "protocol": "Upshift",
+  "chainId": 1,
+  "contractAddress": "0x101E583EE2F83a8BD0bBa202938bbadC6b8795c0",
+  "hunter": "Zhauxxx23",
+  "basePayoutAddress": "0x589304C62b6ad7f29a9a797182feDAF160a5bD3A",
+  "mcpProof": {
+    "tool": "pacta_check_preflight",
+    "arguments": {
+      "chain": "ethereum",
+      "address": "0xAD958C4c0c90bf0216e0f5472F074a9AB30f595F"
+    },
+    "result": {
+      "schema": "pacta.preflight_check.v1",
+      "chain": "ethereum",
+      "chainId": 1,
+      "address": "0xAD958C4c0c90bf0216e0f5472F074a9AB30f595F",
+      "pinnedBlock": 26442630,
+      "pinnedBlockHash": "0xa55cab96a72d234b3a897c842d7925c00c3f2581828137e10470d49bd0f9d3d9",
+      "blockTimestamp": 1795013135,
+      "verdict": "MULTISIG_NO_TIMELOCK",
+      "riskScore": 80,
+      "isContract": true,
+      "isProxy": true,
+      "proxyType": "eip1967",
+      "implementation": "0xEB5f80aCEa6060764E91c185bE93752Ab40F01c2",
+      "beacon": null,
+      "hasAdminSlot": true,
+      "canUpgradeZeroDelay": true,
+      "capabilities": {
+        "pause": false,
+        "blacklist": false,
+        "upgrade": true
+      },
+      "paused": null,
+      "controller": {
+        "address": "0x101E583EE2F83a8BD0bBa202938bbadC6b8795c0",
+        "kind": "multisig_safe",
+        "safeThreshold": 1,
+        "timelockDelaySec": null,
+        "safeOwnerCount": 3,
+        "proxyAdmin": "0x67702786dbCdB3eAD1756F70461DdC30BAd68e63",
+        "source": "eip1967_admin_slot"
+      },
+      "roleAdminMembers": null,
+      "codeBytes": 2001,
+      "method": "Batched JSON-RPC reads pinned to the block hash (EIP-1898); EIP-1967 / EIP-1822 / beacon proxies; capabilities from PUSH4 selectors in proxy + implementation bytecode (heuristic).",
+      "summary": "Controlled by a 1-of-3 Safe with no timelock: changes can land instantly once signers agree. Capabilities seen in bytecode: upgrade.",
+      "source": "live_rpc",
+      "assessment": {
+        "coverage": "unindexed_bytecode_heuristic",
+        "confidence": "medium",
+        "method": "Live bytecode + storage heuristic at the pinned block only: this contract is not in Pacta's indexed catalog (no documentation comparison).",
+        "limits": [
+          "riskScore (0-100) is a heuristic of the controller type and of pause / blacklist / upgrade capabilities read at one block; it is not an audit.",
+          "The live check reads EIP-1967 slots, owner(), Safe getThreshold() / getOwners() and TimelockController getMinDelay(); custom role systems, bridge or L2 admin paths and off-chain operations are not resolved.",
+          "Documentation is compared only for indexed protocols (catalogMatch), at their pinned block."
+        ]
+      },
+      "coverage_gap_hint": "Target is not yet indexed or fully classified. Ask the user if they want you to queue coverage or request this capability via pacta_submit_request (free community queue, or 24h priority clearance for issuers)."
+    }
+  },
+  "blockNumber": 26429778,
+  "blockHash": "0xdaaaf0da1b05eb73f18eba0a5a037f0ae82bada8a004902607d61a5a7ed728e5",
+  "castCommands": [
+    "cast call 0x101E583EE2F83a8BD0bBa202938bbadC6b8795c0 \"getThreshold()(uint256)\" --block 26429778 --rpc-url https://ethereum-rpc.publicnode.com",
+    "cast call 0x101E583EE2F83a8BD0bBa202938bbadC6b8795c0 \"getThreshold()(uint256)\" --block 26429778 --rpc-url https://eth.drpc.org"
+  ],
+  "rpcOutputs": {
+    "a": "1",
+    "b": "1"
+  },
+  "docsUrl": "https://docs.upshift.finance/vault-architecture/risk-controls",
+  "docsQuote": "It is generally a 4 of 6 Gnosis Safe with two signers each from the asset issuer, Upshift and the curator, so no single party can upgrade a vault alone.",
+  "tvlUsd": 282490672,
+  "tvlReference": "https://defillama.com/protocol/upshift",
+  "apache2CommercialGrant": true,
+  "rulesAccepted": [
+    true,
+    true,
+    true,
+    true
+  ]
+}

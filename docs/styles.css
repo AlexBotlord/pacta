@@ -657,7 +657,9 @@ tr.sc-row { cursor: pointer; }
 tr.sc-row > td { height: 56px; }
 tr.sc-row:hover > td { background: var(--accent); }
 tr.sc-row.open > td { background: color-mix(in srgb, var(--accent) 70%, transparent); border-bottom-color: transparent; }
-.sc-toggle { display: inline-flex; align-items: center; min-height: 32px; padding: 0; border: 0; background: none; color: var(--foreground); font-size: 1rem; font-weight: 600; line-height: 20px; text-align: left; cursor: pointer; }
+/* short protocol names (3F, M0) keep a >= 24 x 24 px link box on /protocols/; long names still wrap */
+#proto-table td:first-child a { display: inline-flex; align-items: center; min-inline-size: 24px; min-block-size: 24px; }
+.sc-toggle { display: inline-flex; align-items: center; min-height: 32px; min-inline-size: 24px; padding: 0; border: 0; background: none; color: var(--foreground); font-size: 1rem; font-weight: 600; line-height: 20px; text-align: left; cursor: pointer; }
 .sc-toggle:hover { text-decoration: underline; }
 .sc-chain { display: block; margin-top: 2px; font-size: 0.75rem; color: var(--muted-foreground); }
 .sc-find { color: var(--foreground); font-size: 0.875rem; }

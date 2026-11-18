@@ -1628,12 +1628,13 @@ def protocol_page(name, entries, idx, radar, digest=None, slug=None):
         ch = CHAINS[e.get("chain", "ethereum")][0]
         prov = "RPC-pinned, not EAS-attested" if pinned else f'sprint {E(str(e["sprint"]))}'
         ctrl = f'<dt>Controller</dt><dd>{controller_dd(e)}</dd>' if pinned else ""
+        eas_dd = "" if pinned else f'<dt>Attestation</dt><dd>{proof_html(e)}</dd>'   # EAS-attested records link their Base EAS UID
         doc_lbl = "Documentation (linked, not compared)." if pinned else "Documented."
         records += (f'<article class="memo-sec" id="{E(e["id"])}"><h2>{E(e["surface"])}</h2>'
                     f'<dl class="memo-meta"><dt>Status</dt><dd>{badge(e["classification"])}</dd>'
                     f'<dt>Target</dt><dd>{E(e["target_label"])} {hexref(e["target_contract"])} · {explorer_link(e, "address")}</dd>'
                     f'<dt>Pinned block</dt><dd>{ch} <span class="num">#{int(e["block_number"]):,}</span> · {explorer_link(e)} · {prov}</dd>'
-                    f'<dt>Block hash</dt><dd>{hexref(e["block_hash"], 10, 6)}</dd>{ctrl}</dl>'
+                    f'<dt>Block hash</dt><dd>{hexref(e["block_hash"], 10, 6)}</dd>{eas_dd}{ctrl}</dl>'
                     f'<p><b>Observed onchain.</b> {prose(e["onchain_observed"])}</p>'
                     f'<p><b>{doc_lbl}</b> {prose(e["documented_reference"])}</p>'
                     f'{term(cast_line(e), "Reproduce on any archive node", "Copy the cast reproduction for " + e["surface"])}</article>\n')

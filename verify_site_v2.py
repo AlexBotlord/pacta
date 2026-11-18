@@ -2359,6 +2359,21 @@ def main(argv=None):
     check("v4.7.1 review fixes (V47-01 stable audience-tab height, V47-02 command-input focus ring, V47-03 basket URLs with underscores)",
           all(v471.values()), str([k for k, x in v471.items() if not x]))
 
+    # protocol pages: every EAS-attested record card links its own Base EAS attestation; RPC-pinned pages carry none
+    sp_eas = BS.site_protocols(json.loads(read("docs/api/v1/index.json")))
+    eas_bad = []
+    for v_ in sp_eas.values():
+        pg_ = pages.get(os.path.join("protocols", v_["slug"], "index.html"), "")
+        if v_["pinned"]:
+            if "base.easscan.org/attestation/view/" in pg_:
+                eas_bad.append(v_["slug"])
+        elif not all(f'<dt>Attestation</dt><dd><a href="https://base.easscan.org/attestation/view/{e_["base_eas_uid"]}" target="_blank" rel="noopener">'
+                     f'Base EAS attestation {BS.short(e_["base_eas_uid"])}' in pg_ for e_ in v_["entries"]):
+            eas_bad.append(v_["slug"])
+    n_eas_pages = sum(1 for v_ in sp_eas.values() if not v_["pinned"])
+    check(f"protocol pages: every Base-EAS-attested record card links its attestation ({n_eas_pages} pages, short UID text, full UID in href); "
+          "RPC-pinned pages carry 0 base.easscan.org attestation links", n_eas_pages > 0 and not eas_bad, str(eas_bad[:6]))
+
     nf = pages.get("404.html", "")
     nf_raw = nf.encode()
     nf_h, nf_b = nf_raw.find(b"<head>"), nf_raw.find(b"<body")

@@ -70,7 +70,115 @@
   ],
   "rpcOutputs": {
     "a": "0x000000000000000000000000b43b30c405c61bc330227968635d130994450735",
-    "b": "0x000000000000000000000000b43b30c405c61bc330227968635d130994450735"
+    "b": "0x000000000000000000000000b43b30c405c61bc330227968635d130994450735",
+    "pinnedDualRpcChainProof": {
+      "blockNumber": 58636035,
+      "blockHash": "0x254412c2895b831e6c332e2c9ec54703b21f61254e3292c65c6961c84b91e055",
+      "rpcEndpoints": [
+        "https://mainnet.base.org",
+        "https://base-rpc.publicnode.com"
+      ],
+      "reads": {
+        "upgradeInterfaceVersion": {
+          "selector": "0xad3cb1cc",
+          "castCommands": [
+            "cast call 0x87f18b377e625b62c708D5f6EA96EC193558EFD0 \"UPGRADE_INTERFACE_VERSION()(string)\" --block 58636035 --rpc-url https://mainnet.base.org",
+            "cast call 0x87f18b377e625b62c708D5f6EA96EC193558EFD0 \"UPGRADE_INTERFACE_VERSION()(string)\" --block 58636035 --rpc-url https://base-rpc.publicnode.com"
+          ],
+          "output": "\"5.0.0\""
+        },
+        "implementationProxiableUUID": {
+          "selector": "0x52d1902d",
+          "castCommands": [
+            "cast call 0xb43b30c405c61BC330227968635d130994450735 \"proxiableUUID()(bytes32)\" --block 58636035 --rpc-url https://mainnet.base.org",
+            "cast call 0xb43b30c405c61BC330227968635d130994450735 \"proxiableUUID()(bytes32)\" --block 58636035 --rpc-url https://base-rpc.publicnode.com"
+          ],
+          "output": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc"
+        },
+        "proxyOwner": {
+          "selector": "0x8da5cb5b",
+          "castCommands": [
+            "cast call 0x87f18b377e625b62c708D5f6EA96EC193558EFD0 \"owner()(address)\" --block 58636035 --rpc-url https://mainnet.base.org",
+            "cast call 0x87f18b377e625b62c708D5f6EA96EC193558EFD0 \"owner()(address)\" --block 58636035 --rpc-url https://base-rpc.publicnode.com"
+          ],
+          "output": "0xfF16fd3D147220E6CC002a8e4a1f942ac41DBD23"
+        },
+        "proxyPendingOwner": {
+          "castCommands": [
+            "cast call 0x87f18b377e625b62c708D5f6EA96EC193558EFD0 \"pendingOwner()(address)\" --block 58636035 --rpc-url https://mainnet.base.org",
+            "cast call 0x87f18b377e625b62c708D5f6EA96EC193558EFD0 \"pendingOwner()(address)\" --block 58636035 --rpc-url https://1rpc.io/base"
+          ],
+          "output": "0x0000000000000000000000000000000000000000"
+        },
+        "proxyVault": {
+          "selector": "0xfd243da3",
+          "castCommands": [
+            "cast call 0x87f18b377e625b62c708D5f6EA96EC193558EFD0 \"_vault()(address)\" --block 58636035 --rpc-url https://mainnet.base.org",
+            "cast call 0x87f18b377e625b62c708D5f6EA96EC193558EFD0 \"_vault()(address)\" --block 58636035 --rpc-url https://base-rpc.publicnode.com"
+          ],
+          "output": "0xB99B6dF96d4d5448cC0a5B3e0ef7896df9507Cf5"
+        },
+        "vaultAsset": {
+          "castCommands": [
+            "cast call 0xB99B6dF96d4d5448cC0a5B3e0ef7896df9507Cf5 \"asset()(address)\" --block 58636035 --rpc-url https://mainnet.base.org",
+            "cast call 0xB99B6dF96d4d5448cC0a5B3e0ef7896df9507Cf5 \"asset()(address)\" --block 58636035 --rpc-url https://base-rpc.publicnode.com"
+          ],
+          "output": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
+        },
+        "vaultTotalAssets": {
+          "castCommands": [
+            "cast call 0xB99B6dF96d4d5448cC0a5B3e0ef7896df9507Cf5 \"totalAssets()(uint256)\" --block 58636035 --rpc-url https://mainnet.base.org",
+            "cast call 0xB99B6dF96d4d5448cC0a5B3e0ef7896df9507Cf5 \"totalAssets()(uint256)\" --block 58636035 --rpc-url https://base-rpc.publicnode.com"
+          ],
+          "output": "5441773907954 [5.441e12]"
+        },
+        "proxyActiveAssets": {
+          "castCommands": [
+            "cast call 0x87f18b377e625b62c708D5f6EA96EC193558EFD0 \"activeAssets()(uint256)\" --block 58636035 --rpc-url https://mainnet.base.org",
+            "cast call 0x87f18b377e625b62c708D5f6EA96EC193558EFD0 \"activeAssets()(uint256)\" --block 58636035 --rpc-url https://base-rpc.publicnode.com"
+          ],
+          "output": "5447307404664 [5.447e12]"
+        },
+        "vaultUsdcBalance": {
+          "castCommands": [
+            "cast call 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913 \"balanceOf(address)(uint256)\" 0xB99B6dF96d4d5448cC0a5B3e0ef7896df9507Cf5 --block 58636035 --rpc-url https://mainnet.base.org",
+            "cast call 0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913 \"balanceOf(address)(uint256)\" 0xB99B6dF96d4d5448cC0a5B3e0ef7896df9507Cf5 --block 58636035 --rpc-url https://base-rpc.publicnode.com"
+          ],
+          "output": "50001 [5e4]"
+        },
+        "safeThreshold": {
+          "castCommands": [
+            "cast call 0xfF16fd3D147220E6CC002a8e4a1f942ac41DBD23 \"getThreshold()(uint256)\" --block 58636035 --rpc-url https://mainnet.base.org",
+            "cast call 0xfF16fd3D147220E6CC002a8e4a1f942ac41DBD23 \"getThreshold()(uint256)\" --block 58636035 --rpc-url https://base-rpc.publicnode.com"
+          ],
+          "output": "2"
+        },
+        "safeOwners": {
+          "castCommands": [
+            "cast call 0xfF16fd3D147220E6CC002a8e4a1f942ac41DBD23 \"getOwners()(address[])\" --block 58636035 --rpc-url https://mainnet.base.org",
+            "cast call 0xfF16fd3D147220E6CC002a8e4a1f942ac41DBD23 \"getOwners()(address[])\" --block 58636035 --rpc-url https://base-rpc.publicnode.com"
+          ],
+          "output": "[0x39c1bA0A9D28B084E1E7F9Ef73f2C7e686374C4b, 0x7Dcd02442D92748a2DAc40181890bf47209AbD4e, 0x84f2213CCBc3eCa68bbF01365549E9f42A5515fB]"
+        }
+      },
+      "implementationBytecodeSelectorProof": {
+        "implementationAddress": "0xb43b30c405c61BC330227968635d130994450735",
+        "castCommands": [
+          "cast code 0xb43b30c405c61BC330227968635d130994450735 --block 58636035 --rpc-url https://mainnet.base.org",
+          "cast code 0xb43b30c405c61BC330227968635d130994450735 --block 58636035 --rpc-url https://base-rpc.publicnode.com"
+        ],
+        "byteLength": 24144,
+        "push4SelectorsPresent": {
+          "upgradeToAndCall(address,bytes)": "0x4f1ef286 (PUSH4 634f1ef286 present=true)",
+          "owner()": "0x8da5cb5b (PUSH4 638da5cb5b present=true)",
+          "proxiableUUID()": "0x52d1902d (PUSH4 6352d1902d present=true)"
+        },
+        "basescanVerifiedSources": {
+          "proxy": "https://basescan.org/address/0x87f18b377e625b62c708D5f6EA96EC193558EFD0#code (Exact Match: ERC1967Proxy)",
+          "implementation": "https://basescan.org/address/0xb43b30c405c61BC330227968635d130994450735#code (Exact Match: Loan in src/LoanV2.sol; _authorizeUpgrade(address) internal override onlyOwner {})"
+        }
+      }
+    }
   },
   "docsUrl": "https://docs.40acres.finance/",
   "docsQuote": "40 Acres has completed four independent audits with Sherlock. Smart contracts are immutable and non-upgradeable post-deployment.",

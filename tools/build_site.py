@@ -84,6 +84,9 @@ BRIEFS = {
                                               "delist USDm, reset two bridge limits to 25M per hour and add a custodian (ETAs 2026-11-18).",
     "yearn-v3-op-0x2a14": "Pre-execution brief: one 16-call Yearn V3 timelock batch adds 8 strategies to 6 vaults with max-debt caps "
                           "from 10,000 WETH to 10B USDC (7-day delay; ETA 2026-11-23 16:39 UTC).",
+    # Sprint 27: fifth decoded brief
+    "etherfi-liquid-op-0xf0fb": "Pre-execution brief: one 5-call ether.fi Liquid timelock batch rotates the strategist Merkle roots of the "
+                                "liquidUSD, liquidETH and liquidBTC managers and clears one (1-day delay; ETA 2026-11-19 04:47 UTC).",
 }
 NAV = [("scorecards/", "Scorecards"), ("protocols/", "Protocols"), ("radar/", "Radar"), ("for-protocols/", "For protocols"),
        ("mcp/", "MCP"), ("#pricing", "Pricing")]
@@ -1407,7 +1410,7 @@ SLUG_RE = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
 BRIEF_PROTOCOL = {"ethena-ops-0x0ca0-0x1fe5": "ethena-usde-susde", "etherfi-op-0x244e": "ether-fi-core-eeth-weeth",
                   "treehouse-op-0x2f11": "treehouse-tree-teth", "lombard-ops-0xceee-0x2f2a-0x6404": "lombard-lbtc",
                   "beefy-base-op-0x3302": "beefy-finance-base", "ethena-ops-0xb028-0xca05-0x108e-0x070a": "ethena-usde-susde",
-                  "yearn-v3-op-0x2a14": "yearn-v3"}
+                  "yearn-v3-op-0x2a14": "yearn-v3", "etherfi-liquid-op-0xf0fb": "ether-fi-liquid-veda-boringvault"}
 
 
 def request_href(tier, slug, forum=None, settlement=None, home="../../"):

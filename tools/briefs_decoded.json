@@ -2037,6 +2037,331 @@
         "cast call 0x88ba032be87d5ef1fbe87336b7090767f367bf73 \"getMinDelay()(uint256)\" --block 26436571 --rpc-url $ETH_RPC_URL",
         "cast keccak $(cast code 0x88ba032be87d5ef1fbe87336b7090767f367bf73 --block 26436571 --rpc-url $ETH_RPC_URL)"
       ]
+    },
+    {
+      "slug": "etherfi-liquid-op-0xf0fb",
+      "protocol": "ether.fi Liquid",
+      "protocol_slug": "ether-fi-liquid-veda-boringvault",
+      "chain_id": 1,
+      "timelock": {
+        "address": "0xd829f278016b90fec735f9a12bf8b75e06102c89",
+        "getMinDelay": 86400,
+        "verified": {
+          "address": "0xd829f278016b90fec735f9a12bf8b75e06102c89",
+          "codeKeccak": "0xfddb562593c11daca66d4b598334b215a59a1812602701ff3c1d7994a2da2407",
+          "codeBytes": 6577,
+          "sourcify": {
+            "name": "TimelockController",
+            "fullyQualifiedName": "lib/openzeppelin-contracts/contracts/governance/TimelockController.sol:TimelockController",
+            "match": "match",
+            "runtimeMatch": "match",
+            "compiler": "0.8.21+commit.d9974bed",
+            "verifiedAt": "2026-09-24T16:17:43Z",
+            "onchainBytecodeMatchesChain": true,
+            "url": "https://sourcify.dev/server/v2/contract/1/0xd829f278016b90fec735f9a12bf8b75e06102c89"
+          }
+        }
+      },
+      "operations": [
+        {
+          "op_id": "0xf0fbfdb07f06c3a429b032811930fbb9b314ed8adc343b4d9ef3a60fe2975eea",
+          "label": null,
+          "eta": 1795063667,
+          "eta_utc": "2026-11-19 04:47:47 UTC",
+          "status": {
+            "isOperation": true,
+            "isOperationPending": true,
+            "isOperationReady": false,
+            "isOperationDone": false,
+            "getTimestamp": 1795063667
+          },
+          "ready": false,
+          "predecessor": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "delay": 86400,
+          "scheduled": {
+            "block": 26439645,
+            "tx": "0xd8eaded83c5f85a97938d112fc62cb19916eae955f674b71674fe822d2ee0178",
+            "from": "0xf1fdb7a92a785c7896f1ecf866326884f18ef893",
+            "to": "0xcea8039076e35a825854c5c2f85659430b06ec96",
+            "function": "Safe execTransaction",
+            "logIndexes": [
+              59,
+              60,
+              61,
+              62,
+              63
+            ]
+          },
+          "calls": [
+            {
+              "index": 0,
+              "target": "0x7b57ad1a0aa89583130acfad024241170d24c13c",
+              "value": 0,
+              "selector": "0x21801a99",
+              "function": "setManageRoot(address,bytes32)",
+              "args": {
+                "strategist": "0x607d0c7e3578802eb46d388cb86cfba8ff657306",
+                "_manageRoot": "0x7371d50c45af5f3b9a30e020264be64cfc5f493450311134180a2e59f909e00b"
+              },
+              "calldata": "0x21801a99000000000000000000000000607d0c7e3578802eb46d388cb86cfba8ff6573067371d50c45af5f3b9a30e020264be64cfc5f493450311134180a2e59f909e00b",
+              "cast_decode": "cast calldata-decode \"setManageRoot(address,bytes32)\" 0x21801a99000000000000000000000000607d0c7e3578802eb46d388cb86cfba8ff6573067371d50c45af5f3b9a30e020264be64cfc5f493450311134180a2e59f909e00b",
+              "vaultSymbol": "liquidUSD",
+              "strategistKind": "Safe",
+              "root": {
+                "from": "0x5ca3f563ebdc7002d3bd7f4df7479ffe4475c582315add8af3e39594dfb824cb",
+                "to": "0x7371d50c45af5f3b9a30e020264be64cfc5f493450311134180a2e59f909e00b"
+              }
+            },
+            {
+              "index": 1,
+              "target": "0x7b57ad1a0aa89583130acfad024241170d24c13c",
+              "value": 0,
+              "selector": "0x21801a99",
+              "function": "setManageRoot(address,bytes32)",
+              "args": {
+                "strategist": "0x7b57ad1a0aa89583130acfad024241170d24c13c",
+                "_manageRoot": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              },
+              "calldata": "0x21801a990000000000000000000000007b57ad1a0aa89583130acfad024241170d24c13c0000000000000000000000000000000000000000000000000000000000000000",
+              "cast_decode": "cast calldata-decode \"setManageRoot(address,bytes32)\" 0x21801a990000000000000000000000007b57ad1a0aa89583130acfad024241170d24c13c0000000000000000000000000000000000000000000000000000000000000000",
+              "vaultSymbol": "liquidUSD",
+              "strategistKind": "liquidUSD manager (this contract's own address)",
+              "root": {
+                "from": "0x64fe8acfe1936a9cba6d2cbe0d204b5dee6a3b6b55d52f0d44825c03c6f7f719",
+                "to": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              }
+            },
+            {
+              "index": 2,
+              "target": "0xf9f7969c357ce6dfd7973098ea0d57173592bcca",
+              "value": 0,
+              "selector": "0x21801a99",
+              "function": "setManageRoot(address,bytes32)",
+              "args": {
+                "strategist": "0x607d0c7e3578802eb46d388cb86cfba8ff657306",
+                "_manageRoot": "0xe94f77dd19539dfed197f7721ae1cdb6d2b2a3a33b708377c416ee4cdd320fb5"
+              },
+              "calldata": "0x21801a99000000000000000000000000607d0c7e3578802eb46d388cb86cfba8ff657306e94f77dd19539dfed197f7721ae1cdb6d2b2a3a33b708377c416ee4cdd320fb5",
+              "cast_decode": "cast calldata-decode \"setManageRoot(address,bytes32)\" 0x21801a99000000000000000000000000607d0c7e3578802eb46d388cb86cfba8ff657306e94f77dd19539dfed197f7721ae1cdb6d2b2a3a33b708377c416ee4cdd320fb5",
+              "vaultSymbol": "liquidETH",
+              "strategistKind": "Safe",
+              "root": {
+                "from": "0x54e590fcd2ed925b8ab09dcf08e97aae06de91f0f06180e20b0432b09c9636d3",
+                "to": "0xe94f77dd19539dfed197f7721ae1cdb6d2b2a3a33b708377c416ee4cdd320fb5"
+              }
+            },
+            {
+              "index": 3,
+              "target": "0xf9f7969c357ce6dfd7973098ea0d57173592bcca",
+              "value": 0,
+              "selector": "0x21801a99",
+              "function": "setManageRoot(address,bytes32)",
+              "args": {
+                "strategist": "0xc8111d00351765c64d301cdfc1848bf5ff2e23a2",
+                "_manageRoot": "0x82d52ad0ca873ddc28878c119268b0c9ded3988ce4ceec8ee2275febe2c56312"
+              },
+              "calldata": "0x21801a99000000000000000000000000c8111d00351765c64d301cdfc1848bf5ff2e23a282d52ad0ca873ddc28878c119268b0c9ded3988ce4ceec8ee2275febe2c56312",
+              "cast_decode": "cast calldata-decode \"setManageRoot(address,bytes32)\" 0x21801a99000000000000000000000000c8111d00351765c64d301cdfc1848bf5ff2e23a282d52ad0ca873ddc28878c119268b0c9ded3988ce4ceec8ee2275febe2c56312",
+              "vaultSymbol": "liquidETH",
+              "strategistKind": "EOA",
+              "root": {
+                "from": "0x7cd657a68d12868228630bd83972507df86f854a60fa146e3153f80945b0d7a2",
+                "to": "0x82d52ad0ca873ddc28878c119268b0c9ded3988ce4ceec8ee2275febe2c56312"
+              }
+            },
+            {
+              "index": 4,
+              "target": "0xafa8c08bedb2ec1bbeb64a7ffa44c604e7cca68d",
+              "value": 0,
+              "selector": "0x21801a99",
+              "function": "setManageRoot(address,bytes32)",
+              "args": {
+                "strategist": "0x607d0c7e3578802eb46d388cb86cfba8ff657306",
+                "_manageRoot": "0x49be1837d859035ecf295a056e7c7399becf9c3c5a93574c327b31b4611df777"
+              },
+              "calldata": "0x21801a99000000000000000000000000607d0c7e3578802eb46d388cb86cfba8ff65730649be1837d859035ecf295a056e7c7399becf9c3c5a93574c327b31b4611df777",
+              "cast_decode": "cast calldata-decode \"setManageRoot(address,bytes32)\" 0x21801a99000000000000000000000000607d0c7e3578802eb46d388cb86cfba8ff65730649be1837d859035ecf295a056e7c7399becf9c3c5a93574c327b31b4611df777",
+              "vaultSymbol": "liquidBTC",
+              "strategistKind": "Safe",
+              "root": {
+                "from": "0xe17584a4cf97d1fef74191ce4c4b81fd4644202aead7d2b914f15e4254ab1b69",
+                "to": "0x49be1837d859035ecf295a056e7c7399becf9c3c5a93574c327b31b4611df777"
+              }
+            }
+          ]
+        }
+      ],
+      "decoded": {
+        "salt": "0x690d8927d7ad8b311fe2d29cb9be5866ac546b6d395cadf98dbc70158797424a",
+        "proposer": {
+          "address": "0xcea8039076e35a825854c5c2f85659430b06ec96",
+          "kind": "Safe",
+          "threshold": 4,
+          "owners": 6,
+          "version": "1.3.0",
+          "proposerIsSafe": true,
+          "cancellerIsSafe": true,
+          "executorOpen": false,
+          "executorIsSafe": true
+        },
+        "managers": {
+          "0x7b57ad1a0aa89583130acfad024241170d24c13c": {
+            "vault": "0x08c6f91e2b681faf5e17227f2a44c307b3c1364c",
+            "vaultName": "Ether.Fi Liquid USD",
+            "vaultSymbol": "liquidUSD",
+            "decimals": 6,
+            "totalSupply": "22,021,141.106153",
+            "owner": "0x0000000000000000000000000000000000000000",
+            "authority": "0xaba6ba1e95e0926a6a6b917fe4e2f19ceae4ff2e",
+            "isPaused": false,
+            "timelockCanSetRoot": true,
+            "verified": {
+              "address": "0x7b57ad1a0aa89583130acfad024241170d24c13c",
+              "codeKeccak": "0xe87892949b5350f00619049d4cfec3269c62227923af03d3bac958b0b824ab79",
+              "codeBytes": 8347,
+              "sourcify": {
+                "name": "ManagerWithMerkleVerification",
+                "fullyQualifiedName": "src/base/Roles/ManagerWithMerkleVerification.sol:ManagerWithMerkleVerification",
+                "match": "match",
+                "runtimeMatch": "match",
+                "compiler": "0.8.21+commit.d9974bed",
+                "verifiedAt": "2026-10-29T17:26:12Z",
+                "onchainBytecodeMatchesChain": true,
+                "url": "https://sourcify.dev/server/v2/contract/1/0x7b57ad1a0aa89583130acfad024241170d24c13c"
+              }
+            }
+          },
+          "0xf9f7969c357ce6dfd7973098ea0d57173592bcca": {
+            "vault": "0xf0bb20865277abd641a307ece5ee04e79073416c",
+            "vaultName": "Ether.Fi Liquid ETH",
+            "vaultSymbol": "liquidETH",
+            "decimals": 18,
+            "totalSupply": "122,751.951192058445257272",
+            "owner": "0x0000000000000000000000000000000000000000",
+            "authority": "0x485bde66bb668a51f2372e34e45b1c6226798122",
+            "isPaused": false,
+            "timelockCanSetRoot": true,
+            "verified": {
+              "address": "0xf9f7969c357ce6dfd7973098ea0d57173592bcca",
+              "codeKeccak": "0x4e1623f952168a7843eeda5d668e405ba9b2be059a658cf6b74bfc9788f471b3",
+              "codeBytes": 8347,
+              "sourcify": {
+                "name": "ManagerWithMerkleVerification",
+                "fullyQualifiedName": "src/base/Roles/ManagerWithMerkleVerification.sol:ManagerWithMerkleVerification",
+                "match": "match",
+                "runtimeMatch": "match",
+                "compiler": "0.8.21+commit.d9974bed",
+                "verifiedAt": "2026-11-04T08:39:59Z",
+                "onchainBytecodeMatchesChain": true,
+                "url": "https://sourcify.dev/server/v2/contract/1/0xf9f7969c357ce6dfd7973098ea0d57173592bcca"
+              }
+            }
+          },
+          "0xafa8c08bedb2ec1bbeb64a7ffa44c604e7cca68d": {
+            "vault": "0x5f46d540b6ed704c3c8789105f30e075aa900726",
+            "vaultName": "Ether.Fi Liquid BTC",
+            "vaultSymbol": "liquidBTC",
+            "decimals": 8,
+            "totalSupply": "119.13040557",
+            "owner": "0x0000000000000000000000000000000000000000",
+            "authority": "0x49f954c67ff235034b69b8a59fbe309a40256c8d",
+            "isPaused": false,
+            "timelockCanSetRoot": true,
+            "verified": {
+              "address": "0xafa8c08bedb2ec1bbeb64a7ffa44c604e7cca68d",
+              "codeKeccak": "0x1ff00bcf21ee40f19bc255f96387c7d672b02bf2c3e49d364701b36b9edea4ac",
+              "codeBytes": 8347,
+              "sourcify": {
+                "name": "ManagerWithMerkleVerification",
+                "fullyQualifiedName": "src/base/Roles/ManagerWithMerkleVerification.sol:ManagerWithMerkleVerification",
+                "match": "exact_match",
+                "runtimeMatch": "exact_match",
+                "compiler": "0.8.21+commit.d9974bed",
+                "verifiedAt": "2024-11-15T14:18:21Z",
+                "onchainBytecodeMatchesChain": true,
+                "url": "https://sourcify.dev/server/v2/contract/1/0xafa8c08bedb2ec1bbeb64a7ffa44c604e7cca68d"
+              }
+            }
+          }
+        },
+        "strategists": {
+          "0x607d0c7e3578802eb46d388cb86cfba8ff657306": {
+            "kind": "Safe",
+            "codeBytes": 171,
+            "sourcifyName": "GnosisSafeProxy"
+          },
+          "0x7b57ad1a0aa89583130acfad024241170d24c13c": {
+            "kind": "liquidUSD manager (this contract's own address)",
+            "codeBytes": 8347,
+            "sourcifyName": "ManagerWithMerkleVerification"
+          },
+          "0xc8111d00351765c64d301cdfc1848bf5ff2e23a2": {
+            "kind": "EOA",
+            "codeBytes": 0,
+            "sourcifyName": null
+          }
+        }
+      },
+      "risk_notes": [
+        "One scheduleBatch of 5 setManageRoot(address,bytes32) calls (selector 0x21801a99): 2 on the liquidUSD manager, 2 on the liquidETH manager, 1 on the liquidBTC manager. Every call replaces a non-zero root that is live at the pin.",
+        "A manage root is the Merkle root of the calls a strategist may make through the vault. The leaves of the queued roots are not onchain: what each strategist can do after execution cannot be read from this operation alone.",
+        "liquidETH: the queued root for 0xc811…23a2 goes to an externally owned account (no code at the pin), so a single key will be able to run every call that root allows.",
+        "liquidUSD: the root kept for the manager's own address (0x7b57…c13c) is set to zero, so manage calls that the manager contract itself submits can no longer pass Merkle verification.",
+        "The 4-of-6 Safe 0xcea8…ec96 (Safe 1.3.0) that scheduled the batch is this timelock's proposer, canceller and executor; the executor role is not open, so only that Safe can execute after the ETA or cancel before it.",
+        "On all three managers owner() is the zero address and each manager's authority lets this timelock call setManageRoot (canCall = true at the pin): execution needs no other approval."
+      ],
+      "brief": "briefs/etherfi-liquid-op-0xf0fb/",
+      "pinned_block": {
+        "block_number": 26440366,
+        "block_hash": "0x79a48850c0365696dc6376877db2726f59f710b342b22d22b6cec8f59f367ae3",
+        "block_timestamp": 1794985943,
+        "block_time_utc": "2026-11-18 07:12 UTC",
+        "tag": "finalized",
+        "rpcs_cross_checked": 2
+      },
+      "radar_title": "ether.fi Liquid — strategist Merkle roots rotated on liquidUSD, liquidETH and liquidBTC",
+      "reproduce": [
+        "cast logs --from-block 26439645 --to-block 26439645 --address 0xd829f278016b90fec735f9a12bf8b75e06102c89 \"CallScheduled(bytes32 indexed id,uint256 indexed index,address target,uint256 value,bytes data,bytes32 predecessor,uint256 delay)\" 0xf0fbfdb07f06c3a429b032811930fbb9b314ed8adc343b4d9ef3a60fe2975eea --rpc-url $ETH_RPC_URL",
+        "cast receipt 0xd8eaded83c5f85a97938d112fc62cb19916eae955f674b71674fe822d2ee0178 --rpc-url $ETH_RPC_URL",
+        "cast call 0xd829f278016b90fec735f9a12bf8b75e06102c89 \"getMinDelay()(uint256)\" --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast call 0xd829f278016b90fec735f9a12bf8b75e06102c89 \"isOperationPending(bytes32)(bool)\" 0xf0fbfdb07f06c3a429b032811930fbb9b314ed8adc343b4d9ef3a60fe2975eea --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast call 0xd829f278016b90fec735f9a12bf8b75e06102c89 \"isOperationReady(bytes32)(bool)\" 0xf0fbfdb07f06c3a429b032811930fbb9b314ed8adc343b4d9ef3a60fe2975eea --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast call 0xd829f278016b90fec735f9a12bf8b75e06102c89 \"isOperationDone(bytes32)(bool)\" 0xf0fbfdb07f06c3a429b032811930fbb9b314ed8adc343b4d9ef3a60fe2975eea --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast call 0xd829f278016b90fec735f9a12bf8b75e06102c89 \"getTimestamp(bytes32)(uint256)\" 0xf0fbfdb07f06c3a429b032811930fbb9b314ed8adc343b4d9ef3a60fe2975eea --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast call 0xd829f278016b90fec735f9a12bf8b75e06102c89 \"hasRole(bytes32,address)(bool)\" $(cast keccak PROPOSER_ROLE) 0xcea8039076e35a825854c5c2f85659430b06ec96 --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast call 0xd829f278016b90fec735f9a12bf8b75e06102c89 \"hasRole(bytes32,address)(bool)\" $(cast keccak CANCELLER_ROLE) 0xcea8039076e35a825854c5c2f85659430b06ec96 --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast call 0xd829f278016b90fec735f9a12bf8b75e06102c89 \"hasRole(bytes32,address)(bool)\" $(cast keccak EXECUTOR_ROLE) 0xcea8039076e35a825854c5c2f85659430b06ec96 --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast call 0xd829f278016b90fec735f9a12bf8b75e06102c89 \"hasRole(bytes32,address)(bool)\" $(cast keccak EXECUTOR_ROLE) 0x0000000000000000000000000000000000000000 --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast call 0xcea8039076e35a825854c5c2f85659430b06ec96 \"getThreshold()(uint256)\" --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast call 0xcea8039076e35a825854c5c2f85659430b06ec96 \"getOwners()(address[])\" --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast call 0x7b57ad1a0aa89583130acfad024241170d24c13c \"vault()(address)\" --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast call 0x7b57ad1a0aa89583130acfad024241170d24c13c \"owner()(address)\" --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast call 0x7b57ad1a0aa89583130acfad024241170d24c13c \"authority()(address)\" --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast call 0x7b57ad1a0aa89583130acfad024241170d24c13c \"isPaused()(bool)\" --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast call 0xaba6ba1e95e0926a6a6b917fe4e2f19ceae4ff2e \"canCall(address,address,bytes4)(bool)\" 0xd829f278016b90fec735f9a12bf8b75e06102c89 0x7b57ad1a0aa89583130acfad024241170d24c13c 0x21801a99 --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast call 0x08c6f91e2b681faf5e17227f2a44c307b3c1364c \"symbol()(string)\" --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast call 0x08c6f91e2b681faf5e17227f2a44c307b3c1364c \"totalSupply()(uint256)\" --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast call 0xf9f7969c357ce6dfd7973098ea0d57173592bcca \"vault()(address)\" --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast call 0xf9f7969c357ce6dfd7973098ea0d57173592bcca \"owner()(address)\" --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast call 0xf9f7969c357ce6dfd7973098ea0d57173592bcca \"authority()(address)\" --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast call 0xf9f7969c357ce6dfd7973098ea0d57173592bcca \"isPaused()(bool)\" --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast call 0x485bde66bb668a51f2372e34e45b1c6226798122 \"canCall(address,address,bytes4)(bool)\" 0xd829f278016b90fec735f9a12bf8b75e06102c89 0xf9f7969c357ce6dfd7973098ea0d57173592bcca 0x21801a99 --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast call 0xf0bb20865277abd641a307ece5ee04e79073416c \"symbol()(string)\" --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast call 0xf0bb20865277abd641a307ece5ee04e79073416c \"totalSupply()(uint256)\" --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast call 0xafa8c08bedb2ec1bbeb64a7ffa44c604e7cca68d \"vault()(address)\" --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast call 0xafa8c08bedb2ec1bbeb64a7ffa44c604e7cca68d \"owner()(address)\" --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast call 0xafa8c08bedb2ec1bbeb64a7ffa44c604e7cca68d \"authority()(address)\" --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast call 0xafa8c08bedb2ec1bbeb64a7ffa44c604e7cca68d \"isPaused()(bool)\" --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast call 0x49f954c67ff235034b69b8a59fbe309a40256c8d \"canCall(address,address,bytes4)(bool)\" 0xd829f278016b90fec735f9a12bf8b75e06102c89 0xafa8c08bedb2ec1bbeb64a7ffa44c604e7cca68d 0x21801a99 --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast call 0x5f46d540b6ed704c3c8789105f30e075aa900726 \"symbol()(string)\" --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast call 0x5f46d540b6ed704c3c8789105f30e075aa900726 \"totalSupply()(uint256)\" --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast call 0x7b57ad1a0aa89583130acfad024241170d24c13c \"manageRoot(address)(bytes32)\" 0x607d0c7e3578802eb46d388cb86cfba8ff657306 --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast call 0x7b57ad1a0aa89583130acfad024241170d24c13c \"manageRoot(address)(bytes32)\" 0x7b57ad1a0aa89583130acfad024241170d24c13c --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast call 0xf9f7969c357ce6dfd7973098ea0d57173592bcca \"manageRoot(address)(bytes32)\" 0x607d0c7e3578802eb46d388cb86cfba8ff657306 --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast call 0xf9f7969c357ce6dfd7973098ea0d57173592bcca \"manageRoot(address)(bytes32)\" 0xc8111d00351765c64d301cdfc1848bf5ff2e23a2 --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast call 0xafa8c08bedb2ec1bbeb64a7ffa44c604e7cca68d \"manageRoot(address)(bytes32)\" 0x607d0c7e3578802eb46d388cb86cfba8ff657306 --block 26440366 --rpc-url $ETH_RPC_URL",
+        "cast code 0xc8111d00351765c64d301cdfc1848bf5ff2e23a2 --block 26440366 --rpc-url $ETH_RPC_URL"
+      ]
     }
   ],
   "recheck": [
@@ -2117,10 +2442,10 @@
     }
   ],
   "counts": {
-    "briefs": 4,
-    "operations": 9,
-    "calls": 33,
-    "radarItems": 7,
-    "radarOps": 13
+    "briefs": 5,
+    "operations": 10,
+    "calls": 38,
+    "radarItems": 8,
+    "radarOps": 14
   }
 }

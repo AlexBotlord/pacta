@@ -72,7 +72,7 @@ X = EXPECT
 # sha256 of docs/api/v1/graph-manifest.json: changes only through a deliberate re-pin (a Sprint stage / stamp rewrites it after the
 # rebuild); a merged Wave 2 claim or any site-only change must leave it as is
 GRAPH_MANIFEST_SHA256 = "12637bad50abb5b02ca349e29a8de8b4a336719212e3bcb05f4eaa11751265f3"
-NON_PROTOCOL_PAGES = 30                                                  # docs/**/*.html pages that are not /protocols/<slug>/
+NON_PROTOCOL_PAGES = 31                                                  # docs/**/*.html pages that are not /protocols/<slug>/ (31 with the Sprint 27 brief)
 
 
 def check(name, ok, detail=""):
@@ -308,7 +308,9 @@ GRAPH_TAU = 0.65
 # U4 baseline: the node ids promoted before Sprint 24 (tools/graph_u4_baseline.json). Their texts are minted and immutable, and the word
 # TF-IDF cosine of two short texts with rare shared tokens rises with every node added to the corpus, so pairs inside the baseline are held
 # to their own ceiling and reported; every pair with at least one newer node stays below GRAPH_TAU. The token-count (bow) metric is
-# applied to every pair, with no baseline.
+# applied to every pair, with no baseline. From Sprint 27 the same rule covers every node minted before the current Sprint: the apply
+# script records them as minted_before {sprint, nodes} (the pre-Sprint tools/graph_minted.json ids), so only pairs of two already-published
+# texts move to the ceiling; any pair with a node first published in the current Sprint stays below GRAPH_TAU.
 GRAPH_TFIDF_BASELINE_CEILING = 0.70
 
 
@@ -593,8 +595,17 @@ def graph_manifest_checks(args):
     check(f"FN-Memory {SCRUB.FN_MEMORY_COMMIT[:8]} pre-write scrubber (mcp_server.py looks_like_secret + custom_relations.py canonical payload): "
           "0 hits across every node text and every relation payload; node text abbreviates 0x values (0xABCD..1234)",
           not hits and not long0x, f"{len(nodes)} texts + {len(edges)} payloads; hits {hits[:4]}; unabbreviated {long0x[:4]}")
-    base_ids = set(json.loads(read("tools/graph_u4_baseline.json"))["nodes"])
-    inb = [nid in base_ids for nid in ids]
+    u4 = json.loads(read("tools/graph_u4_baseline.json"))
+    base_ids = set(u4["nodes"])
+    mb = u4.get("minted_before") or {"sprint": None, "nodes": []}
+    minted_before = set(mb["nodes"])
+    minted_texts = json.loads(read("tools/graph_minted.json"))["nodes"]
+    text_of = {n["id"]: n["text"] for n in nodes}
+    mb_ok = (not minted_before or (mb["sprint"] == EXPECT["sprints"] and base_ids <= minted_before <= set(ids)
+                                   and all(minted_texts.get(nid) == text_of[nid] for nid in minted_before)))
+    held = base_ids | minted_before
+    mb_note = f" or two nodes minted before Sprint {mb['sprint']}" if minted_before else ""
+    inb = [nid in held for nid in ids]
     old = {(i, j) for i in range(len(ids)) for j in range(i + 1, len(ids)) if inb[i] and inb[j]}
     best = graph_distinctiveness([n["text"] for n in nodes], exempt_tfidf=old)
     ex = [v for k, v in best.items() if isinstance(k, tuple)]
@@ -602,9 +613,9 @@ def graph_manifest_checks(args):
     worst = {k: (round(v[0], 3), ids[v[1]] if v[1] is not None else None, ids[v[2]] if v[2] is not None else None) for k, v in best.items()}
     top_old = max(ex) if ex else (0.0, None, None)
     check(f"graph node texts are distinct (U4): max pairwise token-count (bow expectation) and TF-IDF cosine < {GRAPH_TAU} "
-          f"(TF-IDF pairs of two pre-Sprint-24 minted nodes < {GRAPH_TFIDF_BASELINE_CEILING}, reported)",
+          f"(TF-IDF pairs of two pre-Sprint-24 minted nodes{mb_note} < {GRAPH_TFIDF_BASELINE_CEILING}, reported)",
           all(v[0] < GRAPH_TAU for v in best.values()) and top_old[0] < GRAPH_TFIDF_BASELINE_CEILING and len(base_ids) == 283
-          and base_ids <= set(ids),
+          and base_ids <= set(ids) and mb_ok,
           f"{worst}; baseline max {round(top_old[0], 4)} {ids[top_old[1]] if top_old[1] is not None else None}~"
           f"{ids[top_old[2]] if top_old[2] is not None else None}")
     facts = json.loads(read("tools/graph_controller_facts.json"))
@@ -2224,11 +2235,12 @@ def main(argv=None):
     check("v4.5.1 polish (R3-01 neutral Aligned badges, R3-02 demo receipt link target, '36 of 90' reconciliation line)", all(v451.values()),
           str([k for k, x in v451.items() if not x]))
 
-    # v4.6: 7-item / 13-op multi-chain radar (Ethereum + Base), 4 decoded pre-execution briefs, one receipt card per protocol + 11 radar + x-feed mirror
+    # v4.6: multi-chain radar (Ethereum + Base; Sprint 27 refresh: 8 items / 14 ops), decoded pre-execution briefs (5 from Sprint 27), one receipt card per protocol + radar cards + x-feed mirror
     rad46 = json.loads(read("docs/api/v1/radar.json"))
     home46, radar46 = pages["index.html"], pages[os.path.join("radar", "index.html")]
     base46 = [it for it in rad46["items"] if it.get("chain_id") == 8453]
-    new46 = ["lombard-ops-0xceee-0x2f2a-0x6404", "beefy-base-op-0x3302", "ethena-ops-0xb028-0xca05-0x108e-0x070a", "yearn-v3-op-0x2a14"]
+    new46 = ["lombard-ops-0xceee-0x2f2a-0x6404", "beefy-base-op-0x3302", "ethena-ops-0xb028-0xca05-0x108e-0x070a", "yearn-v3-op-0x2a14",
+             "etherfi-liquid-op-0xf0fb"]
     dec46 = json.loads(read("tools/briefs_decoded.json"))
     dec_by46 = {b_["slug"]: b_ for b_ in dec46["briefs"]}
     briefs46 = {sl: pages.get(os.path.join("briefs", sl, "index.html"), "") for sl in new46}
@@ -2243,17 +2255,17 @@ def main(argv=None):
         return {**it_, "eta": None if st_ == "executed" else it_["eta"],
                 "operations": [{**o_, "done": st_ == "executed", "pending": st_ != "executed", "ready": st_ == "ready"} for o_ in it_["operations"]]}
     v46 = {
-        "radar.json: 7 items / 13 ops (Sprint 26 refresh: 1 ready (3 ops), 3 pending (6 ops), executed (4 ops), Beefy on Base + Treehouse on Ethereum executed); refreshed_at (Ethereum) + refreshed_at_base (Base)":
-            len(rad46["items"]) == 7 and sum(len(it["operations"]) for it in rad46["items"]) == 13
-            and [BS.item_state(it) for it in rad46["items"]].count("ready") == 1 and [BS.item_state(it) for it in rad46["items"]].count("pending") == 3
+        "radar.json: 8 items / 14 ops (Sprint 27 refresh: 1 ready (3 ops), 4 pending (7 ops), executed (4 ops), Beefy on Base + Treehouse on Ethereum executed); refreshed_at (Ethereum) + refreshed_at_base (Base)":
+            len(rad46["items"]) == 8 and sum(len(it["operations"]) for it in rad46["items"]) == 14
+            and [BS.item_state(it) for it in rad46["items"]].count("ready") == 1 and [BS.item_state(it) for it in rad46["items"]].count("pending") == 4
             and sum(len(it["operations"]) for it in rad46["items"] if BS.item_state(it) == "ready") == 3
-            and sum(len(it["operations"]) for it in rad46["items"] if BS.item_state(it) == "pending") == 6
+            and sum(len(it["operations"]) for it in rad46["items"] if BS.item_state(it) == "pending") == 7
             and sum(len(it["operations"]) for it in rad46["items"] if BS.item_state(it) == "executed") == 4
             and all(BS.item_state(it) == "executed" for it in base46)
             and r46["tag"] == rb46.get("tag") == "finalized" and len(base46) == 1 and all(it.get("protocol_slug") and it.get("chain_id") in (1, 8453) for it in rad46["items"]),
-        "counts text '1 ready (3 ops) · 3 pending (6 ops) · Executed (4 ops)' on / and /radar/":
-            BS.radar_counts_text(rad46) == "1 ready (3 ops) · 3 pending (6 ops) · Executed (4 ops)"
-            and all("data-radar-counts>1 ready (3 ops) · 3 pending (6 ops) · Executed (4 ops)</span>" in t for t in (home46, radar46)),
+        "counts text '1 ready (3 ops) · 4 pending (7 ops) · Executed (4 ops)' on / and /radar/":
+            BS.radar_counts_text(rad46) == "1 ready (3 ops) · 4 pending (7 ops) · Executed (4 ops)"
+            and all("data-radar-counts>1 ready (3 ops) · 4 pending (7 ops) · Executed (4 ops)</span>" in t for t in (home46, radar46)),
         "Base items link Basescan (never Etherscan) for the timelock on / and /radar/, carry a 'Base' tag, and the Base brief has 0 etherscan.io links":
             all(f'https://basescan.org/address/{it["timelock"]}' in t and f'etherscan.io/address/{it["timelock"]}' not in t and f'etherscan.io/address/{it["timelock"].lower()}' not in t
                 and '<span class="chain-tag">Base</span>' in t for it in base46 for t in (home46, radar46))
@@ -2270,7 +2282,7 @@ def main(argv=None):
                 and f"Executed on Base by Finalized Block #{rb46['block_number']:,}" in BS.post_eta_banner(ann46(it, "executed"), rb46, "base")
                 and "on L1" not in BS.post_eta_banner(ann46(it, "ready"), rb46, "base") for it in base46)
             and "on L1" not in beefy46,
-        "4 new briefs: rendered from tools/briefs_decoded.json (every op id, call, risk note and reproduce command), in BRIEFS / BRIEF_PROTOCOL, sitemap, llms.txt, lookup.json + lookup.mjs":
+        "5 decoded briefs: rendered from tools/briefs_decoded.json (every op id, call, risk note and reproduce command), in BRIEFS / BRIEF_PROTOCOL, sitemap, llms.txt, lookup.json + lookup.mjs":
             dec46["schema"] == "pacta.decoded_briefs.v1" and sorted(dec_by46) == sorted(new46)
             and all(sl in BS.BRIEFS and BS.BRIEF_PROTOCOL[sl] == dec_by46[sl]["protocol_slug"] for sl in new46)
             and all(all(o_["op_id"] in briefs46[sl] for o_ in dec_by46[sl]["operations"])
@@ -2289,7 +2301,7 @@ def main(argv=None):
         "app.js keeps live blocks per chain (an Ethereum block is never compared with a Base block) (harness)":
             "blk[ch] = Math.floor(n)" in appjs and res.get("v46_live_blocks_per_chain") is True,
     }
-    check(f"v4.6 multi-chain radar (7 items / 13 ops, Basescan for chain id 8453, two-chain provenance, 'on Base' wording), 4 decoded briefs, {X['protocols'] + rad46n} cards",
+    check(f"v4.6 multi-chain radar (8 items / 14 ops, Basescan for chain id 8453, two-chain provenance, 'on Base' wording), 5 decoded briefs, {X['protocols'] + rad46n} cards",
           all(v46.values()), str([k for k, x in v46.items() if not x]))
 
     # v4.7 W1-W5 (external UX evaluation quick wins)

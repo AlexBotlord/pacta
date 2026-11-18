@@ -71,6 +71,13 @@ OPS = [
      "timelock": "0xE8Dc0Fab349EA169283C48Ccfd09d797E6DB7c94", "brief": "briefs/ethena-ops-0x0ca0-0x1fe5/",
      "ops": [("0x1fe5e3e892708310bbfcf50efc03a1b8e21e0d0042035d7e8315e0cd5f26d85b", None),
              ("0x0ca0fcc4856b87f3df9a74532bd60db58d1310c27c17e7d9bfa8a56846f57a90", None)]},
+    {"protocol": "ether.fi Liquid", "protocol_slug": "ether-fi-liquid-veda-boringvault", "chain_id": 1,
+     "title": "ether.fi Liquid — strategist Merkle roots rotated on liquidUSD, liquidETH and liquidBTC",
+     "summary": "One 5-call batch of setManageRoot on the Veda ManagerWithMerkleVerification contracts of three Liquid vaults: four live "
+                "strategist roots replaced (a Safe on all three vaults, an EOA on liquidETH) and the liquidUSD manager's own root set to zero. "
+                "The new roots' leaves are not onchain.",
+     "timelock": "0xD829F278016b90FEc735F9A12Bf8b75E06102C89", "brief": "briefs/etherfi-liquid-op-0xf0fb/",
+     "ops": [("0xf0fbfdb07f06c3a429b032811930fbb9b314ed8adc343b4d9ef3a60fe2975eea", None)]},
 ]
 RANK = {"ready": 0, "pending": 1, "mixed": 2, "unknown": 3, "executed": 4}
 

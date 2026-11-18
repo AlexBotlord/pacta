@@ -95,6 +95,7 @@ TOKENS = {
     "etherfi-op-0x244e": ["eETH", "weETH"], "treehouse-op-0x2f11": ["TREE", "tETH"],
     "lombard-ops-0xceee-0x2f2a-0x6404": ["LBTC", "BTC.b"], "beefy-base-op-0x3302": ["cowAeroBaseUSDC-VVV", "VVV"],
     "ethena-ops-0xb028-0xca05-0x108e-0x070a": ["USDe", "USDm"], "yearn-v3-op-0x2a14": ["yvUSDC-1", "yvUSD", "yvWETH-1", "yvFlexUSDC"],
+    "etherfi-liquid-op-0xf0fb": ["liquidUSD", "liquidETH", "liquidBTC"],
 }
 
 

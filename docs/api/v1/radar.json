@@ -2,18 +2,18 @@
   "schema": "pacta.radar.v1",
   "chain_id": 1,
   "refreshed_at": {
-    "block_number": 26439505,
-    "block_hash": "0xce3270237a669c83bf0c53468ce4eec299c89cc58c3aebf5a9cf8620103175c6",
-    "block_timestamp": 1794975575,
-    "block_time_utc": "2026-11-18 04:19 UTC",
+    "block_number": 26440398,
+    "block_hash": "0x04e1dd75b076588c15365e881bf9c45856751f86714fe460256115f0c97acd96",
+    "block_timestamp": 1794986327,
+    "block_time_utc": "2026-11-18 07:18 UTC",
     "tag": "finalized",
     "rpcs_cross_checked": 2
   },
   "refreshed_at_base": {
-    "block_number": 58923958,
-    "block_hash": "0x675f9abbb427df456bdbdcc8256e61f1d69349257ebd883b5d429d3dd81b55bd",
-    "block_timestamp": 1794975167,
-    "block_time_utc": "2026-11-18 04:12 UTC",
+    "block_number": 58977569,
+    "block_hash": "0x00f3a8bf4d0eb9550a2ba5b417470b619c8933f15f31eb7f9d5504b4782c12c9",
+    "block_timestamp": 1794985889,
+    "block_time_utc": "2026-11-18 07:11 UTC",
     "tag": "finalized",
     "rpcs_cross_checked": 2
   },
@@ -99,6 +99,26 @@
         }
       ],
       "eta": 1795011647
+    },
+    {
+      "protocol": "ether.fi Liquid",
+      "protocol_slug": "ether-fi-liquid-veda-boringvault",
+      "chain_id": 1,
+      "title": "ether.fi Liquid — strategist Merkle roots rotated on liquidUSD, liquidETH and liquidBTC",
+      "summary": "One 5-call batch of setManageRoot on the Veda ManagerWithMerkleVerification contracts of three Liquid vaults: four live strategist roots replaced (a Safe on all three vaults, an EOA on liquidETH) and the liquidUSD manager's own root set to zero. The new roots' leaves are not onchain.",
+      "timelock": "0xD829F278016b90FEc735F9A12Bf8b75E06102C89",
+      "brief": "briefs/etherfi-liquid-op-0xf0fb/",
+      "min_delay_seconds": 86400,
+      "operations": [
+        {
+          "op_id": "0xf0fbfdb07f06c3a429b032811930fbb9b314ed8adc343b4d9ef3a60fe2975eea",
+          "eta": 1795063667,
+          "pending": true,
+          "done": false,
+          "ready": false
+        }
+      ],
+      "eta": 1795063667
     },
     {
       "protocol": "ether.fi",

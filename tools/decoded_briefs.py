@@ -1,4 +1,4 @@
-"""v4.6: the four radar pre-execution briefs rendered from tools/briefs_decoded.json (schema pacta.decoded_briefs.v1).
+"""v4.6: the radar pre-execution briefs rendered from tools/briefs_decoded.json (schema pacta.decoded_briefs.v1); Sprint 27 adds the fifth.
 
 tools/briefs_decoded.json is the decoder's output, committed byte-for-byte: scheduling logs, decoded calls, current vs new state,
 verified sources (Sourcify), risk notes and `cast` reproduction commands. Every value in it was read at a finalized block
@@ -58,6 +58,15 @@ EDITORIAL = {
                  "default queue and given a max-debt cap, from 10,000 WETH to 10,000,000,000 USDC."),
         "badges": [("badge-cyan", "Pre-execution brief"), ("badge-amber", "yvFlexUSDC cap: in effect uncapped")],
         "state_title": "Vaults and strategies",
+    },
+    "etherfi-liquid-op-0xf0fb": {
+        "title": "Pacta Governance Radar · Pre-Execution Brief — ether.fi Liquid Op 0xf0fb",
+        "h1": "ether.fi Liquid — Strategist Merkle Roots Rotated on <code>liquidUSD</code>, <code>liquidETH</code> and <code>liquidBTC</code>",
+        "lede": ("Pre-execution decode of one 5-call timelock batch on the Veda ManagerWithMerkleVerification contracts of three ether.fi "
+                 "Liquid vaults: four live strategist roots are replaced and one is cleared. The roots' leaves are not onchain."),
+        "badges": [("badge-cyan", "Pre-execution brief"), ("badge-amber", "Root leaves not onchain"),
+                   ("badge-amber", "EOA strategist on liquidETH")],
+        "state_title": "Managers, vaults and strategists at the pin",
     },
 }
 
@@ -265,6 +274,9 @@ def target_names(b):
         n[d["minting"]["address"]] = "EthenaMinting"
         n[d["oftAdapter"]["address"]] = "USDeOFTAdapter (LayerZero)"
         n.update({a: v["symbol"] for a, v in d["assets"].items()})
+    if "managers" in d:
+        n.update({m: f'{v["vaultSymbol"]} manager' for m, v in d["managers"].items()})
+        n.update({v["vault"]: v["vaultSymbol"] for v in d["managers"].values()})
     if "vaults" in d:
         n.update({a: v["symbol"] for a, v in d["vaults"].items()})
         n.update({s["strategy"]: s["strategyName"] for s in d["strategies"]})
@@ -288,6 +300,10 @@ def call_effect(b, o, c, E):
         k = c["custodian"]
         return (f' — {E(k["kind"])} ({k["codeBytes"]} bytes of code); isCustodianAddress = '
                 f'{str(k["isCustodianAddress"]).lower()} at the pin')
+    if "root" in c:
+        r = c["root"]
+        to = "zero (cleared)" if int(r["to"], 16) == 0 else f'{r["to"][:6]}…{r["to"][-4:]}'
+        return f' — {E(c["vaultSymbol"])}: {E(c["strategistKind"])} strategist root {E(r["from"][:6])}…{E(r["from"][-4:])} to {E(to)}'
     if "newMaxDebtUnits" in c:
         return f' — max debt {E(c["newMaxDebtUnits"])}'
     if c["function"].startswith("add_strategy"):
@@ -328,6 +344,14 @@ def kpis(b, F):
                 ("Collateral", "USDm delisted", "removeSupportedAsset(USDm)", False),
                 ("Bridge rate limits", f"{mstr(limits[0]['limit']['to'])} USDe / hour", " · ".join(f"eid {r['dstEid']} was {mstr(r['limit']['from'])}" for r in limits), False),
                 ("New custodian", cust["custodian"]["kind"], "Not yet a custodian · check the owner", False)]
+    if slug.startswith("etherfi-liquid"):
+        calls = [c for o in ops for c in o["calls"]]
+        cleared = [c for c in calls if int(c["root"]["to"], 16) == 0]
+        kinds = sorted({s["kind"] for a, s in d["strategists"].items() if a not in d["managers"]})
+        return [("Calls", f"{len(calls)} in one batch", f"setManageRoot on {len(d['managers'])} vaults", False),
+                ("Timelock delay", F["delay"], f"ETA {F['eta']}", False),
+                ("Roots replaced", f"{len(calls)} of {len(calls)} live", f"{len(cleared)} set to zero ({cleared[0]['vaultSymbol']})", False),
+                ("Strategists", " + ".join(kinds), "plus the liquidUSD manager itself", False)]
     v = d["vaults"]
     top = max(d["strategies"], key=lambda s: s["newMaxDebt"] / 10 ** v[s["vault"]]["decimals"])
     return [("Calls", f"{len(ops[0]['calls'])} in one batch", f"{len(d['strategies'])} add_strategy + {len(d['strategies'])} max-debt caps", False),
@@ -437,5 +461,31 @@ def state_yearn(b, item, bs, xa, E):
             f'calls update_debt up to the new max debt.</p>', '</div>']
 
 
+def state_etherfi_liquid(b, item, bs, xa, E):
+    d, ops = b["decoded"], b["operations"]
+    tl = item["timelock"].lower()
+    p = d["proposer"]
+    assert p["proposerIsSafe"] and p["executorIsSafe"] and not p["executorOpen"]
+    mrows = []
+    for m, v in d["managers"].items():
+        assert int(v["owner"], 16) == 0 and v["timelockCanSetRoot"] and not v["isPaused"]
+        mrows.append(f'<tr><td>{xa(v["vault"], v["vaultSymbol"])}<br>{E(v["vaultName"])}</td><td title="{E(v["totalSupply"])}">{E(round2(v["totalSupply"]))}</td>'
+                     f'<td>{xa(m)} · Sourcify {E(v["verified"]["sourcify"]["match"])}</td><td>{xa(v["authority"])}</td></tr>')
+    root = lambda h: f'<span class="addr" title="{E(h)}">{"zero" if int(h, 16) == 0 else E(h[:10] + "…" + h[-4:])}</span>'
+    crows = [f'<tr><td>{E(c["vaultSymbol"])}</td><td>{xa(c["args"]["strategist"])}<br>{E(c["strategistKind"])}</td>'
+             f'<td>{root(c["root"]["from"])}</td><td>{root(c["root"]["to"])}</td></tr>' for o in ops for c in o["calls"]]
+    return ['<div class="card">',
+            f'  <p>Each vault is run by a Veda ManagerWithMerkleVerification contract whose owner() is the zero address; its authority lets '
+            f'{xa(tl, "this timelock")} call setManageRoot. None of the three managers is paused at the pin. Vault shares outstanding:</p>',
+            '  <table><thead><tr><th>Vault</th><th>Shares (totalSupply)</th><th>Manager</th><th>Authority</th></tr></thead>',
+            '  <tbody>' + "".join(mrows) + '</tbody></table>',
+            '  <p>Strategist roots, live at the pin and queued:</p>',
+            '  <table><thead><tr><th>Vault</th><th>Strategist</th><th>Root now</th><th>Queued root</th></tr></thead>',
+            '  <tbody>' + "".join(crows) + '</tbody></table>',
+            f'  <p>The batch was scheduled by the {p["threshold"]}-of-{p["owners"]} Safe {xa(p["address"])} (Safe {E(p["version"])}), which is this '
+            f'timelock\'s proposer, canceller and executor; the executor role is not open to everyone.</p>', '</div>']
+
+
 STATE = {"lombard-ops-0xceee-0x2f2a-0x6404": state_lombard, "beefy-base-op-0x3302": state_beefy,
-         "ethena-ops-0xb028-0xca05-0x108e-0x070a": state_ethena, "yearn-v3-op-0x2a14": state_yearn}
+         "ethena-ops-0xb028-0xca05-0x108e-0x070a": state_ethena, "yearn-v3-op-0x2a14": state_yearn,
+         "etherfi-liquid-op-0xf0fb": state_etherfi_liquid}

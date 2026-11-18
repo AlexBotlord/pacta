@@ -1,0 +1,219 @@
+{
+  "wave": 2,
+  "category": "protocol_mismatch",
+  "slug": "usdd",
+  "protocol": "USDD",
+  "chainId": 1,
+  "contractAddress": "0x3dbA111255d3888c723242320595588754Cf493e",
+  "hunter": "VB-Blue",
+  "basePayoutAddress": "0xe0a3AAe6e7d042f42e82830f4eEbF426cc1270a2",
+  "mcpProof": {
+    "tool": "pacta_check_preflight",
+    "arguments": {
+      "chain": "ethereum",
+      "address": "0x3dbA111255d3888c723242320595588754Cf493e"
+    },
+    "result": {
+      "schema": "pacta.preflight_check.v1",
+      "chain": "ethereum",
+      "chainId": 1,
+      "address": "0x3dbA111255d3888c723242320595588754Cf493e",
+      "pinnedBlock": 26441608,
+      "pinnedBlockHash": "0x019612a2131287d4aef7e9d8bddef194ec24952903a243386eb359fd623bd001",
+      "blockTimestamp": 1795000859,
+      "verdict": "INSTANT_EOA_ADMIN_RISK",
+      "riskScore": 95,
+      "isContract": true,
+      "isProxy": false,
+      "proxyType": null,
+      "implementation": null,
+      "beacon": null,
+      "hasAdminSlot": false,
+      "canUpgradeZeroDelay": false,
+      "capabilities": {
+        "pause": true,
+        "blacklist": false,
+        "upgrade": false
+      },
+      "paused": null,
+      "controller": {
+        "address": "0x25198d0D111eEAC0fb1Bd1DE826294D9Fce84378",
+        "kind": "eoa",
+        "safeThreshold": null,
+        "timelockDelaySec": null,
+        "source": "owner()"
+      },
+      "roleAdminMembers": null,
+      "codeBytes": 10321,
+      "method": "Batched JSON-RPC reads pinned to the block hash (EIP-1898); EIP-1967 / EIP-1822 / beacon proxies; capabilities from PUSH4 selectors in proxy + implementation bytecode (heuristic).",
+      "summary": "Controlled by a single externally owned account: one key can change this contract instantly. Additional unresolved role/authority administration surface is also present. Capabilities seen in bytecode: pause.",
+      "source": "live_rpc",
+      "assessment": {
+        "coverage": "unindexed_bytecode_heuristic",
+        "confidence": "medium",
+        "method": "Live bytecode + storage heuristic at the pinned block only: this contract is not in Pacta's indexed catalog (no documentation comparison).",
+        "limits": [
+          "riskScore (0-100) is a heuristic of the controller type and of pause / blacklist / upgrade capabilities read at one block; it is not an audit.",
+          "The live check reads EIP-1967 slots, owner(), Safe getThreshold() / getOwners() and TimelockController getMinDelay(); custom role systems, bridge or L2 admin paths and off-chain operations are not resolved.",
+          "Documentation is compared only for indexed protocols (catalogMatch), at their pinned block."
+        ]
+      },
+      "coverage_gap_hint": "Target is not yet indexed or fully classified. Ask the user if they want you to queue coverage or request this capability via pacta_submit_request (free community queue, or 24h priority clearance for issuers)."
+    }
+  },
+  "blockNumber": 26441549,
+  "blockHash": "0x65d12f7aa9cd2ca3ea52175823cdc8fb0f0bd4b6d020ede56222dad2d7759e91",
+  "castCommands": [
+    "cast call 0x3dbA111255d3888c723242320595588754Cf493e \"owner()(address)\" --block 26441549 --rpc-url https://gateway.tenderly.co/public/mainnet",
+    "cast call 0x3dbA111255d3888c723242320595588754Cf493e \"owner()(address)\" --block 26441549 --rpc-url https://eth.drpc.org"
+  ],
+  "rpcOutputs": {
+    "a": "0x25198d0D111eEAC0fb1Bd1DE826294D9Fce84378",
+    "b": "0x25198d0D111eEAC0fb1Bd1DE826294D9Fce84378",
+    "pinnedDualRpcChainProof": {
+      "blockNumber": 26441549,
+      "blockHash": "0x65d12f7aa9cd2ca3ea52175823cdc8fb0f0bd4b6d020ede56222dad2d7759e91",
+      "rpcEndpoints": [
+        "https://gateway.tenderly.co/public/mainnet",
+        "https://eth.drpc.org"
+      ],
+      "summary": "GovActionsProxy (0x3dbA111255d3888c723242320595588754Cf493e) owner() is single EOA 0x25198d0D111eEAC0fb1Bd1DE826294D9Fce84378 (0 bytes code). EOA has immediate canCall() authorization to plot and exec on Pause (0xca277750ECD2b0707a7CcEF2A78EC2f33B5FC7F7, delay() == 0 seconds), which owns PauseProxy (0xF60cf7d4330f115F9e51fF0d56D23F95F0f10Aee), a ward (wards == 1) on Vat, End, Jug, Dog, Spot, MCD_PSM_USDT_A, MCD_PSM_USDC_A, and JOIN_PSM_USDT_A \u2014 contradicting USDD's claim that critical protocol changes are subject to community review and decentralized governance.",
+      "reads": {
+        "govActionsProxyCanCallPauseExec": {
+          "castCommands": [
+            "cast call 0x3dbA111255d3888c723242320595588754Cf493e \"canCall(address,address,bytes4)(bool)\" 0x25198d0D111eEAC0fb1Bd1DE826294D9Fce84378 0xca277750ECD2b0707a7CcEF2a78EC2f33b5FC7F7 0x168ccd67 --block 26441549 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x3dbA111255d3888c723242320595588754Cf493e \"canCall(address,address,bytes4)(bool)\" 0x25198d0D111eEAC0fb1Bd1DE826294D9Fce84378 0xca277750ECD2b0707a7CcEF2a78EC2f33b5FC7F7 0x168ccd67 --block 26441549 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "true",
+          "rawHex": "0x0000000000000000000000000000000000000000000000000000000000000001",
+          "note": "Single EOA owner 0x25198d0D111eEAC0fb1Bd1DE826294D9Fce84378 can call Pause.exec immediately"
+        },
+        "govActionsProxyCanCallPausePlot": {
+          "castCommands": [
+            "cast call 0x3dbA111255d3888c723242320595588754Cf493e \"canCall(address,address,bytes4)(bool)\" 0x25198d0D111eEAC0fb1Bd1DE826294D9Fce84378 0xca277750ECD2b0707a7CcEF2a78EC2f33b5FC7F7 0x46d2fbbb --block 26441549 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x3dbA111255d3888c723242320595588754Cf493e \"canCall(address,address,bytes4)(bool)\" 0x25198d0D111eEAC0fb1Bd1DE826294D9Fce84378 0xca277750ECD2b0707a7CcEF2a78EC2f33b5FC7F7 0x46d2fbbb --block 26441549 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "true",
+          "rawHex": "0x0000000000000000000000000000000000000000000000000000000000000001"
+        },
+        "pauseAuthority": {
+          "castCommands": [
+            "cast call 0xca277750ECD2b0707a7CcEF2a78EC2f33b5FC7F7 \"authority()(address)\" --block 26441549 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0xca277750ECD2b0707a7CcEF2a78EC2f33b5FC7F7 \"authority()(address)\" --block 26441549 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "0x3dbA111255d3888c723242320595588754Cf493e",
+          "rawHex": "0x0000000000000000000000003dba111255d3888c723242320595588754cf493e"
+        },
+        "pauseDelay": {
+          "castCommands": [
+            "cast call 0xca277750ECD2b0707a7CcEF2a78EC2f33b5FC7F7 \"delay()(uint256)\" --block 26441549 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0xca277750ECD2b0707a7CcEF2a78EC2f33b5FC7F7 \"delay()(uint256)\" --block 26441549 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "0",
+          "rawHex": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "note": "0 seconds instant execution delay on DSS Pause (0xca277750ECD2b0707a7CcEF2A78EC2f33B5FC7F7)"
+        },
+        "pauseProxy": {
+          "castCommands": [
+            "cast call 0xca277750ECD2b0707a7CcEF2a78EC2f33b5FC7F7 \"proxy()(address)\" --block 26441549 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0xca277750ECD2b0707a7CcEF2a78EC2f33b5FC7F7 \"proxy()(address)\" --block 26441549 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "0xF60cf7d4330f115F9e51fF0d56D23F95F0f10Aee",
+          "rawHex": "0x000000000000000000000000f60cf7d4330f115f9e51ff0d56d23f95f0f10aee"
+        },
+        "pauseProxyOwner": {
+          "castCommands": [
+            "cast call 0xF60cf7d4330f115F9e51fF0d56D23F95F0f10Aee \"owner()(address)\" --block 26441549 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0xF60cf7d4330f115F9e51fF0d56D23F95F0f10Aee \"owner()(address)\" --block 26441549 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "0xca277750ECD2b0707a7CcEF2a78EC2f33b5FC7F7",
+          "rawHex": "0x000000000000000000000000ca277750ecd2b0707a7ccef2a78ec2f33b5fc7f7"
+        },
+        "vatWardPauseProxy": {
+          "castCommands": [
+            "cast call 0xFf77F6209239DEB2c076179499f2346b0032097f \"wards(address)(uint256)\" 0xF60cf7d4330f115F9e51fF0d56D23F95F0f10Aee --block 26441549 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0xFf77F6209239DEB2c076179499f2346b0032097f \"wards(address)(uint256)\" 0xF60cf7d4330f115F9e51fF0d56D23F95F0f10Aee --block 26441549 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "1",
+          "rawHex": "0x0000000000000000000000000000000000000000000000000000000000000001"
+        },
+        "endWardPauseProxy": {
+          "castCommands": [
+            "cast call 0xA9f0cd86E0A011D41693d1a748A8127877c8b054 \"wards(address)(uint256)\" 0xF60cf7d4330f115F9e51fF0d56D23F95F0f10Aee --block 26441549 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0xA9f0cd86E0A011D41693d1a748A8127877c8b054 \"wards(address)(uint256)\" 0xF60cf7d4330f115F9e51fF0d56D23F95F0f10Aee --block 26441549 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "1",
+          "rawHex": "0x0000000000000000000000000000000000000000000000000000000000000001"
+        },
+        "mcdPsmUsdtWardPauseProxy": {
+          "castCommands": [
+            "cast call 0xcE355440c00014A229bbEc030A2B8f8EB45a2897 \"wards(address)(uint256)\" 0xF60cf7d4330f115F9e51fF0d56D23F95F0f10Aee --block 26441549 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0xcE355440c00014A229bbEc030A2B8f8EB45a2897 \"wards(address)(uint256)\" 0xF60cf7d4330f115F9e51fF0d56D23F95F0f10Aee --block 26441549 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "1",
+          "rawHex": "0x0000000000000000000000000000000000000000000000000000000000000001"
+        },
+        "mcdPsmUsdcWardPauseProxy": {
+          "castCommands": [
+            "cast call 0x12d0351F68035a41D13fc8324562e2d51B7A3b93 \"wards(address)(uint256)\" 0xF60cf7d4330f115F9e51fF0d56D23F95F0f10Aee --block 26441549 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x12d0351F68035a41D13fc8324562e2d51B7A3b93 \"wards(address)(uint256)\" 0xF60cf7d4330f115F9e51fF0d56D23F95F0f10Aee --block 26441549 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "1",
+          "rawHex": "0x0000000000000000000000000000000000000000000000000000000000000001"
+        },
+        "joinPsmUsdtWardPauseProxy": {
+          "castCommands": [
+            "cast call 0x217e42CEB2eAE9ECB788fDF0e31c806c531760A3 \"wards(address)(uint256)\" 0xF60cf7d4330f115F9e51fF0d56D23F95F0f10Aee --block 26441549 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x217e42CEB2eAE9ECB788fDF0e31c806c531760A3 \"wards(address)(uint256)\" 0xF60cf7d4330f115F9e51fF0d56D23F95F0f10Aee --block 26441549 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "1",
+          "rawHex": "0x0000000000000000000000000000000000000000000000000000000000000001"
+        },
+        "jugWardPauseProxy": {
+          "castCommands": [
+            "cast call 0xDb218163Fe160FeDF0C702c37124E8c194e99329 \"wards(address)(uint256)\" 0xF60cf7d4330f115F9e51fF0d56D23F95F0f10Aee --block 26441549 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0xDb218163Fe160FeDF0C702c37124E8c194e99329 \"wards(address)(uint256)\" 0xF60cf7d4330f115F9e51fF0d56D23F95F0f10Aee --block 26441549 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "1",
+          "rawHex": "0x0000000000000000000000000000000000000000000000000000000000000001"
+        },
+        "dogWardPauseProxy": {
+          "castCommands": [
+            "cast call 0x9681604090395e835Ff54187F638dEd8DC983cBF \"wards(address)(uint256)\" 0xF60cf7d4330f115F9e51fF0d56D23F95F0f10Aee --block 26441549 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x9681604090395e835Ff54187F638dEd8DC983cBF \"wards(address)(uint256)\" 0xF60cf7d4330f115F9e51fF0d56D23F95F0f10Aee --block 26441549 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "1",
+          "rawHex": "0x0000000000000000000000000000000000000000000000000000000000000001"
+        },
+        "spotWardPauseProxy": {
+          "castCommands": [
+            "cast call 0x8C4C758152dA3E04B95B5eAca75585D79013c6b0 \"wards(address)(uint256)\" 0xF60cf7d4330f115F9e51fF0d56D23F95F0f10Aee --block 26441549 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x8C4C758152dA3E04B95B5eAca75585D79013c6b0 \"wards(address)(uint256)\" 0xF60cf7d4330f115F9e51fF0d56D23F95F0f10Aee --block 26441549 --rpc-url https://eth.drpc.org"
+          ],
+          "output": "1",
+          "rawHex": "0x0000000000000000000000000000000000000000000000000000000000000001"
+        },
+        "ownerEoaCodeSizeCheck": {
+          "ethGetCodeAddress": "0x25198d0D111eEAC0fb1Bd1DE826294D9Fce84378",
+          "rpcEndpoints": [
+            "https://gateway.tenderly.co/public/mainnet",
+            "https://eth.drpc.org"
+          ],
+          "output": "0x",
+          "note": "Empty bytecode (0x = 0 bytes) confirms single externally owned account (EOA) controls GovActionsProxy"
+        }
+      }
+    }
+  },
+  "docsUrl": "https://docs.usdd.io/security/secure-framework",
+  "docsQuote": "Critical protocol changes are subject to community review and approval.",
+  "tvlUsd": 32642885,
+  "tvlReference": "https://api.llama.fi/protocol/usdd",
+  "apache2CommercialGrant": true,
+  "rulesAccepted": [
+    true,
+    true,
+    true,
+    true
+  ]
+}

@@ -2821,6 +2821,14 @@ def main(argv=None):
     treas = w2cfg["settlement"]["treasuryAddress"]
     no_safe = lambda t: not re.search(re.escape(treas) + r".{0,160}\b(?:Safe|multisig)\b", t, re.S | re.I)
     hunters_ = BS.hunter_stats(lb_, claims_)
+    # Bounties: the Wave 1 ledger counts are scoped to its own table; the Wave 2 claims table is joined to wave2Settlements by fixture
+    m_w1_ = re.search(r'<table class="ix" data-wave1-ledger>.*?</table>', bounty, re.S)
+    w1_led_ = m_w1_.group(0) if m_w1_ else ""
+    m_w2t_ = re.search(r'<div class="table-scroll" role="region" aria-label="[^"]+" tabindex="0"><table class="ix w2-table" data-wave2-claims>.*?</table></div>', bounty, re.S)
+    w2_tab_ = m_w2t_.group(0) if m_w2t_ else ""
+    w2_paid_ = {p_["fixture"]: p_["payoutTxHash"] for p_ in lb_["wave2Settlements"]}
+    w2_rows_ = dict(re.findall(r'<tr data-wave2-claim="([^"]+)">(.*?)</tr>', w2_tab_, re.S))
+    w2_set_ = sum(1 for c_ in claims_[BS.PRIOR_EPOCH_SLOTS:] if c_["_file"] in w2_paid_)
     w2 = {
         "single-sourced epoch config (REWARD_USDC 1.00 = 1,000,000 atomic Base USDC; 1,000-slot program; Epoch 1 = 25 slots / $25.00; chain 8453, EOA treasury)":
             (BS.REWARD_USDC, BS.REWARD_ATOMIC, BS.PROGRAM_CAP_SLOTS, BS.CURRENT_EPOCH, BS.ACTIVE_EPOCH_SLOTS, BS.ACTIVE_EPOCH_CAP_USDC, BS.USDC_BASE)
@@ -2837,7 +2845,8 @@ def main(argv=None):
             and "python3 tools/verify_bounty_submission.py --json bounties/wave-2/<chain>-<slug>.json" in master and no_safe(master),
         f"live counters = merged bounties/wave-2/*.json ({n_claims - BS.PRIOR_EPOCH_SLOTS} / 25 Epoch 1 active; {n_claims} / 1,000 program)": n_claims == len(claims_)
             and f'data-wave2-counter="{n_claims - BS.PRIOR_EPOCH_SLOTS}" data-wave2-program="{n_claims}"' in bounty
-            and f"<b>{n_claims - BS.PRIOR_EPOCH_SLOTS} / 25 Epoch 1 Slots Claimed</b> · target cap $25.00 USDC · <b>${BS.FUNDED_UNENCUMBERED_USDC} USDC ({BS.FUNDED_UNENCUMBERED_SLOTS} slots) confirmed unencumbered on-chain now</b>" in bounty
+            and (f'<b>{n_claims - BS.PRIOR_EPOCH_SLOTS} / 25 Epoch 1 Slots Claimed</b> · <b data-wave2-settled="{w2_set_}">{w2_set_} settled on Base ({BS.usdc(w2_set_ * BS.REWARD_ATOMIC)} USDC)</b> · '
+                 f'target cap $25.00 USDC · <b>${BS.FUNDED_UNENCUMBERED_USDC} USDC ({BS.FUNDED_UNENCUMBERED_SLOTS} slots) confirmed unencumbered on-chain now</b>') in bounty
             and f"1,000-Gap Perpetual Program · $1.00 USDC / Merged Net-New Gap · {n_claims} / 1,000 program slots merged" in bounty
             and "data-wave2-epochs" in bounty and "<b>Net-new only:</b>" in bounty
             and (n_claims > 0 or "No Wave 2 slots claimed yet" in bounty),
@@ -2854,9 +2863,9 @@ def main(argv=None):
                                                                                              (29, "kinshu7777", "YO Protocol"), (32, "givemehat", "Inverse Finance (FiRM)")]
             and all(s_["status"] == "verified" for s_ in lb_["wave1Settlements"])
             and all(f'data-w1-slot="{n}"' in bounty for n in (1, 2, 3, 4)) and all(f'/pull/{n}"' in bounty for n in (27, 31, 29, 32))
-            and "In review through Nov 22, 2026" not in bounty and bounty.count('data-settled="pending"') == sum(1 for s_ in lb_["wave1Settlements"]
+            and "In review through Nov 22, 2026" not in bounty and w1_led_.count('data-settled="pending"') == sum(1 for s_ in lb_["wave1Settlements"]
                                                                                                          if s_["status"] == "verified" and not s_["payoutTxHash"])
-            and bounty.count("data-basescan-tx") == sum(1 for s_ in lb_["wave1Settlements"] if s_["payoutTxHash"]),
+            and w1_led_.count("data-w1-slot=") == 4 and w1_led_.count("data-basescan-tx") == sum(1 for s_ in lb_["wave1Settlements"] if s_["payoutTxHash"]),
     }
     # settlement truthfulness: stamp in memory -> BaseScan link + $25.00; malformed hashes refused by the stamp tool and the loader
     fake = "0x" + "ab" * 32
@@ -2903,6 +2912,44 @@ def main(argv=None):
         and all(f'href="https://basescan.org/tx/{s_["payoutTxHash"]}"' in re.search(rf'<tr data-w1-slot="{s_["slot"]}">.*?</tr>', bounty, re.S).group(0)
                 and "Settled on Base" in re.search(rf'<tr data-w1-slot="{s_["slot"]}">.*?</tr>', bounty, re.S).group(0) for s_ in paid_)
         and all(f'href="https://basescan.org/tx/{s_["payoutTxHash"]}"' in lbp for s_ in paid_))
+    # Wave 2: a future unpaid claim (simulated in memory by dropping one recorded payout) raises only the claimed count
+    lb_w2u_ = {**lb_, "wave2Settlements": lb_["wave2Settlements"][1:]}
+    sec_w2u_ = BS.wave2_section_html(claims_, n_prot, lb_w2u_)
+    w2u_drop_ = lb_["wave2Settlements"][0]["fixture"] if lb_["wave2Settlements"] else None
+    w2u_rows_ = dict(re.findall(r'<tr data-wave2-claim="([^"]+)">(.*?)</tr>', sec_w2u_, re.S))
+    w2u_set_ = sum(1 for c_ in claims_[BS.PRIOR_EPOCH_SLOTS:] if c_["_file"] in w2_paid_ and c_["_file"] != w2u_drop_)
+    w2[f"/bounties/#wave-2 settlements: all {len(w2_rows_)} claims joined to wave2Settlements by fixture ({len(w2_paid_)} settled -> BaseScan tx + $1.00 USDC, "
+       f"unpaid -> $0.00 pending); claimed and settled counted separately (a simulated unpaid claim raises only claimed)"] = (
+        bool(w2_tab_) and len(w2_rows_) == len(claims_) == n_claims and set(w2_paid_) <= set(w2_rows_) and len(w2_paid_) == BS.SETTLED_EPOCH_SLOTS
+        and "<th>Settled (Base USDC)</th>" in w2_tab_ and w2_tab_.count('class="lb-handle"') == len(claims_)
+        and ".w2-table .lb-handle { white-space: nowrap; }" in read("docs/styles.css")
+        and all(f'href="https://basescan.org/tx/{tx_}"' in w2_rows_[f_] and "data-basescan-tx" in w2_rows_[f_]
+                and f'<b data-settled="{BS.REWARD_ATOMIC}">$1.00 USDC</b>' in w2_rows_[f_] for f_, tx_ in w2_paid_.items())
+        and all('data-settled="pending"' in r_ and "$0.00 (pending settlement)" in r_ for f_, r_ in w2_rows_.items() if f_ not in w2_paid_)
+        and w2_tab_.count("data-basescan-tx") == len(w2_paid_) and bounty.count("data-basescan-tx") == len(w2_paid_) + w1_led_.count("data-basescan-tx")
+        and w2u_drop_ is not None and len(w2u_rows_) == len(claims_)
+        and 'data-settled="pending"' in w2u_rows_[w2u_drop_] and "data-basescan-tx" not in w2u_rows_[w2u_drop_]
+        and sec_w2u_.count("data-basescan-tx") == len(w2_paid_) - 1 and w2u_set_ == w2_set_ - 1
+        and (f'<b>{n_claims - BS.PRIOR_EPOCH_SLOTS} / 25 Epoch 1 Slots Claimed</b> · <b data-wave2-settled="{w2u_set_}">{w2u_set_} settled on Base '
+             f'({BS.usdc(w2u_set_ * BS.REWARD_ATOMIC)} USDC)</b>') in sec_w2u_)
+    # /leaderboard/ layout: the geometry is measured in Chromium, these are the static guarantees behind it
+    lb_imgs_ = re.findall(r'<img class="cp-badge" src="\.\./badges/hunters/([^"]+)\.svg" alt="Pacta hunter: [^"]+" width="(\d+)" height="20">', lbp)
+    lb_svgw_ = {h_: re.search(r'<svg [^>]*\bwidth="(\d+)" height="20"', read(f"docs/badges/hunters/{h_}.svg")) for h_, _ in lb_imgs_}
+    lb_ncatch_ = {h_["handle"]: len(h_["catches"]) for h_ in hunters_}
+    lb_labels_ = re.findall(r'<li data-catch-wave="[12]"><a [^>]*>([^<]+)<', lbp)
+    css_lb_ = read("docs/styles.css")
+    w2[f"/leaderboard/ layout: wide container; hunters table scrolls inside a labelled focusable region (never the document); handles and compact catch "
+       f"labels never wrap; all {len(lb_imgs_)} hunter badges declare their intrinsic SVG width, unclamped (11 px labels)"] = (
+        '<main id="main" class="memo-wrap memo-wide">' in lbp
+        and lbp.count('<div class="table-scroll" role="region" aria-label="Hunter leaderboard table" tabindex="0"><table class="ix lb-table" data-leaderboard>') == 1
+        and len(lb_imgs_) == len(hunters_)
+        and all(lb_svgw_[h_] and int(w_) == int(lb_svgw_[h_].group(1)) == BS.hunter_badge_width(h_, lb_ncatch_[h_]) for h_, w_ in lb_imgs_)
+        and lbp.count('class="lb-handle"') == len(hunters_)
+        and len(lb_labels_) == sum(lb_ncatch_.values()) and all(len(l_) <= 32 and ".json" not in l_ for l_ in lb_labels_)
+        and all(rule_ in css_lb_ for rule_ in (".memo-wrap.memo-wide { max-width: var(--container-wide); }", ".table-scroll { max-width: 100%; overflow-x: auto; }",
+                                               ".table-scroll > table.ix { display: table; max-width: none; overflow: visible; }",
+                                               ".lb-table .lb-handle { white-space: nowrap; }", ".lb-table .cp-badge { max-width: none; }",
+                                               ".memo .lb-catches a { display: inline-flex; align-items: center; min-height: 24px; white-space: nowrap; }")))
     # /leaderboard/
     lb_rows = re.findall(r'<tr id="hunter-([a-z0-9-]+)" data-hunter="([^"]+)"><td class="num">(\d+)</td>', lbp)
     w2["/leaderboard/: hunters ranked (verified catches > protocols > EAS > settled), frameworks, copy-badge Markdown + Share on X per hunter, settled only with tx; linked from /bounties/, footer, sitemap, llms.txt, llms-full.txt, /llms/"] = (

@@ -898,6 +898,22 @@ table.ix td:first-child a { display: inline-flex; align-items: center; min-heigh
 .w2-counter { margin: 8px 0 16px; padding: 12px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); font-family: var(--font-mono); font-size: 0.875rem; }
 .lb-share { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
 .lb-share .copy { margin-left: 0; }
+/* v4.9.2: /leaderboard/ uses the wide container; its hunters table scrolls inside its own labelled region (never the document),
+   handles and catch labels never split mid-word, and hunter badges keep their intrinsic size (11 px SVG text, never clamped) */
+.memo-wrap.memo-wide { max-width: var(--container-wide); }
+.memo-wide .memo > header p, .memo-wide .memo-sec > p { max-width: var(--container-prose); }
+.table-scroll { max-width: 100%; overflow-x: auto; }
+.table-scroll > table.ix { display: table; max-width: none; overflow: visible; }
+.lb-table th, .lb-table td, .memo .lb-catches li { overflow-wrap: normal; word-break: normal; }
+.w2-table th, .w2-table td { overflow-wrap: normal; word-break: normal; }
+.w2-table .lb-handle { white-space: nowrap; }
+.lb-table th, table[data-wave2-claims] th { height: auto; padding-top: 8px; padding-bottom: 8px; line-height: 1.35; white-space: normal; vertical-align: bottom; }
+.lb-table .lb-handle { white-space: nowrap; }
+.memo .lb-catches { list-style: none; margin: 2px 0 0; padding: 0; }
+.memo .lb-catches li { margin: 0; font-size: 0.8125rem; line-height: 1.5; color: var(--muted-foreground); }
+.memo .lb-catches a { display: inline-flex; align-items: center; min-height: 24px; white-space: nowrap; }
+.lb-table .cp-badge { max-width: none; }
+a[data-basescan-tx] { white-space: nowrap; }
 .status { min-height: 20px; margin-top: 8px; font-size: 0.875rem; color: var(--success); }
 .actions { display: grid; gap: 8px; margin-top: 16px; }
 .firewall { margin: 0 0 16px; font-size: 0.875rem; color: var(--muted-foreground); }

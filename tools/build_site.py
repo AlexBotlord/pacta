@@ -2433,7 +2433,7 @@ def bounties_page(idx, radar, bounties=None, claims=None, lb=None):
 <header><span class="tier" data-bounty-pill>{FUNDED_UNENCUMBERED_SLOTS} Funded Slots Open Now · ${E(REWARD_USDC)} USDC / Merged Finding</span>
 <p class="s" data-bounty-context>Epoch {CURRENT_EPOCH}: {ACTIVE_EPOCH_SLOTS}-slot target · {PROGRAM_CAP_SLOTS:,}-slot program · ${E(RING_FENCED_USDC)} reserved for Epoch 2+ · Wave 1 Genesis (4/4 = $100 USDC) 100% settled on Base</p><h1>Pacta bounties: verified on-chain control-plane mismatches</h1>
 <p class="lede">Find a live on-chain control-plane fact that contradicts a protocol's official documentation: a proxy admin, timelock delay, multisig threshold, curator or guardian role that differs from what the docs say. <b>Wave 2</b> is a {PROGRAM_CAP_SLOTS:,}-gap perpetual program at <b>${E(REWARD_USDC)} USDC per merged net-new gap</b>, opened in epochs: <b>Epoch {CURRENT_EPOCH}</b> has a target cap of {ACTIVE_EPOCH_SLOTS} slots (${E(ACTIVE_EPOCH_CAP_USDC)} USDC), of which ${E(FUNDED_UNENCUMBERED_USDC)} USDC ({FUNDED_UNENCUMBERED_SLOTS} slots) is confirmed unencumbered on-chain now. <b>Wave 1</b> (4 × $25 USDC, Nov 15 – Nov 22, 2026) is closed; its archive and settlement ledger are collapsed at the bottom of this page. Every hunter is credited on the <a href="../leaderboard/">hunter leaderboard</a>.</p></header>
-{wave2_section_html(claims, n_protocols)}<section class="memo-sec" id="quickstart"><h2>1-line Remote MCP quickstart (free)</h2>
+{wave2_section_html(claims, n_protocols, lb)}<section class="memo-sec" id="quickstart"><h2>1-line Remote MCP quickstart (free)</h2>
 <div class="qs-snip"><span class="qs-l">Claude Code</span><code class="mono">{E(claude)}</code>{copy_btn(claude)}</div>
 <p>Query <code>pacta_lookup_protocol</code> (confirm the target is unindexed: a miss carries <code>coverage_gap_hint</code>), <code>pacta_check_preflight</code> and <code>pacta_scan_control_plane</code>, then pin the reads with <code>cast</code> on two RPC endpoints. Indexed protocols: <a href="../api/v1/protocols.json">/api/v1/protocols.json</a>.</p></section>
 <details class="archive-details" id="wave-1-archive" data-wave1-archive><summary><span>Archive: Wave 1 (closed, Nov 15 – Nov 22, 2026) · 4 × $25 USDC · 53 protocols indexed at the time</span></summary>
@@ -2617,10 +2617,10 @@ def hunter_stats(lb, claims):
             add(s["hunter"], s["agentFramework"], f"{s['chainId']}:{s['protocol'].lower()}",
                 {"wave": 1, "label": f"Wave 1 · Slot #{s['slot']} · PR #{s['pr']}", "href": f"{REPO}/pull/{s['pr']}", "protocol": s["protocol"]},
                 25 * 10 ** 6, tx)
-    for c in claims:
+    for i, c in enumerate(claims, 1):
         tx = paid2.get(c["_file"])
         add(c["hunter"], c.get("agentFramework"), f"{c['chainId']}:{c['slug']}",
-            {"wave": 2, "label": f"Wave 2 · {c['_file']}", "href": f"{REPO}/blob/main/{WAVE2['fixtureDir']}/{c['_file']}", "protocol": c["protocol"]},
+            {"wave": 2, "label": f"Wave 2 · Slot #{i}", "href": f"{REPO}/blob/main/{WAVE2['fixtureDir']}/{c['_file']}", "protocol": c["protocol"]},
             REWARD_ATOMIC, tx if tx_ok(tx) else None)
     rows = sorted(st.values(), key=lambda h: (-len(h["catches"]), -len(h["protocols"]), -h["eas"], -h["settled"], h["handle"].lower()))
     rank, prev = 0, None
@@ -2643,6 +2643,17 @@ def framework_stats(rows):
     return sorted(fw.values(), key=lambda f: (f["name"] == "not stated", -f["catches"], -len(f["protocols"]), f["name"]))
 
 
+def hunter_badge_dims(handle, catches):
+    """(left text, right text, left width, right width) of a hunter badge; the leaderboard declares lw + rw as the <img> width."""
+    left, right = "Pacta hunter", f"{handle} · {catches} verified"
+    return left, right, 24 + round(len(left) * 6.6) + 8, round(len(right) * 6.6) + 14
+
+
+def hunter_badge_width(handle, catches):
+    _, _, lw, rw = hunter_badge_dims(handle, catches)
+    return lw + rw
+
+
 def hunter_badge_svg(handle, catches):
     """Deterministic static README badge for a hunter: the official Pacta mark + '<handle> · N verified'. Every dynamic string is
     XML-escaped and the handle must match HUNTER_FILE_RE (no traversal, no markup)."""
@@ -2650,9 +2661,7 @@ def hunter_badge_svg(handle, catches):
     import xml.etree.ElementTree as ET
     if not (isinstance(handle, str) and HUNTER_FILE_RE.fullmatch(handle)):
         raise ValueError(f"refusing hunter badge for handle {handle!r}")
-    left, right = "Pacta hunter", f"{handle} · {catches} verified"
-    lw = 24 + round(len(left) * 6.6) + 8
-    rw = round(len(right) * 6.6) + 14
+    left, right, lw, rw = hunter_badge_dims(handle, catches)
     label = f"{left}: {right} control-plane catch{'es' if catches != 1 else ''}"
     svg = (f'<svg xmlns="http://www.w3.org/2000/svg" width="{lw + rw}" height="20" viewBox="0 0 {lw + rw} 20" role="img" aria-label={quoteattr(label)}>'
            f"<title>{escape(label)}</title>"
@@ -2790,24 +2799,30 @@ def write_wave2_master_issue(idx, path=None):
         fh.write(wave2_master_issue_md(n))
 
 
-def wave2_section_html(claims, n_protocols):
+def wave2_section_html(claims, n_protocols, lb=None):
+    """The Wave 2 pool. Each merged claim is joined by fixture to its Base payout (bounties/leaderboard.json wave2Settlements): a settled
+    row links its BaseScan transaction, an unpaid claim shows $0.00 (pending settlement) and raises only the claimed count."""
+    lb = load_leaderboard() if lb is None else lb
+    paid = {p["fixture"]: p["payoutTxHash"] for p in lb["wave2Settlements"] if tx_ok(p["payoutTxHash"])}
     claimed = len(claims)
     cats = "".join(f'<li data-wave2-category="{c}"><b>{E(WAVE2["categories"][c]["label"])}</b> (<code>{c}</code>'
                    + (f', ≥ {tvl_label(c)} TVL' if WAVE2["categories"][c]["minTvlUsd"] else "") + "): "
                    + E(WAVE2_CATEGORY_TEXT[c].format(tvl=tvl_label(c) if WAVE2["categories"][c]["minTvlUsd"] else "", n=n_protocols)) + ".</li>"
                    for c in WAVE2["categories"])
     rows = "".join(f'<tr data-wave2-claim="{E(c["_file"])}"><td class="num">#{i}</td><td><a href="{E(REPO)}/blob/main/{E(WAVE2["fixtureDir"])}/{E(c["_file"])}" '
-                   f'target="_blank" rel="noopener"><code>{E(c["_file"])}</code>{EXT}</a></td><td>{E(c["protocol"])}</td><td><code>{E(c["category"])}</code></td>'
-                   f'<td><a href="https://github.com/{E(c["hunter"])}" target="_blank" rel="noopener">@{E(c["hunter"])}</a></td>'
-                   f'<td>{E(c.get("agentFramework") or "—")}</td></tr>' for i, c in enumerate(claims, 1))
-    table = (f'<table class="ix" data-wave2-claims><thead><tr><th>Slot</th><th>Fixture</th><th>Target</th><th>Category</th><th>Hunter</th><th>Agent framework</th>'
-             f'</tr></thead><tbody>{rows}</tbody></table>' if claims else '<p class="s" data-wave2-claims-empty>No Wave 2 slots claimed yet: the first merged fixture takes Slot #1.</p>')
+                   f'target="_blank" rel="noopener"><code>{E(c["_file"])}</code>{EXT}</a></td><td>{E(c["protocol"])}<div class="s"><code>{E(c["category"])}</code></div></td>'
+                   f'<td><a class="lb-handle" href="https://github.com/{E(c["hunter"])}" target="_blank" rel="noopener">@{E(c["hunter"])}</a>'
+                   f'<div class="s">{E(c.get("agentFramework") or "framework not stated")}</div></td><td>{settled_cell(REWARD_ATOMIC, [paid[c["_file"]]] if c["_file"] in paid else [])}</td></tr>'
+                   for i, c in enumerate(claims, 1))
+    table = (f'<div class="table-scroll" role="region" aria-label="Wave 2 claimed slots table" tabindex="0"><table class="ix w2-table" data-wave2-claims><thead><tr><th>Slot</th><th>Fixture</th><th>Target / category</th><th>Hunter / agent framework</th>'
+             f'<th>Settled (Base USDC)</th></tr></thead><tbody>{rows}</tbody></table></div>' if claims else '<p class="s" data-wave2-claims-empty>No Wave 2 slots claimed yet: the first merged fixture takes Slot #1.</p>')
     m_issue = re.fullmatch(re.escape(REPO) + r"/issues/(\d+)", WAVE2_ISSUE_URL)
     issue_label = f"Master issue #{m_issue.group(1)}{EXT}" if m_issue else f"GitHub issues{EXT}"
     master = md_html(wave2_master_issue_md(n_protocols).split("\n", 2)[2])
     in_epoch = claimed - PRIOR_EPOCH_SLOTS
+    settled = sum(1 for c in claims[PRIOR_EPOCH_SLOTS:] if c["_file"] in paid)     # this epoch's claims with a Base payout tx
     return f"""<section class="memo-sec" id="wave-2"><h2>Wave 2 · Epoch {CURRENT_EPOCH}: {ACTIVE_EPOCH_SLOTS} × ${E(REWARD_USDC)} USDC · {PROGRAM_CAP_SLOTS:,}-slot program</h2>
-<p class="w2-counter" data-wave2-counter="{in_epoch}" data-wave2-program="{claimed}"><b>{in_epoch} / {ACTIVE_EPOCH_SLOTS} Epoch {CURRENT_EPOCH} Slots Claimed</b> · target cap ${E(ACTIVE_EPOCH_CAP_USDC)} USDC · <b>${E(FUNDED_UNENCUMBERED_USDC)} USDC ({FUNDED_UNENCUMBERED_SLOTS} slots) confirmed unencumbered on-chain now</b><br>{PROGRAM_CAP_SLOTS:,}-Gap Perpetual Program · ${E(REWARD_USDC)} USDC / Merged Net-New Gap · {claimed} / {PROGRAM_CAP_SLOTS:,} program slots merged</p>
+<p class="w2-counter" data-wave2-counter="{in_epoch}" data-wave2-program="{claimed}"><b>{in_epoch} / {ACTIVE_EPOCH_SLOTS} Epoch {CURRENT_EPOCH} Slots Claimed</b> · <b data-wave2-settled="{settled}">{settled} settled on Base ({usdc(settled * REWARD_ATOMIC)} USDC)</b> · target cap ${E(ACTIVE_EPOCH_CAP_USDC)} USDC · <b>${E(FUNDED_UNENCUMBERED_USDC)} USDC ({FUNDED_UNENCUMBERED_SLOTS} slots) confirmed unencumbered on-chain now</b><br>{PROGRAM_CAP_SLOTS:,}-Gap Perpetual Program · ${E(REWARD_USDC)} USDC / Merged Net-New Gap · {claimed} / {PROGRAM_CAP_SLOTS:,} program slots merged</p>
 <p data-wave2-epochs>Slots open in epochs of 25–100, up to {PROGRAM_CAP_SLOTS:,} in total. Epoch {CURRENT_EPOCH} target cap: {ACTIVE_EPOCH_SLOTS} × ${E(REWARD_USDC)} USDC = ${E(ACTIVE_EPOCH_CAP_USDC)} USDC. <span data-wave2-capacity>${E(FUNDED_UNENCUMBERED_USDC)} USDC ({FUNDED_UNENCUMBERED_SLOTS} slots) is confirmed unencumbered on-chain now; ${E(RING_FENCED_USDC)} USDC in the treasury is separately ring-fenced for {E(RING_FENCED_FOR)}, and the remaining ${E(EPOCH_REMAINING_USDC)} of Epoch {CURRENT_EPOCH} target capacity unlocks as confirmed Base USDC top-ups land.</span> <b>Net-new only:</b> a finding qualifies only if it is not already published in <a href="../api/v1/protocols.json">/api/v1/protocols.json</a> when the PR is opened, and <code>post_pin_drift</code> must be read at a block strictly after Pacta&#x27;s latest pinned block for that protocol.</p>
 <p>One slot per merged, verified control-plane mismatch, in one of three categories:</p>
 <ol>{cats}</ol>
@@ -2833,13 +2848,15 @@ def leaderboard_page(idx, lb, claims):
     for h in rows:
         hid = f"hunter-{h['handle'].lower()}"
         md = badge_markdown(h["handle"])
-        catches = "<br>".join(f'<a href="{E(c["href"])}" target="_blank" rel="noopener">{E(c["label"])}{EXT}</a> <span class="s">{E(c["protocol"])}</span>'
-                              for c in h["catches"])
+        catches = "".join(f'<li data-catch-wave="{c["wave"]}"><a href="{E(c["href"])}" target="_blank" rel="noopener">{E(c["label"])}{EXT}</a> '
+                          f'<span class="s">{E(c["protocol"])}</span></li>' for c in h["catches"])
         hrows.append(f'<tr id="{E(hid)}" data-hunter="{E(h["handle"])}"><td class="num">{h["rank"]}</td>'
-                     f'<td><a href="https://github.com/{E(h["handle"])}" target="_blank" rel="noopener">@{E(h["handle"])}</a><div class="s">{catches}</div></td>'
+                     f'<td class="lb-hunter"><a class="lb-handle" href="https://github.com/{E(h["handle"])}" target="_blank" rel="noopener">@{E(h["handle"])}</a>'
+                     f'<ul class="lb-catches">{catches}</ul></td>'
                      f'<td>{E(", ".join(h["frameworks"]) or "not stated")}</td><td class="num">{len(h["catches"])}</td><td class="num">{len(h["protocols"])}</td>'
                      f'<td class="num">{h["eas"]}</td><td>{settled_cell(h["settled"], h["txs"])}</td>'
-                     f'<td><img class="cp-badge" src="../badges/hunters/{E(h["handle"])}.svg" alt="Pacta hunter: {E(h["handle"])}" height="20">'
+                     f'<td><img class="cp-badge" src="../badges/hunters/{E(h["handle"])}.svg" alt="Pacta hunter: {E(h["handle"])}" '
+                     f'width="{hunter_badge_width(h["handle"], len(h["catches"]))}" height="20">'
                      f'<div class="lb-share">{copy_btn(md, "Copy badge Markdown")}'
                      f'<a class="copy" href="{E(share_x_href(h))}" target="_blank" rel="noopener" data-share-x>Share on X{EXT}</a></div></td></tr>')
     frows = "".join(f'<tr data-framework="{E(f["name"])}"><td>{E(f["name"])}</td><td class="num">{f["hunters"]}</td><td class="num">{f["catches"]}</td>'
@@ -2852,13 +2869,13 @@ def leaderboard_page(idx, lb, claims):
     ld_json = json.dumps(ld, ensure_ascii=False, sort_keys=True).replace("</", "<\\/")
     body = f"""<body>
 {topbar("../")}
-<main id="main" class="memo-wrap">
+<main id="main" class="memo-wrap memo-wide">
 <div class="crumbs"><a href="../">Pacta</a> / <a href="../bounties/">Bounties</a> / Leaderboard</div>
 <article class="memo">
 <header><span class="tier">Bounties · hunter leaderboard</span><h1>Pacta hunter leaderboard</h1>
 <p class="lede">Every verified on-chain control-plane mismatch merged through the <a href="../bounties/">Pacta bounties</a>, credited to its GitHub hunter and agent framework. Ranked by verified catches, then protocols covered, Base EAS attestations and settled Base USDC. Settled USDC counts only payouts with a Base transaction hash (linked to BaseScan).</p></header>
 <section class="memo-sec" id="hunters"><h2>Hunters</h2>
-<table class="ix" data-leaderboard><thead><tr><th>Rank</th><th>Hunter</th><th>Agent framework</th><th>Verified catches</th><th>Protocols covered</th><th>Base EAS attestations</th><th>Settled Base USDC</th><th>README badge</th></tr></thead><tbody>{"".join(hrows)}</tbody></table>
+<div class="table-scroll" role="region" aria-label="Hunter leaderboard table" tabindex="0"><table class="ix lb-table" data-leaderboard><thead><tr><th>Rank</th><th>Hunter</th><th>Agent framework</th><th>Verified catches</th><th>Protocols covered</th><th>Base EAS attestations</th><th>Settled Base USDC</th><th>README badge</th></tr></thead><tbody>{"".join(hrows)}</tbody></table></div>
 <p class="s">{len(rows)} hunters · {sum(len(h["catches"]) for h in rows)} verified catches · settled so far: {usdc(total_settled)} USDC. Wave 1 ledger: <a href="../bounties/#wave-1">/bounties/#wave-1</a>; Wave 2 pool: <a href="../bounties/#wave-2">/bounties/#wave-2</a>.</p></section>
 <section class="memo-sec" id="frameworks"><h2>Agent frameworks</h2>
 <table class="ix" data-frameworks><thead><tr><th>Framework</th><th>Hunters</th><th>Verified catches</th><th>Protocols covered</th><th>Settled Base USDC</th></tr></thead><tbody>{frows}</tbody></table>

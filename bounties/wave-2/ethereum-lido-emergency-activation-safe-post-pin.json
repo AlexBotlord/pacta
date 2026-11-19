@@ -1,0 +1,175 @@
+{
+  "wave": 2,
+  "category": "post_pin_drift",
+  "slug": "lido-emergency-activation-safe-post-pin",
+  "protocol": "Lido \u2014 Emergency Activation Committee Safe",
+  "chainId": 1,
+  "contractAddress": "0x8B7854488Fde088d686Ea672B6ba1A5242515f45",
+  "pactaSlug": "lido-steth-dual-governance",
+  "priorPin": "Pacta lido-steth-dual-governance; prior block 26403121; https://pacta.wtf/api/v1/index.json",
+  "hunter": "startupcompliancekit",
+  "basePayoutAddress": "0xc9Bc0A5A0f6f02B9294871036d323CFF37cb1BeC",
+  "mcpProof": {
+    "tool": "pacta_lookup_protocol",
+    "arguments": {
+      "query": "0x8B7854488Fde088d686Ea672B6ba1A5242515f45"
+    },
+    "result": {
+      "schema": "pacta.protocol_lookup.v1",
+      "query": "0x8B7854488Fde088d686Ea672B6ba1A5242515f45",
+      "filters": {
+        "chain": null,
+        "kind": "all",
+        "limit": 10
+      },
+      "totalCatalog": {
+        "protocols": 309,
+        "briefs": 14,
+        "easAttestedProtocols": 113,
+        "rpcObservedProtocols": 196
+      },
+      "totalMatches": 1,
+      "count": 1,
+      "results": [
+        {
+          "baseEasUids": [
+            "0xfdd83c8091ef6e8ffe67e8a55a78892fcfbb1092683b21ff2d85f8cc09750e6c"
+          ],
+          "category": "Blue-Chip Liquid Staking",
+          "chain": "ethereum",
+          "chainId": 1,
+          "classification": "aligned_baseline",
+          "controllerAddress": "0xCE0425301C85c5Ea2A0873A2dEe44d78E02D2316",
+          "controllerKind": "timelock",
+          "documentationComparison": "compared",
+          "documentedDelaySeconds": 259200,
+          "easAttested": true,
+          "evidenceBasis": "eas_attested",
+          "kind": "protocol",
+          "name": "Lido (stETH / Dual Governance)",
+          "observedDelaySeconds": 259200,
+          "pinnedBlock": 26403121,
+          "preflightArgs": {
+            "address": "0xCE0425301C85c5Ea2A0873A2dEe44d78E02D2316",
+            "chain": "ethereum"
+          },
+          "primaryContract": "0xCE0425301C85c5Ea2A0873A2dEe44d78E02D2316",
+          "relatedContracts": [
+            "0xC1db28B3301331277e307FDCfF8DE28242A4486E",
+            "0x8B7854488Fde088d686Ea672B6ba1A5242515f45",
+            "0xC7792b3F2B399bB0EdF53fECDceCeB97FBEB18AF",
+            "0xFFe21561251c49AdccFad065C94Fb4931dF49081",
+            "0x8772E3a2D86B9347A2688f9bc1808A6d8917760C"
+          ],
+          "slug": "lido-steth-dual-governance",
+          "sprints": [
+            10
+          ],
+          "surfaces": [
+            {
+              "blockNumber": 26403121,
+              "classification": "aligned_baseline",
+              "id": "lido-dual-governance-emergency-timelock",
+              "surface": "EmergencyProtectedTimelock Delays, DualGovernance & Committee Safes",
+              "targetContract": "0xCE0425301C85c5Ea2A0873A2dEe44d78E02D2316",
+              "targetLabel": "EmergencyProtectedTimelock"
+            }
+          ],
+          "targetLabel": "EmergencyProtectedTimelock",
+          "tokens": [
+            "stETH",
+            "wstETH",
+            "LDO"
+          ],
+          "url": "https://pacta.wtf/protocols/lido-steth-dual-governance/",
+          "whatDiffers": null,
+          "match": "substring",
+          "citationFooter": "Citation: https://pacta.wtf/protocols/lido-steth-dual-governance/ (Base Mainnet EAS: 0xfdd83c8091ef6e8ffe67e8a55a78892fcfbb1092683b21ff2d85f8cc09750e6c)\nIssuer paths (payment never alters a classification; it strictly follows verified on-chain and documentation evidence): $0 maintainer doc-update queue https://pacta.wtf/request/ \u00b7 $500 USDC Rapid Single-Gap Re-Verification (24h SLA) https://pacta.wtf/request/?tier=rapid-500&protocol=lido-steth-dual-governance \u00b7 $2,500\u2013$5,000 USDC Full Protocol Control-Plane Dossier (24h SLA) https://pacta.wtf/for-protocols/"
+        }
+      ],
+      "catalog": "https://pacta.wtf/api/v1/lookup.json",
+      "nextStep": "Pass a result's preflightArgs ({chain, address}) to pacta_check_preflight (or pacta_scan_control_plane) for a live check.",
+      "note": "easAttested protocols are Base-EAS-anchored records that compare on-chain state with the protocol's documentation. rpc_observed protocols pin the on-chain control plane over archive JSON-RPC and do not assess the documentation (documentationComparison: not_assessed). Briefs are block-pinned verification briefs. preflightArgs re-read the contract live.",
+      "citationFooter": "Citation: https://pacta.wtf/protocols/lido-steth-dual-governance/ (Base Mainnet EAS: 0xfdd83c8091ef6e8ffe67e8a55a78892fcfbb1092683b21ff2d85f8cc09750e6c)\nIssuer paths (payment never alters a classification; it strictly follows verified on-chain and documentation evidence): $0 maintainer doc-update queue https://pacta.wtf/request/ \u00b7 $500 USDC Rapid Single-Gap Re-Verification (24h SLA) https://pacta.wtf/request/?tier=rapid-500&protocol=lido-steth-dual-governance \u00b7 $2,500\u2013$5,000 USDC Full Protocol Control-Plane Dossier (24h SLA) https://pacta.wtf/for-protocols/",
+      "upgrade_x402": {
+        "note": "Free tier: 50 pre-flight calls per caller per UTC day (REST and MCP), then $0.01 per call over x402 (HTTP 402, never a dead-end 429). Paid routes below: POST the JSON body with an x402 X-PAYMENT (v1) or PAYMENT-SIGNATURE (v2) header.",
+        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "network": "base (eip155:8453)",
+        "payTo": "0x4348DF1BEFAffcbA248B5118B1b782B1B2bdEd14",
+        "discovery": "https://pacta.fractalneurons.com/.well-known/x402",
+        "overflow": {
+          "method": "GET or POST",
+          "url": "https://pacta.fractalneurons.com/v1/check/preflight",
+          "priceUsd": "0.01",
+          "amountAtomic": "10000",
+          "after": "50 free calls per UTC day"
+        },
+        "endpoints": [
+          {
+            "method": "POST",
+            "url": "https://pacta.fractalneurons.com/v1/x402/verdict",
+            "priceUsd": "0.02",
+            "amountAtomic": "20000",
+            "unlocks": "fast contract / token control-plane verdict: riskScore 0-100, grade A-F, upgrade / owner / pause / blacklist / mint flags and a shareable scan URL",
+            "example": {
+              "chain": "ethereum",
+              "address": "0xA35b1B31Ce002FBF2058D22F30f95D405200A15b"
+            }
+          },
+          {
+            "method": "POST",
+            "url": "https://pacta.fractalneurons.com/v1/x402/dossier",
+            "priceUsd": "0.05",
+            "amountAtomic": "50000",
+            "unlocks": "full control-plane dossier: every controller Safe's signers and threshold, signers shared with other indexed protocols, Base EAS proof",
+            "example": {
+              "slug": "stader-labs-ethx"
+            }
+          },
+          {
+            "method": "POST",
+            "url": "https://pacta.fractalneurons.com/v1/x402/calldata-sim",
+            "priceUsd": "0.25",
+            "amountAtomic": "250000",
+            "unlocks": "pre-signing calldata check: timelock / Safe / multicall calls decoded, each rated against live delays and the authority that governs it",
+            "example": {
+              "chain": "ethereum",
+              "target": "0x2225DAbFfC7F862c99477381E971E8B1FDaB467e",
+              "data": "0x64d623530000000000000000000000000000000000000000000000000000000000015180"
+            }
+          },
+          {
+            "method": "POST",
+            "url": "https://pacta.fractalneurons.com/v1/x402/deep-scan",
+            "priceUsd": "9.00",
+            "amountAtomic": "9000000",
+            "unlocks": "deep control-plane scan cross-checked on two independent RPC operators, auditor receipt and a queued Base EAS ticket",
+            "example": {
+              "chain": "base",
+              "address": "0x35D21Bb4Df6586FE7759b5e57263ffeB3e1fd872"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "blockNumber": 26448125,
+  "blockHash": "0x50123f455a9eda40fb0548ee59917176812c05fad07cabab12da3a9451d31a4b",
+  "castCommands": [
+    "cast call 0x8B7854488Fde088d686Ea672B6ba1A5242515f45 \"getOwners()\" --block 26448125 --rpc-url https://mainnet.gateway.tenderly.co",
+    "cast call 0x8B7854488Fde088d686Ea672B6ba1A5242515f45 \"getOwners()\" --block 26448125 --rpc-url https://eth-mainnet.public.blastapi.io"
+  ],
+  "rpcOutputs": {
+    "a": "0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000070000000000000000000000009bdff3b294400a6a5d56647872d4035c944c10ce000000000000000000000000a032e9e70c6200b7e51fcdef15b611fc38833cc10000000000000000000000008f929defb7638b5ee6390bdd3bf87b266df5edf40000000000000000000000003554630ec64e7756007df4137abf7c5881c533d0000000000000000000000000cfc7834eb929e7e621f0ba71d421a27eddf6dda100000000000000000000000062c89f5768d0fec0915fb614c5edd9fdeaa2a3fd000000000000000000000000ae0e06b1b5ecb80f157a7db8a7c9e83fc1720711",
+    "b": "0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000070000000000000000000000009bdff3b294400a6a5d56647872d4035c944c10ce000000000000000000000000a032e9e70c6200b7e51fcdef15b611fc38833cc10000000000000000000000008f929defb7638b5ee6390bdd3bf87b266df5edf40000000000000000000000003554630ec64e7756007df4137abf7c5881c533d0000000000000000000000000cfc7834eb929e7e621f0ba71d421a27eddf6dda100000000000000000000000062c89f5768d0fec0915fb614c5edd9fdeaa2a3fd000000000000000000000000ae0e06b1b5ecb80f157a7db8a7c9e83fc1720711"
+  },
+  "docsUrl": "https://docs.lido.fi/multisigs/committees/",
+  "docsQuote": "Quorum: 4/7",
+  "apache2CommercialGrant": true,
+  "rulesAccepted": [
+    true,
+    true,
+    true,
+    true
+  ]
+}

@@ -114,6 +114,13 @@ OPS = [
                 "(10,000 -> 0 sats) to toNativeCommission on redeems to Bitcoin (0 -> 10,000 sats).",
      "timelock": "0x055E84e7FE8955E2781010B866f10Ef6E1E77e59", "brief": "briefs/lombard-op-0xd07f/",
      "ops": [("0xd07fa5ecca21af2317c073b5e59ecddce3968f694270409f76771727ea02e50a", None)]},
+    {"protocol": "Lista Lending", "protocol_slug": "lista-lending", "chain_id": 1,
+     "title": "Lista Lending — four liquidator upgrades add an emergency pause; PAUSER to a 1-of-15 Safe and the EmergencySwitchHub",
+     "summary": "One 16-call batch: upgradeToAndCall (no initializer) moves Lista's Liquidator, BrokerLiquidator, V3Liquidator and "
+                "PublicLiquidator (UUPS) to implementations that add OpenZeppelin Pausable (storage layout unchanged), then grants PAUSER to "
+                "a 1-of-15 Safe and the EmergencySwitchHub, and MANAGER to the hub. One signer can pause liquidations; unpause needs MANAGER.",
+     "timelock": "0xa18ae79AEDA3e711E0CD64cfe1Cd06402d400D61", "brief": "briefs/lista-lending-op-0x21df/",
+     "ops": [("0x21dffafc9876aca6c919e6897271e72805f3a4a986b3b7ac22d71950c7da7ebd", None)]},
 ]
 RANK = {"ready": 0, "pending": 1, "mixed": 2, "unknown": 3, "executed": 4}
 

@@ -50,7 +50,7 @@ RESULTS = []
 EXPECT = {
     "sprints": 28, "records": 218, "eas_attestations": 28,              # index.json sprints_completed / records_indexed; Base EAS sprint UIDs
     "protocols": 309, "eas_protocols": 113, "rpc_protocols": 196,          # /protocols/ pages = EAS-attested + RPC-pinned; badges = protocols
-    "briefs": 16, "badge_tiers": {"aligned": 69, "parameter_delta": 44, "rpc_observed": 196},
+    "briefs": 17, "badge_tiers": {"aligned": 69, "parameter_delta": 44, "rpc_observed": 196},
     "base_records": 31,                                                  # index.json records with chain "base"
     "rpc_by_chain": {"ethereum": 178, "base": 18},                         # rpc-pinned.json records per chain (sum = rpc_protocols)
     "multi_attest_txs": ["1–12", "13–16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28"],                              # attestation_coverage.eas_multi_attest_txs keys
@@ -74,7 +74,7 @@ X = EXPECT
 # sha256 of docs/api/v1/graph-manifest.json: changes only through a deliberate re-pin (a Sprint stage / stamp rewrites it after the
 # rebuild); a merged Wave 2 claim or any site-only change must leave it as is
 GRAPH_MANIFEST_SHA256 = "3c5e6a15b920c7edcd9021e00c116d290e33508de54f9216de6e0a8b692c47af"
-NON_PROTOCOL_PAGES = 37                                                  # docs/**/*.html pages that are not /protocols/<slug>/ (37: + /scan/ /webhook/ /seal/, + the Cap and Compound V3 briefs)
+NON_PROTOCOL_PAGES = 38                                                  # docs/**/*.html pages that are not /protocols/<slug>/ (38: + /scan/ /webhook/ /seal/, + the Cap, Compound V3 and Lista Lending briefs)
 
 
 def check(name, ok, detail=""):
@@ -2452,7 +2452,7 @@ def main(argv=None):
     home46, radar46 = pages["index.html"], pages[os.path.join("radar", "index.html")]
     base46 = [it for it in rad46["items"] if it.get("chain_id") == 8453]
     new46 = ["lombard-ops-0xceee-0x2f2a-0x6404", "beefy-base-op-0x3302", "ethena-ops-0xb028-0xca05-0x108e-0x070a", "yearn-v3-op-0x2a14",
-             "etherfi-liquid-op-0xf0fb", "lombard-op-0xd07f", "cap-op-0x3397", "compound-v3-op-0x86b4"]
+             "etherfi-liquid-op-0xf0fb", "lombard-op-0xd07f", "cap-op-0x3397", "compound-v3-op-0x86b4", "lista-lending-op-0x21df"]
     dec46 = json.loads(read("tools/briefs_decoded.json"))
     dec_by46 = {b_["slug"]: b_ for b_ in dec46["briefs"]}
     briefs46 = {sl: pages.get(os.path.join("briefs", sl, "index.html"), "") for sl in new46}
@@ -2467,19 +2467,19 @@ def main(argv=None):
         return {**it_, "eta": None if st_ == "executed" else it_["eta"],
                 "operations": [{**o_, "done": st_ == "executed", "pending": st_ != "executed", "ready": st_ == "ready"} for o_ in it_["operations"]]}
     v46 = {
-        "radar.json: 11 items / 17 ops (Cap + Compound V3 refresh: 0 ready, 6 pending (6 ops), 1 mixed (Ethena: 3 ready + 1 executed), executed (7 ops), Beefy on Base + Treehouse and the Lombard upgrades on Ethereum executed); refreshed_at (Ethereum) + refreshed_at_base (Base)":
-            len(rad46["items"]) == 11 and sum(len(it["operations"]) for it in rad46["items"]) == 17
-            and [BS.item_state(it) for it in rad46["items"]].count("ready") == 0 and [BS.item_state(it) for it in rad46["items"]].count("pending") == 6
-            and sum(len(it["operations"]) for it in rad46["items"] if BS.item_state(it) == "ready") == 0
-            and sum(len(it["operations"]) for it in rad46["items"] if BS.item_state(it) == "pending") == 6
-            and [BS.item_state(it) for it in rad46["items"]].count("mixed") == 1
-            and sum(len(it["operations"]) for it in rad46["items"] if BS.item_state(it) == "mixed") == 4
-            and sum(len(it["operations"]) for it in rad46["items"] if BS.item_state(it) == "executed") == 7
+        "radar.json: 12 items / 18 ops (Lista refresh: 2 ready (ether.fi Liquid 0xf0fb + Lombard 0xd07f, matured, unexecuted), 5 pending (5 ops, Lista 0x21df among them), 0 mixed, executed (11 ops), Beefy on Base + Treehouse, the Lombard upgrades and both Ethena items executed); refreshed_at (Ethereum) + refreshed_at_base (Base)":
+            len(rad46["items"]) == 12 and sum(len(it["operations"]) for it in rad46["items"]) == 18
+            and [BS.item_state(it) for it in rad46["items"]].count("ready") == 2 and [BS.item_state(it) for it in rad46["items"]].count("pending") == 5
+            and sum(len(it["operations"]) for it in rad46["items"] if BS.item_state(it) == "ready") == 2
+            and sum(len(it["operations"]) for it in rad46["items"] if BS.item_state(it) == "pending") == 5
+            and [BS.item_state(it) for it in rad46["items"]].count("mixed") == 0
+            and sum(len(it["operations"]) for it in rad46["items"] if BS.item_state(it) == "executed") == 11
+            and {it["brief"] for it in rad46["items"] if BS.item_state(it) == "ready"} == {"briefs/etherfi-liquid-op-0xf0fb/", "briefs/lombard-op-0xd07f/"}
             and all(BS.item_state(it) == "executed" for it in base46)
             and r46["tag"] == rb46.get("tag") == "finalized" and len(base46) == 1 and all(it.get("protocol_slug") and it.get("chain_id") in (1, 8453) for it in rad46["items"]),
-        "counts text '6 pending · 1 mixed (4 ops) · Executed (7 ops)' on / and /radar/":
-            BS.radar_counts_text(rad46) == "6 pending · 1 mixed (4 ops) · Executed (7 ops)"
-            and all("data-radar-counts>6 pending · 1 mixed (4 ops) · Executed (7 ops)</span>" in t for t in (home46, radar46)),
+        "counts text '2 ready · 5 pending · Executed (11 ops)' on / and /radar/":
+            BS.radar_counts_text(rad46) == "2 ready · 5 pending · Executed (11 ops)"
+            and all("data-radar-counts>2 ready · 5 pending · Executed (11 ops)</span>" in t for t in (home46, radar46)),
         "Base items link Basescan (never Etherscan) for the timelock on / and /radar/, carry a 'Base' tag, and the Base brief has 0 etherscan.io links":
             all(f'https://basescan.org/address/{it["timelock"]}' in t and f'etherscan.io/address/{it["timelock"]}' not in t and f'etherscan.io/address/{it["timelock"].lower()}' not in t
                 and '<span class="chain-tag">Base</span>' in t for it in base46 for t in (home46, radar46))
@@ -2496,7 +2496,7 @@ def main(argv=None):
                 and f"Executed on Base by Finalized Block #{rb46['block_number']:,}" in BS.post_eta_banner(ann46(it, "executed"), rb46, "base")
                 and "on L1" not in BS.post_eta_banner(ann46(it, "ready"), rb46, "base") for it in base46)
             and "on L1" not in beefy46,
-        "8 decoded briefs: rendered from tools/briefs_decoded.json (every op id, call, risk note and reproduce command), in BRIEFS / BRIEF_PROTOCOL, sitemap, llms.txt, lookup.json + lookup.mjs":
+        "9 decoded briefs: rendered from tools/briefs_decoded.json (every op id, call, risk note and reproduce command), in BRIEFS / BRIEF_PROTOCOL, sitemap, llms.txt, lookup.json + lookup.mjs":
             dec46["schema"] == "pacta.decoded_briefs.v1" and sorted(dec_by46) == sorted(new46)
             and all(sl in BS.BRIEFS and BS.BRIEF_PROTOCOL[sl] == dec_by46[sl]["protocol_slug"] for sl in new46)
             and all(all(o_["op_id"] in briefs46[sl] for o_ in dec_by46[sl]["operations"])
@@ -2515,7 +2515,7 @@ def main(argv=None):
         "app.js keeps live blocks per chain (an Ethereum block is never compared with a Base block) (harness)":
             "blk[ch] = Math.floor(n)" in appjs and res.get("v46_live_blocks_per_chain") is True,
     }
-    check(f"v4.6 multi-chain radar (11 items / 17 ops, Basescan for chain id 8453, two-chain provenance, 'on Base' wording), 8 decoded briefs, {X['protocols'] + rad46n} cards",
+    check(f"v4.6 multi-chain radar (12 items / 18 ops, Basescan for chain id 8453, two-chain provenance, 'on Base' wording), 9 decoded briefs, {X['protocols'] + rad46n} cards",
           all(v46.values()), str([k for k, x in v46.items() if not x]))
 
     # v4.7 W1-W5 (external UX evaluation quick wins)

@@ -96,6 +96,16 @@ EDITORIAL = {
                    ("badge-amber", "Fee above the operator range")],
         "state_title": "AssetRouter parameters: current vs queued",
     },
+    "lista-lending-op-0x21df": {
+        "title": "Pacta Governance Radar · Pre-Execution Brief — Lista Lending Op 0x21df",
+        "h1": "Lista Lending — Four Liquidator Upgrades Add an Emergency Pause; a 1-of-15 Safe Gets <code>PAUSER</code>",
+        "lede": ("Pre-execution decode of one 16-call Lista TimeLock batch: the Liquidator, BrokerLiquidator, V3Liquidator and PublicLiquidator "
+                 "proxies (UUPS) move to implementations that add OpenZeppelin Pausable, then PAUSER goes to a 1-of-15 Safe and to Lista's "
+                 "EmergencySwitchHub, and MANAGER to the hub."),
+        "badges": [("badge-cyan", "Pre-execution brief"), ("badge-amber", "Pause by 1 of 15 signers"),
+                   ("badge-green", "Storage layout unchanged")],
+        "state_title": "Liquidators, roles and the EmergencySwitchHub at the pin",
+    },
 }
 
 
@@ -333,6 +343,8 @@ def target_names(b):
         n[d["minting"]["address"]] = "EthenaMinting"
         n[d["oftAdapter"]["address"]] = "USDeOFTAdapter (LayerZero)"
         n.update({a: v["symbol"] for a, v in d["assets"].items()})
+    if "hub" in d:
+        n[d["hub"]["address"]] = "EmergencySwitchHub"
     if "router" in d:
         n[d["router"]["address"]] = d["router"]["name"]
         n.update({a: v["symbol"] for a, v in d["tokens"].items()})
@@ -377,6 +389,13 @@ def call_effect(b, o, c, E):
         return f' — {E(s["vaultSymbol"])}: {E(s["strategyName"])}, not added to the default queue'
     if c["function"].startswith("setDeviation"):
         return f' — maxTickDeviation {d["strategy"]["maxTickDeviation"]} to {d["newMaxTickDeviation"]} ticks'
+    if "grant" in c:
+        g = c["grant"]
+        return f' — {E(g["roleName"])} to {E(g["accountName"])} (not held at the pin)' if not g["heldBefore"] else f' — {E(g["roleName"])} (already held)'
+    if "upgradeOf" in c:
+        u = next(u for u in d["upgrades"] if u["proxy"] == c["upgradeOf"])
+        assert u["initCalldataBytes"] == 0 and c["args"]["data"] == "0x"
+        return f' — {E(u["proxyName"])} (UUPS) to the queued implementation; adds Pausable; no initializer (empty data)'
     if c["function"].startswith("upgradeToAndCall"):
         u = next(u for u in d["upgrades"] if u["op_id"] == o["op_id"])
         assert u["initCalldataBytes"] == 0 and c["args"]["data"] == "0x"
@@ -403,6 +422,13 @@ def kpis(b, F):
                 ("Minimum request", f'{mn["from"]:,} to {mn["to"]:,} sats', "Router-wide · set first in the batch", False),
                 ("Timelock delay", F["delay"], f"ETA {F['eta']}", False),
                 ("Operator fee range", f"{lo:,}–{hi:,} sats", "The queued fee is above it: timelock only", True)]
+    if slug.startswith("lista-"):
+        calls = [c for o in ops for c in o["calls"]]
+        ps = d["safes"]["pauser"]
+        return [("Calls", f"{len(calls)} in one batch", f"{len(d['upgrades'])} upgradeToAndCall + {len(d['grants'])} grantRole", False),
+                ("Timelock delay", F["delay"], f"ETA {F['eta']}", False),
+                ("Pause quorum", f"{ps['threshold']} of {ps['owners']}", "PAUSER Safe · unpause needs MANAGER", False),
+                ("Storage", "Unchanged", "Pausable flag in an ERC-7201 slot", True)]
     if slug.startswith("cap-"):
         u = d["upgrades"][0]
         return [("Operation", "1 UUPS upgrade", "upgradeToAndCall · no initializer", False),
@@ -677,7 +703,48 @@ def state_compound(b, item, bs, xa, xl, E):
             '  </tbody></table>', '</div>']
 
 
+def state_lista(b, item, bs, xa, E):
+    d = b["decoded"]
+    tl = item["timelock"].lower()
+    hub, ps, ms, p, mf = d["hub"], d["safes"]["pauser"], d["safes"]["manager"], d["proposer"], d["marketFactory"]
+    assert p["proposerIsTxTo"] and p["executorIsTxTo"] and not p["executorOpen"] and hub["defaultAdmin"] == [tl] and not hub["liquidatorsListed"]
+    out = []
+    abi = lambda xs: ", ".join(f'<code>{E(x.split(" ", 1)[1].split("(", 1)[0])}</code>' for x in xs) or "none"
+    for u in d["upgrades"]:
+        cur, new, sd = u["currentImplementation"], u["newImplementation"], u["sourceDiff"]
+        assert u["proxyKind"] == "UUPS" and int(u["eip1967AdminSlot"], 16) == 0 and u["initCalldataBytes"] == 0 and u["upgradeAuthority"]["timelockHoldsDefaultAdmin"]
+        files = " · ".join(f'{os.path.basename(f["file"])} +{f["linesAdded"]} / -{f["linesRemoved"]}' for f in sd["projectFilesChanged"])
+        out += [f'<h3>{E(u["proxyName"])}</h3>', '<dl class="memo-meta">',
+                f'<dt>Proxy</dt><dd>{xa(u["proxy"])} · UUPS (ERC-1967 admin slot empty)</dd>',
+                f'<dt>Upgrade authority</dt><dd>_authorizeUpgrade requires DEFAULT_ADMIN_ROLE, held by {xa(tl, "this timelock")}</dd>',
+                f'<dt>Implementation now</dt><dd>{xa(cur["address"])} · {E(cur["sourcify"]["name"])} · Sourcify {E(cur["sourcify"]["match"])}</dd>',
+                f'<dt>Queued implementation</dt><dd>{xa(new["address"])} · {E(new["sourcify"]["name"])} · Sourcify {E(new["sourcify"]["match"])} '
+                f'(verified {E(new["sourcify"]["verifiedAt"][:10])}) · proxiableUUID = the ERC-1967 implementation slot</dd>',
+                '<dt>Initializer</dt><dd>None: upgradeToAndCall with empty data</dd>',
+                f'<dt>Source diff</dt><dd>{E(files)}; OpenZeppelin files added: {E(", ".join(os.path.basename(f) for f in sd["filesAdded"]) or "none")}</dd>',
+                f'<dt>ABI added</dt><dd>{abi(sd["abiAdded"])}</dd>',
+                f'<dt>Paused entry points</dt><dd>{", ".join(f"<code>{E(f)}</code>" for f in u["pausedFunctions"])}</dd>',
+                f'<dt>Storage</dt><dd>{E(sd["storage"])}</dd>', '</dl>']
+    rows = (f'<tr><td><code>PAUSER</code></td><td>nobody</td><td>{xa(ps["address"])} (Safe, {ps["threshold"]} of {ps["owners"]}) · '
+            f'{xa(hub["address"], "EmergencySwitchHub")}</td><td>pause()</td></tr>'
+            f'<tr><td><code>MANAGER</code></td><td>{xa(ms["address"])} (Safe, {ms["threshold"]} of {ms["owners"]}) · {xa(mf["address"], mf["implementationName"])} '
+            f'proxy</td><td>adds {xa(hub["address"], "EmergencySwitchHub")}</td><td>unpause() and the admin setters</td></tr>'
+            f'<tr><td><code>DEFAULT_ADMIN_ROLE</code></td><td>{xa(tl, "this timelock")}</td><td>unchanged</td><td>upgrades; grants PAUSER and MANAGER</td></tr>')
+    out += ['<div class="card">',
+            '  <p>Roles on each of the four liquidators (the same holders on all four at the pin):</p>',
+            '  <table><thead><tr><th>Role</th><th>Held at the pin</th><th>After the batch</th><th>Gates</th></tr></thead>',
+            '  <tbody>' + rows + '</tbody></table>',
+            f'  <p>{xa(hub["address"], "EmergencySwitchHub")} (implementation {xa(hub["implementation"]["address"])}, Sourcify '
+            f'{E(hub["implementation"]["sourcifyMatch"])}): DEFAULT_ADMIN_ROLE is {xa(tl, "this timelock")}, MANAGER the {ms["threshold"]}-of-{ms["owners"]} '
+            f'Safe, PAUSER the {ps["threshold"]}-of-{ps["owners"]} Safe, and the hub\'s PAUSER role admin is {E(hub["pauserRoleAdmin"])}. Its '
+            f'getPausableContracts() lists {hub["pausableContracts"]} contracts at the pin, none of them one of these liquidators.</p>',
+            f'  <p>The batch was scheduled by the {p["threshold"]}-of-{p["owners"]} Safe {xa(p["address"])} (Safe {E(p["version"])}), which is this '
+            f'timelock\'s proposer, canceller and executor; the executor role is not open to everyone. The operation id was re-derived on chain with '
+            f'hashOperationBatch (salt {E(d["opIdRederived"]["salt"][-4:])}).</p>', '</div>']
+    return out
+
+
 STATE = {"lombard-ops-0xceee-0x2f2a-0x6404": state_lombard, "beefy-base-op-0x3302": state_beefy,
          "ethena-ops-0xb028-0xca05-0x108e-0x070a": state_ethena, "yearn-v3-op-0x2a14": state_yearn,
          "etherfi-liquid-op-0xf0fb": state_etherfi_liquid, "lombard-op-0xd07f": state_lombard_fees,
-         "cap-op-0x3397": state_cap, "compound-v3-op-0x86b4": state_compound}
+         "cap-op-0x3397": state_cap, "compound-v3-op-0x86b4": state_compound, "lista-lending-op-0x21df": state_lista}

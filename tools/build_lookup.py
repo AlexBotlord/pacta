@@ -135,6 +135,7 @@ TOKENS = {
     "ethena-ops-0xb028-0xca05-0x108e-0x070a": ["USDe", "USDm"], "yearn-v3-op-0x2a14": ["yvUSDC-1", "yvUSD", "yvWETH-1", "yvFlexUSDC"],
     "etherfi-liquid-op-0xf0fb": ["liquidUSD", "liquidETH", "liquidBTC"], "lombard-op-0xd07f": ["LBTC", "BTC.b", "AssetRouter"],
     "cap-op-0x3397": ["cUSD", "Cap", "EigenServiceManager"], "compound-v3-op-0x86b4": ["cWETHv3", "Comet", "Linea"],
+    "lista-lending-op-0x21df": ["Lista", "Moolah", "Liquidator", "EmergencySwitchHub"],
 }
 
 

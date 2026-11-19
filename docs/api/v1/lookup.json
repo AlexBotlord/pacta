@@ -15496,7 +15496,7 @@
    "controllerKind": "timelock",
    "documentedDelaySeconds": null,
    "easAttested": false,
-   "eta": 1795011647,
+   "eta": null,
    "evidenceBasis": "pinned_rpc_brief",
    "kind": "brief",
    "name": "Ethena USDe — mint caps cut to 50M per block, USDm delisted, a custodian added",
@@ -15604,6 +15604,37 @@
    ],
    "url": "https://pacta.wtf/briefs/kerne-kusd-base/",
    "venue": "Euler (Base) · isolated kUSD/USDC market"
+  },
+  {
+   "baseEasUids": [],
+   "category": "Timelock radar brief (queued operations)",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "timelock_radar_brief",
+   "controllerAddress": "0xa18ae79AEDA3e711E0CD64cfe1Cd06402d400D61",
+   "controllerKind": "timelock",
+   "documentedDelaySeconds": null,
+   "easAttested": false,
+   "eta": 1795159259,
+   "evidenceBasis": "pinned_rpc_brief",
+   "kind": "brief",
+   "name": "Lista Lending — four liquidator upgrades add an emergency pause; PAUSER to a 1-of-15 Safe and the EmergencySwitchHub",
+   "observedDelaySeconds": 86400,
+   "preflightArgs": {
+    "address": "0xa18ae79AEDA3e711E0CD64cfe1Cd06402d400D61",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0xa18ae79AEDA3e711E0CD64cfe1Cd06402d400D61",
+   "relatedProtocolSlug": "lista-lending",
+   "slug": "lista-lending-op-0x21df",
+   "targetLabel": "Lista Lending timelock",
+   "tokens": [
+    "Lista",
+    "Moolah",
+    "Liquidator",
+    "EmergencySwitchHub"
+   ],
+   "url": "https://pacta.wtf/briefs/lista-lending-op-0x21df/"
   },
   {
    "baseEasUids": [],
@@ -15800,9 +15831,9 @@
   "https://pacta.wtf/api/v1/radar.json"
  ],
  "totals": {
-  "briefs": 16,
+  "briefs": 17,
   "easAttestedProtocols": 113,
-  "items": 325,
+  "items": 326,
   "protocols": 309,
   "rpcObservedProtocols": 196
  }

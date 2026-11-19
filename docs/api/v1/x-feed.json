@@ -6,17 +6,17 @@
    "scorecards.json": "a17346626cd1518e78ccaf17075b04b723e054ae3d727c7d4d2bb1b90ae96714",
    "index.json": "e442a7622d747b12d7d185d0de6f01dbba995fc57eb3c06e6c8d6124fa8722bb",
    "rpc-pinned.json": "77b8f176cd3dcc4f43c2e3de4092cf65bec80bc8981d02824cb6b965ada5d087",
-   "radar.json": "08721a73b00a6cd9a3d57099c6f58ecbe1a5c24d436891cf5db781c331f8052f",
+   "radar.json": "19d464d7127a1e292ddaf6fadfc6cfb8e2db89c53b53238015d7fad758082b1b",
    "protocols.json": "98ce9e069f43d473839360a41552ee9b54b67e70298ae68f186305b1e6d4e4d1"
   },
   "xHandles": "f74c591da43bd9e990e1ef5ae19dc57f08d4ed2fe966a914dda06302ea09d8cf",
-  "radarBlock": 26441005,
-  "radarBlockBase": 59014044
+  "radarBlock": 26448030,
+  "radarBlockBase": 59436640
  },
  "counts": {
   "adverse_delta": 37,
   "protective_delta": 7,
-  "radar_timelock": 8,
+  "radar_timelock": 7,
   "aligned_baseline": 69,
   "rpc_observed": 196
  },
@@ -2662,266 +2662,6 @@
    "priority": 44
   },
   {
-   "feedId": "radar:0xb0289f92009409e09b8b87150e10486ab753b7c13d049702caca3221a622d81a",
-   "slug": "ethena-ops-0xb028-0xca05-0x108e-0x070a",
-   "protocolSlug": "ethena-usde-susde",
-   "protocolName": "Ethena (USDe / sUSDe)",
-   "xHandle": "@ethena",
-   "xUrl": "https://x.com/ethena",
-   "kind": "radar_timelock",
-   "chain": "ethereum",
-   "pinnedBlock": 26441005,
-   "blockHash": "0xffd4780112448d0bb57761c0a7002cc426fda42fe95c589b83ed548c2a7ed6cc",
-   "easUid": null,
-   "sprint": null,
-   "recordId": null,
-   "opId": "0xb0289f92009409e09b8b87150e10486ab753b7c13d049702caca3221a622d81a",
-   "opShort": "0xb028…d81a",
-   "eta": 1795011647,
-   "state": "pending",
-   "summaryShort": "Four ops: global and per-asset maxMintPerBlock 200M -> 50M USDe on 8 assets; removeSupportedAsset(USDm); addCustodianAddress for an EOA not yet a custodian; USDe OFT adapter setRateLimits to 25M per hour on LayerZero eids 30339 (was 10M) and 30383 (was 30M).",
-   "rosette": [
-    {
-     "key": "upgrade",
-     "label": "Upgradeability",
-     "state": "n",
-     "cue": "—",
-     "value": "Upgrade path not in the published records"
-    },
-    {
-     "key": "timelock",
-     "label": "Timelock floor",
-     "state": "b",
-     "cue": "M",
-     "value": "1d minimum enforced delay across control surfaces"
-    },
-    {
-     "key": "quorum",
-     "label": "Signer quorum",
-     "state": "g",
-     "cue": "S",
-     "value": "Lowest controlling quorum: 5-of-10"
-    },
-    {
-     "key": "emergency",
-     "label": "Emergency / freeze scope",
-     "state": "n",
-     "cue": "—",
-     "value": "No pause / freeze authority in the published records"
-    },
-    {
-     "key": "parity",
-     "label": "Docs-vs-chain parity",
-     "state": "a",
-     "cue": "W",
-     "value": "Documentation differs from the chain (parameter delta)"
-    }
-   ],
-   "docsSay": "Ethena USDe — mint caps cut from 200M to 50M per block",
-   "chainSays": "the queued operation can execute (from Nov 18, 14:20 UTC)",
-   "mainPostText": "Timelock watch @ethena: Ethena USDe - mint caps cut from 200M to 50M per block. At Ethereum block #26,441,005 the queued operation can execute (from Nov 18, 14:20 UTC). Decoded before it runs. Brief below.",
-   "replyPostText": "Brief: https://pacta.wtf/briefs/ethena-ops-0xb028-0xca05-0x108e-0x070a/ · Pinned RPC observation (not attested on Base)",
-   "cardFilename": "radar-b0289f92.png",
-   "receiptUrl": "https://pacta.wtf/briefs/ethena-ops-0xb028-0xca05-0x108e-0x070a/",
-   "attestationUrl": null,
-   "priority": 45
-  },
-  {
-   "feedId": "radar:0xca0563b0bebee6c971db36df24ef8c5802ad4007f7fb42bff2f553141c8ed835",
-   "slug": "ethena-ops-0xb028-0xca05-0x108e-0x070a",
-   "protocolSlug": "ethena-usde-susde",
-   "protocolName": "Ethena (USDe / sUSDe)",
-   "xHandle": "@ethena",
-   "xUrl": "https://x.com/ethena",
-   "kind": "radar_timelock",
-   "chain": "ethereum",
-   "pinnedBlock": 26441005,
-   "blockHash": "0xffd4780112448d0bb57761c0a7002cc426fda42fe95c589b83ed548c2a7ed6cc",
-   "easUid": null,
-   "sprint": null,
-   "recordId": null,
-   "opId": "0xca0563b0bebee6c971db36df24ef8c5802ad4007f7fb42bff2f553141c8ed835",
-   "opShort": "0xca05…d835",
-   "eta": 1795011731,
-   "state": "pending",
-   "summaryShort": "Four ops: global and per-asset maxMintPerBlock 200M -> 50M USDe on 8 assets; removeSupportedAsset(USDm); addCustodianAddress for an EOA not yet a custodian; USDe OFT adapter setRateLimits to 25M per hour on LayerZero eids 30339 (was 10M) and 30383 (was 30M).",
-   "rosette": [
-    {
-     "key": "upgrade",
-     "label": "Upgradeability",
-     "state": "n",
-     "cue": "—",
-     "value": "Upgrade path not in the published records"
-    },
-    {
-     "key": "timelock",
-     "label": "Timelock floor",
-     "state": "b",
-     "cue": "M",
-     "value": "1d minimum enforced delay across control surfaces"
-    },
-    {
-     "key": "quorum",
-     "label": "Signer quorum",
-     "state": "g",
-     "cue": "S",
-     "value": "Lowest controlling quorum: 5-of-10"
-    },
-    {
-     "key": "emergency",
-     "label": "Emergency / freeze scope",
-     "state": "n",
-     "cue": "—",
-     "value": "No pause / freeze authority in the published records"
-    },
-    {
-     "key": "parity",
-     "label": "Docs-vs-chain parity",
-     "state": "a",
-     "cue": "W",
-     "value": "Documentation differs from the chain (parameter delta)"
-    }
-   ],
-   "docsSay": "Ethena USDe — USDm removed as mint collateral",
-   "chainSays": "the queued operation can execute (from Nov 18, 14:22 UTC)",
-   "mainPostText": "Timelock watch @ethena: Ethena USDe - USDm removed as mint collateral. At Ethereum block #26,441,005 the queued operation can execute (from Nov 18, 14:22 UTC). Decoded before it runs. Brief below.",
-   "replyPostText": "Brief: https://pacta.wtf/briefs/ethena-ops-0xb028-0xca05-0x108e-0x070a/ · Pinned RPC observation (not attested on Base)",
-   "cardFilename": "radar-ca0563b0.png",
-   "receiptUrl": "https://pacta.wtf/briefs/ethena-ops-0xb028-0xca05-0x108e-0x070a/",
-   "attestationUrl": null,
-   "priority": 46
-  },
-  {
-   "feedId": "radar:0x108ea49a961a00e8992ad4aed2e1faea43b0a47982e0c62d63f9db03ddb4d0f4",
-   "slug": "ethena-ops-0xb028-0xca05-0x108e-0x070a",
-   "protocolSlug": "ethena-usde-susde",
-   "protocolName": "Ethena (USDe / sUSDe)",
-   "xHandle": "@ethena",
-   "xUrl": "https://x.com/ethena",
-   "kind": "radar_timelock",
-   "chain": "ethereum",
-   "pinnedBlock": 26441005,
-   "blockHash": "0xffd4780112448d0bb57761c0a7002cc426fda42fe95c589b83ed548c2a7ed6cc",
-   "easUid": null,
-   "sprint": null,
-   "recordId": null,
-   "opId": "0x108ea49a961a00e8992ad4aed2e1faea43b0a47982e0c62d63f9db03ddb4d0f4",
-   "opShort": "0x108e…d0f4",
-   "eta": 1795013567,
-   "state": "pending",
-   "summaryShort": "Four ops: global and per-asset maxMintPerBlock 200M -> 50M USDe on 8 assets; removeSupportedAsset(USDm); addCustodianAddress for an EOA not yet a custodian; USDe OFT adapter setRateLimits to 25M per hour on LayerZero eids 30339 (was 10M) and 30383 (was 30M).",
-   "rosette": [
-    {
-     "key": "upgrade",
-     "label": "Upgradeability",
-     "state": "n",
-     "cue": "—",
-     "value": "Upgrade path not in the published records"
-    },
-    {
-     "key": "timelock",
-     "label": "Timelock floor",
-     "state": "b",
-     "cue": "M",
-     "value": "1d minimum enforced delay across control surfaces"
-    },
-    {
-     "key": "quorum",
-     "label": "Signer quorum",
-     "state": "g",
-     "cue": "S",
-     "value": "Lowest controlling quorum: 5-of-10"
-    },
-    {
-     "key": "emergency",
-     "label": "Emergency / freeze scope",
-     "state": "n",
-     "cue": "—",
-     "value": "No pause / freeze authority in the published records"
-    },
-    {
-     "key": "parity",
-     "label": "Docs-vs-chain parity",
-     "state": "a",
-     "cue": "W",
-     "value": "Documentation differs from the chain (parameter delta)"
-    }
-   ],
-   "docsSay": "Ethena USDe — bridge rate limits set to 25M per hour on two routes",
-   "chainSays": "the queued operation can execute (from Nov 18, 14:52 UTC)",
-   "mainPostText": "Timelock watch @ethena: Ethena USDe - bridge rate limits set to 25M per hour on two routes. At Ethereum block #26,441,005 the queued operation can execute (from Nov 18, 14:52 UTC). Decoded before it runs. Brief below.",
-   "replyPostText": "Brief: https://pacta.wtf/briefs/ethena-ops-0xb028-0xca05-0x108e-0x070a/ · Pinned RPC observation (not attested on Base)",
-   "cardFilename": "radar-108ea49a.png",
-   "receiptUrl": "https://pacta.wtf/briefs/ethena-ops-0xb028-0xca05-0x108e-0x070a/",
-   "attestationUrl": null,
-   "priority": 47
-  },
-  {
-   "feedId": "radar:0x070a0ab4df4b4d69e23ed817c62481d267dae887ed7f7b5fbc7cffa5ff64228d",
-   "slug": "ethena-ops-0xb028-0xca05-0x108e-0x070a",
-   "protocolSlug": "ethena-usde-susde",
-   "protocolName": "Ethena (USDe / sUSDe)",
-   "xHandle": "@ethena",
-   "xUrl": "https://x.com/ethena",
-   "kind": "radar_timelock",
-   "chain": "ethereum",
-   "pinnedBlock": 26441005,
-   "blockHash": "0xffd4780112448d0bb57761c0a7002cc426fda42fe95c589b83ed548c2a7ed6cc",
-   "easUid": null,
-   "sprint": null,
-   "recordId": null,
-   "opId": "0x070a0ab4df4b4d69e23ed817c62481d267dae887ed7f7b5fbc7cffa5ff64228d",
-   "opShort": "0x070a…228d",
-   "eta": 1795013615,
-   "state": "pending",
-   "summaryShort": "Four ops: global and per-asset maxMintPerBlock 200M -> 50M USDe on 8 assets; removeSupportedAsset(USDm); addCustodianAddress for an EOA not yet a custodian; USDe OFT adapter setRateLimits to 25M per hour on LayerZero eids 30339 (was 10M) and 30383 (was 30M).",
-   "rosette": [
-    {
-     "key": "upgrade",
-     "label": "Upgradeability",
-     "state": "n",
-     "cue": "—",
-     "value": "Upgrade path not in the published records"
-    },
-    {
-     "key": "timelock",
-     "label": "Timelock floor",
-     "state": "b",
-     "cue": "M",
-     "value": "1d minimum enforced delay across control surfaces"
-    },
-    {
-     "key": "quorum",
-     "label": "Signer quorum",
-     "state": "g",
-     "cue": "S",
-     "value": "Lowest controlling quorum: 5-of-10"
-    },
-    {
-     "key": "emergency",
-     "label": "Emergency / freeze scope",
-     "state": "n",
-     "cue": "—",
-     "value": "No pause / freeze authority in the published records"
-    },
-    {
-     "key": "parity",
-     "label": "Docs-vs-chain parity",
-     "state": "a",
-     "cue": "W",
-     "value": "Documentation differs from the chain (parameter delta)"
-    }
-   ],
-   "docsSay": "Ethena USDe — a new custodian address added",
-   "chainSays": "the queued operation can execute (from Nov 18, 14:53 UTC)",
-   "mainPostText": "Timelock watch @ethena: Ethena USDe - a new custodian address added. At Ethereum block #26,441,005 the queued operation can execute (from Nov 18, 14:53 UTC). Decoded before it runs. Brief below.",
-   "replyPostText": "Brief: https://pacta.wtf/briefs/ethena-ops-0xb028-0xca05-0x108e-0x070a/ · Pinned RPC observation (not attested on Base)",
-   "cardFilename": "radar-070a0ab4.png",
-   "receiptUrl": "https://pacta.wtf/briefs/ethena-ops-0xb028-0xca05-0x108e-0x070a/",
-   "attestationUrl": null,
-   "priority": 48
-  },
-  {
    "feedId": "radar:0xf0fbfdb07f06c3a429b032811930fbb9b314ed8adc343b4d9ef3a60fe2975eea",
    "slug": "etherfi-liquid-op-0xf0fb",
    "protocolSlug": "ether-fi-liquid-veda-boringvault",
@@ -2930,15 +2670,15 @@
    "xUrl": "https://x.com/veda_labs",
    "kind": "radar_timelock",
    "chain": "ethereum",
-   "pinnedBlock": 26441005,
-   "blockHash": "0xffd4780112448d0bb57761c0a7002cc426fda42fe95c589b83ed548c2a7ed6cc",
+   "pinnedBlock": 26448030,
+   "blockHash": "0xf52a0561c233cb270843176ec6fdc9978eac09dcdf451846da10c21343172608",
    "easUid": null,
    "sprint": null,
    "recordId": null,
    "opId": "0xf0fbfdb07f06c3a429b032811930fbb9b314ed8adc343b4d9ef3a60fe2975eea",
    "opShort": "0xf0fb…5eea",
    "eta": 1795063667,
-   "state": "pending",
+   "state": "ready",
    "summaryShort": "One 5-call batch of setManageRoot on the Veda ManagerWithMerkleVerification contracts of three Liquid vaults: four live strategist roots replaced (a Safe on all three vaults, an EOA on liquidETH) and the liquidUSD manager's own root set to zero. The new roots' leaves are not onchain.",
    "rosette": [
     {
@@ -2978,13 +2718,13 @@
     }
    ],
    "docsSay": "ether.fi Liquid — strategist Merkle roots rotated on liquidUSD, liquidETH and liquidBTC",
-   "chainSays": "the queued operation can execute (from Nov 19, 04:47 UTC)",
-   "mainPostText": "Timelock watch @veda_labs: ether fi Liquid - strategist Merkle roots rotated on liquidUSD, liquidETH and liquidBTC. At Ethereum block #26,441,005 the queued operation can execute (from Nov 19, 04:47 UTC). Decoded before it runs. Brief below.",
+   "chainSays": "the queued operation can execute now (since Nov 19, 04:47 UTC)",
+   "mainPostText": "Timelock watch @veda_labs: ether fi Liquid - strategist Merkle roots rotated on liquidUSD, liquidETH and liquidBTC. At Ethereum block #26,448,030 the queued operation can execute now (since Nov 19, 04:47 UTC). Decoded before it runs. Brief below.",
    "replyPostText": "Brief: https://pacta.wtf/briefs/etherfi-liquid-op-0xf0fb/ · Pinned RPC observation (not attested on Base)",
    "cardFilename": "radar-f0fbfdb0.png",
    "receiptUrl": "https://pacta.wtf/briefs/etherfi-liquid-op-0xf0fb/",
    "attestationUrl": null,
-   "priority": 49
+   "priority": 45
   },
   {
    "feedId": "radar:0xd07fa5ecca21af2317c073b5e59ecddce3968f694270409f76771727ea02e50a",
@@ -2995,15 +2735,15 @@
    "xUrl": "https://x.com/Lombard_Finance",
    "kind": "radar_timelock",
    "chain": "ethereum",
-   "pinnedBlock": 26441005,
-   "blockHash": "0xffd4780112448d0bb57761c0a7002cc426fda42fe95c589b83ed548c2a7ed6cc",
+   "pinnedBlock": 26448030,
+   "blockHash": "0xf52a0561c233cb270843176ec6fdc9978eac09dcdf451846da10c21343172608",
    "easUid": null,
    "sprint": null,
    "recordId": null,
    "opId": "0xd07fa5ecca21af2317c073b5e59ecddce3968f694270409f76771727ea02e50a",
    "opShort": "0xd07f…e50a",
    "eta": 1795077227,
-   "state": "pending",
+   "state": "ready",
    "summaryShort": "One 5-call batch on the upgraded AssetRouter: minRequestAmount 2,000 -> 4,000 sats, a 2,000-sat deposit fee on every LBTC and BTC.b proof mint (half the new minimum, above the operator range), and LBTC's redeem charge moved from redeemFee (10,000 -> 0 sats) to toNativeCommission on redeems to Bitcoin (0 -> 10,000 sats).",
    "rosette": [
     {
@@ -3043,13 +2783,143 @@
     }
    ],
    "docsSay": "Lombard — LBTC and BTC.b deposit fees set to 2,000 sats; minimum request doubled",
-   "chainSays": "the queued operation can execute (from Nov 19, 08:33 UTC)",
-   "mainPostText": "Timelock watch @Lombard_Finance: Lombard - LBTC and BTC.b deposit fees set to 2,000 sats; minimum request doubled. At Ethereum block #26,441,005 the queued operation can execute (from Nov 19, 08:33 UTC). Decoded before it runs. Brief below.",
+   "chainSays": "the queued operation can execute now (since Nov 19, 08:33 UTC)",
+   "mainPostText": "Timelock watch @Lombard_Finance: Lombard - LBTC and BTC.b deposit fees set to 2,000 sats; minimum request doubled. At Ethereum block #26,448,030 the queued operation can execute now (since Nov 19, 08:33 UTC). Decoded before it runs. Brief below.",
    "replyPostText": "Brief: https://pacta.wtf/briefs/lombard-op-0xd07f/ · Pinned RPC observation (not attested on Base)",
    "cardFilename": "radar-d07fa5ec.png",
    "receiptUrl": "https://pacta.wtf/briefs/lombard-op-0xd07f/",
    "attestationUrl": null,
-   "priority": 50
+   "priority": 46
+  },
+  {
+   "feedId": "radar:0x3397c542581a354278c3bfd01e0b9e853ec74e6c7a6ea1ec36e1d6e6cf7ab94a",
+   "slug": "cap-op-0x3397",
+   "protocolSlug": "cap",
+   "protocolName": "Cap",
+   "xHandle": "@CapApp",
+   "xUrl": "https://x.com/CapApp",
+   "kind": "radar_timelock",
+   "chain": "ethereum",
+   "pinnedBlock": 26448030,
+   "blockHash": "0xf52a0561c233cb270843176ec6fdc9978eac09dcdf451846da10c21343172608",
+   "easUid": null,
+   "sprint": null,
+   "recordId": null,
+   "opId": "0x3397c542581a354278c3bfd01e0b9e853ec74e6c7a6ea1ec36e1d6e6cf7ab94a",
+   "opShort": "0x3397…b94a",
+   "eta": 1795105403,
+   "state": "pending",
+   "summaryShort": "upgradeToAndCall (no initializer) on Cap's EigenServiceManager (UUPS): a slash now queues the payout, valued at slash time, and anyone completes it once EigenLayer's slash resolution delay has passed (completeSlash); rewards become USDC-only and USDC can no longer be registered as collateral. Storage is appended only (pendingSlashes).",
+   "rosette": [
+    {
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "cue": "—",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "b",
+     "cue": "M",
+     "value": "1d minimum enforced delay across control surfaces"
+    },
+    {
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "cue": "S",
+     "value": "Lowest controlling quorum: 3-of-5"
+    },
+    {
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "cue": "—",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "cue": "S",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "docsSay": "Cap — EigenLayer service-manager upgrade: slashes paid out only after EigenLayer's resolution delay",
+   "chainSays": "the queued operation can execute (from Nov 19, 16:23 UTC)",
+   "mainPostText": "Timelock watch @CapApp: Cap - EigenLayer service-manager upgrade: slashes paid out only after EigenLayer's resolution delay. At Ethereum block #26,448,030 the queued operation can execute (from Nov 19, 16:23 UTC). Decoded before it runs. Brief below.",
+   "replyPostText": "Brief: https://pacta.wtf/briefs/cap-op-0x3397/ · Pinned RPC observation (not attested on Base)",
+   "cardFilename": "radar-3397c542.png",
+   "receiptUrl": "https://pacta.wtf/briefs/cap-op-0x3397/",
+   "attestationUrl": null,
+   "priority": 47
+  },
+  {
+   "feedId": "radar:0x21dffafc9876aca6c919e6897271e72805f3a4a986b3b7ac22d71950c7da7ebd",
+   "slug": "lista-lending-op-0x21df",
+   "protocolSlug": "lista-lending",
+   "protocolName": "Lista Lending",
+   "xHandle": null,
+   "xUrl": null,
+   "kind": "radar_timelock",
+   "chain": "ethereum",
+   "pinnedBlock": 26448030,
+   "blockHash": "0xf52a0561c233cb270843176ec6fdc9978eac09dcdf451846da10c21343172608",
+   "easUid": null,
+   "sprint": null,
+   "recordId": null,
+   "opId": "0x21dffafc9876aca6c919e6897271e72805f3a4a986b3b7ac22d71950c7da7ebd",
+   "opShort": "0x21df…7ebd",
+   "eta": 1795159259,
+   "state": "pending",
+   "summaryShort": "One 16-call batch: upgradeToAndCall (no initializer) moves Lista's Liquidator, BrokerLiquidator, V3Liquidator and PublicLiquidator (UUPS) to implementations that add OpenZeppelin Pausable (storage layout unchanged), then grants PAUSER to a 1-of-15 Safe and the EmergencySwitchHub, and MANAGER to the hub. One signer can pause liquidations; unpause needs MANAGER.",
+   "rosette": [
+    {
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "cue": "—",
+     "value": "Upgradeable; the delay gating the upgrade path is not in the published records"
+    },
+    {
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "b",
+     "cue": "M",
+     "value": "1d minimum enforced delay across control surfaces"
+    },
+    {
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "n",
+     "cue": "—",
+     "value": "No signer quorum in the published records"
+    },
+    {
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "n",
+     "cue": "—",
+     "value": "No pause / freeze authority in the published records"
+    },
+    {
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "u",
+     "cue": "—",
+     "value": "Uncompared: documentation not assessed (RPC-observed)"
+    }
+   ],
+   "docsSay": "Lista Lending — four liquidator upgrades add an emergency pause; PAUSER to a 1-of-15 Safe and the EmergencySwitchHub",
+   "chainSays": "the queued operation can execute (from Nov 20, 07:20 UTC)",
+   "mainPostText": "Timelock watch: Lista Lending - four liquidator upgrades add an emergency pause; PAUSER to a 1-of-15 Safe and the EmergencySwitchHub. At Ethereum block #26,448,030 the queued operation can execute (from Nov 20, 07:20 UTC). Decoded before it runs. Brief below.",
+   "replyPostText": "Brief: https://pacta.wtf/briefs/lista-lending-op-0x21df/ · Pinned RPC observation (not attested on Base)",
+   "cardFilename": "radar-21dffafc.png",
+   "receiptUrl": "https://pacta.wtf/briefs/lista-lending-op-0x21df/",
+   "attestationUrl": null,
+   "priority": 48
   },
   {
    "feedId": "radar:0x244e3f6c3df722246c471cee58804dd34c7703fce9cee1eadc1c5a85f171359f",
@@ -3060,8 +2930,8 @@
    "xUrl": null,
    "kind": "radar_timelock",
    "chain": "ethereum",
-   "pinnedBlock": 26441005,
-   "blockHash": "0xffd4780112448d0bb57761c0a7002cc426fda42fe95c589b83ed548c2a7ed6cc",
+   "pinnedBlock": 26448030,
+   "blockHash": "0xf52a0561c233cb270843176ec6fdc9978eac09dcdf451846da10c21343172608",
    "easUid": null,
    "sprint": null,
    "recordId": null,
@@ -3109,12 +2979,77 @@
    ],
    "docsSay": "ether.fi — LayerZero V2 delegate moved behind the 10-day timelock",
    "chainSays": "the queued operation can execute (from Nov 20, 16:54 UTC)",
-   "mainPostText": "Timelock watch: ether fi - LayerZero V2 delegate moved behind the 10-day timelock. At Ethereum block #26,441,005 the queued operation can execute (from Nov 20, 16:54 UTC). Decoded before it runs. Brief below.",
+   "mainPostText": "Timelock watch: ether fi - LayerZero V2 delegate moved behind the 10-day timelock. At Ethereum block #26,448,030 the queued operation can execute (from Nov 20, 16:54 UTC). Decoded before it runs. Brief below.",
    "replyPostText": "Brief: https://pacta.wtf/briefs/etherfi-op-0x244e/ · Pinned RPC observation (not attested on Base)",
    "cardFilename": "radar-244e3f6c.png",
    "receiptUrl": "https://pacta.wtf/briefs/etherfi-op-0x244e/",
    "attestationUrl": null,
-   "priority": 51
+   "priority": 49
+  },
+  {
+   "feedId": "radar:0x86b41fd84764a2e73ccd29c1e33c93497a70d7e84b7445804752980fa039fee0",
+   "slug": "compound-v3-op-0x86b4",
+   "protocolSlug": "compound-v3-comet",
+   "protocolName": "Compound V3 (Comet)",
+   "xHandle": null,
+   "xUrl": null,
+   "kind": "radar_timelock",
+   "chain": "ethereum",
+   "pinnedBlock": 26448030,
+   "blockHash": "0xf52a0561c233cb270843176ec6fdc9978eac09dcdf451846da10c21343172608",
+   "easUid": null,
+   "sprint": null,
+   "recordId": null,
+   "opId": "0x86b41fd84764a2e73ccd29c1e33c93497a70d7e84b7445804752980fa039fee0",
+   "opShort": "0x86b4…fee0",
+   "eta": 1795201103,
+   "state": "pending",
+   "summaryShort": "Proposal 625: the Ethereum Timelock sends one Linea message (L1 MessageService.sendMessage). On Linea the bridge receiver queues three calls behind the 1-day Linea Timelock: withdrawReserves of 25.942 WETH from Compound WETH (cWETHv3), WETH.withdraw, and L2 MessageService.sendMessage of 25.952 ETH (0.01 ETH fee) back to the Ethereum Timelock.",
+   "rosette": [
+    {
+     "key": "upgrade",
+     "label": "Upgradeability",
+     "state": "n",
+     "cue": "—",
+     "value": "Upgrade path not in the published records"
+    },
+    {
+     "key": "timelock",
+     "label": "Timelock floor",
+     "state": "g",
+     "cue": "S",
+     "value": "2d minimum enforced delay across control surfaces"
+    },
+    {
+     "key": "quorum",
+     "label": "Signer quorum",
+     "state": "g",
+     "cue": "S",
+     "value": "Lowest controlling quorum: 5-of-9"
+    },
+    {
+     "key": "emergency",
+     "label": "Emergency / freeze scope",
+     "state": "g",
+     "cue": "S",
+     "value": "Pause / freeze authority scoped behind a multi-signer controller (5-of-9)"
+    },
+    {
+     "key": "parity",
+     "label": "Docs-vs-chain parity",
+     "state": "g",
+     "cue": "S",
+     "value": "Chain matches or is stronger than the documentation"
+    }
+   ],
+   "docsSay": "Compound V3 — all 25.94 WETH of reserves on Linea's cWETHv3 withdrawn and bridged to the Ethereum Timelock",
+   "chainSays": "the queued operation can execute (from Nov 20, 18:58 UTC)",
+   "mainPostText": "Timelock watch: Compound V3 - all 25.94 WETH of reserves on Linea's cWETHv3 withdrawn and bridged to the Ethereum Timelock. At Ethereum block #26,448,030 the queued operation can execute (from Nov 20, 18:58 UTC). Decoded before it runs. Brief below.",
+   "replyPostText": "Brief: https://pacta.wtf/briefs/compound-v3-op-0x86b4/ · Pinned RPC observation (not attested on Base)",
+   "cardFilename": "radar-86b41fd8.png",
+   "receiptUrl": "https://pacta.wtf/briefs/compound-v3-op-0x86b4/",
+   "attestationUrl": null,
+   "priority": 50
   },
   {
    "feedId": "radar:0x2a14e386ce3da63615778466602757ea8dc25e8157aaee660213827a15efb5cf",
@@ -3125,8 +3060,8 @@
    "xUrl": "https://x.com/yearnfi",
    "kind": "radar_timelock",
    "chain": "ethereum",
-   "pinnedBlock": 26441005,
-   "blockHash": "0xffd4780112448d0bb57761c0a7002cc426fda42fe95c589b83ed548c2a7ed6cc",
+   "pinnedBlock": 26448030,
+   "blockHash": "0xf52a0561c233cb270843176ec6fdc9978eac09dcdf451846da10c21343172608",
    "easUid": null,
    "sprint": null,
    "recordId": null,
@@ -3174,12 +3109,12 @@
    ],
    "docsSay": "Yearn V3 — 8 new strategies added to 6 vaults with max-debt caps",
    "chainSays": "the queued operation can execute (from Nov 23, 16:39 UTC)",
-   "mainPostText": "Timelock watch @yearnfi: Yearn V3 - 8 new strategies added to 6 vaults with max-debt caps. At Ethereum block #26,441,005 the queued operation can execute (from Nov 23, 16:39 UTC). Decoded before it runs. Brief below.",
+   "mainPostText": "Timelock watch @yearnfi: Yearn V3 - 8 new strategies added to 6 vaults with max-debt caps. At Ethereum block #26,448,030 the queued operation can execute (from Nov 23, 16:39 UTC). Decoded before it runs. Brief below.",
    "replyPostText": "Brief: https://pacta.wtf/briefs/yearn-v3-op-0x2a14/ · Pinned RPC observation (not attested on Base)",
    "cardFilename": "radar-2a14e386.png",
    "receiptUrl": "https://pacta.wtf/briefs/yearn-v3-op-0x2a14/",
    "attestationUrl": null,
-   "priority": 52
+   "priority": 51
   },
   {
    "feedId": "finding:apy-finance:S28:aligned_baseline",
@@ -3239,7 +3174,7 @@
    "cardFilename": "apy-finance.png",
    "receiptUrl": "https://pacta.wtf/protocols/apy-finance/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x541dcd6767b83d7e01b7ffe6843d486d6abce09ef00801c39bf287c6d14a5768",
-   "priority": 53
+   "priority": 52
   },
   {
    "feedId": "finding:asymmetry-finance:S28:aligned_baseline",
@@ -3299,7 +3234,7 @@
    "cardFilename": "asymmetry-finance.png",
    "receiptUrl": "https://pacta.wtf/protocols/asymmetry-finance/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x541dcd6767b83d7e01b7ffe6843d486d6abce09ef00801c39bf287c6d14a5768",
-   "priority": 54
+   "priority": 53
   },
   {
    "feedId": "finding:diem-relay:S28:aligned_baseline",
@@ -3359,7 +3294,7 @@
    "cardFilename": "diem-relay.png",
    "receiptUrl": "https://pacta.wtf/protocols/diem-relay/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x541dcd6767b83d7e01b7ffe6843d486d6abce09ef00801c39bf287c6d14a5768",
-   "priority": 55
+   "priority": 54
   },
   {
    "feedId": "finding:kyberswap-classic:S28:aligned_baseline",
@@ -3419,7 +3354,7 @@
    "cardFilename": "kyberswap-classic.png",
    "receiptUrl": "https://pacta.wtf/protocols/kyberswap-classic/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x541dcd6767b83d7e01b7ffe6843d486d6abce09ef00801c39bf287c6d14a5768",
-   "priority": 56
+   "priority": 55
   },
   {
    "feedId": "finding:mcdex:S28:aligned_baseline",
@@ -3479,7 +3414,7 @@
    "cardFilename": "mcdex.png",
    "receiptUrl": "https://pacta.wtf/protocols/mcdex/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x541dcd6767b83d7e01b7ffe6843d486d6abce09ef00801c39bf287c6d14a5768",
-   "priority": 57
+   "priority": 56
   },
   {
    "feedId": "finding:steakhouse-prime-usdc-base:S28:aligned_baseline",
@@ -3539,7 +3474,7 @@
    "cardFilename": "steakhouse-prime-usdc-base.png",
    "receiptUrl": "https://pacta.wtf/protocols/steakhouse-prime-usdc-base/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x541dcd6767b83d7e01b7ffe6843d486d6abce09ef00801c39bf287c6d14a5768",
-   "priority": 58
+   "priority": 57
   },
   {
    "feedId": "finding:strata-markets:S28:aligned_baseline",
@@ -3599,7 +3534,7 @@
    "cardFilename": "strata-markets.png",
    "receiptUrl": "https://pacta.wtf/protocols/strata-markets/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x541dcd6767b83d7e01b7ffe6843d486d6abce09ef00801c39bf287c6d14a5768",
-   "priority": 59
+   "priority": 58
   },
   {
    "feedId": "finding:wintermute-confidential-wbtc-ethereum:S28:aligned_baseline",
@@ -3659,7 +3594,7 @@
    "cardFilename": "wintermute-confidential-wbtc-ethereum.png",
    "receiptUrl": "https://pacta.wtf/protocols/wintermute-confidential-wbtc-ethereum/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x541dcd6767b83d7e01b7ffe6843d486d6abce09ef00801c39bf287c6d14a5768",
-   "priority": 60
+   "priority": 59
   },
   {
    "feedId": "finding:eclipse-bridge:S27:aligned_baseline",
@@ -3719,7 +3654,7 @@
    "cardFilename": "eclipse-bridge.png",
    "receiptUrl": "https://pacta.wtf/protocols/eclipse-bridge/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x5c12867816bee7d00c13412cf7ec67c00b7d42f3020643ab2a2ca577a28de424",
-   "priority": 61
+   "priority": 60
   },
   {
    "feedId": "finding:equilibria:S27:aligned_baseline",
@@ -3779,7 +3714,7 @@
    "cardFilename": "equilibria.png",
    "receiptUrl": "https://pacta.wtf/protocols/equilibria/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x5c12867816bee7d00c13412cf7ec67c00b7d42f3020643ab2a2ca577a28de424",
-   "priority": 62
+   "priority": 61
   },
   {
    "feedId": "finding:eth-strategy:S27:aligned_baseline",
@@ -3839,7 +3774,7 @@
    "cardFilename": "eth-strategy.png",
    "receiptUrl": "https://pacta.wtf/protocols/eth-strategy/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x5c12867816bee7d00c13412cf7ec67c00b7d42f3020643ab2a2ca577a28de424",
-   "priority": 63
+   "priority": 62
   },
   {
    "feedId": "finding:gravity-by-galxe-bridge:S27:aligned_baseline",
@@ -3899,7 +3834,7 @@
    "cardFilename": "gravity-by-galxe-bridge.png",
    "receiptUrl": "https://pacta.wtf/protocols/gravity-by-galxe-bridge/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x5c12867816bee7d00c13412cf7ec67c00b7d42f3020643ab2a2ca577a28de424",
-   "priority": 64
+   "priority": 63
   },
   {
    "feedId": "finding:kuma-protocol:S27:aligned_baseline",
@@ -3959,7 +3894,7 @@
    "cardFilename": "kuma-protocol.png",
    "receiptUrl": "https://pacta.wtf/protocols/kuma-protocol/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x5c12867816bee7d00c13412cf7ec67c00b7d42f3020643ab2a2ca577a28de424",
-   "priority": 65
+   "priority": 64
   },
   {
    "feedId": "finding:privacy-pools-v1:S27:aligned_baseline",
@@ -4019,7 +3954,7 @@
    "cardFilename": "privacy-pools-v1.png",
    "receiptUrl": "https://pacta.wtf/protocols/privacy-pools-v1/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x5c12867816bee7d00c13412cf7ec67c00b7d42f3020643ab2a2ca577a28de424",
-   "priority": 66
+   "priority": 65
   },
   {
    "feedId": "finding:umia:S27:aligned_baseline",
@@ -4079,7 +4014,7 @@
    "cardFilename": "umia.png",
    "receiptUrl": "https://pacta.wtf/protocols/umia/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x5c12867816bee7d00c13412cf7ec67c00b7d42f3020643ab2a2ca577a28de424",
-   "priority": 67
+   "priority": 66
   },
   {
    "feedId": "finding:3jane-lending:S26:aligned_baseline",
@@ -4139,7 +4074,7 @@
    "cardFilename": "3jane-lending.png",
    "receiptUrl": "https://pacta.wtf/protocols/3jane-lending/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x6692c36731ecd514fb7a92fe3de0a6770b67f68f55eece26faa669c2c84b3a08",
-   "priority": 68
+   "priority": 67
   },
   {
    "feedId": "finding:cooler-loans:S26:aligned_baseline",
@@ -4199,7 +4134,7 @@
    "cardFilename": "cooler-loans.png",
    "receiptUrl": "https://pacta.wtf/protocols/cooler-loans/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x6692c36731ecd514fb7a92fe3de0a6770b67f68f55eece26faa669c2c84b3a08",
-   "priority": 69
+   "priority": 68
   },
   {
    "feedId": "finding:curve-dex-ethereum:S26:aligned_baseline",
@@ -4259,7 +4194,7 @@
    "cardFilename": "curve-dex-ethereum.png",
    "receiptUrl": "https://pacta.wtf/protocols/curve-dex-ethereum/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x6692c36731ecd514fb7a92fe3de0a6770b67f68f55eece26faa669c2c84b3a08",
-   "priority": 70
+   "priority": 69
   },
   {
    "feedId": "finding:ipor-fusion:S26:aligned_baseline",
@@ -4319,7 +4254,7 @@
    "cardFilename": "ipor-fusion.png",
    "receiptUrl": "https://pacta.wtf/protocols/ipor-fusion/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x6692c36731ecd514fb7a92fe3de0a6770b67f68f55eece26faa669c2c84b3a08",
-   "priority": 71
+   "priority": 70
   },
   {
    "feedId": "finding:polygon-bridge:S26:aligned_baseline",
@@ -4379,7 +4314,7 @@
    "cardFilename": "polygon-bridge.png",
    "receiptUrl": "https://pacta.wtf/protocols/polygon-bridge/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x6692c36731ecd514fb7a92fe3de0a6770b67f68f55eece26faa669c2c84b3a08",
-   "priority": 72
+   "priority": 71
   },
   {
    "feedId": "finding:stakewise-v3-oseth:S26:aligned_baseline",
@@ -4439,7 +4374,7 @@
    "cardFilename": "stakewise-v3-oseth.png",
    "receiptUrl": "https://pacta.wtf/protocols/stakewise-v3-oseth/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x7caae9c22c86ae171392def07dce83fa5da6fbf904b1ba9b5ff66a5021b16de9",
-   "priority": 73
+   "priority": 72
   },
   {
    "feedId": "finding:layerzero-v2:S25:aligned_baseline",
@@ -4499,7 +4434,7 @@
    "cardFilename": "layerzero-v2.png",
    "receiptUrl": "https://pacta.wtf/protocols/layerzero-v2/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff",
-   "priority": 74
+   "priority": 73
   },
   {
    "feedId": "finding:railgun:S25:aligned_baseline",
@@ -4559,7 +4494,7 @@
    "cardFilename": "railgun.png",
    "receiptUrl": "https://pacta.wtf/protocols/railgun/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff",
-   "priority": 75
+   "priority": 74
   },
   {
    "feedId": "finding:safe-singleton-core:S25:aligned_baseline",
@@ -4619,7 +4554,7 @@
    "cardFilename": "safe-singleton-core.png",
    "receiptUrl": "https://pacta.wtf/protocols/safe-singleton-core/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff",
-   "priority": 76
+   "priority": 75
   },
   {
    "feedId": "finding:wormhole-core-ntt:S25:aligned_baseline",
@@ -4679,7 +4614,7 @@
    "cardFilename": "wormhole-core-ntt.png",
    "receiptUrl": "https://pacta.wtf/protocols/wormhole-core-ntt/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x1c379ef9f845a2affa9c42715ba2b1b4b2f750b71b4edf9c50d0e1ae739e11ff",
-   "priority": 77
+   "priority": 76
   },
   {
    "feedId": "finding:centrifuge-liquidity-pools-base:S24:aligned_baseline",
@@ -4739,7 +4674,7 @@
    "cardFilename": "centrifuge-liquidity-pools-base.png",
    "receiptUrl": "https://pacta.wtf/protocols/centrifuge-liquidity-pools-base/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x61c2970c176b85ab604e6b565c5f050a7176b62e725d449e8d27d700365283d6",
-   "priority": 78
+   "priority": 77
   },
   {
    "feedId": "finding:steakhouse-financial-ethereum:S24:aligned_baseline",
@@ -4799,7 +4734,7 @@
    "cardFilename": "steakhouse-financial-ethereum.png",
    "receiptUrl": "https://pacta.wtf/protocols/steakhouse-financial-ethereum/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x61c2970c176b85ab604e6b565c5f050a7176b62e725d449e8d27d700365283d6",
-   "priority": 79
+   "priority": 78
   },
   {
    "feedId": "finding:synthetix-v3-core:S24:aligned_baseline",
@@ -4859,7 +4794,7 @@
    "cardFilename": "synthetix-v3-core.png",
    "receiptUrl": "https://pacta.wtf/protocols/synthetix-v3-core/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x61c2970c176b85ab604e6b565c5f050a7176b62e725d449e8d27d700365283d6",
-   "priority": 80
+   "priority": 79
   },
   {
    "feedId": "finding:uniswap-v4:S24:aligned_baseline",
@@ -4919,7 +4854,7 @@
    "cardFilename": "uniswap-v4.png",
    "receiptUrl": "https://pacta.wtf/protocols/uniswap-v4/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x61c2970c176b85ab604e6b565c5f050a7176b62e725d449e8d27d700365283d6",
-   "priority": 81
+   "priority": 80
   },
   {
    "feedId": "finding:circle-usdc:S23:aligned_baseline",
@@ -4979,7 +4914,7 @@
    "cardFilename": "circle-usdc.png",
    "receiptUrl": "https://pacta.wtf/protocols/circle-usdc/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x435a5212e2490cd6024859f474dbbd897752b24985480413301d7573cb195801",
-   "priority": 82
+   "priority": 81
   },
   {
    "feedId": "finding:tether-usdt:S23:aligned_baseline",
@@ -5039,7 +4974,7 @@
    "cardFilename": "tether-usdt.png",
    "receiptUrl": "https://pacta.wtf/protocols/tether-usdt/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x435a5212e2490cd6024859f474dbbd897752b24985480413301d7573cb195801",
-   "priority": 83
+   "priority": 82
   },
   {
    "feedId": "finding:paypal-usd-pyusd:S23:aligned_baseline",
@@ -5099,7 +5034,7 @@
    "cardFilename": "paypal-usd-pyusd.png",
    "receiptUrl": "https://pacta.wtf/protocols/paypal-usd-pyusd/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x435a5212e2490cd6024859f474dbbd897752b24985480413301d7573cb195801",
-   "priority": 84
+   "priority": 83
   },
   {
    "feedId": "finding:frax-usd-frxusd:S23:aligned_baseline",
@@ -5159,7 +5094,7 @@
    "cardFilename": "frax-usd-frxusd.png",
    "receiptUrl": "https://pacta.wtf/protocols/frax-usd-frxusd/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x435a5212e2490cd6024859f474dbbd897752b24985480413301d7573cb195801",
-   "priority": 85
+   "priority": 84
   },
   {
    "feedId": "finding:reserve-protocol-rtoken:S23:aligned_baseline",
@@ -5219,7 +5154,7 @@
    "cardFilename": "reserve-protocol-rtoken.png",
    "receiptUrl": "https://pacta.wtf/protocols/reserve-protocol-rtoken/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x435a5212e2490cd6024859f474dbbd897752b24985480413301d7573cb195801",
-   "priority": 86
+   "priority": 85
   },
   {
    "feedId": "finding:across-protocol-hubpool:S22:aligned_baseline",
@@ -5279,7 +5214,7 @@
    "cardFilename": "across-protocol-hubpool.png",
    "receiptUrl": "https://pacta.wtf/protocols/across-protocol-hubpool/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x50058ab09e446a72e880df68ce0e0ef96bb891ccd689a99ad2cbfc7b469ae9f5",
-   "priority": 87
+   "priority": 86
   },
   {
    "feedId": "finding:liquity-v1-lusd:S22:aligned_baseline",
@@ -5339,7 +5274,7 @@
    "cardFilename": "liquity-v1-lusd.png",
    "receiptUrl": "https://pacta.wtf/protocols/liquity-v1-lusd/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x50058ab09e446a72e880df68ce0e0ef96bb891ccd689a99ad2cbfc7b469ae9f5",
-   "priority": 88
+   "priority": 87
   },
   {
    "feedId": "finding:balancer-v2-vault-timelock:S21:aligned_baseline",
@@ -5399,7 +5334,7 @@
    "cardFilename": "balancer-v2-vault-timelock.png",
    "receiptUrl": "https://pacta.wtf/protocols/balancer-v2-vault-timelock/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0xaddd478e0a488405a28720e11fed8d1942853dbb36fc75bb5a0725b83a460ad6",
-   "priority": 89
+   "priority": 88
   },
   {
    "feedId": "finding:coinbase-wrapped-staked-eth:S21:aligned_baseline",
@@ -5459,7 +5394,7 @@
    "cardFilename": "coinbase-wrapped-staked-eth.png",
    "receiptUrl": "https://pacta.wtf/protocols/coinbase-wrapped-staked-eth/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0xaddd478e0a488405a28720e11fed8d1942853dbb36fc75bb5a0725b83a460ad6",
-   "priority": 90
+   "priority": 89
   },
   {
    "feedId": "finding:grove-finance:S21:aligned_baseline",
@@ -5519,7 +5454,7 @@
    "cardFilename": "grove-finance.png",
    "receiptUrl": "https://pacta.wtf/protocols/grove-finance/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0xaddd478e0a488405a28720e11fed8d1942853dbb36fc75bb5a0725b83a460ad6",
-   "priority": 91
+   "priority": 90
   },
   {
    "feedId": "finding:ssv-network:S21:aligned_baseline",
@@ -5579,7 +5514,7 @@
    "cardFilename": "ssv-network.png",
    "receiptUrl": "https://pacta.wtf/protocols/ssv-network/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0xaddd478e0a488405a28720e11fed8d1942853dbb36fc75bb5a0725b83a460ad6",
-   "priority": 92
+   "priority": 91
   },
   {
    "feedId": "finding:frax-ether-sfrxeth:S20:aligned_baseline",
@@ -5639,7 +5574,7 @@
    "cardFilename": "frax-ether-sfrxeth.png",
    "receiptUrl": "https://pacta.wtf/protocols/frax-ether-sfrxeth/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0xe712dd31d79ab492e2e64eb5847396651dee81daa9f895ead45548e97f1a2eb7",
-   "priority": 93
+   "priority": 92
   },
   {
    "feedId": "finding:stake-link:S20:aligned_baseline",
@@ -5699,7 +5634,7 @@
    "cardFilename": "stake-link.png",
    "receiptUrl": "https://pacta.wtf/protocols/stake-link/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0xe712dd31d79ab492e2e64eb5847396651dee81daa9f895ead45548e97f1a2eb7",
-   "priority": 94
+   "priority": 93
   },
   {
    "feedId": "finding:pendle-finance-v2:S19:aligned_baseline",
@@ -5759,7 +5694,7 @@
    "cardFilename": "pendle-finance-v2.png",
    "receiptUrl": "https://pacta.wtf/protocols/pendle-finance-v2/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0xa04d9c98873fce6fffb60fe535510092f22284f3afeeb78e36e4a0c25d5ea928",
-   "priority": 95
+   "priority": 94
   },
   {
    "feedId": "finding:aave-v3-base:S19:aligned_baseline",
@@ -5819,7 +5754,7 @@
    "cardFilename": "aave-v3-base.png",
    "receiptUrl": "https://pacta.wtf/protocols/aave-v3-base/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0xa04d9c98873fce6fffb60fe535510092f22284f3afeeb78e36e4a0c25d5ea928",
-   "priority": 96
+   "priority": 95
   },
   {
    "feedId": "finding:compound-v3-base:S19:aligned_baseline",
@@ -5879,7 +5814,7 @@
    "cardFilename": "compound-v3-base.png",
    "receiptUrl": "https://pacta.wtf/protocols/compound-v3-base/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0xa04d9c98873fce6fffb60fe535510092f22284f3afeeb78e36e4a0c25d5ea928",
-   "priority": 97
+   "priority": 96
   },
   {
    "feedId": "finding:liquid-collective-lseth:S19:aligned_baseline",
@@ -5939,7 +5874,7 @@
    "cardFilename": "liquid-collective-lseth.png",
    "receiptUrl": "https://pacta.wtf/protocols/liquid-collective-lseth/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0xa04d9c98873fce6fffb60fe535510092f22284f3afeeb78e36e4a0c25d5ea928",
-   "priority": 98
+   "priority": 97
   },
   {
    "feedId": "finding:aerodrome-slipstream-base:S18:aligned_baseline",
@@ -5999,7 +5934,7 @@
    "cardFilename": "aerodrome-slipstream-base.png",
    "receiptUrl": "https://pacta.wtf/protocols/aerodrome-slipstream-base/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x105ea2849a5cd9ef601ae565e6b0adf288884771c8ac82c1c3d0a87aa789eb4f",
-   "priority": 99
+   "priority": 98
   },
   {
    "feedId": "finding:euler-v2-evk:S18:aligned_baseline",
@@ -6059,7 +5994,7 @@
    "cardFilename": "euler-v2-evk.png",
    "receiptUrl": "https://pacta.wtf/protocols/euler-v2-evk/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x105ea2849a5cd9ef601ae565e6b0adf288884771c8ac82c1c3d0a87aa789eb4f",
-   "priority": 100
+   "priority": 99
   },
   {
    "feedId": "finding:nexus-mutual:S18:aligned_baseline",
@@ -6119,7 +6054,7 @@
    "cardFilename": "nexus-mutual.png",
    "receiptUrl": "https://pacta.wtf/protocols/nexus-mutual/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x105ea2849a5cd9ef601ae565e6b0adf288884771c8ac82c1c3d0a87aa789eb4f",
-   "priority": 101
+   "priority": 100
   },
   {
    "feedId": "finding:stargate-v2:S18:aligned_baseline",
@@ -6179,7 +6114,7 @@
    "cardFilename": "stargate-v2.png",
    "receiptUrl": "https://pacta.wtf/protocols/stargate-v2/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x105ea2849a5cd9ef601ae565e6b0adf288884771c8ac82c1c3d0a87aa789eb4f",
-   "priority": 102
+   "priority": 101
   },
   {
    "feedId": "finding:falcon-finance-usdf-susdf:S17:aligned_baseline",
@@ -6239,7 +6174,7 @@
    "cardFilename": "falcon-finance-usdf-susdf.png",
    "receiptUrl": "https://pacta.wtf/protocols/falcon-finance-usdf-susdf/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0xbeb412dfc350f879f816a5cb001b53257a3ee03c12cf1d8e2c15a070141ed8c7",
-   "priority": 103
+   "priority": 102
   },
   {
    "feedId": "finding:m0-protocol-m:S17:aligned_baseline",
@@ -6299,7 +6234,7 @@
    "cardFilename": "m0-protocol-m.png",
    "receiptUrl": "https://pacta.wtf/protocols/m0-protocol-m/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0xbeb412dfc350f879f816a5cb001b53257a3ee03c12cf1d8e2c15a070141ed8c7",
-   "priority": 104
+   "priority": 103
   },
   {
    "feedId": "finding:steakhouse-usdc-metamorpho-base:S17:aligned_baseline",
@@ -6359,7 +6294,7 @@
    "cardFilename": "steakhouse-usdc-metamorpho-base.png",
    "receiptUrl": "https://pacta.wtf/protocols/steakhouse-usdc-metamorpho-base/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0xbeb412dfc350f879f816a5cb001b53257a3ee03c12cf1d8e2c15a070141ed8c7",
-   "priority": 105
+   "priority": 104
   },
   {
    "feedId": "finding:lombard-lbtc:S16:aligned_baseline",
@@ -6419,7 +6354,7 @@
    "cardFilename": "lombard-lbtc.png",
    "receiptUrl": "https://pacta.wtf/protocols/lombard-lbtc/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x754edd7612258b755ff2e56903243d1f8867bad53c29ce3febb5ed9114005e42",
-   "priority": 106
+   "priority": 105
   },
   {
    "feedId": "finding:threshold-network-tbtc:S15:aligned_baseline",
@@ -6479,7 +6414,7 @@
    "cardFilename": "threshold-network-tbtc.png",
    "receiptUrl": "https://pacta.wtf/protocols/threshold-network-tbtc/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x967a4935786194575835d5a46e3e39b1d553225deb6a96c7ff4acf52a34dff22",
-   "priority": 107
+   "priority": 106
   },
   {
    "feedId": "finding:kelp-dao-rseth:S14:aligned_baseline",
@@ -6539,7 +6474,7 @@
    "cardFilename": "kelp-dao-rseth.png",
    "receiptUrl": "https://pacta.wtf/protocols/kelp-dao-rseth/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x0e017bc4399101f9fef3d98a434dd9f2829b6e386e7733408dfd4b626d186eea",
-   "priority": 108
+   "priority": 107
   },
   {
    "feedId": "finding:superstate-ustb-uscc:S12:aligned_baseline",
@@ -6599,7 +6534,7 @@
    "cardFilename": "superstate-ustb-uscc.png",
    "receiptUrl": "https://pacta.wtf/protocols/superstate-ustb-uscc/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x7caae9c22c86ae171392def07dce83fa5da6fbf904b1ba9b5ff66a5021b16de9",
-   "priority": 109
+   "priority": 108
   },
   {
    "feedId": "finding:swell-sweth-rsweth:S12:aligned_baseline",
@@ -6659,7 +6594,7 @@
    "cardFilename": "swell-sweth-rsweth.png",
    "receiptUrl": "https://pacta.wtf/protocols/swell-sweth-rsweth/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x7caae9c22c86ae171392def07dce83fa5da6fbf904b1ba9b5ff66a5021b16de9",
-   "priority": 110
+   "priority": 109
   },
   {
    "feedId": "finding:resolv-usr-rlp:S11:aligned_baseline",
@@ -6719,7 +6654,7 @@
    "cardFilename": "resolv-usr-rlp.png",
    "receiptUrl": "https://pacta.wtf/protocols/resolv-usr-rlp/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x754edd7612258b755ff2e56903243d1f8867bad53c29ce3febb5ed9114005e42",
-   "priority": 111
+   "priority": 110
   },
   {
    "feedId": "finding:lido-steth-dual-governance:S10:aligned_baseline",
@@ -6779,7 +6714,7 @@
    "cardFilename": "lido-steth-dual-governance.png",
    "receiptUrl": "https://pacta.wtf/protocols/lido-steth-dual-governance/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0xfdd83c8091ef6e8ffe67e8a55a78892fcfbb1092683b21ff2d85f8cc09750e6c",
-   "priority": 112
+   "priority": 111
   },
   {
    "feedId": "finding:symbiotic-core:S10:aligned_baseline",
@@ -6839,7 +6774,7 @@
    "cardFilename": "symbiotic-core.png",
    "receiptUrl": "https://pacta.wtf/protocols/symbiotic-core/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0xfdd83c8091ef6e8ffe67e8a55a78892fcfbb1092683b21ff2d85f8cc09750e6c",
-   "priority": 113
+   "priority": 112
   },
   {
    "feedId": "finding:aave-v3-gho:S9:aligned_baseline",
@@ -6899,7 +6834,7 @@
    "cardFilename": "aave-v3-gho.png",
    "receiptUrl": "https://pacta.wtf/protocols/aave-v3-gho/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x0e017bc4399101f9fef3d98a434dd9f2829b6e386e7733408dfd4b626d186eea",
-   "priority": 114
+   "priority": 113
   },
   {
    "feedId": "finding:compound-v3-comet:S9:aligned_baseline",
@@ -6959,7 +6894,7 @@
    "cardFilename": "compound-v3-comet.png",
    "receiptUrl": "https://pacta.wtf/protocols/compound-v3-comet/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x0e017bc4399101f9fef3d98a434dd9f2829b6e386e7733408dfd4b626d186eea",
-   "priority": 115
+   "priority": 114
   },
   {
    "feedId": "finding:eigenlayer-core:S9:aligned_baseline",
@@ -7019,7 +6954,7 @@
    "cardFilename": "eigenlayer-core.png",
    "receiptUrl": "https://pacta.wtf/protocols/eigenlayer-core/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x0e017bc4399101f9fef3d98a434dd9f2829b6e386e7733408dfd4b626d186eea",
-   "priority": 116
+   "priority": 115
   },
   {
    "feedId": "finding:spark-sky:S7:aligned_baseline",
@@ -7079,7 +7014,7 @@
    "cardFilename": "spark-sky.png",
    "receiptUrl": "https://pacta.wtf/protocols/spark-sky/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x3e0e0e1b62de65b277b1399f9833cd70baf627e5ba69e17f1f4f76be30008779",
-   "priority": 117
+   "priority": 116
   },
   {
    "feedId": "finding:liquity-v2-bold:S6:aligned_baseline",
@@ -7139,7 +7074,7 @@
    "cardFilename": "liquity-v2-bold.png",
    "receiptUrl": "https://pacta.wtf/protocols/liquity-v2-bold/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x749d96e1a3d214a4ab66c528ca12c84dce085fa138dc370dd0eb817d890f09fa",
-   "priority": 118
+   "priority": 117
   },
   {
    "feedId": "finding:convex-finance:S4:aligned_baseline",
@@ -7199,7 +7134,7 @@
    "cardFilename": "convex-finance.png",
    "receiptUrl": "https://pacta.wtf/protocols/convex-finance/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0xa26f81b0e68248c7f286527286b3d2e6b299502d53f4dfbc4397df7d22262986",
-   "priority": 119
+   "priority": 118
   },
   {
    "feedId": "finding:morpho-blue-core:S3:aligned_baseline",
@@ -7259,7 +7194,7 @@
    "cardFilename": "morpho-blue-core.png",
    "receiptUrl": "https://pacta.wtf/protocols/morpho-blue-core/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x291e513f3d697eea41b20bd57bf53acdb085b5566e499dd655ff46d7cd9d95a8",
-   "priority": 120
+   "priority": 119
   },
   {
    "feedId": "finding:ether-fi-liquid-veda-boringvault:S3:aligned_baseline",
@@ -7319,7 +7254,7 @@
    "cardFilename": "ether-fi-liquid-veda-boringvault.png",
    "receiptUrl": "https://pacta.wtf/protocols/ether-fi-liquid-veda-boringvault/",
    "attestationUrl": "https://base.easscan.org/attestation/view/0x291e513f3d697eea41b20bd57bf53acdb085b5566e499dd655ff46d7cd9d95a8",
-   "priority": 121
+   "priority": 120
   },
   {
    "feedId": "finding:3f:rpc-ethereum-26441165:rpc_observed",
@@ -7379,7 +7314,7 @@
    "cardFilename": "3f.png",
    "receiptUrl": "https://pacta.wtf/protocols/3f/",
    "attestationUrl": null,
-   "priority": 122
+   "priority": 121
   },
   {
    "feedId": "finding:abracadabra-spell:rpc-ethereum-26441165:rpc_observed",
@@ -7439,7 +7374,7 @@
    "cardFilename": "abracadabra-spell.png",
    "receiptUrl": "https://pacta.wtf/protocols/abracadabra-spell/",
    "attestationUrl": null,
-   "priority": 123
+   "priority": 122
   },
   {
    "feedId": "finding:adi-bridge:rpc-ethereum-26441165:rpc_observed",
@@ -7499,7 +7434,7 @@
    "cardFilename": "adi-bridge.png",
    "receiptUrl": "https://pacta.wtf/protocols/adi-bridge/",
    "attestationUrl": null,
-   "priority": 124
+   "priority": 123
   },
   {
    "feedId": "finding:aegis-yusd:rpc-ethereum-26441165:rpc_observed",
@@ -7559,7 +7494,7 @@
    "cardFilename": "aegis-yusd.png",
    "receiptUrl": "https://pacta.wtf/protocols/aegis-yusd/",
    "attestationUrl": null,
-   "priority": 125
+   "priority": 124
   },
   {
    "feedId": "finding:aera-v3:rpc-ethereum-26441165:rpc_observed",
@@ -7619,7 +7554,7 @@
    "cardFilename": "aera-v3.png",
    "receiptUrl": "https://pacta.wtf/protocols/aera-v3/",
    "attestationUrl": null,
-   "priority": 126
+   "priority": 125
   },
   {
    "feedId": "finding:alchemix-v3:rpc-ethereum-26441165:rpc_observed",
@@ -7679,7 +7614,7 @@
    "cardFilename": "alchemix-v3.png",
    "receiptUrl": "https://pacta.wtf/protocols/alchemix-v3/",
    "attestationUrl": null,
-   "priority": 127
+   "priority": 126
   },
   {
    "feedId": "finding:anemoy-capital:rpc-ethereum-26441165:rpc_observed",
@@ -7739,7 +7674,7 @@
    "cardFilename": "anemoy-capital.png",
    "receiptUrl": "https://pacta.wtf/protocols/anemoy-capital/",
    "attestationUrl": null,
-   "priority": 128
+   "priority": 127
   },
   {
    "feedId": "finding:angle:rpc-ethereum-26441165:rpc_observed",
@@ -7799,7 +7734,7 @@
    "cardFilename": "angle.png",
    "receiptUrl": "https://pacta.wtf/protocols/angle/",
    "attestationUrl": null,
-   "priority": 129
+   "priority": 128
   },
   {
    "feedId": "finding:angstrom:rpc-ethereum-26441165:rpc_observed",
@@ -7859,7 +7794,7 @@
    "cardFilename": "angstrom.png",
    "receiptUrl": "https://pacta.wtf/protocols/angstrom/",
    "attestationUrl": null,
-   "priority": 130
+   "priority": 129
   },
   {
    "feedId": "finding:ankr:rpc-ethereum-26441165:rpc_observed",
@@ -7919,7 +7854,7 @@
    "cardFilename": "ankr.png",
    "receiptUrl": "https://pacta.wtf/protocols/ankr/",
    "attestationUrl": null,
-   "priority": 131
+   "priority": 130
   },
   {
    "feedId": "finding:anvil:rpc-ethereum-26441165:rpc_observed",
@@ -7979,7 +7914,7 @@
    "cardFilename": "anvil.png",
    "receiptUrl": "https://pacta.wtf/protocols/anvil/",
    "attestationUrl": null,
-   "priority": 132
+   "priority": 131
   },
   {
    "feedId": "finding:ao-bridge:rpc-ethereum-26441165:rpc_observed",
@@ -8039,7 +7974,7 @@
    "cardFilename": "ao-bridge.png",
    "receiptUrl": "https://pacta.wtf/protocols/ao-bridge/",
    "attestationUrl": null,
-   "priority": 133
+   "priority": 132
   },
   {
    "feedId": "finding:apex-pro:rpc-ethereum-26441165:rpc_observed",
@@ -8099,7 +8034,7 @@
    "cardFilename": "apex-pro.png",
    "receiptUrl": "https://pacta.wtf/protocols/apex-pro/",
    "attestationUrl": null,
-   "priority": 134
+   "priority": 133
   },
   {
    "feedId": "finding:arkis:rpc-ethereum-26441165:rpc_observed",
@@ -8159,7 +8094,7 @@
    "cardFilename": "arkis.png",
    "receiptUrl": "https://pacta.wtf/protocols/arkis/",
    "attestationUrl": null,
-   "priority": 135
+   "priority": 134
   },
   {
    "feedId": "finding:arrakis-modular:rpc-ethereum-26441165:rpc_observed",
@@ -8219,7 +8154,7 @@
    "cardFilename": "arrakis-modular.png",
    "receiptUrl": "https://pacta.wtf/protocols/arrakis-modular/",
    "attestationUrl": null,
-   "priority": 136
+   "priority": 135
   },
   {
    "feedId": "finding:aster-bridge:rpc-ethereum-26441165:rpc_observed",
@@ -8279,7 +8214,7 @@
    "cardFilename": "aster-bridge.png",
    "receiptUrl": "https://pacta.wtf/protocols/aster-bridge/",
    "attestationUrl": null,
-   "priority": 137
+   "priority": 136
   },
   {
    "feedId": "finding:augur:rpc-ethereum-26441165:rpc_observed",
@@ -8339,7 +8274,7 @@
    "cardFilename": "augur.png",
    "receiptUrl": "https://pacta.wtf/protocols/augur/",
    "attestationUrl": null,
-   "priority": 138
+   "priority": 137
   },
   {
    "feedId": "finding:aura:rpc-ethereum-26441165:rpc_observed",
@@ -8399,7 +8334,7 @@
    "cardFilename": "aura.png",
    "receiptUrl": "https://pacta.wtf/protocols/aura/",
    "attestationUrl": null,
-   "priority": 139
+   "priority": 138
   },
   {
    "feedId": "finding:autofinance:rpc-ethereum-26441165:rpc_observed",
@@ -8459,7 +8394,7 @@
    "cardFilename": "autofinance.png",
    "receiptUrl": "https://pacta.wtf/protocols/autofinance/",
    "attestationUrl": null,
-   "priority": 140
+   "priority": 139
   },
   {
    "feedId": "finding:avalon-superearn:rpc-ethereum-26441165:rpc_observed",
@@ -8519,7 +8454,7 @@
    "cardFilename": "avalon-superearn.png",
    "receiptUrl": "https://pacta.wtf/protocols/avalon-superearn/",
    "attestationUrl": null,
-   "priority": 141
+   "priority": 140
   },
   {
    "feedId": "finding:avant-aveth:rpc-ethereum-26441165:rpc_observed",
@@ -8579,7 +8514,7 @@
    "cardFilename": "avant-aveth.png",
    "receiptUrl": "https://pacta.wtf/protocols/avant-aveth/",
    "attestationUrl": null,
-   "priority": 142
+   "priority": 141
   },
   {
    "feedId": "finding:badger-dao:rpc-ethereum-26441165:rpc_observed",
@@ -8639,7 +8574,7 @@
    "cardFilename": "badger-dao.png",
    "receiptUrl": "https://pacta.wtf/protocols/badger-dao/",
    "attestationUrl": null,
-   "priority": 143
+   "priority": 142
   },
   {
    "feedId": "finding:bancor-v3:rpc-ethereum-26441165:rpc_observed",
@@ -8699,7 +8634,7 @@
    "cardFilename": "bancor-v3.png",
    "receiptUrl": "https://pacta.wtf/protocols/bancor-v3/",
    "attestationUrl": null,
-   "priority": 144
+   "priority": 143
   },
   {
    "feedId": "finding:baseline-protocol:rpc-ethereum-26441165:rpc_observed",
@@ -8759,7 +8694,7 @@
    "cardFilename": "baseline-protocol.png",
    "receiptUrl": "https://pacta.wtf/protocols/baseline-protocol/",
    "attestationUrl": null,
-   "priority": 145
+   "priority": 144
   },
   {
    "feedId": "finding:benddao-ape-staking:rpc-ethereum-26441165:rpc_observed",
@@ -8819,7 +8754,7 @@
    "cardFilename": "benddao-ape-staking.png",
    "receiptUrl": "https://pacta.wtf/protocols/benddao-ape-staking/",
    "attestationUrl": null,
-   "priority": 146
+   "priority": 145
   },
   {
    "feedId": "finding:bio-protocol:rpc-ethereum-26441165:rpc_observed",
@@ -8879,7 +8814,7 @@
    "cardFilename": "bio-protocol.png",
    "receiptUrl": "https://pacta.wtf/protocols/bio-protocol/",
    "attestationUrl": null,
-   "priority": 147
+   "priority": 146
   },
   {
    "feedId": "finding:bitfi-basis:rpc-ethereum-26441165:rpc_observed",
@@ -8939,7 +8874,7 @@
    "cardFilename": "bitfi-basis.png",
    "receiptUrl": "https://pacta.wtf/protocols/bitfi-basis/",
    "attestationUrl": null,
-   "priority": 148
+   "priority": 147
   },
   {
    "feedId": "finding:blast-pre-launch-farm:rpc-ethereum-26441165:rpc_observed",
@@ -8999,7 +8934,7 @@
    "cardFilename": "blast-pre-launch-farm.png",
    "receiptUrl": "https://pacta.wtf/protocols/blast-pre-launch-farm/",
    "attestationUrl": null,
-   "priority": 149
+   "priority": 148
   },
   {
    "feedId": "finding:blur-bids:rpc-ethereum-26441165:rpc_observed",
@@ -9059,7 +8994,7 @@
    "cardFilename": "blur-bids.png",
    "receiptUrl": "https://pacta.wtf/protocols/blur-bids/",
    "attestationUrl": null,
-   "priority": 150
+   "priority": 149
   },
   {
    "feedId": "finding:bmx-freestyle:rpc-base-59025642:rpc_observed",
@@ -9119,7 +9054,7 @@
    "cardFilename": "bmx-freestyle.png",
    "receiptUrl": "https://pacta.wtf/protocols/bmx-freestyle/",
    "attestationUrl": null,
-   "priority": 151
+   "priority": 150
   },
   {
    "feedId": "finding:brickken:rpc-ethereum-26441165:rpc_observed",
@@ -9179,7 +9114,7 @@
    "cardFilename": "brickken.png",
    "receiptUrl": "https://pacta.wtf/protocols/brickken/",
    "attestationUrl": null,
-   "priority": 152
+   "priority": 151
   },
   {
    "feedId": "finding:cbridge:rpc-ethereum-26441165:rpc_observed",
@@ -9239,7 +9174,7 @@
    "cardFilename": "cbridge.png",
    "receiptUrl": "https://pacta.wtf/protocols/cbridge/",
    "attestationUrl": null,
-   "priority": 153
+   "priority": 152
   },
   {
    "feedId": "finding:chamber-vaults:rpc-ethereum-26441165:rpc_observed",
@@ -9299,7 +9234,7 @@
    "cardFilename": "chamber-vaults.png",
    "receiptUrl": "https://pacta.wtf/protocols/chamber-vaults/",
    "attestationUrl": null,
-   "priority": 154
+   "priority": 153
   },
   {
    "feedId": "finding:cian-yield-layer:rpc-ethereum-26441165:rpc_observed",
@@ -9359,7 +9294,7 @@
    "cardFilename": "cian-yield-layer.png",
    "receiptUrl": "https://pacta.wtf/protocols/cian-yield-layer/",
    "attestationUrl": null,
-   "priority": 155
+   "priority": 154
   },
   {
    "feedId": "finding:clipper:rpc-ethereum-26441165:rpc_observed",
@@ -9419,7 +9354,7 @@
    "cardFilename": "clipper.png",
    "receiptUrl": "https://pacta.wtf/protocols/clipper/",
    "attestationUrl": null,
-   "priority": 156
+   "priority": 155
   },
   {
    "feedId": "finding:concentrator:rpc-ethereum-26441165:rpc_observed",
@@ -9479,7 +9414,7 @@
    "cardFilename": "concentrator.png",
    "receiptUrl": "https://pacta.wtf/protocols/concentrator/",
    "attestationUrl": null,
-   "priority": 157
+   "priority": 156
   },
   {
    "feedId": "finding:convergence-fi:rpc-ethereum-26441165:rpc_observed",
@@ -9539,7 +9474,7 @@
    "cardFilename": "convergence-fi.png",
    "receiptUrl": "https://pacta.wtf/protocols/convergence-fi/",
    "attestationUrl": null,
-   "priority": 158
+   "priority": 157
   },
   {
    "feedId": "finding:creth2:rpc-ethereum-26441165:rpc_observed",
@@ -9599,7 +9534,7 @@
    "cardFilename": "creth2.png",
    "receiptUrl": "https://pacta.wtf/protocols/creth2/",
    "attestationUrl": null,
-   "priority": 159
+   "priority": 158
   },
   {
    "feedId": "finding:cronos-zkevm-bridge:rpc-ethereum-26441165:rpc_observed",
@@ -9659,7 +9594,7 @@
    "cardFilename": "cronos-zkevm-bridge.png",
    "receiptUrl": "https://pacta.wtf/protocols/cronos-zkevm-bridge/",
    "attestationUrl": null,
-   "priority": 160
+   "priority": 159
   },
   {
    "feedId": "finding:cvault-finance:rpc-ethereum-26441165:rpc_observed",
@@ -9719,7 +9654,7 @@
    "cardFilename": "cvault-finance.png",
    "receiptUrl": "https://pacta.wtf/protocols/cvault-finance/",
    "attestationUrl": null,
-   "priority": 161
+   "priority": 160
   },
   {
    "feedId": "finding:d2-finance:rpc-ethereum-26441165:rpc_observed",
@@ -9779,7 +9714,7 @@
    "cardFilename": "d2-finance.png",
    "receiptUrl": "https://pacta.wtf/protocols/d2-finance/",
    "attestationUrl": null,
-   "priority": 162
+   "priority": 161
   },
   {
    "feedId": "finding:debridge:rpc-ethereum-26441165:rpc_observed",
@@ -9839,7 +9774,7 @@
    "cardFilename": "debridge.png",
    "receiptUrl": "https://pacta.wtf/protocols/debridge/",
    "attestationUrl": null,
-   "priority": 163
+   "priority": 162
   },
   {
    "feedId": "finding:decentralized-euro:rpc-ethereum-26441165:rpc_observed",
@@ -9899,7 +9834,7 @@
    "cardFilename": "decentralized-euro.png",
    "receiptUrl": "https://pacta.wtf/protocols/decentralized-euro/",
    "attestationUrl": null,
-   "priority": 164
+   "priority": 163
   },
   {
    "feedId": "finding:defil:rpc-ethereum-26441165:rpc_observed",
@@ -9959,7 +9894,7 @@
    "cardFilename": "defil.png",
    "receiptUrl": "https://pacta.wtf/protocols/defil/",
    "attestationUrl": null,
-   "priority": 165
+   "priority": 164
   },
   {
    "feedId": "finding:delv-yield:rpc-ethereum-26441165:rpc_observed",
@@ -10019,7 +9954,7 @@
    "cardFilename": "delv-yield.png",
    "receiptUrl": "https://pacta.wtf/protocols/delv-yield/",
    "attestationUrl": null,
-   "priority": 166
+   "priority": 165
   },
   {
    "feedId": "finding:derivadex:rpc-ethereum-26441165:rpc_observed",
@@ -10079,7 +10014,7 @@
    "cardFilename": "derivadex.png",
    "receiptUrl": "https://pacta.wtf/protocols/derivadex/",
    "attestationUrl": null,
-   "priority": 167
+   "priority": 166
   },
   {
    "feedId": "finding:derive-v3-options:rpc-ethereum-26441165:rpc_observed",
@@ -10139,7 +10074,7 @@
    "cardFilename": "derive-v3-options.png",
    "receiptUrl": "https://pacta.wtf/protocols/derive-v3-options/",
    "attestationUrl": null,
-   "priority": 168
+   "priority": 167
   },
   {
    "feedId": "finding:dexfi-aggregator:rpc-ethereum-26441165:rpc_observed",
@@ -10199,7 +10134,7 @@
    "cardFilename": "dexfi-aggregator.png",
    "receiptUrl": "https://pacta.wtf/protocols/dexfi-aggregator/",
    "attestationUrl": null,
-   "priority": 169
+   "priority": 168
   },
   {
    "feedId": "finding:dodo-amm:rpc-ethereum-26441165:rpc_observed",
@@ -10259,7 +10194,7 @@
    "cardFilename": "dodo-amm.png",
    "receiptUrl": "https://pacta.wtf/protocols/dodo-amm/",
    "attestationUrl": null,
-   "priority": 170
+   "priority": 169
   },
   {
    "feedId": "finding:dolomite:rpc-ethereum-26441165:rpc_observed",
@@ -10319,7 +10254,7 @@
    "cardFilename": "dolomite.png",
    "receiptUrl": "https://pacta.wtf/protocols/dolomite/",
    "attestationUrl": null,
-   "priority": 171
+   "priority": 170
   },
   {
    "feedId": "finding:drakewell-usddw:rpc-ethereum-26441165:rpc_observed",
@@ -10379,7 +10314,7 @@
    "cardFilename": "drakewell-usddw.png",
    "receiptUrl": "https://pacta.wtf/protocols/drakewell-usddw/",
    "attestationUrl": null,
-   "priority": 172
+   "priority": 171
   },
   {
    "feedId": "finding:dxsale:rpc-ethereum-26441165:rpc_observed",
@@ -10439,7 +10374,7 @@
    "cardFilename": "dxsale.png",
    "receiptUrl": "https://pacta.wtf/protocols/dxsale/",
    "attestationUrl": null,
-   "priority": 173
+   "priority": 172
   },
   {
    "feedId": "finding:dydx-v3:rpc-ethereum-26441165:rpc_observed",
@@ -10499,7 +10434,7 @@
    "cardFilename": "dydx-v3.png",
    "receiptUrl": "https://pacta.wtf/protocols/dydx-v3/",
    "attestationUrl": null,
-   "priority": 174
+   "priority": 173
   },
   {
    "feedId": "finding:easedefi-org:rpc-ethereum-26441165:rpc_observed",
@@ -10559,7 +10494,7 @@
    "cardFilename": "easedefi-org.png",
    "receiptUrl": "https://pacta.wtf/protocols/easedefi-org/",
    "attestationUrl": null,
-   "priority": 175
+   "priority": 174
   },
   {
    "feedId": "finding:edgex-bridge:rpc-ethereum-26441165:rpc_observed",
@@ -10619,7 +10554,7 @@
    "cardFilename": "edgex-bridge.png",
    "receiptUrl": "https://pacta.wtf/protocols/edgex-bridge/",
    "attestationUrl": null,
-   "priority": 176
+   "priority": 175
   },
   {
    "feedId": "finding:eigenpie:rpc-ethereum-26441165:rpc_observed",
@@ -10679,7 +10614,7 @@
    "cardFilename": "eigenpie.png",
    "receiptUrl": "https://pacta.wtf/protocols/eigenpie/",
    "attestationUrl": null,
-   "priority": 177
+   "priority": 176
   },
   {
    "feedId": "finding:ekubo:rpc-ethereum-26441165:rpc_observed",
@@ -10739,7 +10674,7 @@
    "cardFilename": "ekubo.png",
    "receiptUrl": "https://pacta.wtf/protocols/ekubo/",
    "attestationUrl": null,
-   "priority": 178
+   "priority": 177
   },
   {
    "feedId": "finding:elfomofi:rpc-base-59025642:rpc_observed",
@@ -10799,7 +10734,7 @@
    "cardFilename": "elfomofi.png",
    "receiptUrl": "https://pacta.wtf/protocols/elfomofi/",
    "attestationUrl": null,
-   "priority": 179
+   "priority": 178
   },
   {
    "feedId": "finding:exactly:rpc-ethereum-26441165:rpc_observed",
@@ -10859,7 +10794,7 @@
    "cardFilename": "exactly.png",
    "receiptUrl": "https://pacta.wtf/protocols/exactly/",
    "attestationUrl": null,
-   "priority": 180
+   "priority": 179
   },
   {
    "feedId": "finding:extra-finance-base:rpc-base-59025642:rpc_observed",
@@ -10919,7 +10854,7 @@
    "cardFilename": "extra-finance-base.png",
    "receiptUrl": "https://pacta.wtf/protocols/extra-finance-base/",
    "attestationUrl": null,
-   "priority": 181
+   "priority": 180
   },
   {
    "feedId": "finding:fake-world-assets-v2:rpc-ethereum-26441165:rpc_observed",
@@ -10979,7 +10914,7 @@
    "cardFilename": "fake-world-assets-v2.png",
    "receiptUrl": "https://pacta.wtf/protocols/fake-world-assets-v2/",
    "attestationUrl": null,
-   "priority": 182
+   "priority": 181
   },
   {
    "feedId": "finding:fermiswap:rpc-ethereum-26441165:rpc_observed",
@@ -11039,7 +10974,7 @@
    "cardFilename": "fermiswap.png",
    "receiptUrl": "https://pacta.wtf/protocols/fermiswap/",
    "attestationUrl": null,
-   "priority": 183
+   "priority": 182
   },
   {
    "feedId": "finding:flaunch:rpc-base-59025642:rpc_observed",
@@ -11099,7 +11034,7 @@
    "cardFilename": "flaunch.png",
    "receiptUrl": "https://pacta.wtf/protocols/flaunch/",
    "attestationUrl": null,
-   "priority": 184
+   "priority": 183
   },
   {
    "feedId": "finding:flexa:rpc-ethereum-26441165:rpc_observed",
@@ -11159,7 +11094,7 @@
    "cardFilename": "flexa.png",
    "receiptUrl": "https://pacta.wtf/protocols/flexa/",
    "attestationUrl": null,
-   "priority": 185
+   "priority": 184
   },
   {
    "feedId": "finding:flokifi-locker:rpc-ethereum-26441165:rpc_observed",
@@ -11219,7 +11154,7 @@
    "cardFilename": "flokifi-locker.png",
    "receiptUrl": "https://pacta.wtf/protocols/flokifi-locker/",
    "attestationUrl": null,
-   "priority": 186
+   "priority": 185
   },
   {
    "feedId": "finding:flying-tulip-lend:rpc-ethereum-26441165:rpc_observed",
@@ -11279,7 +11214,7 @@
    "cardFilename": "flying-tulip-lend.png",
    "receiptUrl": "https://pacta.wtf/protocols/flying-tulip-lend/",
    "attestationUrl": null,
-   "priority": 187
+   "priority": 186
   },
   {
    "feedId": "finding:frankencoin:rpc-ethereum-26441165:rpc_observed",
@@ -11339,7 +11274,7 @@
    "cardFilename": "frankencoin.png",
    "receiptUrl": "https://pacta.wtf/protocols/frankencoin/",
    "attestationUrl": null,
-   "priority": 188
+   "priority": 187
   },
   {
    "feedId": "finding:friend-tech-v1:rpc-base-59025642:rpc_observed",
@@ -11399,7 +11334,7 @@
    "cardFilename": "friend-tech-v1.png",
    "receiptUrl": "https://pacta.wtf/protocols/friend-tech-v1/",
    "attestationUrl": null,
-   "priority": 189
+   "priority": 188
   },
   {
    "feedId": "finding:gamma:rpc-ethereum-26441165:rpc_observed",
@@ -11459,7 +11394,7 @@
    "cardFilename": "gamma.png",
    "receiptUrl": "https://pacta.wtf/protocols/gamma/",
    "attestationUrl": null,
-   "priority": 190
+   "priority": 189
   },
   {
    "feedId": "finding:geth:rpc-ethereum-26441165:rpc_observed",
@@ -11519,7 +11454,7 @@
    "cardFilename": "geth.png",
    "receiptUrl": "https://pacta.wtf/protocols/geth/",
    "attestationUrl": null,
-   "priority": 191
+   "priority": 190
   },
   {
    "feedId": "finding:glif:rpc-base-59025642:rpc_observed",
@@ -11579,7 +11514,7 @@
    "cardFilename": "glif.png",
    "receiptUrl": "https://pacta.wtf/protocols/glif/",
    "attestationUrl": null,
-   "priority": 192
+   "priority": 191
   },
   {
    "feedId": "finding:goldfinch:rpc-ethereum-26441165:rpc_observed",
@@ -11639,7 +11574,7 @@
    "cardFilename": "goldfinch.png",
    "receiptUrl": "https://pacta.wtf/protocols/goldfinch/",
    "attestationUrl": null,
-   "priority": 193
+   "priority": 192
   },
   {
    "feedId": "finding:gondi-v3:rpc-ethereum-26441165:rpc_observed",
@@ -11699,7 +11634,7 @@
    "cardFilename": "gondi-v3.png",
    "receiptUrl": "https://pacta.wtf/protocols/gondi-v3/",
    "attestationUrl": null,
-   "priority": 194
+   "priority": 193
   },
   {
    "feedId": "finding:gro:rpc-ethereum-26441165:rpc_observed",
@@ -11759,7 +11694,7 @@
    "cardFilename": "gro.png",
    "receiptUrl": "https://pacta.wtf/protocols/gro/",
    "attestationUrl": null,
-   "priority": 195
+   "priority": 194
   },
   {
    "feedId": "finding:grvt-bridge:rpc-ethereum-26441165:rpc_observed",
@@ -11819,7 +11754,7 @@
    "cardFilename": "grvt-bridge.png",
    "receiptUrl": "https://pacta.wtf/protocols/grvt-bridge/",
    "attestationUrl": null,
-   "priority": 196
+   "priority": 195
   },
   {
    "feedId": "finding:hakka-finance:rpc-ethereum-26441165:rpc_observed",
@@ -11879,7 +11814,7 @@
    "cardFilename": "hakka-finance.png",
    "receiptUrl": "https://pacta.wtf/protocols/hakka-finance/",
    "attestationUrl": null,
-   "priority": 197
+   "priority": 196
   },
   {
    "feedId": "finding:harvest-finance:rpc-ethereum-26441165:rpc_observed",
@@ -11939,7 +11874,7 @@
    "cardFilename": "harvest-finance.png",
    "receiptUrl": "https://pacta.wtf/protocols/harvest-finance/",
    "attestationUrl": null,
-   "priority": 198
+   "priority": 197
   },
   {
    "feedId": "finding:hashport:rpc-ethereum-26441165:rpc_observed",
@@ -11999,7 +11934,7 @@
    "cardFilename": "hashport.png",
    "receiptUrl": "https://pacta.wtf/protocols/hashport/",
    "attestationUrl": null,
-   "priority": 199
+   "priority": 198
   },
   {
    "feedId": "finding:hegic:rpc-ethereum-26441165:rpc_observed",
@@ -12059,7 +11994,7 @@
    "cardFilename": "hegic.png",
    "receiptUrl": "https://pacta.wtf/protocols/hegic/",
    "attestationUrl": null,
-   "priority": 200
+   "priority": 199
   },
   {
    "feedId": "finding:hop-protocol:rpc-ethereum-26441165:rpc_observed",
@@ -12119,7 +12054,7 @@
    "cardFilename": "hop-protocol.png",
    "receiptUrl": "https://pacta.wtf/protocols/hop-protocol/",
    "attestationUrl": null,
-   "priority": 201
+   "priority": 200
   },
   {
    "feedId": "finding:hyperlane:rpc-ethereum-26441165:rpc_observed",
@@ -12179,7 +12114,7 @@
    "cardFilename": "hyperlane.png",
    "receiptUrl": "https://pacta.wtf/protocols/hyperlane/",
    "attestationUrl": null,
-   "priority": 202
+   "priority": 201
   },
   {
    "feedId": "finding:iaero-protocol:rpc-base-59025642:rpc_observed",
@@ -12239,7 +12174,7 @@
    "cardFilename": "iaero-protocol.png",
    "receiptUrl": "https://pacta.wtf/protocols/iaero-protocol/",
    "attestationUrl": null,
-   "priority": 203
+   "priority": 202
   },
   {
    "feedId": "finding:ichi:rpc-ethereum-26441165:rpc_observed",
@@ -12299,7 +12234,7 @@
    "cardFilename": "ichi.png",
    "receiptUrl": "https://pacta.wtf/protocols/ichi/",
    "attestationUrl": null,
-   "priority": 204
+   "priority": 203
   },
   {
    "feedId": "finding:idex-v1:rpc-ethereum-26441165:rpc_observed",
@@ -12359,7 +12294,7 @@
    "cardFilename": "idex-v1.png",
    "receiptUrl": "https://pacta.wtf/protocols/idex-v1/",
    "attestationUrl": null,
-   "priority": 205
+   "priority": 204
   },
   {
    "feedId": "finding:idle:rpc-ethereum-26441165:rpc_observed",
@@ -12419,7 +12354,7 @@
    "cardFilename": "idle.png",
    "receiptUrl": "https://pacta.wtf/protocols/idle/",
    "attestationUrl": null,
-   "priority": 206
+   "priority": 205
   },
   {
    "feedId": "finding:inceptionlrt-isolated-restaking:rpc-ethereum-26441165:rpc_observed",
@@ -12479,7 +12414,7 @@
    "cardFilename": "inceptionlrt-isolated-restaking.png",
    "receiptUrl": "https://pacta.wtf/protocols/inceptionlrt-isolated-restaking/",
    "attestationUrl": null,
-   "priority": 207
+   "priority": 206
   },
   {
    "feedId": "finding:index-coop:rpc-ethereum-26441165:rpc_observed",
@@ -12539,7 +12474,7 @@
    "cardFilename": "index-coop.png",
    "receiptUrl": "https://pacta.wtf/protocols/index-coop/",
    "attestationUrl": null,
-   "priority": 208
+   "priority": 207
   },
   {
    "feedId": "finding:injective-bridge:rpc-ethereum-26441165:rpc_observed",
@@ -12599,7 +12534,7 @@
    "cardFilename": "injective-bridge.png",
    "receiptUrl": "https://pacta.wtf/protocols/injective-bridge/",
    "attestationUrl": null,
-   "priority": 209
+   "priority": 208
   },
   {
    "feedId": "finding:interest-protocol:rpc-ethereum-26441165:rpc_observed",
@@ -12659,7 +12594,7 @@
    "cardFilename": "interest-protocol.png",
    "receiptUrl": "https://pacta.wtf/protocols/interest-protocol/",
    "attestationUrl": null,
-   "priority": 210
+   "priority": 209
   },
   {
    "feedId": "finding:jpy-defi:rpc-ethereum-26441165:rpc_observed",
@@ -12719,7 +12654,7 @@
    "cardFilename": "jpy-defi.png",
    "receiptUrl": "https://pacta.wtf/protocols/jpy-defi/",
    "attestationUrl": null,
-   "priority": 211
+   "priority": 210
   },
   {
    "feedId": "finding:juicebox-v1:rpc-ethereum-26441165:rpc_observed",
@@ -12779,7 +12714,7 @@
    "cardFilename": "juicebox-v1.png",
    "receiptUrl": "https://pacta.wtf/protocols/juicebox-v1/",
    "attestationUrl": null,
-   "priority": 212
+   "priority": 211
   },
   {
    "feedId": "finding:k3-capital:rpc-ethereum-26441165:rpc_observed",
@@ -12839,7 +12774,7 @@
    "cardFilename": "k3-capital.png",
    "receiptUrl": "https://pacta.wtf/protocols/k3-capital/",
    "attestationUrl": null,
-   "priority": 213
+   "priority": 212
   },
   {
    "feedId": "finding:kine-finance:rpc-ethereum-26441165:rpc_observed",
@@ -12899,7 +12834,7 @@
    "cardFilename": "kine-finance.png",
    "receiptUrl": "https://pacta.wtf/protocols/kine-finance/",
    "attestationUrl": null,
-   "priority": 214
+   "priority": 213
   },
   {
    "feedId": "finding:king-protocol:rpc-ethereum-26441165:rpc_observed",
@@ -12959,7 +12894,7 @@
    "cardFilename": "king-protocol.png",
    "receiptUrl": "https://pacta.wtf/protocols/king-protocol/",
    "attestationUrl": null,
-   "priority": 215
+   "priority": 214
   },
   {
    "feedId": "finding:kpk:rpc-ethereum-26441165:rpc_observed",
@@ -13019,7 +12954,7 @@
    "cardFilename": "kpk.png",
    "receiptUrl": "https://pacta.wtf/protocols/kpk/",
    "attestationUrl": null,
-   "priority": 216
+   "priority": 215
   },
   {
    "feedId": "finding:landx-finance:rpc-ethereum-26441165:rpc_observed",
@@ -13079,7 +13014,7 @@
    "cardFilename": "landx-finance.png",
    "receiptUrl": "https://pacta.wtf/protocols/landx-finance/",
    "attestationUrl": null,
-   "priority": 217
+   "priority": 216
   },
   {
    "feedId": "finding:lazy:rpc-ethereum-26441165:rpc_observed",
@@ -13139,7 +13074,7 @@
    "cardFilename": "lazy.png",
    "receiptUrl": "https://pacta.wtf/protocols/lazy/",
    "attestationUrl": null,
-   "priority": 218
+   "priority": 217
   },
   {
    "feedId": "finding:ledgity-yield:rpc-ethereum-26441165:rpc_observed",
@@ -13199,7 +13134,7 @@
    "cardFilename": "ledgity-yield.png",
    "receiptUrl": "https://pacta.wtf/protocols/ledgity-yield/",
    "attestationUrl": null,
-   "priority": 219
+   "priority": 218
   },
   {
    "feedId": "finding:legion:rpc-ethereum-26441165:rpc_observed",
@@ -13259,7 +13194,7 @@
    "cardFilename": "legion.png",
    "receiptUrl": "https://pacta.wtf/protocols/legion/",
    "attestationUrl": null,
-   "priority": 220
+   "priority": 219
   },
   {
    "feedId": "finding:lendflare:rpc-ethereum-26441165:rpc_observed",
@@ -13319,7 +13254,7 @@
    "cardFilename": "lendflare.png",
    "receiptUrl": "https://pacta.wtf/protocols/lendflare/",
    "attestationUrl": null,
-   "priority": 221
+   "priority": 220
   },
   {
    "feedId": "finding:lighter-bridge:rpc-ethereum-26441165:rpc_observed",
@@ -13379,7 +13314,7 @@
    "cardFilename": "lighter-bridge.png",
    "receiptUrl": "https://pacta.wtf/protocols/lighter-bridge/",
    "attestationUrl": null,
-   "priority": 222
+   "priority": 221
   },
   {
    "feedId": "finding:lista-lending:rpc-ethereum-26441165:rpc_observed",
@@ -13439,7 +13374,7 @@
    "cardFilename": "lista-lending.png",
    "receiptUrl": "https://pacta.wtf/protocols/lista-lending/",
    "attestationUrl": null,
-   "priority": 223
+   "priority": 222
   },
   {
    "feedId": "finding:lusd-chickenbonds:rpc-ethereum-26441165:rpc_observed",
@@ -13499,7 +13434,7 @@
    "cardFilename": "lusd-chickenbonds.png",
    "receiptUrl": "https://pacta.wtf/protocols/lusd-chickenbonds/",
    "attestationUrl": null,
-   "priority": 224
+   "priority": 223
   },
   {
    "feedId": "finding:makina:rpc-ethereum-26441165:rpc_observed",
@@ -13559,7 +13494,7 @@
    "cardFilename": "makina.png",
    "receiptUrl": "https://pacta.wtf/protocols/makina/",
    "attestationUrl": null,
-   "priority": 225
+   "priority": 224
   },
   {
    "feedId": "finding:meta-pool-eth:rpc-ethereum-26441165:rpc_observed",
@@ -13619,7 +13554,7 @@
    "cardFilename": "meta-pool-eth.png",
    "receiptUrl": "https://pacta.wtf/protocols/meta-pool-eth/",
    "attestationUrl": null,
-   "priority": 226
+   "priority": 225
   },
   {
    "feedId": "finding:metis-bridge:rpc-ethereum-26441165:rpc_observed",
@@ -13679,7 +13614,7 @@
    "cardFilename": "metis-bridge.png",
    "receiptUrl": "https://pacta.wtf/protocols/metis-bridge/",
    "attestationUrl": null,
-   "priority": 227
+   "priority": 226
   },
   {
    "feedId": "finding:metric-v1:rpc-ethereum-26441165:rpc_observed",
@@ -13739,7 +13674,7 @@
    "cardFilename": "metric-v1.png",
    "receiptUrl": "https://pacta.wtf/protocols/metric-v1/",
    "attestationUrl": null,
-   "priority": 228
+   "priority": 227
   },
   {
    "feedId": "finding:metronome-synth:rpc-ethereum-26441165:rpc_observed",
@@ -13799,7 +13734,7 @@
    "cardFilename": "metronome-synth.png",
    "receiptUrl": "https://pacta.wtf/protocols/metronome-synth/",
    "attestationUrl": null,
-   "priority": 229
+   "priority": 228
   },
   {
    "feedId": "finding:monolith-market:rpc-ethereum-26441165:rpc_observed",
@@ -13859,7 +13794,7 @@
    "cardFilename": "monolith-market.png",
    "receiptUrl": "https://pacta.wtf/protocols/monolith-market/",
    "attestationUrl": null,
-   "priority": 230
+   "priority": 229
   },
   {
    "feedId": "finding:morph-bridge:rpc-ethereum-26441165:rpc_observed",
@@ -13919,7 +13854,7 @@
    "cardFilename": "morph-bridge.png",
    "receiptUrl": "https://pacta.wtf/protocols/morph-bridge/",
    "attestationUrl": null,
-   "priority": 231
+   "priority": 230
   },
   {
    "feedId": "finding:morpheusai:rpc-ethereum-26441165:rpc_observed",
@@ -13979,7 +13914,7 @@
    "cardFilename": "morpheusai.png",
    "receiptUrl": "https://pacta.wtf/protocols/morpheusai/",
    "attestationUrl": null,
-   "priority": 232
+   "priority": 231
   },
   {
    "feedId": "finding:mortgagefi:rpc-base-59025642:rpc_observed",
@@ -14039,7 +13974,7 @@
    "cardFilename": "mortgagefi.png",
    "receiptUrl": "https://pacta.wtf/protocols/mortgagefi/",
    "attestationUrl": null,
-   "priority": 233
+   "priority": 232
   },
   {
    "feedId": "finding:multichain:rpc-ethereum-26441165:rpc_observed",
@@ -14099,7 +14034,7 @@
    "cardFilename": "multichain.png",
    "receiptUrl": "https://pacta.wtf/protocols/multichain/",
    "attestationUrl": null,
-   "priority": 234
+   "priority": 233
   },
   {
    "feedId": "finding:nami:rpc-ethereum-26441165:rpc_observed",
@@ -14159,7 +14094,7 @@
    "cardFilename": "nami.png",
    "receiptUrl": "https://pacta.wtf/protocols/nami/",
    "attestationUrl": null,
-   "priority": 235
+   "priority": 234
   },
   {
    "feedId": "finding:native-credit-pool:rpc-ethereum-26441165:rpc_observed",
@@ -14219,7 +14154,7 @@
    "cardFilename": "native-credit-pool.png",
    "receiptUrl": "https://pacta.wtf/protocols/native-credit-pool/",
    "attestationUrl": null,
-   "priority": 236
+   "priority": 235
   },
   {
    "feedId": "finding:nftx:rpc-ethereum-26441165:rpc_observed",
@@ -14279,7 +14214,7 @@
    "cardFilename": "nftx.png",
    "receiptUrl": "https://pacta.wtf/protocols/nftx/",
    "attestationUrl": null,
-   "priority": 237
+   "priority": 236
   },
   {
    "feedId": "finding:nodedao:rpc-ethereum-26441165:rpc_observed",
@@ -14339,7 +14274,7 @@
    "cardFilename": "nodedao.png",
    "receiptUrl": "https://pacta.wtf/protocols/nodedao/",
    "attestationUrl": null,
-   "priority": 238
+   "priority": 237
   },
   {
    "feedId": "finding:noon:rpc-ethereum-26441165:rpc_observed",
@@ -14399,7 +14334,7 @@
    "cardFilename": "noon.png",
    "receiptUrl": "https://pacta.wtf/protocols/noon/",
    "attestationUrl": null,
-   "priority": 239
+   "priority": 238
   },
   {
    "feedId": "finding:nucleus:rpc-ethereum-26441165:rpc_observed",
@@ -14459,7 +14394,7 @@
    "cardFilename": "nucleus.png",
    "receiptUrl": "https://pacta.wtf/protocols/nucleus/",
    "attestationUrl": null,
-   "priority": 240
+   "priority": 239
   },
   {
    "feedId": "finding:nuva:rpc-ethereum-26441165:rpc_observed",
@@ -14519,7 +14454,7 @@
    "cardFilename": "nuva.png",
    "receiptUrl": "https://pacta.wtf/protocols/nuva/",
    "attestationUrl": null,
-   "priority": 241
+   "priority": 240
   },
   {
    "feedId": "finding:opengdp-shared-security:rpc-ethereum-26441165:rpc_observed",
@@ -14579,7 +14514,7 @@
    "cardFilename": "opengdp-shared-security.png",
    "receiptUrl": "https://pacta.wtf/protocols/opengdp-shared-security/",
    "attestationUrl": null,
-   "priority": 242
+   "priority": 241
   },
   {
    "feedId": "finding:orderly-bridge:rpc-ethereum-26441165:rpc_observed",
@@ -14639,7 +14574,7 @@
    "cardFilename": "orderly-bridge.png",
    "receiptUrl": "https://pacta.wtf/protocols/orderly-bridge/",
    "attestationUrl": null,
-   "priority": 243
+   "priority": 242
   },
   {
    "feedId": "finding:origami-finance:rpc-ethereum-26441165:rpc_observed",
@@ -14699,7 +14634,7 @@
    "cardFilename": "origami-finance.png",
    "receiptUrl": "https://pacta.wtf/protocols/origami-finance/",
    "attestationUrl": null,
-   "priority": 244
+   "priority": 243
   },
   {
    "feedId": "finding:origin-superoeth-base:rpc-base-59025642:rpc_observed",
@@ -14759,7 +14694,7 @@
    "cardFilename": "origin-superoeth-base.png",
    "receiptUrl": "https://pacta.wtf/protocols/origin-superoeth-base/",
    "attestationUrl": null,
-   "priority": 245
+   "priority": 244
   },
   {
    "feedId": "finding:outcome-finance:rpc-ethereum-26441165:rpc_observed",
@@ -14819,7 +14754,7 @@
    "cardFilename": "outcome-finance.png",
    "receiptUrl": "https://pacta.wtf/protocols/outcome-finance/",
    "attestationUrl": null,
-   "priority": 246
+   "priority": 245
   },
   {
    "feedId": "finding:overtime:rpc-ethereum-26441165:rpc_observed",
@@ -14879,7 +14814,7 @@
    "cardFilename": "overtime.png",
    "receiptUrl": "https://pacta.wtf/protocols/overtime/",
    "attestationUrl": null,
-   "priority": 247
+   "priority": 246
   },
   {
    "feedId": "finding:pancakeswap-amm-v3:rpc-ethereum-26441165:rpc_observed",
@@ -14939,7 +14874,7 @@
    "cardFilename": "pancakeswap-amm-v3.png",
    "receiptUrl": "https://pacta.wtf/protocols/pancakeswap-amm-v3/",
    "attestationUrl": null,
-   "priority": 248
+   "priority": 247
   },
   {
    "feedId": "finding:panoptic-v2:rpc-ethereum-26441165:rpc_observed",
@@ -14999,7 +14934,7 @@
    "cardFilename": "panoptic-v2.png",
    "receiptUrl": "https://pacta.wtf/protocols/panoptic-v2/",
    "attestationUrl": null,
-   "priority": 249
+   "priority": 248
   },
   {
    "feedId": "finding:paradex-bridge:rpc-ethereum-26441165:rpc_observed",
@@ -15059,7 +14994,7 @@
    "cardFilename": "paradex-bridge.png",
    "receiptUrl": "https://pacta.wtf/protocols/paradex-bridge/",
    "attestationUrl": null,
-   "priority": 250
+   "priority": 249
   },
   {
    "feedId": "finding:parallel-protocol-v3:rpc-ethereum-26441165:rpc_observed",
@@ -15119,7 +15054,7 @@
    "cardFilename": "parallel-protocol-v3.png",
    "receiptUrl": "https://pacta.wtf/protocols/parallel-protocol-v3/",
    "attestationUrl": null,
-   "priority": 251
+   "priority": 250
   },
   {
    "feedId": "finding:peapods-finance:rpc-ethereum-26441165:rpc_observed",
@@ -15179,7 +15114,7 @@
    "cardFilename": "peapods-finance.png",
    "receiptUrl": "https://pacta.wtf/protocols/peapods-finance/",
    "attestationUrl": null,
-   "priority": 252
+   "priority": 251
   },
   {
    "feedId": "finding:pickle:rpc-ethereum-26441165:rpc_observed",
@@ -15239,7 +15174,7 @@
    "cardFilename": "pickle.png",
    "receiptUrl": "https://pacta.wtf/protocols/pickle/",
    "attestationUrl": null,
-   "priority": 253
+   "priority": 252
   },
   {
    "feedId": "finding:piku-finance:rpc-ethereum-26441165:rpc_observed",
@@ -15299,7 +15234,7 @@
    "cardFilename": "piku-finance.png",
    "receiptUrl": "https://pacta.wtf/protocols/piku-finance/",
    "attestationUrl": null,
-   "priority": 254
+   "priority": 253
   },
   {
    "feedId": "finding:pirex:rpc-ethereum-26441165:rpc_observed",
@@ -15359,7 +15294,7 @@
    "cardFilename": "pirex.png",
    "receiptUrl": "https://pacta.wtf/protocols/pirex/",
    "attestationUrl": null,
-   "priority": 255
+   "priority": 254
   },
   {
    "feedId": "finding:pooltogether-v3:rpc-ethereum-26441165:rpc_observed",
@@ -15419,7 +15354,7 @@
    "cardFilename": "pooltogether-v3.png",
    "receiptUrl": "https://pacta.wtf/protocols/pooltogether-v3/",
    "attestationUrl": null,
-   "priority": 256
+   "priority": 255
   },
   {
    "feedId": "finding:punks-terminal:rpc-ethereum-26441165:rpc_observed",
@@ -15479,7 +15414,7 @@
    "cardFilename": "punks-terminal.png",
    "receiptUrl": "https://pacta.wtf/protocols/punks-terminal/",
    "attestationUrl": null,
-   "priority": 257
+   "priority": 256
   },
   {
    "feedId": "finding:quickswap-v4:rpc-base-59025642:rpc_observed",
@@ -15539,7 +15474,7 @@
    "cardFilename": "quickswap-v4.png",
    "receiptUrl": "https://pacta.wtf/protocols/quickswap-v4/",
    "attestationUrl": null,
-   "priority": 258
+   "priority": 257
   },
   {
    "feedId": "finding:reflexer:rpc-ethereum-26441165:rpc_observed",
@@ -15599,7 +15534,7 @@
    "cardFilename": "reflexer.png",
    "receiptUrl": "https://pacta.wtf/protocols/reflexer/",
    "attestationUrl": null,
-   "priority": 259
+   "priority": 258
   },
   {
    "feedId": "finding:ribbon:rpc-ethereum-26441165:rpc_observed",
@@ -15659,7 +15594,7 @@
    "cardFilename": "ribbon.png",
    "receiptUrl": "https://pacta.wtf/protocols/ribbon/",
    "attestationUrl": null,
-   "priority": 260
+   "priority": 259
   },
   {
    "feedId": "finding:ring-few:rpc-ethereum-26441165:rpc_observed",
@@ -15719,7 +15654,7 @@
    "cardFilename": "ring-few.png",
    "receiptUrl": "https://pacta.wtf/protocols/ring-few/",
    "attestationUrl": null,
-   "priority": 261
+   "priority": 260
   },
   {
    "feedId": "finding:rockawayx:rpc-ethereum-26441165:rpc_observed",
@@ -15779,7 +15714,7 @@
    "cardFilename": "rockawayx.png",
    "receiptUrl": "https://pacta.wtf/protocols/rockawayx/",
    "attestationUrl": null,
-   "priority": 262
+   "priority": 261
   },
   {
    "feedId": "finding:royco-v2:rpc-ethereum-26441165:rpc_observed",
@@ -15839,7 +15774,7 @@
    "cardFilename": "royco-v2.png",
    "receiptUrl": "https://pacta.wtf/protocols/royco-v2/",
    "attestationUrl": null,
-   "priority": 263
+   "priority": 262
   },
   {
    "feedId": "finding:saffron-vaults:rpc-ethereum-26441165:rpc_observed",
@@ -15899,7 +15834,7 @@
    "cardFilename": "saffron-vaults.png",
    "receiptUrl": "https://pacta.wtf/protocols/saffron-vaults/",
    "attestationUrl": null,
-   "priority": 264
+   "priority": 263
   },
   {
    "feedId": "finding:sato:rpc-ethereum-26441165:rpc_observed",
@@ -15959,7 +15894,7 @@
    "cardFilename": "sato.png",
    "receiptUrl": "https://pacta.wtf/protocols/sato/",
    "attestationUrl": null,
-   "priority": 265
+   "priority": 264
   },
   {
    "feedId": "finding:saturn:rpc-ethereum-26441165:rpc_observed",
@@ -16019,7 +15954,7 @@
    "cardFilename": "saturn.png",
    "receiptUrl": "https://pacta.wtf/protocols/saturn/",
    "attestationUrl": null,
-   "priority": 266
+   "priority": 265
   },
   {
    "feedId": "finding:seamless-protocol-base:rpc-base-59025642:rpc_observed",
@@ -16079,7 +16014,7 @@
    "cardFilename": "seamless-protocol-base.png",
    "receiptUrl": "https://pacta.wtf/protocols/seamless-protocol-base/",
    "attestationUrl": null,
-   "priority": 267
+   "priority": 266
   },
   {
    "feedId": "finding:shift-defi:rpc-ethereum-26441165:rpc_observed",
@@ -16139,7 +16074,7 @@
    "cardFilename": "shift-defi.png",
    "receiptUrl": "https://pacta.wtf/protocols/shift-defi/",
    "attestationUrl": null,
-   "priority": 268
+   "priority": 267
   },
   {
    "feedId": "finding:sierra-protocol:rpc-ethereum-26441165:rpc_observed",
@@ -16199,7 +16134,7 @@
    "cardFilename": "sierra-protocol.png",
    "receiptUrl": "https://pacta.wtf/protocols/sierra-protocol/",
    "attestationUrl": null,
-   "priority": 269
+   "priority": 268
   },
   {
    "feedId": "finding:smardex-usdn:rpc-ethereum-26441165:rpc_observed",
@@ -16259,7 +16194,7 @@
    "cardFilename": "smardex-usdn.png",
    "receiptUrl": "https://pacta.wtf/protocols/smardex-usdn/",
    "attestationUrl": null,
-   "priority": 270
+   "priority": 269
   },
   {
    "feedId": "finding:sofa-org:rpc-ethereum-26441165:rpc_observed",
@@ -16319,7 +16254,7 @@
    "cardFilename": "sofa-org.png",
    "receiptUrl": "https://pacta.wtf/protocols/sofa-org/",
    "attestationUrl": null,
-   "priority": 271
+   "priority": 270
   },
   {
    "feedId": "finding:sommelier:rpc-ethereum-26441165:rpc_observed",
@@ -16379,7 +16314,7 @@
    "cardFilename": "sommelier.png",
    "receiptUrl": "https://pacta.wtf/protocols/sommelier/",
    "attestationUrl": null,
-   "priority": 272
+   "priority": 271
   },
   {
    "feedId": "finding:sonic-gateway:rpc-ethereum-26441165:rpc_observed",
@@ -16439,7 +16374,7 @@
    "cardFilename": "sonic-gateway.png",
    "receiptUrl": "https://pacta.wtf/protocols/sonic-gateway/",
    "attestationUrl": null,
-   "priority": 273
+   "priority": 272
   },
   {
    "feedId": "finding:sosovalue-basis:rpc-base-59025642:rpc_observed",
@@ -16499,7 +16434,7 @@
    "cardFilename": "sosovalue-basis.png",
    "receiptUrl": "https://pacta.wtf/protocols/sosovalue-basis/",
    "attestationUrl": null,
-   "priority": 274
+   "priority": 273
   },
   {
    "feedId": "finding:spectra-metavaults:rpc-base-59025642:rpc_observed",
@@ -16559,7 +16494,7 @@
    "cardFilename": "spectra-metavaults.png",
    "receiptUrl": "https://pacta.wtf/protocols/spectra-metavaults/",
    "attestationUrl": null,
-   "priority": 275
+   "priority": 274
   },
   {
    "feedId": "finding:sport-fun:rpc-base-59025642:rpc_observed",
@@ -16619,7 +16554,7 @@
    "cardFilename": "sport-fun.png",
    "receiptUrl": "https://pacta.wtf/protocols/sport-fun/",
    "attestationUrl": null,
-   "priority": 276
+   "priority": 275
   },
   {
    "feedId": "finding:stablehodl:rpc-ethereum-26441165:rpc_observed",
@@ -16679,7 +16614,7 @@
    "cardFilename": "stablehodl.png",
    "receiptUrl": "https://pacta.wtf/protocols/stablehodl/",
    "attestationUrl": null,
-   "priority": 277
+   "priority": 276
   },
   {
    "feedId": "finding:stafi:rpc-ethereum-26441165:rpc_observed",
@@ -16739,7 +16674,7 @@
    "cardFilename": "stafi.png",
    "receiptUrl": "https://pacta.wtf/protocols/stafi/",
    "attestationUrl": null,
-   "priority": 278
+   "priority": 277
   },
   {
    "feedId": "finding:stakestone-stone:rpc-ethereum-26441165:rpc_observed",
@@ -16799,7 +16734,7 @@
    "cardFilename": "stakestone-stone.png",
    "receiptUrl": "https://pacta.wtf/protocols/stakestone-stone/",
    "attestationUrl": null,
-   "priority": 279
+   "priority": 278
   },
   {
    "feedId": "finding:starknet-bridge:rpc-ethereum-26441165:rpc_observed",
@@ -16859,7 +16794,7 @@
    "cardFilename": "starknet-bridge.png",
    "receiptUrl": "https://pacta.wtf/protocols/starknet-bridge/",
    "attestationUrl": null,
-   "priority": 280
+   "priority": 279
   },
   {
    "feedId": "finding:steer-protocol:rpc-ethereum-26441165:rpc_observed",
@@ -16919,7 +16854,7 @@
    "cardFilename": "steer-protocol.png",
    "receiptUrl": "https://pacta.wtf/protocols/steer-protocol/",
    "attestationUrl": null,
-   "priority": 281
+   "priority": 280
   },
   {
    "feedId": "finding:superform-v2-base:rpc-base-59025642:rpc_observed",
@@ -16979,7 +16914,7 @@
    "cardFilename": "superform-v2-base.png",
    "receiptUrl": "https://pacta.wtf/protocols/superform-v2-base/",
    "attestationUrl": null,
-   "priority": 282
+   "priority": 281
   },
   {
    "feedId": "finding:supernova-cl:rpc-ethereum-26441165:rpc_observed",
@@ -17039,7 +16974,7 @@
    "cardFilename": "supernova-cl.png",
    "receiptUrl": "https://pacta.wtf/protocols/supernova-cl/",
    "attestationUrl": null,
-   "priority": 283
+   "priority": 282
   },
   {
    "feedId": "finding:sushiswap-v3:rpc-ethereum-26441165:rpc_observed",
@@ -17099,7 +17034,7 @@
    "cardFilename": "sushiswap-v3.png",
    "receiptUrl": "https://pacta.wtf/protocols/sushiswap-v3/",
    "attestationUrl": null,
-   "priority": 284
+   "priority": 283
   },
   {
    "feedId": "finding:symbiosis:rpc-ethereum-26441165:rpc_observed",
@@ -17159,7 +17094,7 @@
    "cardFilename": "symbiosis.png",
    "receiptUrl": "https://pacta.wtf/protocols/symbiosis/",
    "attestationUrl": null,
-   "priority": 285
+   "priority": 284
   },
   {
    "feedId": "finding:synapse-cross-chain-bridge:rpc-ethereum-26441165:rpc_observed",
@@ -17219,7 +17154,7 @@
    "cardFilename": "synapse-cross-chain-bridge.png",
    "receiptUrl": "https://pacta.wtf/protocols/synapse-cross-chain-bridge/",
    "attestationUrl": null,
-   "priority": 286
+   "priority": 285
   },
   {
    "feedId": "finding:synfutures-v3:rpc-ethereum-26441165:rpc_observed",
@@ -17279,7 +17214,7 @@
    "cardFilename": "synfutures-v3.png",
    "receiptUrl": "https://pacta.wtf/protocols/synfutures-v3/",
    "attestationUrl": null,
-   "priority": 287
+   "priority": 286
   },
   {
    "feedId": "finding:syntropia:rpc-ethereum-26441165:rpc_observed",
@@ -17339,7 +17274,7 @@
    "cardFilename": "syntropia.png",
    "receiptUrl": "https://pacta.wtf/protocols/syntropia/",
    "attestationUrl": null,
-   "priority": 288
+   "priority": 287
   },
   {
    "feedId": "finding:taiko-bridge:rpc-ethereum-26441165:rpc_observed",
@@ -17399,7 +17334,7 @@
    "cardFilename": "taiko-bridge.png",
    "receiptUrl": "https://pacta.wtf/protocols/taiko-bridge/",
    "attestationUrl": null,
-   "priority": 289
+   "priority": 288
   },
   {
    "feedId": "finding:tangent-finance:rpc-ethereum-26441165:rpc_observed",
@@ -17459,7 +17394,7 @@
    "cardFilename": "tangent-finance.png",
    "receiptUrl": "https://pacta.wtf/protocols/tangent-finance/",
    "attestationUrl": null,
-   "priority": 290
+   "priority": 289
   },
   {
    "feedId": "finding:team-finance:rpc-ethereum-26441165:rpc_observed",
@@ -17519,7 +17454,7 @@
    "cardFilename": "team-finance.png",
    "receiptUrl": "https://pacta.wtf/protocols/team-finance/",
    "attestationUrl": null,
-   "priority": 291
+   "priority": 290
   },
   {
    "feedId": "finding:the-idols:rpc-ethereum-26441165:rpc_observed",
@@ -17579,7 +17514,7 @@
    "cardFilename": "the-idols.png",
    "receiptUrl": "https://pacta.wtf/protocols/the-idols/",
    "attestationUrl": null,
-   "priority": 292
+   "priority": 291
   },
   {
    "feedId": "finding:theo-network-thusd:rpc-ethereum-26441165:rpc_observed",
@@ -17639,7 +17574,7 @@
    "cardFilename": "theo-network-thusd.png",
    "receiptUrl": "https://pacta.wtf/protocols/theo-network-thusd/",
    "attestationUrl": null,
-   "priority": 293
+   "priority": 292
   },
   {
    "feedId": "finding:tokenworks:rpc-ethereum-26441165:rpc_observed",
@@ -17699,7 +17634,7 @@
    "cardFilename": "tokenworks.png",
    "receiptUrl": "https://pacta.wtf/protocols/tokenworks/",
    "attestationUrl": null,
-   "priority": 294
+   "priority": 293
   },
   {
    "feedId": "finding:tori-finance:rpc-ethereum-26441165:rpc_observed",
@@ -17759,7 +17694,7 @@
    "cardFilename": "tori-finance.png",
    "receiptUrl": "https://pacta.wtf/protocols/tori-finance/",
    "attestationUrl": null,
-   "priority": 295
+   "priority": 294
   },
   {
    "feedId": "finding:tornado-cash:rpc-ethereum-26441165:rpc_observed",
@@ -17819,7 +17754,7 @@
    "cardFilename": "tornado-cash.png",
    "receiptUrl": "https://pacta.wtf/protocols/tornado-cash/",
    "attestationUrl": null,
-   "priority": 296
+   "priority": 295
   },
   {
    "feedId": "finding:trueo:rpc-base-59025642:rpc_observed",
@@ -17879,7 +17814,7 @@
    "cardFilename": "trueo.png",
    "receiptUrl": "https://pacta.wtf/protocols/trueo/",
    "attestationUrl": null,
-   "priority": 297
+   "priority": 296
   },
   {
    "feedId": "finding:ultrayield-vaults:rpc-ethereum-26441165:rpc_observed",
@@ -17939,7 +17874,7 @@
    "cardFilename": "ultrayield-vaults.png",
    "receiptUrl": "https://pacta.wtf/protocols/ultrayield-vaults/",
    "attestationUrl": null,
-   "priority": 298
+   "priority": 297
   },
   {
    "feedId": "finding:uncx-network-v2:rpc-ethereum-26441165:rpc_observed",
@@ -17999,7 +17934,7 @@
    "cardFilename": "uncx-network-v2.png",
    "receiptUrl": "https://pacta.wtf/protocols/uncx-network-v2/",
    "attestationUrl": null,
-   "priority": 299
+   "priority": 298
   },
   {
    "feedId": "finding:unitus:rpc-ethereum-26441165:rpc_observed",
@@ -18059,7 +17994,7 @@
    "cardFilename": "unitus.png",
    "receiptUrl": "https://pacta.wtf/protocols/unitus/",
    "attestationUrl": null,
-   "priority": 300
+   "priority": 299
   },
   {
    "feedId": "finding:unslashed:rpc-ethereum-26441165:rpc_observed",
@@ -18119,7 +18054,7 @@
    "cardFilename": "unslashed.png",
    "receiptUrl": "https://pacta.wtf/protocols/unslashed/",
    "attestationUrl": null,
-   "priority": 301
+   "priority": 300
   },
   {
    "feedId": "finding:usdt0:rpc-ethereum-26441165:rpc_observed",
@@ -18179,7 +18114,7 @@
    "cardFilename": "usdt0.png",
    "receiptUrl": "https://pacta.wtf/protocols/usdt0/",
    "attestationUrl": null,
-   "priority": 302
+   "priority": 301
   },
   {
    "feedId": "finding:veda:rpc-ethereum-26441165:rpc_observed",
@@ -18239,7 +18174,7 @@
    "cardFilename": "veda.png",
    "receiptUrl": "https://pacta.wtf/protocols/veda/",
    "attestationUrl": null,
-   "priority": 303
+   "priority": 302
   },
   {
    "feedId": "finding:vetro:rpc-ethereum-26441165:rpc_observed",
@@ -18299,7 +18234,7 @@
    "cardFilename": "vetro.png",
    "receiptUrl": "https://pacta.wtf/protocols/vetro/",
    "attestationUrl": null,
-   "priority": 304
+   "priority": 303
   },
   {
    "feedId": "finding:wan-bridge:rpc-ethereum-26441165:rpc_observed",
@@ -18359,7 +18294,7 @@
    "cardFilename": "wan-bridge.png",
    "receiptUrl": "https://pacta.wtf/protocols/wan-bridge/",
    "attestationUrl": null,
-   "priority": 305
+   "priority": 304
   },
   {
    "feedId": "finding:wildcat-protocol:rpc-ethereum-26441165:rpc_observed",
@@ -18419,7 +18354,7 @@
    "cardFilename": "wildcat-protocol.png",
    "receiptUrl": "https://pacta.wtf/protocols/wildcat-protocol/",
    "attestationUrl": null,
-   "priority": 306
+   "priority": 305
   },
   {
    "feedId": "finding:woofi-earn:rpc-ethereum-26441165:rpc_observed",
@@ -18479,7 +18414,7 @@
    "cardFilename": "woofi-earn.png",
    "receiptUrl": "https://pacta.wtf/protocols/woofi-earn/",
    "attestationUrl": null,
-   "priority": 307
+   "priority": 306
   },
   {
    "feedId": "finding:world-chain-bridge:rpc-ethereum-26441165:rpc_observed",
@@ -18539,7 +18474,7 @@
    "cardFilename": "world-chain-bridge.png",
    "receiptUrl": "https://pacta.wtf/protocols/world-chain-bridge/",
    "attestationUrl": null,
-   "priority": 308
+   "priority": 307
   },
   {
    "feedId": "finding:xdai-stake-bridge:rpc-ethereum-26441165:rpc_observed",
@@ -18599,7 +18534,7 @@
    "cardFilename": "xdai-stake-bridge.png",
    "receiptUrl": "https://pacta.wtf/protocols/xdai-stake-bridge/",
    "attestationUrl": null,
-   "priority": 309
+   "priority": 308
   },
   {
    "feedId": "finding:xsy:rpc-base-59025642:rpc_observed",
@@ -18659,7 +18594,7 @@
    "cardFilename": "xsy.png",
    "receiptUrl": "https://pacta.wtf/protocols/xsy/",
    "attestationUrl": null,
-   "priority": 310
+   "priority": 309
   },
   {
    "feedId": "finding:yield-basis:rpc-ethereum-26441165:rpc_observed",
@@ -18719,7 +18654,7 @@
    "cardFilename": "yield-basis.png",
    "receiptUrl": "https://pacta.wtf/protocols/yield-basis/",
    "attestationUrl": null,
-   "priority": 311
+   "priority": 310
   },
   {
    "feedId": "finding:yieldfi:rpc-ethereum-26441165:rpc_observed",
@@ -18779,7 +18714,7 @@
    "cardFilename": "yieldfi.png",
    "receiptUrl": "https://pacta.wtf/protocols/yieldfi/",
    "attestationUrl": null,
-   "priority": 312
+   "priority": 311
   },
   {
    "feedId": "finding:yuzu-money:rpc-ethereum-26441165:rpc_observed",
@@ -18839,7 +18774,7 @@
    "cardFilename": "yuzu-money.png",
    "receiptUrl": "https://pacta.wtf/protocols/yuzu-money/",
    "attestationUrl": null,
-   "priority": 313
+   "priority": 312
   },
   {
    "feedId": "finding:zama:rpc-ethereum-26441165:rpc_observed",
@@ -18899,7 +18834,7 @@
    "cardFilename": "zama.png",
    "receiptUrl": "https://pacta.wtf/protocols/zama/",
    "attestationUrl": null,
-   "priority": 314
+   "priority": 313
   },
   {
    "feedId": "finding:zerobase-cedefi:rpc-ethereum-26441165:rpc_observed",
@@ -18959,7 +18894,7 @@
    "cardFilename": "zerobase-cedefi.png",
    "receiptUrl": "https://pacta.wtf/protocols/zerobase-cedefi/",
    "attestationUrl": null,
-   "priority": 315
+   "priority": 314
   },
   {
    "feedId": "finding:zora-bridge:rpc-base-59025642:rpc_observed",
@@ -19019,7 +18954,7 @@
    "cardFilename": "zora-bridge.png",
    "receiptUrl": "https://pacta.wtf/protocols/zora-bridge/",
    "attestationUrl": null,
-   "priority": 316
+   "priority": 315
   },
   {
    "feedId": "finding:ztln-p:rpc-ethereum-26441165:rpc_observed",
@@ -19079,7 +19014,7 @@
    "cardFilename": "ztln-p.png",
    "receiptUrl": "https://pacta.wtf/protocols/ztln-p/",
    "attestationUrl": null,
-   "priority": 317
+   "priority": 316
   }
  ]
 }

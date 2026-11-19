@@ -3104,6 +3104,1005 @@
         "cast balance 0x4a900f81deda753bbbab12453b3775d5f26df6f3 --block 32643467 --rpc-url $LINEA_RPC_URL",
         "cast call 0x508ca82df566dcd1b0de8296e70a96332cd644ec \"minimumFeeInWei()(uint256)\" --block 32643467 --rpc-url $LINEA_RPC_URL"
       ]
+    },
+    {
+      "slug": "lista-lending-op-0x21df",
+      "protocol": "Lista Lending",
+      "protocol_slug": "lista-lending",
+      "chain_id": 1,
+      "timelock": {
+        "address": "0xa18ae79aeda3e711e0cd64cfe1cd06402d400d61",
+        "getMinDelay": 86400,
+        "verified": {
+          "address": "0xa18ae79aeda3e711e0cd64cfe1cd06402d400d61",
+          "codeKeccak": "0x5b9089c51ed9181be5ecde4341a7ca51391da5f24e0184858af0faef40304308",
+          "codeBytes": 6353,
+          "sourcify": {
+            "name": "TimeLock",
+            "fullyQualifiedName": "src/timelock/TimeLock.sol:TimeLock",
+            "match": "exact_match",
+            "runtimeMatch": "exact_match",
+            "compiler": "0.8.28+commit.7893614a",
+            "verifiedAt": "2026-01-22T09:10:36Z",
+            "onchainBytecodeMatchesChain": true,
+            "url": "https://sourcify.dev/server/v2/contract/1/0xa18ae79aeda3e711e0cd64cfe1cd06402d400d61"
+          }
+        }
+      },
+      "operations": [
+        {
+          "op_id": "0x21dffafc9876aca6c919e6897271e72805f3a4a986b3b7ac22d71950c7da7ebd",
+          "label": null,
+          "eta": 1795159259,
+          "eta_utc": "2026-11-20 07:20:59 UTC",
+          "status": {
+            "isOperation": true,
+            "isOperationPending": true,
+            "isOperationReady": false,
+            "isOperationDone": false,
+            "getTimestamp": 1795159259
+          },
+          "ready": false,
+          "predecessor": "0x0000000000000000000000000000000000000000000000000000000000000000",
+          "delay": 86400,
+          "salt": "0x0000000000000000000000000000000000000000000000000000000000000035",
+          "scheduled": {
+            "block": 26447594,
+            "tx": "0x507a12309f1a0a008cb9d3fca62182f270ae55667c4abc3631e573af4404bb26",
+            "from": "0x535ec9c0c195ad4526877eeca979cd024cfd3028",
+            "to": "0x08ae09467ff962af105c23775b9bc8eaa175d27f",
+            "function": "Safe execTransaction",
+            "logIndexes": [
+              305,
+              306,
+              307,
+              308,
+              309,
+              310,
+              311,
+              312,
+              313,
+              314,
+              315,
+              316,
+              317,
+              318,
+              319,
+              320
+            ]
+          },
+          "calls": [
+            {
+              "index": 0,
+              "target": "0x5bf5c3b5f5c29dbc647d2557cc22b00ed29f301c",
+              "value": 0,
+              "selector": "0x4f1ef286",
+              "function": "upgradeToAndCall(address,bytes)",
+              "args": {
+                "newImplementation": "0x115b3d0ee1d12a1622dd6bccaa0d4ab57f54887e",
+                "data": "0x"
+              },
+              "calldata": "0x4f1ef286000000000000000000000000115b3d0ee1d12a1622dd6bccaa0d4ab57f54887e00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000",
+              "cast_decode": "cast calldata-decode \"upgradeToAndCall(address,bytes)\" 0x4f1ef286000000000000000000000000115b3d0ee1d12a1622dd6bccaa0d4ab57f54887e00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000",
+              "upgradeOf": "0x5bf5c3b5f5c29dbc647d2557cc22b00ed29f301c"
+            },
+            {
+              "index": 1,
+              "target": "0x0aefec58e6339c663e80306e38ffebbae0820c70",
+              "value": 0,
+              "selector": "0x4f1ef286",
+              "function": "upgradeToAndCall(address,bytes)",
+              "args": {
+                "newImplementation": "0x56784762d041c472e9e80d2199abc559eb4663b9",
+                "data": "0x"
+              },
+              "calldata": "0x4f1ef28600000000000000000000000056784762d041c472e9e80d2199abc559eb4663b900000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000",
+              "cast_decode": "cast calldata-decode \"upgradeToAndCall(address,bytes)\" 0x4f1ef28600000000000000000000000056784762d041c472e9e80d2199abc559eb4663b900000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000",
+              "upgradeOf": "0x0aefec58e6339c663e80306e38ffebbae0820c70"
+            },
+            {
+              "index": 2,
+              "target": "0x2b4a0e205f17f32fa88d850eb728bebcaeffcc2f",
+              "value": 0,
+              "selector": "0x4f1ef286",
+              "function": "upgradeToAndCall(address,bytes)",
+              "args": {
+                "newImplementation": "0x5dd6873362834cc3eaf731b7a35ea7424c436798",
+                "data": "0x"
+              },
+              "calldata": "0x4f1ef2860000000000000000000000005dd6873362834cc3eaf731b7a35ea7424c43679800000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000",
+              "cast_decode": "cast calldata-decode \"upgradeToAndCall(address,bytes)\" 0x4f1ef2860000000000000000000000005dd6873362834cc3eaf731b7a35ea7424c43679800000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000",
+              "upgradeOf": "0x2b4a0e205f17f32fa88d850eb728bebcaeffcc2f"
+            },
+            {
+              "index": 3,
+              "target": "0x796302e041d1715a8b1f16fd7d7cba38bb031de5",
+              "value": 0,
+              "selector": "0x4f1ef286",
+              "function": "upgradeToAndCall(address,bytes)",
+              "args": {
+                "newImplementation": "0x383ad35be2e5ac178b70de69db2110c472166dfc",
+                "data": "0x"
+              },
+              "calldata": "0x4f1ef286000000000000000000000000383ad35be2e5ac178b70de69db2110c472166dfc00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000",
+              "cast_decode": "cast calldata-decode \"upgradeToAndCall(address,bytes)\" 0x4f1ef286000000000000000000000000383ad35be2e5ac178b70de69db2110c472166dfc00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000",
+              "upgradeOf": "0x796302e041d1715a8b1f16fd7d7cba38bb031de5"
+            },
+            {
+              "index": 4,
+              "target": "0x5bf5c3b5f5c29dbc647d2557cc22b00ed29f301c",
+              "value": 0,
+              "selector": "0x2f2ff15d",
+              "function": "grantRole(bytes32,address)",
+              "args": {
+                "role": "0x539440820030c4994db4e31b6b800deafd503688728f932addfe7a410515c14c",
+                "account": "0xeefebb1546d88ea0909435df6f615084dd3c5bd8"
+              },
+              "calldata": "0x2f2ff15d539440820030c4994db4e31b6b800deafd503688728f932addfe7a410515c14c000000000000000000000000eefebb1546d88ea0909435df6f615084dd3c5bd8",
+              "cast_decode": "cast calldata-decode \"grantRole(bytes32,address)\" 0x2f2ff15d539440820030c4994db4e31b6b800deafd503688728f932addfe7a410515c14c000000000000000000000000eefebb1546d88ea0909435df6f615084dd3c5bd8",
+              "grant": {
+                "roleName": "PAUSER",
+                "account": "0xeefebb1546d88ea0909435df6f615084dd3c5bd8",
+                "accountName": "the 1-of-15 Safe",
+                "heldBefore": false
+              }
+            },
+            {
+              "index": 5,
+              "target": "0x5bf5c3b5f5c29dbc647d2557cc22b00ed29f301c",
+              "value": 0,
+              "selector": "0x2f2ff15d",
+              "function": "grantRole(bytes32,address)",
+              "args": {
+                "role": "0x539440820030c4994db4e31b6b800deafd503688728f932addfe7a410515c14c",
+                "account": "0xbafb0b5b70a9844fb9f132ba1c28f888dd113b34"
+              },
+              "calldata": "0x2f2ff15d539440820030c4994db4e31b6b800deafd503688728f932addfe7a410515c14c000000000000000000000000bafb0b5b70a9844fb9f132ba1c28f888dd113b34",
+              "cast_decode": "cast calldata-decode \"grantRole(bytes32,address)\" 0x2f2ff15d539440820030c4994db4e31b6b800deafd503688728f932addfe7a410515c14c000000000000000000000000bafb0b5b70a9844fb9f132ba1c28f888dd113b34",
+              "grant": {
+                "roleName": "PAUSER",
+                "account": "0xbafb0b5b70a9844fb9f132ba1c28f888dd113b34",
+                "accountName": "the EmergencySwitchHub",
+                "heldBefore": false
+              }
+            },
+            {
+              "index": 6,
+              "target": "0x5bf5c3b5f5c29dbc647d2557cc22b00ed29f301c",
+              "value": 0,
+              "selector": "0x2f2ff15d",
+              "function": "grantRole(bytes32,address)",
+              "args": {
+                "role": "0xaf290d8680820aad922855f39b306097b20e28774d6c1ad35a20325630c3a02c",
+                "account": "0xbafb0b5b70a9844fb9f132ba1c28f888dd113b34"
+              },
+              "calldata": "0x2f2ff15daf290d8680820aad922855f39b306097b20e28774d6c1ad35a20325630c3a02c000000000000000000000000bafb0b5b70a9844fb9f132ba1c28f888dd113b34",
+              "cast_decode": "cast calldata-decode \"grantRole(bytes32,address)\" 0x2f2ff15daf290d8680820aad922855f39b306097b20e28774d6c1ad35a20325630c3a02c000000000000000000000000bafb0b5b70a9844fb9f132ba1c28f888dd113b34",
+              "grant": {
+                "roleName": "MANAGER",
+                "account": "0xbafb0b5b70a9844fb9f132ba1c28f888dd113b34",
+                "accountName": "the EmergencySwitchHub",
+                "heldBefore": false
+              }
+            },
+            {
+              "index": 7,
+              "target": "0x0aefec58e6339c663e80306e38ffebbae0820c70",
+              "value": 0,
+              "selector": "0x2f2ff15d",
+              "function": "grantRole(bytes32,address)",
+              "args": {
+                "role": "0x539440820030c4994db4e31b6b800deafd503688728f932addfe7a410515c14c",
+                "account": "0xeefebb1546d88ea0909435df6f615084dd3c5bd8"
+              },
+              "calldata": "0x2f2ff15d539440820030c4994db4e31b6b800deafd503688728f932addfe7a410515c14c000000000000000000000000eefebb1546d88ea0909435df6f615084dd3c5bd8",
+              "cast_decode": "cast calldata-decode \"grantRole(bytes32,address)\" 0x2f2ff15d539440820030c4994db4e31b6b800deafd503688728f932addfe7a410515c14c000000000000000000000000eefebb1546d88ea0909435df6f615084dd3c5bd8",
+              "grant": {
+                "roleName": "PAUSER",
+                "account": "0xeefebb1546d88ea0909435df6f615084dd3c5bd8",
+                "accountName": "the 1-of-15 Safe",
+                "heldBefore": false
+              }
+            },
+            {
+              "index": 8,
+              "target": "0x0aefec58e6339c663e80306e38ffebbae0820c70",
+              "value": 0,
+              "selector": "0x2f2ff15d",
+              "function": "grantRole(bytes32,address)",
+              "args": {
+                "role": "0x539440820030c4994db4e31b6b800deafd503688728f932addfe7a410515c14c",
+                "account": "0xbafb0b5b70a9844fb9f132ba1c28f888dd113b34"
+              },
+              "calldata": "0x2f2ff15d539440820030c4994db4e31b6b800deafd503688728f932addfe7a410515c14c000000000000000000000000bafb0b5b70a9844fb9f132ba1c28f888dd113b34",
+              "cast_decode": "cast calldata-decode \"grantRole(bytes32,address)\" 0x2f2ff15d539440820030c4994db4e31b6b800deafd503688728f932addfe7a410515c14c000000000000000000000000bafb0b5b70a9844fb9f132ba1c28f888dd113b34",
+              "grant": {
+                "roleName": "PAUSER",
+                "account": "0xbafb0b5b70a9844fb9f132ba1c28f888dd113b34",
+                "accountName": "the EmergencySwitchHub",
+                "heldBefore": false
+              }
+            },
+            {
+              "index": 9,
+              "target": "0x0aefec58e6339c663e80306e38ffebbae0820c70",
+              "value": 0,
+              "selector": "0x2f2ff15d",
+              "function": "grantRole(bytes32,address)",
+              "args": {
+                "role": "0xaf290d8680820aad922855f39b306097b20e28774d6c1ad35a20325630c3a02c",
+                "account": "0xbafb0b5b70a9844fb9f132ba1c28f888dd113b34"
+              },
+              "calldata": "0x2f2ff15daf290d8680820aad922855f39b306097b20e28774d6c1ad35a20325630c3a02c000000000000000000000000bafb0b5b70a9844fb9f132ba1c28f888dd113b34",
+              "cast_decode": "cast calldata-decode \"grantRole(bytes32,address)\" 0x2f2ff15daf290d8680820aad922855f39b306097b20e28774d6c1ad35a20325630c3a02c000000000000000000000000bafb0b5b70a9844fb9f132ba1c28f888dd113b34",
+              "grant": {
+                "roleName": "MANAGER",
+                "account": "0xbafb0b5b70a9844fb9f132ba1c28f888dd113b34",
+                "accountName": "the EmergencySwitchHub",
+                "heldBefore": false
+              }
+            },
+            {
+              "index": 10,
+              "target": "0x2b4a0e205f17f32fa88d850eb728bebcaeffcc2f",
+              "value": 0,
+              "selector": "0x2f2ff15d",
+              "function": "grantRole(bytes32,address)",
+              "args": {
+                "role": "0x539440820030c4994db4e31b6b800deafd503688728f932addfe7a410515c14c",
+                "account": "0xeefebb1546d88ea0909435df6f615084dd3c5bd8"
+              },
+              "calldata": "0x2f2ff15d539440820030c4994db4e31b6b800deafd503688728f932addfe7a410515c14c000000000000000000000000eefebb1546d88ea0909435df6f615084dd3c5bd8",
+              "cast_decode": "cast calldata-decode \"grantRole(bytes32,address)\" 0x2f2ff15d539440820030c4994db4e31b6b800deafd503688728f932addfe7a410515c14c000000000000000000000000eefebb1546d88ea0909435df6f615084dd3c5bd8",
+              "grant": {
+                "roleName": "PAUSER",
+                "account": "0xeefebb1546d88ea0909435df6f615084dd3c5bd8",
+                "accountName": "the 1-of-15 Safe",
+                "heldBefore": false
+              }
+            },
+            {
+              "index": 11,
+              "target": "0x2b4a0e205f17f32fa88d850eb728bebcaeffcc2f",
+              "value": 0,
+              "selector": "0x2f2ff15d",
+              "function": "grantRole(bytes32,address)",
+              "args": {
+                "role": "0x539440820030c4994db4e31b6b800deafd503688728f932addfe7a410515c14c",
+                "account": "0xbafb0b5b70a9844fb9f132ba1c28f888dd113b34"
+              },
+              "calldata": "0x2f2ff15d539440820030c4994db4e31b6b800deafd503688728f932addfe7a410515c14c000000000000000000000000bafb0b5b70a9844fb9f132ba1c28f888dd113b34",
+              "cast_decode": "cast calldata-decode \"grantRole(bytes32,address)\" 0x2f2ff15d539440820030c4994db4e31b6b800deafd503688728f932addfe7a410515c14c000000000000000000000000bafb0b5b70a9844fb9f132ba1c28f888dd113b34",
+              "grant": {
+                "roleName": "PAUSER",
+                "account": "0xbafb0b5b70a9844fb9f132ba1c28f888dd113b34",
+                "accountName": "the EmergencySwitchHub",
+                "heldBefore": false
+              }
+            },
+            {
+              "index": 12,
+              "target": "0x2b4a0e205f17f32fa88d850eb728bebcaeffcc2f",
+              "value": 0,
+              "selector": "0x2f2ff15d",
+              "function": "grantRole(bytes32,address)",
+              "args": {
+                "role": "0xaf290d8680820aad922855f39b306097b20e28774d6c1ad35a20325630c3a02c",
+                "account": "0xbafb0b5b70a9844fb9f132ba1c28f888dd113b34"
+              },
+              "calldata": "0x2f2ff15daf290d8680820aad922855f39b306097b20e28774d6c1ad35a20325630c3a02c000000000000000000000000bafb0b5b70a9844fb9f132ba1c28f888dd113b34",
+              "cast_decode": "cast calldata-decode \"grantRole(bytes32,address)\" 0x2f2ff15daf290d8680820aad922855f39b306097b20e28774d6c1ad35a20325630c3a02c000000000000000000000000bafb0b5b70a9844fb9f132ba1c28f888dd113b34",
+              "grant": {
+                "roleName": "MANAGER",
+                "account": "0xbafb0b5b70a9844fb9f132ba1c28f888dd113b34",
+                "accountName": "the EmergencySwitchHub",
+                "heldBefore": false
+              }
+            },
+            {
+              "index": 13,
+              "target": "0x796302e041d1715a8b1f16fd7d7cba38bb031de5",
+              "value": 0,
+              "selector": "0x2f2ff15d",
+              "function": "grantRole(bytes32,address)",
+              "args": {
+                "role": "0x539440820030c4994db4e31b6b800deafd503688728f932addfe7a410515c14c",
+                "account": "0xeefebb1546d88ea0909435df6f615084dd3c5bd8"
+              },
+              "calldata": "0x2f2ff15d539440820030c4994db4e31b6b800deafd503688728f932addfe7a410515c14c000000000000000000000000eefebb1546d88ea0909435df6f615084dd3c5bd8",
+              "cast_decode": "cast calldata-decode \"grantRole(bytes32,address)\" 0x2f2ff15d539440820030c4994db4e31b6b800deafd503688728f932addfe7a410515c14c000000000000000000000000eefebb1546d88ea0909435df6f615084dd3c5bd8",
+              "grant": {
+                "roleName": "PAUSER",
+                "account": "0xeefebb1546d88ea0909435df6f615084dd3c5bd8",
+                "accountName": "the 1-of-15 Safe",
+                "heldBefore": false
+              }
+            },
+            {
+              "index": 14,
+              "target": "0x796302e041d1715a8b1f16fd7d7cba38bb031de5",
+              "value": 0,
+              "selector": "0x2f2ff15d",
+              "function": "grantRole(bytes32,address)",
+              "args": {
+                "role": "0x539440820030c4994db4e31b6b800deafd503688728f932addfe7a410515c14c",
+                "account": "0xbafb0b5b70a9844fb9f132ba1c28f888dd113b34"
+              },
+              "calldata": "0x2f2ff15d539440820030c4994db4e31b6b800deafd503688728f932addfe7a410515c14c000000000000000000000000bafb0b5b70a9844fb9f132ba1c28f888dd113b34",
+              "cast_decode": "cast calldata-decode \"grantRole(bytes32,address)\" 0x2f2ff15d539440820030c4994db4e31b6b800deafd503688728f932addfe7a410515c14c000000000000000000000000bafb0b5b70a9844fb9f132ba1c28f888dd113b34",
+              "grant": {
+                "roleName": "PAUSER",
+                "account": "0xbafb0b5b70a9844fb9f132ba1c28f888dd113b34",
+                "accountName": "the EmergencySwitchHub",
+                "heldBefore": false
+              }
+            },
+            {
+              "index": 15,
+              "target": "0x796302e041d1715a8b1f16fd7d7cba38bb031de5",
+              "value": 0,
+              "selector": "0x2f2ff15d",
+              "function": "grantRole(bytes32,address)",
+              "args": {
+                "role": "0xaf290d8680820aad922855f39b306097b20e28774d6c1ad35a20325630c3a02c",
+                "account": "0xbafb0b5b70a9844fb9f132ba1c28f888dd113b34"
+              },
+              "calldata": "0x2f2ff15daf290d8680820aad922855f39b306097b20e28774d6c1ad35a20325630c3a02c000000000000000000000000bafb0b5b70a9844fb9f132ba1c28f888dd113b34",
+              "cast_decode": "cast calldata-decode \"grantRole(bytes32,address)\" 0x2f2ff15daf290d8680820aad922855f39b306097b20e28774d6c1ad35a20325630c3a02c000000000000000000000000bafb0b5b70a9844fb9f132ba1c28f888dd113b34",
+              "grant": {
+                "roleName": "MANAGER",
+                "account": "0xbafb0b5b70a9844fb9f132ba1c28f888dd113b34",
+                "accountName": "the EmergencySwitchHub",
+                "heldBefore": false
+              }
+            }
+          ]
+        }
+      ],
+      "decoded": {
+        "upgrades": [
+          {
+            "op_id": "0x21dffafc9876aca6c919e6897271e72805f3a4a986b3b7ac22d71950c7da7ebd",
+            "proxy": "0x5bf5c3b5f5c29dbc647d2557cc22b00ed29f301c",
+            "proxyName": "Liquidator",
+            "proxyKind": "UUPS",
+            "proxyAdmin": null,
+            "eip1967AdminSlot": "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "eip1967ImplementationSlot": "0x000000000000000000000000992680a7e9469243e623cf663f4130c333100ef6",
+            "upgradeAuthority": {
+              "check": "_authorizeUpgrade -> onlyRole(DEFAULT_ADMIN_ROLE)",
+              "timelockHoldsDefaultAdmin": true,
+              "defaultAdminMembers": null
+            },
+            "currentImplementation": {
+              "address": "0x992680a7e9469243e623cf663f4130c333100ef6",
+              "codeKeccak": "0x5e9c514df47bb1e27489e33a2cdd4dc671cb5224b352fe62bbce96bee368ac04",
+              "codeBytes": 15675,
+              "sourcify": {
+                "name": "Liquidator",
+                "fullyQualifiedName": "src/liquidator/Liquidator.sol:Liquidator",
+                "match": "exact_match",
+                "runtimeMatch": "exact_match",
+                "compiler": "0.8.34+commit.80d5c536",
+                "verifiedAt": "2026-07-30T21:18:05Z",
+                "onchainBytecodeMatchesChain": true,
+                "url": "https://sourcify.dev/server/v2/contract/1/0x992680a7e9469243e623cf663f4130c333100ef6"
+              }
+            },
+            "newImplementation": {
+              "address": "0x115b3d0ee1d12a1622dd6bccaa0d4ab57f54887e",
+              "codeKeccak": "0x8d34e8dfe6842e35e3a4b38386b26c523579e0e79d65321e3f6c258f27e35b8c",
+              "codeBytes": 16353,
+              "proxiableUUID": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+              "sourcify": {
+                "name": "Liquidator",
+                "fullyQualifiedName": "src/liquidator/Liquidator.sol:Liquidator",
+                "match": "exact_match",
+                "runtimeMatch": "exact_match",
+                "compiler": "0.8.34+commit.80d5c536",
+                "verifiedAt": "2026-11-17T06:23:12Z",
+                "onchainBytecodeMatchesChain": true,
+                "url": "https://sourcify.dev/server/v2/contract/1/0x115b3d0ee1d12a1622dd6bccaa0d4ab57f54887e"
+              }
+            },
+            "initCalldataBytes": 0,
+            "sourceDiff": {
+              "old": "0x992680a7e9469243e623cf663f4130c333100ef6",
+              "new": "0x115b3d0ee1d12a1622dd6bccaa0d4ab57f54887e",
+              "contract": "Liquidator",
+              "filesAdded": [
+                "lib/openzeppelin-contracts-upgradeable/contracts/utils/PausableUpgradeable.sol"
+              ],
+              "filesRemoved": [],
+              "projectFilesChanged": [
+                {
+                  "file": "src/liquidator/ILiquidationVault.sol",
+                  "linesAdded": 7,
+                  "linesRemoved": 0
+                },
+                {
+                  "file": "src/liquidator/Interface.sol",
+                  "linesAdded": 7,
+                  "linesRemoved": 0
+                },
+                {
+                  "file": "src/liquidator/Liquidator.sol",
+                  "linesAdded": 31,
+                  "linesRemoved": 10
+                },
+                {
+                  "file": "src/moolah/interfaces/IMoolah.sol",
+                  "linesAdded": 3,
+                  "linesRemoved": 0
+                }
+              ],
+              "libraryFilesChanged": 0,
+              "abiAdded": [
+                "error EnforcedPause()",
+                "error ExpectedPause()",
+                "event Paused(address)",
+                "event Unpaused(address)",
+                "function PAUSER()",
+                "function pause()",
+                "function paused()",
+                "function unpause()"
+              ],
+              "abiRemoved": [],
+              "storage": "unchanged: the Sourcify storage layouts of the current and queued implementations are identical; PausableUpgradeable (OpenZeppelin v5) keeps its flag in its ERC-7201 namespaced slot"
+            },
+            "pausedFunctions": [
+              "flashLiquidate",
+              "flashLiquidateSmartCollateral",
+              "liquidate",
+              "liquidateSmartCollateral",
+              "redeemSmartCollateral",
+              "sellBNB",
+              "sellToken"
+            ],
+            "managerHolders": [
+              "0x8d388136d578dcd791d081c6042284ced6d9b0c6",
+              "0xa2ff080d4c0b71b6c8796129dd4acc0b09d7592c"
+            ],
+            "managerEnumerable": false,
+            "pauserHoldersBefore": [],
+            "roleAdmins": {
+              "MANAGER": "0x0000000000000000000000000000000000000000000000000000000000000000",
+              "PAUSER": "0x0000000000000000000000000000000000000000000000000000000000000000"
+            }
+          },
+          {
+            "op_id": "0x21dffafc9876aca6c919e6897271e72805f3a4a986b3b7ac22d71950c7da7ebd",
+            "proxy": "0x0aefec58e6339c663e80306e38ffebbae0820c70",
+            "proxyName": "BrokerLiquidator",
+            "proxyKind": "UUPS",
+            "proxyAdmin": null,
+            "eip1967AdminSlot": "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "eip1967ImplementationSlot": "0x00000000000000000000000025a0e446b25e93afa1f7a18f60e4f26c77f9e473",
+            "upgradeAuthority": {
+              "check": "_authorizeUpgrade -> onlyRole(DEFAULT_ADMIN_ROLE)",
+              "timelockHoldsDefaultAdmin": true,
+              "defaultAdminMembers": null
+            },
+            "currentImplementation": {
+              "address": "0x25a0e446b25e93afa1f7a18f60e4f26c77f9e473",
+              "codeKeccak": "0x4fdc23f973b29d7a674794063e7014814628e45f50eb214ce4c1b63735f98393",
+              "codeBytes": 16115,
+              "sourcify": {
+                "name": "BrokerLiquidator",
+                "fullyQualifiedName": "src/liquidator/BrokerLiquidator.sol:BrokerLiquidator",
+                "match": "exact_match",
+                "runtimeMatch": "exact_match",
+                "compiler": "0.8.34+commit.80d5c536",
+                "verifiedAt": "2026-07-31T04:22:58Z",
+                "onchainBytecodeMatchesChain": true,
+                "url": "https://sourcify.dev/server/v2/contract/1/0x25a0e446b25e93afa1f7a18f60e4f26c77f9e473"
+              }
+            },
+            "newImplementation": {
+              "address": "0x56784762d041c472e9e80d2199abc559eb4663b9",
+              "codeKeccak": "0x277adc7a020b38b89c918337d4a416cc2946a2f1fdff8db1aae8fcccb44d5f52",
+              "codeBytes": 16791,
+              "proxiableUUID": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+              "sourcify": {
+                "name": "BrokerLiquidator",
+                "fullyQualifiedName": "src/liquidator/BrokerLiquidator.sol:BrokerLiquidator",
+                "match": "exact_match",
+                "runtimeMatch": "exact_match",
+                "compiler": "0.8.34+commit.80d5c536",
+                "verifiedAt": "2026-11-17T06:23:24Z",
+                "onchainBytecodeMatchesChain": true,
+                "url": "https://sourcify.dev/server/v2/contract/1/0x56784762d041c472e9e80d2199abc559eb4663b9"
+              }
+            },
+            "initCalldataBytes": 0,
+            "sourceDiff": {
+              "old": "0x25a0e446b25e93afa1f7a18f60e4f26c77f9e473",
+              "new": "0x56784762d041c472e9e80d2199abc559eb4663b9",
+              "contract": "BrokerLiquidator",
+              "filesAdded": [
+                "lib/openzeppelin-contracts-upgradeable/contracts/utils/PausableUpgradeable.sol"
+              ],
+              "filesRemoved": [],
+              "projectFilesChanged": [
+                {
+                  "file": "src/broker/interfaces/IBroker.sol",
+                  "linesAdded": 15,
+                  "linesRemoved": 0
+                },
+                {
+                  "file": "src/liquidator/BrokerLiquidator.sol",
+                  "linesAdded": 23,
+                  "linesRemoved": 8
+                },
+                {
+                  "file": "src/liquidator/IBrokerLiquidator.sol",
+                  "linesAdded": 4,
+                  "linesRemoved": 0
+                },
+                {
+                  "file": "src/liquidator/ILiquidationVault.sol",
+                  "linesAdded": 7,
+                  "linesRemoved": 0
+                },
+                {
+                  "file": "src/moolah/interfaces/IMoolah.sol",
+                  "linesAdded": 3,
+                  "linesRemoved": 0
+                }
+              ],
+              "libraryFilesChanged": 0,
+              "abiAdded": [
+                "error EnforcedPause()",
+                "error ExpectedPause()",
+                "event Paused(address)",
+                "event Unpaused(address)",
+                "function PAUSER()",
+                "function pause()",
+                "function paused()",
+                "function unpause()"
+              ],
+              "abiRemoved": [],
+              "storage": "unchanged: the Sourcify storage layouts of the current and queued implementations are identical; PausableUpgradeable (OpenZeppelin v5) keeps its flag in its ERC-7201 namespaced slot"
+            },
+            "pausedFunctions": [
+              "flashLiquidate",
+              "flashLiquidateSmartCollateral",
+              "liquidate",
+              "liquidateSmartCollateral",
+              "redeemSmartCollateral",
+              "sellBNB",
+              "sellToken"
+            ],
+            "managerHolders": [
+              "0x8d388136d578dcd791d081c6042284ced6d9b0c6",
+              "0xa2ff080d4c0b71b6c8796129dd4acc0b09d7592c"
+            ],
+            "managerEnumerable": false,
+            "pauserHoldersBefore": [],
+            "roleAdmins": {
+              "MANAGER": "0x0000000000000000000000000000000000000000000000000000000000000000",
+              "PAUSER": "0x0000000000000000000000000000000000000000000000000000000000000000"
+            }
+          },
+          {
+            "op_id": "0x21dffafc9876aca6c919e6897271e72805f3a4a986b3b7ac22d71950c7da7ebd",
+            "proxy": "0x2b4a0e205f17f32fa88d850eb728bebcaeffcc2f",
+            "proxyName": "V3Liquidator",
+            "proxyKind": "UUPS",
+            "proxyAdmin": null,
+            "eip1967AdminSlot": "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "eip1967ImplementationSlot": "0x000000000000000000000000f0ebad177b608da7997f449c8ce8cfda84e635d9",
+            "upgradeAuthority": {
+              "check": "_authorizeUpgrade -> onlyRole(DEFAULT_ADMIN_ROLE)",
+              "timelockHoldsDefaultAdmin": true,
+              "defaultAdminMembers": [
+                "0xa18ae79aeda3e711e0cd64cfe1cd06402d400d61"
+              ]
+            },
+            "currentImplementation": {
+              "address": "0xf0ebad177b608da7997f449c8ce8cfda84e635d9",
+              "codeKeccak": "0xfd50cbf2a62abeb655cb99652a675bb2bd198fb8c28d80a17afde8952b27595a",
+              "codeBytes": 14981,
+              "sourcify": {
+                "name": "V3Liquidator",
+                "fullyQualifiedName": "src/liquidator/V3Liquidator.sol:V3Liquidator",
+                "match": "exact_match",
+                "runtimeMatch": "exact_match",
+                "compiler": "0.8.34+commit.80d5c536",
+                "verifiedAt": "2026-11-06T01:01:39Z",
+                "onchainBytecodeMatchesChain": true,
+                "url": "https://sourcify.dev/server/v2/contract/1/0xf0ebad177b608da7997f449c8ce8cfda84e635d9"
+              }
+            },
+            "newImplementation": {
+              "address": "0x5dd6873362834cc3eaf731b7a35ea7424c436798",
+              "codeKeccak": "0x0a187cc3eff7d5b6b5bb274a1efe906b7aa963f968a9c996536aa9602edf941f",
+              "codeBytes": 15633,
+              "proxiableUUID": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+              "sourcify": {
+                "name": "V3Liquidator",
+                "fullyQualifiedName": "src/liquidator/V3Liquidator.sol:V3Liquidator",
+                "match": "exact_match",
+                "runtimeMatch": "exact_match",
+                "compiler": "0.8.34+commit.80d5c536",
+                "verifiedAt": "2026-11-17T06:23:29Z",
+                "onchainBytecodeMatchesChain": true,
+                "url": "https://sourcify.dev/server/v2/contract/1/0x5dd6873362834cc3eaf731b7a35ea7424c436798"
+              }
+            },
+            "initCalldataBytes": 0,
+            "sourceDiff": {
+              "old": "0xf0ebad177b608da7997f449c8ce8cfda84e635d9",
+              "new": "0x5dd6873362834cc3eaf731b7a35ea7424c436798",
+              "contract": "V3Liquidator",
+              "filesAdded": [
+                "lib/openzeppelin-contracts-upgradeable/contracts/utils/PausableUpgradeable.sol"
+              ],
+              "filesRemoved": [],
+              "projectFilesChanged": [
+                {
+                  "file": "src/liquidator/Interface.sol",
+                  "linesAdded": 7,
+                  "linesRemoved": 0
+                },
+                {
+                  "file": "src/liquidator/V3Liquidator.sol",
+                  "linesAdded": 30,
+                  "linesRemoved": 7
+                },
+                {
+                  "file": "src/moolah/interfaces/IMoolah.sol",
+                  "linesAdded": 3,
+                  "linesRemoved": 0
+                }
+              ],
+              "libraryFilesChanged": 0,
+              "abiAdded": [
+                "error EnforcedPause()",
+                "error ExpectedPause()",
+                "event Paused(address)",
+                "event Unpaused(address)",
+                "function PAUSER()",
+                "function pause()",
+                "function paused()",
+                "function unpause()"
+              ],
+              "abiRemoved": [],
+              "storage": "unchanged: the Sourcify storage layouts of the current and queued implementations are identical; PausableUpgradeable (OpenZeppelin v5) keeps its flag in its ERC-7201 namespaced slot"
+            },
+            "pausedFunctions": [
+              "flashLiquidate",
+              "liquidate",
+              "redeemV3Shares",
+              "sellBNB",
+              "sellToken"
+            ],
+            "managerHolders": [
+              "0x8d388136d578dcd791d081c6042284ced6d9b0c6",
+              "0xa2ff080d4c0b71b6c8796129dd4acc0b09d7592c"
+            ],
+            "managerEnumerable": true,
+            "pauserHoldersBefore": [],
+            "roleAdmins": {
+              "MANAGER": "0x0000000000000000000000000000000000000000000000000000000000000000",
+              "PAUSER": "0x0000000000000000000000000000000000000000000000000000000000000000"
+            }
+          },
+          {
+            "op_id": "0x21dffafc9876aca6c919e6897271e72805f3a4a986b3b7ac22d71950c7da7ebd",
+            "proxy": "0x796302e041d1715a8b1f16fd7d7cba38bb031de5",
+            "proxyName": "PublicLiquidator",
+            "proxyKind": "UUPS",
+            "proxyAdmin": null,
+            "eip1967AdminSlot": "0x0000000000000000000000000000000000000000000000000000000000000000",
+            "eip1967ImplementationSlot": "0x0000000000000000000000001e96d13e899deab8f0aa594a4987fabab26dbc81",
+            "upgradeAuthority": {
+              "check": "_authorizeUpgrade -> onlyRole(DEFAULT_ADMIN_ROLE)",
+              "timelockHoldsDefaultAdmin": true,
+              "defaultAdminMembers": [
+                "0xa18ae79aeda3e711e0cd64cfe1cd06402d400d61"
+              ]
+            },
+            "currentImplementation": {
+              "address": "0x1e96d13e899deab8f0aa594a4987fabab26dbc81",
+              "codeKeccak": "0x98c751af14046f1e3e30c71a4cd88c1ba72b8f5c90f9aa655c85d66b31380835",
+              "codeBytes": 19044,
+              "sourcify": {
+                "name": "PublicLiquidator",
+                "fullyQualifiedName": "src/liquidator/PublicLiquidator.sol:PublicLiquidator",
+                "match": "exact_match",
+                "runtimeMatch": "exact_match",
+                "compiler": "0.8.34+commit.80d5c536",
+                "verifiedAt": "2026-08-31T09:03:01Z",
+                "onchainBytecodeMatchesChain": true,
+                "url": "https://sourcify.dev/server/v2/contract/1/0x1e96d13e899deab8f0aa594a4987fabab26dbc81"
+              }
+            },
+            "newImplementation": {
+              "address": "0x383ad35be2e5ac178b70de69db2110c472166dfc",
+              "codeKeccak": "0x263d0297374a35bb044d8f67c28e1d18129503d248b5a6d0b40d10e5c78d0473",
+              "codeBytes": 19696,
+              "proxiableUUID": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+              "sourcify": {
+                "name": "PublicLiquidator",
+                "fullyQualifiedName": "src/liquidator/PublicLiquidator.sol:PublicLiquidator",
+                "match": "exact_match",
+                "runtimeMatch": "exact_match",
+                "compiler": "0.8.34+commit.80d5c536",
+                "verifiedAt": "2026-11-17T06:23:41Z",
+                "onchainBytecodeMatchesChain": true,
+                "url": "https://sourcify.dev/server/v2/contract/1/0x383ad35be2e5ac178b70de69db2110c472166dfc"
+              }
+            },
+            "initCalldataBytes": 0,
+            "sourceDiff": {
+              "old": "0x1e96d13e899deab8f0aa594a4987fabab26dbc81",
+              "new": "0x383ad35be2e5ac178b70de69db2110c472166dfc",
+              "contract": "PublicLiquidator",
+              "filesAdded": [
+                "lib/openzeppelin-contracts-upgradeable/contracts/utils/PausableUpgradeable.sol"
+              ],
+              "filesRemoved": [],
+              "projectFilesChanged": [
+                {
+                  "file": "src/liquidator/Interface.sol",
+                  "linesAdded": 7,
+                  "linesRemoved": 0
+                },
+                {
+                  "file": "src/liquidator/PublicLiquidator.sol",
+                  "linesAdded": 20,
+                  "linesRemoved": 4
+                },
+                {
+                  "file": "src/moolah/interfaces/IMoolah.sol",
+                  "linesAdded": 3,
+                  "linesRemoved": 0
+                }
+              ],
+              "libraryFilesChanged": 0,
+              "abiAdded": [
+                "error EnforcedPause()",
+                "error ExpectedPause()",
+                "event Paused(address)",
+                "event Unpaused(address)",
+                "function PAUSER()",
+                "function pause()",
+                "function paused()",
+                "function unpause()"
+              ],
+              "abiRemoved": [],
+              "storage": "unchanged: the Sourcify storage layouts of the current and queued implementations are identical; PausableUpgradeable (OpenZeppelin v5) keeps its flag in its ERC-7201 namespaced slot"
+            },
+            "pausedFunctions": [
+              "flashLiquidate",
+              "flashLiquidateSmartCollateral",
+              "liquidateSmartCollateral",
+              "liquidateWithCollTransferOpt"
+            ],
+            "managerHolders": [
+              "0x8d388136d578dcd791d081c6042284ced6d9b0c6",
+              "0xa2ff080d4c0b71b6c8796129dd4acc0b09d7592c"
+            ],
+            "managerEnumerable": true,
+            "pauserHoldersBefore": [],
+            "roleAdmins": {
+              "MANAGER": "0x0000000000000000000000000000000000000000000000000000000000000000",
+              "PAUSER": "0x0000000000000000000000000000000000000000000000000000000000000000"
+            }
+          }
+        ],
+        "grants": [
+          {
+            "index": 4,
+            "proxy": "0x5bf5c3b5f5c29dbc647d2557cc22b00ed29f301c",
+            "roleName": "PAUSER",
+            "account": "0xeefebb1546d88ea0909435df6f615084dd3c5bd8",
+            "accountName": "the 1-of-15 Safe",
+            "heldBefore": false
+          },
+          {
+            "index": 5,
+            "proxy": "0x5bf5c3b5f5c29dbc647d2557cc22b00ed29f301c",
+            "roleName": "PAUSER",
+            "account": "0xbafb0b5b70a9844fb9f132ba1c28f888dd113b34",
+            "accountName": "the EmergencySwitchHub",
+            "heldBefore": false
+          },
+          {
+            "index": 6,
+            "proxy": "0x5bf5c3b5f5c29dbc647d2557cc22b00ed29f301c",
+            "roleName": "MANAGER",
+            "account": "0xbafb0b5b70a9844fb9f132ba1c28f888dd113b34",
+            "accountName": "the EmergencySwitchHub",
+            "heldBefore": false
+          },
+          {
+            "index": 7,
+            "proxy": "0x0aefec58e6339c663e80306e38ffebbae0820c70",
+            "roleName": "PAUSER",
+            "account": "0xeefebb1546d88ea0909435df6f615084dd3c5bd8",
+            "accountName": "the 1-of-15 Safe",
+            "heldBefore": false
+          },
+          {
+            "index": 8,
+            "proxy": "0x0aefec58e6339c663e80306e38ffebbae0820c70",
+            "roleName": "PAUSER",
+            "account": "0xbafb0b5b70a9844fb9f132ba1c28f888dd113b34",
+            "accountName": "the EmergencySwitchHub",
+            "heldBefore": false
+          },
+          {
+            "index": 9,
+            "proxy": "0x0aefec58e6339c663e80306e38ffebbae0820c70",
+            "roleName": "MANAGER",
+            "account": "0xbafb0b5b70a9844fb9f132ba1c28f888dd113b34",
+            "accountName": "the EmergencySwitchHub",
+            "heldBefore": false
+          },
+          {
+            "index": 10,
+            "proxy": "0x2b4a0e205f17f32fa88d850eb728bebcaeffcc2f",
+            "roleName": "PAUSER",
+            "account": "0xeefebb1546d88ea0909435df6f615084dd3c5bd8",
+            "accountName": "the 1-of-15 Safe",
+            "heldBefore": false
+          },
+          {
+            "index": 11,
+            "proxy": "0x2b4a0e205f17f32fa88d850eb728bebcaeffcc2f",
+            "roleName": "PAUSER",
+            "account": "0xbafb0b5b70a9844fb9f132ba1c28f888dd113b34",
+            "accountName": "the EmergencySwitchHub",
+            "heldBefore": false
+          },
+          {
+            "index": 12,
+            "proxy": "0x2b4a0e205f17f32fa88d850eb728bebcaeffcc2f",
+            "roleName": "MANAGER",
+            "account": "0xbafb0b5b70a9844fb9f132ba1c28f888dd113b34",
+            "accountName": "the EmergencySwitchHub",
+            "heldBefore": false
+          },
+          {
+            "index": 13,
+            "proxy": "0x796302e041d1715a8b1f16fd7d7cba38bb031de5",
+            "roleName": "PAUSER",
+            "account": "0xeefebb1546d88ea0909435df6f615084dd3c5bd8",
+            "accountName": "the 1-of-15 Safe",
+            "heldBefore": false
+          },
+          {
+            "index": 14,
+            "proxy": "0x796302e041d1715a8b1f16fd7d7cba38bb031de5",
+            "roleName": "PAUSER",
+            "account": "0xbafb0b5b70a9844fb9f132ba1c28f888dd113b34",
+            "accountName": "the EmergencySwitchHub",
+            "heldBefore": false
+          },
+          {
+            "index": 15,
+            "proxy": "0x796302e041d1715a8b1f16fd7d7cba38bb031de5",
+            "roleName": "MANAGER",
+            "account": "0xbafb0b5b70a9844fb9f132ba1c28f888dd113b34",
+            "accountName": "the EmergencySwitchHub",
+            "heldBefore": false
+          }
+        ],
+        "hub": {
+          "address": "0xbafb0b5b70a9844fb9f132ba1c28f888dd113b34",
+          "implementation": {
+            "address": "0xc0becff73d3f44a144169ece4406b410d1ddda3b",
+            "sourcifyName": "EmergencySwitchHub",
+            "sourcifyMatch": "match"
+          },
+          "defaultAdmin": [
+            "0xa18ae79aeda3e711e0cd64cfe1cd06402d400d61"
+          ],
+          "managers": [
+            "0x8d388136d578dcd791d081c6042284ced6d9b0c6"
+          ],
+          "pausers": [
+            "0xeefebb1546d88ea0909435df6f615084dd3c5bd8"
+          ],
+          "pauserRoleAdmin": "MANAGER",
+          "pausableContracts": 12,
+          "liquidatorsListed": []
+        },
+        "safes": {
+          "pauser": {
+            "address": "0xeefebb1546d88ea0909435df6f615084dd3c5bd8",
+            "kind": "Safe",
+            "threshold": 1,
+            "owners": 15,
+            "version": "1.3.0"
+          },
+          "manager": {
+            "address": "0x8d388136d578dcd791d081c6042284ced6d9b0c6",
+            "kind": "Safe",
+            "threshold": 3,
+            "owners": 6,
+            "version": "1.3.0"
+          }
+        },
+        "marketFactory": {
+          "address": "0xa2ff080d4c0b71b6c8796129dd4acc0b09d7592c",
+          "implementation": "0xb798bb56898a86b6fd49fc1eca4150efdc3ee6ea",
+          "implementationName": "MarketFactory"
+        },
+        "proposer": {
+          "address": "0x08ae09467ff962af105c23775b9bc8eaa175d27f",
+          "kind": "Safe",
+          "threshold": 3,
+          "owners": 6,
+          "version": "1.3.0",
+          "proposerIsTxTo": true,
+          "cancellerIsTxTo": true,
+          "executorIsTxTo": true,
+          "executorOpen": false
+        },
+        "opIdRederived": {
+          "hashOperationBatch": "0x21dffafc9876aca6c919e6897271e72805f3a4a986b3b7ac22d71950c7da7ebd",
+          "salt": "0x0000000000000000000000000000000000000000000000000000000000000035",
+          "matches": true
+        }
+      },
+      "risk_notes": [
+        "After execution any one of the 15 signers of the Safe 0xEEfebb1546d88EA0909435DF6f615084DD3c5Bd8 (threshold 1) can call pause() on each of the four liquidators. While a liquidator is paused, its whenNotPaused entry points revert: on Liquidator and BrokerLiquidator every BOT liquidation, smart-collateral and token-sale function; on V3Liquidator liquidations, V3 share redemption and token sales; on PublicLiquidator the four public liquidation functions (redeemSmartCollateral stays callable there). withdraw functions and admin setters are not gated.",
+        "unpause() needs MANAGER on each liquidator. At the pin MANAGER is held by the 3-of-6 Safe 0x8d388136d578dCD791D081c6042284CED6d9B0c6 and by Lista's MarketFactory proxy 0xA2ff080D4c0b71B6c8796129DD4aCc0B09D7592c; the batch adds the EmergencySwitchHub. Pausing takes one signature, resuming takes the 3-of-6 Safe or a contract.",
+        "The EmergencySwitchHub 0xBafB0B5B70A9844Fb9F132ba1C28F888Dd113B34 (Sourcify-verified EmergencySwitchHub) lets its PAUSER call pauseAll / pauseContracts and its MANAGER call unpauseAll and addPausableContracts. Its PAUSER is the same 1-of-15 Safe, its MANAGER the 3-of-6 Safe, and the hub's PAUSER role admin is MANAGER: the 3-of-6 Safe can add hub pausers without this timelock. At the pin none of the four liquidators is in getPausableContracts() (12 entries), so the hub reaches them only after its MANAGER adds them.",
+        "On the liquidators themselves, PAUSER and MANAGER are administered by DEFAULT_ADMIN_ROLE, which this timelock holds: further grants there still wait the 1-day delay.",
+        "No initializer runs (upgradeToAndCall with empty data). Each queued implementation only adds OpenZeppelin PausableUpgradeable (ERC-7201 namespaced flag), the PAUSER constant, pause() / unpause() and whenNotPaused on the entry points above; the Sourcify storage layouts are identical, so the proxies start unpaused. The other changed files only add interface declarations.",
+        "All four queued implementations are Sourcify exact matches (verified 2026-11-17). The batch was scheduled by the 3-of-6 Safe 0x08aE09467ff962aF105c23775B9Bc8EAa175D27F, which is this timelock's proposer, canceller and executor; the executor role is not open to everyone."
+      ],
+      "brief": "briefs/lista-lending-op-0x21df/",
+      "pinned_block": {
+        "block_number": 26447998,
+        "block_hash": "0x552856735f65be942639318f690c70f8967411259defa795f4d84eff53c4ac54",
+        "block_timestamp": 1795077719,
+        "block_time_utc": "2026-11-19 08:41 UTC",
+        "tag": "finalized",
+        "rpcs_cross_checked": 2
+      },
+      "radar_title": "Lista Lending — four liquidator upgrades add an emergency pause; PAUSER to a 1-of-15 Safe and the EmergencySwitchHub",
+      "reproduce": [
+        "cast logs --from-block 26447594 --to-block 26447594 --address 0xa18ae79aeda3e711e0cd64cfe1cd06402d400d61 \"CallScheduled(bytes32 indexed id,uint256 indexed index,address target,uint256 value,bytes data,bytes32 predecessor,uint256 delay)\" 0x21dffafc9876aca6c919e6897271e72805f3a4a986b3b7ac22d71950c7da7ebd --rpc-url $ETH_RPC_URL",
+        "cast receipt 0x507a12309f1a0a008cb9d3fca62182f270ae55667c4abc3631e573af4404bb26 --rpc-url $ETH_RPC_URL",
+        "cast call 0xa18ae79aeda3e711e0cd64cfe1cd06402d400d61 \"getMinDelay()(uint256)\" --block 26447998 --rpc-url $ETH_RPC_URL",
+        "cast call 0xa18ae79aeda3e711e0cd64cfe1cd06402d400d61 \"isOperation(bytes32)(bool)\" 0x21dffafc9876aca6c919e6897271e72805f3a4a986b3b7ac22d71950c7da7ebd --block 26447998 --rpc-url $ETH_RPC_URL",
+        "cast call 0xa18ae79aeda3e711e0cd64cfe1cd06402d400d61 \"isOperationPending(bytes32)(bool)\" 0x21dffafc9876aca6c919e6897271e72805f3a4a986b3b7ac22d71950c7da7ebd --block 26447998 --rpc-url $ETH_RPC_URL",
+        "cast call 0xa18ae79aeda3e711e0cd64cfe1cd06402d400d61 \"isOperationReady(bytes32)(bool)\" 0x21dffafc9876aca6c919e6897271e72805f3a4a986b3b7ac22d71950c7da7ebd --block 26447998 --rpc-url $ETH_RPC_URL",
+        "cast call 0xa18ae79aeda3e711e0cd64cfe1cd06402d400d61 \"isOperationDone(bytes32)(bool)\" 0x21dffafc9876aca6c919e6897271e72805f3a4a986b3b7ac22d71950c7da7ebd --block 26447998 --rpc-url $ETH_RPC_URL",
+        "cast call 0xa18ae79aeda3e711e0cd64cfe1cd06402d400d61 \"getTimestamp(bytes32)(uint256)\" 0x21dffafc9876aca6c919e6897271e72805f3a4a986b3b7ac22d71950c7da7ebd --block 26447998 --rpc-url $ETH_RPC_URL",
+        "cast call 0xa18ae79aeda3e711e0cd64cfe1cd06402d400d61 \"hasRole(bytes32,address)(bool)\" $(cast keccak \"PROPOSER_ROLE\") 0x08ae09467ff962af105c23775b9bc8eaa175d27f --block 26447998 --rpc-url $ETH_RPC_URL",
+        "cast call 0xa18ae79aeda3e711e0cd64cfe1cd06402d400d61 \"hasRole(bytes32,address)(bool)\" $(cast keccak \"EXECUTOR_ROLE\") 0x08ae09467ff962af105c23775b9bc8eaa175d27f --block 26447998 --rpc-url $ETH_RPC_URL",
+        "cast call 0xa18ae79aeda3e711e0cd64cfe1cd06402d400d61 \"hasRole(bytes32,address)(bool)\" $(cast keccak \"CANCELLER_ROLE\") 0x08ae09467ff962af105c23775b9bc8eaa175d27f --block 26447998 --rpc-url $ETH_RPC_URL",
+        "cast storage 0x5bf5c3b5f5c29dbc647d2557cc22b00ed29f301c 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc --block 26447998 --rpc-url $ETH_RPC_URL",
+        "cast call 0x5bf5c3b5f5c29dbc647d2557cc22b00ed29f301c \"hasRole(bytes32,address)(bool)\" 0x0000000000000000000000000000000000000000000000000000000000000000 0xa18ae79aeda3e711e0cd64cfe1cd06402d400d61 --block 26447998 --rpc-url $ETH_RPC_URL",
+        "cast call 0x5bf5c3b5f5c29dbc647d2557cc22b00ed29f301c \"hasRole(bytes32,address)(bool)\" $(cast keccak \"MANAGER\") 0x8d388136d578dcd791d081c6042284ced6d9b0c6 --block 26447998 --rpc-url $ETH_RPC_URL",
+        "cast call 0x115b3d0ee1d12a1622dd6bccaa0d4ab57f54887e \"proxiableUUID()(bytes32)\" --block 26447998 --rpc-url $ETH_RPC_URL",
+        "cast storage 0x0aefec58e6339c663e80306e38ffebbae0820c70 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc --block 26447998 --rpc-url $ETH_RPC_URL",
+        "cast call 0x0aefec58e6339c663e80306e38ffebbae0820c70 \"hasRole(bytes32,address)(bool)\" 0x0000000000000000000000000000000000000000000000000000000000000000 0xa18ae79aeda3e711e0cd64cfe1cd06402d400d61 --block 26447998 --rpc-url $ETH_RPC_URL",
+        "cast call 0x0aefec58e6339c663e80306e38ffebbae0820c70 \"hasRole(bytes32,address)(bool)\" $(cast keccak \"MANAGER\") 0x8d388136d578dcd791d081c6042284ced6d9b0c6 --block 26447998 --rpc-url $ETH_RPC_URL",
+        "cast call 0x56784762d041c472e9e80d2199abc559eb4663b9 \"proxiableUUID()(bytes32)\" --block 26447998 --rpc-url $ETH_RPC_URL",
+        "cast storage 0x2b4a0e205f17f32fa88d850eb728bebcaeffcc2f 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc --block 26447998 --rpc-url $ETH_RPC_URL",
+        "cast call 0x2b4a0e205f17f32fa88d850eb728bebcaeffcc2f \"hasRole(bytes32,address)(bool)\" 0x0000000000000000000000000000000000000000000000000000000000000000 0xa18ae79aeda3e711e0cd64cfe1cd06402d400d61 --block 26447998 --rpc-url $ETH_RPC_URL",
+        "cast call 0x2b4a0e205f17f32fa88d850eb728bebcaeffcc2f \"hasRole(bytes32,address)(bool)\" $(cast keccak \"MANAGER\") 0x8d388136d578dcd791d081c6042284ced6d9b0c6 --block 26447998 --rpc-url $ETH_RPC_URL",
+        "cast call 0x5dd6873362834cc3eaf731b7a35ea7424c436798 \"proxiableUUID()(bytes32)\" --block 26447998 --rpc-url $ETH_RPC_URL",
+        "cast storage 0x796302e041d1715a8b1f16fd7d7cba38bb031de5 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc --block 26447998 --rpc-url $ETH_RPC_URL",
+        "cast call 0x796302e041d1715a8b1f16fd7d7cba38bb031de5 \"hasRole(bytes32,address)(bool)\" 0x0000000000000000000000000000000000000000000000000000000000000000 0xa18ae79aeda3e711e0cd64cfe1cd06402d400d61 --block 26447998 --rpc-url $ETH_RPC_URL",
+        "cast call 0x796302e041d1715a8b1f16fd7d7cba38bb031de5 \"hasRole(bytes32,address)(bool)\" $(cast keccak \"MANAGER\") 0x8d388136d578dcd791d081c6042284ced6d9b0c6 --block 26447998 --rpc-url $ETH_RPC_URL",
+        "cast call 0x383ad35be2e5ac178b70de69db2110c472166dfc \"proxiableUUID()(bytes32)\" --block 26447998 --rpc-url $ETH_RPC_URL",
+        "cast call 0xeefebb1546d88ea0909435df6f615084dd3c5bd8 \"getThreshold()(uint256)\" --block 26447998 --rpc-url $ETH_RPC_URL",
+        "cast call 0xeefebb1546d88ea0909435df6f615084dd3c5bd8 \"getOwners()(address[])\" --block 26447998 --rpc-url $ETH_RPC_URL",
+        "cast call 0x8d388136d578dcd791d081c6042284ced6d9b0c6 \"getThreshold()(uint256)\" --block 26447998 --rpc-url $ETH_RPC_URL",
+        "cast call 0x08ae09467ff962af105c23775b9bc8eaa175d27f \"getThreshold()(uint256)\" --block 26447998 --rpc-url $ETH_RPC_URL",
+        "cast call 0xbafb0b5b70a9844fb9f132ba1c28f888dd113b34 \"getPausableContracts()(address[])\" --block 26447998 --rpc-url $ETH_RPC_URL",
+        "cast call 0xbafb0b5b70a9844fb9f132ba1c28f888dd113b34 \"getRoleMember(bytes32,uint256)(address)\" $(cast keccak \"PAUSER\") 0 --block 26447998 --rpc-url $ETH_RPC_URL",
+        "cast call 0xbafb0b5b70a9844fb9f132ba1c28f888dd113b34 \"getRoleMember(bytes32,uint256)(address)\" $(cast keccak \"MANAGER\") 0 --block 26447998 --rpc-url $ETH_RPC_URL",
+        "cast call 0xbafb0b5b70a9844fb9f132ba1c28f888dd113b34 \"getRoleAdmin(bytes32)(bytes32)\" $(cast keccak \"PAUSER\") --block 26447998 --rpc-url $ETH_RPC_URL"
+      ]
     }
   ],
   "recheck": [
@@ -3184,10 +4183,10 @@
     }
   ],
   "counts": {
-    "briefs": 8,
-    "operations": 13,
-    "calls": 45,
-    "radarItems": 11,
-    "radarOps": 17
+    "briefs": 9,
+    "operations": 14,
+    "calls": 61,
+    "radarItems": 12,
+    "radarOps": 18
   }
 }

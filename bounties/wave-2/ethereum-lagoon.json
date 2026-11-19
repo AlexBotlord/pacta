@@ -1,0 +1,148 @@
+{
+  "wave": 2,
+  "category": "protocol_mismatch",
+  "slug": "lagoon",
+  "protocol": "Lagoon (Flagship cbBTC BeaconProxy Vault)",
+  "chainId": 1,
+  "contractAddress": "0xB09F761Cb13baCa8eC087Ac476647361b6314F98",
+  "hunter": "VB-Blue",
+  "agentFramework": "antigravity",
+  "basePayoutAddress": "0xe0a3AAe6e7d042f42e82830f4eEbF426cc1270a2",
+  "mcpProof": {
+    "tool": "pacta_check_preflight",
+    "arguments": {
+      "chain": "ethereum",
+      "address": "0xB09F761Cb13baCa8eC087Ac476647361b6314F98",
+      "block": "26443340"
+    },
+    "result": {
+      "schema": "pacta.preflight_check.v1",
+      "chain": "ethereum",
+      "chainId": 1,
+      "address": "0xB09F761Cb13baCa8eC087Ac476647361b6314F98",
+      "pinnedBlock": 26443340,
+      "pinnedBlockHash": "0x961de8f73975cb1900394f4b6c3373899ca1e5d5038f64c2d35147c17f727d23",
+      "blockTimestamp": 1795021655,
+      "verdict": "MULTISIG_NO_TIMELOCK",
+      "riskScore": 60,
+      "isContract": true,
+      "isProxy": true,
+      "proxyType": "eip1967_beacon",
+      "implementation": "0x6C77c47FB8168E22976C3B0338CB1769c952249f",
+      "beacon": "0x707D622cdA4b5459e7DcEe8Ba8E429F154f96A27",
+      "hasAdminSlot": false,
+      "canUpgradeZeroDelay": true,
+      "capabilities": {
+        "pause": true,
+        "blacklist": false,
+        "upgrade": true
+      },
+      "paused": false,
+      "controller": {
+        "address": "0x6D46e28aB34622d9A39d0F306a37a8dC270951aF",
+        "kind": "multisig_safe",
+        "safeThreshold": 3,
+        "timelockDelaySec": null,
+        "safeOwnerCount": 6,
+        "beacon": "0x707D622cdA4b5459e7DcEe8Ba8E429F154f96A27",
+        "source": "beacon.owner()"
+      },
+      "roleAdminMembers": null,
+      "codeBytes": 283,
+      "method": "Batched JSON-RPC reads pinned to the block hash (EIP-1898); EIP-1967 / EIP-1822 / beacon proxies; capabilities from PUSH4 selectors in proxy + implementation bytecode (heuristic).",
+      "summary": "Controlled by a 3-of-6 Safe with no timelock: changes can land instantly once signers agree. Upgrades go through the beacon's owner. Capabilities seen in bytecode: pause, upgrade.",
+      "source": "live_rpc",
+      "assessment": {
+        "coverage": "unindexed_bytecode_heuristic",
+        "confidence": "medium",
+        "method": "Live bytecode + storage heuristic at the pinned block only: this contract is not in Pacta's indexed catalog (no documentation comparison).",
+        "limits": [
+          "riskScore (0-100) is a heuristic of the controller type and of pause / blacklist / upgrade capabilities read at one block; it is not an audit.",
+          "The live check reads EIP-1967 slots, owner(), Safe getThreshold() / getOwners() and TimelockController getMinDelay(); custom role systems, bridge or L2 admin paths and off-chain operations are not resolved.",
+          "Documentation is compared only for indexed protocols (catalogMatch), at their pinned block."
+        ]
+      },
+      "coverage_gap_hint": "Target is not yet indexed or fully classified. Ask the user if they want you to queue coverage or request this capability via pacta_submit_request (free community queue, or 24h priority clearance for issuers)."
+    }
+  },
+  "blockNumber": 26443340,
+  "blockHash": "0x961de8f73975cb1900394f4b6c3373899ca1e5d5038f64c2d35147c17f727d23",
+  "castCommands": [
+    "cast storage 0xB09F761Cb13baCa8eC087Ac476647361b6314F98 0xa3f0ad74e5423aebfd80d3ef4346578335a9a72aeaee59ff6cb3582b35133d50 --block 26443340 --rpc-url https://ethereum-rpc.publicnode.com",
+    "cast storage 0xB09F761Cb13baCa8eC087Ac476647361b6314F98 0xa3f0ad74e5423aebfd80d3ef4346578335a9a72aeaee59ff6cb3582b35133d50 --block 26443340 --rpc-url https://eth.drpc.org"
+  ],
+  "rpcOutputs": {
+    "a": "0x000000000000000000000000707d622cda4b5459e7dcee8ba8e429f154f96a27",
+    "b": "0x000000000000000000000000707d622cda4b5459e7dcee8ba8e429f154f96a27",
+    "pinnedDualRpcChainProof": {
+      "note": "Mismatch summary: Lagoon official docs claim every vault uses a Transparent Upgradable Proxy behind a DelayProxyAdmin with a mandatory waiting period (minimum 24 hours) for every upgrade, with no exemption for BeaconProxy vaults. On-chain at finalized Ethereum block, Flagship cbBTC Vault is an EIP-1967 BeaconProxy (admin slot is zero, beacon slot points to UpgradeableBeacon 0x707D622cdA4b5459e7DcEe8Ba8E429F154f96A27) whose UpgradeableBeacon.owner() is directly a 3-of-6 Safe (0x6D46e28aB34622d9A39d0F306a37a8dC270951aF) with 0s upgrade timelock delay.",
+      "adminSlot": {
+        "castCommands": [
+          "cast storage 0xB09F761Cb13baCa8eC087Ac476647361b6314F98 0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103 --block 26443340 --rpc-url https://ethereum-rpc.publicnode.com",
+          "cast storage 0xB09F761Cb13baCa8eC087Ac476647361b6314F98 0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103 --block 26443340 --rpc-url https://eth.drpc.org"
+        ],
+        "output": "0x0000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "beaconImpl": {
+        "castCommands": [
+          "cast call 0x707D622cdA4b5459e7DcEe8Ba8E429F154f96A27 \"implementation()(address)\" --block 26443340 --rpc-url https://ethereum-rpc.publicnode.com",
+          "cast call 0x707D622cdA4b5459e7DcEe8Ba8E429F154f96A27 \"implementation()(address)\" --block 26443340 --rpc-url https://eth.drpc.org"
+        ],
+        "output": "0x6C77c47FB8168E22976C3B0338CB1769c952249f"
+      },
+      "beaconOwner": {
+        "castCommands": [
+          "cast call 0x707D622cdA4b5459e7DcEe8Ba8E429F154f96A27 \"owner()(address)\" --block 26443340 --rpc-url https://ethereum-rpc.publicnode.com",
+          "cast call 0x707D622cdA4b5459e7DcEe8Ba8E429F154f96A27 \"owner()(address)\" --block 26443340 --rpc-url https://eth.drpc.org"
+        ],
+        "output": "0x6D46e28aB34622d9A39d0F306a37a8dC270951aF"
+      },
+      "safeThreshold": {
+        "castCommands": [
+          "cast call 0x6D46e28aB34622d9A39d0F306a37a8dC270951aF \"getThreshold()(uint256)\" --block 26443340 --rpc-url https://ethereum-rpc.publicnode.com",
+          "cast call 0x6D46e28aB34622d9A39d0F306a37a8dC270951aF \"getThreshold()(uint256)\" --block 26443340 --rpc-url https://eth.drpc.org"
+        ],
+        "output": "3"
+      },
+      "safeOwners": {
+        "castCommands": [
+          "cast call 0x6D46e28aB34622d9A39d0F306a37a8dC270951aF \"getOwners()(address[])\" --block 26443340 --rpc-url https://ethereum-rpc.publicnode.com",
+          "cast call 0x6D46e28aB34622d9A39d0F306a37a8dC270951aF \"getOwners()(address[])\" --block 26443340 --rpc-url https://eth.drpc.org"
+        ],
+        "output": "[0x59e608E4842162480591032f3c8b0aE55C98d104, 0x33C04a54EccF212f177Ed5dF62E3e5306D8d4eb3, 0x32Fb1743426F37D40D0d50a30cdDA1b158e6bA24, 0x07bA6271C1eE0637c3afd47A302bD7874386fC19, 0x3b89ea8FD6978c0CAa3d69AB6bE18F3d0dAc8eaA, 0x0022b30a000f03820d7cf2E2D89cf32A08484384]"
+      },
+      "vaultSymbol": {
+        "castCommands": [
+          "cast call 0xB09F761Cb13baCa8eC087Ac476647361b6314F98 \"symbol()(string)\" --block 26443340 --rpc-url https://ethereum-rpc.publicnode.com",
+          "cast call 0xB09F761Cb13baCa8eC087Ac476647361b6314F98 \"symbol()(string)\" --block 26443340 --rpc-url https://eth.drpc.org"
+        ],
+        "output": "\"T9cbBTC\""
+      },
+      "vaultAsset": {
+        "castCommands": [
+          "cast call 0xB09F761Cb13baCa8eC087Ac476647361b6314F98 \"asset()(address)\" --block 26443340 --rpc-url https://ethereum-rpc.publicnode.com",
+          "cast call 0xB09F761Cb13baCa8eC087Ac476647361b6314F98 \"asset()(address)\" --block 26443340 --rpc-url https://eth.drpc.org"
+        ],
+        "output": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf"
+      },
+      "vaultTotalAssets": {
+        "castCommands": [
+          "cast call 0xB09F761Cb13baCa8eC087Ac476647361b6314F98 \"totalAssets()(uint256)\" --block 26443340 --rpc-url https://ethereum-rpc.publicnode.com",
+          "cast call 0xB09F761Cb13baCa8eC087Ac476647361b6314F98 \"totalAssets()(uint256)\" --block 26443340 --rpc-url https://eth.drpc.org"
+        ],
+        "output": "11782300000 [1.178e10]"
+      }
+    }
+  },
+  "docsUrl": "https://docs.lagoon.finance/vault/upgradability-and-opt-in-proxy",
+  "docsQuote": "Every upgrade is subject to a mandatory waiting period before it takes effect. This gives investors time to evaluate the incoming change and exit the vault if needed.",
+  "tvlUsd": 127989896,
+  "tvlReference": "https://api.llama.fi/protocol/lagoon",
+  "apache2CommercialGrant": true,
+  "rulesAccepted": [
+    true,
+    true,
+    true,
+    true
+  ]
+}

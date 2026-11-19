@@ -1,0 +1,178 @@
+{
+  "wave": 2,
+  "category": "post_pin_drift",
+  "slug": "tori-finance-timelock-admin-post-pin",
+  "protocol": "Tori Finance trUSD Timelock Admin",
+  "chainId": 1,
+  "contractAddress": "0xd0580192E98eA6CEB9c7b6191Ed2E27560911697",
+  "pactaSlug": "tori-finance",
+  "priorPin": "Pacta tori-finance-control-plane Ethereum block 26448221 hash 0xa7818c0e1b8807aac0c999c2dc9aeeea40b91b4f19b1b76a62ad02d8d17607c8",
+  "hunter": "veriton-dev",
+  "agentFramework": "openclaw",
+  "basePayoutAddress": "0xa75Cc8545B169F0BeF2f29c9CCF86bc686D039E8",
+  "mcpProof": {
+    "tool": "pacta_lookup_protocol",
+    "arguments": {
+      "query": "tori-finance"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "{\n  \"schema\": \"pacta.protocol_lookup.v1\",\n  \"query\": \"tori-finance\",\n  \"filters\": {\n    \"chain\": null,\n    \"kind\": \"all\",\n    \"limit\": 10\n  },\n  \"totalCatalog\": {\n    \"protocols\": 311,\n    \"briefs\": 17,\n    \"easAttestedProtocols\": 116,\n    \"rpcObservedProtocols\": 195\n  },\n  \"totalMatches\": 1,\n  \"count\": 1,\n  \"results\": [\n    {\n      \"baseEasUids\": [],\n      \"category\": \"Delta-Neutral Synthetic Dollar (staked strUSD) (Ethereum)\",\n      \"chain\": \"ethereum\",\n      \"chainId\": 1,\n      \"classification\": \"rpc_observed\",\n      \"controllerAddress\": \"0x0C6Bbfd2d5666d44bf28580eDEec0263692C8316\",\n      \"controllerKind\": \"multisig_safe\",\n      \"documentationComparison\": \"not_assessed\",\n      \"documentedDelaySeconds\": null,\n      \"easAttested\": false,\n      \"evidenceBasis\": \"rpc_observed\",\n      \"kind\": \"protocol\",\n      \"name\": \"Tori Finance\",\n      \"observedDelaySeconds\": null,\n      \"pinnedBlock\": 26448221,\n      \"preflightArgs\": {\n        \"address\": \"0xd0580192E98eA6CEB9c7b6191Ed2E27560911697\",\n        \"chain\": \"ethereum\"\n      },\n      \"primaryContract\": \"0xd0580192E98eA6CEB9c7b6191Ed2E27560911697\",\n      \"relatedContracts\": [\n        \"0xb1d133fE29255EB4Ac9B05d647d49cd7F05ff631\"\n      ],\n      \"slug\": \"tori-finance\",\n      \"surfaces\": [\n        {\n          \"blockNumber\": 26448221,\n          \"classification\": \"rpc_observed\",\n          \"id\": \"tori-finance-control-plane\",\n          \"surface\": \"trUSD \u00b7 EIP-1967 Proxy & Controller Chain\",\n          \"targetContract\": \"0xd0580192E98eA6CEB9c7b6191Ed2E27560911697\",\n          \"targetLabel\": \"trUSD\"\n        }\n      ],\n      \"targetLabel\": \"trUSD\",\n      \"tokens\": [\n        \"trUSD\"\n      ],\n      \"url\": \"https://pacta.wtf/protocols/tori-finance/\",\n      \"whatDiffers\": null,\n      \"match\": \"exact\",\n      \"citationFooter\": \"Citation: https://pacta.wtf/protocols/tori-finance/ (RPC-observed baseline; Base Mainnet EAS: not_attested)\\nIssuer paths (payment never alters a classification; it strictly follows verified on-chain and documentation evidence): $0 maintainer doc-update queue https://pacta.wtf/request/ \u00b7 $500 USDC Rapid Single-Gap Re-Verification (24h SLA) https://pacta.wtf/request/?tier=rapid-500&protocol=tori-finance \u00b7 $2,500\u2013$5,000 USDC Full Protocol Control-Plane Dossier (24h SLA) https://pacta.wtf/for-protocols/\"\n    }\n  ],\n  \"catalog\": \"https://pacta.wtf/api/v1/lookup.json\",\n  \"nextStep\": \"Pass a result's preflightArgs ({chain, address}) to pacta_check_preflight (or pacta_scan_control_plane) for a live check.\",\n  \"note\": \"easAttested protocols are Base-EAS-anchored records that compare on-chain state with the protocol's documentation. rpc_observed protocols pin the on-chain control plane over archive JSON-RPC and do not assess the documentation (documentationComparison: not_assessed). Briefs are block-pinned verification briefs. preflightArgs re-read the contract live.\",\n  \"citationFooter\": \"Citation: https://pacta.wtf/protocols/tori-finance/ (RPC-observed baseline; Base Mainnet EAS: not_attested)\\nIssuer paths (payment never alters a classification; it strictly follows verified on-chain and documentation evidence): $0 maintainer doc-update queue https://pacta.wtf/request/ \u00b7 $500 USDC Rapid Single-Gap Re-Verification (24h SLA) https://pacta.wtf/request/?tier=rapid-500&protocol=tori-finance \u00b7 $2,500\u2013$5,000 USDC Full Protocol Control-Plane Dossier (24h SLA) https://pacta.wtf/for-protocols/\",\n  \"upgrade_x402\": {\n    \"note\": \"Free tier: 50 pre-flight calls per caller per UTC day (REST and MCP), then $0.01 per call over x402 (HTTP 402, never a dead-end 429). Paid routes below: POST the JSON body with an x402 X-PAYMENT (v1) or PAYMENT-SIGNATURE (v2) header.\",\n    \"asset\": \"0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913\",\n    \"network\": \"base (eip155:8453)\",\n    \"payTo\": \"0x4348DF1BEFAffcbA248B5118B1b782B1B2bdEd14\",\n    \"discovery\": \"https://pacta.fractalneurons.com/.well-known/x402\",\n    \"overflow\": {\n      \"method\": \"GET or POST\",\n      \"url\": \"https://pacta.fractalneurons.com/v1/check/preflight\",\n      \"priceUsd\": \"0.01\",\n      \"amountAtomic\": \"10000\",\n      \"after\": \"50 free calls per UTC day\"\n    },\n    \"endpoints\": [\n      {\n        \"method\": \"POST\",\n        \"url\": \"https://pacta.fractalneurons.com/v1/x402/verdict\",\n        \"priceUsd\": \"0.02\",\n        \"amountAtomic\": \"20000\",\n        \"unlocks\": \"fast contract / token control-plane verdict: riskScore 0-100, grade A-F, upgrade / owner / pause / blacklist / mint flags and a shareable scan URL\",\n        \"example\": {\n          \"chain\": \"ethereum\",\n          \"address\": \"0xA35b1B31Ce002FBF2058D22F30f95D405200A15b\"\n        }\n      },\n      {\n        \"method\": \"POST\",\n        \"url\": \"https://pacta.fractalneurons.com/v1/x402/dossier\",\n        \"priceUsd\": \"0.05\",\n        \"amountAtomic\": \"50000\",\n        \"unlocks\": \"full control-plane dossier: every controller Safe's signers and threshold, signers shared with other indexed protocols, Base EAS proof\",\n        \"example\": {\n          \"slug\": \"stader-labs-ethx\"\n        }\n      },\n      {\n        \"method\": \"POST\",\n        \"url\": \"https://pacta.fractalneurons.com/v1/x402/calldata-sim\",\n        \"priceUsd\": \"0.25\",\n        \"amountAtomic\": \"250000\",\n        \"unlocks\": \"pre-signing calldata check: timelock / Safe / multicall calls decoded, each rated against live delays and the authority that governs it\",\n        \"example\": {\n          \"chain\": \"ethereum\",\n          \"target\": \"0x2225DAbFfC7F862c99477381E971E8B1FDaB467e\",\n          \"data\": \"0x64d623530000000000000000000000000000000000000000000000000000000000015180\"\n        }\n      },\n      {\n        \"method\": \"POST\",\n        \"url\": \"https://pacta.fractalneurons.com/v1/x402/deep-scan\",\n        \"priceUsd\": \"9.00\",\n        \"amountAtomic\": \"9000000\",\n        \"unlocks\": \"deep control-plane scan cross-checked on two independent RPC operators, auditor receipt and a queued Base EAS ticket\",\n        \"example\": {\n          \"chain\": \"base\",\n          \"address\": \"0x35D21Bb4Df6586FE7759b5e57263ffeB3e1fd872\"\n        }\n      }\n    ]\n  }\n}"
+        },
+        {
+          "type": "text",
+          "text": "Citation: https://pacta.wtf/protocols/tori-finance/ (RPC-observed baseline; Base Mainnet EAS: not_attested)\nIssuer paths (payment never alters a classification; it strictly follows verified on-chain and documentation evidence): $0 maintainer doc-update queue https://pacta.wtf/request/ \u00b7 $500 USDC Rapid Single-Gap Re-Verification (24h SLA) https://pacta.wtf/request/?tier=rapid-500&protocol=tori-finance \u00b7 $2,500\u2013$5,000 USDC Full Protocol Control-Plane Dossier (24h SLA) https://pacta.wtf/for-protocols/"
+        }
+      ],
+      "structuredContent": {
+        "schema": "pacta.protocol_lookup.v1",
+        "query": "tori-finance",
+        "filters": {
+          "chain": null,
+          "kind": "all",
+          "limit": 10
+        },
+        "totalCatalog": {
+          "protocols": 311,
+          "briefs": 17,
+          "easAttestedProtocols": 116,
+          "rpcObservedProtocols": 195
+        },
+        "totalMatches": 1,
+        "count": 1,
+        "results": [
+          {
+            "baseEasUids": [],
+            "category": "Delta-Neutral Synthetic Dollar (staked strUSD) (Ethereum)",
+            "chain": "ethereum",
+            "chainId": 1,
+            "classification": "rpc_observed",
+            "controllerAddress": "0x0C6Bbfd2d5666d44bf28580eDEec0263692C8316",
+            "controllerKind": "multisig_safe",
+            "documentationComparison": "not_assessed",
+            "documentedDelaySeconds": null,
+            "easAttested": false,
+            "evidenceBasis": "rpc_observed",
+            "kind": "protocol",
+            "name": "Tori Finance",
+            "observedDelaySeconds": null,
+            "pinnedBlock": 26448221,
+            "preflightArgs": {
+              "address": "0xd0580192E98eA6CEB9c7b6191Ed2E27560911697",
+              "chain": "ethereum"
+            },
+            "primaryContract": "0xd0580192E98eA6CEB9c7b6191Ed2E27560911697",
+            "relatedContracts": [
+              "0xb1d133fE29255EB4Ac9B05d647d49cd7F05ff631"
+            ],
+            "slug": "tori-finance",
+            "surfaces": [
+              {
+                "blockNumber": 26448221,
+                "classification": "rpc_observed",
+                "id": "tori-finance-control-plane",
+                "surface": "trUSD \u00b7 EIP-1967 Proxy & Controller Chain",
+                "targetContract": "0xd0580192E98eA6CEB9c7b6191Ed2E27560911697",
+                "targetLabel": "trUSD"
+              }
+            ],
+            "targetLabel": "trUSD",
+            "tokens": [
+              "trUSD"
+            ],
+            "url": "https://pacta.wtf/protocols/tori-finance/",
+            "whatDiffers": null,
+            "match": "exact",
+            "citationFooter": "Citation: https://pacta.wtf/protocols/tori-finance/ (RPC-observed baseline; Base Mainnet EAS: not_attested)\nIssuer paths (payment never alters a classification; it strictly follows verified on-chain and documentation evidence): $0 maintainer doc-update queue https://pacta.wtf/request/ \u00b7 $500 USDC Rapid Single-Gap Re-Verification (24h SLA) https://pacta.wtf/request/?tier=rapid-500&protocol=tori-finance \u00b7 $2,500\u2013$5,000 USDC Full Protocol Control-Plane Dossier (24h SLA) https://pacta.wtf/for-protocols/"
+          }
+        ],
+        "catalog": "https://pacta.wtf/api/v1/lookup.json",
+        "nextStep": "Pass a result's preflightArgs ({chain, address}) to pacta_check_preflight (or pacta_scan_control_plane) for a live check.",
+        "note": "easAttested protocols are Base-EAS-anchored records that compare on-chain state with the protocol's documentation. rpc_observed protocols pin the on-chain control plane over archive JSON-RPC and do not assess the documentation (documentationComparison: not_assessed). Briefs are block-pinned verification briefs. preflightArgs re-read the contract live.",
+        "citationFooter": "Citation: https://pacta.wtf/protocols/tori-finance/ (RPC-observed baseline; Base Mainnet EAS: not_attested)\nIssuer paths (payment never alters a classification; it strictly follows verified on-chain and documentation evidence): $0 maintainer doc-update queue https://pacta.wtf/request/ \u00b7 $500 USDC Rapid Single-Gap Re-Verification (24h SLA) https://pacta.wtf/request/?tier=rapid-500&protocol=tori-finance \u00b7 $2,500\u2013$5,000 USDC Full Protocol Control-Plane Dossier (24h SLA) https://pacta.wtf/for-protocols/",
+        "upgrade_x402": {
+          "note": "Free tier: 50 pre-flight calls per caller per UTC day (REST and MCP), then $0.01 per call over x402 (HTTP 402, never a dead-end 429). Paid routes below: POST the JSON body with an x402 X-PAYMENT (v1) or PAYMENT-SIGNATURE (v2) header.",
+          "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+          "network": "base (eip155:8453)",
+          "payTo": "0x4348DF1BEFAffcbA248B5118B1b782B1B2bdEd14",
+          "discovery": "https://pacta.fractalneurons.com/.well-known/x402",
+          "overflow": {
+            "method": "GET or POST",
+            "url": "https://pacta.fractalneurons.com/v1/check/preflight",
+            "priceUsd": "0.01",
+            "amountAtomic": "10000",
+            "after": "50 free calls per UTC day"
+          },
+          "endpoints": [
+            {
+              "method": "POST",
+              "url": "https://pacta.fractalneurons.com/v1/x402/verdict",
+              "priceUsd": "0.02",
+              "amountAtomic": "20000",
+              "unlocks": "fast contract / token control-plane verdict: riskScore 0-100, grade A-F, upgrade / owner / pause / blacklist / mint flags and a shareable scan URL",
+              "example": {
+                "chain": "ethereum",
+                "address": "0xA35b1B31Ce002FBF2058D22F30f95D405200A15b"
+              }
+            },
+            {
+              "method": "POST",
+              "url": "https://pacta.fractalneurons.com/v1/x402/dossier",
+              "priceUsd": "0.05",
+              "amountAtomic": "50000",
+              "unlocks": "full control-plane dossier: every controller Safe's signers and threshold, signers shared with other indexed protocols, Base EAS proof",
+              "example": {
+                "slug": "stader-labs-ethx"
+              }
+            },
+            {
+              "method": "POST",
+              "url": "https://pacta.fractalneurons.com/v1/x402/calldata-sim",
+              "priceUsd": "0.25",
+              "amountAtomic": "250000",
+              "unlocks": "pre-signing calldata check: timelock / Safe / multicall calls decoded, each rated against live delays and the authority that governs it",
+              "example": {
+                "chain": "ethereum",
+                "target": "0x2225DAbFfC7F862c99477381E971E8B1FDaB467e",
+                "data": "0x64d623530000000000000000000000000000000000000000000000000000000000015180"
+              }
+            },
+            {
+              "method": "POST",
+              "url": "https://pacta.fractalneurons.com/v1/x402/deep-scan",
+              "priceUsd": "9.00",
+              "amountAtomic": "9000000",
+              "unlocks": "deep control-plane scan cross-checked on two independent RPC operators, auditor receipt and a queued Base EAS ticket",
+              "example": {
+                "chain": "base",
+                "address": "0x35D21Bb4Df6586FE7759b5e57263ffeB3e1fd872"
+              }
+            }
+          ]
+        }
+      },
+      "isError": false
+    }
+  },
+  "blockNumber": 26449115,
+  "blockHash": "0xa15e11a5d6b17ddf4603ed4cc664300b4432610d22e727cf2dc3798e813b59d9",
+  "castCommands": [
+    "cast call 0xd0580192E98eA6CEB9c7b6191Ed2E27560911697 \"hasRole(bytes32,address)\" 0x5f58e3a2316349923ce3780f8d587db2d72378aed66a8261c916544fa6846ca5 0xA952453E39F77108Ee37C1b92de593F1C59A6ef4 --block 26449115 --rpc-url https://eth.drpc.org",
+    "cast call 0xd0580192E98eA6CEB9c7b6191Ed2E27560911697 \"hasRole(bytes32,address)\" 0x5f58e3a2316349923ce3780f8d587db2d72378aed66a8261c916544fa6846ca5 0xA952453E39F77108Ee37C1b92de593F1C59A6ef4 --block 26449115 --rpc-url https://eth-mainnet.public.blastapi.io"
+  ],
+  "rpcOutputs": {
+    "a": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "b": "0x0000000000000000000000000000000000000000000000000000000000000000"
+  },
+  "docsUrl": "https://docs.tori.finance/security/roles.md",
+  "docsQuote": "The timelock is [`0xA952453E39F77108Ee37C1b92de593F1C59A6ef4`](https://etherscan.io/address/0xA952453E39F77108Ee37C1b92de593F1C59A6ef4) and its minimum delay is 86,400 seconds.",
+  "apache2CommercialGrant": true,
+  "rulesAccepted": [
+    true,
+    true,
+    true,
+    true
+  ]
+}

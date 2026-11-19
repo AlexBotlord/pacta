@@ -1921,7 +1921,7 @@ SLUG_OVERRIDES = {"Frax Ether (frxETH / sfrxETH)": "frax-ether-sfrxeth", "Re Pro
                   # Sprint 24 conversion keeps its published RPC-pinned slug
                   "Centrifuge V3 Root (Base)": "centrifuge-liquidity-pools-base",
                   # Sprint 25 conversion keeps its published RPC-pinned slug
-                  "Safe Smart Account (v1.4.1 Singleton)": "safe-singleton-core"}
+                  "Safe Smart Account (v1.4.1 Singleton)": "safe-singleton-core", "Origin Protocol (SuperOETHb Base)": "origin-superoeth-base"}
 
 
 def protocol_slug(name):

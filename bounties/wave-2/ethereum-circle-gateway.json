@@ -1,0 +1,218 @@
+{
+  "wave": 2,
+  "category": "protocol_mismatch",
+  "slug": "circle-gateway",
+  "protocol": "Circle Gateway (Ethereum GatewayWallet)",
+  "chainId": 1,
+  "contractAddress": "0x77777777Dcc4d5A8B6E418Fd04D8997ef11000eE",
+  "hunter": "VB-Blue",
+  "agentFramework": "antigravity",
+  "basePayoutAddress": "0xe0a3AAe6e7d042f42e82830f4eEbF426cc1270a2",
+  "mcpProof": {
+    "tool": "pacta_check_preflight",
+    "arguments": {
+      "chain": "ethereum",
+      "address": "0x77777777Dcc4d5A8B6E418Fd04D8997ef11000eE",
+      "block": "26449019"
+    },
+    "result": {
+      "schema": "pacta.preflight_check.v1",
+      "chain": "ethereum",
+      "chainId": 1,
+      "address": "0x77777777Dcc4d5A8B6E418Fd04D8997ef11000eE",
+      "pinnedBlock": 26449019,
+      "pinnedBlockHash": "0x0156139f91f2d3191200929ba10ff44e9b8846b42a23594ff6ff9b15b602762c",
+      "blockTimestamp": 1795090007,
+      "verdict": "INSTANT_EOA_ADMIN_RISK",
+      "riskScore": 95,
+      "isContract": true,
+      "isProxy": true,
+      "proxyType": "eip1967",
+      "implementation": "0xF7a6D9D7Df917c072ac8987A820c58aA27A0e798",
+      "beacon": null,
+      "hasAdminSlot": false,
+      "canUpgradeZeroDelay": true,
+      "capabilities": {
+        "pause": true,
+        "blacklist": false,
+        "upgrade": true
+      },
+      "paused": false,
+      "controller": {
+        "address": "0x2A6A86466F181721ec8ff946967b56f1AA4758c5",
+        "kind": "eoa",
+        "safeThreshold": null,
+        "timelockDelaySec": null,
+        "source": "owner()"
+      },
+      "roleAdminMembers": null,
+      "codeBytes": 163,
+      "method": "Batched JSON-RPC reads pinned to the block hash (EIP-1898); EIP-1967 / EIP-1822 / beacon proxies; capabilities from PUSH4 selectors in proxy + implementation bytecode (heuristic).",
+      "summary": "Controlled by a single externally owned account: one key can change this contract instantly. Capabilities seen in bytecode: pause, upgrade.",
+      "source": "live_rpc",
+      "assessment": {
+        "coverage": "unindexed_bytecode_heuristic",
+        "confidence": "medium",
+        "method": "Live bytecode + storage heuristic at the pinned block only: this contract is not in Pacta's indexed catalog (no documentation comparison).",
+        "limits": [
+          "riskScore (0-100) is a heuristic of the controller type and of pause / blacklist / upgrade capabilities read at one block; it is not an audit.",
+          "The live check reads EIP-1967 slots, owner(), Safe getThreshold() / getOwners() and TimelockController getMinDelay(); custom role systems, bridge or L2 admin paths and off-chain operations are not resolved.",
+          "Documentation is compared only for indexed protocols (catalogMatch), at their pinned block."
+        ]
+      },
+      "coverage_gap_hint": "Target is not yet indexed or fully classified. Ask the user if they want you to queue coverage or request this capability via pacta_submit_request (free community queue, or 24h priority clearance for issuers).",
+      "meter": {
+        "limit": 50,
+        "remaining": 43,
+        "reset": 1795132800
+      },
+      "upgrade_x402": {
+        "note": "Free tier: 50 pre-flight calls per caller per UTC day (REST and MCP), then $0.01 per call over x402 (HTTP 402, never a dead-end 429). Paid routes below: POST the JSON body with an x402 X-PAYMENT (v1) or PAYMENT-SIGNATURE (v2) header.",
+        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "network": "base (eip155:8453)",
+        "payTo": "0x4348DF1BEFAffcbA248B5118B1b782B1B2bdEd14",
+        "discovery": "https://pacta.fractalneurons.com/.well-known/x402",
+        "overflow": {
+          "method": "GET or POST",
+          "url": "https://pacta.fractalneurons.com/v1/check/preflight",
+          "priceUsd": "0.01",
+          "amountAtomic": "10000",
+          "after": "50 free calls per UTC day"
+        },
+        "endpoints": [
+          {
+            "method": "POST",
+            "url": "https://pacta.fractalneurons.com/v1/x402/verdict",
+            "priceUsd": "0.02",
+            "amountAtomic": "20000",
+            "unlocks": "fast contract / token control-plane verdict: riskScore 0-100, grade A-F, upgrade / owner / pause / blacklist / mint flags and a shareable scan URL",
+            "example": {
+              "chain": "ethereum",
+              "address": "0xA35b1B31Ce002FBF2058D22F30f95D405200A15b"
+            }
+          },
+          {
+            "method": "POST",
+            "url": "https://pacta.fractalneurons.com/v1/x402/dossier",
+            "priceUsd": "0.05",
+            "amountAtomic": "50000",
+            "unlocks": "full control-plane dossier: every controller Safe's signers and threshold, signers shared with other indexed protocols, Base EAS proof",
+            "example": {
+              "slug": "stader-labs-ethx"
+            }
+          },
+          {
+            "method": "POST",
+            "url": "https://pacta.fractalneurons.com/v1/x402/calldata-sim",
+            "priceUsd": "0.25",
+            "amountAtomic": "250000",
+            "unlocks": "pre-signing calldata check: timelock / Safe / multicall calls decoded, each rated against live delays and the authority that governs it",
+            "example": {
+              "chain": "ethereum",
+              "target": "0x2225DAbFfC7F862c99477381E971E8B1FDaB467e",
+              "data": "0x64d623530000000000000000000000000000000000000000000000000000000000015180"
+            }
+          },
+          {
+            "method": "POST",
+            "url": "https://pacta.fractalneurons.com/v1/x402/deep-scan",
+            "priceUsd": "9.00",
+            "amountAtomic": "9000000",
+            "unlocks": "deep control-plane scan cross-checked on two independent RPC operators, auditor receipt and a queued Base EAS ticket",
+            "example": {
+              "chain": "base",
+              "address": "0x35D21Bb4Df6586FE7759b5e57263ffeB3e1fd872"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "blockNumber": 26449019,
+  "blockHash": "0x0156139f91f2d3191200929ba10ff44e9b8846b42a23594ff6ff9b15b602762c",
+  "castCommands": [
+    "cast call 0x77777777Dcc4d5A8B6E418Fd04D8997ef11000eE \"owner()(address)\" --block 26449019 --rpc-url https://gateway.tenderly.co/public/mainnet",
+    "cast call 0x77777777Dcc4d5A8B6E418Fd04D8997ef11000eE \"owner()(address)\" --block 26449019 --rpc-url https://0xrpc.io/eth"
+  ],
+  "rpcOutputs": {
+    "a": "0x2A6A86466F181721ec8ff946967b56f1AA4758c5",
+    "b": "0x2A6A86466F181721ec8ff946967b56f1AA4758c5",
+    "pinnedDualRpcChainProof": {
+      "blockNumber": 26449019,
+      "blockHash": "0x0156139f91f2d3191200929ba10ff44e9b8846b42a23594ff6ff9b15b602762c",
+      "rpcEndpoints": [
+        "https://gateway.tenderly.co/public/mainnet",
+        "https://0xrpc.io/eth"
+      ],
+      "officialDeploymentBinding": "https://developers.circle.com/gateway/references/contract-addresses lists Ethereum GatewayWallet proxy 0x77777777Dcc4d5A8B6E418Fd04D8997ef11000eE (verified implementation GatewayWallet 0xF7a6D9D7Df917c072ac8987A820c58aA27A0e798 in https://github.com/circlefin/evm-gateway-contracts). GatewayCommon._authorizeUpgrade is restricted onlyOwner, Pausing.pause is onlyPauser, Withdrawals.initiateWithdrawal and Withdrawals.withdraw require whenNotPaused, WithdrawalDelay.updateWithdrawalDelay is onlyOwner (updating the delay for future withdrawal initiations, with no upper bound), and GatewayWallet.renounceOwnership() permanently reverts with RenounceOwnershipDisabled().",
+      "note": "Mismatch summary: Circle Gateway official pages (https://www.circle.com/gateway and https://developers.circle.com/gateway/concepts/technical-guide) state that \"Users have full control of their deposited assets. Funds can only move with their signature, and withdrawals are trustless.\" and \"Gateway is non-custodial; CTS does not hold, control, manage, or transfer user assets\", promising a guaranteed 7-day trustless withdrawal option without relying on Circle. On-chain at finalized Ethereum block #26449019, GatewayWallet (0x77777777Dcc4d5A8B6E418Fd04D8997ef11000eE, holding $56,767,596.52 USDC) is a UUPS ERC-1967 proxy (impl 0xF7a6D9D7Df917c072ac8987A820c58aA27A0e798) whose owner() is a single EOA (0x2A6A86466F181721ec8ff946967b56f1AA4758c5, codeBytes=0, 0s timelock), pauser() is a separate EOA (0x9812d5F0a0832d9A0a78a1ba728fACd87bC35b19, codeBytes=0, holding Pausing.pause onlyPauser authority), and denylister() is also an EOA (0x7359fD9aA258992eb4B6d9572c6f6c74Cf719a94, codeBytes=0). The owner can authorize UUPS upgrades without an on-chain timelock and change the delay used for future withdrawal initiations. The separate pauser EOA can pause both initiateWithdrawal() and withdraw(); the denylister has denylist authority, not pause authority. These owner/pauser qualifications are not explained in the captured Gateway landing page and technical guide. The current 50,400-block delay does not guarantee an unpausable exit.",
+      "implSlot": {
+        "castCommands": [
+          "cast storage 0x77777777Dcc4d5A8B6E418Fd04D8997ef11000eE 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc --block 26449019 --rpc-url https://gateway.tenderly.co/public/mainnet",
+          "cast storage 0x77777777Dcc4d5A8B6E418Fd04D8997ef11000eE 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc --block 26449019 --rpc-url https://0xrpc.io/eth"
+        ],
+        "output": "0x000000000000000000000000f7a6d9d7df917c072ac8987a820c58aa27a0e798"
+      },
+      "ownerCode": {
+        "castCommands": [
+          "cast code 0x2A6A86466F181721ec8ff946967b56f1AA4758c5 --block 26449019 --rpc-url https://gateway.tenderly.co/public/mainnet",
+          "cast code 0x2A6A86466F181721ec8ff946967b56f1AA4758c5 --block 26449019 --rpc-url https://0xrpc.io/eth"
+        ],
+        "output": "0x"
+      },
+      "pauser": {
+        "castCommands": [
+          "cast call 0x77777777Dcc4d5A8B6E418Fd04D8997ef11000eE \"pauser()(address)\" --block 26449019 --rpc-url https://gateway.tenderly.co/public/mainnet",
+          "cast call 0x77777777Dcc4d5A8B6E418Fd04D8997ef11000eE \"pauser()(address)\" --block 26449019 --rpc-url https://0xrpc.io/eth"
+        ],
+        "output": "0x9812d5F0a0832d9A0a78a1ba728fACd87bC35b19"
+      },
+      "pauserCode": {
+        "castCommands": [
+          "cast code 0x9812d5F0a0832d9A0a78a1ba728fACd87bC35b19 --block 26449019 --rpc-url https://gateway.tenderly.co/public/mainnet",
+          "cast code 0x9812d5F0a0832d9A0a78a1ba728fACd87bC35b19 --block 26449019 --rpc-url https://0xrpc.io/eth"
+        ],
+        "output": "0x"
+      },
+      "denylister": {
+        "castCommands": [
+          "cast call 0x77777777Dcc4d5A8B6E418Fd04D8997ef11000eE \"denylister()(address)\" --block 26449019 --rpc-url https://gateway.tenderly.co/public/mainnet",
+          "cast call 0x77777777Dcc4d5A8B6E418Fd04D8997ef11000eE \"denylister()(address)\" --block 26449019 --rpc-url https://0xrpc.io/eth"
+        ],
+        "output": "0x7359fD9aA258992eb4B6d9572c6f6c74Cf719a94"
+      },
+      "denylisterCode": {
+        "castCommands": [
+          "cast code 0x7359fD9aA258992eb4B6d9572c6f6c74Cf719a94 --block 26449019 --rpc-url https://gateway.tenderly.co/public/mainnet",
+          "cast code 0x7359fD9aA258992eb4B6d9572c6f6c74Cf719a94 --block 26449019 --rpc-url https://0xrpc.io/eth"
+        ],
+        "output": "0x"
+      },
+      "withdrawalDelayBlocks": {
+        "castCommands": [
+          "cast call 0x77777777Dcc4d5A8B6E418Fd04D8997ef11000eE \"withdrawalDelay()(uint256)\" --block 26449019 --rpc-url https://gateway.tenderly.co/public/mainnet",
+          "cast call 0x77777777Dcc4d5A8B6E418Fd04D8997ef11000eE \"withdrawalDelay()(uint256)\" --block 26449019 --rpc-url https://0xrpc.io/eth"
+        ],
+        "output": "50400 [5.04e4]"
+      },
+      "usdcBalance": {
+        "castCommands": [
+          "cast call 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 \"balanceOf(address)(uint256)\" 0x77777777Dcc4d5A8B6E418Fd04D8997ef11000eE --block 26449019 --rpc-url https://gateway.tenderly.co/public/mainnet",
+          "cast call 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48 \"balanceOf(address)(uint256)\" 0x77777777Dcc4d5A8B6E418Fd04D8997ef11000eE --block 26449019 --rpc-url https://0xrpc.io/eth"
+        ],
+        "output": "56767596515600 [5.676e13]"
+      }
+    }
+  },
+  "docsUrl": "https://www.circle.com/gateway",
+  "docsQuote": "Users have full control of their deposited assets. Funds can only move with their signature, and withdrawals are trustless.",
+  "tvlUsd": 56765397,
+  "tvlReference": "https://api.llama.fi/protocol/circle-gateway",
+  "apache2CommercialGrant": true,
+  "rulesAccepted": [
+    true,
+    true,
+    true,
+    true
+  ]
+}

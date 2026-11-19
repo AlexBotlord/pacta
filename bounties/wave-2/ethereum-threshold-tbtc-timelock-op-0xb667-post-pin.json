@@ -1,0 +1,172 @@
+{
+  "wave": 2,
+  "category": "post_pin_drift",
+  "slug": "threshold-tbtc-timelock-op-0xb667-post-pin",
+  "protocol": "Threshold Network (tBTC) \u2014 TimelockController Operation 0xb667 Execution",
+  "chainId": 1,
+  "contractAddress": "0x92f2d8b72a7F6a551Be60b9aa4194248E9B4913D",
+  "pactaSlug": "threshold-network-tbtc",
+  "priorPin": "Pacta threshold-tbtc-timelock-1d-walletregistry-op-0xb667; prior block 26407707; https://pacta.wtf/api/v1/index.json",
+  "hunter": "random-solver",
+  "basePayoutAddress": "0x7EDAC178137184cB0a3e291CFAefAcFe138137Bb",
+  "mcpProof": {
+    "tool": "pacta_lookup_protocol",
+    "arguments": {
+      "query": "0x92f2d8b72a7F6a551Be60b9aa4194248E9B4913D"
+    },
+    "result": {
+      "schema": "pacta.protocol_lookup.v1",
+      "query": "0x92f2d8b72a7F6a551Be60b9aa4194248E9B4913D",
+      "filters": {
+        "chain": null,
+        "kind": "all",
+        "limit": 10
+      },
+      "totalCatalog": {
+        "protocols": 309,
+        "briefs": 14,
+        "easAttestedProtocols": 113,
+        "rpcObservedProtocols": 196
+      },
+      "totalMatches": 1,
+      "count": 1,
+      "results": [
+        {
+          "baseEasUids": [
+            "0x967a4935786194575835d5a46e3e39b1d553225deb6a96c7ff4acf52a34dff22"
+          ],
+          "category": "Decentralized Bitcoin Bridge",
+          "chain": "ethereum",
+          "chainId": 1,
+          "classification": "aligned_baseline",
+          "controllerAddress": "0x92f2d8b72a7F6a551Be60b9aa4194248E9B4913D",
+          "controllerKind": "timelock",
+          "documentationComparison": "compared",
+          "documentedDelaySeconds": null,
+          "easAttested": true,
+          "evidenceBasis": "eas_attested",
+          "kind": "protocol",
+          "name": "Threshold Network (tBTC)",
+          "observedDelaySeconds": 86400,
+          "pinnedBlock": 26407707,
+          "preflightArgs": {
+            "address": "0x92f2d8b72a7F6a551Be60b9aa4194248E9B4913D",
+            "chain": "ethereum"
+          },
+          "primaryContract": "0x92f2d8b72a7F6a551Be60b9aa4194248E9B4913D",
+          "relatedContracts": [
+            "0x7Affa05f726D293eB1193807A91617318292008e",
+            "0x46d52E41C2F300BC82217Ce22b920c34995204eb",
+            "0x14fAD0C11C83AC736e5929D5661bbA7E6BB9c0D6"
+          ],
+          "slug": "threshold-network-tbtc",
+          "sprints": [
+            15
+          ],
+          "surfaces": [
+            {
+              "blockNumber": 26407707,
+              "classification": "aligned_baseline",
+              "id": "threshold-tbtc-timelock-1d-walletregistry-op-0xb667",
+              "surface": "tBTC TimelockController 1d delay \u2014 public WalletRegistry upgradeAndCall schedule",
+              "targetContract": "0x92f2d8b72a7F6a551Be60b9aa4194248E9B4913D",
+              "targetLabel": "Threshold Council TimelockController"
+            }
+          ],
+          "targetLabel": "Threshold Council TimelockController",
+          "tokens": [
+            "tBTC",
+            "T"
+          ],
+          "url": "https://pacta.wtf/protocols/threshold-network-tbtc/",
+          "whatDiffers": null,
+          "match": "exact",
+          "citationFooter": "Citation: https://pacta.wtf/protocols/threshold-network-tbtc/ (Base Mainnet EAS: 0x967a4935786194575835d5a46e3e39b1d553225deb6a96c7ff4acf52a34dff22)\nIssuer paths (payment never alters a classification; it strictly follows verified on-chain and documentation evidence): $0 maintainer doc-update queue https://pacta.wtf/request/ \u00b7 $500 USDC Rapid Single-Gap Re-Verification (24h SLA) https://pacta.wtf/request/?tier=rapid-500&protocol=threshold-network-tbtc \u00b7 $2,500\u2013$5,000 USDC Full Protocol Control-Plane Dossier (24h SLA) https://pacta.wtf/for-protocols/"
+        }
+      ],
+      "catalog": "https://pacta.wtf/api/v1/lookup.json",
+      "nextStep": "Pass a result's preflightArgs ({chain, address}) to pacta_check_preflight (or pacta_scan_control_plane) for a live check.",
+      "note": "easAttested protocols are Base-EAS-anchored records that compare on-chain state with the protocol's documentation. rpc_observed protocols pin the on-chain control plane over archive JSON-RPC and do not assess the documentation (documentationComparison: not_assessed). Briefs are block-pinned verification briefs. preflightArgs re-read the contract live.",
+      "citationFooter": "Citation: https://pacta.wtf/protocols/threshold-network-tbtc/ (Base Mainnet EAS: 0x967a4935786194575835d5a46e3e39b1d553225deb6a96c7ff4acf52a34dff22)\nIssuer paths (payment never alters a classification; it strictly follows verified on-chain and documentation evidence): $0 maintainer doc-update queue https://pacta.wtf/request/ \u00b7 $500 USDC Rapid Single-Gap Re-Verification (24h SLA) https://pacta.wtf/request/?tier=rapid-500&protocol=threshold-network-tbtc \u00b7 $2,500\u2013$5,000 USDC Full Protocol Control-Plane Dossier (24h SLA) https://pacta.wtf/for-protocols/",
+      "upgrade_x402": {
+        "note": "Free tier: 50 pre-flight calls per caller per UTC day (REST and MCP), then $0.01 per call over x402 (HTTP 402, never a dead-end 429). Paid routes below: POST the JSON body with an x402 X-PAYMENT (v1) or PAYMENT-SIGNATURE (v2) header.",
+        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "network": "base (eip155:8453)",
+        "payTo": "0x4348DF1BEFAffcbA248B5118B1b782B1B2bdEd14",
+        "discovery": "https://pacta.fractalneurons.com/.well-known/x402",
+        "overflow": {
+          "method": "GET or POST",
+          "url": "https://pacta.fractalneurons.com/v1/check/preflight",
+          "priceUsd": "0.01",
+          "amountAtomic": "10000",
+          "after": "50 free calls per UTC day"
+        },
+        "endpoints": [
+          {
+            "method": "POST",
+            "url": "https://pacta.fractalneurons.com/v1/x402/verdict",
+            "priceUsd": "0.02",
+            "amountAtomic": "20000",
+            "unlocks": "fast contract / token control-plane verdict: riskScore 0-100, grade A-F, upgrade / owner / pause / blacklist / mint flags and a shareable scan URL",
+            "example": {
+              "chain": "ethereum",
+              "address": "0xA35b1B31Ce002FBF2058D22F30f95D405200A15b"
+            }
+          },
+          {
+            "method": "POST",
+            "url": "https://pacta.fractalneurons.com/v1/x402/dossier",
+            "priceUsd": "0.05",
+            "amountAtomic": "50000",
+            "unlocks": "full control-plane dossier: every controller Safe's signers and threshold, signers shared with other indexed protocols, Base EAS proof",
+            "example": {
+              "slug": "stader-labs-ethx"
+            }
+          },
+          {
+            "method": "POST",
+            "url": "https://pacta.fractalneurons.com/v1/x402/calldata-sim",
+            "priceUsd": "0.25",
+            "amountAtomic": "250000",
+            "unlocks": "pre-signing calldata check: timelock / Safe / multicall calls decoded, each rated against live delays and the authority that governs it",
+            "example": {
+              "chain": "ethereum",
+              "target": "0x2225DAbFfC7F862c99477381E971E8B1FDaB467e",
+              "data": "0x64d623530000000000000000000000000000000000000000000000000000000000015180"
+            }
+          },
+          {
+            "method": "POST",
+            "url": "https://pacta.fractalneurons.com/v1/x402/deep-scan",
+            "priceUsd": "9.00",
+            "amountAtomic": "9000000",
+            "unlocks": "deep control-plane scan cross-checked on two independent RPC operators, auditor receipt and a queued Base EAS ticket",
+            "example": {
+              "chain": "base",
+              "address": "0x35D21Bb4Df6586FE7759b5e57263ffeB3e1fd872"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "blockNumber": 26448795,
+  "blockHash": "0x9b426cf61e4126f13bb86cb7d2c3616dbd7b2baf813dfc4d3eb6b318ea8ebb72",
+  "castCommands": [
+    "cast call 0x92f2d8b72a7F6a551Be60b9aa4194248E9B4913D \"isOperationDone(bytes32)\" 0xb6671bbbedf818d7232a4006d4a85b21e3f3055d17244188f244c1da8263e0c7 --block 26448795 --rpc-url https://mainnet.gateway.tenderly.co",
+    "cast call 0x92f2d8b72a7F6a551Be60b9aa4194248E9B4913D \"isOperationDone(bytes32)\" 0xb6671bbbedf818d7232a4006d4a85b21e3f3055d17244188f244c1da8263e0c7 --block 26448795 --rpc-url https://ethereum-rpc.publicnode.com"
+  ],
+  "rpcOutputs": {
+    "a": "0x0000000000000000000000000000000000000000000000000000000000000001",
+    "b": "0x0000000000000000000000000000000000000000000000000000000000000001"
+  },
+  "docsUrl": "https://docs.threshold.network/contract-addresses/tbtc",
+  "docsQuote": "Timelock Controller 0x92f2d8b72a7F6a551Be60b9aa4194248E9B4913D",
+  "apache2CommercialGrant": true,
+  "rulesAccepted": [
+    true,
+    true,
+    true,
+    true
+  ]
+}

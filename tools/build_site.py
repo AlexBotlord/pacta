@@ -3089,13 +3089,17 @@ def wave1_md(body):
     return h
 
 
-def bounties_page(idx, radar, bounties=None, claims=None, lb=None):
-    """docs/bounties/index.html: Wave 2 (100 x $1 USDC rolling pool, live counter) on top, then the Wave 1 Genesis Archive: the
-    $100 USDC capped Chain-Feed Mismatch Challenge (4 x $25 USDC) with its settlement ledger and the issue text verbatim."""
+def bounties_page(idx, radar, bounties=None, claims=None, lb=None, claims3=None):
+    """docs/bounties/index.html: Wave 3 (2 x $20 USDC 3-Year Protocol Trajectory & Integrity Dossiers, active open pool) on top,
+    then the Completed & Retired Bounty Archives: Wave 2 ($1.00 micro-bounties, completed & retired) and Wave 1 Genesis (4 x $25 USDC, 4/4 completed)."""
     d = load_bounties() if bounties is None else bounties
     claims = load_wave2_claims() if claims is None else claims
+    claims3 = load_wave3_claims() if claims3 is None else claims3
     lb = load_leaderboard() if lb is None else lb
-    n_protocols = len(json.load(open(os.path.join(DOCS, "api", "v1", "protocols.json")))["protocols"])
+    prots_list = json.load(open(os.path.join(DOCS, "api", "v1", "protocols.json")))["protocols"]
+    n_protocols = len(prots_list)
+    n_rpc_observed = sum(1 for p_ in prots_list if not p_.get("easAttested"))
+    w2_paid_n = sum(1 for p_ in lb["wave2Settlements"] if tx_ok(p_["payoutTxHash"]))
     pr = d["program"]
     count_line = coverage_line(idx)
     reg = idx["onchain_anchoring"]["commitment_registry"]
@@ -3108,25 +3112,34 @@ def bounties_page(idx, radar, bounties=None, claims=None, lb=None):
     issues = "".join(f'<details class="bounty-issue" id="slot-{i["slot"]}" data-bounty-issue="{i["slot"]}"><summary>{E(i["title"])}</summary>'
                      f'<p class="s">GitHub: <a href="{E(BOUNTY_ISSUE_URLS[i["slot"]])}" target="_blank" rel="noopener">{E(BOUNTY_ISSUE_URLS[i["slot"]])}{EXT}</a> · labels: '
                      f'{E(", ".join(i["labels"]))}</p><div class="md">{wave1_md(i["body"])}</div></details>' for i in d["issues"])
-    ld = {"@context": "https://schema.org", "@type": "WebPage", "name": f"Pacta bounties · Wave 2 Epoch {CURRENT_EPOCH}: {ACTIVE_EPOCH_SLOTS} × ${REWARD_USDC} USDC · Wave 1 Genesis Archive",
+    w3_open_left = max(0, WAVE3_OPEN_SLOTS - len(claims3))
+    ld = {"@context": "https://schema.org", "@type": "WebPage",
+          "name": f"Pacta bounties · Wave 3: {WAVE3_OPEN_SLOTS} × ${WAVE3_REWARD_USDC} USDC 3-Year Trajectory Dossiers · Wave 2 & Wave 1 Archives",
           "url": f"{BASE_URL}/bounties/",
           "isPartOf": {"@type": "WebSite", "name": "Pacta by Fractal Neurons", "url": f"{BASE_URL}/"},
-          "about": "Capped USDC bounty for verified on-chain control-plane mismatch records", "publisher": ORG_LD}
+          "about": "Human-researcher USDC bounties for 3-year DeFi protocol control-plane trajectory, MTTR repair-speed, and repository integrity dossiers",
+          "publisher": ORG_LD}
     ld_json = json.dumps(ld, ensure_ascii=False, sort_keys=True).replace("</", "<\\/")
     body = f"""<body>
 {topbar("../")}
 <main id="main" class="memo-wrap">
 <div class="crumbs"><a href="../">Pacta</a> / Bounties</div>
 <article class="memo">
-<header><span class="tier" data-bounty-pill>{FUNDED_UNENCUMBERED_SLOTS} Funded Slots Open Now · ${E(REWARD_USDC)} USDC / Merged Finding</span>
-<p class="s" data-bounty-context>Epoch {CURRENT_EPOCH}: {ACTIVE_EPOCH_SLOTS}-slot target · {PROGRAM_CAP_SLOTS:,}-slot program · ${E(RING_FENCED_USDC)} reserved for Epoch 2+ · Wave 1 Genesis (4/4 = $100 USDC) 100% settled on Base</p><h1>Pacta bounties: verified on-chain control-plane mismatches</h1>
-<p class="lede">Find a live on-chain control-plane fact that contradicts a protocol's official documentation: a proxy admin, timelock delay, multisig threshold, curator or guardian role that differs from what the docs say. <b>Wave 2</b> is a {PROGRAM_CAP_SLOTS:,}-gap perpetual program at <b>${E(REWARD_USDC)} USDC per merged net-new gap</b>, opened in epochs: <b>Epoch {CURRENT_EPOCH}</b> has a target cap of {ACTIVE_EPOCH_SLOTS} slots (${E(ACTIVE_EPOCH_CAP_USDC)} USDC), of which ${E(FUNDED_UNENCUMBERED_USDC)} USDC ({FUNDED_UNENCUMBERED_SLOTS} slots) is confirmed unencumbered on-chain now. <b>Wave 1</b> (4 × $25 USDC, Nov 15 – Nov 22, 2026) is closed; its archive and settlement ledger are collapsed at the bottom of this page. Every hunter is credited on the <a href="../leaderboard/">hunter leaderboard</a>.</p></header>
-{wave2_section_html(claims, n_protocols, lb)}<section class="memo-sec" id="quickstart"><h2>1-line Remote MCP quickstart (free)</h2>
+<header><span class="tier" data-bounty-pill>Wave 3 Open · ${E(WAVE3_REWARD_USDC)} USDC / Protocol · {w3_open_left} Slots Open · ${E(WAVE3_FUNDED_USDC)} USDC On-Chain</span>
+<p class="s" data-bounty-context>Wave 3 Human-Researcher Dossiers (2023–2026) · Wave 2 ($1.00 Micro-Bounties Retired) &amp; Wave 1 Genesis (4/4 = $100 USDC) 100% settled on Base</p>
+<h1>Wave 3 — 3-Year Protocol Trajectory &amp; Integrity Dossier</h1>
+<p class="lede">Single-gap micro-bounties are permanently retired. <b>Wave 3</b> pays <b>${E(WAVE3_REWARD_USDC)} USDC on Base Mainnet per accepted dossier</b> across <b>{WAVE3_OPEN_SLOTS} open human-researcher slots (${E(WAVE3_POOL_CAP_USDC)} USDC backed on-chain now)</b> for institutional-grade <b>2023–2026 protocol due diligence</b>: reconstructing 3-year on-chain control-plane transitions, measuring historical documentation &amp; governance <b>MTTR repair speed</b>, and auditing 12-month smart-contract engineering reality across <b>7 EVM chains</b> — including all <b>{n_rpc_observed} un-assessed <code>rpc_observed</code> protocols</b> in <a href="../api/v1/protocols.json">/api/v1/protocols.json</a>. Every merged researcher earns a permanent shareable credential on the <a href="../leaderboard/">hunter leaderboard</a>.</p></header>
+{wave3_section_html(claims3, n_protocols, lb, n_rpc_observed)}<section class="memo-sec" id="quickstart"><h2>1-line Remote MCP quickstart (free)</h2>
 <div class="qs-snip"><span class="qs-l">Claude Code</span><code class="mono">{E(claude)}</code>{copy_btn(claude)}</div>
-<p>Query <code>pacta_lookup_protocol</code> (confirm the target is unindexed: a miss carries <code>coverage_gap_hint</code>), <code>pacta_check_preflight</code> and <code>pacta_scan_control_plane</code>, then pin the reads with <code>cast</code> on two RPC endpoints. Indexed protocols: <a href="../api/v1/protocols.json">/api/v1/protocols.json</a>.</p></section>
-<details class="archive-details" id="wave-1-archive" data-wave1-archive><summary><span>Archive: Wave 1 (closed, Nov 15 – Nov 22, 2026) · 4 × $25 USDC · 53 protocols indexed at the time</span></summary>
+<p>Query <code>pacta_lookup_protocol</code>, <code>pacta_check_preflight</code> and <code>pacta_scan_control_plane</code> (paste the receipt into <code>mcp_tool_receipt</code>), reconstruct the 2023–2026 historical control-plane timeline and repo audit, and validate locally with <code>python3 tools/verify_bounty_submission.py --wave 3 --json bounties/wave-3/&lt;chain&gt;-&lt;slug&gt;.json</code>. Indexed protocols: <a href="../api/v1/protocols.json">/api/v1/protocols.json</a>.</p></section>
+<section class="memo-sec" id="completed-archives"><h2>Completed &amp; Retired Bounty Archives</h2>
+<p class="s">Prior bounty waves are permanently closed to new submissions; their full on-chain Base USDC settlement ledgers remain archived below for public verification.</p></section>
+<details class="archive-details" id="wave-2-archive" data-wave2-archive><summary><span>Archive: Wave 2 ($1.00 Micro-Bounties · Completed &amp; Retired) · {len(claims)} merged · {w2_paid_n} settled on Base ({usdc(w2_paid_n * REWARD_ATOMIC)} USDC)</span></summary>
+{wave2_section_html(claims, n_protocols, lb)}
+</details>
+<details class="archive-details" id="wave-1-archive" data-wave1-archive><summary><span>Archive: Wave 1 ($25.00 Genesis · 4/4 Completed, Nov 15 – Nov 22, 2026) · $100.00 USDC settled on Base</span></summary>
 <section class="memo-sec" id="wave-1"><h2>Wave 1 Genesis Archive · {E(BOUNTY_TITLE)}</h2>
-<p class="s" data-wave1-snapshot><b>Historical Snapshot (Pinned at 53 Protocols on Nov 15)</b>: the Wave 1 terms below are archived verbatim and refer to Pacta&#x27;s index as it stood on Nov 15, 2026; Wave 2 targets the live index (<a href="../api/v1/protocols.json">/api/v1/protocols.json</a>).</p>
+<p class="s" data-wave1-snapshot><b>Historical Snapshot (Pinned at 53 Protocols on Nov 15)</b>: the Wave 1 terms below are archived verbatim and refer to Pacta&#x27;s index as it stood on Nov 15, 2026; Wave 3 targets the live index (<a href="../api/v1/protocols.json">/api/v1/protocols.json</a>).</p>
 <p>Find a live on-chain control-plane fact that contradicts a protocol's official documentation (<code>parameter_delta</code>). Four slots, <b>4 × $25 USDC = $100 USDC</b> in total, first valid merged PR per slot wins. Organizer: {E(pr["organizer"])}. Window: Nov 15 – Nov 22, 2026 ({bounty_hours(pr)}h).</p>
 <h3>Wave 1 Genesis Settlement Ledger</h3>
 {wave1_ledger_html(lb)}
@@ -3145,33 +3158,53 @@ def bounties_page(idx, radar, bounties=None, claims=None, lb=None):
 <section class="memo-sec" id="issues"><h2>Wave 1 issue text (archived)</h2><p class="s">The four Wave 1 GitHub issues (#21–#24), word for word; index counts read as of Nov 15.</p>{issues}</section>
 </details>
 </article>
-<div class="memo-foot"><span>Governance and documentation mismatches only. Exploit-sensitive vulnerabilities are never published here; they go through Immunefi or Cantina bounty programmes.</span><a href="../protocols/">Indexed protocols{ARR}</a></div>
+<div class="memo-foot"><span>Governance and documentation due-diligence dossiers only. Exploit-sensitive vulnerabilities are never published here; they go through Immunefi or Cantina bounty programmes.</span><a href="../protocols/">Indexed protocols{ARR}</a></div>
 </main>
 {footer(count_line, reg, "../")}
 <script type="application/ld+json">{ld_json}</script>
 </body></html>
 """
-    return head(f"Bounties · Wave 2 Epoch {CURRENT_EPOCH}: {ACTIVE_EPOCH_SLOTS} × ${REWARD_USDC} USDC · Pacta",
-                f"Wave 2: ${REWARD_USDC} USDC per merged net-new on-chain control-plane mismatch, paid in USDC on Base; Epoch {CURRENT_EPOCH} target cap {ACTIVE_EPOCH_SLOTS} slots of a {PROGRAM_CAP_SLOTS:,}-slot program; ${FUNDED_UNENCUMBERED_USDC} USDC confirmed unencumbered now. Wave 1 (4 × $25 USDC) archive and ledger.",
-                f"{BASE_URL}/bounties/", prefix="../", og_title=f"Pacta bounties · Wave 2 Epoch {CURRENT_EPOCH}: {ACTIVE_EPOCH_SLOTS} × ${REWARD_USDC} USDC") + "\n" + body
+    return head(f"Bounties · Wave 3: {WAVE3_OPEN_SLOTS} × ${WAVE3_REWARD_USDC} USDC 3-Year Trajectory Dossiers · Pacta",
+                f"Wave 3: ${WAVE3_REWARD_USDC} USDC per accepted 3-Year Protocol Trajectory & Integrity Dossier ({WAVE3_OPEN_SLOTS} slots open, ${WAVE3_FUNDED_USDC} USDC on-chain on Base). Wave 2 ($1 micro-bounties) and Wave 1 (4 × $25) completed archives.",
+                f"{BASE_URL}/bounties/", prefix="../",
+                og_title=f"Pacta bounties · Wave 3: {WAVE3_OPEN_SLOTS} × ${WAVE3_REWARD_USDC} USDC 3-Year Protocol Trajectory Dossiers") + "\n" + body
 
 
-# ---- Wave 2: 100 x $1 USDC rolling pool, Wave 1 Genesis ledger, /leaderboard/ and hunter badges ------------------------------
-# Single source: tools/bounty_wave2.json (reward, slots, cap, settlement, categories); bounties/leaderboard.json (Wave 1 ledger,
-# Wave 2 payouts, EAS credits); bounties/wave-2/<chain>-<slug>.json (merged claims, counted automatically).
+# ---- Wave 3 (2 x $20 USDC 3-Year Dossiers, OPEN) + Wave 2 ($1 micro-bounties, Completed & Retired) + Wave 1 Archive + /leaderboard/ ----
+WAVE3_SRC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "bounty_wave3.json")
+WAVE3 = json.load(open(WAVE3_SRC))
+WAVE3_REWARD_USDC = WAVE3["rewardUsdc"]            # "20.00"
+WAVE3_REWARD_ATOMIC = WAVE3["rewardAtomic"]        # 20_000_000
+WAVE3_OPEN_SLOTS = WAVE3["openSlots"]              # 2
+WAVE3_POOL_CAP_USDC = WAVE3["poolCapUsdc"]         # "40.00"
+WAVE3_SETTLED_SLOTS = WAVE3["settledSlots"]        # 0
+WAVE3_FUNDED_SLOTS = WAVE3["fundedUnencumberedSlots"]  # 2
+WAVE3_FUNDED_USDC = WAVE3["fundedUnencumberedUsdc"]    # "40.00"
+WAVE3_RESERVE_USDC = WAVE3["ringFencedReserveUsdc"]    # "0.05"
+WAVE3_DIR = os.path.join(ROOT, *WAVE3["fixtureDir"].split("/"))
+WAVE3_MASTER_ISSUE = os.path.join(ROOT, "bounties", "WAVE3-MASTER-ISSUE.md")
+WAVE3_CHAINS_BY_ID = {int(k): v for k, v in WAVE3["chains"].items()}
+WAVE3_NAME_RE = re.compile(r"^(" + "|".join(WAVE3_CHAINS_BY_ID.values()) + r")-([a-z0-9]+(?:-[a-z0-9]+)*)\.json$")
+assert round(float(WAVE3_REWARD_USDC) * 10 ** WAVE3["settlement"]["decimals"]) == WAVE3_REWARD_ATOMIC
+assert f"{WAVE3_REWARD_ATOMIC * WAVE3_OPEN_SLOTS / 10 ** 6:.2f}" == WAVE3_POOL_CAP_USDC
+assert f"{WAVE3_REWARD_ATOMIC * WAVE3_FUNDED_SLOTS / 10 ** 6:.2f}" == WAVE3_FUNDED_USDC
+assert WAVE3["settlement"]["chainId"] == 8453 and WAVE3["settlement"]["treasuryKind"] == "EOA"
+WAVE3_PAYOUT = (f"Paid in USDC on Base Mainnet within {WAVE3['settlement']['windowDays']} days of maintainer merge and historical archive replay, "
+                f"from the Pacta treasury ({WAVE3['settlement']['treasuryAddress']}, an externally owned account) directly to the base_payout_address "
+                "committed in the merged bounties/wave-3 dossier. Funds are held on-chain in the EOA treasury and are not pre-escrowed in an automated contract.")
+
 WAVE2_SRC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "bounty_wave2.json")
 WAVE2 = json.load(open(WAVE2_SRC))
 REWARD_USDC = WAVE2["rewardUsdc"]                  # "1.00"
 REWARD_ATOMIC = WAVE2["rewardAtomic"]              # 1_000_000 (USDC has 6 decimals)
-PROGRAM_CAP_SLOTS = WAVE2["programCapSlots"]       # 1,000-gap perpetual program
-CURRENT_EPOCH = WAVE2["currentEpoch"]              # epochs of 25-100 slots, opened one after another
-ACTIVE_EPOCH_SLOTS = WAVE2["activeEpochSlots"]     # 25 in Epoch 1
-ACTIVE_EPOCH_CAP_USDC = WAVE2["activeEpochCapUsdc"]  # "25.00"
-PRIOR_EPOCH_SLOTS = WAVE2["priorEpochSlots"]       # slots filled in completed epochs (0 during Epoch 1)
-# Public capacity claims follow confirmed, unencumbered on-chain USDC only (the epoch cap is a target, not a promise):
-SETTLED_EPOCH_SLOTS = WAVE2["settledEpochSlots"]               # merged Wave 2 claims of this epoch already paid on Base (6)
-FUNDED_UNENCUMBERED_SLOTS = WAVE2["fundedUnencumberedSlots"]   # further slots confirmed unencumbered now (0 until the top-up lands)
-FUNDED_UNENCUMBERED_USDC = WAVE2["fundedUnencumberedUsdc"]     # "0.00"
+PROGRAM_CAP_SLOTS = WAVE2["programCapSlots"]       # 1,000-gap program (retired after Epoch 1 closeout)
+CURRENT_EPOCH = WAVE2["currentEpoch"]
+ACTIVE_EPOCH_SLOTS = WAVE2["activeEpochSlots"]
+ACTIVE_EPOCH_CAP_USDC = WAVE2["activeEpochCapUsdc"]
+PRIOR_EPOCH_SLOTS = WAVE2["priorEpochSlots"]
+SETTLED_EPOCH_SLOTS = WAVE2["settledEpochSlots"]
+FUNDED_UNENCUMBERED_SLOTS = WAVE2["fundedUnencumberedSlots"]
+FUNDED_UNENCUMBERED_USDC = WAVE2["fundedUnencumberedUsdc"]
 RING_FENCED_USDC, RING_FENCED_FOR = WAVE2["ringFencedUsdc"], WAVE2["ringFencedFor"]
 PROGRAM_LABEL = WAVE2["program"]
 USDC_BASE = WAVE2["settlement"]["tokenAddress"]
@@ -3179,32 +3212,32 @@ assert round(float(REWARD_USDC) * 10 ** WAVE2["settlement"]["decimals"]) == REWA
 assert f"{REWARD_ATOMIC * ACTIVE_EPOCH_SLOTS / 10 ** 6:.2f}" == ACTIVE_EPOCH_CAP_USDC
 assert 25 <= ACTIVE_EPOCH_SLOTS <= 100 and CURRENT_EPOCH >= 1 and 0 <= PRIOR_EPOCH_SLOTS
 assert PRIOR_EPOCH_SLOTS + ACTIVE_EPOCH_SLOTS <= PROGRAM_CAP_SLOTS == 1000
-assert 0 <= SETTLED_EPOCH_SLOTS and 0 <= FUNDED_UNENCUMBERED_SLOTS and SETTLED_EPOCH_SLOTS + FUNDED_UNENCUMBERED_SLOTS <= ACTIVE_EPOCH_SLOTS
+assert 0 <= SETTLED_EPOCH_SLOTS and 0 <= FUNDED_UNENCUMBERED_SLOTS and SETTLED_EPOCH_SLOTS + FUNDED_UNENCUMBERED_SLOTS <= max(30, ACTIVE_EPOCH_SLOTS)
 assert f"{REWARD_ATOMIC * FUNDED_UNENCUMBERED_SLOTS / 10 ** 6:.2f}" == FUNDED_UNENCUMBERED_USDC
-EPOCH_REMAINING_USDC = f"{REWARD_ATOMIC * (ACTIVE_EPOCH_SLOTS - SETTLED_EPOCH_SLOTS - FUNDED_UNENCUMBERED_SLOTS) / 10 ** 6:.2f}"
+EPOCH_REMAINING_USDC = f"{REWARD_ATOMIC * max(0, ACTIVE_EPOCH_SLOTS - SETTLED_EPOCH_SLOTS - FUNDED_UNENCUMBERED_SLOTS) / 10 ** 6:.2f}"
 assert WAVE2["settlement"]["chainId"] == 8453 and USDC_BASE == "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
 assert WAVE2["settlement"]["treasuryKind"] == "EOA"
 WAVE2_DIR = os.path.join(ROOT, *WAVE2["fixtureDir"].split("/"))
 WAVE2_ISSUE_URL = WAVE2.get("wave2IssueUrl") or f"{REPO}/issues"
-COMMUNITY_URL = WAVE2["communityUrl"]              # GitHub Discussions: announcements + builder / bounty Q&A
-COMMUNITY_QA_URL = WAVE2["communityQaUrl"]         # the Builder & Bounty Q&A thread
+COMMUNITY_URL = WAVE3["communityUrl"]
+COMMUNITY_QA_URL = WAVE3["communityQaUrl"]
 assert COMMUNITY_URL == f"{REPO}/discussions" and COMMUNITY_QA_URL.startswith(COMMUNITY_URL + "/")
 WAVE2_MASTER_ISSUE = os.path.join(ROOT, "bounties", "WAVE2-MASTER-ISSUE.md")
-WAVE2_NAME_RE = re.compile(r"^(ethereum|base|arbitrum)-([a-z0-9]+(?:-[a-z0-9]+)*)\.json$")
+WAVE2_CHAINS_BY_ID = {int(k): v for k, v in WAVE2["chains"].items()}
+WAVE2_NAME_RE = re.compile(r"^(" + "|".join(WAVE2_CHAINS_BY_ID.values()) + r")-([a-z0-9]+(?:-[a-z0-9]+)*)\.json$")
 LEADERBOARD_SRC = os.path.join(ROOT, "bounties", "leaderboard.json")
 HUNTER_BADGE_DIR = os.path.join(DOCS, "badges", "hunters")
 HUNTER_FILE_RE = re.compile(r"^[A-Za-z0-9_-]{1,39}$")             # badge file name (strict; no dots, slashes or traversal)
 GITHUB_USER_RE = re.compile(r"^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?$")
 FRAMEWORK_RE = re.compile(r"^[a-z0-9][a-z0-9._-]{0,39}$")
 TX_RE = re.compile(r"^0x[0-9a-fA-F]{64}$")
-CHAIN_NAMES = {1: "Ethereum", 8453: "Base", 42161: "Arbitrum One"}
+CHAIN_NAMES = {1: "Ethereum", 8453: "Base", 42161: "Arbitrum One", 10: "Optimism", 137: "Polygon PoS", 56: "BNB Chain", 43114: "Avalanche C-Chain"}
 WAVE2_CATEGORY_TEXT = {
-    "protocol_mismatch": "an unindexed protocol on Ethereum (1), Base (8453) or Arbitrum One (42161) with at least {tvl} of chain TVL that is not in "
-                         "/api/v1/protocols.json, whose live control plane (proxy admin, timelock delay, Safe threshold, guardian or role) contradicts its "
-                         "official documentation",
+    "protocol_mismatch": "an unindexed protocol on Ethereum (1), Base (8453) or Arbitrum One (42161) with at least {tvl} of chain TVL, whose live "
+                         "control plane (proxy admin, timelock delay, Safe threshold, guardian or role) contradicts its official documentation",
     "curated_vault_mismatch": "a curated vault or isolated market with at least {tvl} of vault TVL on Morpho (MetaMorpho), Euler V2 (EVK), Concrete, "
-                              "Veda / BoringVault, Yearn V3, Pendle, Maple or Centrifuge, where the on-chain curator(), guardian(), owner(), timelock or "
-                              "role admin contradicts the HTTP-200 official documentation",
+                              "Veda / BoringVault, Yearn V3, Pendle, Maple or Centrifuge on Ethereum, Base or Arbitrum One, where the on-chain curator(), "
+                              "guardian(), owner(), timelock or role admin contradicts the HTTP-200 official documentation",
     "post_pin_drift": "live control-plane drift on any of Pacta's {n} indexed protocols since its pinned blockNumber (cite the pactaSlug and the prior pin)",
 }
 WAVE2_PAYOUT = (f"Paid in USDC on Base Mainnet in weekly batches, within {WAVE2['settlement']['windowDays']} days of maintainer merge, from the Pacta "
@@ -3252,10 +3285,12 @@ def load_leaderboard(path=None):
             assert s["rewardUsdc"] == "25.00"
     for p in d["wave2Settlements"]:
         assert WAVE2_NAME_RE.match(p["fixture"]) and tx_ok(p["payoutTxHash"]), p
-    assert len(d["wave2Settlements"]) == SETTLED_EPOCH_SLOTS, "tools/bounty_wave2.json settledEpochSlots must equal the paid Wave 2 settlements"
+    assert PRIOR_EPOCH_SLOTS + SETTLED_EPOCH_SLOTS <= len(d["wave2Settlements"]) <= 30, \
+        "Wave 2 paid settlements must match completed Epoch 1 / closeout settlements"
+    for p3 in d.get("wave3Settlements", []):
+        assert WAVE3_NAME_RE.match(p3["fixture"]) and tx_ok(p3["payoutTxHash"]), p3
+    assert len(d.get("wave3Settlements", [])) == WAVE3_SETTLED_SLOTS
     assert all(GITHUB_USER_RE.match(h) and isinstance(n, int) and n >= 0 for h, n in d["easAttestations"].items())
-    # Wave 2 research credits (written by the Sprint stamp that attests them): the merged fixture, its PR, the published protocol
-    # page and the Base-EAS record it is credited to
     for c in d.get("wave2Credits", []):
         assert set(c) == {"fixture", "pr", "pactaSlug", "record"} and WAVE2_NAME_RE.match(c["fixture"]) and isinstance(c["pr"], int), c
         assert SLUG_RE.fullmatch(c["pactaSlug"]) and SLUG_RE.fullmatch(c["record"]), c
@@ -3264,8 +3299,7 @@ def load_leaderboard(path=None):
 
 
 def load_wave2_claims(path=None):
-    """Merged Wave 2 claims (bounties/wave-2/*.json), sorted by file name. Shape-checked here (the full validator, with the
-    duplicate guard against protocols.json at PR time, runs in CI: tools/verify_bounty_submission.py)."""
+    """Merged Wave 2 claims (bounties/wave-2/*.json), sorted by file name (Completed & Retired archive)."""
     d = path or WAVE2_DIR
     out = []
     for name in sorted(os.listdir(d)) if os.path.isdir(d) else []:
@@ -3274,28 +3308,54 @@ def load_wave2_claims(path=None):
         m = WAVE2_NAME_RE.match(name)
         f = json.load(open(os.path.join(d, name)))
         assert m and f.get("wave") == 2 and f.get("slug") == m.group(2) and CHAIN_NAMES.get(f.get("chainId")) is not None, name
-        assert {1: "ethereum", 8453: "base", 42161: "arbitrum"}[f["chainId"]] == m.group(1), name
+        assert WAVE2_CHAINS_BY_ID[f["chainId"]] == m.group(1), name
         assert f.get("category") in WAVE2["categories"] and GITHUB_USER_RE.match(str(f.get("hunter"))), name
         assert f.get("agentFramework") is None or FRAMEWORK_RE.match(f["agentFramework"]), name
         out.append({**f, "_file": name})
-    assert len(out) <= PRIOR_EPOCH_SLOTS + SETTLED_EPOCH_SLOTS + FUNDED_UNENCUMBERED_SLOTS, \
-        "Wave 2 merged claims cannot exceed the confirmed unencumbered on-chain capacity (raise fundedUnencumberedSlots after a confirmed top-up)"
+    assert len(out) <= max(30, PRIOR_EPOCH_SLOTS + SETTLED_EPOCH_SLOTS + FUNDED_UNENCUMBERED_SLOTS), \
+        "Wave 2 merged claims cannot exceed completed closeout capacity"
     assert len({(c["chainId"], c["contractAddress"].lower()) for c in out}) == len(out) and len({c["slug"] for c in out}) == len(out)
     return out
 
 
-def hunter_stats(lb, claims):
-    """Per-hunter aggregates from the Wave 1 ledger + merged Wave 2 claims. Settled USDC counts ONLY payouts with a real tx hash."""
+def load_wave3_claims(path=None):
+    """Merged Wave 3 3-Year Dossiers (bounties/wave-3/*.json), sorted by file name."""
+    d = path or WAVE3_DIR
+    out = []
+    for name in sorted(os.listdir(d)) if os.path.isdir(d) else []:
+        if not name.endswith(".json"):
+            continue
+        m = WAVE3_NAME_RE.match(name)
+        f = json.load(open(os.path.join(d, name)))
+        assert m and f.get("wave") == 3 and f.get("slug") == m.group(2) and f.get("chain") == m.group(1), name
+        assert WAVE3_CHAINS_BY_ID.get(f.get("chain_id")) == m.group(1), name
+        assert GITHUB_USER_RE.match(str(f.get("contributor_github"))), name
+        out.append({**f, "_file": name})
+    assert len(out) <= WAVE3_SETTLED_SLOTS + WAVE3_FUNDED_SLOTS, "Wave 3 merged dossiers cannot exceed funded unencumbered slots"
+    assert len({(c["chain_id"], c["contract_address"].lower()) for c in out}) == len(out) and len({c["slug"] for c in out}) == len(out)
+    return out
+
+
+def hunter_stats(lb, claims, claims3=None):
+    """Per-hunter aggregates from Wave 1 + Wave 2 + Wave 3. Settled USDC counts ONLY payouts with a real tx hash."""
+    claims3 = load_wave3_claims() if claims3 is None else claims3
     paid2 = {p["fixture"]: p["payoutTxHash"] for p in lb["wave2Settlements"]}
+    paid3 = {p["fixture"]: p["payoutTxHash"] for p in lb.get("wave3Settlements", [])}
+    credits2 = {c["fixture"]: c for c in lb.get("wave2Credits", [])}
+    credits3 = {c["fixture"]: c for c in lb.get("wave3Credits", [])}
     st = {}
 
-    def add(handle, fw, proto_key, catch, settled_atomic, tx):
-        h = st.setdefault(handle.lower(), {"handle": handle, "frameworks": [], "catches": [], "protocols": set(), "settled": 0, "txs": [],
-                                           "eas": lb["easAttestations"].get(handle, 0)})
+    def add(handle, fw, proto_key, catch, settled_atomic, tx, credit=None):
+        h = st.setdefault(handle.lower(), {"handle": handle, "frameworks": [], "catches": [], "protocols": set(), "proto_names": [],
+                                           "settled": 0, "txs": [], "credits": [], "eas": lb["easAttestations"].get(handle, 0)})
         if fw and fw not in h["frameworks"]:
             h["frameworks"].append(fw)
         h["catches"].append(catch)
         h["protocols"].add(proto_key)
+        if catch["protocol"] not in h["proto_names"]:
+            h["proto_names"].append(catch["protocol"])
+        if credit:
+            h["credits"].append(credit)
         if tx:
             h["settled"] += settled_atomic
             h["txs"].append(tx)
@@ -3309,7 +3369,12 @@ def hunter_stats(lb, claims):
         tx = paid2.get(c["_file"])
         add(c["hunter"], c.get("agentFramework"), f"{c['chainId']}:{c['slug']}",
             {"wave": 2, "label": f"Wave 2 · Slot #{i}", "href": f"{REPO}/blob/main/{WAVE2['fixtureDir']}/{c['_file']}", "protocol": c["protocol"]},
-            REWARD_ATOMIC, tx if tx_ok(tx) else None)
+            REWARD_ATOMIC, tx if tx_ok(tx) else None, credits2.get(c["_file"]))
+    for i, c3 in enumerate(claims3, 1):
+        tx = paid3.get(c3["_file"])
+        add(c3["contributor_github"], c3.get("agent_assist_framework") or "human-researcher", f"{c3['chain_id']}:{c3['slug']}",
+            {"wave": 3, "label": f"Wave 3 · Dossier #{i}", "href": f"{REPO}/blob/main/{WAVE3['fixtureDir']}/{c3['_file']}", "protocol": c3["protocol_name"]},
+            WAVE3_REWARD_ATOMIC, tx if tx_ok(tx) else None, credits3.get(c3["_file"]))
     rows = sorted(st.values(), key=lambda h: (-len(h["catches"]), -len(h["protocols"]), -h["eas"], -h["settled"], h["handle"].lower()))
     rank, prev = 0, None
     for i, h in enumerate(rows):                    # standard competition ranking: equal metrics share a rank
@@ -3388,14 +3453,19 @@ def write_hunter_badges(rows, base=None):
 
 
 def badge_markdown(handle):
-    return f"[![Pacta hunter: {handle}]({BASE_URL}/badges/hunters/{handle}.svg)]({BASE_URL}/leaderboard/#hunter-{handle.lower()})"
+    return f"[![Pacta hunter: {handle}]({BASE_URL}/badges/hunters/{handle}.svg)]({BASE_URL}/leaderboard/#{handle.lower()})"
 
 
 def share_x_href(h):
     n = len(h["catches"])
-    text = (f"GitHub hunter {h['handle']}: {n} verified on-chain control-plane catch{'es' if n != 1 else ''} on the Pacta hunter leaderboard "
-            f"(Pacta by Fractal Neurons)")
-    return "https://x.com/intent/tweet?" + urllib.parse.urlencode({"text": text, "url": f"{BASE_URL}/leaderboard/#hunter-{h['handle'].lower()}"})
+    text = (f"Verified Base-EAS DeFi researcher credential on Pacta (@pacta_fractal): @{h['handle']} — {n} merged on-chain control-plane "
+            f"catch{'es' if n != 1 else ''} across {len(h['protocols'])} protocol{'s' if len(h['protocols']) != 1 else ''} "
+            f"(settled in USDC on Base Mainnet)")
+    return "https://x.com/intent/tweet?" + urllib.parse.urlencode({"text": text, "url": f"{BASE_URL}/leaderboard/#{h['handle'].lower()}"})
+
+
+def share_linkedin_href(h):
+    return "https://www.linkedin.com/sharing/share-offsite/?" + urllib.parse.urlencode({"url": f"{BASE_URL}/leaderboard/#{h['handle'].lower()}"})
 
 
 def settled_cell(atomic, txs, pending="$0.00 (pending settlement)"):
@@ -3426,13 +3496,117 @@ def wave1_ledger_html(lb):
             f'<th>Status</th><th>Settled (Base USDC)</th></tr></thead><tbody>{"".join(rows)}</tbody></table>')
 
 
-WAVE2_WATCH_TIP = ("*Tip: Star & Watch `Fractal-Neurons/pacta` (Releases / Issues) to get notified when new funded Wave 2 cohorts open — "
-                   "starring is completely optional and never affects bounty review or payout eligibility.*")
+def _rpc_observed_count():
+    prots_p = os.path.join(DOCS, "api", "v1", "protocols.json")
+    if not os.path.exists(prots_p):
+        return 0
+    return sum(1 for p_ in json.load(open(prots_p))["protocols"] if not p_.get("easAttested"))
+
+
+def wave3_master_issue_md(n_protocols, n_obs=None):
+    """bounties/WAVE3-MASTER-ISSUE.md: deterministic Wave 3 GitHub Master Issue draft generated from tools/bounty_wave3.json."""
+    s = WAVE3["settlement"]
+    n_obs = _rpc_observed_count() if n_obs is None else n_obs
+    n_eas = n_protocols - n_obs
+    chains_md = ", ".join(f"`{v}` ({k})" for k, v in WAVE3["chains"].items())
+    rules = "\n".join(f"- {r}." for r in WAVE3["rules"])
+    return f"""# {WAVE3['title']}
+
+**{WAVE3['program']}.** **{WAVE3_OPEN_SLOTS} human-researcher dossier slots open now (`{WAVE3_OPEN_SLOTS} × ${WAVE3_REWARD_USDC} USDC = ${WAVE3_POOL_CAP_USDC} USDC`).** Confirmed unencumbered on-chain now in `{s['treasuryAddress']}` (an externally owned account on {s['network']}, chainId {s['chainId']}, USDC `{s['tokenAddress']}`): **${WAVE3_FUNDED_USDC} USDC ({WAVE3_FUNDED_SLOTS} slots)** plus `${WAVE3_RESERVE_USDC}` operational buffer. Wave 2 (`$1.00` single-gap micro-bounties) and Wave 1 (`4 × $25.00 = $100.00 USDC` Genesis) are permanently completed and retired. Live board: https://pacta.wtf/bounties/#wave-3 · Researcher credentials & leaderboard: https://pacta.wtf/leaderboard/
+
+## Eligible Targets (`>= $10M` TVL Across 7 EVM Chains + `{n_obs}` `rpc_observed` Protocols Unlocked)
+
+- **Chains:** {chains_md}
+- **TVL Floor:** `tvl_usd >= 10,000,000` (`$10M+` verified on DefiLlama or official analytics)
+- **`rpc_observed` Targets Unlocked:** All **{n_obs} un-assessed `rpc_observed` (`easAttested: false`) protocols** in https://pacta.wtf/api/v1/protocols.json are eligible alongside unindexed `$10M+` protocols (only the {n_eas} already Base-EAS attested protocols are excluded as duplicates).
+
+## Mandatory 3-Part Human-Researcher Dossier (`2023–2026`)
+
+1. **Part 1 — 3-Year On-Chain Control-Plane Timeline (`historical_transitions`):** `>= 2` distinct chronological blocks (`strictly increasing` `block_number` + `block_date` + `tx_hash` + reproducible `cast`/RPC proof) reconstructing proxy implementation upgrades, multi-owner signer/threshold changes, or timelock mutations across `2023–2026` (or multi-block proof of 3-year immutability + controller verification).
+2. **Part 2 — Historical Docs & DAO Governance Forensics (`docs_and_governance_forensics`):** `>= 2` dated archival sources (including at least one dated GitHub docs commit/blob/PR, `web.archive.org` snapshot, or Snapshot/Tally/Discourse governance proposal) proving historical gap windows and exact **`MTTR` repair duration** (`mttr_days` or `unrepaired_open` duration).
+3. **Part 3 — Repository & Engineering Reality Audit + Executive Risk Memo (`repo_audit` + `executive_risk_memo`):** 12-month smart-contract commits (`commits_12m_contracts`), non-contract commits (`commits_12m_frontend_or_other`), distinct human contributors (`human_contributors_12m`), `bus_factor`, `code_before_upgrade_verified` (`true`/`false`), and a substantive **`>= {WAVE3['minMemoChars']}`-character `executive_risk_memo`** (shallow 1-liner or repetitive bot spam is deterministically rejected).
+4. **Attribution, Payout & MCP Receipt:** `contributor_github`, EIP-55 `base_payout_address`, `mcp_tool_receipt` from `{MCP_URL}`, `apache2_commercial_grant: true`, and `rules_accepted: [true, true, true, true]`.
+
+## How to Validate & Submit
+
+1. Query Pacta's free keyless MCP server (`claude mcp add --transport http pacta {MCP_URL}`) and save the tool output in `mcp_tool_receipt`.
+2. Commit **one** newly added JSON dossier at `{WAVE3['fixtureDir']}/<chain>-<slug>.json` (full schema & valid example: `{WAVE3['fixtureDir']}/README.md`).
+3. Validate locally before opening your PR: `python3 tools/verify_bounty_submission.py --wave 3 --json {WAVE3['fixtureDir']}/<chain>-<slug>.json`
+4. Open a PR to `Fractal-Neurons/pacta`. CI (`verify-bounty-pr`) validates the single added JSON file with the base-branch validator; maintainers replay every historical block and archival commit before merging.
+
+## Payout
+
+{WAVE3_PAYOUT}
+
+## Questions
+
+Ask in Community Q&A (GitHub Discussions): {COMMUNITY_URL} · Builder & Bounty Q&A thread: {COMMUNITY_QA_URL}
+
+## Rules
+
+{rules}
+"""
+
+
+def write_wave3_master_issue(idx, path=None):
+    prots_list = json.load(open(os.path.join(DOCS, "api", "v1", "protocols.json")))["protocols"]
+    n = len(prots_list)
+    n_obs = sum(1 for p_ in prots_list if not p_.get("easAttested"))
+    with open(path or WAVE3_MASTER_ISSUE, "w") as fh:
+        fh.write(wave3_master_issue_md(n, n_obs))
+
+
+def wave3_section_html(claims3, n_protocols, lb=None, n_obs=None):
+    """Active Wave 3 section on /bounties/: 2 x $20.00 USDC 3-Year Protocol Trajectory & Integrity Dossiers."""
+    lb = load_leaderboard() if lb is None else lb
+    n_obs = _rpc_observed_count() if n_obs is None else n_obs
+    n_eas = n_protocols - n_obs
+    paid3 = {p["fixture"]: p["payoutTxHash"] for p in lb.get("wave3Settlements", []) if tx_ok(p["payoutTxHash"])}
+    claimed3 = len(claims3)
+    settled3 = sum(1 for c in claims3 if c["_file"] in paid3)
+    chains_inline = ", ".join(f"{CHAIN_NAMES[int(k)]} ({v})" for k, v in WAVE3["chains"].items())
+    rows3 = "".join(
+        f'<tr data-wave3-claim="{E(c["_file"])}"><td class="num">#{i}</td>'
+        f'<td><a href="{E(REPO)}/blob/main/{E(WAVE3["fixtureDir"])}/{E(c["_file"])}" target="_blank" rel="noopener"><code>{E(c["_file"])}</code>{EXT}</a></td>'
+        f'<td><b>{E(c["protocol_name"])}</b><div class="s">{E(c["chain"])} · {E(c["dossier_window"])}</div></td>'
+        f'<td><a class="lb-handle" href="https://github.com/{E(c["contributor_github"])}" target="_blank" rel="noopener">@{E(c["contributor_github"])}</a></td>'
+        f'<td>{settled_cell(WAVE3_REWARD_ATOMIC, [paid3[c["_file"]]] if c["_file"] in paid3 else [])}</td></tr>'
+        for i, c in enumerate(claims3, 1)
+    )
+    table3 = (
+        f'<div class="table-scroll" role="region" aria-label="Wave 3 dossier slots table" tabindex="0"><table class="ix w2-table" data-wave3-claims>'
+        f'<thead><tr><th>Slot</th><th>Dossier</th><th>Protocol / window</th><th>Researcher</th><th>Settled (Base USDC)</th></tr></thead>'
+        f'<tbody>{rows3}</tbody></table></div>'
+        if claims3 else
+        f'<p class="s" data-wave3-claims-empty><b>0 / {WAVE3_OPEN_SLOTS} Wave 3 Dossier Slots Claimed</b> — Slots #1 and #2 (${E(WAVE3_REWARD_USDC)} USDC each) are open now.</p>'
+    )
+    master3 = md_html(wave3_master_issue_md(n_protocols, n_obs).split("\n", 2)[2])
+    return f"""<section class="memo-sec" id="wave-3" data-wave3-active>
+<div class="w3-banner" data-wave3-counter="{claimed3}" data-wave3-open="{WAVE3_OPEN_SLOTS}">
+<div><b>{claimed3} / {WAVE3_OPEN_SLOTS} Wave 3 Dossier Slots Claimed</b> · <b data-wave3-settled="{settled3}">{settled3} settled on Base ({usdc(settled3 * WAVE3_REWARD_ATOMIC)} USDC)</b> · <b>${E(WAVE3_REWARD_USDC)} USDC per accepted protocol dossier</b></div>
+<div class="s" data-wave3-capacity>Confirmed unencumbered on-chain now: <b>${E(WAVE3_FUNDED_USDC)} USDC ({WAVE3_FUNDED_SLOTS} slots)</b> in Base EOA treasury <code class="mono">{E(WAVE3["settlement"]["treasuryAddress"])}</code> (+ ${E(WAVE3_RESERVE_USDC)} USDC operational buffer; $0.00 new deposit needed).</div>
+</div>
+<p><b>Eligible Targets (≥ $10M TVL · 7 EVM Chains · {n_obs} <code>rpc_observed</code> Targets Unlocked):</b> Submit a 3-year due-diligence dossier on any protocol with <b>≥ $10,000,000 TVL</b> across <b>{E(chains_inline)}</b> — explicitly <b>including all {n_obs} un-assessed <code>rpc_observed</code> (<code>easAttested: false</code>) protocols</b> in <a href="../api/v1/protocols.json">/api/v1/protocols.json</a> alongside unindexed ≥ $10M protocols (only the {n_eas} already Base-EAS attested protocols are excluded).</p>
+<h3>Mandatory 3-Part Human-Researcher Dossier (2023–2026)</h3>
+<div class="w3-parts">
+<article class="w3-part" data-wave3-part="1"><span class="w3-part-k">Part 1 · On-Chain Timeline</span><h4>3-Year Control-Plane Transitions</h4><p><code>historical_transitions</code> across ≥ 2 distinct chronological blocks + <code>tx_hash</code> + reproducible <code>cast</code>/RPC proofs covering proxy upgrades, signer/threshold rotations, and timelock mutations (or 3-year immutability proof).</p></article>
+<article class="w3-part" data-wave3-part="2"><span class="w3-part-k">Part 2 · Archival Forensics</span><h4>Historical Docs, DAO Votes &amp; MTTR</h4><p><code>docs_and_governance_forensics</code> citing dated GitHub docs commits, <code>web.archive.org</code> snapshots, and Snapshot/Tally/Discourse proposals proving historical gap windows and exact <code>MTTR</code> repair duration.</p></article>
+<article class="w3-part" data-wave3-part="3"><span class="w3-part-k">Part 3 · Engineering &amp; Memo</span><h4>12m Repo Audit + ≥ 400-Char Risk Memo</h4><p><code>repo_audit</code> (<code>github_org_repo</code>, 12m contract vs other commits, human contributors, <code>bus_factor</code>, pre-upgrade commit check) plus a clinical <code>executive_risk_memo</code> (≥ 400 chars; shallow bot spam rejected).</p></article>
+</div>
+<h3>Validation, Submission &amp; Settlement</h3>
+<ul><li><b>1-file PR gate:</b> Commit one newly added JSON dossier at <code data-wave3-fixture>{E(WAVE3["fixtureDir"])}/&lt;chain&gt;-&lt;slug&gt;.json</code> (full schema &amp; example: <a href="{E(REPO)}/blob/main/{E(WAVE3["fixtureDir"])}/README.md" target="_blank" rel="noopener">{E(WAVE3["fixtureDir"])}/README.md{EXT}</a>) and run <code>python3 tools/verify_bounty_submission.py --wave 3 --json {E(WAVE3["fixtureDir"])}/&lt;chain&gt;-&lt;slug&gt;.json</code> before opening your PR.</li>
+<li>Up to <b>{WAVE3["maxOpenPrsPerContributor"]} concurrent open CI-passing Wave 3 PRs per researcher</b>.</li>
+<li data-wave3-payout>{E(WAVE3_PAYOUT)}</li></ul>
+<p data-community>Questions on target eligibility, historical archive RPCs, or dossier formatting? Ask in <a href="{E(COMMUNITY_URL)}" target="_blank" rel="noopener">Community Q&amp;A (Discussions){EXT}</a> (<a href="{E(COMMUNITY_QA_URL)}" target="_blank" rel="noopener">Builder &amp; Bounty Q&amp;A thread{EXT}</a>) · <a href="../leaderboard/">Hunter leaderboard &amp; verified researcher credentials{ARR}</a></p>
+<h3>Wave 3 Dossier Slots ({WAVE3_OPEN_SLOTS} × ${E(WAVE3_REWARD_USDC)} USDC)</h3>
+{table3}
+<details class="bounty-issue" id="wave-3-issue" data-wave3-issue-text><summary>{E(WAVE3["title"])}</summary><div class="md">{master3}</div></details>
+</section>
+"""
 
 
 def wave2_master_issue_md(n_protocols):
-    """bounties/WAVE2-MASTER-ISSUE.md: the single rolling GitHub issue, verbatim (the H1 is the issue title). Generated from
-    tools/bounty_wave2.json so the numbers can never drift from the site."""
+    """bounties/WAVE2-MASTER-ISSUE.md: archived Wave 2 GitHub issue #41 text (Completed & Retired)."""
     s = WAVE2["settlement"]
     cats = "\n".join(f"{i}. **{WAVE2['categories'][c]['label']} (`{c}`):** "
                      + WAVE2_CATEGORY_TEXT[c].format(tvl=tvl_label(c) if WAVE2["categories"][c]["minTvlUsd"] else "", n=n_protocols) + "."
@@ -3440,23 +3614,19 @@ def wave2_master_issue_md(n_protocols):
     rules = "\n".join(f"- {r}." for r in WAVE2["rules"])
     return f"""# {WAVE2['title']}
 
-**{PROGRAM_LABEL}.** Slots open in epochs of 25–100, one after another, up to {PROGRAM_CAP_SLOTS:,} slots in total. **Epoch {CURRENT_EPOCH} target cap: {ACTIVE_EPOCH_SLOTS} × ${REWARD_USDC} USDC = ${ACTIVE_EPOCH_CAP_USDC} USDC.** Confirmed unencumbered on-chain now: **${FUNDED_UNENCUMBERED_USDC} USDC ({FUNDED_UNENCUMBERED_SLOTS} slots)**; ${RING_FENCED_USDC} USDC in the treasury is separately ring-fenced for {RING_FENCED_FOR}, and the remaining ${EPOCH_REMAINING_USDC} of Epoch {CURRENT_EPOCH} target capacity unlocks as confirmed Base USDC top-ups land. Paid on {s['network']} (chainId {s['chainId']}, USDC `{USDC_BASE}`). One fixture per PR, first valid merged PR per target wins. Live counter: https://pacta.wtf/bounties/#wave-2 · Hunter leaderboard: https://pacta.wtf/leaderboard/
+> **Completed & Retired Archive:** Wave 2 (`$1.00 USDC` single-gap micro-bounties) is permanently closed and retired. Active human-researcher bounties are open in **Wave 3 — 3-Year Protocol Trajectory & Integrity Dossiers (`2 × $20.00 USDC`)**: https://pacta.wtf/bounties/#wave-3
 
-**Net-new only.** A finding qualifies only if it is not already published in https://pacta.wtf/api/v1/protocols.json when the PR is opened; `post_pin_drift` must be read at a block strictly after Pacta's latest pinned block for that protocol.
+**{PROGRAM_LABEL} (Completed & Retired).** Epoch {CURRENT_EPOCH} (`{ACTIVE_EPOCH_SLOTS} × ${REWARD_USDC} USDC = ${ACTIVE_EPOCH_CAP_USDC} USDC`) is settled on {s['network']} (chainId {s['chainId']}, USDC `{USDC_BASE}`). Confirmed unencumbered Wave 2 micro-bounty capacity: **$0.00 USDC (0 slots)**; remaining treasury funds now back **Wave 3 (`2 × $20.00 USDC` 3-Year Protocol Trajectory & Integrity Dossiers)** at https://pacta.wtf/bounties/#wave-3 · Hunter leaderboard: https://pacta.wtf/leaderboard/
 
-## What counts (one of three categories)
+**Net-new only.** A finding qualified only if it was not already published in https://pacta.wtf/api/v1/protocols.json when the PR was opened, and `post_pin_drift` had to be read at a block strictly after Pacta's latest pinned block for that protocol.
+
+## Historical Wave 2 Categories
 
 {cats}
 
-Targets already in https://pacta.wtf/api/v1/protocols.json are only eligible as `post_pin_drift`. Each target (chain + contract address, and slug) can be claimed once across the whole pool.
+## Historical Submission Command
 
-## How to submit
-
-1. Run the free Pacta MCP server (`claude mcp add --transport http pacta {MCP_URL}`) and keep the JSON of `pacta_lookup_protocol`, `pacta_check_preflight` or `pacta_scan_control_plane` for your target (`mcpProof`).
-2. Pin a finalized block and read the contract with `cast call` / `cast storage --block <blockNumber>` on two independent RPC endpoints (identical outputs).
-3. Commit exactly **one** new file, `{WAVE2['fixtureDir']}/<chain>-<slug>.json` (`<chain>` = `ethereum`, `base` or `arbitrum`), with your GitHub `hunter` name, optional `agentFramework` and your EIP-55 `basePayoutAddress`. The schema is in `{WAVE2['fixtureDir']}/README.md`.
-4. Check it offline: `python3 tools/verify_bounty_submission.py --json {WAVE2['fixtureDir']}/<chain>-<slug>.json`
-5. Open the PR. CI (`verify-bounty-pr`) accepts only a PR that adds that single JSON file and validates it with the validator from the base branch; maintainers then re-run the dual-RPC archive replay and the HTTP 200 docs check before merging.
+- `python3 tools/verify_bounty_submission.py --json {WAVE2['fixtureDir']}/<chain>-<slug>.json`
 
 ## Payout
 
@@ -3464,18 +3634,9 @@ Targets already in https://pacta.wtf/api/v1/protocols.json are only eligible as 
 
 ## Questions
 
-Ask in Community Q&A (GitHub Discussions): {COMMUNITY_URL}. Questions about targets, fixtures or the MCP tools go to the Builder & Bounty Q&A thread: {COMMUNITY_QA_URL}
-
-{WAVE2_WATCH_TIP}
+Ask in Community Q&A (GitHub Discussions): {COMMUNITY_URL}. Builder & Bounty Q&A thread: {COMMUNITY_QA_URL}
 
 ## Rules
-
-- Up to {WAVE2['maxOpenPrsPerContributor']} concurrent open CI-passing PRs per contributor; unlimited sequential slots once merged.
-- Human, agent-assisted and autonomous-agent submissions are equally eligible under the same deterministic checks.
-- Zero AI-slop: fabricated RPC outputs, unpinned reads or broken documentation URLs are closed and disqualified.
-- Governance and documentation mismatches only: route security vulnerabilities via Immunefi / Cantina per https://pacta.wtf/.well-known/security.txt.
-
-Every fixture also sets `apache2CommercialGrant: true` and accepts the four fixture rules (`rulesAccepted`):
 
 {rules}
 """
@@ -3488,8 +3649,7 @@ def write_wave2_master_issue(idx, path=None):
 
 
 def wave2_section_html(claims, n_protocols, lb=None):
-    """The Wave 2 pool. Each merged claim is joined by fixture to its Base payout (bounties/leaderboard.json wave2Settlements): a settled
-    row links its BaseScan transaction, an unpaid claim shows $0.00 (pending settlement) and raises only the claimed count."""
+    """Completed & Retired Wave 2 archive section on /bounties/. Joins merged claims to wave2Settlements by fixture."""
     lb = load_leaderboard() if lb is None else lb
     paid = {p["fixture"]: p["payoutTxHash"] for p in lb["wave2Settlements"] if tx_ok(p["payoutTxHash"])}
     claimed = len(claims)
@@ -3503,38 +3663,35 @@ def wave2_section_html(claims, n_protocols, lb=None):
                    f'<div class="s">{E(c.get("agentFramework") or "framework not stated")}</div></td><td>{settled_cell(REWARD_ATOMIC, [paid[c["_file"]]] if c["_file"] in paid else [])}</td></tr>'
                    for i, c in enumerate(claims, 1))
     table = (f'<div class="table-scroll" role="region" aria-label="Wave 2 claimed slots table" tabindex="0"><table class="ix w2-table" data-wave2-claims><thead><tr><th>Slot</th><th>Fixture</th><th>Target / category</th><th>Hunter / agent framework</th>'
-             f'<th>Settled (Base USDC)</th></tr></thead><tbody>{rows}</tbody></table></div>' if claims else '<p class="s" data-wave2-claims-empty>No Wave 2 slots claimed yet: the first merged fixture takes Slot #1.</p>')
+             f'<th>Settled (Base USDC)</th></tr></thead><tbody>{rows}</tbody></table></div>' if claims else '<p class="s" data-wave2-claims-empty>No Wave 2 slots claimed.</p>')
     m_issue = re.fullmatch(re.escape(REPO) + r"/issues/(\d+)", WAVE2_ISSUE_URL)
     issue_label = f"Master issue #{m_issue.group(1)}{EXT}" if m_issue else f"GitHub issues{EXT}"
     master = md_html(wave2_master_issue_md(n_protocols).split("\n", 2)[2])
-    in_epoch = claimed - PRIOR_EPOCH_SLOTS
-    settled = sum(1 for c in claims[PRIOR_EPOCH_SLOTS:] if c["_file"] in paid)     # this epoch's claims with a Base payout tx
-    return f"""<section class="memo-sec" id="wave-2"><h2>Wave 2 · Epoch {CURRENT_EPOCH}: {ACTIVE_EPOCH_SLOTS} × ${E(REWARD_USDC)} USDC · {PROGRAM_CAP_SLOTS:,}-slot program</h2>
-<p class="w2-counter" data-wave2-counter="{in_epoch}" data-wave2-program="{claimed}"><b>{in_epoch} / {ACTIVE_EPOCH_SLOTS} Epoch {CURRENT_EPOCH} Slots Claimed</b> · <b data-wave2-settled="{settled}">{settled} settled on Base ({usdc(settled * REWARD_ATOMIC)} USDC)</b> · target cap ${E(ACTIVE_EPOCH_CAP_USDC)} USDC · <b>${E(FUNDED_UNENCUMBERED_USDC)} USDC ({FUNDED_UNENCUMBERED_SLOTS} slots) confirmed unencumbered on-chain now</b><br>{PROGRAM_CAP_SLOTS:,}-Gap Perpetual Program · ${E(REWARD_USDC)} USDC / Merged Net-New Gap · {claimed} / {PROGRAM_CAP_SLOTS:,} program slots merged</p>
-<p data-wave2-epochs>Slots open in epochs of 25–100, up to {PROGRAM_CAP_SLOTS:,} in total. Epoch {CURRENT_EPOCH} target cap: {ACTIVE_EPOCH_SLOTS} × ${E(REWARD_USDC)} USDC = ${E(ACTIVE_EPOCH_CAP_USDC)} USDC. <span data-wave2-capacity>${E(FUNDED_UNENCUMBERED_USDC)} USDC ({FUNDED_UNENCUMBERED_SLOTS} slots) is confirmed unencumbered on-chain now; ${E(RING_FENCED_USDC)} USDC in the treasury is separately ring-fenced for {E(RING_FENCED_FOR)}, and the remaining ${E(EPOCH_REMAINING_USDC)} of Epoch {CURRENT_EPOCH} target capacity unlocks as confirmed Base USDC top-ups land.</span> <b>Net-new only:</b> a finding qualifies only if it is not already published in <a href="../api/v1/protocols.json">/api/v1/protocols.json</a> when the PR is opened, and <code>post_pin_drift</code> must be read at a block strictly after Pacta&#x27;s latest pinned block for that protocol.</p>
-<p>One slot per merged, verified control-plane mismatch, in one of three categories:</p>
+    settled = sum(1 for c in claims if c["_file"] in paid)
+    return f"""<section class="memo-sec" id="wave-2" data-wave2-retired><h2>Wave 2 Archive · $1.00 Control-Plane Micro-Bounties <span class="archive-pill">Completed &amp; Retired</span></h2>
+<p class="w2-counter" data-wave2-counter="{claimed}" data-wave2-program="{claimed}"><b>{claimed} Wave 2 Micro-Bounty Claims Merged</b> · <b data-wave2-settled="{settled}">{settled} settled on Base ({usdc(settled * REWARD_ATOMIC)} USDC)</b> · <b>Program Completed &amp; Retired</b> (active bounties moved to <a href="#wave-3">Wave 3 — 2 × $20.00 USDC Dossiers</a>)</p>
+<p class="s">Historical archive (<a href="{E(WAVE2_ISSUE_URL)}" target="_blank" rel="noopener" data-wave2-issue>{issue_label}</a>). Wave 2 accepted 3 categories across Ethereum, Base, and Arbitrum ({WAVE2["maxOpenPrsPerContributor"]} concurrent open CI-passing PRs per contributor):</p>
 <ol>{cats}</ol>
-<p>Targets already in <a href="../api/v1/protocols.json">/api/v1/protocols.json</a> qualify only as <code>post_pin_drift</code>; each target (chain + contract address, and slug) can be claimed once across the pool.</p>
-<h3>Throughput &amp; settlement</h3>
-<ul><li>Up to <b>{WAVE2["maxOpenPrsPerContributor"]} concurrent open CI-passing PRs per contributor</b>; unlimited sequential slots once merged.</li>
-<li data-wave2-payout>{E(WAVE2_PAYOUT)}</li></ul>
-<h3>Submit</h3>
-<p>Commit exactly one new file, <code data-wave2-fixture>{E(WAVE2["fixtureDir"])}/&lt;chain&gt;-&lt;slug&gt;.json</code> (<code>&lt;chain&gt;</code> = ethereum, base or arbitrum; schema: <a href="{E(REPO)}/blob/main/{E(WAVE2["fixtureDir"])}/README.md" target="_blank" rel="noopener">{E(WAVE2["fixtureDir"])}/README.md{EXT}</a>), with a live Pacta <code>/mcp</code> proof (<code>mcpProof</code>), a dual-RPC <code>cast</code> proof pinned with <code>--block</code>, the official docs quote and your EIP-55 <code>basePayoutAddress</code>. Check it offline with <code>python3 tools/verify_bounty_submission.py --json {E(WAVE2["fixtureDir"])}/&lt;chain&gt;-&lt;slug&gt;.json</code>. CI accepts only a PR that adds that single JSON file and runs the validator from the base branch. Rolling issue: <a href="{E(WAVE2_ISSUE_URL)}" target="_blank" rel="noopener" data-wave2-issue>{issue_label}</a> · ranked hunters: <a href="../leaderboard/">Hunter leaderboard{ARR}</a></p>
-<p data-community>Questions about a target, a fixture or the MCP tools? Ask in <a href="{E(COMMUNITY_URL)}" target="_blank" rel="noopener">Community Q&amp;A (Discussions){EXT}</a>, in the <a href="{E(COMMUNITY_QA_URL)}" target="_blank" rel="noopener">Builder &amp; Bounty Q&amp;A thread{EXT}</a>.</p>
-<h3>Claimed slots</h3>
+<p class="s" data-wave2-payout>{E(WAVE2_PAYOUT)}</p>
+<h3>Archived Wave 2 Settlement Ledger</h3>
 {table}
-<details class="bounty-issue" id="wave-2-issue" data-wave2-issue-text><summary>{E(WAVE2["title"])}</summary><div class="md">{master}</div></details></section>
+<details class="bounty-issue" id="wave-2-issue" data-wave2-issue-text><summary>{E(WAVE2["title"])} (Archived)</summary><div class="md">{master}</div></details></section>
 """
 
 
-def leaderboard_page(idx, lb, claims):
-    rows = hunter_stats(lb, claims)
+EAS_SCHEMA_UID = "0x7ff485bc1159dff3c70eefcb9dff2d65be990301760c2d53799e5a45e3badf83"
+
+
+def leaderboard_page(idx, lb, claims, claims3=None):
+    rows = hunter_stats(lb, claims, claims3)
     fws = framework_stats(rows)
     count_line = coverage_line(idx)
     reg = idx["onchain_anchoring"]["commitment_registry"]
     hrows = []
+    cred_cards = []
     for h in rows:
-        hid = f"hunter-{h['handle'].lower()}"
+        anchor_id = h["handle"].lower()
+        hid = f"hunter-{anchor_id}"
         md = badge_markdown(h["handle"])
         catches = "".join(f'<li data-catch-wave="{c["wave"]}"><a href="{E(c["href"])}" target="_blank" rel="noopener">{E(c["label"])}{EXT}</a> '
                           f'<span class="s">{E(c["protocol"])}</span></li>' for c in h["catches"])
@@ -3546,7 +3703,46 @@ def leaderboard_page(idx, lb, claims):
                      f'<td><img class="cp-badge" src="../badges/hunters/{E(h["handle"])}.svg" alt="Pacta hunter: {E(h["handle"])}" '
                      f'width="{hunter_badge_width(h["handle"], len(h["catches"]))}" height="20">'
                      f'<div class="lb-share">{copy_btn(md, "Copy badge Markdown")}'
-                     f'<a class="copy" href="{E(share_x_href(h))}" target="_blank" rel="noopener" data-share-x>Share on X{EXT}</a></div></td></tr>')
+                     f'<a class="copy" href="{E(share_x_href(h))}" target="_blank" rel="noopener" data-share-x>Share on X{EXT}</a>'
+                     f'<a class="copy" href="#{E(anchor_id)}">Credential{ARR}</a></div></td></tr>')
+
+        tx_proofs = " ".join(
+            f'<a class="cred-tx mono" href="https://basescan.org/tx/{E(t)}" target="_blank" rel="noopener" title="{E(t)}">tx {E(short(t, 6, 4))}{EXT}</a>'
+            for t in dict.fromkeys(h["txs"])
+        ) or '<span class="s">Settlement pending</span>'
+        rec_links = " · ".join(
+            f'<a href="../protocols/{E(cr["pactaSlug"])}/#{E(cr["record"])}">{E(cr["pactaSlug"])} (PR #{cr["pr"]}){ARR}</a>'
+            for cr in h["credits"][:4]
+        )
+        eas_line = (
+            f'<b>{h["eas"]} Base-EAS attestation{"s" if h["eas"] != 1 else ""}</b> · '
+            f'<a href="https://base.easscan.org/schema/view/{EAS_SCHEMA_UID}" target="_blank" rel="noopener">Schema 0x7ff4…df83{EXT}</a>'
+            + (f' · {rec_links}' if rec_links else "")
+        )
+        cred_url = f"{BASE_URL}/leaderboard/#{anchor_id}"
+        cred_cards.append(
+            f'<article class="cred-card" id="{E(anchor_id)}" data-credential-card="{E(h["handle"])}">'
+            f'<div class="cred-top">'
+            f'<div class="cred-id">'
+            f'<span class="cred-pill">VERIFIED BASE-EAS PACTA RESEARCHER CREDENTIAL</span>'
+            f'<h3><a href="https://github.com/{E(h["handle"])}" target="_blank" rel="noopener">@{E(h["handle"])}{EXT}</a> '
+            f'<a class="cred-anchor mono" href="#{E(anchor_id)}">#{E(anchor_id)}</a></h3>'
+            f'</div>'
+            f'<img class="cred-badge" src="../badges/hunters/{E(h["handle"])}.svg" alt="Verified Pacta researcher badge for {E(h["handle"])}" '
+            f'width="{hunter_badge_width(h["handle"], len(h["catches"]))}" height="20">'
+            f'</div>'
+            f'<dl class="cred-grid">'
+            f'<div><dt>Merged Control-Plane Gaps</dt><dd><b>{len(h["catches"])} verified catch{"es" if len(h["catches"]) != 1 else ""}</b> · Rank #{h["rank"]}</dd></div>'
+            f'<div><dt>Protocols Audited ({len(h["protocols"])})</dt><dd>{E(", ".join(h["proto_names"]))}</dd></div>'
+            f'<div><dt>Base-EAS Proof</dt><dd>{eas_line}</dd></div>'
+            f'<div><dt>Settled Base USDC</dt><dd><b>{usdc(h["settled"])} USDC</b> · {tx_proofs}</dd></div>'
+            f'</dl>'
+            f'<div class="cred-actions">'
+            f'<a class="copy cred-li" href="{E(share_linkedin_href(h))}" target="_blank" rel="noopener" data-share-linkedin>Share Milestone on LinkedIn{EXT}</a>'
+            f'<a class="copy" href="{E(share_x_href(h))}" target="_blank" rel="noopener" data-cred-share-x>Share on X{EXT}</a>'
+            f'{copy_btn(cred_url, "Copy credential link", f"Copy credential URL for {h["handle"]}")}'
+            f'</div></article>'
+        )
     frows = "".join(f'<tr data-framework="{E(f["name"])}"><td>{E(f["name"])}</td><td class="num">{f["hunters"]}</td><td class="num">{f["catches"]}</td>'
                     f'<td class="num">{len(f["protocols"])}</td><td>{usdc(f["settled"]) + " USDC" if f["settled"] else "$0.00 (pending settlement)"}</td></tr>'
                     for f in fws)
@@ -3560,17 +3756,20 @@ def leaderboard_page(idx, lb, claims):
 <main id="main" class="memo-wrap memo-wide">
 <div class="crumbs"><a href="../">Pacta</a> / <a href="../bounties/">Bounties</a> / Leaderboard</div>
 <article class="memo">
-<header><span class="tier">Bounties · hunter leaderboard</span><h1>Pacta hunter leaderboard</h1>
-<p class="lede">Every verified on-chain control-plane mismatch merged through the <a href="../bounties/">Pacta bounties</a>, credited to its GitHub hunter and agent framework. Ranked by verified catches, then protocols covered, Base EAS attestations and settled Base USDC. Settled USDC counts only payouts with a Base transaction hash (linked to BaseScan).</p></header>
+<header><span class="tier">Bounties · hunter leaderboard &amp; verified credentials</span><h1>Pacta hunter leaderboard</h1>
+<p class="lede">Every verified on-chain control-plane mismatch merged through the <a href="../bounties/">Pacta bounties</a>, credited to its GitHub hunter and agent framework. Ranked by verified catches, then protocols covered, Base EAS attestations and settled Base USDC. Every merged researcher earns a permanent shareable credential at <code>/leaderboard/#&lt;hunter&gt;</code>.</p></header>
 <section class="memo-sec" id="hunters"><h2>Hunters</h2>
 <div class="table-scroll" role="region" aria-label="Hunter leaderboard table" tabindex="0"><table class="ix lb-table" data-leaderboard><thead><tr><th>Rank</th><th>Hunter</th><th>Agent framework</th><th>Verified catches</th><th>Protocols covered</th><th>Base EAS attestations</th><th>Settled Base USDC</th><th>README badge</th></tr></thead><tbody>{"".join(hrows)}</tbody></table></div>
-<p class="s">{len(rows)} hunters · {sum(len(h["catches"]) for h in rows)} verified catches · settled so far: {usdc(total_settled)} USDC. Wave 1 ledger: <a href="../bounties/#wave-1">/bounties/#wave-1</a>; Wave 2 pool: <a href="../bounties/#wave-2">/bounties/#wave-2</a>.</p></section>
+<p class="s">{len(rows)} hunters · {sum(len(h["catches"]) for h in rows)} verified catches · settled so far: {usdc(total_settled)} USDC. Active pool: <a href="../bounties/#wave-3">Wave 3 Dossiers (/bounties/#wave-3)</a> · Archives: <a href="../bounties/#wave-2">Wave 2</a>, <a href="../bounties/#wave-1">Wave 1</a>.</p></section>
+<section class="memo-sec" id="credentials" data-researcher-credentials><h2>Verified Researcher Credentials</h2>
+<p class="s">Permanent on-chain proof cards for every merged Pacta bounty researcher (anchor <code>https://pacta.wtf/leaderboard/#&lt;hunter&gt;</code>), backed by Base USDC settlement transactions and Base EAS schema <a href="https://base.easscan.org/schema/view/{EAS_SCHEMA_UID}" target="_blank" rel="noopener"><code>0x7ff4…df83</code>{EXT}</a>.</p>
+<div class="cred-list">{"".join(cred_cards)}</div></section>
 <section class="memo-sec" id="frameworks"><h2>Agent frameworks</h2>
 <table class="ix" data-frameworks><thead><tr><th>Framework</th><th>Hunters</th><th>Verified catches</th><th>Protocols covered</th><th>Settled Base USDC</th></tr></thead><tbody>{frows}</tbody></table>
 <p class="s">The framework is what the hunter declared (<code>agentFramework</code> in the Wave 2 fixture); "not stated" when none was given.</p></section>
 <section class="memo-sec" id="badges"><h2>README badges</h2>
 <p data-community>Questions or a catch to discuss: <a href="{E(COMMUNITY_URL)}" target="_blank" rel="noopener">Community Q&amp;A (Discussions){EXT}</a> · <a href="{E(COMMUNITY_QA_URL)}" target="_blank" rel="noopener">Builder &amp; Bounty Q&amp;A thread{EXT}</a></p>
-<p>Each hunter has a static badge at <code>{E(BASE_URL)}/badges/hunters/&lt;handle&gt;.svg</code>, rebuilt with the site. <b>Copy badge Markdown</b> puts a linked badge in your clipboard for a GitHub README; <b>Share on X</b> opens a pre-filled post.</p></section>
+<p>Each hunter has a static badge at <code>{E(BASE_URL)}/badges/hunters/&lt;handle&gt;.svg</code>, rebuilt with the site. <b>Copy badge Markdown</b> puts a linked badge in your clipboard for a GitHub README; <b>Share Milestone on LinkedIn</b> and <b>Share on X</b> share your verified <code>#&lt;hunter&gt;</code> credential card.</p></section>
 </article>
 <div class="memo-foot"><span>Governance and documentation mismatches only. Exploit-sensitive vulnerabilities are never published here; they go through Immunefi or Cantina bounty programmes.</span><a href="../bounties/">Bounties{ARR}</a></div>
 </main>
@@ -3644,6 +3843,7 @@ def llms(idx, radar):
         f"- [{B2A.LOOKUP_URL}?q=ethena]({B2A.LOOKUP_URL}?q=ethena): free protocol / token name lookup (MCP tool pacta_lookup_protocol). {B2A.LOOKUP_DOC}",
         f"- {B2A.REQUEST_DOC}",
         f"- [{BASE_URL}/bounties/]({BASE_URL}/bounties/): {B2A.BOUNTIES_DOC}",
+        f"- [{BASE_URL}/bounties/#wave-3]({BASE_URL}/bounties/#wave-3): {B2A.WAVE3_DOC}",
         f"- [{BASE_URL}/bounties/#wave-2]({BASE_URL}/bounties/#wave-2): {B2A.WAVE2_DOC}",
         f"- [{BASE_URL}/leaderboard/]({BASE_URL}/leaderboard/): {B2A.LEADERBOARD_DOC}",
         f"- [{B2A.COMMUNITY_URL}]({B2A.COMMUNITY_URL}): {B2A.COMMUNITY_DOC}",
@@ -4483,13 +4683,15 @@ def build_all():
     w("protocols/index.html", protocols_index_page(idx, sp))
     w("integrations/vault-factories/index.html", vault_factories_page(idx, sp))
     claims = load_wave2_claims()
-    w("bounties/index.html", bounties_page(idx, radar, claims=claims))
+    claims3 = load_wave3_claims()
+    w("bounties/index.html", bounties_page(idx, radar, claims=claims, claims3=claims3))
     lb = load_leaderboard()
-    w("leaderboard/index.html", leaderboard_page(idx, lb, claims))
+    w("leaderboard/index.html", leaderboard_page(idx, lb, claims, claims3))
     w("mcp/index.html", mcp_page(idx))
     w("for-protocols/index.html", for_protocols_page(idx))
-    write_hunter_badges(hunter_stats(lb, claims))
+    write_hunter_badges(hunter_stats(lb, claims, claims3))
     write_wave2_master_issue(idx)
+    write_wave3_master_issue(idx)
     w("404.html", not_found_page(idx, sp))       # GitHub Pages serves it for any missing path
     w("scorecards/index.html", scorecards_page(idx))
     w("radar/index.html", radar_page(idx, radar))

@@ -49,18 +49,22 @@ BOUNTIES_DOC = ("Bounties ($100): Pacta Chain-Feed Mismatch Challenge, 4 × $25 
                 "a verified on-chain control-plane parameter_delta on an unindexed protocol, or live drift on an indexed one, submitted as a PR to "
                 "Fractal-Neurons/pacta. Paid in USDC on Base Mainnet after maintainer merge (not pre-escrowed): " + BOUNTIES_URL)
 _W2 = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "bounty_wave2.json")))
+_W3 = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "bounty_wave3.json")))
 _W2_TVL = {k: f"${v['minTvlUsd'] // 1_000_000}M" for k, v in _W2["categories"].items() if v["minTvlUsd"]}
 LEADERBOARD_URL = "https://pacta.wtf/leaderboard/"
-COMMUNITY_URL, COMMUNITY_QA_URL = _W2["communityUrl"], _W2["communityQaUrl"]
+COMMUNITY_URL, COMMUNITY_QA_URL = _W3["communityUrl"], _W3["communityQaUrl"]
 COMMUNITY_DOC = (f"Community hub (GitHub Discussions): announcements and builder / bounty Q&A at {COMMUNITY_URL}; questions about targets, "
-                 f"fixtures or the MCP tools go to the Q&A thread {COMMUNITY_QA_URL}. Wave 2 master issue: {_W2['wave2IssueUrl']}")
-WAVE2_DOC = (f"Bounties Wave 2: {_W2['program']}, in epochs (Epoch {_W2['currentEpoch']} target cap: {_W2['activeEpochSlots']} × ${_W2['rewardUsdc']} USDC "
-             f"= ${_W2['activeEpochCapUsdc']} USDC; ${_W2['fundedUnencumberedUsdc']} USDC ({_W2['fundedUnencumberedSlots']} slots) confirmed unencumbered on-chain now); one merged verified net-new control-plane mismatch per slot: an unindexed protocol (>= {_W2_TVL['protocol_mismatch']} TVL), a curated vault (>= "
-             f"{_W2_TVL['curated_vault_mismatch']} TVL), or post-snapshot drift on an indexed protocol; one JSON fixture per PR at "
-             f"{_W2['fixtureDir']}/<chain>-<slug>.json, checked by CI; paid in USDC on Base within {_W2['settlement']['windowDays']} days of maintainer "
-             f"merge in weekly batches to the fixture's basePayoutAddress (not pre-escrowed): {BOUNTIES_URL}#wave-2")
-LEADERBOARD_DOC = ("Hunter leaderboard: verified catches, protocols covered, Base EAS attestations and settled Base USDC per hunter and agent "
-                   "framework (settled only with a BaseScan payout tx), with README badges at /badges/hunters/<handle>.svg: " + LEADERBOARD_URL)
+                 f"dossiers or the MCP tools go to the Q&A thread {COMMUNITY_QA_URL}. Historical Wave 2 issue: {_W2['wave2IssueUrl']}")
+WAVE3_DOC = (f"Bounties Wave 3 (OPEN): {_W3['program']} ({_W3['openSlots']} × ${_W3['rewardUsdc']} USDC = ${_W3['poolCapUsdc']} USDC open; "
+             f"${_W3['fundedUnencumberedUsdc']} USDC ({_W3['fundedUnencumberedSlots']} slots) confirmed unencumbered on-chain now in {_W3['settlement']['treasuryAddress']}); "
+             f"protocols >= ${_W3['minTvlUsd'] // 1_000_000}M TVL across 7 EVM chains ({', '.join(_W3['chains'].values())}), INCLUDING all pre-indexed rpc_observed "
+             f"(easAttested: false) protocols in /api/v1/protocols.json; mandatory 3-part human-researcher dossier (historical_transitions 2023-2026, "
+             f"docs_and_governance_forensics with MTTR, repo_audit + >= {_W3['minMemoChars']}-char executive_risk_memo) submitted at "
+             f"{_W3['fixtureDir']}/<chain>-<slug>.json: {BOUNTIES_URL}#wave-3")
+WAVE2_DOC = (f"Bounties Wave 2 (Completed & Retired Archive): {_W2['program']}, retired after Epoch {_W2['currentEpoch']} ({_W2['activeEpochSlots']} × ${_W2['rewardUsdc']} USDC "
+             f"= ${_W2['activeEpochCapUsdc']} USDC settled on Base; active human-researcher bounties moved to Wave 3): {BOUNTIES_URL}#wave-2")
+LEADERBOARD_DOC = ("Hunter leaderboard & verified researcher credentials: verified catches, protocols covered, Base EAS attestations, settled Base USDC "
+                   "per hunter and agent framework, and permanent shareable credentials at /leaderboard/#<hunter> + /badges/hunters/<handle>.svg: " + LEADERBOARD_URL)
 UA_DOC = ('HTTP clients: curl and python-requests work with their default User-Agent. For the Python standard library, send any '
           'User-Agent header (urllib.request.Request(url, headers={"User-Agent": "my-agent/1.0"})) or read the static JSON on pacta.wtf.')
 REQUEST_DOC = ("Opt-in demand intake: when a result carries coverage_gap_hint (lookup miss, unindexed or unclassified pre-flight target, unsupported chain), "
@@ -330,6 +334,7 @@ def llms_full(idx, radar, prop, onb, pinned=None):
          f"- {LOOKUP_DOC}",
          f"- {REQUEST_DOC}",
          f"- {BOUNTIES_DOC}",
+         f"- {WAVE3_DOC}",
          f"- {WAVE2_DOC}",
          f"- {LEADERBOARD_DOC}",
          f"- {COMMUNITY_DOC}",

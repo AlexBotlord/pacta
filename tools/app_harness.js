@@ -540,7 +540,7 @@ async function beaconScenario() {
     res.b_c2_slug_only_from_canonical = same(mismatch, { v: 1, h: "wtf", e: "page_load", p: "/other" }) && same(brief, { v: 1, h: "wtf", e: "page_load", p: "/briefs/etherfi-op-0x244e/" })
       && same(run(input.protocol, input.app, { path: "/protocols/" + input.protocolSlug + "/index.html", beacon: B }).events()[0].p, "/protocols/" + input.protocolSlug + "/");
     const views = [["/request", "/request/"], ["/protocols", "/protocols/"], ["/llms", "/llms/"], ["/llms/index.html", "/llms/"], ["/llms/x", "/other"], ["/briefs/etherfi-op-0x244e/", "/other"],
-      ["/protocols/aave-v3-gho/", "/other"], ["/demos/swapio-x402/", "/other"], ["/reset/alice%40example.org/x", "/other"]];   // index page: canonical is "/"
+      ["/protocols/aave-v3-gho/", "/other"], ["/demos/swapio-x402/", "/demos/swapio-x402/"], ["/demos/x", "/other"], ["/reset/alice%40example.org/x", "/other"]];   // index page: canonical is "/"
     res.b_c1_page_paths = views.every(([path, want]) => run(input.index, input.app, { path, beacon: B }).events()[0].p === want);
     const mcp = p.document.querySelectorAll("button[data-copy]").find(b => /\/mcp$/.test(b.getAttribute("data-copy")));
     if (mcp) click(mcp);
@@ -571,11 +571,14 @@ async function beaconScenario() {
   Object.defineProperty(t0.document, "cookie", trap);
   click(t0.document.querySelectorAll("button[data-copy], button[data-copy-term]")[0]);
   res.b_no_cookie_access = !touched && t0.events().length >= 1;
-  // v5.0: first-class routes, allowlisted campaign tags (m, c), the serving host (h), and nothing once the 404 page rescued a URL
+  // v5.0+: first-class routes (all live site HTML routes), allowlisted campaign tags (m, c), production-only serving host gate (h), and nothing once 404 rescued or on staging
   const ev0 = (o) => run(input.index, null, Object.assign({ path: "/", beacon: B }, o)).events()[0];
   res.b_v5_routes = [["/scorecards/", "/scorecards/"], ["/radar", "/radar/"], ["/bounties/", "/bounties/"], ["/leaderboard/", "/leaderboard/"],
     ["/methodology/", "/methodology/"], ["/scan/", "/scan/"], ["/seal/index.html", "/seal/"], ["/webhook/", "/webhook/"], ["/miniapp/", "/miniapp/"],
-    ["/pricing/", "/other"], ["/about/", "/other"], ["/scan/x", "/other"]].every(([path, want]) => ev0({ path }).p === want);
+    ["/pricing/", "/pricing/"], ["/about/", "/about/"], ["/for-protocols/", "/for-protocols/"], ["/integrations/", "/integrations/"],
+    ["/integrations/vault-factories/", "/integrations/vault-factories/"], ["/mcp/", "/mcp/"], ["/demos/", "/demos/"],
+    ["/demos/swapio-x402/", "/demos/swapio-x402/"], ["/privacy/", "/privacy/"], ["/terms/", "/terms/"],
+    ["/scan/x", "/other"], ["/demos/x", "/other"], ["/evil/", "/other"]].every(([path, want]) => ev0({ path }).p === want);
   res.b_v5_campaign_fields = same(ev0({ search: "?utm_source=x&utm_medium=paid&utm_campaign=Launch_Q4" }), { v: 1, e: "page_load", p: "/", u: "x", m: "paid", c: "launch_q4", h: "wtf" })
     && same(ev0({ path: "/scan/", search: "?utm_source=hypelab&utm_medium=cpc&utm_campaign=hl1_explorers_scanseal" }),
             { v: 1, e: "page_load", p: "/scan/", u: "hypelab", m: "cpc", c: "hl1_explorers_scanseal", h: "wtf" })
@@ -584,7 +587,10 @@ async function beaconScenario() {
     && ["0xdeadbeefcafe", "deadbeefcafe12", "user-123456", "reset_token", "x".repeat(33), "launch%20q4", "a.b", "mail_drop", "12345"]
       .every((c) => !("c" in ev0({ search: "?utm_campaign=" + c })));
   res.b_v5_host = ev0({ hostname: "pacta.fractalneurons.com" }).h === "com" && ev0({ hostname: "pacta.fractalneurons.com", referrer: "https://pacta.fractalneurons.com/" }).r === "self"
-    && ev0({}).h === "wtf" && ev0({ hostname: "pacta-fractalneurons.pages.dev" }).h === "wtf";
+    && ev0({}).h === "wtf" && ev0({ hostname: "pacta-fractalneurons.pages.dev" }).h === "wtf"
+    && run(input.index, null, { path: "/website-test/scan/", hostname: "pacta.dri.network", beacon: B }).beacons.length === 0
+    && run(input.index, null, { path: "/", hostname: "localhost", beacon: B }).beacons.length === 0
+    && run(input.index, null, { path: "/", hostname: "127.0.0.1", beacon: B }).beacons.length === 0;
   res.b_v5_rescued_sends_nothing = run(input.index, null, { path: "/", beacon: B, win: { pactaRescued: 1 } }).beacons.length === 0;
 }
 // (o) 404.html stripped-"?" rescue (docs/404-rescue.js): a known route + a stripped query goes back to /<route>/?<query>; nothing else moves

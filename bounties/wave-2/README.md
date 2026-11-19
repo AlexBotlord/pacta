@@ -1,7 +1,8 @@
-# Wave 2 claims ($1 USDC per merged net-new gap, in epochs; https://pacta.wtf/bounties/#wave-2)
+# Wave 2 claims — Completed & Retired Archive ($1 USDC Micro-Bounties; https://pacta.wtf/bounties/#wave-2)
 
-Wave 2 is a 1,000-gap perpetual program that opens slots in epochs of 25–100 (Epoch 1 target cap: 25 × $1.00 USDC; only the
-capacity shown as confirmed unencumbered on-chain at https://pacta.wtf/bounties/#wave-2 is open for payout). **Net-new only:**
+> **ARCHIVED:** Wave 2 (`$1.00 USDC` single-gap micro-bounties) is **Completed & Retired**. Active human-researcher bounties are now open in **[Wave 3 — 3-Year Protocol Trajectory & Integrity Dossiers (`2 × $20.00 USDC`)](../wave-3/README.md)** (`https://pacta.wtf/bounties/#wave-3`).
+
+Wave 2 was an initial single-gap program that opened slots in epochs (Epoch 1 target cap: 25 × $1.00 USDC; settled on Base Mainnet). **Net-new only:**
 a finding qualifies only if it is not already published in `docs/api/v1/protocols.json` when the PR is opened, and
 `post_pin_drift` must be read at a block strictly after Pacta's latest pinned block for that protocol.
 

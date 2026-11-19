@@ -1,0 +1,68 @@
+{
+  "schema": "pacta.bounty_wave3.v1",
+  "wave": 3,
+  "status": "open",
+  "title": "[Wave 3: 2 × $20 USDC | 3-Year Protocol Trajectory & Integrity Dossiers] Human-Researcher Control-Plane Due-Diligence Pool",
+  "program": "Wave 3 — 3-Year Protocol Trajectory & Integrity Dossier ($20.00 USDC / Protocol on Base)",
+  "rewardUsdc": "20.00",
+  "rewardAtomic": 20000000,
+  "openSlots": 2,
+  "poolCapUsdc": "40.00",
+  "settledSlots": 0,
+  "fundedUnencumberedSlots": 2,
+  "fundedUnencumberedUsdc": "40.00",
+  "ringFencedReserveUsdc": "0.05",
+  "dossierWindow": "2023-2026",
+  "minTvlUsd": 10000000,
+  "minTransitions": 2,
+  "minMemoChars": 400,
+  "maxOpenPrsPerContributor": 2,
+  "fixtureDir": "bounties/wave-3",
+  "settlement": {
+    "chainId": 8453,
+    "network": "Base Mainnet",
+    "token": "USDC",
+    "tokenAddress": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+    "decimals": 6,
+    "treasuryAddress": "0xcA4E2ff22B69A7284210c47BdeE21Aac1269da09",
+    "treasuryKind": "EOA",
+    "windowDays": 7
+  },
+  "wave2IssueUrl": "https://github.com/Fractal-Neurons/pacta/issues/41",
+  "communityUrl": "https://github.com/Fractal-Neurons/pacta/discussions",
+  "communityQaUrl": "https://github.com/Fractal-Neurons/pacta/discussions/44",
+  "chains": {
+    "1": "ethereum",
+    "8453": "base",
+    "42161": "arbitrum",
+    "10": "optimism",
+    "137": "polygon",
+    "56": "bnb",
+    "43114": "avalanche"
+  },
+  "dossierParts": {
+    "historical_transitions": {
+      "part": 1,
+      "label": "3-Year On-Chain Control-Plane Timeline (2023–2026)"
+    },
+    "docs_and_governance_forensics": {
+      "part": 2,
+      "label": "Historical Docs & DAO Governance Forensics (MTTR)"
+    },
+    "repo_audit_and_memo": {
+      "part": 3,
+      "label": "Repository & Engineering Reality Audit + Executive Risk Memo (>= 400 chars)"
+    }
+  },
+  "mcpTools": [
+    "pacta_lookup_protocol",
+    "pacta_check_preflight",
+    "pacta_scan_control_plane"
+  ],
+  "rules": [
+    "At most 2 concurrent open Wave 3 dossier PRs per researcher",
+    "Every block height, transaction hash, cast/RPC output, archival commit URL, and 12-month repo audit metric in this dossier is real and reproducible",
+    "I have not opened PRs, issues or comments in any third-party repository on Pacta's behalf",
+    "This dossier contains clinical due-diligence evidence only and zero exploit PoC"
+  ]
+}

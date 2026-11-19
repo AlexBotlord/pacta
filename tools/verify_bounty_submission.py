@@ -307,7 +307,7 @@ def self_test(verbose=False):
     if len(tpl) < 10:
         ok = False
         print(f"self-test FAIL: the empty PR template must fail on most fields, got {tpl}")
-    return self_test_wave2(idx, verbose) and ok
+    return self_test_wave2(idx, verbose) and self_test_wave3(indexed_wave3(), verbose) and ok
 
 
 # ================= Wave 2: 100 x $1 USDC rolling pool (bounties/wave-2/<chain>-<slug>.json) =================
@@ -735,12 +735,533 @@ def self_test_wave2(idx, verbose=False):
     return ok
 
 
+# ================= Wave 3: 2 x $20 USDC 3-Year Protocol Trajectory & Integrity Dossiers (bounties/wave-3/<chain>-<slug>.json) =================
+WAVE3_CONFIG = os.path.join(os.path.dirname(os.path.abspath(__file__)), "bounty_wave3.json")
+W3 = json.load(open(WAVE3_CONFIG))
+WAVE3_DIR = W3["fixtureDir"]                                            # "bounties/wave-3"
+WAVE3_CHAINS = {int(k): v for k, v in W3["chains"].items()}
+WAVE3_CHAIN_IDS = {v: k for k, v in WAVE3_CHAINS.items()}
+WAVE3_NAME_RE = re.compile(r"^(" + "|".join(WAVE3_CHAINS.values()) + r")-([a-z0-9]+(?:-[a-z0-9]+)*)\.json$")
+FIELDS_WAVE3 = ["wave", "chain", "chain_id", "protocol_name", "slug", "pacta_slug", "contract_address", "tvl_usd", "tvl_source_url",
+                "dossier_window", "trajectory_mode", "historical_transitions", "docs_and_governance_forensics", "repo_audit",
+                "executive_risk_memo", "contributor_github", "agent_assist_framework", "base_payout_address", "mcp_tool_receipt",
+                "apache2_commercial_grant", "rules_accepted"]
+WAVE3_OPTIONAL = {"pacta_slug", "trajectory_mode", "agent_assist_framework"}
+WAVE3_EVENT_KINDS = ("deployment_baseline", "proxy_upgrade", "signer_or_threshold_change", "timelock_or_role_mutation",
+                     "parameter_or_pause_mutation", "immutability_checkpoint")
+WAVE3_SOURCE_KINDS = ("github_docs_commit", "wayback_snapshot", "governance_proposal", "official_docs", "audit_report")
+WAVE3_MTTR_STATUS = ("repaired", "partially_repaired", "unrepaired_open", "zero_gap_verified")
+WAVE3_GAP_STATUS = ("repaired", "unrepaired_open", "verified_aligned")
+WAVE3_REPO_FIELDS = ("github_org_repo", "commits_12m_contracts", "commits_12m_frontend_or_other", "human_contributors_12m",
+                     "bus_factor", "code_before_upgrade_verified")
+ISO_DATE_RE = re.compile(r"^20(?:1[89]|2[0-6])-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12][0-9]|3[01])$")
+GITHUB_REPO_RE = re.compile(r"^[A-Za-z0-9_.-]{1,64}/[A-Za-z0-9_.-]{1,100}$")
+HIST_PROVENANCE_RE = re.compile(
+    r"https://(?:github\.com/[^/\s]+/[^/\s]+/(?:commit|blob|pull|issues|releases|tree)/"
+    r"|web\.archive\.org/web/\d+"
+    r"|(?:[a-z0-9-]+\.)?(?:snapshot\.(?:org|box)|tally\.xyz|boardroom\.io|commonwealth\.im|agora\.xyz)/"
+    r"|(?:forum|gov|governance|discourse)\.[a-z0-9.-]+/)",
+    re.I,
+)
+SHELL_META_RE = re.compile(r"[;|&`\r\n]|\$\(")
+
+
+def indexed_wave3(path=PROTOCOLS):
+    """Return (eas_addrs, eas_slugs, rpc_slugs) from protocols.json so all un-assessed rpc_observed protocols are OPEN for Wave 3."""
+    p = json.load(open(path))
+    eas_addrs, eas_slugs, rpc_slugs = set(), set(), set()
+    for x in p["protocols"]:
+        if x.get("easAttested"):
+            eas_slugs.add(x["slug"])
+            for a in [x.get("primaryContract"), x.get("controllerAddress")] + [s.get("targetContract") for s in x.get("surfaces") or []]:
+                if isinstance(a, str):
+                    eas_addrs.add(f'{x["chain"]}:{a.lower()}')
+        else:
+            rpc_slugs.add(x["slug"])
+    return eas_addrs, eas_slugs, rpc_slugs
+
+
+def is_wave3(path, f):
+    norm = os.path.normpath(path or "").replace(os.sep, "/")
+    return (isinstance(f, dict) and f.get("wave") == 3) or os.path.dirname(norm).split("/")[-2:] == WAVE3_DIR.split("/")
+
+
+def wave3_name_problems(path, f):
+    """bounties/wave-3/<chain>-<slug>.json with <chain> = f['chain'] = WAVE3_CHAINS[chain_id] and <slug> = f['slug']."""
+    norm = os.path.normpath(path).replace(os.sep, "/")
+    m = WAVE3_NAME_RE.match(os.path.basename(norm))
+    if not m or os.path.dirname(norm).split("/")[-2:] != WAVE3_DIR.split("/"):
+        return [f"fixturePath: commit the dossier as {WAVE3_DIR}/<chain>-<slug>.json (<chain> in {', '.join(WAVE3_CHAINS.values())})"]
+    probs = []
+    cid = f.get("chain_id") if isinstance(f.get("chain_id"), int) and not isinstance(f.get("chain_id"), bool) else None
+    if WAVE3_CHAINS.get(cid) != m.group(1) or f.get("chain") != m.group(1):
+        probs.append(f"fixturePath: file name prefix {m.group(1)!r} must match chain {f.get('chain')!r} and chain_id {f.get('chain_id')!r}")
+    if f.get("slug") != m.group(2):
+        probs.append(f"fixturePath: file name slug {m.group(2)!r} must equal dossier slug {f.get('slug')!r}")
+    return probs
+
+
+def wave3_siblings(path):
+    """Every other bounties/wave-3/*.json next to `path`: [(chain_id, lowercase address, slug)]."""
+    d = os.path.dirname(os.path.abspath(path))
+    me = os.path.realpath(path)
+    out = []
+    for p in sorted(os.listdir(d)) if os.path.isdir(d) else []:
+        q = os.path.join(d, p)
+        if not p.endswith(".json") or os.path.realpath(q) == me:
+            continue
+        try:
+            g = load_fixture(q)
+            out.append((g.get("chain_id"), str(g.get("contract_address", "")).lower(), g.get("slug")))
+        except (OSError, ValueError, TypeError, AttributeError):
+            continue
+    return out
+
+
+def _https_url_ok(u):
+    return (isinstance(u, str) and len(u) <= 512 and re.fullmatch(r"https://[A-Za-z0-9.-]+\.[A-Za-z]{2,}(?:/\S*)?", u) is not None
+            and not re.search(r"https://(?:\d{1,3}\.){3}\d{1,3}", u))
+
+
+def _finite_nonneg(x):
+    return isinstance(x, (int, float)) and not isinstance(x, bool) and math.isfinite(x) and x >= 0
+
+
+def validate_wave3(f, idx3=None, siblings=()):
+    """Wave 3 3-Year Protocol Trajectory & Integrity Dossier -> list of problems (empty = valid)."""
+    probs = []
+    bad = probs.append
+    if not isinstance(f, dict):
+        return ["fixture: a JSON object is required"]
+    raw = json.dumps(f, sort_keys=True)
+    eas_addrs, eas_slugs, rpc_slugs = idx3 or indexed_wave3()
+    unknown = sorted(set(f) - set(FIELDS_WAVE3))
+    if unknown:
+        bad(f"fields: unknown keys {unknown} (allowed: {', '.join(FIELDS_WAVE3)})")
+    w = f.get("wave")
+    if not (isinstance(w, int) and not isinstance(w, bool) and w == 3):
+        bad("wave: must be 3")
+    chain = f.get("chain")
+    cid = f.get("chain_id")
+    cid_ok = isinstance(cid, int) and not isinstance(cid, bool) and cid in WAVE3_CHAINS
+    if chain not in WAVE3_CHAIN_IDS:
+        bad(f"chain: must be one of {', '.join(WAVE3_CHAIN_IDS)}")
+    if not cid_ok:
+        bad(f"chain_id: must be one of {sorted(WAVE3_CHAINS)} (7 EVM chains)")
+    elif chain in WAVE3_CHAIN_IDS and WAVE3_CHAIN_IDS[chain] != cid:
+        bad(f"chain_id: chain {chain!r} requires chain_id {WAVE3_CHAIN_IDS[chain]}, got {cid}")
+    pname = f.get("protocol_name")
+    if not (isinstance(pname, str) and 2 <= len(pname.strip()) <= 120):
+        bad("protocol_name: non-empty protocol name (2-120 chars)")
+    slug = f.get("slug")
+    if not (isinstance(slug, str) and re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", slug) and len(slug) <= 64):
+        bad("slug: lowercase kebab-case target slug (a-z, 0-9, '-'; <= 64 chars)")
+    psl = f.get("pacta_slug")
+    if psl is not None:
+        if not isinstance(psl, str) or not psl:
+            bad("pacta_slug: null for unindexed protocols, or a valid rpc_observed slug from docs/api/v1/protocols.json")
+        elif psl in eas_slugs:
+            bad("duplicate: pacta_slug is already Base-EAS attested by Pacta; target one of the un-assessed rpc_observed protocols or an unindexed >= $10M protocol")
+        elif psl not in rpc_slugs:
+            bad("pacta_slug: must be null (unindexed) or an rpc_observed slug from docs/api/v1/protocols.json")
+    if isinstance(slug, str) and slug in eas_slugs:
+        bad("duplicate: slug is already Base-EAS attested by Pacta; target one of the un-assessed rpc_observed protocols or an unindexed >= $10M protocol")
+    addr = f.get("contract_address")
+    if not checksummed(addr):
+        bad("contract_address: a mixed-case EIP-55 checksummed 0x address is required")
+    elif int(addr, 16) <= 0xFFFF:
+        bad("contract_address: the zero address and precompiles (<= 0xffff) are not protocol contracts")
+    elif addr.lower() == TREASURY.lower():
+        bad("contract_address: the Pacta treasury is not a bounty target")
+    elif cid_ok and f"{WAVE3_CHAINS[cid]}:{addr.lower()}" in eas_addrs:
+        bad("duplicate: contract_address belongs to a protocol already Base-EAS attested by Pacta (rpc_observed and unindexed >= $10M targets are open)")
+    if checksummed(addr) and cid_ok and any(c == cid and a == addr.lower() for c, a, _ in siblings):
+        bad("duplicate: another bounties/wave-3 dossier already covers this (chain_id, contract_address)")
+    if isinstance(slug, str) and any(s == slug for _, _, s in siblings):
+        bad("duplicate: another bounties/wave-3 dossier already uses this slug")
+    tvl = f.get("tvl_usd")
+    need_tvl = W3["minTvlUsd"]
+    if not (isinstance(tvl, (int, float)) and not isinstance(tvl, bool) and math.isfinite(tvl) and need_tvl <= tvl <= MAX_TVL_USD):
+        bad(f"tvl_usd: Wave 3 requires a finite TVL between ${need_tvl:,} and ${MAX_TVL_USD:,}")
+    if not _https_url_ok(f.get("tvl_source_url")):
+        bad("tvl_source_url: an https:// link to a verifiable TVL source (e.g. DefiLlama)")
+    dw = f.get("dossier_window")
+    if not (isinstance(dw, str) and re.fullmatch(r"202[0-6]-2026", dw)):
+        bad("dossier_window: historical window string ending in 2026 (e.g. '2023-2026')")
+    tmode = f.get("trajectory_mode")
+    if tmode is not None and tmode not in ("mutable_transitions", "immutable_verified"):
+        bad("trajectory_mode: optional 'mutable_transitions' or 'immutable_verified'")
+
+    # Part 1: 3-Year On-Chain Control-Plane Timeline (historical_transitions)
+    ht = f.get("historical_transitions")
+    if not (isinstance(ht, list) and W3["minTransitions"] <= len(ht) <= 50 and all(isinstance(x, dict) for x in ht)):
+        bad(f"historical_transitions: list of >= {W3['minTransitions']} chronological transition objects spanning >= 2 distinct blocks")
+    else:
+        prev_bn, prev_dt, proof_refs_target = 0, "", False
+        req_ht = {"block_number", "block_date", "tx_hash", "event_kind", "rpc_or_cast_proof", "summary"}
+        for i, item in enumerate(ht):
+            if set(item) != req_ht:
+                bad(f"historical_transitions: entry #{i + 1} keys must be {sorted(req_ht)}")
+                break
+            ibn = item.get("block_number")
+            idt = item.get("block_date")
+            itx = item.get("tx_hash")
+            iek = item.get("event_kind")
+            ipr = item.get("rpc_or_cast_proof")
+            ism = item.get("summary")
+            if not (isinstance(ibn, int) and not isinstance(ibn, bool) and 0 < ibn < 10 ** 16):
+                bad(f"historical_transitions: entry #{i + 1} block_number must be a positive integer")
+            elif ibn <= prev_bn:
+                bad(f"historical_transitions: entry #{i + 1} block_number ({ibn}) must strictly increase after {prev_bn} (>= 2 distinct chronological blocks)")
+            else:
+                prev_bn = ibn
+            if not (isinstance(idt, str) and ISO_DATE_RE.fullmatch(idt)):
+                bad(f"historical_transitions: entry #{i + 1} block_date must be YYYY-MM-DD (2018-2026)")
+            elif prev_dt and idt < prev_dt:
+                bad(f"historical_transitions: entry #{i + 1} block_date ({idt}) precedes earlier entry ({prev_dt})")
+            else:
+                prev_dt = idt
+            if not (isinstance(itx, str) and re.fullmatch(r"0x[0-9a-fA-F]{64}", itx) and int(itx, 16) != 0):
+                bad(f"historical_transitions: entry #{i + 1} tx_hash must be a non-zero 32-byte 0x transaction hash")
+            if iek not in WAVE3_EVENT_KINDS:
+                bad(f"historical_transitions: entry #{i + 1} event_kind must be one of {', '.join(WAVE3_EVENT_KINDS)}")
+            if not (isinstance(ipr, str) and 20 <= len(ipr.strip()) <= 600 and not SHELL_META_RE.search(ipr)
+                    and re.match(r"^(?:cast (?:call|storage|receipt|logs|code|tx|block)\s|curl\s)", ipr.strip())
+                    and "https://" in ipr and "<" not in ipr and "YOUR_RPC" not in ipr.upper()):
+                bad(f"historical_transitions: entry #{i + 1} rpc_or_cast_proof must be a reproducible cast/curl RPC command with an https:// endpoint and no placeholders or shell metacharacters")
+            elif (isinstance(addr, str) and addr.lower() in ipr.lower()) or (isinstance(itx, str) and itx.lower() in ipr.lower()):
+                proof_refs_target = True
+            if not (isinstance(ism, str) and 24 <= len(ism.strip()) <= 1000):
+                bad(f"historical_transitions: entry #{i + 1} summary must be 24-1000 chars of clinical transition detail")
+        if not proof_refs_target:
+            bad("historical_transitions: at least one rpc_or_cast_proof must reference contract_address or its transition tx_hash")
+
+    # Part 2: Historical Docs & DAO Governance Forensics (docs_and_governance_forensics)
+    dg = f.get("docs_and_governance_forensics")
+    req_dg = {"mttr_status", "mttr_days", "evidence_sources", "gap_windows"}
+    opt_dg = {"unrepaired_open_days"}
+    if not isinstance(dg, dict) or not (req_dg <= set(dg) <= (req_dg | opt_dg)):
+        bad(f"docs_and_governance_forensics: object with keys {sorted(req_dg)} (+ optional unrepaired_open_days)")
+    else:
+        ms = dg.get("mttr_status")
+        md = dg.get("mttr_days")
+        ud = dg.get("unrepaired_open_days")
+        if ms not in WAVE3_MTTR_STATUS:
+            bad(f"docs_and_governance_forensics: mttr_status must be one of {', '.join(WAVE3_MTTR_STATUS)}")
+        elif ms in ("repaired", "partially_repaired") and not _finite_nonneg(md):
+            bad("docs_and_governance_forensics: mttr_days must be a finite number >= 0 when mttr_status is repaired or partially_repaired")
+        elif ms in ("unrepaired_open", "zero_gap_verified") and md is not None and not _finite_nonneg(md):
+            bad("docs_and_governance_forensics: mttr_days must be null or finite >= 0")
+        if ud is not None and not _finite_nonneg(ud):
+            bad("docs_and_governance_forensics: unrepaired_open_days must be finite >= 0 when provided")
+        evs = dg.get("evidence_sources")
+        if not (isinstance(evs, list) and 2 <= len(evs) <= 30 and all(isinstance(x, dict) for x in evs)):
+            bad("docs_and_governance_forensics: evidence_sources must list >= 2 dated archival / docs / governance URLs")
+        else:
+            has_hist = False
+            for i, ev in enumerate(evs):
+                if set(ev) != {"kind", "date", "url", "claim_summary"}:
+                    bad(f"docs_and_governance_forensics: evidence_sources[#{i + 1}] must have kind, date, url, claim_summary")
+                    break
+                if ev.get("kind") not in WAVE3_SOURCE_KINDS:
+                    bad(f"docs_and_governance_forensics: evidence_sources[#{i + 1}] kind must be one of {', '.join(WAVE3_SOURCE_KINDS)}")
+                if not (isinstance(ev.get("date"), str) and ISO_DATE_RE.fullmatch(ev["date"])):
+                    bad(f"docs_and_governance_forensics: evidence_sources[#{i + 1}] date must be YYYY-MM-DD")
+                u_ = ev.get("url")
+                if not _https_url_ok(u_):
+                    bad(f"docs_and_governance_forensics: evidence_sources[#{i + 1}] url must be a valid public https:// URL")
+                elif HIST_PROVENANCE_RE.match(u_):
+                    has_hist = True
+                cs_ = ev.get("claim_summary")
+                if not (isinstance(cs_, str) and 20 <= len(cs_.strip()) <= 600):
+                    bad(f"docs_and_governance_forensics: evidence_sources[#{i + 1}] claim_summary must be 20-600 chars")
+            if not has_hist:
+                bad("docs_and_governance_forensics: at least one evidence_sources url must be a dated GitHub commit/blob/PR, web.archive.org snapshot, or Snapshot/Tally/Discourse/DAO governance proposal")
+        gws = dg.get("gap_windows")
+        if not (isinstance(gws, list) and 1 <= len(gws) <= 25 and all(isinstance(x, dict) for x in gws)):
+            bad("docs_and_governance_forensics: gap_windows must list >= 1 historical gap or verified-alignment window with duration_days")
+        else:
+            for i, gw in enumerate(gws):
+                if set(gw) != {"opened_block", "opened_date", "closed_block", "closed_date", "duration_days", "status", "summary"}:
+                    bad(f"docs_and_governance_forensics: gap_windows[#{i + 1}] must have opened_block, opened_date, closed_block, closed_date, duration_days, status, summary")
+                    break
+                ob, cb = gw.get("opened_block"), gw.get("closed_block")
+                od, cd = gw.get("opened_date"), gw.get("closed_date")
+                gst = gw.get("status")
+                if not (isinstance(ob, int) and not isinstance(ob, bool) and ob > 0):
+                    bad(f"docs_and_governance_forensics: gap_windows[#{i + 1}] opened_block must be a positive integer")
+                if not (isinstance(od, str) and ISO_DATE_RE.fullmatch(od)):
+                    bad(f"docs_and_governance_forensics: gap_windows[#{i + 1}] opened_date must be YYYY-MM-DD")
+                if gst not in WAVE3_GAP_STATUS:
+                    bad(f"docs_and_governance_forensics: gap_windows[#{i + 1}] status must be one of {', '.join(WAVE3_GAP_STATUS)}")
+                if gst == "repaired":
+                    if not (isinstance(cb, int) and not isinstance(cb, bool) and isinstance(ob, int) and cb > ob):
+                        bad(f"docs_and_governance_forensics: gap_windows[#{i + 1}] repaired window requires closed_block > opened_block")
+                    if not (isinstance(cd, str) and ISO_DATE_RE.fullmatch(cd) and isinstance(od, str) and cd >= od):
+                        bad(f"docs_and_governance_forensics: gap_windows[#{i + 1}] repaired window requires closed_date >= opened_date")
+                else:
+                    if cb is not None and not (isinstance(cb, int) and not isinstance(cb, bool) and isinstance(ob, int) and cb >= ob):
+                        bad(f"docs_and_governance_forensics: gap_windows[#{i + 1}] closed_block must be null or >= opened_block")
+                    if cd is not None and not (isinstance(cd, str) and ISO_DATE_RE.fullmatch(cd)):
+                        bad(f"docs_and_governance_forensics: gap_windows[#{i + 1}] closed_date must be null or YYYY-MM-DD")
+                if not _finite_nonneg(gw.get("duration_days")):
+                    bad(f"docs_and_governance_forensics: gap_windows[#{i + 1}] duration_days must be finite >= 0")
+                if not (isinstance(gw.get("summary"), str) and 24 <= len(gw["summary"].strip()) <= 800):
+                    bad(f"docs_and_governance_forensics: gap_windows[#{i + 1}] summary must be 24-800 chars")
+
+    # Part 3: Repository & Engineering Reality Audit + Executive Risk Memo (>= 400 chars)
+    ra = f.get("repo_audit")
+    if not isinstance(ra, dict) or set(ra) != set(WAVE3_REPO_FIELDS):
+        bad(f"repo_audit: object with exact keys {', '.join(WAVE3_REPO_FIELDS)}")
+    else:
+        org_repo = ra.get("github_org_repo")
+        if not (isinstance(org_repo, str) and GITHUB_REPO_RE.fullmatch(org_repo)):
+            bad("repo_audit: github_org_repo must be '<org>/<repo>'")
+        for k_ in ("commits_12m_contracts", "commits_12m_frontend_or_other", "human_contributors_12m", "bus_factor"):
+            v_ = ra.get(k_)
+            if not (isinstance(v_, int) and not isinstance(v_, bool) and 0 <= v_ <= 1_000_000):
+                bad(f"repo_audit: {k_} must be a non-negative integer")
+        hc, bf = ra.get("human_contributors_12m"), ra.get("bus_factor")
+        if all(isinstance(x_, int) and not isinstance(x_, bool) and x_ >= 0 for x_ in (hc, bf)):
+            if (hc == 0 and bf != 0) or (hc > 0 and not (1 <= bf <= hc)):
+                bad("repo_audit: bus_factor must be between 1 and human_contributors_12m (or 0 when human_contributors_12m == 0)")
+        if not isinstance(ra.get("code_before_upgrade_verified"), bool):
+            bad("repo_audit: code_before_upgrade_verified must be a boolean (true or false)")
+
+    memo = f.get("executive_risk_memo")
+    min_memo = W3["minMemoChars"]
+    if not isinstance(memo, str) or not (min_memo <= len(memo.strip()) <= 8000):
+        bad(f"executive_risk_memo: substantive clinical analysis >= {min_memo} characters required (max 8,000; shallow 1-liner bot spam rejected)")
+    elif len(set(re.findall(r"[a-z]{3,}", memo.lower()))) < 45:
+        bad("executive_risk_memo: low lexical diversity (< 45 distinct words); provide genuine multi-paragraph due-diligence synthesis rather than repeated filler")
+
+    # Part 4: Researcher Attribution, Base Payout, MCP Receipt & Legal
+    cg = f.get("contributor_github")
+    if not (isinstance(cg, str) and HUNTER_RE.fullmatch(cg) and cg.lower() not in ("your-github-handle", "example")):
+        bad("contributor_github: your GitHub handle (1-39 letters, digits or inner hyphens)")
+    afw = f.get("agent_assist_framework")
+    if afw is not None and not (isinstance(afw, str) and FRAMEWORK_RE.fullmatch(afw)):
+        bad("agent_assist_framework: optional lowercase id such as human-researcher, claude-code, or cursor (a-z 0-9 . _ -, <= 40 chars)")
+    pay = f.get("base_payout_address")
+    if not checksummed(pay):
+        bad("base_payout_address: your mixed-case EIP-55 checksummed Base 0x address ($20.00 USDC is paid there)")
+    elif int(pay, 16) <= 0xFFFF:
+        bad("base_payout_address: the zero address and precompiles (<= 0xffff) cannot receive the payout")
+    elif isinstance(addr, str) and pay.lower() == addr.lower():
+        bad("base_payout_address: must differ from contract_address")
+    elif pay.lower() == TREASURY.lower():
+        bad("base_payout_address: must not be the Pacta treasury")
+
+    mp = f.get("mcp_tool_receipt")
+    if not (isinstance(mp, dict) and mp.get("tool") in W3["mcpTools"] and isinstance(mp.get("arguments"), dict) and mp["arguments"]
+            and isinstance(mp.get("result"), dict) and mp["result"]):
+        bad("mcp_tool_receipt: {\"tool\": pacta_lookup_protocol | pacta_check_preflight | pacta_scan_control_plane, \"arguments\": {non-empty}, \"result\": {non-empty}}")
+    else:
+        res = mp["result"]
+        keys = set(res)
+        envelope = isinstance(res.get("content"), list) or isinstance(res.get("structuredContent"), dict)
+        shaped = (envelope or bool(keys & {"schema", "results"})) if mp["tool"] == "pacta_lookup_protocol" else (envelope or any(ks <= keys for ks in PREFLIGHT_KEYSETS))
+        if not shaped:
+            bad(f"mcp_tool_receipt: result is not a {mp['tool']} output")
+        ser = json.dumps(res, sort_keys=True).lower()
+        refs = [x.lower() for x in (addr, psl, slug) if isinstance(x, str) and x]
+        if not any(r in ser for r in refs):
+            bad("mcp_tool_receipt: result must contain contract_address, pacta_slug, or slug from a real Pacta MCP call")
+
+    if f.get("apache2_commercial_grant") is not True:
+        bad("apache2_commercial_grant: must be true (Apache-2.0 contribution & commercialization grant)")
+    racc = f.get("rules_accepted")
+    if not (isinstance(racc, list) and len(racc) == len(W3["rules"]) and all(r is True for r in racc)):
+        bad("rules_accepted: [true, true, true, true]")
+    if any(r.search(raw) for r in SECRET_RES):
+        bad("secrets: remove private keys, mnemonics, API tokens, JWTs and Bearer credentials")
+    if any(r.search(raw) for r in EXPLOIT_RES):
+        bad("exploit: no transaction-sending commands or exploit PoCs (route vulnerabilities via Immunefi / Cantina)")
+    return probs
+
+
+def valid_fixture_wave3(chain="optimism", rpc_slug=None):
+    """A complete, valid synthetic Wave 3 3-Year Protocol Trajectory & Integrity Dossier."""
+    addr = "0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359"
+    pay = "0xdbF03B407c01E7cD3CBea99509d93f8DDDC8C6FB"
+    cid = WAVE3_CHAIN_IDS[chain]
+    slug = rpc_slug or "example-lending"
+    tx1 = "0x" + "1a" * 32
+    tx2 = "0x" + "2b" * 32
+    tx3 = "0x" + "3c" * 32
+    memo = (
+        "Across the 2023-2026 observation window, Example Lending transitioned its primary pool proxy admin from an initial "
+        "2-of-3 founder Gnosis Safe deployed at block 108,400,000 to a 48-hour TimelockController backed by a 4-of-7 guardian "
+        "Safe at block 124,900,000, following an unannounced intermediate implementation upgrade at block 116,250,000 that left "
+        "public security documentation stale for 142 days (MTTR = 142.0 days, closed by GitHub docs commit 9f8e7d6c). Repository "
+        "forensics over the trailing 12 months show 64 smart-contract commits across 5 human engineers (bus factor = 2) with "
+        "every mainnet implementation bytecode hash traceable to a tagged audit commit prior to on-chain execution, indicating "
+        "disciplined post-2025 operational maturity despite the 2024 documentation lag."
+    )
+    return {
+        "wave": 3,
+        "chain": chain,
+        "chain_id": cid,
+        "protocol_name": "Example Lending",
+        "slug": slug,
+        "pacta_slug": rpc_slug,
+        "contract_address": addr,
+        "tvl_usd": 28500000,
+        "tvl_source_url": "https://defillama.com/protocol/example-lending",
+        "dossier_window": "2023-2026",
+        "trajectory_mode": "mutable_transitions",
+        "historical_transitions": [
+            {
+                "block_number": 108400000,
+                "block_date": "2023-08-19",
+                "tx_hash": tx1,
+                "event_kind": "deployment_baseline",
+                "rpc_or_cast_proof": f"cast storage {addr} 0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103 --block 108400000 --rpc-url https://mainnet.optimism.io",
+                "summary": "Initial EIP-1967 admin slot points to 2-of-3 founder Safe without timelock delay despite launch docs citing a 24h timelock.",
+            },
+            {
+                "block_number": 116250000,
+                "block_date": "2024-02-16",
+                "tx_hash": tx2,
+                "event_kind": "proxy_upgrade",
+                "rpc_or_cast_proof": f"cast receipt {tx2} --rpc-url https://mainnet.optimism.io",
+                "summary": "Upgraded(address) executed directly by 2-of-3 Safe in 0 seconds, rotating pool logic implementation while docs still claimed timelock gating.",
+            },
+            {
+                "block_number": 124900000,
+                "block_date": "2024-07-08",
+                "tx_hash": tx3,
+                "event_kind": "timelock_or_role_mutation",
+                "rpc_or_cast_proof": f"cast storage {addr} 0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103 --block 124900000 --rpc-url https://mainnet.optimism.io",
+                "summary": "AdminChanged transferred EIP-1967 proxy admin to 48h TimelockController (minDelay = 172800s) governed by 4-of-7 guardian Safe.",
+            },
+        ],
+        "docs_and_governance_forensics": {
+            "mttr_status": "repaired",
+            "mttr_days": 142.0,
+            "evidence_sources": [
+                {
+                    "kind": "github_docs_commit",
+                    "date": "2024-07-08",
+                    "url": "https://github.com/example-lending/docs/commit/9f8e7d6c5b4a32109876543210fedcba98765432",
+                    "claim_summary": "Docs security page updated to list the deployed 48h TimelockController and 4-of-7 Safe addresses after OIP-14 execution.",
+                },
+                {
+                    "kind": "governance_proposal",
+                    "date": "2024-07-01",
+                    "url": "https://snapshot.org/#/example-lending.eth/proposal/0xabc123",
+                    "claim_summary": "DAO proposal OIP-14 ratifying migration of proxy admin authority from launch multisig to 48-hour TimelockController.",
+                },
+            ],
+            "gap_windows": [
+                {
+                    "opened_block": 116250000,
+                    "opened_date": "2024-02-16",
+                    "closed_block": 124900000,
+                    "closed_date": "2024-07-08",
+                    "duration_days": 142.0,
+                    "status": "repaired",
+                    "summary": "Zero-delay 2-of-3 EOA multisig retained unilateral upgrade control for 142 days while public security docs advertised timelock protection.",
+                }
+            ],
+        },
+        "repo_audit": {
+            "github_org_repo": "example-lending/core-contracts",
+            "commits_12m_contracts": 64,
+            "commits_12m_frontend_or_other": 118,
+            "human_contributors_12m": 5,
+            "bus_factor": 2,
+            "code_before_upgrade_verified": True,
+        },
+        "executive_risk_memo": memo,
+        "contributor_github": "example-researcher",
+        "agent_assist_framework": "human-researcher",
+        "base_payout_address": pay,
+        "mcp_tool_receipt": {
+            "tool": "pacta_lookup_protocol",
+            "arguments": {"query": rpc_slug or addr},
+            "result": {"schema": "pacta.protocol_lookup.v1", "query": rpc_slug or addr, "totalMatches": 1 if rpc_slug else 0, "results": []},
+        },
+        "apache2_commercial_grant": True,
+        "rules_accepted": [True] * 4,
+    }
+
+
+def self_test_wave3(idx3, verbose=False):
+    """Wave 3: 7 chains, rpc_observed unlock, 3-part dossier positives + adversarial/spam negatives."""
+    ok = True
+    prots = json.load(open(PROTOCOLS))["protocols"]
+    eas_prot = next(x for x in prots if x["chain"] == "ethereum" and x.get("easAttested"))
+    rpc_prot = next(x for x in prots if not x.get("easAttested"))
+    for ch in WAVE3_CHAINS.values():
+        g_ = valid_fixture_wave3(ch)
+        if validate_wave3(g_, idx3):
+            ok = False
+            print(f"self-test FAIL: wave 3 valid {ch} dossier -> {validate_wave3(g_, idx3)}")
+    # rpc_observed protocol in protocols.json MUST pass!
+    rpc_ok = valid_fixture_wave3(rpc_prot["chain"] if rpc_prot["chain"] in WAVE3_CHAIN_IDS else "ethereum", rpc_slug=rpc_prot["slug"])
+    if validate_wave3(rpc_ok, idx3):
+        ok = False
+        print(f"self-test FAIL: wave 3 rpc_observed target ({rpc_prot['slug']}) refused -> {validate_wave3(rpc_ok, idx3)}")
+    base = valid_fixture_wave3("optimism")
+    spam_memo = ("protocol risk gap analysis safe timelock upgrade " * 12).strip()   # > 400 chars, only 7 distinct words
+    cases = [
+        ("wave", {"wave": 2}),
+        ("chain", {"chain": "solana"}),
+        ("chain_id", {"chain_id": 1}),
+        ("tvl_usd", {"tvl_usd": 9_999_999}),
+        ("duplicate", {"chain": "ethereum", "chain_id": 1, "pacta_slug": eas_prot["slug"]}),
+        ("duplicate", {"chain": "ethereum", "chain_id": 1, "contract_address": eas_prot["primaryContract"],
+                       "historical_transitions": [{**t, "rpc_or_cast_proof": t["rpc_or_cast_proof"].replace(base["contract_address"], eas_prot["primaryContract"])}
+                                                  for t in base["historical_transitions"]],
+                       "mcp_tool_receipt": {"tool": "pacta_lookup_protocol", "arguments": {"query": eas_prot["primaryContract"]},
+                                            "result": {"schema": "pacta.protocol_lookup.v1", "query": eas_prot["primaryContract"], "results": []}}}),
+        ("historical_transitions", {"historical_transitions": base["historical_transitions"][:1]}),
+        ("historical_transitions", {"historical_transitions": [base["historical_transitions"][1], base["historical_transitions"][0]]}),
+        ("historical_transitions", {"historical_transitions": [{**base["historical_transitions"][0], "rpc_or_cast_proof": "cast call 0x123 --rpc-url https://x.org; rm -rf /"},
+                                                               base["historical_transitions"][1]]}),
+        ("docs_and_governance_forensics", {"docs_and_governance_forensics": {
+            **base["docs_and_governance_forensics"],
+            "evidence_sources": [{"kind": "official_docs", "date": "2025-01-01", "url": "https://docs.example.org/a", "claim_summary": "Current docs page without archival commit."},
+                                 {"kind": "audit_report", "date": "2025-01-02", "url": "https://docs.example.org/b", "claim_summary": "Current audit PDF without commit or Wayback."}]}}),
+        ("docs_and_governance_forensics", {"docs_and_governance_forensics": {**base["docs_and_governance_forensics"], "mttr_days": None}}),
+        ("repo_audit", {"repo_audit": {**base["repo_audit"], "bus_factor": 9}}),
+        ("repo_audit", {"repo_audit": {**base["repo_audit"], "code_before_upgrade_verified": "yes"}}),
+        ("executive_risk_memo", {"executive_risk_memo": "Looks risky, 2/3 multisig upgraded proxy without timelock."}),
+        ("executive_risk_memo", {"executive_risk_memo": spam_memo}),
+        ("contributor_github", {"contributor_github": "your-github-handle"}),
+        ("base_payout_address", {"base_payout_address": base["base_payout_address"].lower()}),
+        ("mcp_tool_receipt", {"mcp_tool_receipt": {"tool": "pacta_lookup_protocol", "arguments": {"query": "other"},
+                                                   "result": {"schema": "pacta.protocol_lookup.v1", "query": "other", "results": []}}}),
+    ]
+    for want, patch in cases:
+        probs = validate_wave3({**base, **patch}, idx3)
+        if not any(p.startswith(want + ":") for p in probs):
+            ok = False
+            print(f"self-test FAIL: wave 3 {list(patch)} -> expected '{want}', got {probs}")
+        elif verbose:
+            print(f"self-test ok: wave 3 {want}")
+    poly = valid_fixture_wave3("polygon")
+    for path, f_, want in (("bounties/wave-3/optimism-example-lending.json", base, True),
+                           ("bounties/wave-3/polygon-example-lending.json", poly, True),
+                           ("bounties/wave-3/ethereum-example-lending.json", base, False),
+                           ("bounties/wave-2/optimism-example-lending.json", base, False),
+                           ("bounties/wave-3/solana-example-lending.json", base, False)):
+        if (not wave3_name_problems(path, f_)) != want:
+            ok = False
+            print(f"self-test FAIL: wave 3 fixture path {path} expected {'ok' if want else 'refused'}")
+    if is_wave3("bounties/wave-3/polygon-x.json", {}) is not True or is_wave3("x.json", {"wave": 3}) is not True or is_wave3("bounties/wave-2/ethereum-x.json", {"wave": 2}):
+        ok = False
+        print("self-test FAIL: wave 3 detection")
+    return ok
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
+    ap.add_argument("--wave", type=int, choices=(1, 2, 3), help="explicitly validate as Wave 1, Wave 2, or Wave 3 (auto-detected when omitted)")
     g = ap.add_mutually_exclusive_group(required=True)
-    g.add_argument("--body", help="filled bounty_mismatch.md PR body")
-    g.add_argument("--json", help="JSON fixture: Wave 1 fields " + ", ".join(FIELDS_JSON) + "; Wave 2 (bounties/wave-2/<chain>-<slug>.json) fields "
-                   + ", ".join(FIELDS_WAVE2))
+    g.add_argument("--body", help="filled bounty_mismatch.md PR body (Wave 1)")
+    g.add_argument("--json", help="JSON fixture: Wave 3 (bounties/wave-3/<chain>-<slug>.json), Wave 2, or Wave 1")
     g.add_argument("--self-test", action="store_true")
     a = ap.parse_args(argv)
     if a.self_test:
@@ -748,6 +1269,9 @@ def main(argv=None):
         print("self-test ok" if ok else "self-test FAILED")
         return 0 if ok else 1
     if a.body:
+        if a.wave in (2, 3):
+            print(f"FAIL wave: --body is only for Wave 1; Wave {a.wave} uses --json")
+            return 1
         f = parse_body(open(a.body).read())
     else:
         try:
@@ -756,7 +1280,9 @@ def main(argv=None):
             print(f"FAIL json: {e}")
             print("1 problem(s)")
             return 1
-    if a.json and is_wave2(a.json, f):
+    if a.json and (a.wave == 3 or (a.wave is None and is_wave3(a.json, f))):
+        probs = validate_wave3(f, siblings=wave3_siblings(a.json)) + wave3_name_problems(a.json, f)
+    elif a.json and (a.wave == 2 or (a.wave is None and is_wave2(a.json, f))):
         probs = validate_wave2(f, siblings=wave2_siblings(a.json)) + wave2_name_problems(a.json, f)
     else:
         probs = validate(f) + (fixture_name_problems(a.json, f) if a.json else [])

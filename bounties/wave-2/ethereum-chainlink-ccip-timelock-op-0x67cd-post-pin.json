@@ -1,0 +1,228 @@
+{
+  "wave": 2,
+  "category": "post_pin_drift",
+  "slug": "chainlink-ccip-timelock-op-0x67cd-post-pin",
+  "protocol": "Chainlink CCIP \u2014 RBACTimelock Operation 0x67cdd78a Execution",
+  "chainId": 1,
+  "contractAddress": "0x44835bBBA9D40DEDa9b64858095EcFB2693c9449",
+  "pactaSlug": "chainlink-ccip",
+  "priorPin": "Pacta chainlink-ccip-timelock-proposers-s24; prior block 26433001; https://pacta.wtf/api/v1/index.json",
+  "hunter": "random-solver",
+  "basePayoutAddress": "0x7EDAC178137184cB0a3e291CFAefAcFe138137Bb",
+  "mcpProof": {
+    "tool": "pacta_lookup_protocol",
+    "arguments": {
+      "query": "0x44835bBBA9D40DEDa9b64858095EcFB2693c9449"
+    },
+    "result": {
+      "schema": "pacta.protocol_lookup.v1",
+      "query": "0x44835bBBA9D40DEDa9b64858095EcFB2693c9449",
+      "filters": {
+        "chain": null,
+        "kind": "all",
+        "limit": 10
+      },
+      "totalCatalog": {
+        "protocols": 311,
+        "briefs": 17,
+        "easAttestedProtocols": 116,
+        "rpcObservedProtocols": 195
+      },
+      "totalMatches": 1,
+      "count": 1,
+      "results": [
+        {
+          "baseEasUids": [
+            "0x61c2970c176b85ab604e6b565c5f050a7176b62e725d449e8d27d700365283d6"
+          ],
+          "category": "Cross-Chain Messaging & Token Bridge Infrastructure",
+          "chain": "ethereum",
+          "chainId": 1,
+          "classification": "mixed",
+          "controllerAddress": "0x44835bBBA9D40DEDa9b64858095EcFB2693c9449",
+          "controllerKind": "timelock",
+          "documentationComparison": "compared",
+          "documentedDelaySeconds": null,
+          "easAttested": true,
+          "evidenceBasis": "eas_attested",
+          "kind": "protocol",
+          "name": "Chainlink CCIP",
+          "observedDelaySeconds": 10800,
+          "pinnedBlock": 26433001,
+          "preflightArgs": {
+            "address": "0x80226fc0Ee2b096224EeAc085Bb9a8cba1146f7D",
+            "chain": "ethereum"
+          },
+          "primaryContract": "0x80226fc0Ee2b096224EeAc085Bb9a8cba1146f7D",
+          "relatedContracts": [
+            "0x411dE17f12D1A34ecC7F45f49844626267c75e81",
+            "0x117ec8aD107976e1dBCc21717ff78407Bc36aADc",
+            "0x6608920e3F6b591EC3Cf15CA1DDf66fBE117F56A",
+            "0x8C00Cc7cC37396e88BbFe66371341a59D1b5771F",
+            "0xE53289F32c8E690b7173aA33affE9B6B0CB0012F",
+            "0xD6597750bf74DCAEC57e0F9aD2ec998D837005bf",
+            "0xD9757aA52907798d1aF2FDa7A6C0cC733E5aCf7e"
+          ],
+          "slug": "chainlink-ccip",
+          "sprints": [
+            24
+          ],
+          "surfaces": [
+            {
+              "blockNumber": 26433001,
+              "classification": "aligned_baseline",
+              "id": "chainlink-ccip-config-owner-rbac-timelock-s24",
+              "surface": "CCIP configuration owner: an RBACTimelock (Router, RMN proxy, TokenAdminRegistry, CCIPHome)",
+              "targetContract": "0x80226fc0Ee2b096224EeAc085Bb9a8cba1146f7D",
+              "targetLabel": "CCIP Router (Ethereum)"
+            },
+            {
+              "blockNumber": 26433001,
+              "classification": "aligned_baseline",
+              "id": "chainlink-ccip-rmn-uncurse-owner-s24",
+              "surface": "RMN: uncurse is owner-only and the owner is an RBACTimelock; curse also by authorized callers",
+              "targetContract": "0x0B047953451A207743fB62541B21199b95190602",
+              "targetLabel": "CCIP RMN (Ethereum)"
+            },
+            {
+              "blockNumber": 26433001,
+              "classification": "parameter_delta",
+              "id": "chainlink-ccip-timelock-proposers-s24",
+              "surface": "Timelock proposers: a 6-of-12 Safe besides the ManyChainMultiSigs (docs: all proposals from an MCMS)",
+              "targetContract": "0x44835bBBA9D40DEDa9b64858095EcFB2693c9449",
+              "targetLabel": "CCIP RBACTimelock (Ethereum)"
+            },
+            {
+              "blockNumber": 26433001,
+              "classification": "aligned_baseline",
+              "id": "chainlink-ccip-token-admin-registry-owner-s24",
+              "surface": "CCIP Directory addresses resolve on-chain; TokenAdminRegistry owned by the RBACTimelock",
+              "targetContract": "0xb22764f98dD05c789929716D677382Df22C05Cb6",
+              "targetLabel": "CCIP TokenAdminRegistry (Ethereum)"
+            }
+          ],
+          "targetLabel": "CCIP Router (Ethereum)",
+          "tokens": [
+            "CCIP",
+            "LINK",
+            "Chainlink"
+          ],
+          "url": "https://pacta.wtf/protocols/chainlink-ccip/",
+          "whatDiffers": {
+            "changed": [
+              {
+                "classification": "parameter_delta",
+                "documented": "docs.chain.link (CCIP upgradability): 'All proposals originate from a ManyChainMultiSig (MCMS), which requires multiple independent signers to sign off.' / 'For example, you can view the Ethereum mainnet MCMS on Ethersc\u2026",
+                "observed": "RBACTimelock 0x44835bBBA9D40DEDa9b64858095EcFB2693c9449: getRoleMemberCount(PROPOSER_ROLE) = 3: ManyChainMultiSig 0xE53289F32c8E690b7173aA33affE9B6B0CB0012F (the MCMS the docs link), GnosisSafeProxy 0xD6597750bf74DCAEC5\u2026",
+                "parameter": "Timelock proposers: a 6-of-12 Safe besides the ManyChainMultiSigs (docs: all proposals from an MCMS)",
+                "recordId": "chainlink-ccip-timelock-proposers-s24"
+              }
+            ],
+            "matched": [
+              {
+                "parameter": "CCIP configuration owner: an RBACTimelock (Router, RMN proxy, TokenAdminRegistry, CCIPHome)",
+                "recordId": "chainlink-ccip-config-owner-rbac-timelock-s24",
+                "value": "matches the documentation"
+              },
+              {
+                "parameter": "RMN: uncurse is owner-only and the owner is an RBACTimelock; curse also by authorized callers",
+                "recordId": "chainlink-ccip-rmn-uncurse-owner-s24",
+                "value": "matches the documentation"
+              },
+              {
+                "parameter": "CCIP Directory addresses resolve on-chain; TokenAdminRegistry owned by the RBACTimelock",
+                "recordId": "chainlink-ccip-token-admin-registry-owner-s24",
+                "value": "matches the documentation"
+              }
+            ]
+          },
+          "match": "exact",
+          "citationFooter": "Citation: https://pacta.wtf/protocols/chainlink-ccip/ (Base Mainnet EAS: 0x61c2970c176b85ab604e6b565c5f050a7176b62e725d449e8d27d700365283d6)\nIssuer paths (payment never alters a classification; it strictly follows verified on-chain and documentation evidence): $0 maintainer doc-update queue https://pacta.wtf/request/ \u00b7 $500 USDC Rapid Single-Gap Re-Verification (24h SLA) https://pacta.wtf/request/?tier=rapid-500&protocol=chainlink-ccip \u00b7 $2,500\u2013$5,000 USDC Full Protocol Control-Plane Dossier (24h SLA) https://pacta.wtf/for-protocols/"
+        }
+      ],
+      "catalog": "https://pacta.wtf/api/v1/lookup.json",
+      "nextStep": "Pass a result's preflightArgs ({chain, address}) to pacta_check_preflight (or pacta_scan_control_plane) for a live check.",
+      "note": "easAttested protocols are Base-EAS-anchored records that compare on-chain state with the protocol's documentation. rpc_observed protocols pin the on-chain control plane over archive JSON-RPC and do not assess the documentation (documentationComparison: not_assessed). Briefs are block-pinned verification briefs. preflightArgs re-read the contract live.",
+      "citationFooter": "Citation: https://pacta.wtf/protocols/chainlink-ccip/ (Base Mainnet EAS: 0x61c2970c176b85ab604e6b565c5f050a7176b62e725d449e8d27d700365283d6)\nIssuer paths (payment never alters a classification; it strictly follows verified on-chain and documentation evidence): $0 maintainer doc-update queue https://pacta.wtf/request/ \u00b7 $500 USDC Rapid Single-Gap Re-Verification (24h SLA) https://pacta.wtf/request/?tier=rapid-500&protocol=chainlink-ccip \u00b7 $2,500\u2013$5,000 USDC Full Protocol Control-Plane Dossier (24h SLA) https://pacta.wtf/for-protocols/",
+      "upgrade_x402": {
+        "note": "Free tier: 50 pre-flight calls per caller per UTC day (REST and MCP), then $0.01 per call over x402 (HTTP 402, never a dead-end 429). Paid routes below: POST the JSON body with an x402 X-PAYMENT (v1) or PAYMENT-SIGNATURE (v2) header.",
+        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "network": "base (eip155:8453)",
+        "payTo": "0x4348DF1BEFAffcbA248B5118B1b782B1B2bdEd14",
+        "discovery": "https://pacta.fractalneurons.com/.well-known/x402",
+        "overflow": {
+          "method": "GET or POST",
+          "url": "https://pacta.fractalneurons.com/v1/check/preflight",
+          "priceUsd": "0.01",
+          "amountAtomic": "10000",
+          "after": "50 free calls per UTC day"
+        },
+        "endpoints": [
+          {
+            "method": "POST",
+            "url": "https://pacta.fractalneurons.com/v1/x402/verdict",
+            "priceUsd": "0.02",
+            "amountAtomic": "20000",
+            "unlocks": "fast contract / token control-plane verdict: riskScore 0-100, grade A-F, upgrade / owner / pause / blacklist / mint flags and a shareable scan URL",
+            "example": {
+              "chain": "ethereum",
+              "address": "0xA35b1B31Ce002FBF2058D22F30f95D405200A15b"
+            }
+          },
+          {
+            "method": "POST",
+            "url": "https://pacta.fractalneurons.com/v1/x402/dossier",
+            "priceUsd": "0.05",
+            "amountAtomic": "50000",
+            "unlocks": "full control-plane dossier: every controller Safe's signers and threshold, signers shared with other indexed protocols, Base EAS proof",
+            "example": {
+              "slug": "stader-labs-ethx"
+            }
+          },
+          {
+            "method": "POST",
+            "url": "https://pacta.fractalneurons.com/v1/x402/calldata-sim",
+            "priceUsd": "0.25",
+            "amountAtomic": "250000",
+            "unlocks": "pre-signing calldata check: timelock / Safe / multicall calls decoded, each rated against live delays and the authority that governs it",
+            "example": {
+              "chain": "ethereum",
+              "target": "0x2225DAbFfC7F862c99477381E971E8B1FDaB467e",
+              "data": "0x64d623530000000000000000000000000000000000000000000000000000000000015180"
+            }
+          },
+          {
+            "method": "POST",
+            "url": "https://pacta.fractalneurons.com/v1/x402/deep-scan",
+            "priceUsd": "9.00",
+            "amountAtomic": "9000000",
+            "unlocks": "deep control-plane scan cross-checked on two independent RPC operators, auditor receipt and a queued Base EAS ticket",
+            "example": {
+              "chain": "base",
+              "address": "0x35D21Bb4Df6586FE7759b5e57263ffeB3e1fd872"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "blockNumber": 26449307,
+  "blockHash": "0x69034b5db9c195b6b42fe95d489c17db3e0cd8f0742242cc17fc81eeacad4151",
+  "castCommands": [
+    "cast call 0x44835bBBA9D40DEDa9b64858095EcFB2693c9449 \"isOperationDone(bytes32)\" 0x67cdd78af74492609eb87e0b8b8c6afb4e4fe86d95b4c11ec5c0d4116350d829 --block 26449307 --rpc-url https://gateway.tenderly.co/public/mainnet",
+    "cast call 0x44835bBBA9D40DEDa9b64858095EcFB2693c9449 \"isOperationDone(bytes32)\" 0x67cdd78af74492609eb87e0b8b8c6afb4e4fe86d95b4c11ec5c0d4116350d829 --block 26449307 --rpc-url https://eth-mainnet.public.blastapi.io"
+  ],
+  "rpcOutputs": {
+    "a": "0x0000000000000000000000000000000000000000000000000000000000000001",
+    "b": "0x0000000000000000000000000000000000000000000000000000000000000001"
+  },
+  "docsUrl": "https://github.com/smartcontractkit/ccip-owner-contracts",
+  "docsQuote": "This repo contains a set of contracts used for administering Chainlink contracts",
+  "apache2CommercialGrant": true,
+  "rulesAccepted": [
+    true,
+    true,
+    true,
+    true
+  ]
+}

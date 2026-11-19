@@ -1,0 +1,241 @@
+{
+  "wave": 2,
+  "category": "post_pin_drift",
+  "slug": "cap-timelock-op-0x740e-post-pin",
+  "protocol": "Cap \u2014 TimelockController Operation 0x740e26ef Execution",
+  "chainId": 1,
+  "contractAddress": "0xD8236031d8279d82E615aF2BFab5FC0127A329ab",
+  "pactaSlug": "cap",
+  "priorPin": "Pacta cap-1d-timelock-min-delay-s20; prior block 26425374; https://pacta.wtf/api/v1/index.json",
+  "hunter": "random-solver",
+  "basePayoutAddress": "0x7EDAC178137184cB0a3e291CFAefAcFe138137Bb",
+  "mcpProof": {
+    "tool": "pacta_lookup_protocol",
+    "arguments": {
+      "query": "0xD8236031d8279d82E615aF2BFab5FC0127A329ab"
+    },
+    "result": {
+      "schema": "pacta.protocol_lookup.v1",
+      "query": "0xD8236031d8279d82E615aF2BFab5FC0127A329ab",
+      "filters": {
+        "chain": null,
+        "kind": "all",
+        "limit": 10
+      },
+      "totalCatalog": {
+        "protocols": 311,
+        "briefs": 17,
+        "easAttestedProtocols": 116,
+        "rpcObservedProtocols": 195
+      },
+      "totalMatches": 2,
+      "count": 2,
+      "results": [
+        {
+          "baseEasUids": [
+            "0xe712dd31d79ab492e2e64eb5847396651dee81daa9f895ead45548e97f1a2eb7"
+          ],
+          "category": "Stablecoin / Credit",
+          "chain": "ethereum",
+          "chainId": 1,
+          "classification": "mixed",
+          "controllerAddress": "0xD8236031d8279d82E615aF2BFab5FC0127A329ab",
+          "controllerKind": "timelock",
+          "documentationComparison": "compared",
+          "documentedDelaySeconds": 86400,
+          "easAttested": true,
+          "evidenceBasis": "eas_attested",
+          "kind": "protocol",
+          "name": "Cap",
+          "observedDelaySeconds": 86400,
+          "pinnedBlock": 26425374,
+          "preflightArgs": {
+            "address": "0xD8236031d8279d82E615aF2BFab5FC0127A329ab",
+            "chain": "ethereum"
+          },
+          "primaryContract": "0xD8236031d8279d82E615aF2BFab5FC0127A329ab",
+          "relatedContracts": [
+            "0xb8FC49402dF3ee4f8587268FB89fda4d621a8793",
+            "0xcCcc62962d17b8914c62D74FfB843d73B2a3cccC"
+          ],
+          "slug": "cap",
+          "sprints": [
+            20
+          ],
+          "surfaces": [
+            {
+              "blockNumber": 26425374,
+              "classification": "aligned_baseline",
+              "id": "cap-1d-timelock-min-delay-s20",
+              "surface": "TimelockController minimum delay: 1 day",
+              "targetContract": "0xD8236031d8279d82E615aF2BFab5FC0127A329ab",
+              "targetLabel": "Cap TimelockController (Developer multisig proposer)"
+            },
+            {
+              "blockNumber": 26425374,
+              "classification": "protective_delta",
+              "id": "cap-access-control-admin-is-timelock-s20",
+              "surface": "Access-control admin: the Timelock, not the multisig directly",
+              "targetContract": "0x7731129a10d51e18cDE607C5C115F26503D2c683",
+              "targetLabel": "Cap AccessControl registry"
+            },
+            {
+              "blockNumber": 26425374,
+              "classification": "aligned_baseline",
+              "id": "cap-cusd-upgrade-role-timelock-only-s20",
+              "surface": "cUSD upgrade role (bytes4(0)) holder: the Timelock only",
+              "targetContract": "0x7731129a10d51e18cDE607C5C115F26503D2c683",
+              "targetLabel": "Cap AccessControl registry"
+            }
+          ],
+          "targetLabel": "Cap TimelockController (Developer multisig proposer)",
+          "tokens": [
+            "cUSD",
+            "stcUSD",
+            "CAP"
+          ],
+          "url": "https://pacta.wtf/protocols/cap/",
+          "whatDiffers": {
+            "changed": [
+              {
+                "classification": "protective_delta",
+                "documented": "docs.cap.app (access controls): 'Roles are managed by the Access Control admin, currently set to Cap's multisig address'",
+                "observed": "AccessControl 0x7731129a10d51e18cDE607C5C115F26503D2c683: the only DEFAULT_ADMIN_ROLE member, and the only grantAccess / revokeAccess holder, is the Timelock 0xD8236031d8279d82E615aF2BFab5FC0127A329ab;",
+                "parameter": "Access-control admin: the Timelock, not the multisig directly",
+                "recordId": "cap-access-control-admin-is-timelock-s20"
+              }
+            ],
+            "matched": [
+              {
+                "parameter": "TimelockController minimum delay: 1 day",
+                "recordId": "cap-1d-timelock-min-delay-s20",
+                "value": "matches the documentation"
+              },
+              {
+                "parameter": "cUSD upgrade role (bytes4(0)) holder: the Timelock only",
+                "recordId": "cap-cusd-upgrade-role-timelock-only-s20",
+                "value": "matches the documentation"
+              }
+            ]
+          },
+          "match": "exact",
+          "citationFooter": "Citation: https://pacta.wtf/protocols/cap/ (Base Mainnet EAS: 0xe712dd31d79ab492e2e64eb5847396651dee81daa9f895ead45548e97f1a2eb7)\nIssuer paths (payment never alters a classification; it strictly follows verified on-chain and documentation evidence): $0 maintainer doc-update queue https://pacta.wtf/request/ \u00b7 $500 USDC Rapid Single-Gap Re-Verification (24h SLA) https://pacta.wtf/request/?tier=rapid-500&protocol=cap \u00b7 $2,500\u2013$5,000 USDC Full Protocol Control-Plane Dossier (24h SLA) https://pacta.wtf/for-protocols/"
+        },
+        {
+          "baseEasUids": [],
+          "category": "Timelock radar brief (queued operations)",
+          "chain": "ethereum",
+          "chainId": 1,
+          "classification": "timelock_radar_brief",
+          "controllerAddress": "0xD8236031d8279d82E615aF2BFab5FC0127A329ab",
+          "controllerKind": "timelock",
+          "documentedDelaySeconds": null,
+          "easAttested": false,
+          "eta": 1795105403,
+          "evidenceBasis": "pinned_rpc_brief",
+          "kind": "brief",
+          "name": "Cap \u2014 EigenLayer service-manager upgrade: slashes paid out only after EigenLayer's resolution delay",
+          "observedDelaySeconds": 86400,
+          "preflightArgs": {
+            "address": "0xD8236031d8279d82E615aF2BFab5FC0127A329ab",
+            "chain": "ethereum"
+          },
+          "primaryContract": "0xD8236031d8279d82E615aF2BFab5FC0127A329ab",
+          "relatedProtocolSlug": "cap",
+          "slug": "cap-op-0x3397",
+          "targetLabel": "Cap timelock",
+          "tokens": [
+            "cUSD",
+            "Cap",
+            "EigenServiceManager"
+          ],
+          "url": "https://pacta.wtf/briefs/cap-op-0x3397/",
+          "match": "exact"
+        }
+      ],
+      "catalog": "https://pacta.wtf/api/v1/lookup.json",
+      "nextStep": "Pass a result's preflightArgs ({chain, address}) to pacta_check_preflight (or pacta_scan_control_plane) for a live check.",
+      "note": "easAttested protocols are Base-EAS-anchored records that compare on-chain state with the protocol's documentation. rpc_observed protocols pin the on-chain control plane over archive JSON-RPC and do not assess the documentation (documentationComparison: not_assessed). Briefs are block-pinned verification briefs. preflightArgs re-read the contract live.",
+      "citationFooter": "Citation: https://pacta.wtf/protocols/cap/ (Base Mainnet EAS: 0xe712dd31d79ab492e2e64eb5847396651dee81daa9f895ead45548e97f1a2eb7)\nIssuer paths (payment never alters a classification; it strictly follows verified on-chain and documentation evidence): $0 maintainer doc-update queue https://pacta.wtf/request/ \u00b7 $500 USDC Rapid Single-Gap Re-Verification (24h SLA) https://pacta.wtf/request/?tier=rapid-500&protocol=cap \u00b7 $2,500\u2013$5,000 USDC Full Protocol Control-Plane Dossier (24h SLA) https://pacta.wtf/for-protocols/",
+      "upgrade_x402": {
+        "note": "Free tier: 50 pre-flight calls per caller per UTC day (REST and MCP), then $0.01 per call over x402 (HTTP 402, never a dead-end 429). Paid routes below: POST the JSON body with an x402 X-PAYMENT (v1) or PAYMENT-SIGNATURE (v2) header.",
+        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "network": "base (eip155:8453)",
+        "payTo": "0x4348DF1BEFAffcbA248B5118B1b782B1B2bdEd14",
+        "discovery": "https://pacta.fractalneurons.com/.well-known/x402",
+        "overflow": {
+          "method": "GET or POST",
+          "url": "https://pacta.fractalneurons.com/v1/check/preflight",
+          "priceUsd": "0.01",
+          "amountAtomic": "10000",
+          "after": "50 free calls per UTC day"
+        },
+        "endpoints": [
+          {
+            "method": "POST",
+            "url": "https://pacta.fractalneurons.com/v1/x402/verdict",
+            "priceUsd": "0.02",
+            "amountAtomic": "20000",
+            "unlocks": "fast contract / token control-plane verdict: riskScore 0-100, grade A-F, upgrade / owner / pause / blacklist / mint flags and a shareable scan URL",
+            "example": {
+              "chain": "ethereum",
+              "address": "0xA35b1B31Ce002FBF2058D22F30f95D405200A15b"
+            }
+          },
+          {
+            "method": "POST",
+            "url": "https://pacta.fractalneurons.com/v1/x402/dossier",
+            "priceUsd": "0.05",
+            "amountAtomic": "50000",
+            "unlocks": "full control-plane dossier: every controller Safe's signers and threshold, signers shared with other indexed protocols, Base EAS proof",
+            "example": {
+              "slug": "stader-labs-ethx"
+            }
+          },
+          {
+            "method": "POST",
+            "url": "https://pacta.fractalneurons.com/v1/x402/calldata-sim",
+            "priceUsd": "0.25",
+            "amountAtomic": "250000",
+            "unlocks": "pre-signing calldata check: timelock / Safe / multicall calls decoded, each rated against live delays and the authority that governs it",
+            "example": {
+              "chain": "ethereum",
+              "target": "0x2225DAbFfC7F862c99477381E971E8B1FDaB467e",
+              "data": "0x64d623530000000000000000000000000000000000000000000000000000000000015180"
+            }
+          },
+          {
+            "method": "POST",
+            "url": "https://pacta.fractalneurons.com/v1/x402/deep-scan",
+            "priceUsd": "9.00",
+            "amountAtomic": "9000000",
+            "unlocks": "deep control-plane scan cross-checked on two independent RPC operators, auditor receipt and a queued Base EAS ticket",
+            "example": {
+              "chain": "base",
+              "address": "0x35D21Bb4Df6586FE7759b5e57263ffeB3e1fd872"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "blockNumber": 26449307,
+  "blockHash": "0x69034b5db9c195b6b42fe95d489c17db3e0cd8f0742242cc17fc81eeacad4151",
+  "castCommands": [
+    "cast call 0xD8236031d8279d82E615aF2BFab5FC0127A329ab \"isOperationDone(bytes32)\" 0x740e26ef00f5ac693593d62327a7b40ea59d2a88711c151fcc835bc0190b20ea --block 26449307 --rpc-url https://gateway.tenderly.co/public/mainnet",
+    "cast call 0xD8236031d8279d82E615aF2BFab5FC0127A329ab \"isOperationDone(bytes32)\" 0x740e26ef00f5ac693593d62327a7b40ea59d2a88711c151fcc835bc0190b20ea --block 26449307 --rpc-url https://eth-mainnet.public.blastapi.io"
+  ],
+  "rpcOutputs": {
+    "a": "0x0000000000000000000000000000000000000000000000000000000000000001",
+    "b": "0x0000000000000000000000000000000000000000000000000000000000000001"
+  },
+  "docsUrl": "https://docs.cap.app/concepts/access-controls",
+  "docsQuote": "The Timelock enforces a mandatory waiting period between when an operation is proposed and when it can be executed, giving participants time to react to parameter changes.",
+  "apache2CommercialGrant": true,
+  "rulesAccepted": [
+    true,
+    true,
+    true,
+    true
+  ]
+}

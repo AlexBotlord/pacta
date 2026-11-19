@@ -2,13 +2,13 @@
   "schema": "pacta.staged_sprint_records.v1",
   "sprint": 29,
   "summary_doc": "audits/sprint-29/block-26448221-summary.md",
-  "summary_sha256": "0x64c1ea2c5a8d932c1b2dfd3bffaf04b74bc51e6dea15e17f46d60d18623c7b77",
+  "summary_sha256": "0xba61b61feb65e1b23d10c998f70bcabce22a8b27203581542ef1cc3b68a4507f",
   "eas": {
     "chainId": 1,
     "blockNumber": 26448221,
     "blockHash": "0xa7818c0e1b8807aac0c999c2dc9aeeea40b91b4f19b1b76a62ad02d8d17607c8",
-    "verifiedCount": 1,
-    "driftCount": 3
+    "verifiedCount": 3,
+    "driftCount": 4
   },
   "driftDefinition": "eas.driftCount = parameter_delta records (Sprints 1-28 convention; PactaSentinelGuard treats driftCount != 0 as drift)",
   "pins": {
@@ -74,10 +74,40 @@
         "record": "lagoon-vault-beacon-upgrade-delay-s29",
         "wave": 2
       }
+    ],
+    "lido-steth-dual-governance": [
+      {
+        "agentFramework": null,
+        "fixture": "bounties/wave-2/ethereum-lido-emergency-activation-safe-post-pin.json",
+        "hunter": "startupcompliancekit",
+        "pr": 93,
+        "record": "lido-dual-governance-emergency-activation-safe-s29",
+        "wave": 2
+      },
+      {
+        "agentFramework": null,
+        "fixture": "bounties/wave-2/ethereum-lido-emergency-execution-safe-post-pin.json",
+        "hunter": "startupcompliancekit",
+        "pr": 94,
+        "record": "lido-dual-governance-emergency-execution-safe-s29",
+        "wave": 2
+      }
+    ],
+    "renzo-protocol-ezeth": [
+      {
+        "agentFramework": null,
+        "fixture": "bounties/wave-2/ethereum-renzo-depositqueue-fee-post-pin.json",
+        "hunter": "startupcompliancekit",
+        "pr": 92,
+        "record": "renzo-ezeth-deposit-queue-fee-s29",
+        "wave": 2
+      }
     ]
   },
   "maintenance": {
-    "f-x-protocol-v2": "f(x) Protocol v2"
+    "f-x-protocol-v2": "f(x) Protocol v2",
+    "lido-steth-dual-governance": "Lido (stETH / Dual Governance)",
+    "renzo-protocol-ezeth": "Renzo Protocol (ezETH)"
   },
   "new_protocols": [
     {
@@ -8965,10 +8995,22 @@
       ],
       "docs": "L1 ProxyAdmin Owner 0x5a0A…3d2A",
       "group": "parameter_delta"
+    },
+    "renzo-protocol-ezeth": {
+      "chain": "feeBasisPoints() reads 10,000 (100%)",
+      "chain_tokens": [
+        "10,000"
+      ],
+      "doc_tokens": [
+        "10%"
+      ],
+      "docs": "a 10% fee on restaking rewards",
+      "group": "parameter_delta"
     }
   },
   "summary_line_updates": {
     "f-x-protocol-v2": "Docs set a 3-day timelock on every transaction; the V2 Router's owner is a 6-of-9 Safe",
+    "renzo-protocol-ezeth": "Docs state a 10% reward fee; feeBasisPoints() now reads 10,000 (100%), up from 1,500",
     "flaunch": "flaunch changes wait a 2-day timelock, as documented"
   },
   "controller_facts": {
@@ -9016,6 +9058,45 @@
         "code_keccak_hex": "758e4449ee13529a1957db8b808180c777b53da35998e0de658e070563df3131",
         "pin": "ethereum@sprint-29",
         "owner_hex": "6d46e28ab34622d9a39d0f306a37a8dc270951af"
+      },
+      "ethereum:8b7854488fde088d686ea672b6ba1a5242515f45": {
+        "code_bytes": 171,
+        "code_keccak_hex": "d7d408ebcd99b2b70be43e20253d6d92a8ea8fab29bd3be7f55b10032331fb4c",
+        "pin": "ethereum@sprint-29",
+        "safe_threshold": 4,
+        "safe_owners": 7,
+        "safe_owner_hex": [
+          "9bdff3b294400a6a5d56647872d4035c944c10ce",
+          "a032e9e70c6200b7e51fcdef15b611fc38833cc1",
+          "8f929defb7638b5ee6390bdd3bf87b266df5edf4",
+          "3554630ec64e7756007df4137abf7c5881c533d0",
+          "cfc7834eb929e7e621f0ba71d421a27eddf6dda1",
+          "62c89f5768d0fec0915fb614c5edd9fdeaa2a3fd",
+          "ae0e06b1b5ecb80f157a7db8a7c9e83fc1720711"
+        ],
+        "safe_version": "1.4.1"
+      },
+      "ethereum:c7792b3f2b399bb0edf53fecdceceb97fbeb18af": {
+        "code_bytes": 171,
+        "code_keccak_hex": "d7d408ebcd99b2b70be43e20253d6d92a8ea8fab29bd3be7f55b10032331fb4c",
+        "pin": "ethereum@sprint-29",
+        "safe_threshold": 5,
+        "safe_owners": 7,
+        "safe_owner_hex": [
+          "8f929defb7638b5ee6390bdd3bf87b266df5edf4",
+          "9bdff3b294400a6a5d56647872d4035c944c10ce",
+          "a032e9e70c6200b7e51fcdef15b611fc38833cc1",
+          "3554630ec64e7756007df4137abf7c5881c533d0",
+          "ae0e06b1b5ecb80f157a7db8a7c9e83fc1720711",
+          "62c89f5768d0fec0915fb614c5edd9fdeaa2a3fd",
+          "cfc7834eb929e7e621f0ba71d421a27eddf6dda1"
+        ],
+        "safe_version": "1.4.1"
+      },
+      "ethereum:f2f305d14dcd8aaef887e0428b3c9534795d0d60": {
+        "code_bytes": 2739,
+        "code_keccak_hex": "e5e3693157141608a301682c8c228c0277eac7efc0b98b57f874ca49752b5fd8",
+        "pin": "ethereum@sprint-29"
       }
     }
   },
@@ -9043,7 +9124,7 @@
       "selector_or_slot": "0x8da5cb5b",
       "sprint": 29,
       "summary_doc": "audits/sprint-29/block-26448221-summary.md",
-      "summary_sha256": "0x64c1ea2c5a8d932c1b2dfd3bffaf04b74bc51e6dea15e17f46d60d18623c7b77",
+      "summary_sha256": "0xba61b61feb65e1b23d10c998f70bcabce22a8b27203581542ef1cc3b68a4507f",
       "summary_short": "Docs require a 24 h minimum upgrade wait; the vault beacon's owner is a 3-of-6 Safe",
       "surface": "cbBTC vault upgrades: docs require a 24 h to 30 day wait; the vault's beacon owner is a 3-of-6 Safe with no delay",
       "target_contract": "0x707D622cdA4b5459e7DcEe8Ba8E429F154f96A27",
@@ -9072,7 +9153,7 @@
       "selector_or_slot": "0x8da5cb5b",
       "sprint": 29,
       "summary_doc": "audits/sprint-29/block-26448221-summary.md",
-      "summary_sha256": "0x64c1ea2c5a8d932c1b2dfd3bffaf04b74bc51e6dea15e17f46d60d18623c7b77",
+      "summary_sha256": "0xba61b61feb65e1b23d10c998f70bcabce22a8b27203581542ef1cc3b68a4507f",
       "summary_short": "Docs set a 3-day timelock on every transaction; the V2 Router's owner is a 6-of-9 Safe",
       "surface": "V2 Router (Diamond) owner: docs put every transaction behind a 3-day timelock; owner() is the 6-of-9 Safe",
       "target_contract": "0x33636D49FbefBE798e15e7F356E8DBef543CC708",
@@ -9101,11 +9182,98 @@
       "selector_or_slot": "0x8da5cb5b",
       "sprint": 29,
       "summary_doc": "audits/sprint-29/block-26448221-summary.md",
-      "summary_sha256": "0x64c1ea2c5a8d932c1b2dfd3bffaf04b74bc51e6dea15e17f46d60d18623c7b77",
+      "summary_sha256": "0xba61b61feb65e1b23d10c998f70bcabce22a8b27203581542ef1cc3b68a4507f",
       "summary_short": "Docs name another L1 ProxyAdmin Owner; owner() is a different 2-of-2 Safe",
       "surface": "L1 ProxyAdmin owner: docs name 0x5a0A…3d2A; owner() is another 2-of-2 Safe",
       "target_contract": "0x0475cBCAebd9CE8AfA5025828d5b98DFb67E059E",
       "target_label": "Base L1 ProxyAdmin",
+      "verification_status": "scanner_dual_rpc_replayed_base_eas_attested_pending_static_review"
+    },
+    {
+      "base_eas_uid": null,
+      "block_hash": "0xa7818c0e1b8807aac0c999c2dc9aeeea40b91b4f19b1b76a62ad02d8d17607c8",
+      "block_number": 26448221,
+      "call_args": [],
+      "call_signature": "feeBasisPoints()",
+      "category": "Liquid Restaking",
+      "chain": "ethereum",
+      "check_type": "eth_call",
+      "classification": "parameter_delta",
+      "documented_delay_seconds": null,
+      "documented_reference": "'Renzo charges a 10% fee on rewards generated via restaking.' (docs.renzoprotocol.com/docs/products/staking-suite/ezeth)",
+      "id": "renzo-ezeth-deposit-queue-fee-s29",
+      "observed_delay_seconds": null,
+      "observed_delay_source": null,
+      "onchain_observed": "Renzo DepositQueue 0xf2F305D14DCD8aaef887E0428B3c9534795D0d60 (Ethereum): feeBasisPoints() = 10,000 (100% in basis points) at this pin; 1,500 at Pacta's published pins #26,401,725 and #26,433,001 (record renzo-ezeth-deposit-queue-fee). feeAddress() = 0x10586b9b7Ff0F842913a57539f8167CE143C3011 and the EIP-1967 implementation 0x24Aa958C90b7973DC16c63C9992f69E1767377Ae are the same at both pins.",
+      "protocol": "Renzo Protocol (ezETH)",
+      "repro_calldata": "0xb8606eef",
+      "rpc_env_var": "$ETH_RPC_URL",
+      "selector_or_slot": "0xb8606eef",
+      "sprint": 29,
+      "summary_doc": "audits/sprint-29/block-26448221-summary.md",
+      "summary_sha256": "0xba61b61feb65e1b23d10c998f70bcabce22a8b27203581542ef1cc3b68a4507f",
+      "summary_short": "Docs state a 10% reward fee; feeBasisPoints() now reads 10,000 (100%), up from 1,500",
+      "surface": "DepositQueue fee: docs state 10% of restaking rewards; feeBasisPoints() reads 10,000 (100%), 1,500 at #26,433,001",
+      "target_contract": "0xf2F305D14DCD8aaef887E0428B3c9534795D0d60",
+      "target_label": "Renzo DepositQueue",
+      "verification_status": "scanner_dual_rpc_replayed_base_eas_attested_pending_static_review"
+    },
+    {
+      "base_eas_uid": null,
+      "block_hash": "0xa7818c0e1b8807aac0c999c2dc9aeeea40b91b4f19b1b76a62ad02d8d17607c8",
+      "block_number": 26448221,
+      "call_args": [],
+      "call_signature": "getOwners()",
+      "category": "Blue-Chip Liquid Staking",
+      "chain": "ethereum",
+      "check_type": "eth_call",
+      "classification": "aligned_baseline",
+      "documented_delay_seconds": null,
+      "documented_reference": "'Quorum: 4/7' (docs.lido.fi/multisigs/committees, activation section)",
+      "id": "lido-dual-governance-emergency-activation-safe-s29",
+      "observed_delay_seconds": null,
+      "observed_delay_source": null,
+      "onchain_observed": "Lido Emergency Activation Committee Safe 0x8B7854488Fde088d686Ea672B6ba1A5242515f45 (Ethereum): getThreshold() = 4 of getOwners() = 7 owners (Safe v1.4.1); the owner set equals the signer list of the committees page. At Pacta's published pin #26,403,121 (record lido-dual-governance-emergency-timelock) the Safe was 4-of-7; since then 0x237Cddf3aA765260cf6b60E064065Da7c3Aa1559 was replaced by 0x3554630ec64e7756007dF4137abf7c5881C533D0.",
+      "protocol": "Lido (stETH / Dual Governance)",
+      "repro_calldata": "0xa0e67e2b",
+      "rpc_env_var": "$ETH_RPC_URL",
+      "selector_or_slot": "0xa0e67e2b",
+      "sprint": 29,
+      "summary_doc": "audits/sprint-29/block-26448221-summary.md",
+      "summary_sha256": "0xba61b61feb65e1b23d10c998f70bcabce22a8b27203581542ef1cc3b68a4507f",
+      "summary_short": "Activation committee Safe: 4-of-7, signers as documented; one replaced since the last pin",
+      "surface": "4-of-7 Safe: holds the one-off, time-limited right to activate emergency mode; signers as listed, one replaced since #26,403,121",
+      "target_contract": "0x8B7854488Fde088d686Ea672B6ba1A5242515f45",
+      "target_label": "Lido Dual Governance Emergency Activation Committee Safe",
+      "verification_status": "scanner_dual_rpc_replayed_base_eas_attested_pending_static_review"
+    },
+    {
+      "base_eas_uid": null,
+      "block_hash": "0xa7818c0e1b8807aac0c999c2dc9aeeea40b91b4f19b1b76a62ad02d8d17607c8",
+      "block_number": 26448221,
+      "call_args": [],
+      "call_signature": "getOwners()",
+      "category": "Blue-Chip Liquid Staking",
+      "chain": "ethereum",
+      "check_type": "eth_call",
+      "classification": "aligned_baseline",
+      "documented_delay_seconds": null,
+      "documented_reference": "'This committee has the same list of participants as Dual Governance Emergency Activation Committee, but the quorum is restricted to 5 of 7 Quorum: 5/7' (docs.lido.fi/multisigs/committees, execution section)",
+      "id": "lido-dual-governance-emergency-execution-safe-s29",
+      "observed_delay_seconds": null,
+      "observed_delay_source": null,
+      "onchain_observed": "Lido Emergency Execution Committee Safe 0xC7792b3F2B399bB0EdF53fECDceCeB97FBEB18AF (Ethereum): getThreshold() = 5 of getOwners() = 7 owners (Safe v1.4.1); the owner set equals the signer list of the committees page. At Pacta's published pin #26,403,121 (record lido-dual-governance-emergency-timelock) the Safe was 5-of-7; since then 0x237Cddf3aA765260cf6b60E064065Da7c3Aa1559 was replaced by 0x3554630ec64e7756007dF4137abf7c5881C533D0.",
+      "protocol": "Lido (stETH / Dual Governance)",
+      "repro_calldata": "0xa0e67e2b",
+      "rpc_env_var": "$ETH_RPC_URL",
+      "selector_or_slot": "0xa0e67e2b",
+      "sprint": 29,
+      "summary_doc": "audits/sprint-29/block-26448221-summary.md",
+      "summary_sha256": "0xba61b61feb65e1b23d10c998f70bcabce22a8b27203581542ef1cc3b68a4507f",
+      "summary_short": "Execution committee Safe: 5-of-7, signers as documented; one replaced since the last pin",
+      "surface": "5-of-7 Safe: executes scheduled proposals while emergency mode is active; the activation committee's signers, with a stricter quorum",
+      "target_contract": "0xC7792b3F2B399bB0EdF53fECDceCeB97FBEB18AF",
+      "target_label": "Lido Dual Governance Emergency Execution Committee Safe",
       "verification_status": "scanner_dual_rpc_replayed_base_eas_attested_pending_static_review"
     },
     {
@@ -9134,7 +9302,7 @@
       "selector_or_slot": "0xf27a0c92",
       "sprint": 29,
       "summary_doc": "audits/sprint-29/block-26448221-summary.md",
-      "summary_sha256": "0x64c1ea2c5a8d932c1b2dfd3bffaf04b74bc51e6dea15e17f46d60d18623c7b77",
+      "summary_sha256": "0xba61b61feb65e1b23d10c998f70bcabce22a8b27203581542ef1cc3b68a4507f",
       "summary_short": "flaunch changes wait a 2-day timelock, as documented",
       "surface": "flaunch timelock: 2-day minimum delay, as documented",
       "target_contract": "0x6c4c0CD7E0E5eeFfbd77AAfe1820d3b9B1ef27b0",

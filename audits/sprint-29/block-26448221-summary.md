@@ -2,8 +2,8 @@
 
 - **Ethereum Mainnet pin**: `26448221` (`0x193915d`), canonical block hash `0xa7818c0e1b8807aac0c999c2dc9aeeea40b91b4f19b1b76a62ad02d8d17607c8`, timestamp `2026-11-19 09:26:47 UTC` (`1795080407`); the `finalized` head, both endpoints returning the same number and hash
 - **Base Mainnet pin**: `59450023` (`0x38b22a7`), canonical block hash `0xf0732368cb614a82f09f6c0e1c33011269cb9da90e64995249a218a3d724466d`, timestamp `2026-11-19 09:26:20 UTC` (`1795080380`); the `finalized` head, both endpoints returning the same number and hash
-- **Scanner**: Pacta by Fractal Neurons (Pacta Protocol Commitments DRI), bulk harvester v2.1. Read-only `eth_call` / `eth_getStorageAt` / `eth_getCode` batched through Multicall3 at the pinned block, on two independent RPCs per chain with identical block hashes: `ethereum-rpc.publicnode.com` + `rpc.mevblocker.io` (Ethereum), `base-rpc.publicnode.com` + `mainnet.base.org` (Base). Documentation: HTTP-200 first-party snapshots named by their SHA-256; every quote below is an exact substring of its snapshot's text and every value is re-derived from the pinned reads by the validator (no model output is trusted). The 1 targets added after the pin (flaunch--rescore) were read at the same block numbers and hashes through two archive-capable endpoints per chain whose block hashes match the pin: `gateway.tenderly.co` + `eth.drpc.org` (Ethereum), `base-rpc.publicnode.com` + `mainnet.base.org` (Base). The merged bounty records' values were re-read by their own check (`bounty-check-s29.json`) at the same block numbers and hashes through `gateway.tenderly.co` + `eth.drpc.org` (Ethereum), `base-rpc.publicnode.com` + `mainnet.base.org` (Base).
-- **Result**: `4` records for `4` protocols (`2` new; published protocols with a new record: f(x) Protocol v2, flaunch) — `1` aligned baseline, `0` protective deltas, `3` parameter deltas. `verifiedCount = 1`. `driftCount = 3`, the same convention as Sprints 1–28 and `PactaSentinelGuard` (`driftCount != 0` means drift).
+- **Scanner**: Pacta by Fractal Neurons (Pacta Protocol Commitments DRI), bulk harvester v2.1. Read-only `eth_call` / `eth_getStorageAt` / `eth_getCode` batched through Multicall3 at the pinned block, on two independent RPCs per chain with identical block hashes: `ethereum-rpc.publicnode.com` + `rpc.mevblocker.io` (Ethereum), `base-rpc.publicnode.com` + `mainnet.base.org` (Base). Documentation: HTTP-200 first-party snapshots named by their SHA-256; every quote below is an exact substring of its snapshot's text and every value is re-derived from the pinned reads by the validator (no model output is trusted). The 3 targets added after the pin (bounty-s29-lido-ea, bounty-s29-renzo, flaunch--rescore) were read at the same block numbers and hashes through two archive-capable endpoints per chain whose block hashes match the pin: `gateway.tenderly.co` + `eth.drpc.org` (Ethereum), `base-rpc.publicnode.com` + `mainnet.base.org` (Base). The merged bounty records' values were re-read by their own check (`bounty-check-s29.json`) at the same block numbers and hashes through `gateway.tenderly.co` + `eth.drpc.org` (Ethereum), `base-rpc.publicnode.com` + `mainnet.base.org` (Base).
+- **Result**: `7` records for `6` protocols (`2` new; published protocols with a new record: f(x) Protocol v2, Lido (stETH / Dual Governance), Renzo Protocol (ezETH), flaunch) — `3` aligned baselines, `0` protective deltas, `4` parameter deltas. `verifiedCount = 3`. `driftCount = 4`, the same convention as Sprints 1–28 and `PactaSentinelGuard` (`driftCount != 0` means drift).
 - **RPC-pinned promotions (not attested)**: `0` further new protocols are published as RPC-pinned control-plane records at the same pins (listed below); the `195` RPC-pinned protocols already published move to these pins with every stated fact unchanged. They carry no Base EAS UID. `1` published RPC-pinned protocols are documentation-compared for the first time and become Base-EAS protocols here (flaunch); their RPC-pinned records are retired.
 - **On-chain anchoring**: to be attested on Base Mainnet EAS (`0x4200000000000000000000000000000000000021`) under canonical schema `0x7ff485bc1159dff3c70eefcb9dff2d65be990301760c2d53799e5a45e3badf83` (`chainId = 1`, the Ethereum pin above); Base reads are taken at the Base pin.
 
@@ -34,7 +34,27 @@ Classification: **parameter delta** (1 record).
 Classification: **parameter delta** (1 record).
 - 'Once queued, every transaction enter a mandatory 3-day public timelock before execution giving the community time to review, question, or flag concerns.' (fxprotocol.gitbook.io/fx-docs/more/resources/multisig) (snapshot sha256 `2f99f89fa992006f468d08806859d469b2de577ea64e91a51fe7039dc7258362`)
 
-## 4. flaunch — flaunch timelock: 2-day minimum delay, as documented
+## 4. Lido (stETH / Dual Governance) — 4-of-7 Safe: holds the one-off, time-limited right to activate emergency mode; signers as listed, one replaced since #26,403,121
+
+| Contract / Check | Address | Selector / slot | Observation |
+| :--- | :--- | :--- | :--- |
+| **Lido Dual Governance Emergency Activation Committee Safe** | `0x8B7854488Fde088d686Ea672B6ba1A5242515f45` | `getOwners()` | Lido Emergency Activation Committee Safe 0x8B7854488Fde088d686Ea672B6ba1A5242515f45 (Ethereum): getThreshold() = 4 of getOwners() = 7 owners (Safe v1.4.1); the owner set equals the signer list of the committees page. At Pacta's published pin #26,403,121 (record lido-dual-governance-emergency-timelock) the Safe was 4-of-7; since then 0x237Cddf3aA765260cf6b60E064065Da7c3Aa1559 was replaced by 0x3554630ec64e7756007dF4137abf7c5881C533D0. (Ethereum `#26448221`) |
+| **Lido Dual Governance Emergency Execution Committee Safe** | `0xC7792b3F2B399bB0EdF53fECDceCeB97FBEB18AF` | `getOwners()` | Lido Emergency Execution Committee Safe 0xC7792b3F2B399bB0EdF53fECDceCeB97FBEB18AF (Ethereum): getThreshold() = 5 of getOwners() = 7 owners (Safe v1.4.1); the owner set equals the signer list of the committees page. At Pacta's published pin #26,403,121 (record lido-dual-governance-emergency-timelock) the Safe was 5-of-7; since then 0x237Cddf3aA765260cf6b60E064065Da7c3Aa1559 was replaced by 0x3554630ec64e7756007dF4137abf7c5881C533D0. (Ethereum `#26448221`) |
+
+Classification: **aligned baseline** (2 records).
+- 'Quorum: 4/7' (docs.lido.fi/multisigs/committees, activation section) (snapshot sha256 `870b7de2b343c6a513f58a6fb85ef9634818f0250c0e71724ec8c67cba222708`)
+- 'This committee has the same list of participants as Dual Governance Emergency Activation Committee, but the quorum is restricted to 5 of 7 Quorum: 5/7' (docs.lido.fi/multisigs/committees, execution section) (snapshot sha256 `870b7de2b343c6a513f58a6fb85ef9634818f0250c0e71724ec8c67cba222708`)
+
+## 5. Renzo Protocol (ezETH) — DepositQueue fee: docs state 10% of restaking rewards; feeBasisPoints() reads 10,000 (100%), 1,500 at #26,433,001
+
+| Contract / Check | Address | Selector / slot | Observation |
+| :--- | :--- | :--- | :--- |
+| **Renzo DepositQueue** | `0xf2F305D14DCD8aaef887E0428B3c9534795D0d60` | `feeBasisPoints()` | Renzo DepositQueue 0xf2F305D14DCD8aaef887E0428B3c9534795D0d60 (Ethereum): feeBasisPoints() = 10,000 (100% in basis points) at this pin; 1,500 at Pacta's published pins #26,401,725 and #26,433,001 (record renzo-ezeth-deposit-queue-fee). feeAddress() = 0x10586b9b7Ff0F842913a57539f8167CE143C3011 and the EIP-1967 implementation 0x24Aa958C90b7973DC16c63C9992f69E1767377Ae are the same at both pins. (Ethereum `#26448221`) |
+
+Classification: **parameter delta** (1 record).
+- 'Renzo charges a 10% fee on rewards generated via restaking.' (docs.renzoprotocol.com/docs/products/staking-suite/ezeth) (snapshot sha256 `502e4a5872871a5a70288345e8a5a4d41e4147c12ffca74831bf59f058293bd3`)
+
+## 6. flaunch — flaunch timelock: 2-day minimum delay, as documented
 
 | Contract / Check | Address | Selector / slot | Observation |
 | :--- | :--- | :--- | :--- |
@@ -43,14 +63,14 @@ Classification: **parameter delta** (1 record).
 Classification: **aligned baseline** (1 record).
 - 'a two day timelock will follow before the proposed code is executed' (docs.flaunch.gg/community/governance/proposals-and-voting.md) (snapshot sha256 `fd5a0a1e62d7689d854b255e45065188958f0f5ebb8466288fd982ff751f5361`)
 
-## 5. RPC-pinned promotions — 0 new protocols, documentation not compared
+## 7. RPC-pinned promotions — 0 new protocols, documentation not compared
 
 Each is published as an `rpc_observed` record (`docs/api/v1/rpc-pinned.json`): runtime bytecode, EIP-1967 slots and the first readable controller of the protocol's primary contract, at the pins above. No documentation parameter is compared, so none counts toward `verifiedCount` or `driftCount`.
 
 | Protocol | Chain | Primary contract | Proxy | Controller |
 | :--- | :--- | :--- | :--- | :--- |
 
-## 6. Published RPC-pinned protocols moved to the Sprint 29 pins
+## 8. Published RPC-pinned protocols moved to the Sprint 29 pins
 
 - Extra Finance (Base): `0xBB505c54D71E9e599cB8435b4F0cEEc05fC71cbD` (Base) — bytecode keccak256 `0x2bda3204356bb12a5b68e82c0408773da0a9c311b37996552ee4e9e6756623e8`, EIP-1967 slots and controller unchanged at `#59450023`.
 - Origin Protocol (SuperOETHb Base): `0xDBFeFD2e8460a6Ee4955A68582F85708BAEA60A3` (Base) — bytecode keccak256 `0x1ab9c11f4c97800cad045510e6c2ceafc40074dd151fd1ed56bd75c61a0b0421`, EIP-1967 slots and controller unchanged at `#59450023`.

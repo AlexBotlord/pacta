@@ -2,7 +2,7 @@
 """apply_sprint29_attestation.py - stamp the Sprint 29 Base EAS attestation and publish the staged Sprint 29 records.
 
     python3 tools/apply_sprint29_attestation.py --uid 0x<32-byte UID> --tx 0x<32-byte tx hash>
-        --wave2-payouts 82=0x<tx>,83=0x<tx>,90=0x<tx> [--core ../pacta-core] [--skip-tests]
+        --wave2-payouts 82=0x<tx>,83=0x<tx>,90=0x<tx>,92=0x<tx>,93=0x<tx>,94=0x<tx> [--core ../pacta-core] [--skip-tests]
 
 Input: tools/staged/sprint-29-records.json (the Sprint 29 records, their summary audits/sprint-29/block-<n>-summary.md and both pins;
 written by pacta-core packages/bulk-harvester/promote/s29_stage.py + s26_emit.py --sprint 29). The UID must be the attestation of that
@@ -12,7 +12,9 @@ base.easscan.org first. The summary file is never modified.
 
 Sprint 29 is the Wave 5 gap audit under the stop rule (no new un-scored row): it adds Base-EAS records only.
 - The merged and paid Wave 2 community catches folded in with hunter credit (staged "bounty_credits"):
-  #82 Lagoon and #90 Base Bridge (new Base-EAS protocols), #83 f(x) Protocol v2 (a maintenance record of a published protocol).
+  #82 Lagoon and #90 Base Bridge (new Base-EAS protocols), #83 f(x) Protocol v2 (a maintenance record of a published protocol), and
+  the post-pin drift catches #92 Renzo Protocol (ezETH) and #93 / #94 Lido (stETH / Dual Governance) (maintenance records, re-read at
+  the Sprint pin and at the published prior pin).
   --wave2-payouts gives each PR's Base payout transaction (32-byte hashes; truncated hashes are refused): they join
   bounties/leaderboard.json wave2Settlements, and tools/bounty_wave2.json / bounties/WAVE2-MASTER-ISSUE.md move to the epoch
   capacity below (WAVE2_CAPACITY). A further Codex-approved Wave 2 PR is folded the same way: add its catch to
@@ -43,16 +45,17 @@ A.NEW_BRIEFS = ()               # the Lista Lending brief was published with the
 A.NO_TOUCH = ("optimism-bridge", "usd-ai", "aevo", "yearn-og-usdc", "spark-usdc-vault", "swissborg-morpho-usdc", "fraxlend",
               "gauntlet-usdc-prime")
 # ---- TARGET-BEGIN (written by the staging run; predict_target() re-derives every number and must agree)
-A.TARGET = {"sprints": 29, "records": 222, "eas_attestations": 29, "protocols": 311, "eas_protocols": 116, "rpc_protocols": 195, "briefs": 17,
+A.TARGET = {"sprints": 29, "records": 225, "eas_attestations": 29, "protocols": 311, "eas_protocols": 116, "rpc_protocols": 195, "briefs": 17,
             "badge_tiers": {"aligned": 70, "parameter_delta": 46, "rpc_observed": 195}, "base_records": 31,
             "rpc_by_chain": {"ethereum": 178, "base": 17}}
 # ---- TARGET-END
 A.ROW_NOTE = ("Wave 5 gap audit under the stop rule (Base-EAS records only, no new RPC-observed row): merged Wave 2 community gaps "
-              "Lagoon (#82) and Base Bridge (#90) attested as new protocols, f(x) Protocol v2 (#83) gains a record; flaunch converted to "
-              "Base EAS (v2.1 re-score); Peapods (PEAS) Base surface noted (309 → 311)")
-BOUNTY_PRS = (82, 83, 90)
+              "Lagoon (#82) and Base Bridge (#90) attested as new protocols, f(x) Protocol v2 (#83) gains a record, post-pin drift re-read "
+              "for Renzo Protocol (ezETH) (#92) and the two Lido Dual Governance committee Safes (#93, #94); flaunch converted to Base EAS "
+              "(v2.1 re-score); Peapods (PEAS) Base surface noted (309 → 311)")
+BOUNTY_PRS = (82, 83, 90, 92, 93, 94)
 # Wave 2 epoch 1 capacity after the three payouts (confirmed unencumbered + ring-fenced = the treasury's unencumbered USDC)
-WAVE2_CAPACITY = {"settledEpochSlots": 15, "fundedUnencumberedSlots": 10, "fundedUnencumberedUsdc": "10.00", "ringFencedUsdc": "45.05"}
+WAVE2_CAPACITY = {"settledEpochSlots": 18, "fundedUnencumberedSlots": 7, "fundedUnencumberedUsdc": "7.00", "ringFencedUsdc": "45.05"}
 WAVE2_BEFORE = {"settledEpochSlots": 12, "fundedUnencumberedSlots": 13, "fundedUnencumberedUsdc": "13.00", "ringFencedUsdc": "66.07"}
 HEX32 = re.compile(r"0x[0-9a-f]{64}")
 
@@ -194,6 +197,9 @@ def bounty_expect(tot_b, tot_a):
          f'"${a["ringFencedUsdc"]} USDC in the treasury is separately ring-fenced for subsequent Wave 2 epochs (${tot_a} USDC total unencumbered', 1),
         (f'"Confirmed unencumbered on-chain now: **${b["fundedUnencumberedUsdc"]} USDC ({b["fundedUnencumberedSlots"]} slots)**"',
          f'"Confirmed unencumbered on-chain now: **${a["fundedUnencumberedUsdc"]} USDC ({a["fundedUnencumberedSlots"]} slots)**"', 1),
+        # the stamp-tool simulation's settled total of kinshu7777 (Wave 1 unstamped): Wave 2 PRs #77 + #76, + #90 from this Sprint
+        ('st_rows["kinshu7777"]["settled"] == 2 * BS.REWARD_ATOMIC   # + Wave 2 PR #54 (paid); kinshu7777: Wave 2 PRs #77 + #76 (paid) once Wave 1 is unstamped',
+         'st_rows["kinshu7777"]["settled"] == 3 * BS.REWARD_ATOMIC   # + Wave 2 PR #54 (paid); kinshu7777: Wave 2 PRs #77 + #76 + #90 (paid) once Wave 1 is unstamped', 1),
     ]
     p = os.path.join(A.ROOT, "verify_site_v2.py")
     s = A.read(p)
@@ -214,7 +220,7 @@ def main(argv=None):
     if A.TARGET is None:
         A.fail("TARGET is not set: run the staging (s29_stage.py + s26_emit.py --sprint 29) and write the TARGET block first")
     if "--wave2-payouts" not in argv:
-        A.fail("--wave2-payouts 82=0x..,83=0x..,90=0x.. is required (the Base payout transactions of the folded PRs)")
+        A.fail("--wave2-payouts 82=0x..,83=0x..,90=0x..,92=0x..,93=0x..,94=0x.. is required (the Base payout transactions of the folded PRs)")
     i = argv.index("--wave2-payouts")
     spec = argv[i + 1]
     del argv[i:i + 2]

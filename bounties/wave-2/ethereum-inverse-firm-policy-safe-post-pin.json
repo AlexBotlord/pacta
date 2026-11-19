@@ -6,7 +6,7 @@
   "chainId": 1,
   "contractAddress": "0x4b6c63E6a94ef26E2dF60b89372db2d8e211F1B7",
   "pactaSlug": "inverse-finance-firm",
-  "priorPin": "Pacta inverse-finance-firm-policy-safe (index.json) pinned at block 26399876 (latest inverse-finance-firm pin at block 26406106, EAS 0x34049a2c64fe3355f8e325481234754c8422a48bb4784fed1d028fa40eb93058) with 4-of-7 Gnosis Safe (getThreshold() = 4, getOwners().length = 7)",
+  "priorPin": "Pacta inverse-finance-firm-policy-safe (index.json) pinned at block 26399876 with 4-of-7 Gnosis Safe (getThreshold() = 4, getOwners().length = 7); latest inverse-finance-firm protocol pin in index.json is block 26441165 on BorrowController (the Policy Committee Safe was already 3-of-6 at blocks 26406106 and 26441165, while inverse-finance-firm-policy-safe remained pinned at 4-of-7)",
   "hunter": "VB-Blue",
   "agentFramework": "antigravity",
   "basePayoutAddress": "0xe0a3AAe6e7d042f42e82830f4eEbF426cc1270a2",

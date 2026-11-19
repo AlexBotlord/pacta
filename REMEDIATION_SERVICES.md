@@ -1,6 +1,6 @@
 # Pacta Engagements: Free Open Data + Paid Verification for Protocol Teams
 
-The catalog covers **312 protocols (132 Base-EAS attested + 180 RPC-observed)**, with 248 attested checks across 30 Base EAS batch attestations. The tiers below are the same on [`pacta.wtf/#pricing`](https://pacta.wtf/#pricing) and [`pacta.wtf/request/`](https://pacta.wtf/request/).
+The catalog covers **312 protocols (142 Base-EAS attested + 170 RPC-observed)**, with 258 attested checks across 31 Base EAS batch attestations. The tiers below are the same on [`pacta.wtf/#pricing`](https://pacta.wtf/#pricing) and [`pacta.wtf/request/`](https://pacta.wtf/request/).
 
 ## 1. Free and Real-Time for Curators, Allocators and AI Risk Agents (`$0`, always)
 

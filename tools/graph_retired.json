@@ -13,6 +13,16 @@
    "controller_kind": "multisig_safe"
   },
   {
+   "slug": "alchemix-v3",
+   "chain": "ethereum",
+   "record_id": "alchemix-v3-control-plane",
+   "retired_at_sprint": 31,
+   "target_contract": "0xdBdb4d16EdA451D0503b854CF79D55697F90c8DF",
+   "target_label": "Alchemix (AlchemixToken)",
+   "controller_address": null,
+   "controller_kind": null
+  },
+  {
    "slug": "arrakis-modular",
    "chain": "ethereum",
    "record_id": "arrakis-modular-control-plane",
@@ -21,6 +31,46 @@
    "target_label": "ArrakisMetaVaultFactory",
    "controller_address": "0x5108EF86cF493905BcD35A3736e4B46DeCD7de58",
    "controller_kind": "multisig_safe"
+  },
+  {
+   "slug": "bancor-v3",
+   "chain": "ethereum",
+   "record_id": "bancor-v3-control-plane",
+   "retired_at_sprint": 31,
+   "target_contract": "0x1F573D6Fb3F13d689FF844B4cE37794d79a7FF1C",
+   "target_label": "Bancor Network Token (SmartToken)",
+   "controller_address": "0xa489C2b5b36835A327851Ab917A80562B5AFC244",
+   "controller_kind": "contract_controller"
+  },
+  {
+   "slug": "cian-yield-layer",
+   "chain": "ethereum",
+   "record_id": "cian-yield-layer-control-plane",
+   "retired_at_sprint": 31,
+   "target_contract": "0xB13aa2d0345b0439b064f26B82D8dCf3f508775d",
+   "target_label": "CIAN yield layer stETH (VaultYieldETH)",
+   "controller_address": "0xf24955E9D0a05222373d4555f8831f7A05e83F62",
+   "controller_kind": "contract_controller"
+  },
+  {
+   "slug": "decentralized-euro",
+   "chain": "ethereum",
+   "record_id": "decentralized-euro-control-plane",
+   "retired_at_sprint": 31,
+   "target_contract": "0x5052D3Cc819f53116641e89b96Ff4cD1EE80B182",
+   "target_label": "Wrapped Frankencoin Pool Share (FPSWrapper)",
+   "controller_address": null,
+   "controller_kind": null
+  },
+  {
+   "slug": "dolomite",
+   "chain": "ethereum",
+   "record_id": "dolomite-control-plane",
+   "retired_at_sprint": 31,
+   "target_contract": "0x003Ca23Fd5F0ca87D01F6eC6CD14A8AE60c2b97D",
+   "target_label": "DolomiteMargin",
+   "controller_address": "0xC2B66E247daE5Ee749Ae1d827190115F3653dE06",
+   "controller_kind": "contract_controller"
   },
   {
    "slug": "exactly",
@@ -73,6 +123,16 @@
    "controller_kind": null
   },
   {
+   "slug": "idle",
+   "chain": "ethereum",
+   "record_id": "idle-control-plane",
+   "retired_at_sprint": 31,
+   "target_contract": "0x875773784Af8135eA0ef43b5a374AaD105c5D39e",
+   "target_label": "Idle",
+   "controller_address": null,
+   "controller_kind": null
+  },
+  {
    "slug": "jpy-defi",
    "chain": "ethereum",
    "record_id": "jpy-defi-control-plane",
@@ -113,6 +173,16 @@
    "controller_kind": "contract_controller"
   },
   {
+   "slug": "noon",
+   "chain": "ethereum",
+   "record_id": "noon-control-plane",
+   "retired_at_sprint": 31,
+   "target_contract": "0xdA67B4284609d2d48e5d10cfAc411572727dc1eD",
+   "target_label": "USN (USNUpgradeableHyperlane)",
+   "controller_address": "0x55f39512cb43111A13E8440ee3e3602e72628239",
+   "controller_kind": "contract_controller"
+  },
+  {
    "slug": "nuva",
    "chain": "ethereum",
    "record_id": "nuva-control-plane",
@@ -120,6 +190,16 @@
    "target_contract": "0x50AE1e4A612A4623b747aEeFb30aFBA82804e12c",
    "target_label": "DedicatedVaultRouter",
    "controller_address": "0xDEa75A312b2F99b5A7558c4636897b39C195E241",
+   "controller_kind": "timelock"
+  },
+  {
+   "slug": "origin-superoeth-base",
+   "chain": "base",
+   "record_id": "origin-superoeth-base-control-plane",
+   "retired_at_sprint": 31,
+   "target_contract": "0xDBFeFD2e8460a6Ee4955A68582F85708BAEA60A3",
+   "target_label": "SuperOETHb_VaultProxy",
+   "controller_address": "0xf817cb3092179083c48c014688D98B72fB61464f",
    "controller_kind": "timelock"
   },
   {
@@ -143,6 +223,16 @@
    "controller_kind": "contract_controller"
   },
   {
+   "slug": "sonic-gateway",
+   "chain": "ethereum",
+   "record_id": "sonic-gateway-control-plane",
+   "retired_at_sprint": 31,
+   "target_contract": "0xa1E2481a9CD0Cb0447EeB1cbc26F1b3fff3bec20",
+   "target_label": "TokenDeposit",
+   "controller_address": "0x9Fe65a5418850015a9D8ad3Ca50d6a0B9769FbE0",
+   "controller_kind": "multisig_safe"
+  },
+  {
    "slug": "spectra-metavaults",
    "chain": "base",
    "record_id": "spectra-metavaults-control-plane",
@@ -161,6 +251,16 @@
    "target_label": "Strata Senior USDe",
    "controller_address": "0x30A17d6bcBDBF1579d6fBBA453aCf776D01fbb50",
    "controller_kind": "contract_controller"
+  },
+  {
+   "slug": "trueo",
+   "chain": "base",
+   "record_id": "trueo-control-plane",
+   "retired_at_sprint": 31,
+   "target_contract": "0x21CFCFc3d8F98fC728f48341D10Ad8283F6EB7AB",
+   "target_label": "True",
+   "controller_address": "0x8963712Bc91aE8C64d96293ed9A1157344f6Fd04",
+   "controller_kind": "timelock"
   },
   {
    "slug": "vesper-v1",

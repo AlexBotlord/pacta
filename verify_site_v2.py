@@ -2776,6 +2776,20 @@ def main(argv=None):
           and all(res.get(k_) is True for k_ in ma_keys),
           f"ma_png {ma_png_ok}; embeds {valid_fc_embed(ma_html)}/{valid_fc_embed(scan_html)}; failed {[k_ for k_ in ma_keys if res.get(k_) is not True]}")
 
+    ads_expected = (("pacta-hypelab-728x90.png", (728, 90)), ("pacta-hypelab-300x250.png", (300, 250)), ("pacta-hypelab-320x50.png", (320, 50)))
+    ads_ok = True
+    for ad_name, ad_dims in ads_expected:
+        ad_src_p = os.path.join(ROOT, "tools", "ads", ad_name)
+        ad_doc_p = os.path.join(DOCS, "assets", "ads", ad_name)
+        if not (os.path.exists(ad_src_p) and os.path.exists(ad_doc_p)):
+            ads_ok = False
+            break
+        b_src, b_doc = open(ad_src_p, "rb").read(), open(ad_doc_p, "rb").read()
+        if b_src != b_doc or b_doc[:8] != b"\x89PNG\r\n\x1a\n" or len(b_doc) > 500 * 1024 or struct.unpack(">II", b_doc[16:24]) != ad_dims:
+            ads_ok = False
+            break
+    check("HypeLab ad creatives persisted in tools/ads/ and emitted byte-identically to docs/assets/ads/ (728x90, 300x250, 320x50 <= 500KB)", ads_ok)
+
     # private identifiers must never be published: compared by SHA-256 of lowercased tokens, so the
     # repository itself never contains the literal identifiers this check guards against
     # ================= Batch C (task-d40112b6b379) =================

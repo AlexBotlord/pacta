@@ -4333,6 +4333,14 @@ def build_all():
         w(f"{CHECKOUT[sku_]['route']}/index.html", product_page(idx, sku_))
     w("miniapp/index.html", miniapp_page(idx))
     w(".well-known/farcaster.json", farcaster_manifest_json())
+    ads_src = os.path.join(ROOT, "tools", "ads")
+    if os.path.isdir(ads_src):
+        ads_dst = os.path.join(DOCS, "assets", "ads")
+        os.makedirs(ads_dst, exist_ok=True)
+        for ad_f in sorted(os.listdir(ads_src)):
+            if ad_f.endswith(".png"):
+                with open(os.path.join(ads_src, ad_f), "rb") as f_in, open(os.path.join(ads_dst, ad_f), "wb") as f_out:
+                    f_out.write(f_in.read())
     GM.write(ROOT, DOCS)                          # api/v1/graph-manifest.json: durable protocol graph (from protocols/index/rpc-pinned.json)
     digest = load_forum_digest()                  # data/forum-digest.json (optional; missing = empty digest)
     w("api/v1/forum-digest.json", forum_digest_json(idx, digest, pinned))

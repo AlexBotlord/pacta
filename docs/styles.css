@@ -476,7 +476,7 @@ body.sheet-open { overflow: hidden; }
 .ftr ul a { display: inline-flex; align-items: center; min-height: 28px; color: var(--muted-foreground); text-decoration: none; }
 .ftr ul a:hover { color: var(--foreground); text-decoration: underline; }
 .ftr-bottom { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border); font-size: 0.75rem; }
-.ftr-bottom a { display: inline-flex; align-items: center; min-height: 24px; color: var(--muted-foreground); }
+.ftr-bottom a { color: var(--foreground); text-decoration: underline; text-underline-offset: 2px; }
 
 /* ---------------------------------------------------------------- toast (Sonner) + live region */
 .toaster { position: fixed; right: 16px; bottom: 16px; z-index: 80; display: grid; gap: 8px; pointer-events: none; }
@@ -524,7 +524,8 @@ pre.llms { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 0.875rem; 
 .qs-snip code { display: block; margin-top: 6px; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--muted); font-size: 0.875rem; line-height: 1.5; overflow-wrap: anywhere; }
 .qs-snip .copy { margin: 8px 0 0; }
 .qs-l { font-size: 0.75rem; font-weight: 600; color: var(--muted-foreground); letter-spacing: 0.04em; text-transform: uppercase; }
-p code, li code, dd code, td code { padding: 1px 5px; border-radius: 4px; background: var(--muted); border: 1px solid var(--border); }
+p code, li code, dd code, td code { padding: 1px 5px; border-radius: 4px; background: var(--muted); border: 1px solid var(--border); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+code.nw { white-space: nowrap; }
 .term code, pre code { padding: 0; border: 0; background: none; }
 pre code { white-space: inherit; }
 code { overflow-wrap: break-word; }

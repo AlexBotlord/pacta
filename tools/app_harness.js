@@ -163,7 +163,7 @@ function run(tree, app, loc) {
   const ctx = {
     window, document, location, navigator, URLSearchParams, URL, AbortController: loc.noAbort ? undefined : AbortController,
     console, Promise, JSON, Date, Math, Event: Event_,
-    localStorage: { getItem: () => null, setItem: () => {}, removeItem: () => {} },
+    localStorage: loc.storage || { getItem: () => null, setItem: () => {}, removeItem: () => {} },
     setTimeout: loc.setTimeout || ((fn, ms) => { if (!ms && typeof fn === "function") zero.push(fn); return 0; }),
     clearTimeout: loc.clearTimeout || (() => {}), setInterval: () => 0,
     fetch: loc.fetch || (() => Promise.reject(new Error("network disabled in harness")))
@@ -1514,6 +1514,104 @@ async function checkoutScenario() {
     && injectedMobile.document.getElementById("co-deeplinks").hidden === true
     && injectedMobile.document.getElementById("pf-address").value === C.usdc;
 }
+
+async function xPixelScenario() {
+  const UWT = "https://static.ads-twitter.com/uwt.js";
+  const ADDR = "0x" + "12".repeat(20), TXH = "0x" + "ef".repeat(32);
+  const mobileUa = "Mozilla/5.0 (Linux; Android 14; Pixel 8 Build/UQ1A; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/128.0.0.0 Mobile Safari/537.36";
+
+  // 1. Host gate: pacta.wtf & pacta.fractalneurons.com inject uwt.js once + record config rjbqn;
+  //    staging / localhost keep window.__pactaTwqEvents in memory with ZERO uwt.js script injection;
+  //    404.html ([data-nf]) and rescued stripped-? URLs stay silent.
+  const prodWtf = run(input.index, input.app, { path: "/", hostname: "pacta.wtf" });
+  const prodCom = run(input.index, input.app, { path: "/", hostname: "pacta.fractalneurons.com" });
+  const stageDri = run(input.index, input.app, { path: "/website-test/", hostname: "pacta.dri.network" });
+  const localDev = run(input.index, input.app, { path: "/", hostname: "127.0.0.1" });
+  const nfPage = run(input.notfound, input.app, { path: "/missing", hostname: "pacta.wtf" });
+  const rescuedPage = run(input.index, input.app, { path: "/", hostname: "pacta.wtf", win: { pactaRescued: 1 } });
+  const uwtCount = (p) => p.document.querySelectorAll('script[src="' + UWT + '"]').length;
+  res.x_pixel_host_gate = same(prodWtf.window.__pactaTwqEvents, [["config", "rjbqn"]]) && uwtCount(prodWtf) === 1
+    && prodWtf.document.querySelector('script[src="' + UWT + '"]').hasAttribute("async")
+    && same(prodCom.window.__pactaTwqEvents, [["config", "rjbqn"]]) && uwtCount(prodCom) === 1
+    && same(stageDri.window.__pactaTwqEvents, [["config", "rjbqn"]]) && uwtCount(stageDri) === 0
+    && same(localDev.window.__pactaTwqEvents, [["config", "rjbqn"]]) && uwtCount(localDev) === 0
+    && same(nfPage.window.__pactaTwqEvents, []) && uwtCount(nfPage) === 0
+    && same(rescuedPage.window.__pactaTwqEvents, []) && uwtCount(rescuedPage) === 0;
+
+  // 2. Lead (tw-rjbqn-rjhie) dedup: fires on valid live_checker_submit OR checkout CTA (#co-wallet, MetaMask/Coinbase deep-link,
+  //    or manual transfer summary expand), never on invalid checker input, and at most ONCE per page load.
+  const pfFetch = () => Promise.resolve({ status: 200, ok: true, json: () => Promise.resolve({ verdict: "IMMUTABLE_NO_ADMIN", chain: "ethereum", address: ADDR, blockNumber: 1, riskScore: 0 }) });
+  const pfPage = run(input.index, input.app, { path: "/", hostname: "127.0.0.1", fetch: pfFetch });
+  const pfAddr = pfPage.document.getElementById("pf-address"), pfForm = pfPage.document.getElementById("pf-form");
+  pfAddr.value = "0xbad"; pfForm.dispatchEvent(new Event_("submit"));
+  const invalidNoLead = same(pfPage.window.__pactaTwqEvents, [["config", "rjbqn"]]);
+  pfAddr.value = ADDR; pfForm.dispatchEvent(new Event_("submit"));
+  pfForm.dispatchEvent(new Event_("submit"));
+  await flush();
+  const pfLeadOnce = same(pfPage.window.__pactaTwqEvents, [["config", "rjbqn"], ["event", "tw-rjbqn-rjhie", {}]]);
+
+  const ctaWallet = run(input.webhook, input.app, { path: "/webhook/", hostname: "127.0.0.1" });
+  click(ctaWallet.document.getElementById("co-wallet"));
+  click(ctaWallet.document.getElementById("co-wallet"));
+  const walletLeadOnce = same(ctaWallet.window.__pactaTwqEvents, [["config", "rjbqn"], ["event", "tw-rjbqn-rjhie", {}]]);
+
+  const ctaDl = run(input.scan, input.app, { path: "/scan/", hostname: "127.0.0.1", nav: { userAgent: mobileUa } });
+  click(ctaDl.document.querySelector("[data-co-metamask]"));
+  click(ctaDl.document.querySelector("[data-co-coinbase]"));
+  const dlLeadOnce = same(ctaDl.window.__pactaTwqEvents, [["config", "rjbqn"], ["event", "tw-rjbqn-rjhie", {}]]);
+
+  const ctaDrawer = run(input.seal, input.app, { path: "/seal/", hostname: "127.0.0.1" });
+  click(ctaDrawer.document.querySelector("#co-manual summary"));
+  click(ctaDrawer.document.querySelector("#co-manual summary"));
+  const drawerLeadOnce = same(ctaDrawer.window.__pactaTwqEvents, [["config", "rjbqn"], ["event", "tw-rjbqn-rjhie", {}]]);
+
+  res.x_pixel_lead_dedup = invalidNoLead && pfLeadOnce && walletLeadOnce && dlLeadOnce && drawerLeadOnce;
+
+  // 3. Purchase (tw-rjbqn-rjhif): fires ONLY on /v1/orders/verify HTTP 200 when !internalCanary, Pacta-Idempotent-Replay !== "true",
+  //    and orderId not yet in localStorage; sends { value: Number(usdPrice), currency: "USD", conversion_id: String(orderId) }.
+  const storeMap = {};
+  const sharedStorage = {
+    getItem: (k) => Object.prototype.hasOwnProperty.call(storeMap, k) ? storeMap[k] : null,
+    setItem: (k, v) => { storeMap[k] = String(v); },
+    removeItem: (k) => { delete storeMap[k]; }
+  };
+  const makeVerifyFetch = (status, body, replayHdr) => () => Promise.resolve({
+    status,
+    ok: status === 200,
+    headers: { get: (h) => (String(h).toLowerCase() === "pacta-idempotent-replay" ? (replayHdr || null) : null) },
+    text: () => Promise.resolve(JSON.stringify(body)),
+    json: () => Promise.resolve(body)
+  });
+  const submitScan = async (fetchFn, txHash) => {
+    const pg = run(input.scan, input.app, { path: "/scan/", hostname: "127.0.0.1", storage: sharedStorage, fetch: fetchFn });
+    pg.document.getElementById("pf-address").value = ADDR;
+    pg.document.getElementById("co-tx").value = txHash || TXH;
+    pg.document.getElementById("co-form").dispatchEvent(new Event_("submit"));
+    await flush(); await flush();
+    return pg.window.__pactaTwqEvents;
+  };
+  const evReal19 = await submitScan(makeVerifyFetch(200, { orderId: "ord_real_19", status: "verified", internalCanary: false }), TXH);
+  const evReloadSameOrder = await submitScan(makeVerifyFetch(200, { orderId: "ord_real_19", status: "verified", internalCanary: false }), TXH);
+  const evCanary = await submitScan(makeVerifyFetch(200, { orderId: "ord_canary_1", status: "verified", internalCanary: true }), "0x" + "aa".repeat(32));
+  const evReplay = await submitScan(makeVerifyFetch(200, { orderId: "ord_replay_1", status: "verified", internalCanary: false }, "true"), "0x" + "bb".repeat(32));
+
+  const sealPg = run(input.seal, input.app, {
+    path: "/seal/", hostname: "127.0.0.1", storage: sharedStorage,
+    fetch: makeVerifyFetch(200, { orderId: "ord_real_99", status: "verified", internalCanary: false })
+  });
+  sealPg.document.getElementById("co-target").value = ADDR;
+  sealPg.document.getElementById("co-contact").value = "@founder";
+  sealPg.document.getElementById("co-tx").value = "0x" + "cc".repeat(32);
+  sealPg.document.getElementById("co-form").dispatchEvent(new Event_("submit"));
+  await flush(); await flush();
+
+  res.x_pixel_purchase_rules = same(evReal19, [["config", "rjbqn"], ["event", "tw-rjbqn-rjhif", { value: 19, currency: "USD", conversion_id: "ord_real_19" }]])
+    && same(evReloadSameOrder, [["config", "rjbqn"]])
+    && same(evCanary, [["config", "rjbqn"]])
+    && same(evReplay, [["config", "rjbqn"]])
+    && same(sealPg.window.__pactaTwqEvents, [["config", "rjbqn"], ["event", "tw-rjbqn-rjhif", { value: 99, currency: "USD", conversion_id: "ord_real_99" }]])
+    && same(JSON.parse(storeMap["pacta-x-purchased"]), ["ord_real_19", "ord_real_99"]);
+}
 (async () => {
   try { await v45Scenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await requestBriefScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
@@ -1528,6 +1626,7 @@ async function checkoutScenario() {
   try { await beaconScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { rescueScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await checkoutScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
+  try { await xPixelScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await liveTimelockScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await lateLivePayloadScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await basePathScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }

@@ -2071,14 +2071,20 @@ def main(argv=None):
     check(f"beacon loaded (defer, in <head>) on every HTML page incl. 404.html ({len(pages)} pages); no third-party script/style/image hosts; inline scripts make no requests",
           not no_beacon and not third and not bad_inline and "404.html" in pages, f"missing beacon {no_beacon[:4]}; third-party {third[:4]}; inline {bad_inline[:4]}")
     page_js = {"docs/app.js": appjs, "docs/b.js": bjs, "docs/theme.js": read("docs/theme.js")}
-    # v4 (U2): the theme preference is the only stored value (read, written, or removed for "System")
+    # v4 (U2) + X conversion dedup: localStorage stores only THEME_KEY ("pacta-theme") and X_PURCHASE_KEY ("pacta-x-purchased");
+    # createElement("script") appears once in app.js for the host-gated X tag (https://static.ads-twitter.com/uwt.js) and nowhere else.
+    ls_vars = set(re.findall(r"localStorage\.\w+\((\w+)", appjs))
     ls_keys = set(re.findall(r'localStorage\.(?:getItem|setItem)\("([^"]+)"', appjs)) | (
-        {"pacta-theme"} if 'var THEME_KEY = "pacta-theme";' in appjs and set(re.findall(r"localStorage\.\w+\((\w+)", appjs)) == {"THEME_KEY"} else set())
-    js_bad = sorted(f for f, t in page_js.items() if re.search(r"document\.cookie|sessionStorage|indexedDB|XMLHttpRequest|new Image\b|WebSocket|EventSource|importScripts|createElement\(\s*\"script", t))
+        {"pacta-theme"} if 'var THEME_KEY = "pacta-theme";' in appjs and "THEME_KEY" in ls_vars else set()) | (
+        {"pacta-x-purchased"} if 'X_PURCHASE_KEY = "pacta-x-purchased"' in appjs and "X_PURCHASE_KEY" in ls_vars else set())
+    js_bad = sorted(f for f, t in page_js.items() if re.search(
+        r"document\.cookie|sessionStorage|indexedDB|XMLHttpRequest|new Image\b|WebSocket|EventSource|importScripts"
+        + (r"|createElement\(\s*\"script" if f != "docs/app.js" else r""), t))
+    script_el_ok = len(re.findall(r'createElement\(\s*"script"', appjs)) == 1 and 'X_UWT_SRC = "https://static.ads-twitter.com/uwt.js"' in appjs
     data_api = set(re.findall(r'data-api="([^"]+)"', "".join(pages.values())))
     app_fetch = len(re.findall(r"\bfetch\(", appjs))
-    check("no cookies, no storage identifiers, no third-party requests in page scripts: localStorage only for the theme preference; app.js fetches only this site's JSON, the first-party API (data-api), the first-party /v1/briefs/live-timelocks (data-live-timelocks) and, on an explicit Verify-live-on-RPC click, the four allow-listed public RPCs",
-          not js_bad and ls_keys == {"pacta-theme"} and appjs.count("localStorage") == 3 and data_api <= {API_, API_ + "/v1/requests", API_ + "/v1/orders/verify"}
+    check("page script boundaries: b.js/theme.js touch zero cookies/storage/third-party scripts; app.js uses localStorage only for pacta-theme + pacta-x-purchased dedup, injects only host-gated uwt.js, and fetch() calls only this site's JSON, data-api, data-live-timelocks, and the four allow-listed public RPCs",
+          not js_bad and script_el_ok and ls_vars == {"THEME_KEY", "X_PURCHASE_KEY"} and ls_keys == {"pacta-theme", "pacta-x-purchased"} and appjs.count("localStorage") == 5 and data_api <= {API_, API_ + "/v1/requests", API_ + "/v1/orders/verify"}
           and app_fetch == 8 and appjs[appjs.find("function initCheckout()"):].count("fetch(api, opts)") == 1 and 'j(root + "api/v1/lookup.json")' in appjs and 'j(root + "api/v1/scorecards.json")' in appjs and 'fetch(api, init)' in appjs[appjs.find("function initRequest()"):] and "REQ_API_RE.test(api)" in appjs and 'fetch(document.documentElement.getAttribute("data-api") || "api/v1/index.json")' in appjs
           and 'fetch(body.getAttribute("data-src") || "api/v1/scorecards.json")' in appjs
           # the 4th fetch: the user-initiated "Verify live on RPC" button, POSTing JSON-RPC only to the four allow-listed public RPCs
@@ -2716,9 +2722,23 @@ def main(argv=None):
     check("root Dockerfile (glama.ai mcp-proxy): node:22-alpine, copies only packages/mcp-server, PACTA_X402_URL = live gateway, USER node + CMD [node, /app/bin/pacta-mcp.mjs] (no ENTRYPOINT), no EXPOSE",
           all(df_ok.values()), str({k: v for k, v in df_ok.items() if not v}))
     readme = read("README.md")
-    priv = readme[readme.find("## Analytics & privacy"):][:1500] if "## Analytics & privacy" in readme else ""
-    check("README: Analytics & privacy note (first-party beacon, no cookies, Do Not Track, observed client metadata only)",
-          bool(priv) and all(t in priv for t in ("first-party", "cookie", "Do Not Track", "observed client metadata", "/v1/telemetry/beacon")))
+    priv = readme[readme.find("## Analytics & privacy"):][:1800] if "## Analytics & privacy" in readme else ""
+    check("README: Analytics & privacy note (first-party b.js beacon, Do Not Track, observed client metadata, and host-gated X uwt.js rjbqn disclosure)",
+          bool(priv) and all(t in priv for t in ("first-party", "cookie", "Do Not Track", "observed client metadata", "/v1/telemetry/beacon", "uwt.js", "rjbqn")))
+
+    priv_html = pages.get(os.path.join("privacy", "index.html"), "")
+    ftr_pages = {r_: t_ for r_, t_ in pages.items() if 'class="ftr"' in t_}
+    xp_keys = ["x_pixel_host_gate", "x_pixel_lead_dedup", "x_pixel_purchase_rules"]
+    check("X Pixel (rjbqn) + honest privacy/footer disclosure: host-gated uwt.js on pacta.wtf / pacta.fractalneurons.com (in-memory __pactaTwqEvents on staging), "
+          "Lead tw-rjbqn-rjhie once/page, Purchase tw-rjbqn-rjhif on verified non-canary non-replay orders, accurate footer & /privacy/ copy",
+          all(res.get(k_) is True for k_ in xp_keys)
+          and bool(ftr_pages)
+          and all("First-party telemetry stores aggregate counts without raw IPs; X Ads conversion measurement (uwt.js) runs on public pages" in t_
+                  and "no cookies, no IP stored" not in t_ for t_ in ftr_pages.values())
+          and all(tok_ in priv_html for tok_ in ("static.ads-twitter.com/uwt.js", "rjbqn", "tw-rjbqn-rjhie", "tw-rjbqn-rjhif",
+                                                 "analytics.twitter.com", "t.co", "pacta-x-purchased"))
+          and "no third-party trackers" not in priv_html and "The site sets no cookies" not in priv_html,
+          f"xp_failed {[k_ for k_ in xp_keys if res.get(k_) is not True]}")
 
     # private identifiers must never be published: compared by SHA-256 of lowercased tokens, so the
     # repository itself never contains the literal identifiers this check guards against
@@ -3403,9 +3423,12 @@ def main(argv=None):
     gen_pages = {r: t for r, t in all_pages.items()}
     csp_src = {d.split(" ")[0]: d.split(" ")[1:] for d in BS.CSP.split(";")}
     js_hosts = set(re.findall(r'"(https://[a-z0-9.-]+)', read("tools/app.src.js") + read("docs/b.js") + read("docs/theme.js")))
-    js_hosts = {h for h in js_hosts if h not in ("https://pacta.wtf", "https://github.com", "https://base.easscan.org", "https://etherscan.io", "https://basescan.org", "https://x.com", "https://mail.google.com", "https://metamask.app.link", "https://go.cb-wallet.com")}   # link targets, never fetched
-    pp["S01: meta Content-Security-Policy on every generated page (default/script 'self' only, no frame-ancestors, before any <script>); 0 inline JS (theme bootstrap = docs/theme.js); no eval / new Function; every HTTPS origin the page scripts fetch is in connect-src"] = (
-        "frame-ancestors" not in BS.CSP and csp_src.get("script-src") == ["'self'"] and csp_src.get("default-src") == ["'self'"]
+    js_hosts = {h for h in js_hosts if h not in ("https://pacta.wtf", "https://github.com", "https://base.easscan.org", "https://etherscan.io", "https://basescan.org", "https://x.com", "https://mail.google.com", "https://metamask.app.link", "https://go.cb-wallet.com", "https://static.ads-twitter.com")}   # link targets + script-src host
+    pp["S01: meta Content-Security-Policy on every generated page (default-src 'self', script-src 'self' + static.ads-twitter.com with 0 'unsafe-inline', no frame-ancestors, before any <script>); 0 inline JS (theme bootstrap = docs/theme.js); no eval / new Function; every HTTPS origin the page scripts fetch is in connect-src"] = (
+        "frame-ancestors" not in BS.CSP and csp_src.get("script-src") == ["'self'", "https://static.ads-twitter.com"] and csp_src.get("default-src") == ["'self'"]
+        and csp_src.get("img-src") == ["'self'", "data:", "https://analytics.twitter.com", "https://t.co"]
+        and "https://analytics.twitter.com" in csp_src.get("connect-src", []) and "https://t.co" in csp_src.get("connect-src", [])
+        and "'unsafe-inline'" not in csp_src.get("script-src", []) and "'unsafe-eval'" not in csp_src.get("script-src", [])
         and all(t.count(csp_meta) == 1 and t.find(csp_meta) < t.find("<script") for t in gen_pages.values())
         and not [r for r, t in gen_pages.items() if re.search(r"<script(?![^>]*\bsrc=)(?![^>]*application/ld\+json)[^>]*>", t)]
         and read("docs/theme.js") == BS.THEME_JS and not re.search(r"\beval\(|new Function\(", read("tools/app.src.js") + read("docs/b.js"))
@@ -3442,9 +3465,10 @@ def main(argv=None):
         and res.get("pp2_verdict_plain") is True
         and all(res.get(k) is True for k in ("pp3_inspector_live_rpc", "pp3_preflight_live_rpc_proxy", "pp3_immutable_headline",
                                              "pp3_preflight_live_rpc_owner", "pp3_live_rpc_failure")))
-    pp["S02 + V07 (v4.4 wording): 'Runs when you press Check or pick an example below' (nothing runs on page load: harness) + aggregate-pageview note; /bounties/ pill leads with funded slots open now"] = (
+    pp["S02 + V07 (v4.4 wording): 'Runs when you press Check or pick an example below' (nothing runs on page load: harness) + honest telemetry/conversion note; /bounties/ pill leads with funded slots open now"] = (
         "Runs when you press Check or pick an example below." in home_p and res.get("pf_no_fetch_on_load") is True
-        and "anonymous first-party aggregate pageviews" in home_p
+        and "First-party telemetry stores aggregate counts without raw IPs; X Ads conversion measurement (uwt.js) runs on public pages" in home_p
+        and "no cookies" not in home_p
         and f'data-bounty-pill>{BS.FUNDED_UNENCUMBERED_SLOTS} Funded Slots Open Now · ${BS.REWARD_USDC} USDC / Merged Finding</span>' in read("docs/bounties/index.html")
         and "Wave 1 Genesis (4/4 = $100 USDC) 100% settled on Base" in read("docs/bounties/index.html"))
     def lum_(h):

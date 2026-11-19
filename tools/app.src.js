@@ -1,5 +1,5 @@
-// Pacta site v3: theme, live countdowns, copy buttons, live pre-flight checker, control-plane inspector, index filter + drawers,
-// request builder. No wallet, no third-party trackers (the optional first-party beacon, b.js, is separate). Data comes from this site's own /api/v1/*.json files; the one exception is the
+// Pacta site: theme, live countdowns, copy buttons, live pre-flight checker, control-plane inspector, index filter + drawers,
+// request builder, self-serve Base USDC checkout, and host-gated X conversion measurement (uwt.js on pacta.wtf / pacta.fractalneurons.com only). Data comes from this site's own /api/v1/*.json files; the one exception is the
 // pre-flight checker, which calls Pacta's own free API (data-api on .pf) only after an explicit submit or preset click.
 // Record text is inserted with textContent (never innerHTML). Every control works without a mail client.
 (function () {
@@ -487,6 +487,73 @@
         else if (a.closest('a.primary,a[data-variant="default"],.memo-foot a,a[data-cta]')) B("cta_click");
       }
     }, true);
+  }
+
+  // ---- X Ads conversion measurement (pixel rjbqn): external queue in JS (0 'unsafe-inline' in script-src), host-gated
+  //      so uwt.js loads ONLY on pacta.wtf and pacta.fractalneurons.com (staging / localhost keep window.__pactaTwqEvents
+  //      in memory with zero network calls to X). Lead (tw-rjbqn-rjhie) dedupes once per page load; Purchase (tw-rjbqn-rjhif)
+  //      fires only on non-canary, non-replay /v1/orders/verify 200 responses and dedupes orderId in browser storage.
+  var X_PIXEL_ID = "rjbqn", X_LEAD_EVENT = "tw-rjbqn-rjhie", X_PURCHASE_EVENT = "tw-rjbqn-rjhif";
+  var X_UWT_SRC = "https://static.ads-twitter.com/uwt.js", X_PURCHASE_KEY = "pacta-x-purchased";
+  var xLeadSent = false, xPurchasedMem = {};
+  function xIsProdHost() {
+    var h = String((location && location.hostname) || "");
+    return h === "pacta.wtf" || h === "pacta.fractalneurons.com";
+  }
+  function xCallTwq() {
+    var a = Array.prototype.slice.call(arguments);
+    if (typeof window.twq === "function") {
+      var q = window.__pactaTwqEvents, n0 = Array.isArray(q) ? q.length : 0;
+      window.twq.apply(window, a);
+      if (Array.isArray(q) && q.length === n0) q.push(a);
+    }
+  }
+  function initXPixel() {
+    if (!Array.isArray(window.__pactaTwqEvents)) window.__pactaTwqEvents = [];
+    if (!window.twq) {
+      var s = function () {
+        var a = Array.prototype.slice.call(arguments);
+        window.__pactaTwqEvents.push(a);
+        if (s.exe) s.exe.apply(s, a); else s.queue.push(a);
+      };
+      s.version = "1.1";
+      s.queue = [];
+      window.twq = s;
+    }
+    if ($("[data-nf]") || window.pactaRescued) return;
+    xCallTwq("config", X_PIXEL_ID);
+    if (xIsProdHost() && !$('script[src="' + X_UWT_SRC + '"]')) {
+      var sc = document.createElement("script");
+      sc.async = true;
+      sc.setAttribute("async", "");
+      sc.setAttribute("src", X_UWT_SRC);
+      var hd = document.head || $("head") || document.documentElement;
+      if (hd) hd.appendChild(sc);
+    }
+  }
+  function xTrackLead() {
+    if (xLeadSent) return;
+    xLeadSent = true;
+    try { xCallTwq("event", X_LEAD_EVENT, {}); } catch (e) { /* ignore */ }
+  }
+  function xTrackPurchase(j, s, isReplay, txHash) {
+    if (!j || j.internalCanary === true || j.qa_test === true || isReplay) return;
+    var orderId = String(j.orderId || j.order_id || j.id || txHash || "").trim();
+    if (!orderId || own(xPurchasedMem, orderId)) return;
+    var seen = [];
+    try {
+      var raw = localStorage.getItem(X_PURCHASE_KEY);
+      var parsed = raw ? JSON.parse(raw) : [];
+      if (Array.isArray(parsed)) seen = parsed;
+    } catch (e) { seen = []; }
+    if (seen.indexOf(orderId) >= 0) return;
+    xPurchasedMem[orderId] = 1;
+    seen.push(orderId);
+    if (seen.length > 50) seen = seen.slice(seen.length - 50);
+    try { localStorage.setItem(X_PURCHASE_KEY, JSON.stringify(seen)); } catch (e) { /* storage disabled */ }
+    try {
+      xCallTwq("event", X_PURCHASE_EVENT, { value: Number(s.amount), currency: "USD", conversion_id: orderId });
+    } catch (e) { /* ignore */ }
   }
 
   // ---- copy to clipboard (works on http(s) and file://) ---------------------------------------------
@@ -1272,7 +1339,7 @@
         : "Not verified (HTTP " + http + (c ? ", " + c : "") + "). Keep the transaction hash and try again.");
     }
     function row(sel, kids) { var d = $(sel, res); if (!d) return; d.textContent = ""; [].concat(kids).forEach(function (x) { d.appendChild(typeof x === "string" ? document.createTextNode(x) : x); }); }
-    function render(j, b) {
+    function render(j, b, isReplay) {
       var order = j.order_id || j.orderId || j.id || "", stx = String(j.status || "verified");
       report = j;
       row("[data-co-r-order]", String(order || "—").slice(0, 80));
@@ -1282,6 +1349,7 @@
       var pre = $("#co-json"); if (pre) pre.textContent = JSON.stringify(j, null, 2);
       if (res) { res.hidden = false; if (res.focus) res.focus(); }
       status("Verified. Your result is below.");
+      xTrackPurchase(j, s, isReplay, b.tx_hash);
     }
     function verify(retries) {
       if (busy || !validate(true)) return;
@@ -1295,10 +1363,11 @@
       var opts = { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(b) };
       if (ctl) opts.signal = ctl.signal;
       fetch(api, opts).then(function (r) {
-        return r.text().then(function (t) { var j = null; try { j = JSON.parse(t); } catch (e) { j = null; } return { s: r.status, j: j }; });
+        var replay = !!(r.headers && typeof r.headers.get === "function" && r.headers.get("Pacta-Idempotent-Replay") === "true");
+        return r.text().then(function (t) { var j = null; try { j = JSON.parse(t); } catch (e) { j = null; } return { s: r.status, j: j, replay: replay }; });
       }).then(function (x) {
         clearTimeout(guard);
-        if (x.s === 200 && x.j && typeof x.j === "object") { setBusy(false); render(x.j, b); return; }
+        if (x.s === 200 && x.j && typeof x.j === "object") { setBusy(false); render(x.j, b, x.replay); return; }
         var code = x.j && typeof x.j.error === "string" ? x.j.error : "";
         if (retries > 0 && (x.s === 202 || x.s === 425 || CO_RETRY.test(code))) {
           status("Waiting for Base to confirm the transaction…");
@@ -1347,9 +1416,15 @@
       var t = fld("tx_hash"); if (t && t.focus) t.focus();
     }
     if (wal) wal.addEventListener("click", function () {
+      if (!busy) xTrackLead();
       var eth = window.ethereum;
       if (eth && typeof eth.request === "function") pay(eth); else manual();
     });
+    if (drawer) {
+      drawer.addEventListener("toggle", function () { if (drawer.open || drawer.hasAttribute("open")) xTrackLead(); });
+      var sumEl = $("summary", drawer);
+      if (sumEl) sumEl.addEventListener("click", function () { if (!drawer.hasAttribute("open")) xTrackLead(); });
+    }
     form.addEventListener("submit", function (ev) { ev.preventDefault(); verify(5); });
     // /webhook/: quick picks fill the chain, the timelock or Safe (when the protocol has one) and the protocol name
     $$("[data-co-pick]", form).forEach(function (b) {
@@ -1386,6 +1461,8 @@
     }
     if (dlBox) {
       syncDeepLinks();
+      if (dlMm) dlMm.addEventListener("click", xTrackLead);
+      if (dlCb) dlCb.addEventListener("click", xTrackLead);
       var tCh = fld("target_chain"), tAd = fld("target_address");
       if (tCh) tCh.addEventListener("change", syncDeepLinks);
       if (tAd) { tAd.addEventListener("input", syncDeepLinks); tAd.addEventListener("change", syncDeepLinks); }
@@ -1777,6 +1854,7 @@
       if (typeof fetch !== "function") { msg("This browser cannot call the API; use the cURL quickstart.", "http"); return; }
       // First-party beacon hook (docs/b.js); optional: the checker works the same without it.
       if (typeof window.pactaBeacon === "function") { try { window.pactaBeacon("live_checker_submit", ch + ":" + a.toLowerCase()); } catch (e) { /* ignore */ } }
+      xTrackLead();
       var opts = { headers: { Accept: "application/json" } }, timedOut = false;
       if (typeof AbortController === "function") {
         ctl = new AbortController(); opts.signal = ctl.signal;
@@ -2285,7 +2363,7 @@
   document.addEventListener("DOMContentLoaded", function () {
     // v4.3: every feature starts on its own, so one that throws can never leave a later one (the "Try:" examples, the
     // checker, the radar) unbound; the error is re-thrown asynchronously, so it still reaches the console
-    [initTheme, initSheet, initTabs, initTabLinks, initDetailsHash, initCmdk, initTooltips, initCopy, initBeaconHooks, tick, initIndex, initRequest, initLauncher, initCheckout, initInspector, initPreflight,
+    [initTheme, initXPixel, initSheet, initTabs, initTabLinks, initDetailsHash, initCmdk, initTooltips, initCopy, initBeaconHooks, tick, initIndex, initRequest, initLauncher, initCheckout, initInspector, initPreflight,
      initLiveTimelocks, initProtocolFilter, initAges, initRefresh, initHeroCheck, initBadgeWidget, initScorecards, initReceipts].forEach(function (f) {
       try { f(); } catch (e) { setTimeout(function () { throw e; }, 0); }
     });

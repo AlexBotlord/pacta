@@ -275,9 +275,10 @@ ROBOTS_META_404 = "noindex, follow, max-snippet:-1, max-image-preview:large"   #
 
 
 # S01: one policy for every generated page (meta CSP cannot carry frame-ancestors; send that as a response header at the edge)
-CSP = ("default-src 'self';script-src 'self';style-src 'self' 'unsafe-inline';img-src 'self' data:;font-src 'self';"
+CSP = ("default-src 'self';script-src 'self' https://static.ads-twitter.com;style-src 'self' 'unsafe-inline';"
+       "img-src 'self' data: https://analytics.twitter.com https://t.co;font-src 'self';"
        "connect-src 'self' https://pacta-x402.pacta.workers.dev https://ethereum-rpc.publicnode.com https://base-rpc.publicnode.com "
-       "https://eth.drpc.org https://mainnet.base.org;object-src 'none';base-uri 'self'")
+       "https://eth.drpc.org https://mainnet.base.org https://analytics.twitter.com https://t.co;object-src 'none';base-uri 'self'")
 # U2: Light / Dark / System on a .dark class; System (the default) follows prefers-color-scheme. Legacy values map: slate -> dark, paper -> light.
 # X Ads strips the "?" from a Website-card URL (/scorecards/utm_source=x... then lands on 404.html): 404.html loads this first
 # (render-blocking, same origin) and sends a stripped query on a known route back to /<route>/?<query> with location.replace.
@@ -504,7 +505,7 @@ def footer(count_line, reg, home=""):
             f'<div class="ftr-brand"><a class="brand" href="{home or "./"}"><img class="ftr-logo" src="{home}favicon.svg" alt="" width="24" height="24">PACTA</a>'
             f'<p>Independent control-plane scorecards for DeFi. Pacta by Fractal Neurons · pacta.base.eth</p></div>'
             + col("Product", product) + col("For agents", agents) + col("Company", company) + col("Legal", legal)
-            + f'</div><div class="ftr-bottom"><span data-count-line>{E(count_line)}</span><span>Read-only onchain analysis. Not investment advice. Pages count anonymous first-party aggregate pageviews: no cookies, no IP stored.</span></div>'
+            + f'</div><div class="ftr-bottom"><span data-count-line>{E(count_line)}</span><span>Read-only onchain analysis. Not investment advice. First-party telemetry stores aggregate counts without raw IPs; X Ads conversion measurement (uwt.js) runs on public pages — see <a href="{home}privacy/">Privacy</a>.</span></div>'
             f'</div></footer>\n<div class="toaster" id="toaster" aria-live="polite" aria-atomic="true"></div>')
 
 
@@ -3969,12 +3970,31 @@ def methodology_page(idx):
 
 def privacy_page(idx):
     sections = [
-        ("summary", "Summary", '<p>Pacta has no accounts, no advertising and no third-party trackers. The site sets no cookies.</p>'),
-        ("analytics", "Page analytics", '<p>Pages count anonymous, first-party aggregate page views through a small script on pacta.wtf '
-         '(<code>b.js</code>): no cookies, no identifiers in browser storage, no IP address stored, and nothing is sent when your browser sends '
-         'Do Not Track. A page view records the page, the referring site&#x27;s host name, the campaign tags of the link you followed '
-         '(<code>utm_source</code>, <code>utm_medium</code>, <code>utm_campaign</code>, only from closed, safe patterns) and which Pacta '
-         'domain served it.</p>'),
+        ("summary", "Summary",
+         '<p>Pacta has no user accounts. First-party telemetry stores aggregate counts only (zero raw IP addresses). '
+         'On the public production domains (<code>pacta.wtf</code> and <code>pacta.fractalneurons.com</code>), Pacta also loads the X '
+         '(Twitter) conversion measurement tag (<code>static.ads-twitter.com/uwt.js</code>, pixel <code>rjbqn</code>), which sets '
+         'advertising attribution cookies unless blocked by your browser or content blocker.</p>'),
+        ("analytics", "First-party page telemetry",
+         '<p>Pages count anonymous, first-party aggregate page views through a small script on pacta.wtf '
+         '(<code>b.js</code>): zero cookies, zero identifiers in browser storage, zero raw IP addresses stored, and nothing is sent by '
+         '<code>b.js</code> when your browser sends Do Not Track (<code>navigator.doNotTrack = &quot;1&quot;</code>). A page view records '
+         'only a closed-set page path, the referring site&#x27;s public host name, allowlisted campaign tags '
+         '(<code>utm_source</code>, <code>utm_medium</code>, <code>utm_campaign</code>) and which Pacta domain served it.</p>'),
+        ("x-pixel", "X (Twitter) Ads conversion measurement",
+         '<p>To measure X campaign performance, public pages on <code class="nw">pacta.wtf</code> and <code class="nw">pacta.fractalneurons.com</code> load '
+         'X&#x27;s Universal Website Tag (<code>https://static.ads-twitter.com/uwt.js</code>, pixel ID <code class="nw">rjbqn</code>). It records '
+         'ad-attributed page visits (<code class="nw">config rjbqn</code>), live-checker or checkout intent (<code class="nw">tw-rjbqn-rjhie</code>, at most '
+         'once per page load, with no wallet address or form text attached), and verified self-serve orders '
+         '(<code class="nw">tw-rjbqn-rjhif</code>, sending only the USD order value and non-personal <code class="nw">orderId</code>; internal QA canary '
+         'transactions and idempotent replays are excluded). Staging previews and localhost never load <code class="nw">uwt.js</code>.</p>'
+         '<p><code class="nw">uwt.js</code> sets cookies and sends requests to <code class="nw">analytics.twitter.com</code> and <code class="nw">t.co</code> under '
+         'X&#x27;s privacy policy. A small first-party <code class="nw">localStorage</code> entry (<code class="nw">pacta-x-purchased</code>) stores recent '
+         '<code class="nw">orderId</code> strings in your browser solely so reloading a receipt never reports a duplicate purchase. To block X '
+         'conversion measurement and cookies, enable tracker / third-party cookie blocking in your browser (Brave Shields, Firefox '
+         'Enhanced Tracking Protection, Safari Intelligent Tracking Prevention, or uBlock Origin blocking '
+         '<code class="nw">static.ads-twitter.com</code>, <code class="nw">analytics.twitter.com</code> and <code class="nw">t.co</code>) and review your X Ads '
+         'personalization settings.</p>'),
         ("checkout", "Self-serve checkout", '<p>Verify on-chain &amp; unlock sends the product, the Base transaction hash, the target '
          'chain and address, the protocol or docs URL and, only if you enter one, a contact handle or webhook URL to Pacta&#x27;s API. The '
          'contact or webhook is kept privately for delivery and never published. A payment on Base is public on-chain, like any transfer. '
@@ -3987,8 +4007,9 @@ def privacy_page(idx):
          'and emails you choose to send are handled by those services.</p>'),
         ("contact", "Contact", f'<p>{E(CONTACT_NOTE)}</p>'),
     ]
-    return simple_page("privacy", "Privacy · Pacta", "What the Pacta site and API collect: no cookies, anonymous aggregate page views, and only what you send.",
-                       "Privacy", "What this site collects, and what it does not.", sections, idx)
+    return simple_page("privacy", "Privacy · Pacta",
+                       "What the Pacta site and API collect: aggregate first-party telemetry without raw IPs, X Ads conversion measurement (uwt.js), and only what you submit.",
+                       "Privacy", "What this site collects, how conversion measurement works, and how to block it.", sections, idx)
 
 
 def terms_page(idx):

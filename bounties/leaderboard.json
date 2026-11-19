@@ -65,6 +65,10 @@
       "payoutTxHash": "0x71a7b2716c6af53e7311db020b740c1b02bc6fcdd1fef3e74c959af8184689c0"
     },
     {
+      "fixture": "ethereum-bedrock-unibtc.json",
+      "payoutTxHash": "0xa60d8c704ac1fe6a7cdb6e89fc701f1e4e61dbe38b9a7639788231fad4f5cb71"
+    },
+    {
       "fixture": "ethereum-defi-saver.json",
       "payoutTxHash": "0xb605a9b7273cb52a1ad6886ca5bfb59cd4bba56cf07723bc2509b7c31b68432d"
     },
@@ -73,8 +77,20 @@
       "payoutTxHash": "0xb804508636dadab0c0a5cd4513cd055b41239fa1b73fc88b3968525f665351ef"
     },
     {
+      "fixture": "ethereum-infinifi-core-role-rotation-post-pin.json",
+      "payoutTxHash": "0x127ac80fc3afe41c891521ab7a2aa3d9bd72cbe41a6304c9c1c51004272f5392"
+    },
+    {
       "fixture": "ethereum-inverse-firm-borrowcontroller.json",
       "payoutTxHash": "0xac02ff3b67c0ebd17fc515d049a83a42d64f5fc784b995ba2220108f8a76dbc7"
+    },
+    {
+      "fixture": "ethereum-inverse-firm-policy-safe-post-pin.json",
+      "payoutTxHash": "0x57f6056f5bade33b31cbcec363d47f0027c9b26bb3e119d9bd59d77a580b87a9"
+    },
+    {
+      "fixture": "ethereum-kelp-lrtconfig-operator-post-pin.json",
+      "payoutTxHash": "0xd4e268e1e9a40e218daa49878b2db1e343752358831c6bbd0c1e1738e95b3b28"
     },
     {
       "fixture": "ethereum-lagoon.json",
@@ -97,8 +113,16 @@
       "payoutTxHash": "0x772b82bc5578e7d7fb4727088a88ea87587eff538ebcb2a4c9ffd7f6a9551668"
     },
     {
+      "fixture": "ethereum-polygon-pos-bridge.json",
+      "payoutTxHash": "0xa0f88a29c95d9711c2fad85e684b603dfc3a5f7c253e1e1345689a501b3b62b0"
+    },
+    {
       "fixture": "ethereum-renzo-depositqueue-fee-post-pin.json",
       "payoutTxHash": "0xdb0b84f99ad57e0f7cc70337e1b47c5c927ae4034974cb089eaeaaced757f021"
+    },
+    {
+      "fixture": "ethereum-resolv-usr-counter-role-post-pin.json",
+      "payoutTxHash": "0x3629b17baae2d067ef9ab47f1cfb321e521bcdca9e281edbb5459081e21567d0"
     },
     {
       "fixture": "ethereum-rocksolid-network.json",
@@ -107,6 +131,10 @@
     {
       "fixture": "ethereum-scroll-bridge.json",
       "payoutTxHash": "0x5e7992ad534d12250d4b088087838c3eee056fe8cf8d6dbce8067d750f878fd8"
+    },
+    {
+      "fixture": "ethereum-threshold-tbtc-timelock-op-0xb667-post-pin.json",
+      "payoutTxHash": "0x319280f3a01c109dbf2223e1d6750aa3f3ebd46382da6fdf68fb5628a43cbb2d"
     },
     {
       "fixture": "ethereum-upshift-axis-origin.json",
@@ -130,11 +158,13 @@
     }
   ],
   "easAttestations": {
-    "VB-Blue": 5,
+    "VB-Blue": 7,
     "dankezo": 1,
     "farmmer938-lgtm": 1,
     "givemehat": 1,
     "kinshu7777": 2,
+    "physho158-cell": 2,
+    "random-solver": 3,
     "scavenger-osan": 1,
     "startupcompliancekit": 3,
     "veriton-dev": 2
@@ -211,6 +241,48 @@
       "pr": 94,
       "pactaSlug": "lido-steth-dual-governance",
       "record": "lido-dual-governance-emergency-execution-safe-s29"
+    },
+    {
+      "fixture": "ethereum-kelp-lrtconfig-operator-post-pin.json",
+      "pr": 96,
+      "pactaSlug": "kelp-dao-rseth",
+      "record": "kelp-lrtconfig-operator-revoked-s30"
+    },
+    {
+      "fixture": "ethereum-resolv-usr-counter-role-post-pin.json",
+      "pr": 97,
+      "pactaSlug": "resolv-usr-rlp",
+      "record": "resolv-usr-counter-service-role-revoked-s30"
+    },
+    {
+      "fixture": "ethereum-inverse-firm-policy-safe-post-pin.json",
+      "pr": 99,
+      "pactaSlug": "inverse-finance-firm",
+      "record": "inverse-firm-policy-safe-3of6-s30"
+    },
+    {
+      "fixture": "ethereum-bedrock-unibtc.json",
+      "pr": 100,
+      "pactaSlug": "bedrock-unibtc",
+      "record": "bedrock-unibtc-secure-mint-precondition-s30"
+    },
+    {
+      "fixture": "ethereum-infinifi-core-role-rotation-post-pin.json",
+      "pr": 101,
+      "pactaSlug": "infinifi",
+      "record": "infinifi-core-governance-token-roles-rotated-s30"
+    },
+    {
+      "fixture": "ethereum-threshold-tbtc-timelock-op-0xb667-post-pin.json",
+      "pr": 102,
+      "pactaSlug": "threshold-network-tbtc",
+      "record": "threshold-tbtc-walletregistry-op-0xb667-executed-s30"
+    },
+    {
+      "fixture": "ethereum-polygon-pos-bridge.json",
+      "pr": 104,
+      "pactaSlug": "polygon-bridge",
+      "record": "polygon-bridge-rootchainmanager-zero-delay-upgrade-s30"
     }
   ]
 }

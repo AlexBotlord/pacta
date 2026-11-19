@@ -3,6 +3,36 @@
  "description": "RPC-pinned records retired when their protocol was converted to Base-EAS records. tools/graph_manifest.py keeps their contracts governed by that protocol (the graph only grows).",
  "records": [
   {
+   "slug": "abracadabra-spell",
+   "chain": "ethereum",
+   "record_id": "abracadabra-spell-control-plane",
+   "retired_at_sprint": 30,
+   "target_contract": "0x090185f2135308BaD17527004364eBcC2D37e5F6",
+   "target_label": "Spell Token",
+   "controller_address": "0xDF2C270f610Dc35d8fFDA5B453E74db5471E126B",
+   "controller_kind": "multisig_safe"
+  },
+  {
+   "slug": "arrakis-modular",
+   "chain": "ethereum",
+   "record_id": "arrakis-modular-control-plane",
+   "retired_at_sprint": 30,
+   "target_contract": "0x820FB8127a689327C863de8433278d6181123982",
+   "target_label": "ArrakisMetaVaultFactory",
+   "controller_address": "0x5108EF86cF493905BcD35A3736e4B46DeCD7de58",
+   "controller_kind": "multisig_safe"
+  },
+  {
+   "slug": "exactly",
+   "chain": "ethereum",
+   "record_id": "exactly-control-plane",
+   "retired_at_sprint": 30,
+   "target_contract": "0x310A2694521f75C7B2b64b5937C16CE65C3EFE01",
+   "target_label": "Auditor",
+   "controller_address": "0x3866eA62494597A5EDeA4A97f9429f82b9d7Ca34",
+   "controller_kind": "contract_controller"
+  },
+  {
    "slug": "flaunch",
    "chain": "base",
    "record_id": "flaunch-control-plane",
@@ -11,6 +41,116 @@
    "target_label": "flETH",
    "controller_address": "0x0646441c3eC556c1994420C3F9B0f31279BEfb6e",
    "controller_kind": "multisig_safe"
+  },
+  {
+   "slug": "flying-tulip-lend",
+   "chain": "ethereum",
+   "record_id": "flying-tulip-lend-control-plane",
+   "retired_at_sprint": 30,
+   "target_contract": "0x5DD1A7A369e8273371d2DBf9d83356057088082c",
+   "target_label": "Flying Tulip (FT)",
+   "controller_address": "0x1118e1c057211306a40A4d7006C040dbfE1370Cb",
+   "controller_kind": "multisig_safe"
+  },
+  {
+   "slug": "goldfinch",
+   "chain": "ethereum",
+   "record_id": "goldfinch-control-plane",
+   "retired_at_sprint": 30,
+   "target_contract": "0xdab396cCF3d84Cf2D07C4454e10C8A6F5b008D2b",
+   "target_label": "Goldfinch (GFI)",
+   "controller_address": null,
+   "controller_kind": null
+  },
+  {
+   "slug": "iaero-protocol",
+   "chain": "base",
+   "record_id": "iaero-protocol-control-plane",
+   "retired_at_sprint": 30,
+   "target_contract": "0x7ee8964160126081cebC443a42482E95e393e6A8",
+   "target_label": "Liquid (LIQToken)",
+   "controller_address": null,
+   "controller_kind": null
+  },
+  {
+   "slug": "jpy-defi",
+   "chain": "ethereum",
+   "record_id": "jpy-defi-control-plane",
+   "retired_at_sprint": 30,
+   "target_contract": "0x6042755eCCa71A1Be9C7091441ca5bEaA6b520e4",
+   "target_label": "CollateralVault",
+   "controller_address": null,
+   "controller_kind": null
+  },
+  {
+   "slug": "kpk",
+   "chain": "ethereum",
+   "record_id": "kpk-control-plane",
+   "retired_at_sprint": 30,
+   "target_contract": "0xbF3F63D8AC133B16d7D50C015036b33219Dd8D23",
+   "target_label": "kpk Token",
+   "controller_address": "0x5912d39421109E4bf3Dc8108b403b74773bc5379",
+   "controller_kind": "contract_controller"
+  },
+  {
+   "slug": "makina",
+   "chain": "ethereum",
+   "record_id": "makina-control-plane",
+   "retired_at_sprint": 30,
+   "target_contract": "0x8d28A69328561eF9F171c58996fEcB9F494e070c",
+   "target_label": "HubCoreFactory",
+   "controller_address": "0xEb78836D3aa3A0518A96fd7C9c549d0FFB7D6dA9",
+   "controller_kind": "contract_controller"
+  },
+  {
+   "slug": "meta-pool-eth",
+   "chain": "ethereum",
+   "record_id": "meta-pool-eth-control-plane",
+   "retired_at_sprint": 30,
+   "target_contract": "0x48AFbBd342F64EF8a9Ab1C143719b63C2AD81710",
+   "target_label": "MetaPoolETH",
+   "controller_address": "0x806F870ee04A2CC8bf2aD053BAa5ed9999A1f182",
+   "controller_kind": "contract_controller"
+  },
+  {
+   "slug": "nuva",
+   "chain": "ethereum",
+   "record_id": "nuva-control-plane",
+   "retired_at_sprint": 30,
+   "target_contract": "0x50AE1e4A612A4623b747aEeFb30aFBA82804e12c",
+   "target_label": "DedicatedVaultRouter",
+   "controller_address": "0xDEa75A312b2F99b5A7558c4636897b39C195E241",
+   "controller_kind": "timelock"
+  },
+  {
+   "slug": "panoptic-v2",
+   "chain": "ethereum",
+   "record_id": "panoptic-v2-control-plane",
+   "retired_at_sprint": 30,
+   "target_contract": "0x0000000000000aDC9A108591e718F2aee963a2a7",
+   "target_label": "Panoptic V2 Factory Deployer NFTs (PanopticFactoryV3)",
+   "controller_address": null,
+   "controller_kind": null
+  },
+  {
+   "slug": "shift-defi",
+   "chain": "ethereum",
+   "record_id": "shift-defi-control-plane",
+   "retired_at_sprint": 30,
+   "target_contract": "0x1d71c888961c4600cF0E31F6196b4dA7fE72e4B3",
+   "target_label": "Shift-DeFi USDC Vault (Vault)",
+   "controller_address": "0x83B975e5F33c0251eFEA5D355A91b3d8d58E6d9a",
+   "controller_kind": "contract_controller"
+  },
+  {
+   "slug": "spectra-metavaults",
+   "chain": "base",
+   "record_id": "spectra-metavaults-control-plane",
+   "retired_at_sprint": 30,
+   "target_contract": "0x64FCC3A02eeEba05Ef701b7eed066c6ebD5d4E51",
+   "target_label": "Spectra Token",
+   "controller_address": "0xAA8578C937f8Ce1eDb10477817FfA424EdfAE6fc",
+   "controller_kind": "contract_controller"
   },
   {
    "slug": "strata-markets",
@@ -30,6 +170,16 @@
    "target_contract": "0x1b40183EFB4Dd766f11bDa7A7c3AD8982e998421",
    "target_label": "VesperToken (VSP)",
    "controller_address": "0x9520b477Aa81180E6DdC006Fc09Fb6d3eb4e807A",
+   "controller_kind": "multisig_safe"
+  },
+  {
+   "slug": "vetro",
+   "chain": "ethereum",
+   "record_id": "vetro-control-plane",
+   "retired_at_sprint": 30,
+   "target_contract": "0xC8317A10385BE07901A4c9ee3d06E1D83AE378c9",
+   "target_label": "Treasury",
+   "controller_address": "0x6649Ddb5c7e52348b73c8bBdD2A1cbA630b7AaEA",
    "controller_kind": "multisig_safe"
   },
   {

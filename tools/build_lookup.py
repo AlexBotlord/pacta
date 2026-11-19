@@ -129,6 +129,8 @@ TOKENS = {
     "wintermute-confidential-wbtc-ethereum": ["armcWBTC"], "woofi-earn": ["WOO"],
     # Sprint 29 promotion (bulk harvester v2.0)
     "base-bridge": ["BaseBridge"], "lagoon": ["Lagoon"],
+    # Sprint 30 promotion (bulk harvester v2.0)
+    "bedrock-unibtc": ["Bedrock(uniBTC)"],
     # briefs
     "kerne-kusd-base": ["kUSD", "Kerne"], "efix-efixdi-base": ["efixDI+", "EFIXDI", "EFIX"], "circle-cirbtc-eth": ["cirBTC", "Circle"],
     "paxos-paxgy-eth": ["PAXGy", "Paxos"], "tether-usat-eth": ["USAT", "Tether"], "ethena-ops-0x0ca0-0x1fe5": ["USDe", "RLUSD", "USAT"],

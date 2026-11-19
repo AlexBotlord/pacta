@@ -1845,6 +1845,16 @@
       }
     },
     {
+      "slug": "bedrock-unibtc",
+      "protocolName": "Bedrock (uniBTC)",
+      "xHandle": null,
+      "xUrl": null,
+      "verificationSource": null,
+      "sources": [],
+      "reason": "no relevant first-party handle",
+      "candidates": {}
+    },
+    {
       "slug": "bedrock-unieth",
       "protocolName": "Bedrock (uniETH)",
       "xHandle": "@Bedrock_DeFi",

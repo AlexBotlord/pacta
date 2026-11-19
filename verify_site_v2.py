@@ -46,14 +46,14 @@ import xml.etree.ElementTree as ET
 ROOT = os.path.dirname(os.path.abspath(__file__))
 DOCS = os.path.join(ROOT, "docs")
 RESULTS = []
-# ---- EXPECT-BEGIN: the published numbers, in one place (tools/apply_sprint29_attestation.py rewrites this block when it stamps a Sprint)
+# ---- EXPECT-BEGIN: the published numbers, in one place (tools/apply_sprint30_attestation.py rewrites this block when it stamps a Sprint)
 EXPECT = {
-    "sprints": 29, "records": 225, "eas_attestations": 29,              # index.json sprints_completed / records_indexed; Base EAS sprint UIDs
-    "protocols": 311, "eas_protocols": 116, "rpc_protocols": 195,          # /protocols/ pages = EAS-attested + RPC-pinned; badges = protocols
-    "briefs": 17, "badge_tiers": {"aligned": 70, "parameter_delta": 46, "rpc_observed": 195},
-    "base_records": 31,                                                  # index.json records with chain "base"
-    "rpc_by_chain": {"ethereum": 178, "base": 17},                         # rpc-pinned.json records per chain (sum = rpc_protocols)
-    "multi_attest_txs": ["1–12", "13–16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29"],                              # attestation_coverage.eas_multi_attest_txs keys
+    "sprints": 30, "records": 248, "eas_attestations": 30,              # index.json sprints_completed / records_indexed; Base EAS sprint UIDs
+    "protocols": 312, "eas_protocols": 132, "rpc_protocols": 180,          # /protocols/ pages = EAS-attested + RPC-pinned; badges = protocols
+    "briefs": 17, "badge_tiers": {"aligned": 82, "parameter_delta": 50, "rpc_observed": 180},
+    "base_records": 32,                                                  # index.json records with chain "base"
+    "rpc_by_chain": {"ethereum": 165, "base": 15},                         # rpc-pinned.json records per chain (sum = rpc_protocols)
+    "multi_attest_txs": ["1–12", "13–16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30"],                              # attestation_coverage.eas_multi_attest_txs keys
     "summaries": {"15": "61c0cc292cfa1fc3840277cf312383d24a6c81af56afac303afdbd84e7316cf6",
                   "16": "91b8e29301ef0e625c4ddc9eadaf5388115812f5958f90b6e0ed53a4808ba8ae",
                   "17": "2fd7ab979c6dfc3aae44f6c46c8f0397959927874ff0358574043a056d3168ea",
@@ -68,13 +68,14 @@ EXPECT = {
                   "26": "cbf6009b33bde0e22ec37fc45720aad3dad57bfcd91f8763e6b31fdf223c583d",
                   "27": "be4a0d34a555b52a23bf57a9852be083b669e19151323c42bb322c18f0df1d6b",
                   "28": "062632d4abf0411664883823e185de5f974c9e989bf8497c0e8863b557b878bd",
-                  "29": "ba61b61feb65e1b23d10c998f70bcabce22a8b27203581542ef1cc3b68a4507f"},   # audits/sprint-<n>/ summary SHA-256 (attested)
+                  "29": "ba61b61feb65e1b23d10c998f70bcabce22a8b27203581542ef1cc3b68a4507f",
+                  "30": "f51c2033847f5012027468eea28660c59c270c5f2592f06a248483f4c7c040fc"},   # audits/sprint-<n>/ summary SHA-256 (attested)
 }
 # ---- EXPECT-END
 X = EXPECT
 # sha256 of docs/api/v1/graph-manifest.json: changes only through a deliberate re-pin (a Sprint stage / stamp rewrites it after the
 # rebuild); a merged Wave 2 claim or any site-only change must leave it as is
-GRAPH_MANIFEST_SHA256 = "6ba130a3d98300f962b3b265c7361d22ad0ed6a0da7138e2c50bf7eda9e4b0d5"
+GRAPH_MANIFEST_SHA256 = "ce2ad4c150ca17444d8b12d9d81b63680a4337683ca5f69f36b59e1fabe819f6"
 NON_PROTOCOL_PAGES = 39                                                  # docs/**/*.html pages that are not /protocols/<slug>/ (39: + /scan/ /webhook/ /seal/ /miniapp/, + the Cap, Compound V3 and Lista Lending briefs)
 
 
@@ -2587,7 +2588,7 @@ def main(argv=None):
         "V47-02: the command input paints a 2 px inset --ring outline on :focus-visible (both themes)":
             ".cmdk-head input:focus-visible { outline: 2px solid var(--ring); outline-offset: -2px; box-shadow: none; }" in css471
             and ".cmdk-head input:focus, .cmdk-head input:focus-visible { outline: none" not in css471,
-        "V47-03: ?basket= keeps underscores (exact <option> values): stable_rwa 69, eth_lst_lrt 45, lending_vaults 120, base 34; combined with ?grade= and ?q= (harness)":
+        "V47-03: ?basket= keeps underscores (exact <option> values): stable_rwa 69, eth_lst_lrt 46, lending_vaults 121, base 33; combined with ?grade= and ?q= (harness)":
             "replace(/[^a-z0-9-]/g" not in appjs and res.get("v471_basket_urls") is True,
     }
     check("v4.7.1 review fixes (V47-01 stable audience-tab height, V47-02 command-input focus ring, V47-03 basket URLs with underscores)",
@@ -3387,16 +3388,16 @@ def main(argv=None):
             and all('bounties/">Bounties</a>' in t for r, t in pages.items() if 'class="topbar"' in t),
         "Wave 1 archive labelled 'Historical Snapshot (Pinned at 53 Protocols on Nov 15)'": "<b>Historical Snapshot (Pinned at 53 Protocols on Nov 15)</b>" in bounty
             and bounty.index("data-wave1-snapshot") > bounty.index('id="wave-1"'),
-        "funded capacity = confirmed unencumbered USDC only (18 Epoch 1 slots settled on Base; 7 slots / $7.00 unencumbered completing Epoch 1; $45.05 Epoch 2+ reserve from $52.05 treasury; Wave 1 4/4 settled)":
-            (w2cfg["settledEpochSlots"], w2cfg["fundedUnencumberedSlots"], w2cfg["fundedUnencumberedUsdc"], w2cfg["ringFencedUsdc"]) == (18, 7, "7.00", "45.05")
-            and (BS.SETTLED_EPOCH_SLOTS, BS.FUNDED_UNENCUMBERED_SLOTS, BS.FUNDED_UNENCUMBERED_USDC, BS.EPOCH_REMAINING_USDC) == (18, 7, "7.00", "0.00")
-            and len(lb_["wave2Settlements"]) == 18 and all(BS.tx_ok(p_["payoutTxHash"]) for p_ in lb_["wave2Settlements"])
-            and "data-wave2-capacity" in bounty and "$45.05 USDC in the treasury is separately ring-fenced for subsequent Wave 2 epochs ($52.05 USDC total unencumbered in the Base treasury; Wave 1 Genesis 4/4 = $100.00 USDC is 100% settled on Base)" in bounty
-            and "Confirmed unencumbered on-chain now: **$7.00 USDC (7 slots)**" in master and "funded this epoch" not in bounty + master + read("docs/llms.txt")
+        "funded capacity = confirmed unencumbered USDC only (25 Epoch 1 slots settled on Base; 0 slots / $0.00 unencumbered completing Epoch 1; $45.05 Epoch 2+ reserve from $45.05 treasury; Wave 1 4/4 settled)":
+            (w2cfg["settledEpochSlots"], w2cfg["fundedUnencumberedSlots"], w2cfg["fundedUnencumberedUsdc"], w2cfg["ringFencedUsdc"]) == (25, 0, "0.00", "45.05")
+            and (BS.SETTLED_EPOCH_SLOTS, BS.FUNDED_UNENCUMBERED_SLOTS, BS.FUNDED_UNENCUMBERED_USDC, BS.EPOCH_REMAINING_USDC) == (25, 0, "0.00", "0.00")
+            and len(lb_["wave2Settlements"]) == 25 and all(BS.tx_ok(p_["payoutTxHash"]) for p_ in lb_["wave2Settlements"])
+            and "data-wave2-capacity" in bounty and "$45.05 USDC in the treasury is separately ring-fenced for subsequent Wave 2 epochs ($45.05 USDC total unencumbered in the Base treasury; Wave 1 Genesis 4/4 = $100.00 USDC is 100% settled on Base)" in bounty
+            and "Confirmed unencumbered on-chain now: **$0.00 USDC (0 slots)**" in master and "funded this epoch" not in bounty + master + read("docs/llms.txt")
             and not re.search(r"\bfunded epochs?\b|pays out in funded", bounty + master + read("docs/llms.txt") + read("docs/llms-full.txt") + rd_)
             and "PRIOR_EPOCH_SLOTS + SETTLED_EPOCH_SLOTS + FUNDED_UNENCUMBERED_SLOTS" in read("tools/build_site.py"),
         "README: $112 settled shield (= $100 Wave 1 4/4 + $12 Wave 2), @pacta/mcp-server 0.1.5, Master Issue #41, live protocol count, Ethereum and Base block heights": (
-            sum(25 for s_ in lb_["wave1Settlements" ] if s_["payoutTxHash"]) == 100 and len(lb_["wave2Settlements"]) == 18
+            sum(25 for s_ in lb_["wave1Settlements" ] if s_["payoutTxHash"]) == 100 and len(lb_["wave2Settlements"]) == 25
             and "[![Bounties & Leaderboard](https://img.shields.io/badge/Bounties_%26_Leaderboard-%24112_USDC_Settled-10b981?style=for-the-badge&labelColor=000000)](https://pacta.wtf/leaderboard/)" in read("README.md")
             and "`@pacta/mcp-server` 0.1.5" in read("README.md") and "0.1.4" not in read("README.md")
             and json.loads(read("packages/mcp-server/package.json"))["version"] == "0.1.5"

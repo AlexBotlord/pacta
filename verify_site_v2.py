@@ -2914,7 +2914,7 @@ def main(argv=None):
                     and f'`{stg["drift_rescans"]["checks"]}` checks' in read(stg["summary_doc"])))
                 or any(sl not in {e["slug"] for e in pinned_["entries"]} or stg.get("slug_overrides", {}).get(nm, BS.protocol_slug(nm)) != sl
                        or not any(r["protocol"] == nm for r in rs)
-                       for sl, nm in stg.get("converts_rpc_pinned", {}).items())
+                       for sl, nm in ((sl, c_["name"] if isinstance(c_, dict) else c_) for sl, c_ in stg.get("converts_rpc_pinned", {}).items()))
                 or any(r["base_eas_uid"] is not None or r["sprint"] != n_ or (r["block_number"], r["block_hash"]) != pins_[r["chain"]]
                        or r["rpc_env_var"] != BS.CHAINS[r["chain"]][2] or not eip55_ok(r["target_contract"])
                        or not repro_ok(r) for r in rs)

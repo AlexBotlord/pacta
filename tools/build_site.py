@@ -170,12 +170,14 @@ CHECKOUT_TREASURY = "0x4348DF1BEFAffcbA248B5118B1b782B1B2bdEd14"
 CHECKOUT = {   # sku -> product page; "tier" is the /request/?tier= alias that forwards to the page
     "instant-scan-19": {
         "tier": "instant-19", "route": "scan", "amount": "19.00", "atomic": 19_000_000, "price": "$19 USDC", "unit": "one-time · Base mainnet",
-        "badge": "Instant self-serve · under 60 s", "h1": "Instant Contract & Safe Deep-Scan", "label": "Instant Contract & Safe Deep-Scan",
-        "lede": "A live multi-RPC read of any Ethereum or Base contract or Safe: proxy and implementation chain, Safe signers, threshold "
-                "and guard, timelock delay and privileged roles, unlocked on this page in under 60 seconds.",
+        "badge": "Ethereum & Base Smart Contract Control-Plane Verification",
+        "h1": "See who actually controls any Ethereum or Base smart contract — in 3 seconds, free, no wallet or signup.",
+        "label": "Instant Contract & Safe Deep-Scan",
+        "lede": "Protocol docs often promise a 48-hour timelock while the live smart contract can be upgraded in 0 seconds by a small multisig or single EOA. "
+                "Pacta reads live Ethereum & Base bytecode and authority slots across two independent RPCs to show you who really holds the keys.",
         "cta": "Pay $19 USDC on Base & Unlock Full Report",
-        "title": "Instant contract & Safe deep-scan · $19 USDC · Pacta", "card": "x-card-scan19-1200x628.png",
-        "desc": "Paste an Ethereum or Base address, pay 19 USDC on Base, and get a live proxy, Safe, timelock and role report on the page in under 60 seconds."},
+        "title": "Free Ethereum & Base Contract Control-Plane Check · Pacta", "card": "x-card-scan19-1200x628.png",
+        "desc": "See who actually controls any Ethereum or Base smart contract in 3 seconds — free, no wallet or signup. Verify upgrade proxies, Safe quorums, timelocks and pause keys."},
     "radar-webhook-49": {
         "tier": "webhook-49", "route": "webhook", "amount": "49.00", "atomic": 49_000_000, "price": "$49 USDC", "unit": "per month · Base mainnet",
         "badge": "Live alerts · Slack, Telegram, Discord, HTTPS", "h1": "Live Timelock & Signer Alerts", "label": "Live Timelock & Signer Webhook",
@@ -186,19 +188,26 @@ CHECKOUT = {   # sku -> product page; "tier" is the /request/?tier= alias that f
         "desc": "Slack, Telegram, Discord or HTTPS alerts when a watched timelock queues an operation or a Safe changes signers. 49 USDC a month on Base."},
     "reverify-seal-99": {
         "tier": "seal-99", "route": "seal", "amount": "99.00", "atomic": 99_000_000, "price": "$99 USDC", "unit": "vs $500 regular · Base mainnet",
-        "badge": "Save 80% · intro for the first 5 teams", "h1": "24h Mainnet Control-Plane Seal", "label": "24h Mainnet Control-Plane Seal",
-        "lede": "For a team that fixed a flagged gap or launched a new vault: a maintainer and an independent verifier re-check it on "
-                "mainnet within 24h, and you get a Base EAS attestation of the result.",
+        "badge": "For DeFi Protocols, Vault Curators & Institutional LPs",
+        "h1": "Prove your smart contract matches your security docs — attested on Base Mainnet EAS within 24h.",
+        "label": "24h Mainnet Control-Plane Seal",
+        "lede": "Turn 'trust our docs' into an independently verified, block-pinned scorecard and embeddable SVG badge backed by two independent RPCs "
+                "and a permanent Base Ethereum Attestation Service (EAS) record.",
         "cta": "Pay $99 USDC on Base & Book 24h Re-Verification",
-        "title": "24h mainnet control-plane seal · $99 USDC · Pacta", "card": "x-card-seal99-1200x628.png",
-        "desc": "Fixed a flagged gap or launched a vault? A maintainer and an independent verifier re-check it on mainnet within 24h, with a Base EAS attestation of the result."},
+        "title": "24h Base-EAS Control-Plane Seal · $99 USDC · Pacta", "card": "x-card-seal99-1200x628.png",
+        "desc": "Prove your Ethereum or Base smart contract matches your security docs — independently verified across two RPCs and attested on Base Mainnet EAS within 24h."},
 }
 assert all(v["atomic"] == round(float(v["amount"]) * 10 ** 6) and v["price"] == f"${v['amount'][:-3]} USDC" for v in CHECKOUT.values())
 SEAL_GUARANTEE = ("The fee pays for the 24-hour mainnet re-verification work, never the grade: your attestation reads Aligned when "
                   "on-chain controls match the published documentation, and Delta when they do not.")
 # real indexed contracts behind the example chips (resolved from api/v1/lookup.json at build time)
 SCAN_SAMPLE_CHIPS = ("getMinDelay()", "PROPOSER_ROLE", "DEFAULT_ADMIN_ROLE", "MINTER_ROLE")
-SCAN_CHIPS = [("Ethena", "ethena-usde-susde"), ("Stader", "stader-labs-ethx"), ("Morpho", "morpho-blue-core")]
+SCAN_CHIPS = [
+    ("Lagoon cbBTC Vault (0s Safe vs 24h-30d Docs)", "lagoon"),
+    ("Base Bridge (>1M ETH Nested Safe)", "base-bridge"),
+    ("Moonwell Base", "moonwell-lending-base"),
+    ("USDC Base", "circle-usdc"),
+]
 WEBHOOK_PICKS = [("Ethena", "ethena-usde-susde"), ("Morpho", "morpho-blue-core"), ("Aave v3", "aave-v3-gho"), ("Treehouse", "treehouse-tree-teth")]
 ALERT_EXAMPLE = "lombard-op-0xd07f"     # the alert preview is built from this decoded radar brief
 SOCIAL_SIZE = (1200, 628)   # X Website cards (1.91:1): og-preview.png and docs/cards/x-card-*-1200x628.png
@@ -1384,17 +1393,67 @@ def chain_target(target_label, optional=False):
 
 
 def scan_checker(lk):
-    """/scan/: the free live preflight check (the homepage checker) is the scanner: chips fill a real indexed contract and run it."""
+    """/scan/: 100% free live preflight checker at the top of the page; 4 real protocol chips run an eye-opening live check in 1 click."""
     chips = []
     for label, slug in SCAN_CHIPS:
         it = lk[slug]
         ch, addr = LIVE_CHECK_TARGET.get(slug, (it["preflightArgs"]["chain"], it["preflightArgs"]["address"]))
         chips.append(U.button(E(label), variant="outline", size="sm", cls="receipt",
                               attrs=f'data-receipt data-pf-chain="{ch}" data-pf-address="{addr}" aria-label="Try {E(label)}: run a free live check of its indexed contract"'))
-    examples = (f'<div class="try"><div class="try-row" role="group" aria-label="Example contracts"><span class="try-l">Try:</span>{"".join(chips)}</div></div>')
-    cap = ("Free preview first: Check runs the read-only live check of this contract at the latest block. The $19 report adds the multi-RPC "
-           "deep-scan, Safe signer overlap, a printable report and a queued Base EAS receipt.")
-    return hero_checker(examples, prefix="../", cap=cap, label="Contract or Safe address", cta_variant="outline")
+    examples = (f'<div class="try"><div class="try-row" role="group" aria-label="Example contracts"><span class="try-l">Try live:</span>{"".join(chips)}</div></div>')
+    cap = ("Free, read-only live check at the latest finalized block — no wallet, no API key, no signup. Paste any Ethereum or Base "
+           "0x… contract address, or click one of the 4 live protocol examples below to inspect its real control plane.")
+    return hero_checker(examples, prefix="../", cap=cap, label="Contract or Safe address", cta_variant="default", cta_label="Check Contract (Free)")
+
+
+def scan_explainer_section():
+    """/scan/: plain-English + technical explainer shown on initial cold load right beneath the Free Checker (zero price tags)."""
+    items = (
+        ("1. Upgrade Authority & Proxy Chain",
+         "Reads EIP-1967, UUPS, Transparent, Beacon and Diamond diamondCut storage slots to expose active implementation addresses and who can swap them."),
+        ("2. Multisig Signers & Real Quorum",
+         "Extracts exact Gnosis Safe threshold (e.g. 3-of-6), owner list, Safe guard status, and nested Safes holding admin power."),
+        ("3. Timelock Delay & Bypass Check",
+         "Queries live getMinDelay() in seconds alongside PROPOSER_ROLE, EXECUTOR_ROLE, and DEFAULT_ADMIN_ROLE holders."),
+        ("4. Emergency Pause, Mint & Fee Keys",
+         "Flags single EOAs or low-quorum multisigs able to pause withdrawals, mint tokens, blacklist users, or hike fees."),
+        ("5. Verifiable Dual-RPC Proof",
+         "Every read is block-pinned across two independent archive RPCs with copyable Foundry cast reproduction commands."),
+    )
+    cards = "".join(f'<li class="ex-item"><b>{E(t)}</b><span>{E(d)}</span></li>' for t, d in items)
+    return (
+        '<section class="scan-explain" id="what-pacta-checks" data-what-pacta-checks>'
+        '<div class="ex-head"><span class="step-k mono">WHAT PACTA CHECKS · DOCS VS LIVE BYTECODE</span>'
+        '<h2>Why smart contract security docs are not enough</h2>'
+        '<p class="ex-sub">Static code audits check logic at one point in time. Post-deployment admin keys, proxy pointers, and Safe signers can change quietly without touching immutable code.</p></div>'
+        '<div class="dvc-compare" role="region" aria-label="Docs vs live on-chain reality example">'
+        '<div class="dvc-box dvc-docs"><span class="dvc-k mono">PUBLISHED DOCS PROMISE</span>'
+        '<p class="dvc-q">&ldquo;All smart contract upgrades pass through a 48-hour Timelock.&rdquo;</p></div>'
+        '<div class="dvc-box dvc-chain"><span class="dvc-k mono">LIVE ON-CHAIN REALITY</span>'
+        '<p class="dvc-q"><b>ADVERSE DELTA</b> — 3-of-6 Gnosis Safe owns ProxyAdmin directly (0-second upgrade delay, no timelock in path).</p></div></div>'
+        f'<ul class="ex-grid" aria-label="Five control-plane checks">{cards}</ul>'
+        '<div class="scan-reveal-row" id="scan-reveal-row">'
+        '<button type="button" class="scan-reveal-btn" id="scan-reveal-btn" data-scan-reveal aria-expanded="false">'
+        'Already have a contract to certify? View Deep Dossier &amp; 24h EAS Seal options ↓</button></div>'
+        '</section>'
+    )
+
+
+def seal_how_section(preview_html):
+    """/seal/: 3-step explainer + honest Independence callout + real sample scorecard/badge deliverable preview BEFORE checkout."""
+    return (
+        '<section class="seal-explain" id="how-seal-works" data-seal-explainer>'
+        '<div class="ex-head"><span class="step-k mono">STEP 1 · HOW IT WORKS &amp; WHAT YOU RECEIVE</span>'
+        '<h2>Three steps from contract submission to permanent Base-EAS attestation</h2></div>'
+        '<ol class="seal-steps">'
+        '<li><b>1 · Submit primary contract(s) &amp; docs URL</b><span>Enter your Ethereum or Base vault, proxy, Safe, or timelock address plus your public security docs or PR.</span></li>'
+        '<li><b>2 · Automated dual-RPC extraction + independent verifier pass</b><span>Pacta extracts live proxy/Safe/timelock storage across two RPCs and verifies every published governance, timelock, and role claim.</span></li>'
+        '<li><b>3 · Permanent Base Mainnet EAS UID + public scorecard + live SVG badge in 24h</b><span>Receive an on-chain Base EAS attestation UID, public Pacta scorecard, embeddable README/docs badge, and Safe remediation JSON if any step remains.</span></li>'
+        '</ol>'
+        f'<div class="seal-indep" role="note"><b>{E(EDITORIAL_FIREWALL)}</b> Paid seals never buy a green pass: when published docs and live on-chain controls match, your Base-EAS seal reads <b>Aligned · Base EAS</b>; if they diverge, we report the exact delta so your team can reconcile it.</div>'
+        f'<aside class="pd-preview" aria-label="What the payment unlocks">{preview_html}</aside>'
+        '</section>'
+    )
 
 
 def scan_preview(idx, lk):
@@ -1469,15 +1528,15 @@ def seal_preview(idx, lk):
 
 
 def product_page(idx, sku):
-    """/scan/, /webhook/, /seal/: one product per page. Left: the order and ONE primary action (a 1-click wallet transfer, or the
-    manual drawer when there is no browser wallet); right: a preview of what the payment unlocks, built from real Pacta records."""
+    """/scan/, /webhook/, /seal/: single-SKU pages. /scan/ is 100% free-first on cold load (progressive upgrade revealed after a
+    free check or via ?unlock=1); /seal/ explains the 3-step Base-EAS process and shows sample deliverables before the $99 order card."""
     c, lk = CHECKOUT[sku], lookup_items()
     count_line = coverage_line(idx)
+    n_proto = len(site_protocols(idx))
+    n_sprints = counts(idx)["sprints"]
     reg = idx["onchain_anchoring"]["commitment_registry"]
     crumbs = (f'<nav class="crumbs" aria-label="Breadcrumb"><a href="../">Pacta</a><span aria-hidden="true">/</span>'
-              f'<a href="../#pricing">Pricing</a><span aria-hidden="true">/</span><span>{E(c["h1"])}</span></nav>')
-    head_ = (f'<div class="pd-head"><span data-slot="badge" data-variant="info">{E(c["badge"])}</span><h1 id="co-title">{E(c["h1"])}</h1>'
-             f'<p class="pd-lede">{E(c["lede"])}</p><p class="pd-price"><b>{E(c["price"])}</b><span>{E(c["unit"])}</span></p></div>')
+              f'<a href="../#pricing">Pricing</a><span aria-hidden="true">/</span><span>{E(c["label"])}</span></nav>')
     if sku == "instant-scan-19":
         pre, fields = scan_checker(lk), (f'<p class="form-message co-target-msg" id="co-target-err" data-slot="form-message" hidden></p>'
                                          + '<div class="co-row2">'
@@ -1520,19 +1579,94 @@ def product_page(idx, sku):
             f'{deeplinks}{manual_drawer(c)}{receipt_card()}'
             f'<noscript><p class="note">Paying needs JavaScript. Without it, open the manual transfer above and send the transaction hash '
             f'through the <a href="../request/">request form</a> or to {CONTACT}.</p></noscript></form>')
-    steps = (f'<section class="sec pd-how" id="how"><div class="wrap"><ol class="pd-steps">'
-             f'<li><b>1 · Enter the target</b><span>The contract, Safe or protocol, and where to deliver.</span></li>'
-             f'<li><b>2 · Pay {E(c["amount"])} USDC on Base</b><span>One click in a browser wallet, or a manual transfer from a Safe, CLI or phone.</span></li>'
-             f'<li><b>3 · Unlock</b><span>The verifier reads the Base receipt and unlocks the result on this page, with a printable receipt.</span></li></ol>'
-             f'<p class="note">{E(EDITORIAL_FIREWALL)} {E(EDITORIAL_SHORT)} Need several contracts, a full dossier or SLA monitoring? '
-             f'<a href="../request/">Enterprise &amp; protocol diligence{ARR}</a></p></div></section>')
+
+    if sku == "instant-scan-19":
+        hero_scan = (
+            f'<div class="pd-head pd-hero-explain"><span data-slot="badge" data-variant="info">{E(c["badge"])}</span>'
+            f'<h1 id="co-title">{E(c["h1"])}</h1>'
+            f'<p class="pd-lede">{E(c["lede"])}</p>'
+            f'<ul class="pd-proof" aria-label="Verification coverage">'
+            f'<li><b>{n_proto}+ Protocols Audited</b></li>'
+            f'<li><b>{n_sprints} Base Mainnet EAS Attestations</b></li>'
+            f'<li><b>2-RPC Archive Proof</b></li>'
+            f'<li><b>No Wallet · No Signup</b></li></ul></div>'
+        )
+        upgrade_scan = (
+            f'<section class="scan-upgrade" id="scan-upgrade" data-scan-upgrade hidden>'
+            f'<div class="scan-up-head"><span class="step-k mono">OPTIONAL DEEP DILIGENCE &amp; ON-CHAIN ATTESTATION</span>'
+            f'<h2>What&#x27;s added beyond the free check</h2>'
+            f'<p class="pd-lede">Full owner-by-owner multisig addresses, nested role graph, EOA pause/mint/fee role scan, downloadable JSON+Markdown receipt &amp; <code>cast</code> reproduction proofs — <b>$19 Base USDC</b>, or 24h Maintainer + Verifier Base-EAS Seal — <b>$99 Base USDC</b>.</p></div>'
+            f'<aside class="pd-preview" aria-label="What the payment unlocks">{preview}</aside>'
+            f'<div class="scan-up-actions">'
+            + U.button("Unlock Full Dossier for This Contract ($19 Base USDC) ↓", variant="default", size="lg",
+                       attrs='id="scan-open-co" data-open-co-card aria-expanded="false"')
+            + U.button(f"24h Maintainer + Verifier Base-EAS Seal ($99 Base USDC){ARR}", href="../seal/", variant="outline", size="lg",
+                       attrs='id="scan-to-seal" data-scan-to-seal')
+            + '</div>'
+            f'<div class="co-card" id="co-card" data-co-card hidden>'
+            f'<div class="co-card-head"><span class="step-k mono">INSTANT ON-CHAIN UNLOCK</span>'
+            f'<h3>Unlock Full Control-Plane Dossier</h3>'
+            f'<p class="pd-price"><b>{E(c["price"])}</b><span>{E(c["unit"])} · target synced from your check above</span></p>'
+            f'<p class="co-sync-pill mono" id="co-sync-pill" data-co-sync-pill>Target: paste or pick a 0x… contract in the free checker above</p></div>'
+            f'{form}</div></section>'
+        )
+        foot_note = (f'<section class="sec pd-how" id="how"><div class="wrap">'
+                     f'<p class="note">{E(EDITORIAL_FIREWALL)} {E(EDITORIAL_SHORT)} Need multi-contract protocol diligence or continuous SLA monitoring? '
+                     f'<a href="../request/">Enterprise &amp; protocol diligence{ARR}</a></p></div></section>')
+        main_inner = (
+            f'<section class="sec pd-sec" id="checkout"><div class="wrap">{crumbs}'
+            f'<div class="pd-funnel">{hero_scan}'
+            f'<div class="pd-free-box" id="free-check" data-free-check>'
+            f'<div class="pd-step-head"><span class="step-k mono">STEP 1 · FREE 3-SECOND CONTRACT CHECK</span>'
+            f'<h2>Paste any Ethereum or Base contract — or click a live example</h2></div>{pre}</div>'
+            f'{scan_explainer_section()}{upgrade_scan}</div></div></section>{foot_note}'
+        )
+    elif sku == "reverify-seal-99":
+        hero_seal = (
+            f'<div class="pd-head pd-hero-explain"><span data-slot="badge" data-variant="info">{E(c["badge"])}</span>'
+            f'<h1 id="co-title">{E(c["h1"])}</h1>'
+            f'<p class="pd-lede">{E(c["lede"])}</p>'
+            f'<ul class="pd-proof" aria-label="Seal verification guarantees">'
+            f'<li><b>{n_proto}+ Protocols Audited</b></li>'
+            f'<li><b>Permanent Base Mainnet EAS Record</b></li>'
+            f'<li><b>Dual-RPC + Independent Verifier</b></li></ul>'
+            f'<div class="seal-precheck-bar"><span>Want to run a free 3-second authority check on your contract before booking?</span>'
+            + U.button(f"Test Contract Free First{ARR}", href="../scan/", variant="outline", size="sm", attrs="data-seal-free-first")
+            + '</div></div>'
+        )
+        order_seal = (
+            f'<section class="co-card seal-order-card" id="seal-order-card" data-seal-order>'
+            f'<div class="co-card-head"><span class="step-k mono">STEP 2 · ORDER YOUR 24H BASE-EAS SEAL</span>'
+            f'<h2>Book Your 24-Hour Mainnet Re-Verification &amp; Base-EAS Seal</h2>'
+            f'<p class="pd-price"><b>{E(c["price"])}</b><span>{E(c["unit"])} · 24h turnaround</span></p></div>'
+            f'{form}</section>'
+        )
+        foot_note = (f'<section class="sec pd-how" id="how"><div class="wrap">'
+                     f'<p class="note">{E(EDITORIAL_FIREWALL)} {E(EDITORIAL_SHORT)} Need multi-contract scope, formal PDF invoicing or SLA monitoring? '
+                     f'<a href="../request/">Enterprise &amp; protocol diligence{ARR}</a></p></div></section>')
+        main_inner = (
+            f'<section class="sec pd-sec" id="checkout"><div class="wrap">{crumbs}'
+            f'<div class="pd-funnel">{hero_seal}{seal_how_section(preview)}{order_seal}</div></div></section>{foot_note}'
+        )
+    else:
+        head_ = (f'<div class="pd-head"><span data-slot="badge" data-variant="info">{E(c["badge"])}</span><h1 id="co-title">{E(c["h1"])}</h1>'
+                 f'<p class="pd-lede">{E(c["lede"])}</p><p class="pd-price"><b>{E(c["price"])}</b><span>{E(c["unit"])}</span></p></div>')
+        steps = (f'<section class="sec pd-how" id="how"><div class="wrap"><ol class="pd-steps">'
+                 f'<li><b>1 · Enter the target</b><span>The contract, Safe or protocol, and where to deliver.</span></li>'
+                 f'<li><b>2 · Pay {E(c["amount"])} USDC on Base</b><span>One click in a browser wallet, or a manual transfer from a Safe, CLI or phone.</span></li>'
+                 f'<li><b>3 · Unlock</b><span>The verifier reads the Base receipt and unlocks the result on this page, with a printable receipt.</span></li></ol>'
+                 f'<p class="note">{E(EDITORIAL_FIREWALL)} {E(EDITORIAL_SHORT)} Need several contracts, a full dossier or SLA monitoring? '
+                 f'<a href="../request/">Enterprise &amp; protocol diligence{ARR}</a></p></div></section>')
+        main_inner = (
+            f'<section class="sec pd-sec" id="checkout"><div class="wrap">{crumbs}'
+            f'<div class="pd"><div class="pd-main">{head_}{pre}{form}</div><aside class="pd-preview" aria-label="What the payment unlocks">{preview}</aside></div>'
+            f'</div></section>\n{steps}'
+        )
+
     body = f"""<body>
 {topbar("../", c["route"] + "/")}
 <main id="main">
-<section class="sec pd-sec" id="checkout"><div class="wrap">{crumbs}
-<div class="pd"><div class="pd-main">{head_}{pre}{form}</div><aside class="pd-preview" aria-label="What the payment unlocks">{preview}</aside></div>
-</div></section>
-{steps}
+{main_inner}
 </main>
 {footer(count_line, reg, "../")}
 </body></html>
@@ -2435,7 +2569,7 @@ EAS_SCHEMA_VIEW = "https://base.easscan.org/schema/view/0x7ff485bc1159dff3c70eef
 EDITORIAL_FIREWALL = "Pacta never sells grades."
 
 
-def hero_checker(examples="", prefix="", cap=None, label="Contract address, protocol or token", cta_variant="default"):
+def hero_checker(examples="", prefix="", cap=None, label="Contract address, protocol or token", cta_variant="default", cta_label="Check contract"):
     """U3/A3: noValidate form (no native bubble), inline 0x + 40-hex validation on blur and submit, aria-invalid + aria-describedby
     to a visible destructive message, and a disabled button with a spinner while the check runs (app.js)."""
     return (f'<div class="pf hero-pf" data-api="{API}" data-lookup="{prefix}api/v1/lookup.json">'
@@ -2445,7 +2579,7 @@ def hero_checker(examples="", prefix="", cap=None, label="Contract address, prot
             f'<label class="sr-only" for="pf-address">{E(label)}</label>'
             f'<input id="pf-address" type="text" name="address" placeholder="0x…, protocol or token" maxlength="80" spellcheck="false" '
             f'autocapitalize="off" aria-describedby="pf-help">'
-            + U.button('<span class="spinner" aria-hidden="true" hidden></span><span data-pf-label>Check contract</span>', variant=cta_variant,
+            + U.button(f'<span class="spinner" aria-hidden="true" hidden></span><span data-pf-label>{E(cta_label)}</span>', variant=cta_variant,
                        size="lg", type_="submit", attrs='id="pf-submit"')
             + f'<p class="form-message" id="pf-addr-error" data-slot="form-message" hidden></p></form>'
             + (f'<p class="checker-cap" id="pf-help">{E(cap)}</p>' if cap else

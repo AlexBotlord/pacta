@@ -1948,21 +1948,21 @@ def main(argv=None):
         if probs:
             pd_bad[v_["route"]] = probs
     scan_ = pages.get(os.path.join("scan", "index.html"), "")
-    chips_v2 = {lbl_: a_ for a_, lbl_ in re.findall(r'data-receipt data-pf-chain="(?:ethereum|base)" data-pf-address="(0x[0-9a-fA-F]{40})" aria-label="Try (\w+):', scan_)}
+    chips_v2 = {html.unescape(lbl_): a_ for a_, lbl_ in re.findall(r'data-receipt data-pf-chain="(?:ethereum|base)" data-pf-address="(0x[0-9a-fA-F]{40})" aria-label="Try ([^:]+):', scan_)}
     want_chips = {lbl: BS.LIVE_CHECK_TARGET.get(sl, (lk_v2[sl]["preflightArgs"]["chain"], lk_v2[sl]["preflightArgs"]["address"]))[1] for lbl, sl in BS.SCAN_CHIPS}
     st_r = next(x_ for x_ in BS.receipt_data(idx) if x_["slug"] == "stader-labs-ethx")
     web_ = pages.get(os.path.join("webhook", "index.html"), "")
     alert_ = BS.DECODED[BS.ALERT_EXAMPLE]["operations"][0]
     seal_ = pages.get(os.path.join("seal", "index.html"), "")
     previews_ok = {
-        "scan: the free live checker is the scanner (Ethena / Stader / Morpho chips on real indexed targets) and the sample is the real Stader record":
+        "scan: the free live checker is the scanner (4 real indexed protocol chips) and the sample is the real Stader record":
             'class="pf hero-pf"' in scan_ and 'data-lookup="../api/v1/lookup.json"' in scan_ and chips_v2 == want_chips
             and f'block #{int(st_r["e"]["block_number"]):,}' in scan_
             and f'data-variant="warning">Delta · {html.escape(st_r["chain"].replace("Manager Safe is ", ""), quote=False)} on chain vs {html.escape(st_r["docs"].replace("Manager Safe is ", ""), quote=False)} docs</span>' in scan_
             and "<svg" in scan_.split('data-preview="scan"')[-1].split('class="pv-rows"')[0]
             and all(f'<code class="sel-chip">{html.escape(c_)}</code>' in scan_ and c_ in pages.get(os.path.join("protocols", "stader-labs-ethx", "index.html"), "")
                     for c_ in BS.SCAN_SAMPLE_CHIPS)
-            and 'id="pf-submit"' in scan_ and re.search(r'data-variant="outline" data-size="lg" type="submit" id="pf-submit"', scan_) is not None,
+            and 'id="pf-submit"' in scan_ and re.search(r'data-variant="default" data-size="lg" type="submit" id="pf-submit"', scan_) is not None,
         "webhook: quick picks + an alert card built from the decoded radar brief (block, decoded call, live ETA countdown)":
             web_.count("data-co-pick") == len(BS.WEBHOOK_PICKS) and f'Ethereum #{alert_["scheduled"]["block"]:,}' in web_
             and f'data-eta="{alert_["eta"]}"' in web_ and alert_["calls"][0]["function"] in web_,
@@ -1970,6 +1970,15 @@ def main(argv=None):
             seal_.count('class="pv-d"') == 3 and "<svg" in seal_.split('data-preview="seal"')[-1] and f'src="../badges/{BS.BADGE_DEMO}.svg"' in seal_
             and html.escape(BS.SEAL_GUARANTEE, quote=False) in seal_,
     }
+    scan_cold_part = scan_.split('id="scan-upgrade"')[0] if 'id="scan-upgrade"' in scan_ else scan_
+    check("Cold-traffic explainer & progressive funnel (/scan/ & /seal/): zero upfront $19/$99 box on initial /scan/ load, 4 live preset chips, "
+          "Docs-vs-Bytecode + 5-check explainer, progressive #scan-upgrade & #co-card reveal after free check or ?unlock=1, and /seal/ explainer + sample before #co-form (harness)",
+          'id="scan-upgrade" data-scan-upgrade hidden' in scan_ and 'id="co-card" data-co-card hidden' in scan_
+          and "$19" not in scan_cold_part and "$99" not in scan_cold_part
+          and scan_.count('class="ex-item"') == 5 and "PUBLISHED DOCS PROMISE" in scan_ and "LIVE ON-CHAIN REALITY" in scan_
+          and 0 < seal_.find("data-seal-explainer") < seal_.find('data-preview="seal"') < seal_.find('id="co-form"')
+          and 'data-seal-free-first' in seal_ and res.get("co_progressive_scan_funnel") is True,
+          f"funnel={res.get('co_progressive_scan_funnel')}; cold_$19={'$19' in scan_cold_part}")
     nav_bad = [r_ for r_, t_ in pages.items() if 'class="topbar"' in t_ and not all(x_ in (re.search(r'<nav data-slot="navigation-menu" class="nav" aria-label="Primary">.*?</nav>', t_, re.S) or re.search("$^", "")).group(0).replace(' aria-current="page"', "")
                                                                                  for x_ in ('scan/">Instant Scan</a>', '#pricing">Pricing</a>', 'bounties/">Bounties</a>',
                                                                                             'radar/">Radar</a>', 'scorecards/">Scorecards</a>', 'mcp/">MCP</a>'))]
@@ -2785,6 +2794,10 @@ def main(argv=None):
         ("pacta-hypelab-600x500.png", (600, 500)),
         ("pacta-hypelab-640x100.png", (640, 100)),
         ("pacta-hypelab-640x200.png", (640, 200)),
+        ("x-ad-1-docs-vs-chain.png", (1200, 675)),
+        ("x-ad-2-five-keys.png", (1200, 675)),
+        ("x-ad-3-vault-deposit-check.png", (1200, 675)),
+        ("x-ad-4-paste-any-address.png", (1200, 675)),
     )
     ads_ok = True
     for ad_name, ad_dims in ads_expected:
@@ -2797,7 +2810,7 @@ def main(argv=None):
         if b_src != b_doc or b_doc[:8] != b"\x89PNG\r\n\x1a\n" or len(b_doc) > 500 * 1024 or struct.unpack(">II", b_doc[16:24]) != ad_dims:
             ads_ok = False
             break
-    check("HypeLab ad creatives persisted in tools/ads/ and emitted byte-identically to docs/assets/ads/ (728x90, 300x250, 320x50 <= 500KB)", ads_ok)
+    check("HypeLab & X ad creatives persisted in tools/ads/ and emitted byte-identically to docs/assets/ads/ (7 HypeLab + 4 1200x675 X cards <= 500KB)", ads_ok)
 
     # private identifiers must never be published: compared by SHA-256 of lowercased tokens, so the
     # repository itself never contains the literal identifiers this check guards against

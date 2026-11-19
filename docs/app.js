@@ -1848,6 +1848,7 @@ pfAssess(card, b);
 card.appendChild(el("p", { text: String(b.summary || "") }));
 pfMatch(card, b.catalogMatch);
 out.appendChild(card);
+notifyScanCheckComplete(b.chain || (b.catalogMatch && b.catalogMatch.chain), b.address);
 }
 var CTL_LABEL = { multisig_safe: "Safe multisig", timelock: "Timelock", eoa: "Single key (EOA)", contract: "Contract",
 access_control: "Role-based access control", none: "None" };
@@ -1926,6 +1927,7 @@ return [head, what + ": " + String(y.result), "Decoded: " + decodeWord(y.result)
 return Promise.all([pinned, live]).then(function (x) { return [].concat(x[0], x[1]); });
 }));
 out.appendChild(card);
+notifyScanCheckComplete(r.chain, r.address);
 }
 function initPreflight() {
 var box = $(".pf"), form = $("#pf-form"), out = $("#pf-out");
@@ -1933,13 +1935,14 @@ if (!box || !form || !out) return;
 var api = box.getAttribute("data-api") || "", chainSel = $('select[name="chain"]', form), addr = $('input[name="address"]', form);
 if (!chainSel || !addr || !/^https:\/\//.test(api)) return;
 var err = $("#pf-addr-error"), btn = $("#pf-submit"), spin = btn ? $(".spinner", btn) : null, lbl = btn ? $("[data-pf-label]", btn) : null;
+var idleLbl = lbl && lbl.textContent ? lbl.textContent : "Check contract";
 var help = addr.getAttribute("aria-describedby") || "pf-help";
 var seq = 0, ctl = null, timer = null, PF_TIMEOUT_MS = 10000;
 function busy(on) {
 if (!btn) return;
 btn.disabled = on; btn.setAttribute("aria-busy", String(on));
 if (spin) spin.hidden = !on;
-if (lbl) lbl.textContent = on ? "Checking…" : "Check contract";
+if (lbl) lbl.textContent = on ? "Checking…" : idleLbl;
 }
 function invalid(text) {
 if (text) {
@@ -2488,8 +2491,73 @@ return !!it;
 }
 };
 }
+function syncScanUpgradeTarget(chOverride, addrOverride) {
+var pfChain = $("#pf-chain"), pfAddr = $("#pf-address"), pill = $("#co-sync-pill"), sealLink = $("#scan-to-seal");
+var ch = (chOverride || (pfChain && pfChain.value) || "ethereum") === "base" ? "base" : "ethereum";
+var a = String(addrOverride || (pfAddr && pfAddr.value) || "").trim();
+if (pill) {
+pill.textContent = ADDR_RE.test(a)
+? "Target synced: " + (ch === "base" ? "Base" : "Ethereum") + " · " + short(a, 6, 4)
+: "Target: paste or pick a 0x… contract in the free checker above";
+}
+if (sealLink) {
+sealLink.setAttribute("href", ADDR_RE.test(a) ? "../seal/?chain=" + ch + "&address=" + a : "../seal/");
+}
+}
+function notifyScanCheckComplete(chain, address) {
+var up = $("#scan-upgrade"), revBtn = $("#scan-reveal-btn");
+if (!up) return;
+up.hidden = false;
+up.setAttribute("data-scan-revealed", "after-check");
+if (revBtn) revBtn.setAttribute("aria-expanded", "true");
+syncScanUpgradeTarget(chain, address);
+}
+function initScanFunnel() {
+var up = $("#scan-upgrade"), coCard = $("#co-card"), revBtn = $("#scan-reveal-btn"), openBtn = $("#scan-open-co");
+var pfChain = $("#pf-chain"), pfAddr = $("#pf-address");
+var q = {};
+try {
+var sp = new URLSearchParams(window.location.search || "");
+sp.forEach(function (v, k) { q[k] = v; });
+} catch (e) {  }
+if (!up && !q.protocol && ADDR_RE.test(String(q.address || ""))) {
+var sealCh = $("#co-chain"), sealT = $("#co-target");
+if (sealCh && (q.chain === "base" || q.chain === "ethereum")) sealCh.value = q.chain;
+if (sealT && !sealT.value) { sealT.value = q.address; sealT.setAttribute("value", q.address); }
+return;
+}
+if (!up) return;
+if (pfChain) pfChain.addEventListener("change", function () { syncScanUpgradeTarget(); });
+if (pfAddr) pfAddr.addEventListener("input", function () { syncScanUpgradeTarget(); });
+syncScanUpgradeTarget();
+function openCheckout() {
+up.hidden = false;
+if (coCard) coCard.hidden = false;
+if (revBtn) revBtn.setAttribute("aria-expanded", "true");
+if (openBtn) openBtn.setAttribute("aria-expanded", "true");
+syncScanUpgradeTarget();
+}
+if (revBtn) {
+revBtn.addEventListener("click", function () {
+up.hidden = false;
+up.setAttribute("data-scan-revealed", "manual-toggle");
+revBtn.setAttribute("aria-expanded", "true");
+syncScanUpgradeTarget();
+if (up.scrollIntoView) { try { up.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (e) {  } }
+});
+}
+if (openBtn) {
+openBtn.addEventListener("click", function () {
+openCheckout();
+if (coCard && coCard.scrollIntoView) { try { coCard.scrollIntoView({ behavior: "smooth", block: "nearest" }); } catch (e) {  } }
+});
+}
+if (q.unlock === "1" || q.unlock === "true") {
+openCheckout();
+}
+}
 document.addEventListener("DOMContentLoaded", function () {
-[initTheme, initXPixel, initSheet, initTabs, initTabLinks, initDetailsHash, initCmdk, initTooltips, initCopy, initBeaconHooks, tick, initIndex, initRequest, initLauncher, initCheckout, initMiniApp, initInspector, initPreflight,
+[initTheme, initXPixel, initSheet, initTabs, initTabLinks, initDetailsHash, initCmdk, initTooltips, initCopy, initBeaconHooks, tick, initIndex, initRequest, initLauncher, initCheckout, initScanFunnel, initMiniApp, initInspector, initPreflight,
 initLiveTimelocks, initProtocolFilter, initAges, initRefresh, initHeroCheck, initBadgeWidget, initScorecards, initReceipts].forEach(function (f) {
 try { f(); } catch (e) { setTimeout(function () { throw e; }, 0); }
 });

@@ -1515,6 +1515,28 @@ async function checkoutScenario() {
     && deskScan.document.getElementById("co-deeplinks").hidden === true
     && injectedMobile.document.getElementById("co-deeplinks").hidden === true
     && injectedMobile.document.getElementById("pf-address").value === C.usdc;
+
+  // Progressive cold-traffic funnel on /scan/: cold load hides #scan-upgrade & #co-card; running a free check reveals #scan-upgrade
+  // and syncs target + /seal/ link; clicking #scan-open-co expands #co-card; ?unlock=1 opens both immediately.
+  const pfOkFetch = (url) => Promise.resolve({
+    status: 200, ok: true,
+    json: () => Promise.resolve({ verdict: "ZERO_DELAY_ADMIN_UPGRADE", chain: "base", address: C.usdc, pinnedBlock: 22000000, riskScore: 65 })
+  });
+  const coldScan = page(input.scan, "/scan/", { search: "?utm_source=x&utm_medium=paid", fetch: pfOkFetch }), cd = coldScan.document;
+  const coldHidden = cd.getElementById("scan-upgrade").hidden === true && cd.getElementById("co-card").hidden === true;
+  const usdcChip = cd.querySelectorAll("[data-receipt]").find((b) => b.getAttribute("data-pf-address") === C.usdc) || cd.querySelectorAll("[data-receipt]")[0];
+  const chipA = usdcChip.getAttribute("data-pf-address"), chipCh = usdcChip.getAttribute("data-pf-chain");
+  click(usdcChip); for (let i = 0; i < 5; i++) await flush();
+  const revealedAfterCheck = cd.getElementById("scan-upgrade").hidden === false && cd.getElementById("co-card").hidden === true
+    && cd.getElementById("co-sync-pill").textContent.includes(chipA.slice(0, 6))
+    && cd.getElementById("scan-to-seal").getAttribute("href") === "../seal/?chain=" + chipCh + "&address=" + chipA;
+  click(cd.getElementById("scan-open-co"));
+  const openedCo = cd.getElementById("co-card").hidden === false && cd.getElementById("scan-open-co").getAttribute("aria-expanded") === "true";
+  const manualScan = page(input.scan, "/scan/"); click(manualScan.document.getElementById("scan-reveal-btn"));
+  const manualRevOk = manualScan.document.getElementById("scan-upgrade").hidden === false;
+  const directUnlock = page(input.scan, "/scan/", { search: "?unlock=1" });
+  const unlockParamOk = directUnlock.document.getElementById("scan-upgrade").hidden === false && directUnlock.document.getElementById("co-card").hidden === false;
+  res.co_progressive_scan_funnel = coldHidden && revealedAfterCheck && openedCo && manualRevOk && unlockParamOk;
 }
 
 async function xPixelScenario() {

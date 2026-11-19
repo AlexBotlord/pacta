@@ -1734,6 +1734,16 @@
       }
     },
     {
+      "slug": "base-bridge",
+      "protocolName": "Base Bridge",
+      "xHandle": null,
+      "xUrl": null,
+      "verificationSource": null,
+      "sources": [],
+      "reason": "no relevant first-party handle",
+      "candidates": {}
+    },
+    {
       "slug": "baseline-protocol",
       "protocolName": "Baseline Protocol",
       "xHandle": "@BaselineMarkets",
@@ -7013,6 +7023,16 @@
         }
       ],
       "reason": "no relevant first-party handle (seen, not relevant: ['kybernetwork'])",
+      "candidates": {}
+    },
+    {
+      "slug": "lagoon",
+      "protocolName": "Lagoon",
+      "xHandle": null,
+      "xUrl": null,
+      "verificationSource": null,
+      "sources": [],
+      "reason": "no relevant first-party handle",
       "candidates": {}
     },
     {

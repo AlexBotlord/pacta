@@ -3,6 +3,16 @@
  "description": "RPC-pinned records retired when their protocol was converted to Base-EAS records. tools/graph_manifest.py keeps their contracts governed by that protocol (the graph only grows).",
  "records": [
   {
+   "slug": "flaunch",
+   "chain": "base",
+   "record_id": "flaunch-control-plane",
+   "retired_at_sprint": 29,
+   "target_contract": "0x000000000D564D5be76f7f0d28fE52605afC7Cf8",
+   "target_label": "flETH",
+   "controller_address": "0x0646441c3eC556c1994420C3F9B0f31279BEfb6e",
+   "controller_kind": "multisig_safe"
+  },
+  {
    "slug": "strata-markets",
    "chain": "ethereum",
    "record_id": "strata-markets-control-plane",

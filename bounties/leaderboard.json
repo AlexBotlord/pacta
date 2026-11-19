@@ -61,12 +61,32 @@
       "payoutTxHash": "0xddb3b12abc7db29fd1584a9c135dd9989575f8265d2bdc9fa2cfc042e3dfe4b6"
     },
     {
+      "fixture": "ethereum-base-bridge.json",
+      "payoutTxHash": "0x71a7b2716c6af53e7311db020b740c1b02bc6fcdd1fef3e74c959af8184689c0"
+    },
+    {
       "fixture": "ethereum-defi-saver.json",
       "payoutTxHash": "0xb605a9b7273cb52a1ad6886ca5bfb59cd4bba56cf07723bc2509b7c31b68432d"
     },
     {
+      "fixture": "ethereum-fx-protocol.json",
+      "payoutTxHash": "0xb804508636dadab0c0a5cd4513cd055b41239fa1b73fc88b3968525f665351ef"
+    },
+    {
       "fixture": "ethereum-inverse-firm-borrowcontroller.json",
       "payoutTxHash": "0xac02ff3b67c0ebd17fc515d049a83a42d64f5fc784b995ba2220108f8a76dbc7"
+    },
+    {
+      "fixture": "ethereum-lagoon.json",
+      "payoutTxHash": "0xae3911b5adf8458fa8b8cf14220eeae75b3294d359901c5445dc2157c2370016"
+    },
+    {
+      "fixture": "ethereum-lido-emergency-activation-safe-post-pin.json",
+      "payoutTxHash": "0x4db6afcf91dfd5763d983bac1cb37ff0851c04b8d265d9ca159bcc9cc48c2c3e"
+    },
+    {
+      "fixture": "ethereum-lido-emergency-execution-safe-post-pin.json",
+      "payoutTxHash": "0x9d845ec961f9419bcc172fc7e733560a265bcb64810c8166b41c00eece8a6d48"
     },
     {
       "fixture": "ethereum-linea-bridge.json",
@@ -75,6 +95,10 @@
     {
       "fixture": "ethereum-origin-ether.json",
       "payoutTxHash": "0x772b82bc5578e7d7fb4727088a88ea87587eff538ebcb2a4c9ffd7f6a9551668"
+    },
+    {
+      "fixture": "ethereum-renzo-depositqueue-fee-post-pin.json",
+      "payoutTxHash": "0xdb0b84f99ad57e0f7cc70337e1b47c5c927ae4034974cb089eaeaaced757f021"
     },
     {
       "fixture": "ethereum-rocksolid-network.json",
@@ -106,12 +130,13 @@
     }
   ],
   "easAttestations": {
-    "VB-Blue": 3,
+    "VB-Blue": 5,
     "dankezo": 1,
     "farmmer938-lgtm": 1,
     "givemehat": 1,
-    "kinshu7777": 1,
+    "kinshu7777": 2,
     "scavenger-osan": 1,
+    "startupcompliancekit": 3,
     "veriton-dev": 2
   },
   "wave2Credits": [
@@ -150,6 +175,42 @@
       "pr": 71,
       "pactaSlug": "defi-saver",
       "record": "defi-saver-adminvault-owner-safe-s28"
+    },
+    {
+      "fixture": "ethereum-lagoon.json",
+      "pr": 82,
+      "pactaSlug": "lagoon",
+      "record": "lagoon-vault-beacon-upgrade-delay-s29"
+    },
+    {
+      "fixture": "ethereum-fx-protocol.json",
+      "pr": 83,
+      "pactaSlug": "f-x-protocol-v2",
+      "record": "f-x-protocol-v2-router-owner-safe-s29"
+    },
+    {
+      "fixture": "ethereum-base-bridge.json",
+      "pr": 90,
+      "pactaSlug": "base-bridge",
+      "record": "base-bridge-l1-proxyadmin-owner-s29"
+    },
+    {
+      "fixture": "ethereum-renzo-depositqueue-fee-post-pin.json",
+      "pr": 92,
+      "pactaSlug": "renzo-protocol-ezeth",
+      "record": "renzo-ezeth-deposit-queue-fee-s29"
+    },
+    {
+      "fixture": "ethereum-lido-emergency-activation-safe-post-pin.json",
+      "pr": 93,
+      "pactaSlug": "lido-steth-dual-governance",
+      "record": "lido-dual-governance-emergency-activation-safe-s29"
+    },
+    {
+      "fixture": "ethereum-lido-emergency-execution-safe-post-pin.json",
+      "pr": 94,
+      "pactaSlug": "lido-steth-dual-governance",
+      "record": "lido-dual-governance-emergency-execution-safe-s29"
     }
   ]
 }

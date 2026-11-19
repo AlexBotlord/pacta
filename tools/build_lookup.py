@@ -127,6 +127,8 @@ TOKENS = {
     "supernova-cl": ["Supernova"], "synfutures-v3": ["SynFutures"], "taiko-bridge": ["TAIKO"], "tokenworks": ["TokenWorks"],
     "trueo": ["TRUE"], "unitus": ["UTS"], "upshift": ["Upshift"], "vetro": ["VETRO"], "wan-bridge": ["Wan"], "whales-market": ["Whales"],
     "wintermute-confidential-wbtc-ethereum": ["armcWBTC"], "woofi-earn": ["WOO"],
+    # Sprint 29 promotion (bulk harvester v2.0)
+    "base-bridge": ["BaseBridge"], "lagoon": ["Lagoon"],
     # briefs
     "kerne-kusd-base": ["kUSD", "Kerne"], "efix-efixdi-base": ["efixDI+", "EFIXDI", "EFIX"], "circle-cirbtc-eth": ["cirBTC", "Circle"],
     "paxos-paxgy-eth": ["PAXGy", "Paxos"], "tether-usat-eth": ["USAT", "Tether"], "ethena-ops-0x0ca0-0x1fe5": ["USDe", "RLUSD", "USAT"],

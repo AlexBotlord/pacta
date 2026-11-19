@@ -1,0 +1,212 @@
+{
+  "wave": 2,
+  "category": "protocol_mismatch",
+  "slug": "bedrock-unibtc",
+  "protocol": "Bedrock uniBTC (Ethereum Vault & Token)",
+  "chainId": 1,
+  "contractAddress": "0x047D41F2544B7F63A8e991aF2068a363d210d6Da",
+  "hunter": "VB-Blue",
+  "agentFramework": "antigravity",
+  "basePayoutAddress": "0xe0a3AAe6e7d042f42e82830f4eEbF426cc1270a2",
+  "mcpProof": {
+    "tool": "pacta_check_preflight",
+    "arguments": {
+      "chain": "ethereum",
+      "address": "0x047D41F2544B7F63A8e991aF2068a363d210d6Da",
+      "block": "26448763"
+    },
+    "result": {
+      "schema": "pacta.preflight_check.v1",
+      "chain": "ethereum",
+      "chainId": 1,
+      "address": "0x047D41F2544B7F63A8e991aF2068a363d210d6Da",
+      "pinnedBlock": 26448763,
+      "pinnedBlockHash": "0xe90c025e3c1d644e5415cef2721001ed8e55560b293688b2a7c983928975d969",
+      "blockTimestamp": 1795086935,
+      "verdict": "UNCLASSIFIED_CONTRACT_CONTROLLER",
+      "riskScore": 60,
+      "isContract": true,
+      "isProxy": true,
+      "proxyType": "eip1967",
+      "implementation": "0x01E9161d1621466eB086651fD514d3eFB8C3752e",
+      "beacon": null,
+      "hasAdminSlot": true,
+      "canUpgradeZeroDelay": null,
+      "capabilities": {
+        "pause": false,
+        "blacklist": false,
+        "upgrade": true
+      },
+      "paused": false,
+      "controller": {
+        "address": null,
+        "kind": "access_control",
+        "safeThreshold": null,
+        "timelockDelaySec": null,
+        "proxyAdmin": "0x029E4FbDAa31DE075dD74B2238222A08233978f6",
+        "source": "eip1967_admin_slot + bytecode grantRole / setAuthority (PUSH4 heuristic)"
+      },
+      "roleAdminMembers": null,
+      "codeBytes": 2227,
+      "method": "Batched JSON-RPC reads pinned to the block hash (EIP-1898); EIP-1967 / EIP-1822 / beacon proxies; capabilities from PUSH4 selectors in proxy + implementation bytecode (heuristic).",
+      "summary": "Competing admin / role-authority surfaces were detected (multisig_safe 0xC9dA980fFABbE2bbe15d4734FDae5761B86b5Fc3 via eip1967_admin_slot; grantRole / setAuthority in the bytecode (PUSH4 heuristic)) and are not resolved to a single delayed controller: inspect every owner, admin and role holder before relying on it. Capabilities seen in bytecode: upgrade.",
+      "source": "live_rpc",
+      "assessment": {
+        "coverage": "unindexed_bytecode_heuristic",
+        "confidence": "low",
+        "method": "Live bytecode + storage heuristic at the pinned block only: this contract is not in Pacta's indexed catalog (no documentation comparison).",
+        "limits": [
+          "riskScore (0-100) is a heuristic of the controller type and of pause / blacklist / upgrade capabilities read at one block; it is not an audit.",
+          "The live check reads EIP-1967 slots, owner(), Safe getThreshold() / getOwners() and TimelockController getMinDelay(); custom role systems, bridge or L2 admin paths and off-chain operations are not resolved.",
+          "Documentation is compared only for indexed protocols (catalogMatch), at their pinned block."
+        ]
+      },
+      "coverage_gap_hint": "Target is not yet indexed or fully classified. Ask the user if they want you to queue coverage or request this capability via pacta_submit_request (free community queue, or 24h priority clearance for issuers).",
+      "meter": {
+        "limit": 50,
+        "remaining": 49,
+        "reset": 1795132800
+      },
+      "upgrade_x402": {
+        "note": "Free tier: 50 pre-flight calls per caller per UTC day (REST and MCP), then $0.01 per call over x402 (HTTP 402, never a dead-end 429). Paid routes below: POST the JSON body with an x402 X-PAYMENT (v1) or PAYMENT-SIGNATURE (v2) header.",
+        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "network": "base (eip155:8453)",
+        "payTo": "0x4348DF1BEFAffcbA248B5118B1b782B1B2bdEd14",
+        "discovery": "https://pacta.fractalneurons.com/.well-known/x402",
+        "overflow": {
+          "method": "GET or POST",
+          "url": "https://pacta.fractalneurons.com/v1/check/preflight",
+          "priceUsd": "0.01",
+          "amountAtomic": "10000",
+          "after": "50 free calls per UTC day"
+        },
+        "endpoints": [
+          {
+            "method": "POST",
+            "url": "https://pacta.fractalneurons.com/v1/x402/verdict",
+            "priceUsd": "0.02",
+            "amountAtomic": "20000",
+            "unlocks": "fast contract / token control-plane verdict: riskScore 0-100, grade A-F, upgrade / owner / pause / blacklist / mint flags and a shareable scan URL",
+            "example": {
+              "chain": "ethereum",
+              "address": "0xA35b1B31Ce002FBF2058D22F30f95D405200A15b"
+            }
+          },
+          {
+            "method": "POST",
+            "url": "https://pacta.fractalneurons.com/v1/x402/dossier",
+            "priceUsd": "0.05",
+            "amountAtomic": "50000",
+            "unlocks": "full control-plane dossier: every controller Safe's signers and threshold, signers shared with other indexed protocols, Base EAS proof",
+            "example": {
+              "slug": "stader-labs-ethx"
+            }
+          },
+          {
+            "method": "POST",
+            "url": "https://pacta.fractalneurons.com/v1/x402/calldata-sim",
+            "priceUsd": "0.25",
+            "amountAtomic": "250000",
+            "unlocks": "pre-signing calldata check: timelock / Safe / multicall calls decoded, each rated against live delays and the authority that governs it",
+            "example": {
+              "chain": "ethereum",
+              "target": "0x2225DAbFfC7F862c99477381E971E8B1FDaB467e",
+              "data": "0x64d623530000000000000000000000000000000000000000000000000000000000015180"
+            }
+          },
+          {
+            "method": "POST",
+            "url": "https://pacta.fractalneurons.com/v1/x402/deep-scan",
+            "priceUsd": "9.00",
+            "amountAtomic": "9000000",
+            "unlocks": "deep control-plane scan cross-checked on two independent RPC operators, auditor receipt and a queued Base EAS ticket",
+            "example": {
+              "chain": "base",
+              "address": "0x35D21Bb4Df6586FE7759b5e57263ffeB3e1fd872"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "blockNumber": 26448763,
+  "blockHash": "0xe90c025e3c1d644e5415cef2721001ed8e55560b293688b2a7c983928975d969",
+  "castCommands": [
+    "cast call 0x047D41F2544B7F63A8e991aF2068a363d210d6Da \"adequacyRatio()(uint256)\" --block 26448763 --rpc-url https://ethereum-rpc.publicnode.com",
+    "cast call 0x047D41F2544B7F63A8e991aF2068a363d210d6Da \"adequacyRatio()(uint256)\" --block 26448763 --rpc-url https://eth.drpc.org"
+  ],
+  "rpcOutputs": {
+    "a": "900",
+    "b": "900",
+    "pinnedDualRpcChainProof": {
+      "note": "Mismatch summary: Bedrock Security docs claim Chainlink Proof of Reserve / Secure Mint verifies reserve sufficiency before any minting action and reverts if reserves fall short of total uniBTC supply (100% reserve backing, https://docs.bedrock.technology/security/secure-mint). On-chain at finalized Ethereum block, VaultWithoutNative (0x047D41F2544B7F63A8e991aF2068a363d210d6Da, impl 01e9161d1621466eb086651fd514d3efb8c3752e) sets adequacyRatio() = 900 (90.0%), so checkReserve() only enforces supply * 900 / 1000 <= reserves (permitting minting up to 111.1% of verified reserves) and checks prior supply without adding the minted amount; MANAGER_ROLE (setAdequacyRatio / setPoRFeeder) is held by an EOA (0x9251fd3D79522bB2243a58FFf1dB43E25A495aaB) with 0s timelock; both Vault (0x047D41F2544B7F63A8e991aF2068a363d210d6Da) and uniBTC (0x004E9C3EF86bc1ca1f0bB5C7662861Ee93350568) share ProxyAdmin (0x029E4FbDAa31DE075dD74B2238222A08233978f6) owned by a 3-of-5 Gnosis Safe (0xC9dA980fFABbE2bbe15d4734FDae5761B86b5Fc3) with 0s upgrade timelock; and uniBTC.mint() itself has no PoR check while DEFAULT_ADMIN_ROLE is held by the same 3-of-5 Safe and MINTER_ROLE is held by external contracts (including 0x004E9C3EF86bc1ca1f0bB5C7662861Ee93350568 minter 0x70Af4743f85e5E74E3B6DDfA38926C0A762ad21c).",
+      "chainlinkReserveFeeder": {
+        "castCommands": [
+          "cast call 0x047D41F2544B7F63A8e991aF2068a363d210d6Da \"chainlinkReserveFeeder()(address)\" --block 26448763 --rpc-url https://ethereum-rpc.publicnode.com",
+          "cast call 0x047D41F2544B7F63A8e991aF2068a363d210d6Da \"chainlinkReserveFeeder()(address)\" --block 26448763 --rpc-url https://eth.drpc.org"
+        ],
+        "output": "0xc590D9fb8eE78a0909dFF341ccf717000b7b7fF2"
+      },
+      "uniBTCSupplyFeeder": {
+        "castCommands": [
+          "cast call 0x047D41F2544B7F63A8e991aF2068a363d210d6Da \"uniBTCSupplyFeeder()(address)\" --block 26448763 --rpc-url https://ethereum-rpc.publicnode.com",
+          "cast call 0x047D41F2544B7F63A8e991aF2068a363d210d6Da \"uniBTCSupplyFeeder()(address)\" --block 26448763 --rpc-url https://eth.drpc.org"
+        ],
+        "output": "0xE542919E4b281f10b437F947c8Ba224DdfaBc716"
+      },
+      "vaultManagerRoleIsEOA": {
+        "castCommands": [
+          "cast call 0x047D41F2544B7F63A8e991aF2068a363d210d6Da \"hasRole(bytes32,address)(bool)\" 0x241ecf16d79d0f8dbfb92cbc07fe17840425976cf0667f022fe9877caa831b08 0x9251fd3D79522bB2243a58FFf1dB43E25A495aaB --block 26448763 --rpc-url https://ethereum-rpc.publicnode.com",
+          "cast call 0x047D41F2544B7F63A8e991aF2068a363d210d6Da \"hasRole(bytes32,address)(bool)\" 0x241ecf16d79d0f8dbfb92cbc07fe17840425976cf0667f022fe9877caa831b08 0x9251fd3D79522bB2243a58FFf1dB43E25A495aaB --block 26448763 --rpc-url https://eth.drpc.org"
+        ],
+        "output": "true"
+      },
+      "vaultEip1967AdminSlot": {
+        "castCommands": [
+          "cast storage 0x047D41F2544B7F63A8e991aF2068a363d210d6Da 0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103 --block 26448763 --rpc-url https://ethereum-rpc.publicnode.com",
+          "cast storage 0x047D41F2544B7F63A8e991aF2068a363d210d6Da 0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103 --block 26448763 --rpc-url https://eth.drpc.org"
+        ],
+        "output": "0x000000000000000000000000029e4fbdaa31de075dd74b2238222a08233978f6"
+      },
+      "proxyAdminOwner": {
+        "castCommands": [
+          "cast call 0x029E4FbDAa31DE075dD74B2238222A08233978f6 \"owner()(address)\" --block 26448763 --rpc-url https://ethereum-rpc.publicnode.com",
+          "cast call 0x029E4FbDAa31DE075dD74B2238222A08233978f6 \"owner()(address)\" --block 26448763 --rpc-url https://eth.drpc.org"
+        ],
+        "output": "0xC9dA980fFABbE2bbe15d4734FDae5761B86b5Fc3"
+      },
+      "safeThreshold": {
+        "castCommands": [
+          "cast call 0xC9dA980fFABbE2bbe15d4734FDae5761B86b5Fc3 \"getThreshold()(uint256)\" --block 26448763 --rpc-url https://ethereum-rpc.publicnode.com",
+          "cast call 0xC9dA980fFABbE2bbe15d4734FDae5761B86b5Fc3 \"getThreshold()(uint256)\" --block 26448763 --rpc-url https://eth.drpc.org"
+        ],
+        "output": "3"
+      },
+      "safeOwners": {
+        "castCommands": [
+          "cast call 0xC9dA980fFABbE2bbe15d4734FDae5761B86b5Fc3 \"getOwners()(address[])\" --block 26448763 --rpc-url https://ethereum-rpc.publicnode.com",
+          "cast call 0xC9dA980fFABbE2bbe15d4734FDae5761B86b5Fc3 \"getOwners()(address[])\" --block 26448763 --rpc-url https://eth.drpc.org"
+        ],
+        "output": "[0x3Ef94316B19e3bbe00F3363e76Ca445c065d31DC, 0xBeD4C1c8d266e9B5841F7F0409D936E2Fe58EE68, 0x720C505aA281e6B41C2f3F5C82AFd6A518bbCFe1, 0x9582Fb0BDE9cB910BC14C1f45ae9A34E7e67791C, 0x1fc76b7C6F092e0566Ce9Bbb9c6803Ba5e45Ba32]"
+      },
+      "uniBTCDefaultAdminAndExternalMinter": {
+        "castCommands": [
+          "cast call 0x004E9C3EF86bc1ca1f0bB5C7662861Ee93350568 \"hasRole(bytes32,address)(bool)\" 0x0000000000000000000000000000000000000000000000000000000000000000 0xC9dA980fFABbE2bbe15d4734FDae5761B86b5Fc3 --block 26448763 --rpc-url https://ethereum-rpc.publicnode.com",
+          "cast call 0x004E9C3EF86bc1ca1f0bB5C7662861Ee93350568 \"hasRole(bytes32,address)(bool)\" 0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6 0x70Af4743f85e5E74E3B6DDfA38926C0A762ad21c --block 26448763 --rpc-url https://eth.drpc.org"
+        ],
+        "output": "DEFAULT_ADMIN_ROLE(Safe)=true, MINTER_ROLE(0x70Af4743...)=true"
+      }
+    }
+  },
+  "docsUrl": "https://docs.bedrock.technology/security/secure-mint",
+  "docsQuote": "Before any minting action occurs, the smart contract automatically checks reserve sufficiency using the on-chain Proof of Reserve feed. If reserves fall short, the mint transaction reverts.",
+  "tvlUsd": 106983961,
+  "tvlReference": "https://api.llama.fi/protocol/bedrock-unibtc",
+  "apache2CommercialGrant": true,
+  "rulesAccepted": [
+    true,
+    true,
+    true,
+    true
+  ]
+}

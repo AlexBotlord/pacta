@@ -75,7 +75,7 @@ X = EXPECT
 # sha256 of docs/api/v1/graph-manifest.json: changes only through a deliberate re-pin (a Sprint stage / stamp rewrites it after the
 # rebuild); a merged Wave 2 claim or any site-only change must leave it as is
 GRAPH_MANIFEST_SHA256 = "6ba130a3d98300f962b3b265c7361d22ad0ed6a0da7138e2c50bf7eda9e4b0d5"
-NON_PROTOCOL_PAGES = 38                                                  # docs/**/*.html pages that are not /protocols/<slug>/ (38: + /scan/ /webhook/ /seal/, + the Cap, Compound V3 and Lista Lending briefs)
+NON_PROTOCOL_PAGES = 39                                                  # docs/**/*.html pages that are not /protocols/<slug>/ (39: + /scan/ /webhook/ /seal/ /miniapp/, + the Cap, Compound V3 and Lista Lending briefs)
 
 
 def check(name, ok, detail=""):
@@ -1330,6 +1330,7 @@ def main(argv=None):
                         timelock_brief_html=ready_fixture_brief(json.loads(read("docs/api/v1/index.json"))),
                         protocols_index_html=pages.get(os.path.join("protocols", "index.html"), ""),
                         extra={"rescue": read("docs/404-rescue.js") if os.path.exists(os.path.join(DOCS, "404-rescue.js")) else "",
+                               "miniapp": dom_tree(pages[os.path.join("miniapp", "index.html")]) if os.path.join("miniapp", "index.html") in pages else None,
                                **{v_["route"]: dom_tree(pages[os.path.join(v_["route"], "index.html")]) for v_ in BS.CHECKOUT.values()
                                   if os.path.join(v_["route"], "index.html") in pages},
                                "checkout": {"api": BS.ORDERS_VERIFY_API, "treasury": BS.CHECKOUT_TREASURY, "usdc": BS.USDC["Base"],
@@ -2036,14 +2037,14 @@ def main(argv=None):
     check("404.html stripped-? rescue: docs/404-rescue.js (same origin, right after the CSP meta, before b.js) sends /<route>/<utm_*|tier|ref>=... on the "
           "known routes to /<route>/?... with location.replace (also under /website-test/), leaves every other path alone; the beacon stays silent (harness)",
           rescue_ == BS.RESCUE_JS and 0 <= csp_at < r_at < b_at and sum(t_.count("404-rescue.js") for t_ in pages.values()) == 1
-          and r'^\/((?:website-test|public\/web\/option-b-v2)\/)?(scorecards|request|scan|seal|webhook|radar|bounties|leaderboard|methodology|protocols(?:\/[a-z0-9-]+)?)\/((?:utm_[a-z]+|tier|ref)=.+)$' in rescue_
+          and r'^\/((?:website-test|public\/web\/option-b-v2)\/)?(scorecards|request|scan|seal|webhook|miniapp|radar|bounties|leaderboard|methodology|protocols(?:\/[a-z0-9-]+)?)\/((?:utm_[a-z]+|tier|ref)=.+)$' in rescue_
           and "L.replace(" in rescue_ and "w.pactaRescued=1" in rescue_ and "&&!w.pactaRescued" in bjs and all(res.get(k_) is True for k_ in r_keys),
           f"csp {csp_at} rescue {r_at} b.js {b_at}; failed {[k_ for k_ in r_keys if res.get(k_) is not True]}")
     b5_keys = ["b_v5_routes", "b_v5_campaign_fields", "b_v5_host"]
-    check("b.js v5.0: first-class routes (/scorecards/ /radar/ /bounties/ /leaderboard/ /methodology/ /scan/ /seal/ /webhook/ + the v4 set); allowlisted m "
-          "(paid | paid_search | organic), c (^[a-z0-9_-]{1,32}$, no secret words, no 12-hex run) and h (com | wtf) on first-load events (harness)",
-          r"/^\/(protocols|scorecards|radar|bounties|leaderboard|methodology|request|scan|seal|webhook|briefs|llms)$/" in bjs
-          and r'/^(paid|paid_search|organic)$/.test(u=G("medium"))&&(b.m=u)' in bjs
+    check("b.js v5.0: first-class routes (/scorecards/ /radar/ /bounties/ /leaderboard/ /methodology/ /scan/ /seal/ /webhook/ /miniapp/ + the v4 set); allowlisted m "
+          "(paid | paid_search | cpc | organic), c (^[a-z0-9_-]{1,32}$, no secret words, no 12-hex run) and h (com | wtf) on first-load events (harness)",
+          r"/^\/(protocols|scorecards|radar|bounties|leaderboard|methodology|request|scan|seal|webhook|miniapp|briefs|llms)$/" in bjs
+          and r'/^(paid|paid_search|cpc|organic)$/.test(u=G("medium"))&&(b.m=u)' in bjs
           and r'/^[a-z\d_-]{1,32}$/.test(u=G("campaign"))&&!D.test(u)&&!/[\da-f]{12}/.test(u)&&(b.c=u)' in bjs
           and r'b.h=/\.com$/.test(L.hostname)?"com":"wtf"' in bjs and all(res.get(k_) is True for k_ in b5_keys),
           str([k_ for k_ in b5_keys if res.get(k_) is not True]))
@@ -2085,7 +2086,7 @@ def main(argv=None):
     app_fetch = len(re.findall(r"\bfetch\(", appjs))
     check("page script boundaries: b.js/theme.js touch zero cookies/storage/third-party scripts; app.js uses localStorage only for pacta-theme + pacta-x-purchased dedup, injects only host-gated uwt.js, and fetch() calls only this site's JSON, data-api, data-live-timelocks, and the four allow-listed public RPCs",
           not js_bad and script_el_ok and ls_vars == {"THEME_KEY", "X_PURCHASE_KEY"} and ls_keys == {"pacta-theme", "pacta-x-purchased"} and appjs.count("localStorage") == 5 and data_api <= {API_, API_ + "/v1/requests", API_ + "/v1/orders/verify"}
-          and app_fetch == 8 and appjs[appjs.find("function initCheckout()"):].count("fetch(api, opts)") == 1 and 'j(root + "api/v1/lookup.json")' in appjs and 'j(root + "api/v1/scorecards.json")' in appjs and 'fetch(api, init)' in appjs[appjs.find("function initRequest()"):] and "REQ_API_RE.test(api)" in appjs and 'fetch(document.documentElement.getAttribute("data-api") || "api/v1/index.json")' in appjs
+          and app_fetch == 10 and appjs[appjs.find("function initCheckout()"):appjs.find("function initLauncher")].count("fetch(api, opts)") == 1 and "fetch(pfUrl," in appjs[appjs.find("function initMiniApp()"):] and "fetch(verifyApi," in appjs[appjs.find("function initMiniApp()"):] and 'j(root + "api/v1/lookup.json")' in appjs and 'j(root + "api/v1/scorecards.json")' in appjs and 'fetch(api, init)' in appjs[appjs.find("function initRequest()"):] and "REQ_API_RE.test(api)" in appjs and 'fetch(document.documentElement.getAttribute("data-api") || "api/v1/index.json")' in appjs
           and 'fetch(body.getAttribute("data-src") || "api/v1/scorecards.json")' in appjs
           # the 4th fetch: the user-initiated "Verify live on RPC" button, POSTing JSON-RPC only to the four allow-listed public RPCs
           and "      return fetch(url, opts).then(function (res) { return res.json(); })" in appjs
@@ -2739,6 +2740,41 @@ def main(argv=None):
                                                  "analytics.twitter.com", "t.co", "pacta-x-purchased"))
           and "no third-party trackers" not in priv_html and "The site sets no cookies" not in priv_html,
           f"xp_failed {[k_ for k_ in xp_keys if res.get(k_) is not True]}")
+
+    fc_raw = read("docs/.well-known/farcaster.json") if os.path.exists(os.path.join(DOCS, ".well-known", "farcaster.json")) else "{}"
+    fc_doc = json.loads(fc_raw)
+    fc_ma = fc_doc.get("miniapp") if isinstance(fc_doc, dict) else {}
+    fc_aa = fc_doc.get("accountAssociation") if isinstance(fc_doc, dict) else {}
+    ma_png_path = os.path.join(DOCS, "miniapp-preview.png")
+    ma_png_b = open(ma_png_path, "rb").read() if os.path.exists(ma_png_path) else b""
+    ma_png_ok = (len(ma_png_b) >= 24 and len(ma_png_b) <= 500 * 1024 and ma_png_b[:8] == b"\x89PNG\r\n\x1a\n"
+                 and struct.unpack(">II", ma_png_b[16:24]) == (1200, 800))
+    ma_html = pages.get(os.path.join("miniapp", "index.html"), "")
+    scan_html = pages.get(os.path.join("scan", "index.html"), "")
+    def valid_fc_embed(html_text):
+        m_ = re.search(r'<meta name="fc:miniapp" content="([^"]+)">', html_text)
+        if not m_:
+            return False
+        try:
+            d_ = json.loads(html.unescape(m_.group(1)))
+        except ValueError:
+            return False
+        act_ = (d_.get("button") or {}).get("action") or {}
+        return (d_.get("version") == "1" and d_.get("imageUrl") == f"{BS.BASE_URL}/miniapp-preview.png"
+                and (d_.get("button") or {}).get("title") == "Check Contract Safety"
+                and act_.get("type") == "launch_miniapp" and act_.get("url") == f"{BS.BASE_URL}/miniapp/")
+    ma_keys = ["ma_frame_ready_handshake", "ma_instant_verdicts", "ma_wallet_upgrade_19_and_99"]
+    check("Base & Farcaster Mini-App: /.well-known/farcaster.json v1 manifest, 1200x800 (3:2 <=500KB) miniapp-preview.png, valid fc:miniapp meta on /miniapp/ & /scan/, "
+          "embedded ready() postMessage + ALIGNED / ADVERSE DELTA / UNINDEXED checks + 1-tap $19/$99 Base USDC upgrades (harness)",
+          isinstance(fc_ma, dict) and fc_ma.get("version") == "1" and fc_ma.get("name") == "Pacta Control-Plane Check"
+          and fc_ma.get("homeUrl") == f"{BS.BASE_URL}/miniapp/" and fc_ma.get("splashBackgroundColor") == "#0a0b0d"
+          and fc_ma.get("subtitle") == "Docs vs Chain DeFi Verdicts" and fc_ma.get("primaryCategory") == "developer-tools"
+          and fc_ma.get("tags") == ["defi", "security", "base", "timelock", "x402"]
+          and isinstance(fc_aa, dict) and set(fc_aa.keys()) >= {"header", "payload", "signature"}
+          and ma_png_ok and valid_fc_embed(ma_html) and valid_fc_embed(scan_html)
+          and 'id="ma-buy-scan"' in ma_html and 'id="ma-buy-seal"' in ma_html
+          and all(res.get(k_) is True for k_ in ma_keys),
+          f"ma_png {ma_png_ok}; embeds {valid_fc_embed(ma_html)}/{valid_fc_embed(scan_html)}; failed {[k_ for k_ in ma_keys if res.get(k_) is not True]}")
 
     # private identifiers must never be published: compared by SHA-256 of lowercased tokens, so the
     # repository itself never contains the literal identifiers this check guards against

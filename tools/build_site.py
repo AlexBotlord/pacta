@@ -282,7 +282,7 @@ CSP = ("default-src 'self';script-src 'self' https://static.ads-twitter.com;styl
 # U2: Light / Dark / System on a .dark class; System (the default) follows prefers-color-scheme. Legacy values map: slate -> dark, paper -> light.
 # X Ads strips the "?" from a Website-card URL (/scorecards/utm_source=x... then lands on 404.html): 404.html loads this first
 # (render-blocking, same origin) and sends a stripped query on a known route back to /<route>/?<query> with location.replace.
-RESCUE_JS = ('(function(w,L){var m=/^\\/((?:website-test|public\\/web\\/option-b-v2)\\/)?(scorecards|request|scan|seal|webhook|radar|bounties|leaderboard|methodology|'
+RESCUE_JS = ('(function(w,L){var m=/^\\/((?:website-test|public\\/web\\/option-b-v2)\\/)?(scorecards|request|scan|seal|webhook|miniapp|radar|bounties|leaderboard|methodology|'
              'protocols(?:\\/[a-z0-9-]+)?)\\/((?:utm_[a-z]+|tier|ref)=.+)$/.exec(L.pathname);'
              'if(m){w.pactaRescued=1;L.replace("/"+(m[1]||"")+m[2]+"/?"+m[3]+(L.search?"&"+L.search.slice(1):"")+L.hash)}})(window,location);\n')
 THEME_JS = ('(function(){var d=document.documentElement,t="system",m=false;d.classList.add("js");'
@@ -493,8 +493,8 @@ def footer(count_line, reg, home=""):
         return f'<div><h2>{title}</h2><ul>{lis}</ul></div>'
     product = [("Scorecards", f"{home}scorecards/", 0), ("Protocols", f"{home}protocols/", 0), ("Timelock radar", f"{home}radar/", 0),
                ("Pricing", nav_href(home, "#pricing"), 0), ("Instant scan", f"{home}scan/", 0), ("Timelock webhooks", f"{home}webhook/", 0),
-               ("24h mainnet seal", f"{home}seal/", 0), ("For protocols", f"{home}for-protocols/", 0), ("Bounties", f"{home}bounties/", 0),
-               ("Leaderboard", f"{home}leaderboard/", 0)]
+               ("24h mainnet seal", f"{home}seal/", 0), ("Base Mini-App", f"{home}miniapp/", 0), ("For protocols", f"{home}for-protocols/", 0),
+               ("Bounties", f"{home}bounties/", 0), ("Leaderboard", f"{home}leaderboard/", 0)]
     agents = [("MCP server", f"{home}mcp/", 0), ("llms.txt", f"{home}llms.txt", 0), ("llms.txt (HTML)", f"{home}llms/", 0),
               ("SKILL.md", f"{home}SKILL.md", 0), ("OpenAPI 3.1", f"{home}api/v1/openapi.json", 0), ("JSON API", f"{home}api/v1/index.json", 0),
               ("Atom feed", f"{home}feed.xml", 0), ("Builder Q&A", COMMUNITY_QA_URL, 1)]
@@ -1538,8 +1538,231 @@ def product_page(idx, sku):
 </body></html>
 """
     img = f"{BASE_URL}/cards/{c['card']}" if c["card"] else f"{BASE_URL}/og-preview.png"
+    extra_meta = fc_miniapp_meta() if sku == "instant-scan-19" else ""
     return head(c["title"], c["desc"], f"{BASE_URL}/{c['route']}/", prefix="../", og_title=c["title"].rsplit(" · Pacta", 1)[0], image=img,
-                image_size=SOCIAL_SIZE) + "\n" + body
+                image_size=SOCIAL_SIZE, extra=extra_meta) + "\n" + body
+
+
+MINIAPP_PRESETS = [
+    ("Moonwell (Base)", "base", "0xfBb21d0380beE3312B33c4353c8936a0F13EF26C", "moonwell-lending-base"),
+    ("USDC (Base)", "base", "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", "circle-usdc"),
+    ("Aerodrome (Base)", "base", "0x420DD381b31aEf6683db6B902084cB0FFECe40Da", "aerodrome-finance-base"),
+    ("Stader ETHx (Eth)", "ethereum", "0xA35b1B31Ce002FBF2058D22F30f95D405200A15b", "stader-labs-ethx"),
+]
+
+
+def fc_miniapp_meta(target_url=None):
+    """Farcaster Mini-App v1 (fc:miniapp) + Frame v2 (fc:frame) JSON embed tags."""
+    u = target_url or f"{BASE_URL}/miniapp/"
+    img = f"{BASE_URL}/miniapp-preview.png"
+    splash = f"{BASE_URL}/logo-512.png"
+    mini = {
+        "version": "1",
+        "imageUrl": img,
+        "button": {
+            "title": "Check Contract Safety",
+            "action": {
+                "type": "launch_miniapp",
+                "name": "Pacta Control-Plane Check",
+                "url": u,
+                "splashImageUrl": splash,
+                "splashBackgroundColor": "#0a0b0d",
+            },
+        },
+    }
+    frame = {
+        "version": "1",
+        "imageUrl": img,
+        "button": {
+            "title": "Check Contract Safety",
+            "action": {
+                "type": "launch_frame",
+                "name": "Pacta Control-Plane Check",
+                "url": u,
+                "splashImageUrl": splash,
+                "splashBackgroundColor": "#0a0b0d",
+            },
+        },
+    }
+    return (f'<meta name="fc:miniapp" content="{E(json.dumps(mini, separators=(",", ":")))}">'
+            f'<meta name="fc:frame" content="{E(json.dumps(frame, separators=(",", ":")))}">')
+
+
+def farcaster_manifest_json():
+    """docs/.well-known/farcaster.json: Farcaster Mini-App v1 + Coinbase Base App manifest."""
+    app_cfg = {
+        "version": "1",
+        "name": "Pacta Control-Plane Check",
+        "homeUrl": f"{BASE_URL}/miniapp/",
+        "iconUrl": f"{BASE_URL}/logo-512.png",
+        "imageUrl": f"{BASE_URL}/miniapp-preview.png",
+        "buttonTitle": "Check Contract Safety",
+        "splashImageUrl": f"{BASE_URL}/logo-512.png",
+        "splashBackgroundColor": "#0a0b0d",
+        "subtitle": "Docs vs Chain DeFi Verdicts",
+        "description": "Block-pinned Base and Ethereum control-plane verdicts: check who can upgrade, pause or drain a DeFi contract before depositing.",
+        "primaryCategory": "developer-tools",
+        "tags": ["defi", "security", "base", "timelock", "x402"],
+        "heroImageUrl": f"{BASE_URL}/miniapp-preview.png",
+        "tagline": "Docs drift. The chain doesn't.",
+        "ogTitle": "Pacta Control-Plane Check",
+        "ogDescription": "Instant Base & Ethereum control-plane verdicts + 1-tap Base USDC deep scans.",
+        "ogImageUrl": f"{BASE_URL}/miniapp-preview.png",
+    }
+    doc = {
+        "accountAssociation": {
+            "header": "",
+            "payload": "",
+            "signature": "",
+        },
+        "baseBuilder": {
+            "allowedAddresses": [
+                "0xcA4E2ff22B69A7284210c47BdeE21Aac1269da09",
+                CHECKOUT_TREASURY,
+            ],
+        },
+        "_signingNote": "Populate accountAssociation.{header,payload,signature} at production promotion via Farcaster Domain Manifest signing for pacta.wtf.",
+        "miniapp": app_cfg,
+        "frame": dict(app_cfg),
+    }
+    return json.dumps(doc, indent=2) + "\n"
+
+
+def miniapp_page(idx):
+    """docs/miniapp/index.html: mobile-first Farcaster / Coinbase Base App Mini-App (zero 'unsafe-inline' CSP)."""
+    count_line = coverage_line(idx)
+    reg = idx["onchain_anchoring"]["commitment_registry"]
+    lk = lookup_items()
+    sample = lk["moonwell-lending-base"]
+    b_label = LK.BADGE_TIERS["parameter_delta"][0]
+    b_w = (len(LK.BADGE_TITLE) + len(b_label)) * 7 + 24
+    chips = "".join(
+        f'<button type="button" class="ma-chip" data-ma-preset data-chain="{ch}" data-address="{addr}" data-slug="{slug}">{E(lbl)}</button>'
+        for lbl, ch, addr, slug in MINIAPP_PRESETS
+    )
+    mm_init = "https://metamask.app.link/dapp/pacta.wtf/miniapp/"
+    cb_init = "https://go.cb-wallet.com/dapp?cb_url=" + urllib.parse.quote("https://pacta.wtf/miniapp/", safe="")
+    body = f"""<body>
+{topbar("../", "miniapp/")}
+<main id="main">
+<section class="sec ma-sec">
+<div class="wrap ma-wrap">
+<div class="ma-shell" id="ma-root" data-miniapp data-api="{E(API)}" data-verify-api="{E(ORDERS_VERIFY_API)}" data-lookup="../api/v1/lookup.json" data-badges="../badges/">
+  <header class="ma-head">
+    <div class="ma-topline">
+      <span data-slot="badge" data-variant="info">Base · Farcaster Mini-App</span>
+      <span class="ma-wallet-pill mono" id="ma-wallet-pill" data-state="detecting">Ready · Base + Ethereum</span>
+    </div>
+    <h1>Control-Plane Check</h1>
+    <p class="ma-sub">Verify who can upgrade, pause or change any Base or Ethereum contract before depositing.</p>
+  </header>
+
+  <form class="ma-card" id="ma-check-form" novalidate autocomplete="off">
+    <div class="ma-bar">
+      <div class="ma-seg" role="radiogroup" aria-label="Target chain">
+        <button type="button" class="ma-seg-btn" role="radio" aria-checked="true" data-ma-chain="base">Base</button>
+        <button type="button" class="ma-seg-btn" role="radio" aria-checked="false" data-ma-chain="ethereum">Ethereum</button>
+      </div>
+      <span class="ma-free-tag mono">50 free / day · no key</span>
+    </div>
+    <input type="hidden" id="ma-chain" name="chain" value="base">
+    <div class="ma-input-row">
+      <label class="sr-only" for="ma-address">Contract or Safe address</label>
+      <input id="ma-address" name="address" type="text" class="mono" spellcheck="false" autocapitalize="off"
+             value="0xfBb21d0380beE3312B33c4353c8936a0F13EF26C" placeholder="0x… contract, token or Safe">
+      <button data-slot="button" data-variant="default" data-size="default" type="submit" id="ma-submit">Check</button>
+    </div>
+    <p class="form-message" id="ma-addr-err" data-slot="form-message" hidden></p>
+    <div class="ma-presets" role="group" aria-label="Live contract presets">
+      <span class="ma-presets-l">Tap live:</span>{chips}
+    </div>
+  </form>
+
+  <section class="ma-card ma-verdict" id="ma-verdict" aria-live="polite" data-ma-status="ADVERSE DELTA">
+    <div class="ma-v-head">
+      <div>
+        <span class="ma-status-pill" id="ma-v-pill" data-tone="delta">ADVERSE DELTA</span>
+        <h2 id="ma-v-title">{E(sample["name"])} · Base</h2>
+      </div>
+      <img class="cp-badge" id="ma-v-badge" src="../badges/moonwell-lending-base.svg" alt="{E(LK.BADGE_TITLE)}: {E(b_label)}" width="{b_w}" height="20">
+    </div>
+    <p class="ma-v-summary" id="ma-v-summary">Published docs vs live Base control plane: tap Check or pick any preset above to run a fresh block-pinned read.</p>
+    <dl class="ma-v-grid" id="ma-v-grid">
+      <div><dt>Target</dt><dd class="mono" id="ma-v-target">base:0xfBb2…EF26C</dd></div>
+      <div><dt>Controller</dt><dd class="mono" id="ma-v-ctrl">Timelock / Multisig</dd></div>
+      <div><dt>Timelock floor</dt><dd class="mono" id="ma-v-delay">Indexed record (tap Check for live)</dd></div>
+      <div><dt>Provenance</dt><dd id="ma-v-prov"><a href="../protocols/moonwell-lending-base/">Published scorecard</a></dd></div>
+    </dl>
+  </section>
+
+  <section class="ma-card ma-upgrade" id="ma-upgrade" aria-label="1-tap Base USDC upgrades">
+    <div class="ma-up-head">
+      <h2>Need deeper diligence or a 24h Base EAS seal?</h2>
+      <span class="mono ma-up-net">Base USDC · Chain 8453</span>
+    </div>
+    <div class="ma-up-btns">
+      <button type="button" class="ma-buy-btn ma-buy-primary" id="ma-buy-scan" data-ma-buy="instant-scan-19">
+        <span class="ma-buy-t">Unlock Full Scan ($19 Base USDC)</span>
+        <span class="ma-buy-s">2-RPC proxy, Safe signer &amp; role report + Base EAS ticket</span>
+      </button>
+      <button type="button" class="ma-buy-btn ma-buy-secondary" id="ma-buy-seal" data-ma-buy="reverify-seal-99">
+        <span class="ma-buy-t">24h Mainnet EAS Seal ($99 Base USDC)</span>
+        <span class="ma-buy-s">Maintainer + independent verifier docs-vs-chain attestation</span>
+      </button>
+    </div>
+    <div class="ma-contact-row" id="ma-contact-row">
+      <label for="ma-contact">Delivery @telegram, email or webhook <span class="opt">(optional for $19 · required for $99 Seal)</span></label>
+      <input id="ma-contact" type="text" maxlength="200" spellcheck="false" placeholder="@handle or team@protocol.xyz">
+      <p class="form-message" id="ma-contact-err" data-slot="form-message" hidden></p>
+    </div>
+    <p class="ma-quote" id="ma-quote">Deterministic quote: exact USDC transfer on Base to Pacta Treasury <span class="addr-pill mono" title="{CHECKOUT_TREASURY}">0x4348…Ed14</span> · zero approvals.</p>
+    <p class="req-status" id="ma-pay-status" role="status" aria-live="polite"></p>
+
+    <div class="co-result" id="ma-receipt" tabindex="-1" hidden>
+      <div class="co-r-head"><span data-slot="badge" data-variant="success">Verified on Base</span><b id="ma-r-sku">Instant Scan · 19.00 USDC</b></div>
+      <dl class="co-r-dl">
+        <div><dt>Order</dt><dd class="mono" id="ma-r-order">—</dd></div>
+        <div><dt>Settlement</dt><dd id="ma-r-tx">—</dd></div>
+      </dl>
+      <pre class="pv-pre" id="ma-r-json"></pre>
+    </div>
+
+    <details class="co-manual ma-manual" id="ma-manual">
+      <summary>No injected wallet or paid from Safe/CLI? Open in Base Wallet or verify tx hash</summary>
+      <div class="co-manual-b">
+        <div class="co-dl-btns">
+          <a class="co-dl-btn" href="{E(cb_init)}" rel="noopener" data-ma-coinbase data-cta="wallet_coinbase"><span>Open in Coinbase Wallet</span>{EXT}</a>
+          <a class="co-dl-btn" href="{E(mm_init)}" rel="noopener" data-ma-metamask data-cta="wallet_metamask"><span>Open in MetaMask</span>{EXT}</a>
+        </div>
+        <div class="ma-tx-row">
+          <label class="sr-only" for="ma-tx">Base USDC transaction hash</label>
+          <input id="ma-tx" type="text" class="mono" maxlength="68" spellcheck="false" placeholder="0x… 64-hex Base payment tx hash">
+          <select id="ma-manual-sku" aria-label="Order tier">
+            <option value="instant-scan-19">$19 Scan</option>
+            <option value="reverify-seal-99">$99 Seal</option>
+          </select>
+          <button data-slot="button" data-variant="outline" data-size="sm" type="button" id="ma-verify-btn">Verify tx</button>
+        </div>
+      </div>
+    </details>
+  </section>
+</div>
+</div>
+</section>
+</main>
+{footer(count_line, reg, "../")}
+</body></html>
+"""
+    return head(
+        "Pacta Control-Plane Check · Base & Farcaster Mini-App",
+        "Instant Base and Ethereum DeFi control-plane verdicts: check proxy upgradeability, Safe thresholds, and timelock delays, with 1-tap Base USDC deep-scans.",
+        f"{BASE_URL}/miniapp/",
+        prefix="../",
+        og_title="Pacta Control-Plane Check",
+        image=f"{BASE_URL}/miniapp-preview.png",
+        image_size=(1200, 800),
+        extra=fc_miniapp_meta(),
+    ) + "\n" + body
 
 
 def maintainer_card(name, slug, forum=None, home="../../"):
@@ -4108,6 +4331,8 @@ def build_all():
     LK.write_all(ROOT, DOCS, sp, onb, radar, BRIEF_PROTOCOL)   # api/v1/lookup.json + packages/mcp-server/src/lookup.mjs catalog
     for sku_ in CHECKOUT:                          # v2: /scan/, /webhook/, /seal/ (they read the fresh lookup.json for real example targets)
         w(f"{CHECKOUT[sku_]['route']}/index.html", product_page(idx, sku_))
+    w("miniapp/index.html", miniapp_page(idx))
+    w(".well-known/farcaster.json", farcaster_manifest_json())
     GM.write(ROOT, DOCS)                          # api/v1/graph-manifest.json: durable protocol graph (from protocols/index/rpc-pinned.json)
     digest = load_forum_digest()                  # data/forum-digest.json (optional; missing = empty digest)
     w("api/v1/forum-digest.json", forum_digest_json(idx, digest, pinned))
@@ -4141,7 +4366,7 @@ def build_all():
         w(root_name, open(os.path.join(DOCS, src_rel), encoding="utf-8").read())
     w("feed.xml", atom_feed(idx, radar))
     w("api/v1/feed.json", json_feed(idx, radar))
-    urls = ["/", "/request/", "/scan/", "/webhook/", "/seal/", "/llms.txt", "/api/v1/index.json", "/api/v1/radar.json"] + [f"/briefs/{k}/" for k in BRIEFS] + \
+    urls = ["/", "/request/", "/scan/", "/webhook/", "/seal/", "/miniapp/", "/.well-known/farcaster.json", "/llms.txt", "/api/v1/index.json", "/api/v1/radar.json"] + [f"/briefs/{k}/" for k in BRIEFS] + \
         [f"/briefs/{b['slug']}/" for b in load_onboarding()["briefs"]] + (["/api/v1/onboarding.json"] if load_onboarding()["briefs"] else []) + \
         ["/api/v1/proposals.json", "/api/v1/rpc-pinned.json", "/api/v1/lookup.json", "/api/v1/protocols.json", "/api/v1/graph-manifest.json", "/integrations/vault-factories/", "/for-protocols/", "/llms/", "/llms-full.txt", "/SKILL.md", "/.well-known/agent.json", "/.well-known/mcp.json",
          "/demos/swapio-x402/", "/bounties/", "/leaderboard/", "/mcp/", "/protocols/", "/feed.xml", "/api/v1/feed.json",

@@ -5,6 +5,8 @@
   <url><loc>https://pacta.wtf/scan/</loc><lastmod>2026-11-19</lastmod></url>
   <url><loc>https://pacta.wtf/webhook/</loc><lastmod>2026-11-19</lastmod></url>
   <url><loc>https://pacta.wtf/seal/</loc><lastmod>2026-11-19</lastmod></url>
+  <url><loc>https://pacta.wtf/miniapp/</loc><lastmod>2026-11-19</lastmod></url>
+  <url><loc>https://pacta.wtf/.well-known/farcaster.json</loc><lastmod>2026-11-19</lastmod></url>
   <url><loc>https://pacta.wtf/llms.txt</loc><lastmod>2026-11-19</lastmod></url>
   <url><loc>https://pacta.wtf/api/v1/index.json</loc><lastmod>2026-11-19</lastmod></url>
   <url><loc>https://pacta.wtf/api/v1/radar.json</loc><lastmod>2026-11-19</lastmod></url>

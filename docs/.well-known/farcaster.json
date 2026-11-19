@@ -1,0 +1,64 @@
+{
+  "accountAssociation": {
+    "header": "",
+    "payload": "",
+    "signature": ""
+  },
+  "baseBuilder": {
+    "allowedAddresses": [
+      "0xcA4E2ff22B69A7284210c47BdeE21Aac1269da09",
+      "0x4348DF1BEFAffcbA248B5118B1b782B1B2bdEd14"
+    ]
+  },
+  "_signingNote": "Populate accountAssociation.{header,payload,signature} at production promotion via Farcaster Domain Manifest signing for pacta.wtf.",
+  "miniapp": {
+    "version": "1",
+    "name": "Pacta Control-Plane Check",
+    "homeUrl": "https://pacta.wtf/miniapp/",
+    "iconUrl": "https://pacta.wtf/logo-512.png",
+    "imageUrl": "https://pacta.wtf/miniapp-preview.png",
+    "buttonTitle": "Check Contract Safety",
+    "splashImageUrl": "https://pacta.wtf/logo-512.png",
+    "splashBackgroundColor": "#0a0b0d",
+    "subtitle": "Docs vs Chain DeFi Verdicts",
+    "description": "Block-pinned Base and Ethereum control-plane verdicts: check who can upgrade, pause or drain a DeFi contract before depositing.",
+    "primaryCategory": "developer-tools",
+    "tags": [
+      "defi",
+      "security",
+      "base",
+      "timelock",
+      "x402"
+    ],
+    "heroImageUrl": "https://pacta.wtf/miniapp-preview.png",
+    "tagline": "Docs drift. The chain doesn't.",
+    "ogTitle": "Pacta Control-Plane Check",
+    "ogDescription": "Instant Base & Ethereum control-plane verdicts + 1-tap Base USDC deep scans.",
+    "ogImageUrl": "https://pacta.wtf/miniapp-preview.png"
+  },
+  "frame": {
+    "version": "1",
+    "name": "Pacta Control-Plane Check",
+    "homeUrl": "https://pacta.wtf/miniapp/",
+    "iconUrl": "https://pacta.wtf/logo-512.png",
+    "imageUrl": "https://pacta.wtf/miniapp-preview.png",
+    "buttonTitle": "Check Contract Safety",
+    "splashImageUrl": "https://pacta.wtf/logo-512.png",
+    "splashBackgroundColor": "#0a0b0d",
+    "subtitle": "Docs vs Chain DeFi Verdicts",
+    "description": "Block-pinned Base and Ethereum control-plane verdicts: check who can upgrade, pause or drain a DeFi contract before depositing.",
+    "primaryCategory": "developer-tools",
+    "tags": [
+      "defi",
+      "security",
+      "base",
+      "timelock",
+      "x402"
+    ],
+    "heroImageUrl": "https://pacta.wtf/miniapp-preview.png",
+    "tagline": "Docs drift. The chain doesn't.",
+    "ogTitle": "Pacta Control-Plane Check",
+    "ogDescription": "Instant Base & Ethereum control-plane verdicts + 1-tap Base USDC deep scans.",
+    "ogImageUrl": "https://pacta.wtf/miniapp-preview.png"
+  }
+}

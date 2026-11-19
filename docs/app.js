@@ -1415,6 +1415,286 @@ var p = readPrefill(location.search), href = a.getAttribute("href") + (p.protoco
 a.setAttribute("aria-current", "true");
 try { location.replace(href); } catch (e) {  }
 }
+function initMiniApp() {
+var root = $("#ma-root"); if (!root) return;
+var api = (root.getAttribute("data-api") || "").replace(/\/+$/, "");
+var verifyApi = root.getAttribute("data-verify-api") || "";
+var badgeBase = root.getAttribute("data-badges") || "../badges/";
+var wPill = $("#ma-wallet-pill", root), cForm = $("#ma-check-form", root), cHid = $("#ma-chain", root), cAddr = $("#ma-address", root);
+var cSub = $("#ma-submit", root), cErr = $("#ma-addr-err", root), segBtns = $$("[data-ma-chain]", root), presets = $$("[data-ma-preset]", root);
+var vSec = $("#ma-verdict", root), vPill = $("#ma-v-pill", root), vTitle = $("#ma-v-title", root), vBadge = $("#ma-v-badge", root);
+var vSum = $("#ma-v-summary", root), vTarget = $("#ma-v-target", root), vCtrl = $("#ma-v-ctrl", root), vDelay = $("#ma-v-delay", root), vProv = $("#ma-v-prov", root);
+var bScan = $("#ma-buy-scan", root), bSeal = $("#ma-buy-seal", root), mContact = $("#ma-contact", root), mContactErr = $("#ma-contact-err", root);
+var pStatus = $("#ma-pay-status", root), rBox = $("#ma-receipt", root), rSku = $("#ma-r-sku", root), rOrd = $("#ma-r-order", root);
+var rTx = $("#ma-r-tx", root), rJson = $("#ma-r-json", root), mDrawer = $("#ma-manual", root), mTx = $("#ma-tx", root);
+var mSku = $("#ma-manual-sku", root), mVerify = $("#ma-verify-btn", root), dlCb = $("[data-ma-coinbase]", root), dlMm = $("[data-ma-metamask]", root);
+var provider = null, busy = false, checkSeq = 0;
+window.__pactaMiniAppReady = true;
+try {
+if (window.parent && window.parent !== window && typeof window.parent.postMessage === "function") {
+window.parent.postMessage({ type: "fc:frame:ready", method: "ready", params: {} }, "*");
+window.parent.postMessage({ id: "pacta-fc-ready", type: "APPLY", path: ["actions", "ready"], argumentList: [{}] }, "*");
+}
+} catch (e) {  }
+function setProvider(p, label) {
+if (!p || typeof p.request !== "function") return;
+provider = p;
+if (wPill) {
+wPill.textContent = label || (p.isCoinbaseWallet ? "Base / Coinbase Wallet Ready" : p.isMetaMask ? "MetaMask Ready" : "Embedded Wallet Ready");
+wPill.setAttribute("data-state", "ready");
+}
+if (typeof p.request === "function") {
+try {
+Promise.resolve(p.request({ method: "wallet_getCapabilities" })).then(function (caps) {
+if (caps && typeof caps === "object") root.setAttribute("data-eip5792", "true");
+}).catch(function () {  });
+} catch (e) {  }
+}
+}
+window.addEventListener("eip6963:announceProvider", function (ev) {
+var d = ev && ev.detail;
+if (d && d.provider && (!provider || (d.info && /coinbase|base/i.test(d.info.name || "")))) {
+setProvider(d.provider, d.info && d.info.name ? d.info.name + " Ready" : "Base Wallet Ready");
+}
+});
+try { window.dispatchEvent(new Event("eip6963:requestProvider")); } catch (e) {  }
+if (!provider && window.ethereum && typeof window.ethereum.request === "function") setProvider(window.ethereum);
+if (!provider && wPill) { wPill.textContent = "Read-Only · Deep-Link Ready"; wPill.setAttribute("data-state", "readonly"); }
+function curChain() { return cHid && cHid.value === "ethereum" ? "ethereum" : "base"; }
+function setChain(ch) {
+var v = ch === "ethereum" ? "ethereum" : "base";
+if (cHid) cHid.value = v;
+segBtns.forEach(function (b) { b.setAttribute("aria-checked", String(b.getAttribute("data-ma-chain") === v)); });
+syncMaLinks();
+}
+function syncMaLinks() {
+var a = String((cAddr && cAddr.value) || "").trim(), ch = curChain();
+var qs = CO_ADDR.test(a) ? "?chain=" + ch + "&address=" + a : "";
+var canon = "/miniapp/" + qs;
+if (dlMm) dlMm.setAttribute("href", "https://metamask.app.link/dapp/pacta.wtf" + canon);
+if (dlCb) dlCb.setAttribute("href", "https://go.cb-wallet.com/dapp?cb_url=" + encodeURIComponent("https://pacta.wtf" + canon));
+}
+segBtns.forEach(function (b) {
+b.addEventListener("click", function () { if (!busy) setChain(b.getAttribute("data-ma-chain")); });
+});
+if (cAddr) cAddr.addEventListener("input", syncMaLinks);
+try {
+var q0 = new URLSearchParams(location.search || ""), qCh = q0.get("chain"), qAd = q0.get("address");
+if (qCh === "ethereum" || qCh === "base") setChain(qCh);
+if (cAddr && CO_ADDR.test(String(qAd || ""))) { cAddr.value = String(qAd); cAddr.setAttribute("value", String(qAd)); }
+} catch (e) {  }
+syncMaLinks();
+function showAddrErr(msg) {
+if (cErr) { cErr.textContent = msg || ""; cErr.hidden = !msg; }
+if (cAddr) { if (msg) cAddr.setAttribute("aria-invalid", "true"); else cAddr.removeAttribute("aria-invalid"); }
+}
+function fmtDelaySec(sec) {
+var n = Number(sec || 0);
+if (!n || n <= 0) return "0 s (no delay)";
+if (n % 86400 === 0) return (n / 86400) + "d (" + n + " s)";
+if (n % 3600 === 0) return (n / 3600) + "h (" + n + " s)";
+return n + " s";
+}
+function renderMaVerdict(ch, addr, pf, catIt) {
+var cls = catIt && catIt.classification;
+var status = catIt ? (cls === "parameter_delta" || cls === "mixed" ? "ADVERSE DELTA" : "ALIGNED") : "UNINDEXED";
+var tone = status === "ALIGNED" ? "aligned" : status === "ADVERSE DELTA" ? "delta" : "unindexed";
+if (vSec) vSec.setAttribute("data-ma-status", status);
+if (vPill) { vPill.textContent = status; vPill.setAttribute("data-tone", tone); }
+var chainLbl = ch === "base" ? "Base" : "Ethereum";
+if (vTitle) vTitle.textContent = (catIt && catIt.name ? catIt.name : short(addr, 6, 4)) + " · " + chainLbl;
+if (vBadge) {
+if (catIt && catIt.slug) {
+vBadge.setAttribute("src", badgeBase + catIt.slug + ".svg");
+vBadge.setAttribute("alt", "Pacta verification: " + status);
+vBadge.hidden = false;
+} else {
+vBadge.hidden = true;
+}
+}
+var ctl = (pf && (pf.controller || pf.controllerSummary)) || {};
+var ctlTxt = ctl.kind === "multisig_safe" && ctl.safeThreshold ? ctl.safeThreshold + "-of-" + ctl.safeOwnerCount + " Safe"
+: ctl.kind === "timelock" ? "Timelock" + (ctl.address ? " " + short(ctl.address, 6, 4) : "")
+: ctl.kind === "eoa" ? "EOA" + (ctl.address ? " " + short(ctl.address, 6, 4) : "")
+: pf && pf.verdict === "IMMUTABLE_NO_ADMIN" ? "No upgrade/admin slot" : (ctl.kind || "Contract");
+var dSec = ctl.timelockDelaySec != null ? ctl.timelockDelaySec : (pf && pf.timelockDelaySec != null ? pf.timelockDelaySec : null);
+var hScore = pf && typeof pf.riskScore === "number" ? " · Heuristic score " + pf.riskScore + "/100" : "";
+if (vSum) {
+vSum.textContent = (pf && (pf.summary || pf.oneLineVerdict) ? String(pf.summary || pf.oneLineVerdict)
+: "Block-pinned control-plane read completed.") + hScore;
+}
+if (vTarget) vTarget.textContent = ch + ":" + short(addr, 6, 4) + (pf && pf.block && pf.block.number ? " @ #" + pf.block.number : "");
+if (vCtrl) vCtrl.textContent = ctlTxt;
+if (vDelay) vDelay.textContent = dSec != null ? fmtDelaySec(dSec) : (pf && pf.verdict === "IMMUTABLE_NO_ADMIN" ? "Immutable" : "0 s (no timelock)");
+if (vProv) {
+vProv.textContent = "";
+if (catIt && catIt.slug) {
+vProv.appendChild(el("a", { href: "../protocols/" + catIt.slug + "/", text: "Published scorecard" }));
+} else {
+vProv.textContent = "Live RPC read (unindexed)";
+}
+}
+}
+function runMaCheck() {
+var a = String((cAddr && cAddr.value) || "").trim(), ch = curChain();
+if (!CO_ADDR.test(a)) {
+showAddrErr("Enter a 0x address: 0x followed by 40 hexadecimal characters.");
+if (cAddr && cAddr.focus) cAddr.focus();
+return;
+}
+showAddrErr("");
+syncMaLinks();
+var my = ++checkSeq;
+if (cSub) cSub.disabled = true;
+if (vSum) vSum.textContent = "Reading " + short(a, 6, 4) + " on " + (ch === "base" ? "Base" : "Ethereum") + "…";
+if (typeof window.pactaBeacon === "function") { try { window.pactaBeacon("live_checker_submit", ch + ":" + a.toLowerCase()); } catch (e) {  } }
+xTrackLead();
+var pfUrl = api + "/v1/check/preflight?chain=" + ch + "&address=" + a + "&caller_agent=pacta-wtf-checker&requester_role=individual_user&caller_purpose=general_research";
+Promise.all([
+fetch(pfUrl, { headers: { Accept: "application/json" } }).then(function (r) { return r.json().then(function (b) { return { s: r.status, b: b }; }); }),
+lookupData().catch(function () { return []; })
+]).then(function (pair) {
+if (my !== checkSeq) return;
+if (cSub) cSub.disabled = false;
+var res = pair[0], lk = pair[1] || [];
+var body = res.b || {}, pf = body.verdict ? body : (body.result && body.result.verdict ? body.result : null);
+if (res.s !== 200 || !pf) {
+if (vSum) vSum.textContent = "Could not complete live check (HTTP " + res.s + "). Retry in a moment.";
+return;
+}
+var hit = lk.filter(function (x) {
+var pa = x.it && x.it.preflightArgs;
+return (pa && String(pa.address || "").toLowerCase() === a.toLowerCase()) || (pf.indexedProtocol && x.slug === pf.indexedProtocol.slug);
+})[0];
+var catIt = (hit && hit.it) || pf.indexedProtocol || null;
+renderMaVerdict(ch, a, pf, catIt);
+}).catch(function () {
+if (my !== checkSeq) return;
+if (cSub) cSub.disabled = false;
+if (vSum) vSum.textContent = "Network error while reading the control plane. Check your connection and retry.";
+});
+}
+if (cForm) cForm.addEventListener("submit", function (ev) { ev.preventDefault(); if (!busy) runMaCheck(); });
+presets.forEach(function (b) {
+b.addEventListener("click", function () {
+if (busy) return;
+setChain(b.getAttribute("data-chain"));
+if (cAddr) cAddr.value = b.getAttribute("data-address") || "";
+runMaCheck();
+});
+});
+function setPayStatus(msg, bad) {
+if (!pStatus) return;
+pStatus.textContent = msg || "";
+if (bad) pStatus.setAttribute("data-bad", ""); else pStatus.removeAttribute("data-bad");
+}
+function setMaBusy(on) {
+busy = on;
+[bScan, bSeal, cSub, mVerify, cAddr, mContact, mTx, mSku].concat(segBtns).concat(presets).forEach(function (x) { if (x) x.disabled = on; });
+}
+function verifyMaOrder(order, skuObj, retries) {
+setPayStatus("Verifying Base USDC receipt…");
+fetch(verifyApi, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(order) })
+.then(function (r) {
+var replay = !!(r.headers && typeof r.headers.get === "function" && r.headers.get("Pacta-Idempotent-Replay") === "true");
+return r.text().then(function (t) { var j = null; try { j = JSON.parse(t); } catch (e) { j = null; } return { s: r.status, j: j, replay: replay }; });
+})
+.then(function (x) {
+if (x.s === 200 && x.j && typeof x.j === "object") {
+setMaBusy(false);
+var oid = x.j.order_id || x.j.orderId || x.j.id || "—";
+if (rSku) rSku.textContent = skuObj.label + " · " + skuObj.amount + " USDC";
+if (rOrd) rOrd.textContent = String(oid).slice(0, 80);
+if (rTx) {
+rTx.textContent = "";
+rTx.appendChild(arrowLink({ href: "https://basescan.org/tx/" + order.tx_hash, target: "_blank", rel: "noopener" }, "tx " + short(order.tx_hash, 6, 4), "up-right"));
+}
+if (rJson) rJson.textContent = JSON.stringify(x.j, null, 2);
+if (rBox) rBox.hidden = false;
+setPayStatus("Verified on Base. Your deliverable receipt is unlocked below.");
+xTrackPurchase(x.j, skuObj, x.replay, order.tx_hash);
+return;
+}
+var code = x.j && typeof x.j.error === "string" ? x.j.error : "";
+if (retries > 0 && (x.s === 202 || x.s === 425 || CO_RETRY.test(code))) {
+setPayStatus("Waiting for Base confirmation…");
+setTimeout(function () { verifyMaOrder(order, skuObj, retries - 1); }, 4000);
+return;
+}
+setMaBusy(false);
+setPayStatus(CO_ERR[code] || ("Verification returned HTTP " + x.s + (code ? " (" + code + ")" : "") + "."), true);
+})
+.catch(function () {
+setMaBusy(false);
+setPayStatus("Could not reach the verifier. Keep your transaction hash and press Verify tx.", true);
+});
+}
+function startMaUpgrade(skuKey) {
+if (busy || !own(CO_SKU, skuKey)) return;
+var skuObj = CO_SKU[skuKey];
+var a = String((cAddr && cAddr.value) || "").trim(), ct = cleanText(String((mContact && mContact.value) || "").trim(), 200);
+if (!CO_ADDR.test(a)) { showAddrErr("Enter a 0x contract address above first."); if (cAddr && cAddr.focus) cAddr.focus(); return; }
+showAddrErr("");
+var ctErr = ct ? (coContactOk(ct) ? "" : "Use an https:// webhook, email, or @handle.") : (skuObj.needContact ? skuObj.contactMissing : "");
+if (mContactErr) { mContactErr.textContent = ctErr; mContactErr.hidden = !ctErr; }
+if (ctErr) { if (mContact && mContact.focus) mContact.focus(); return; }
+xTrackLead();
+var eth = provider || (window.ethereum && typeof window.ethereum.request === "function" ? window.ethereum : null);
+if (!eth) {
+if (mDrawer) mDrawer.setAttribute("open", "");
+if (mSku) mSku.value = skuKey;
+setPayStatus("Open in Coinbase / Base Wallet below, or send " + skuObj.amount + " Base USDC and paste the tx hash.");
+if (mTx && mTx.focus) mTx.focus();
+return;
+}
+var order = { sku: skuKey, chain: "base", target_chain: curChain(), target_address: a };
+if (ct) order.webhook_or_contact = ct;
+var from = "";
+setMaBusy(true);
+if (rBox) rBox.hidden = true;
+setPayStatus("Confirm " + skuObj.amount + " USDC on Base in your wallet…");
+eth.request({ method: "eth_requestAccounts" }).then(function (accs) {
+from = accs && accs[0] ? String(accs[0]) : "";
+if (!CO_ADDR.test(from)) throw new Error("no account");
+return eth.request({ method: "eth_chainId" });
+}).then(function (cid) {
+if (String(cid).toLowerCase() === CO_CHAIN) return cid;
+return eth.request({ method: "wallet_switchEthereumChain", params: [{ chainId: CO_CHAIN }] }).then(function () { return eth.request({ method: "eth_chainId" }); });
+}).then(function (cid) {
+if (String(cid).toLowerCase() !== CO_CHAIN) throw new Error("wrong chain");
+return eth.request({ method: "eth_sendTransaction", params: [{ from: from, to: CO_USDC, value: "0x0", data: coTransferData(skuObj.atomic) }] });
+}).then(function (txh) {
+if (!TX_RE.test(String(txh || ""))) throw new Error("no hash");
+order.tx_hash = String(txh);
+if (mTx) mTx.value = String(txh);
+if (mSku) mSku.value = skuKey;
+verifyMaOrder(order, skuObj, 15);
+}).catch(function (e) {
+setMaBusy(false);
+var code = e && e.code;
+setPayStatus(code === 4001 ? "Cancelled in wallet. Nothing was sent." : "Wallet transfer did not complete; you can also verify a manual tx below.", true);
+});
+}
+if (bScan) bScan.addEventListener("click", function () { startMaUpgrade("instant-scan-19"); });
+if (bSeal) bSeal.addEventListener("click", function () { startMaUpgrade("reverify-seal-99"); });
+if (dlCb) dlCb.addEventListener("click", xTrackLead);
+if (dlMm) dlMm.addEventListener("click", xTrackLead);
+if (mVerify) mVerify.addEventListener("click", function () {
+if (busy) return;
+var skuKey = (mSku && own(CO_SKU, mSku.value)) ? mSku.value : "instant-scan-19";
+var skuObj = CO_SKU[skuKey];
+var a = String((cAddr && cAddr.value) || "").trim(), txh = String((mTx && mTx.value) || "").trim();
+var ct = cleanText(String((mContact && mContact.value) || "").trim(), 200);
+if (!CO_ADDR.test(a)) { showAddrErr("Enter a 0x contract address above."); return; }
+if (!TX_RE.test(txh)) { setPayStatus("Paste a 64-hex 0x Base transaction hash.", true); return; }
+if (skuObj.needContact && !ct) { setPayStatus(skuObj.contactMissing, true); return; }
+xTrackLead();
+var order = { sku: skuKey, tx_hash: txh, chain: "base", target_chain: curChain(), target_address: a };
+if (ct) order.webhook_or_contact = ct;
+setMaBusy(true);
+verifyMaOrder(order, skuObj, 5);
+});
+}
 var ADDR_RE = /^0x[0-9a-fA-F]{40}$/;
 var SLOT_IMPL = "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc";
 var SLOT_BEACON = "0xa3f0ad74e5423aebfd80d3ef4346578335a9a72aeaee59ff6cb3582b35133d50";
@@ -2209,7 +2489,7 @@ return !!it;
 };
 }
 document.addEventListener("DOMContentLoaded", function () {
-[initTheme, initXPixel, initSheet, initTabs, initTabLinks, initDetailsHash, initCmdk, initTooltips, initCopy, initBeaconHooks, tick, initIndex, initRequest, initLauncher, initCheckout, initInspector, initPreflight,
+[initTheme, initXPixel, initSheet, initTabs, initTabLinks, initDetailsHash, initCmdk, initTooltips, initCopy, initBeaconHooks, tick, initIndex, initRequest, initLauncher, initCheckout, initMiniApp, initInspector, initPreflight,
 initLiveTimelocks, initProtocolFilter, initAges, initRefresh, initHeroCheck, initBadgeWidget, initScorecards, initReceipts].forEach(function (f) {
 try { f(); } catch (e) { setTimeout(function () { throw e; }, 0); }
 });

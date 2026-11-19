@@ -574,11 +574,13 @@ async function beaconScenario() {
   // v5.0: first-class routes, allowlisted campaign tags (m, c), the serving host (h), and nothing once the 404 page rescued a URL
   const ev0 = (o) => run(input.index, null, Object.assign({ path: "/", beacon: B }, o)).events()[0];
   res.b_v5_routes = [["/scorecards/", "/scorecards/"], ["/radar", "/radar/"], ["/bounties/", "/bounties/"], ["/leaderboard/", "/leaderboard/"],
-    ["/methodology/", "/methodology/"], ["/scan/", "/scan/"], ["/seal/index.html", "/seal/"], ["/webhook/", "/webhook/"], ["/pricing/", "/other"],
-    ["/about/", "/other"], ["/scan/x", "/other"]].every(([path, want]) => ev0({ path }).p === want);
+    ["/methodology/", "/methodology/"], ["/scan/", "/scan/"], ["/seal/index.html", "/seal/"], ["/webhook/", "/webhook/"], ["/miniapp/", "/miniapp/"],
+    ["/pricing/", "/other"], ["/about/", "/other"], ["/scan/x", "/other"]].every(([path, want]) => ev0({ path }).p === want);
   res.b_v5_campaign_fields = same(ev0({ search: "?utm_source=x&utm_medium=paid&utm_campaign=Launch_Q4" }), { v: 1, e: "page_load", p: "/", u: "x", m: "paid", c: "launch_q4", h: "wtf" })
+    && same(ev0({ path: "/scan/", search: "?utm_source=hypelab&utm_medium=cpc&utm_campaign=hl1_explorers_scanseal" }),
+            { v: 1, e: "page_load", p: "/scan/", u: "hypelab", m: "cpc", c: "hl1_explorers_scanseal", h: "wtf" })
     && ev0({ search: "?utm_medium=paid_search" }).m === "paid_search" && ev0({ search: "?utm_medium=Organic" }).m === "organic"
-    && ["cpc", "email", "paid%20x", "paid-search", "", "paidx"].every((m) => !("m" in ev0({ search: "?utm_medium=" + m })))
+    && ["email", "paid%20x", "paid-search", "", "paidx"].every((m) => !("m" in ev0({ search: "?utm_medium=" + m })))
     && ["0xdeadbeefcafe", "deadbeefcafe12", "user-123456", "reset_token", "x".repeat(33), "launch%20q4", "a.b", "mail_drop", "12345"]
       .every((c) => !("c" in ev0({ search: "?utm_campaign=" + c })));
   res.b_v5_host = ev0({ hostname: "pacta.fractalneurons.com" }).h === "com" && ev0({ hostname: "pacta.fractalneurons.com", referrer: "https://pacta.fractalneurons.com/" }).r === "self"
@@ -1612,6 +1614,112 @@ async function xPixelScenario() {
     && same(sealPg.window.__pactaTwqEvents, [["config", "rjbqn"], ["event", "tw-rjbqn-rjhif", { value: 99, currency: "USD", conversion_id: "ord_real_99" }]])
     && same(JSON.parse(storeMap["pacta-x-purchased"]), ["ord_real_19", "ord_real_99"]);
 }
+
+async function miniAppScenario() {
+  if (!input.miniapp || !input.checkout) { res.ma_error = "no miniapp input"; return; }
+  const C = input.checkout;
+  const UNIDX = "0x" + "77".repeat(20), TX19 = "0x" + "19".repeat(32), TX99 = "0x" + "99".repeat(32);
+  const postedMsgs = [];
+  const fakeParent = { postMessage: (msg, origin) => { postedMsgs.push([msg, origin]); } };
+
+  // 1. Embedded Farcaster / Base App ready() postMessage handshake + EIP-5792 capability probe
+  const wCalls = [];
+  let chainId = "0x1";
+  const eth = {
+    isCoinbaseWallet: true,
+    request: (a) => {
+      wCalls.push(a);
+      if (a.method === "wallet_getCapabilities") return Promise.resolve({ "0x2105": { atomicBatch: { supported: true } } });
+      if (a.method === "eth_requestAccounts") return Promise.resolve(["0x" + "ab".repeat(20)]);
+      if (a.method === "eth_chainId") return Promise.resolve(chainId);
+      if (a.method === "wallet_switchEthereumChain") { chainId = a.params[0].chainId; return Promise.resolve(null); }
+      if (a.method === "eth_sendTransaction") return Promise.resolve(chainId === "0x2105" && wCalls.filter((x) => x.method === "eth_sendTransaction").length === 1 ? TX19 : TX99);
+      return Promise.reject(new Error("unexpected method " + a.method));
+    }
+  };
+  const maFetch = (url, opts) => {
+    const u = String(url);
+    if (/api\/v1\/lookup\.json$/.test(u)) return Promise.resolve({ status: 200, ok: true, json: () => Promise.resolve(input.lookupJson) });
+    if (u.includes("/v1/check/preflight")) {
+      const addr = new URL(u).searchParams.get("address");
+      const isUsdc = addr.toLowerCase() === C.usdc.toLowerCase();
+      const isMoonwell = addr.toLowerCase() === "0xfbb21d0380bee3312b33c4353c8936a0f13ef26c";
+      return Promise.resolve({
+        status: 200,
+        ok: true,
+        json: () => Promise.resolve({
+          verdict: isUsdc ? "MULTISIG_NO_TIMELOCK" : isMoonwell ? "TIMELOCK_PROTECTED" : "INSTANT_EOA_ADMIN_RISK",
+          riskScore: isUsdc ? 40 : isMoonwell ? 20 : 90,
+          summary: "Block-pinned authority check.",
+          block: { number: 28000555 },
+          controller: { kind: isUsdc ? "multisig_safe" : "eoa", address: "0x" + "33".repeat(20), safeThreshold: 2, safeOwnerCount: 3 }
+        })
+      });
+    }
+    if (u === C.api) {
+      const body = JSON.parse(opts.body);
+      const oid = body.sku === "instant-scan-19" ? "ord_ma_19" : "ord_ma_99";
+      return Promise.resolve({
+        status: 200,
+        ok: true,
+        headers: { get: () => null },
+        text: () => Promise.resolve(JSON.stringify({ orderId: oid, status: "verified", internalCanary: false })),
+        json: () => Promise.resolve({ orderId: oid, status: "verified", internalCanary: false })
+      });
+    }
+    return Promise.reject(new Error("unexpected fetch " + u));
+  };
+
+  const p = run(input.miniapp, input.app, { path: "/miniapp/", hostname: "127.0.0.1", win: { parent: fakeParent, ethereum: eth }, fetch: maFetch });
+  for (let i = 0; i < 4; i++) await flush();
+  res.ma_frame_ready_handshake = p.window.__pactaMiniAppReady === true
+    && postedMsgs.some(([m]) => m && m.type === "fc:frame:ready")
+    && p.document.getElementById("ma-root").getAttribute("data-eip5792") === "true"
+    && /Coinbase Wallet Ready/.test(p.document.getElementById("ma-wallet-pill").textContent);
+
+  // 2. Instant Free Check: ALIGNED (USDC preset), ADVERSE DELTA (Moonwell preset), UNINDEXED (custom 0x...)
+  const presets = p.document.querySelectorAll("[data-ma-preset]");
+  const usdcPreset = presets.find((b) => b.getAttribute("data-slug") === "circle-usdc");
+  const mwPreset = presets.find((b) => b.getAttribute("data-slug") === "moonwell-lending-base");
+  click(usdcPreset);
+  for (let i = 0; i < 6; i++) await flush();
+  const alignedOk = p.document.getElementById("ma-verdict").getAttribute("data-ma-status") === "ALIGNED"
+    && p.document.getElementById("ma-v-badge").hidden === false
+    && /circle-usdc\.svg$/.test(p.document.getElementById("ma-v-badge").getAttribute("src"));
+
+  click(mwPreset);
+  for (let i = 0; i < 6; i++) await flush();
+  const deltaOk = p.document.getElementById("ma-verdict").getAttribute("data-ma-status") === "ADVERSE DELTA"
+    && p.document.getElementById("ma-v-badge").hidden === false;
+
+  p.document.getElementById("ma-address").value = UNIDX;
+  p.document.getElementById("ma-check-form").dispatchEvent(new Event_("submit"));
+  for (let i = 0; i < 6; i++) await flush();
+  const unidxOk = p.document.getElementById("ma-verdict").getAttribute("data-ma-status") === "UNINDEXED"
+    && p.document.getElementById("ma-v-badge").hidden === true;
+
+  res.ma_instant_verdicts = alignedOk && deltaOk && unidxOk;
+
+  // 3. 1-Tap Base USDC upgrades ($19 Scan & $99 Seal -> 0x2105 switch -> exact USDC transfer -> /v1/orders/verify -> X Purchase)
+  click(p.document.getElementById("ma-buy-scan"));
+  for (let i = 0; i < 8; i++) await flush();
+  const scanUnlocked = p.document.getElementById("ma-receipt").hidden === false
+    && p.document.getElementById("ma-r-order").textContent === "ord_ma_19";
+
+  // $99 Seal requires contact first, then succeeds when contact is filled
+  click(p.document.getElementById("ma-buy-seal"));
+  const sealNeedsContact = p.document.getElementById("ma-contact-err").hidden === false;
+  p.document.getElementById("ma-contact").value = "@founder";
+  click(p.document.getElementById("ma-buy-seal"));
+  for (let i = 0; i < 8; i++) await flush();
+  const sealUnlocked = p.document.getElementById("ma-r-order").textContent === "ord_ma_99";
+  const txCalls = wCalls.filter((x) => x.method === "eth_sendTransaction");
+
+  res.ma_wallet_upgrade_19_and_99 = scanUnlocked && sealNeedsContact && sealUnlocked && txCalls.length === 2
+    && txCalls[0].params[0].to === C.usdc && txCalls[1].params[0].to === C.usdc
+    && p.window.__pactaTwqEvents.some((e) => e[1] === "tw-rjbqn-rjhif" && e[2].value === 19 && e[2].conversion_id === "ord_ma_19")
+    && p.window.__pactaTwqEvents.some((e) => e[1] === "tw-rjbqn-rjhif" && e[2].value === 99 && e[2].conversion_id === "ord_ma_99");
+}
 (async () => {
   try { await v45Scenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await requestBriefScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
@@ -1627,6 +1735,7 @@ async function xPixelScenario() {
   try { rescueScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await checkoutScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await xPixelScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
+  try { await miniAppScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await liveTimelockScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await lateLivePayloadScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }
   try { await basePathScenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }

@@ -1,10 +1,10 @@
 /*Pacta beacon: first-party, no cookies/ids, DNT; closed path set, public referrers, allowlisted campaign tags*/
 (function(w,d,n){var U="https://pacta-x402.pacta.workers.dev/v1/telemetry/beacon",L=w.location,k={},N=d.querySelector("[data-nf]"),S,O=L.protocol=="https:"&&n.doNotTrack!="1"&&!w.pactaRescued,D=/reset|token|log|auth|user|acc|mail|exam|sec|priv|pass|sess|adm|\d{5}/,q=L.pathname.replace(/(\/index\.html|\/+)$/,"")||"/",m=/^\/(protocols|briefs)\/[\w-]+$/.exec(q),c=d.querySelector('link[rel="canonical"]'),
-P=N?"/404":q=="/"?q:/^\/(protocols|scorecards|radar|bounties|leaderboard|methodology|request|scan|seal|webhook|briefs|llms)$/.test(q)?q+"/":m&&c&&c.href=="https://pacta.wtf"+q+"/"?(m[1]>"c"&&(S=q.slice(11)),q+"/"):"/other";
+P=N?"/404":q=="/"?q:/^\/(protocols|scorecards|radar|bounties|leaderboard|methodology|request|scan|seal|webhook|miniapp|briefs|llms)$/.test(q)?q+"/":m&&c&&c.href=="https://pacta.wtf"+q+"/"?(m[1]>"c"&&(S=q.slice(11)),q+"/"):"/other";
 function G(x){return((RegExp("[?&]utm_"+x+"=([^&]*)").exec(L.search)||[])[1]||"").toLowerCase()}
 function B(e,t,f,b,r,u){if(O){b={v:1,e:e,p:P};t&&(b.t=t);if(f){try{r=new URL(d.referrer).hostname}catch(x){}
 r&&(r==L.hostname?b.r="self":r.length<81&&/^([a-z\d-]+\.)+[a-z]{2,24}$/.test(r)&&!/\.(local\w*|internal|lan|arpa|corp|intranet)$|ip\.io$|\d+-\d+-\d+-\d/.test(r)&&(b.r=r));
-/^[a-z][\w-]{0,23}$/.test(u=G("source"))&&!D.test(u)&&(b.u=u);/^(paid|paid_search|organic)$/.test(u=G("medium"))&&(b.m=u);
+/^[a-z][\w-]{0,23}$/.test(u=G("source"))&&!D.test(u)&&(b.u=u);/^(paid|paid_search|cpc|organic)$/.test(u=G("medium"))&&(b.m=u);
 /^[a-z\d_-]{1,32}$/.test(u=G("campaign"))&&!D.test(u)&&!/[\da-f]{12}/.test(u)&&(b.c=u);b.h=/\.com$/.test(L.hostname)?"com":"wtf"}
 b=JSON.stringify(b);try{if(n.sendBeacon(U,b))return}catch(x){}fetch(U,{method:"POST",body:b,keepalive:!0,mode:"no-cors"}).catch(String)}}
 function o(e){k[e]||(k[e]=1,B(e))}w.pactaBeacon=B;N?B("not_found_404",0,1):(B("page_load",S,1),S&&B("protocol_view",S));

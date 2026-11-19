@@ -1,0 +1,148 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pacta Control-Plane Check · Base &amp; Farcaster Mini-App</title>
+<meta name="description" content="Instant Base and Ethereum DeFi control-plane verdicts: check proxy upgradeability, Safe thresholds, and timelock delays, with 1-tap Base USDC deep-scans.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Pacta by Fractal Neurons">
+<meta property="og:title" content="Pacta Control-Plane Check">
+<meta property="og:description" content="Instant Base and Ethereum DeFi control-plane verdicts: check proxy upgradeability, Safe thresholds, and timelock delays, with 1-tap Base USDC deep-scans.">
+<meta property="og:url" content="https://pacta.wtf/miniapp/">
+<meta property="og:image" content="https://pacta.wtf/miniapp-preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="800">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Pacta Control-Plane Check">
+<meta name="twitter:description" content="Instant Base and Ethereum DeFi control-plane verdicts: check proxy upgradeability, Safe thresholds, and timelock delays, with 1-tap Base USDC deep-scans.">
+<meta name="twitter:image" content="https://pacta.wtf/miniapp-preview.png">
+<meta name="twitter:site" content="@pacta_fractal">
+<link rel="canonical" href="https://pacta.wtf/miniapp/">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+<meta name="fc:miniapp" content="{&quot;version&quot;:&quot;1&quot;,&quot;imageUrl&quot;:&quot;https://pacta.wtf/miniapp-preview.png&quot;,&quot;button&quot;:{&quot;title&quot;:&quot;Check Contract Safety&quot;,&quot;action&quot;:{&quot;type&quot;:&quot;launch_miniapp&quot;,&quot;name&quot;:&quot;Pacta Control-Plane Check&quot;,&quot;url&quot;:&quot;https://pacta.wtf/miniapp/&quot;,&quot;splashImageUrl&quot;:&quot;https://pacta.wtf/logo-512.png&quot;,&quot;splashBackgroundColor&quot;:&quot;#0a0b0d&quot;}}}"><meta name="fc:frame" content="{&quot;version&quot;:&quot;1&quot;,&quot;imageUrl&quot;:&quot;https://pacta.wtf/miniapp-preview.png&quot;,&quot;button&quot;:{&quot;title&quot;:&quot;Check Contract Safety&quot;,&quot;action&quot;:{&quot;type&quot;:&quot;launch_frame&quot;,&quot;name&quot;:&quot;Pacta Control-Plane Check&quot;,&quot;url&quot;:&quot;https://pacta.wtf/miniapp/&quot;,&quot;splashImageUrl&quot;:&quot;https://pacta.wtf/logo-512.png&quot;,&quot;splashBackgroundColor&quot;:&quot;#0a0b0d&quot;}}}">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../favicon.png" type="image/png" sizes="32x32">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="theme-color" content="#f7f7f5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0a0b0d" media="(prefers-color-scheme: dark)">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self';script-src 'self' https://static.ads-twitter.com;style-src 'self' 'unsafe-inline';img-src 'self' data: https://analytics.twitter.com https://t.co;font-src 'self';connect-src 'self' https://pacta-x402.pacta.workers.dev https://ethereum-rpc.publicnode.com https://base-rpc.publicnode.com https://eth.drpc.org https://mainnet.base.org https://analytics.twitter.com https://t.co;object-src 'none';base-uri 'self'">
+<link rel="preload" href="../fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../styles.css?v=dfdeed5e">
+<link rel="alternate" type="text/markdown" href="../llms.txt">
+<link rel="alternate" type="text/html" href="../llms/">
+<script src="../theme.js?v=897ade0d"></script>
+<script src="../app.js?v=532f1da5" defer></script>
+<script src="../b.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar"><div class="wrap"><a class="brand" href="../"><img src="../favicon.svg" alt="" width="24" height="24">PACTA<small>by Fractal Neurons</small></a><nav data-slot="navigation-menu" class="nav" aria-label="Primary"><a href="../scorecards/">Scorecards</a><a href="../radar/">Radar</a><a href="../scan/">Instant Scan</a><a href="../#pricing">Pricing</a><a href="../bounties/">Bounties</a><a href="../mcp/">MCP</a></nav><div class="tools"><button class="search-btn" data-slot="button" data-variant="outline" data-size="sm" type="button" title="Search protocols, tokens or 0x addresses" aria-haspopup="dialog" aria-keyshortcuts="Control+K Meta+K /" data-cmdk-open><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><span class="sb-l">Search</span><kbd class="sb-k" data-cmdk-kbd>Ctrl K</kbd></button><div class="dd" data-theme-menu><button class="theme-btn" data-slot="button" data-variant="ghost" data-size="sm" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="theme-menu" aria-label="Theme: System" data-theme-btn><svg class="i i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg><svg class="i i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg><span class="tb-l" data-theme-label>Theme</span></button><div data-slot="dropdown-menu-content" role="menu" id="theme-menu" aria-label="Theme" hidden><p data-slot="dropdown-menu-label">Theme</p><button data-slot="dropdown-menu-item" type="button" role="menuitemradio" aria-checked="false" data-theme-set="light"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg><span>Light</span><svg class="i check" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button><button data-slot="dropdown-menu-item" type="button" role="menuitemradio" aria-checked="false" data-theme-set="dark"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg><span>Dark</span><svg class="i check" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button><button data-slot="dropdown-menu-item" type="button" role="menuitemradio" aria-checked="false" data-theme-set="system"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect width="20" height="14" x="2" y="3" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg><span>System</span><svg class="i check" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button></div></div><a class="gh" data-slot="button" data-variant="ghost" data-size="icon" href="https://github.com/Fractal-Neurons/pacta" target="_blank" rel="noopener" aria-label="Pacta source on GitHub (opens in a new tab)"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg></a><a class="xl" data-slot="button" data-variant="ghost" data-size="icon" href="https://x.com/pacta_fractal" target="_blank" rel="noopener" aria-label="Pacta on X (@pacta_fractal, opens in a new tab)"><svg class="i i-fill" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846 h-7.406 l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg></a><a class="cta" data-slot="button" data-variant="default" data-size="sm" href="../request/">Request a dossier</a><button class="menu-btn" data-slot="button" data-variant="ghost" data-size="icon" type="button" aria-label="Open menu" aria-haspopup="dialog" aria-expanded="false" aria-controls="nav-sheet" data-sheet-open><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16"/><path d="M4 6h16"/><path d="M4 18h16"/></svg></button></div></div></header>
+<div data-slot="sheet" id="nav-sheet" role="dialog" aria-modal="true" aria-labelledby="nav-sheet-title" hidden><div data-slot="sheet-overlay" data-sheet-close></div><div data-slot="sheet-content"><div data-slot="sheet-header"><p data-slot="sheet-title" id="nav-sheet-title">Menu</p><button data-slot="button" data-variant="ghost" data-size="icon" type="button" aria-label="Close menu" data-sheet-close><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div><nav aria-label="Mobile"><a href="../scorecards/">Scorecards</a><a href="../radar/">Radar</a><a href="../scan/">Instant Scan</a><a href="../#pricing">Pricing</a><a href="../bounties/">Bounties</a><a href="../mcp/">MCP</a><a href="../bounties/">Bounties</a><a href="https://github.com/Fractal-Neurons/pacta" target="_blank" rel="noopener">GitHub</a><a href="https://x.com/pacta_fractal" target="_blank" rel="noopener">X (@pacta_fractal)</a></nav><div class="sheet-theme" role="group" aria-labelledby="sheet-theme-l"><span id="sheet-theme-l">Theme</span><button data-slot="button" data-variant="outline" data-size="sm" type="button" aria-pressed="false" data-theme-set="light" data-theme-sheet><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg><span>Light</span></button><button data-slot="button" data-variant="outline" data-size="sm" type="button" aria-pressed="false" data-theme-set="dark" data-theme-sheet><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg><span>Dark</span></button><button data-slot="button" data-variant="outline" data-size="sm" type="button" aria-pressed="false" data-theme-set="system" data-theme-sheet><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect width="20" height="14" x="2" y="3" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg><span>System</span></button></div><div class="sheet-cta"><a data-slot="button" data-variant="default" data-size="lg" href="../request/">Request a dossier</a></div></div></div>
+<main id="main">
+<section class="sec ma-sec">
+<div class="wrap ma-wrap">
+<div class="ma-shell" id="ma-root" data-miniapp data-api="https://pacta-x402.pacta.workers.dev" data-verify-api="https://pacta-x402.pacta.workers.dev/v1/orders/verify" data-lookup="../api/v1/lookup.json" data-badges="../badges/">
+  <header class="ma-head">
+    <div class="ma-topline">
+      <span data-slot="badge" data-variant="info">Base · Farcaster Mini-App</span>
+      <span class="ma-wallet-pill mono" id="ma-wallet-pill" data-state="detecting">Ready · Base + Ethereum</span>
+    </div>
+    <h1>Control-Plane Check</h1>
+    <p class="ma-sub">Verify who can upgrade, pause or change any Base or Ethereum contract before depositing.</p>
+  </header>
+
+  <form class="ma-card" id="ma-check-form" novalidate autocomplete="off">
+    <div class="ma-bar">
+      <div class="ma-seg" role="radiogroup" aria-label="Target chain">
+        <button type="button" class="ma-seg-btn" role="radio" aria-checked="true" data-ma-chain="base">Base</button>
+        <button type="button" class="ma-seg-btn" role="radio" aria-checked="false" data-ma-chain="ethereum">Ethereum</button>
+      </div>
+      <span class="ma-free-tag mono">50 free / day · no key</span>
+    </div>
+    <input type="hidden" id="ma-chain" name="chain" value="base">
+    <div class="ma-input-row">
+      <label class="sr-only" for="ma-address">Contract or Safe address</label>
+      <input id="ma-address" name="address" type="text" class="mono" spellcheck="false" autocapitalize="off"
+             value="0xfBb21d0380beE3312B33c4353c8936a0F13EF26C" placeholder="0x… contract, token or Safe">
+      <button data-slot="button" data-variant="default" data-size="default" type="submit" id="ma-submit">Check</button>
+    </div>
+    <p class="form-message" id="ma-addr-err" data-slot="form-message" hidden></p>
+    <div class="ma-presets" role="group" aria-label="Live contract presets">
+      <span class="ma-presets-l">Tap live:</span><button type="button" class="ma-chip" data-ma-preset data-chain="base" data-address="0xfBb21d0380beE3312B33c4353c8936a0F13EF26C" data-slug="moonwell-lending-base">Moonwell (Base)</button><button type="button" class="ma-chip" data-ma-preset data-chain="base" data-address="0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913" data-slug="circle-usdc">USDC (Base)</button><button type="button" class="ma-chip" data-ma-preset data-chain="base" data-address="0x420DD381b31aEf6683db6B902084cB0FFECe40Da" data-slug="aerodrome-finance-base">Aerodrome (Base)</button><button type="button" class="ma-chip" data-ma-preset data-chain="ethereum" data-address="0xA35b1B31Ce002FBF2058D22F30f95D405200A15b" data-slug="stader-labs-ethx">Stader ETHx (Eth)</button>
+    </div>
+  </form>
+
+  <section class="ma-card ma-verdict" id="ma-verdict" aria-live="polite" data-ma-status="ADVERSE DELTA">
+    <div class="ma-v-head">
+      <div>
+        <span class="ma-status-pill" id="ma-v-pill" data-tone="delta">ADVERSE DELTA</span>
+        <h2 id="ma-v-title">Moonwell Lending (Base) · Base</h2>
+      </div>
+      <img class="cp-badge" id="ma-v-badge" src="../badges/moonwell-lending-base.svg" alt="Pacta Control Plane: Parameter Delta" width="262" height="20">
+    </div>
+    <p class="ma-v-summary" id="ma-v-summary">Published docs vs live Base control plane: tap Check or pick any preset above to run a fresh block-pinned read.</p>
+    <dl class="ma-v-grid" id="ma-v-grid">
+      <div><dt>Target</dt><dd class="mono" id="ma-v-target">base:0xfBb2…EF26C</dd></div>
+      <div><dt>Controller</dt><dd class="mono" id="ma-v-ctrl">Timelock / Multisig</dd></div>
+      <div><dt>Timelock floor</dt><dd class="mono" id="ma-v-delay">Indexed record (tap Check for live)</dd></div>
+      <div><dt>Provenance</dt><dd id="ma-v-prov"><a href="../protocols/moonwell-lending-base/">Published scorecard</a></dd></div>
+    </dl>
+  </section>
+
+  <section class="ma-card ma-upgrade" id="ma-upgrade" aria-label="1-tap Base USDC upgrades">
+    <div class="ma-up-head">
+      <h2>Need deeper diligence or a 24h Base EAS seal?</h2>
+      <span class="mono ma-up-net">Base USDC · Chain 8453</span>
+    </div>
+    <div class="ma-up-btns">
+      <button type="button" class="ma-buy-btn ma-buy-primary" id="ma-buy-scan" data-ma-buy="instant-scan-19">
+        <span class="ma-buy-t">Unlock Full Scan ($19 Base USDC)</span>
+        <span class="ma-buy-s">2-RPC proxy, Safe signer &amp; role report + Base EAS ticket</span>
+      </button>
+      <button type="button" class="ma-buy-btn ma-buy-secondary" id="ma-buy-seal" data-ma-buy="reverify-seal-99">
+        <span class="ma-buy-t">24h Mainnet EAS Seal ($99 Base USDC)</span>
+        <span class="ma-buy-s">Maintainer + independent verifier docs-vs-chain attestation</span>
+      </button>
+    </div>
+    <div class="ma-contact-row" id="ma-contact-row">
+      <label for="ma-contact">Delivery @telegram, email or webhook <span class="opt">(optional for $19 · required for $99 Seal)</span></label>
+      <input id="ma-contact" type="text" maxlength="200" spellcheck="false" placeholder="@handle or team@protocol.xyz">
+      <p class="form-message" id="ma-contact-err" data-slot="form-message" hidden></p>
+    </div>
+    <p class="ma-quote" id="ma-quote">Deterministic quote: exact USDC transfer on Base to Pacta Treasury <span class="addr-pill mono" title="0x4348DF1BEFAffcbA248B5118B1b782B1B2bdEd14">0x4348…Ed14</span> · zero approvals.</p>
+    <p class="req-status" id="ma-pay-status" role="status" aria-live="polite"></p>
+
+    <div class="co-result" id="ma-receipt" tabindex="-1" hidden>
+      <div class="co-r-head"><span data-slot="badge" data-variant="success">Verified on Base</span><b id="ma-r-sku">Instant Scan · 19.00 USDC</b></div>
+      <dl class="co-r-dl">
+        <div><dt>Order</dt><dd class="mono" id="ma-r-order">—</dd></div>
+        <div><dt>Settlement</dt><dd id="ma-r-tx">—</dd></div>
+      </dl>
+      <pre class="pv-pre" id="ma-r-json"></pre>
+    </div>
+
+    <details class="co-manual ma-manual" id="ma-manual">
+      <summary>No injected wallet or paid from Safe/CLI? Open in Base Wallet or verify tx hash</summary>
+      <div class="co-manual-b">
+        <div class="co-dl-btns">
+          <a class="co-dl-btn" href="https://go.cb-wallet.com/dapp?cb_url=https%3A%2F%2Fpacta.wtf%2Fminiapp%2F" rel="noopener" data-ma-coinbase data-cta="wallet_coinbase"><span>Open in Coinbase Wallet</span><svg class="i ia" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10v10M7 17 17 7"/></svg></a>
+          <a class="co-dl-btn" href="https://metamask.app.link/dapp/pacta.wtf/miniapp/" rel="noopener" data-ma-metamask data-cta="wallet_metamask"><span>Open in MetaMask</span><svg class="i ia" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10v10M7 17 17 7"/></svg></a>
+        </div>
+        <div class="ma-tx-row">
+          <label class="sr-only" for="ma-tx">Base USDC transaction hash</label>
+          <input id="ma-tx" type="text" class="mono" maxlength="68" spellcheck="false" placeholder="0x… 64-hex Base payment tx hash">
+          <select id="ma-manual-sku" aria-label="Order tier">
+            <option value="instant-scan-19">$19 Scan</option>
+            <option value="reverify-seal-99">$99 Seal</option>
+          </select>
+          <button data-slot="button" data-variant="outline" data-size="sm" type="button" id="ma-verify-btn">Verify tx</button>
+        </div>
+      </div>
+    </details>
+  </section>
+</div>
+</div>
+</section>
+</main>
+<footer class="ftr"><div class="wrap"><div class="ftr-grid"><div class="ftr-brand"><a class="brand" href="../"><img class="ftr-logo" src="../favicon.svg" alt="" width="24" height="24">PACTA</a><p>Independent control-plane scorecards for DeFi. Pacta by Fractal Neurons · pacta.base.eth</p></div><div><h2>Product</h2><ul><li><a href="../scorecards/">Scorecards</a></li><li><a href="../protocols/">Protocols</a></li><li><a href="../radar/">Timelock radar</a></li><li><a href="../#pricing">Pricing</a></li><li><a href="../scan/">Instant scan</a></li><li><a href="../webhook/">Timelock webhooks</a></li><li><a href="../seal/">24h mainnet seal</a></li><li><a href="../miniapp/">Base Mini-App</a></li><li><a href="../for-protocols/">For protocols</a></li><li><a href="../bounties/">Bounties</a></li><li><a href="../leaderboard/">Leaderboard</a></li></ul></div><div><h2>For agents</h2><ul><li><a href="../mcp/">MCP server</a></li><li><a href="../llms.txt">llms.txt</a></li><li><a href="../llms/">llms.txt (HTML)</a></li><li><a href="../SKILL.md">SKILL.md</a></li><li><a href="../api/v1/openapi.json">OpenAPI 3.1</a></li><li><a href="../api/v1/index.json">JSON API</a></li><li><a href="../feed.xml">Atom feed</a></li><li><a href="https://github.com/Fractal-Neurons/pacta/discussions/44" target="_blank" rel="noopener">Builder Q&amp;A</a></li></ul></div><div><h2>Company</h2><ul><li><a href="../about/">About</a></li><li><a href="../methodology/">Methodology</a></li><li><a href="../request/">Request a dossier</a></li><li><a href="https://github.com/Fractal-Neurons/pacta" target="_blank" rel="noopener">GitHub</a></li><li><a href="https://x.com/pacta_fractal" target="_blank" rel="noopener">X (@pacta_fractal)</a></li><li><a href="https://github.com/Fractal-Neurons/pacta/discussions" target="_blank" rel="noopener">Community</a></li><li><a href="https://basescan.org/address/0x35D21Bb4Df6586FE7759b5e57263ffeB3e1fd872" target="_blank" rel="noopener">Base registry</a></li></ul></div><div><h2>Legal</h2><ul><li><a href="../privacy/">Privacy</a></li><li><a href="../terms/">Terms</a></li><li><a href="../.well-known/security.txt">security.txt</a></li></ul></div></div><div class="ftr-bottom"><span data-count-line>311 protocols (116 Base-EAS attested + 195 RPC-observed) · 225 attested checks across 29 Base EAS batch attestations</span><span>Read-only onchain analysis. Not investment advice. First-party telemetry stores aggregate counts without raw IPs; X Ads conversion measurement (uwt.js) runs on public pages — see <a href="../privacy/">Privacy</a>.</span></div></div></footer>
+<div class="toaster" id="toaster" aria-live="polite" aria-atomic="true"></div>
+</body></html>

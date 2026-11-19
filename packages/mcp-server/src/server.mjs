@@ -177,8 +177,7 @@ export const CALLER_PURPOSES = Object.freeze(["pre_trade_safety", "collateral_du
   "governance_monitoring", "integration_testing", "general_research"]);
 export const CALLER_FIELDS = Object.freeze(["caller_agent", "requester_role", "caller_purpose"]);
 const CALLER_AGENT_RE = /^[a-z0-9][a-z0-9._/-]{1,47}$/;
-const CALLER_AGENT_DENY = /(?:^|[^a-z0-9])(?:\d{1,3}\.){3}\d{1,3}(?:$|[^0-9])|0x[0-9a-f]{16,}|https?|sk-|sk_live|ghp_|gho_|ghu_|ghs_|github_pat_|akia|bearer|xox[a-z]-|token|secret|passw|apikey|api_key|\.\./;
-const CALLER_EXAMPLE = Object.freeze({ caller_agent: "claude-code", requester_role: "autonomous_agent", caller_purpose: "pre_trade_safety" });
+const CALLER_AGENT_DENY = /(?:^|[^a-z0-9])(?:\d{1,3}\.){3}\d{1,3}(?:$|[^0-9])|0x[0-9a-f]{16,}|[0-9a-f]{32,}|https?|sk-|sk_live|ghp_|gho_|ghu_|ghs_|github_pat_|akia|bearer|xox[a-z]-|token|secret|passw|apikey|api_key|\.\./;
 // A JWT / base64url JSON header ("eyJ" is base64 for '{"') survives lowercasing as "eyj…" and fits the slug charset:
 // never accept it as a caller slug, at the start or after a separator (Codex task-344fc12c4e24).
 const CALLER_AGENT_JWT = /(?:^|[/_.-])eyj[a-z0-9_-]{4,}\.[a-z0-9_-]{2,}/i;
@@ -200,27 +199,14 @@ export function callerContext(src) {
   }
   return { fields, problems };
 }
-const CALLER_HINT = {
-  caller_agent: "a lowercase slug naming the calling AI agent, IDE or framework (e.g. claude-code, cursor, windsurf, coinbase-agentkit, elizaos, langchain, custom-agent); never a personal name, e-mail, IP, URL, address or secret",
-  requester_role: "one of " + REQUESTER_ROLES.join(", "),
-  caller_purpose: "one of " + CALLER_PURPOSES.join(", "),
-};
 const CALLER_PROPS = {
   caller_agent: {
     type: "string", pattern: CALLER_AGENT_RE.source, maxLength: 48,
-    description: "Identifier of the calling AI agent, IDE, or framework (e.g. 'claude-code', 'cursor', 'windsurf', 'coinbase-agentkit', 'elizaos', 'langchain', 'chatgpt', 'gemini', 'custom-agent'). Optional attribution (omitted = 'unspecified'). Lowercase slug only; never include personal names, emails, or secrets.",
+    description: "Optional identifier of the calling AI agent, IDE, or framework (e.g. 'claude-code', 'cursor', 'windsurf', 'coinbase-agentkit', 'elizaos', 'langchain', 'chatgpt', 'gemini', 'openclaw', 'custom-agent'). Omitted or invalid values never block a call. Lowercase slug only; never include personal names, emails, or secrets.",
   },
   requester_role: { type: "string", enum: [...REQUESTER_ROLES], description: "Optional: high-level role category of the requester or system running this check (closed enum; no personal data)." },
   caller_purpose: { type: "string", enum: [...CALLER_PURPOSES], description: "Optional: operational workflow context for this pre-execution check (closed enum)." },
 };
-/** Only a non-blank INVALID caller field is an error; omitted / blank ones are fine (they default to "unspecified"). */
-const invalidCaller = (cc) => cc.problems.filter((p) => p.reason === "invalid");
-/** -32602 naming each invalid caller field with what is allowed, so an agent can fix the call and retry. */
-function callerError(problems) {
-  const lines = problems.map((p) => `${p.field} (${p.reason}): ${CALLER_HINT[p.field]}`);
-  return Object.assign(new Error("Invalid caller attribution field(s) in the tool arguments (they are optional: omit them or use an allowed value). " + lines.join("; ")
-    + `. Retry with e.g. ${JSON.stringify(CALLER_EXAMPLE)} added to the arguments.`), { code: -32602 });
-}
 const gatewaySchema = (properties, required = []) => objSchema({ ...properties, ...CALLER_PROPS }, [...required]);   // caller fields: optional
 
 /** MCP tool annotations: every inspection tool is read-only, non-destructive and closed-world. */
@@ -528,11 +514,7 @@ export class PactaMcpServer {
     if (this.x402Url) {                                           // nothing leaves the process when unset
       const paying = Boolean(args.xPaymentHeader || args.paymentSignatureHeader);
       const cc = callerContext(args);
-      if (!paying) {
-        const bad = invalidCaller(cc);
-        if (bad.length) throw callerError(bad);
-        query = { ...query, ...cc.fields };                         // valid values forwarded as optional REST query params; omitted ones stay omitted
-      }
+      if (!paying) query = { ...query, ...cc.fields };            // valid values forwarded as optional REST query params; omitted or invalid ones silently dropped
     }
     return callX402Resource({
       fetchImpl: this.fetchImpl,
@@ -553,8 +535,6 @@ export class PactaMcpServer {
 
   async _lookup(args) {
     const cc = callerContext(args);
-    const bad = invalidCaller(cc);
-    if (bad.length) throw callerError(bad);
     const unknown = Object.keys(args).filter((k) => !CALLER_FIELDS.includes(k) && !["query", "chain", "kind", "limit"].includes(k));
     if (unknown.length) throw new X402Error("invalid_input", `Unknown argument ${String(unknown[0]).slice(0, 40)}; allowed: query, chain, kind, limit.`);
     const input = { query: args.query, chain: args.chain, kind: args.kind, limit: args.limit };
@@ -584,18 +564,18 @@ export class PactaMcpServer {
     return withCoverageHint({ ...lookupProtocols(input), source: "embedded_catalog", ...(gatewayFallback ? { gatewayFallback } : {}) });
   }
 
-  /** pacta_submit_request: local checks (fields, types, secrets / HTML guard, caller fields), then POST /v1/requests. */
+  /** pacta_submit_request: local checks (fields, types, secrets / HTML guard; invalid caller fields silently dropped), then POST /v1/requests. */
   async _submit(args) {
     const problems = [];
     for (const k of Object.keys(args)) if (!REQUEST_FIELDS.includes(k)) problems.push(`${String(k).slice(0, 40)} (unknown_field)`);
     for (const k of REQUEST_FIELDS) {
+      if (CALLER_FIELDS.includes(k)) continue;
       const v = args[k];
       if (v === undefined || v === null || v === "") { if (REQUEST_REQUIRED.includes(k)) problems.push(`${k} (missing)`); continue; }
       if (typeof v !== "string") { problems.push(`${k} (invalid: a string)`); continue; }
       const g = demandGuard(v);
       if (g) problems.push(`${k} (${g})`);
     }
-    if (!problems.length) for (const p of callerContext(args).problems) if (p.reason !== "missing") problems.push(`${p.field} (${p.reason})`);
     for (const [k, set] of [["request_type", REQUEST_TYPES], ["urgency_track", URGENCY_TRACKS]]) {
       if (typeof args[k] === "string" && args[k] && !set.includes(args[k].trim().toLowerCase())) problems.push(`${k} (invalid: one of ${set.join(", ")})`);
     }
@@ -606,7 +586,8 @@ export class PactaMcpServer {
     if (!this.x402Url) {
       throw new X402Error("gateway_not_configured", `pacta_submit_request forwards to POST <PACTA_X402_URL>/v1/requests: set PACTA_X402_URL=${X402_DEFAULTS.gatewayUrl} (nothing was sent).`);
     }
-    const body = Object.fromEntries(REQUEST_FIELDS.filter((k) => typeof args[k] === "string" && args[k] !== "").map((k) => [k, args[k]]));
+    const cc = callerContext(args);
+    const body = { ...cc.fields, ...Object.fromEntries(REQUEST_FIELDS.filter((k) => !CALLER_FIELDS.includes(k) && typeof args[k] === "string" && args[k] !== "").map((k) => [k, args[k]])) };
     const url = new URL("/v1/requests", this.x402Url).toString();
     const { res, text } = await fetchTextWithTimeout(this.fetchImpl, url,
       { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(body), redirect: "error" },

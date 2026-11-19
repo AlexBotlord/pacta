@@ -1175,6 +1175,38 @@
     if (/^[a-z][a-z0-9+.-]*:/i.test(v)) { try { var u = new URL(v); return u.protocol === "https:" && !u.username && !u.password && !!u.hostname; } catch (e) { return false; } }
     return v.length <= 200;
   }
+  var CO_MOBILE_UA = /Android|iPhone|iPad|iPod|Mobile/i;
+  function coHasInjectedWallet() { return !!(window.ethereum && typeof window.ethereum.request === "function"); }
+  function coIsMobileNoWallet() {
+    var ua = (typeof navigator === "object" && navigator && navigator.userAgent) || (window.navigator && window.navigator.userAgent) || "";
+    return !coHasInjectedWallet() && CO_MOBILE_UA.test(String(ua));
+  }
+  function coCanonicalPath(pathname, route) {
+    var p = String(pathname || "");
+    if (BASE && p.indexOf(BASE + "/") === 0) p = p.slice(BASE.length);
+    p = p.replace(/^\/website-test(?=\/)/, "");
+    if (p && p.slice(-1) !== "/") p += "/";
+    return /^\/(?:scan|seal)\/$/.test(p) ? p : "/" + route + "/";
+  }
+  function coDeepLinkPair(pathname, route, rawSearch, chainVal, addrVal) {
+    var s0 = String(rawSearch || "").replace(BAD_CHARS, ""), qs = "";
+    if (s0 && s0.charAt(0) !== "?") s0 = "?" + s0;
+    if (CO_ADDR.test(String(addrVal || ""))) {
+      try {
+        var q = new URLSearchParams(s0), ch = chainVal === "base" ? "base" : "ethereum";
+        if (q.get("address") === addrVal && (q.get("chain") || ch) === ch && q.has("chain")) qs = s0;
+        else { q.set("chain", ch); q.set("address", addrVal); qs = "?" + q.toString(); }
+      } catch (e) { qs = s0; }
+    } else {
+      qs = s0;
+    }
+    var canon = coCanonicalPath(pathname, route) + qs;
+    return {
+      canon: canon,
+      metamask: "https://metamask.app.link/dapp/pacta.wtf" + canon,
+      coinbase: "https://go.cb-wallet.com/dapp?cb_url=" + encodeURIComponent("https://pacta.wtf" + canon)
+    };
+  }
   function initCheckout() {
     var form = $("#co-form"); if (!form) return;
     var k = form.getAttribute("data-sku"); if (!own(CO_SKU, k)) return;
@@ -1335,6 +1367,30 @@
         err(watch || t, "co-target-err", "");
       });
     });
+    // ?chain=ethereum|base&address=0x... prefill (when opened inside MetaMask or Coinbase Wallet via 1-tap mobile deep-link)
+    try {
+      var uq = new URLSearchParams(location.search || ""), uch = uq.get("chain"), uad = uq.get("address");
+      var ch0 = fld("target_chain"), ad0 = fld("target_address");
+      if (ch0 && (uch === "ethereum" || uch === "base")) ch0.value = uch;
+      if (ad0 && !ad0.value && CO_ADDR.test(String(uad || ""))) { ad0.value = String(uad); ad0.setAttribute("value", String(uad)); }
+    } catch (e) { /* ignore malformed query */ }
+    var dlBox = $("[data-co-deeplinks]", form), dlMm = $("[data-co-metamask]", form), dlCb = $("[data-co-coinbase]", form);
+    function syncDeepLinks() {
+      if (!dlBox) return;
+      var pair = coDeepLinkPair(location.pathname, s.route, location.search, val("target_chain"), val("target_address"));
+      if (dlMm) dlMm.setAttribute("href", pair.metamask);
+      if (dlCb) dlCb.setAttribute("href", pair.coinbase);
+      var show = coIsMobileNoWallet();
+      dlBox.hidden = !show;
+      if (show) form.setAttribute("data-mobile-webview", "true"); else form.removeAttribute("data-mobile-webview");
+    }
+    if (dlBox) {
+      syncDeepLinks();
+      var tCh = fld("target_chain"), tAd = fld("target_address");
+      if (tCh) tCh.addEventListener("change", syncDeepLinks);
+      if (tAd) { tAd.addEventListener("input", syncDeepLinks); tAd.addEventListener("change", syncDeepLinks); }
+      $$("[data-receipt]", document).forEach(function (b) { b.addEventListener("click", function () { setTimeout(syncDeepLinks, 0); }); });
+    }
     // ?protocol=<slug> (the protocol pages' seal link): the indexed protocol's own contract and name, from the public catalog
     var pf = readPrefill(location.search);
     if (pf.protocol && !pfF) {
@@ -1349,6 +1405,7 @@
         if (t && !t.value && CO_ADDR.test(String(a || ""))) t.value = String(a);
         if (dd && dd.value === pf.protocol) dd.value = cleanText(it.name, 80);
         if (watch && watch.value === pf.protocol) watch.value = cleanText(it.name, 80);
+        syncDeepLinks();
       });
     }
     var dl = $("[data-co-download]", form), pr = $("[data-co-print]", form);

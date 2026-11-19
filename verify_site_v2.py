@@ -2016,7 +2016,8 @@ def main(argv=None):
                and '<input type="hidden" id="co-docs" name="protocol_or_docs">' in web_ and 'for="co-target"' not in web_ and 'for="co-docs"' not in web_)
     co_keys = ["co_single_sku_pages", "co_no_wallet_opens_drawer", "co_scan_chip_previews_and_orders", "co_verify_posts_exact_body", "co_result_text_only",
                "co_contract_codes", "co_errors_reported", "co_wallet_transfer_only", "co_wallet_cancel_sends_nothing", "co_wallet_single_flight",
-               "co_snapshot_and_inputs_locked", "co_webhook_picks_and_rules", "co_webhook_single_target", "co_seal_protocol_prefill", "co_request_launcher_forward"]
+               "co_snapshot_and_inputs_locked", "co_webhook_picks_and_rules", "co_webhook_single_target", "co_seal_protocol_prefill", "co_request_launcher_forward",
+               "co_mobile_webview_deeplinks"]
     co_failed = [k_ for k_ in co_keys if res.get(k_) is not True]
     check(f"Option B v2: /scan/ /webhook/ /seal/ are single-product pages (one form, one primary Pay action, the manual transfer collapsed with a one-line "
           f"0x4348…Ed14 pill, no raw 42-char hex or EOA copy, exact EIP-681 + amount, real-data previews, 1200x628 cards); nav, /radar/, every flagged protocol "
@@ -3401,7 +3402,7 @@ def main(argv=None):
     gen_pages = {r: t for r, t in all_pages.items()}
     csp_src = {d.split(" ")[0]: d.split(" ")[1:] for d in BS.CSP.split(";")}
     js_hosts = set(re.findall(r'"(https://[a-z0-9.-]+)', read("tools/app.src.js") + read("docs/b.js") + read("docs/theme.js")))
-    js_hosts = {h for h in js_hosts if h not in ("https://pacta.wtf", "https://github.com", "https://base.easscan.org", "https://etherscan.io", "https://basescan.org", "https://x.com", "https://mail.google.com")}   # link targets, never fetched
+    js_hosts = {h for h in js_hosts if h not in ("https://pacta.wtf", "https://github.com", "https://base.easscan.org", "https://etherscan.io", "https://basescan.org", "https://x.com", "https://mail.google.com", "https://metamask.app.link", "https://go.cb-wallet.com")}   # link targets, never fetched
     pp["S01: meta Content-Security-Policy on every generated page (default/script 'self' only, no frame-ancestors, before any <script>); 0 inline JS (theme bootstrap = docs/theme.js); no eval / new Function; every HTTPS origin the page scripts fetch is in connect-src"] = (
         "frame-ancestors" not in BS.CSP and csp_src.get("script-src") == ["'self'"] and csp_src.get("default-src") == ["'self'"]
         and all(t.count(csp_meta) == 1 and t.find(csp_meta) < t.find("<script") for t in gen_pages.values())
@@ -3677,8 +3678,9 @@ def main(argv=None):
                 for f in ("docs/index.html", "docs/mcp/index.html"))
         and not [r for r, t in pages.items() if '-A &quot;my-agent' in t] and 'curl -s -A' not in read("README.md")
         and 'curl -s "https://pacta-x402.pacta.workers.dev/v1/check/preflight' in read("README.md"))
-    v1["P1 attribution never blocks a first call: CALLER_FIELDS_DOC / SKILL.md / MCP README say optional (omitted = unspecified, invalid = -32602)"] = (
-        "OPTIONAL" in B2AV1.CALLER_FIELDS_DOC and "never block a call" in B2AV1.CALLER_FIELDS_DOC and B2AV1.CALLER_FIELDS_DOC in read("docs/SKILL.md")
+    v1["P1 attribution never blocks a call: CALLER_FIELDS_DOC / SKILL.md / MCP README say optional (omitted or invalid values dropped, never -32602)"] = (
+        "OPTIONAL" in B2AV1.CALLER_FIELDS_DOC and "never block a call" in B2AV1.CALLER_FIELDS_DOC and "-32602" not in B2AV1.CALLER_FIELDS_DOC
+        and B2AV1.CALLER_FIELDS_DOC in read("docs/SKILL.md")
         and read("docs/SKILL.md") == read("packages/mcp-server/SKILL.md") and "Free-tier caller fields (optional attribution)" in read("packages/mcp-server/README.md")
         and "required on every gateway tool" not in read("packages/mcp-server/README.md"))
     wd_bad = []

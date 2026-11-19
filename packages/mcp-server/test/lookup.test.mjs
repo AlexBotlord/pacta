@@ -40,23 +40,27 @@ test("pacta_lookup_protocol is listed first in both modes, query and caller fiel
   assert.match(MCP_INSTRUCTIONS, /call pacta_lookup_protocol first/);
 });
 
-test("pacta_lookup_protocol: omitted caller fields are fine; INVALID ones (JWT, e-mail) -> -32602; invalid input is a tool error; nothing is sent", async () => {
-  const f = rec(() => { throw new Error("must not be called"); });
-  const local = new PactaMcpServer({ fetchImpl: f });
+test("pacta_lookup_protocol: omitted or invalid caller fields (JWT, e-mail) never reject with -32602 and are never sent; invalid lookup input is a tool error", async () => {
+  const f = rec(() => json(200, { schema: "pacta.protocol_lookup.v1", query: "ethena", count: 0, totalMatches: 0, results: [] }));
+  const local = new PactaMcpServer({ fetchImpl: rec(() => { throw new Error("no network"); }) });
   const none = await call(local, { query: "ethena" });
   assert.deepEqual([none.error, none.result.isError], [undefined, false], "no first-call rejection without attribution");
   const srv = new PactaMcpServer({ x402Url: GW, fetchImpl: f });
   const jwt = "ey" + "JhbGciOiJIUzI1NiJ9.e30.sig";
   for (const a of [jwt, jwt.toLowerCase(), "alice@example.com"]) {
     const r = await call(srv, { ...CALLER, caller_agent: a, query: "ethena" });
-    assert.equal(r.error?.code, -32602, a);
+    assert.deepEqual([r.error, r.result.isError], [undefined, false], a);
   }
+  assert.equal(f.calls.length, 3);
+  for (const u of f.calls) assert.ok(!u.includes("caller_agent=") && !u.includes("alice") && !/eyj/i.test(u), u);
+  const fNoNet = rec(() => { throw new Error("must not be called"); });
+  const srvNoNet = new PactaMcpServer({ x402Url: GW, fetchImpl: fNoNet });
   for (const args of [{ query: "x".repeat(81) }, { chain: "polygon" }, { kind: "token" }, { limit: 0 }, { limit: LOOKUP_CATALOG.length + 1 }, { address: "0x1" }, { query: 7 }]) {
-    const r = await call(srv, { ...CALLER, ...args });
+    const r = await call(srvNoNet, { ...CALLER, ...args });
     assert.equal(r.result.isError, true, JSON.stringify(args));
     assert.equal(body(r).code, "invalid_input", JSON.stringify(args));
   }
-  assert.equal(f.calls.length, 0);
+  assert.equal(fNoNet.calls.length, 0);
 });
 
 test("pacta_lookup_protocol without PACTA_X402_URL: answered from the embedded catalog, no network", async () => {

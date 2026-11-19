@@ -301,7 +301,7 @@ test("tool alias: pacta_get_live_timelocks (the remote MCP name) runs pacta_live
   assert.equal(bad.error.code, -32602);
 });
 
-test("free-tier caller attribution (stdio): gateway tools document caller_agent / requester_role / caller_purpose as OPTIONAL; omitted fields are forwarded as nothing; INVALID values get -32602 (nothing sent upstream); paid calls and local tools are unaffected", async () => {
+test("free-tier caller attribution (stdio): gateway tools document caller_agent / requester_role / caller_purpose as OPTIONAL; omitted or invalid values never reject (-32602) and are dropped before forwarding; paid calls and local tools are unaffected", async () => {
   for (const t of PAID_TOOLS) {
     assert.ok(["caller_agent", "requester_role", "caller_purpose"].every((f) => !t.inputSchema.required.includes(f) && t.inputSchema.properties[f]), t.name);
     assert.deepEqual([t.inputSchema.properties.requester_role.enum, t.inputSchema.properties.caller_purpose.enum], [[...REQUESTER_ROLES], [...CALLER_PURPOSES]]);
@@ -312,19 +312,16 @@ test("free-tier caller attribution (stdio): gateway tools document caller_agent 
   const srv = new PactaMcpServer({ x402Url: BASE_URL, fetchImpl: f, nowSeconds: NOW });
   const call = (args, id = 1) => srv.handleMessage({ jsonrpc: "2.0", id, method: "tools/call", params: { name: "pacta_check_preflight", arguments: { chain: "base", address: FROM, ...args } } });
   const badRole = await call({ requester_role: "ceo" });
-  assert.equal(badRole.error.code, -32602);
-  for (const v of ["requester_role (invalid)", ...REQUESTER_ROLES, "claude-code", "optional"]) assert.ok(badRole.error.message.includes(v), v);
-  assert.ok(!badRole.error.message.includes("(missing)"), "omitted fields are never named as problems");
+  assert.deepEqual([badRole.error, badRole.result.isError], [undefined, false]);
   const tok = (p) => p + "abcdefghijklmnop0123456789";
   const jwt = "ey" + "JhbGciOiJIUzI1NiJ9.e30.sig";   // JWT: mixed case and already lowercased (Codex task-344fc12c4e24)
-  for (const a of ["alice@example.com", "my agent", "0x" + "ab".repeat(20), "https://evil.example.com", "10.0.0.7", tok("sk" + "-"), tok("gh" + "p_"), "a", "x".repeat(49),
+  for (const a of ["alice@example.com", "my agent", "0x" + "ab".repeat(20), "ab".repeat(16), "https://evil.example.com", "10.0.0.7", tok("sk" + "-"), tok("gh" + "p_"), "a", "x".repeat(49),
     jwt, jwt.toLowerCase(), "agent/" + "ey" + "jhbgcioi.x1"]) {
     const r = await call({ ...CALLER, caller_agent: a });
-    assert.equal(r.error?.code, -32602, a);
-    assert.match(r.error.message, /caller_agent \(invalid\)/);
+    assert.deepEqual([r.error, r.result.isError], [undefined, false], a);
   }
-  assert.equal((await call({ ...CALLER, requester_role: "ceo" })).error.code, -32602);
-  assert.equal(f.calls.length, 0, "a rejected call never reaches the gateway");
+  assert.ok(f.calls.every((c) => !c.url.includes("caller_agent=") && !c.url.includes("ceo") && !c.url.includes("alice") && !/eyj/i.test(c.url)), "invalid attribution never sent upstream");
+  f.calls.length = 0;
   assert.equal((await call({ ...CALLER, caller_agent: "Cursor" })).result.isError, false);
   assert.equal(f.calls[0].url, `${BASE_URL}/v1/check/preflight?chain=base&address=${FROM}&caller_agent=cursor&requester_role=defi_developer&caller_purpose=integration_testing`);
   assert.equal((await call({ caller_agent: "  ", requester_role: "" })).result.isError, false, "omitted / blank attribution: dispatched");
@@ -332,6 +329,7 @@ test("free-tier caller attribution (stdio): gateway tools document caller_agent 
   assert.deepEqual([normalizeCallerAgent(" Claude-Code "), normalizeCallerAgent("user@example.com"), normalizeCallerAgent(jwt), normalizeCallerAgent("eyeglass-agent")],
     ["claude-code", null, null, "eyeglass-agent"]);
   // paying: never rejected for missing caller fields, and the request carries no attribution (x402 resource unchanged)
+  f.calls.length = 0;
   const paid = await call({ xPaymentHeader: "not-base64!" });
   assert.notEqual(paid.error?.code, -32602);
   assert.ok(f.calls.length <= 2 && f.calls.every((c) => !c.url.includes("caller_agent=pacta")), "paid calls are sent without attribution");

@@ -1477,6 +1477,42 @@ async function checkoutScenario() {
   const lr2 = run(input.request, input.app, { path: "/request/", search: "?tier=clearance" });
   res.co_request_launcher_forward = lr.location.replaced === "../seal/?protocol=stader-labs-ethx" && !lr2.location.replaced
     && lr.document.querySelectorAll("[data-launcher] a").length === 3;
+  // Mobile WebView 1-tap wallet deep-links (/scan/ and /seal/): shown ONLY when !window.ethereum and mobile UA;
+  // strips staging /website-test prefix from target pacta.wtf dApp URL, preserves ?chain=...&address=..., syncs edits, and fires cta_click
+  const mobileUa = "Mozilla/5.0 (Linux; Android 14; Pixel 8 Build/UQ1A; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/128.0.0.0 Mobile Safari/537.36";
+  const scanStage = JSON.parse(JSON.stringify(input.scan));
+  scanStage[1]["data-base-path"] = "/website-test";
+  const qsInit = "?chain=base&address=" + C.usdc;
+  const mwScan = run(scanStage, input.app, { path: "/website-test/scan/", search: qsInit, nav: { userAgent: mobileUa }, beacon: input.beacon });
+  const mwDoc = mwScan.document, dlScan = mwDoc.getElementById("co-deeplinks");
+  const mmA = mwDoc.querySelector("[data-co-metamask]"), cbA = mwDoc.querySelector("[data-co-coinbase]");
+  const wantCanon = "/scan/" + qsInit;
+  const scanInitOk = !!dlScan && dlScan.hidden === false && mwDoc.getElementById("co-form").getAttribute("data-mobile-webview") === "true"
+    && mwDoc.getElementById("pf-chain").value === "base" && mwDoc.getElementById("pf-address").value === C.usdc
+    && mmA.getAttribute("href") === "https://metamask.app.link/dapp/pacta.wtf" + wantCanon
+    && cbA.getAttribute("href") === "https://go.cb-wallet.com/dapp?cb_url=" + encodeURIComponent("https://pacta.wtf" + wantCanon)
+    && !mwDoc.getElementById("co-manual").hasAttribute("open");
+  const bBefore = mwScan.beacons.length;
+  click(mmA); click(cbA);
+  const ctaEvents = mwScan.events().slice(bBefore).map((e) => e.e);
+  setField(mwDoc, "pf-address", ADDR);
+  const wantEdited = "/scan/?chain=base&address=" + ADDR;
+  const scanEditOk = mmA.getAttribute("href") === "https://metamask.app.link/dapp/pacta.wtf" + wantEdited
+    && cbA.getAttribute("href") === "https://go.cb-wallet.com/dapp?cb_url=" + encodeURIComponent("https://pacta.wtf" + wantEdited);
+  const sealStage = JSON.parse(JSON.stringify(input.seal));
+  sealStage[1]["data-base-path"] = "/website-test";
+  const mwSeal = run(sealStage, input.app, { path: "/website-test/seal/", search: "?chain=ethereum&address=" + ADDR, nav: { userAgent: mobileUa } });
+  const sealOk = mwSeal.document.getElementById("co-deeplinks").hidden === false
+    && mwSeal.document.getElementById("co-target").value === ADDR
+    && mwSeal.document.querySelector("[data-co-metamask]").getAttribute("href") === "https://metamask.app.link/dapp/pacta.wtf/seal/?chain=ethereum&address=" + ADDR
+    && mwSeal.document.querySelector("[data-co-coinbase]").getAttribute("href") === "https://go.cb-wallet.com/dapp?cb_url=" + encodeURIComponent("https://pacta.wtf/seal/?chain=ethereum&address=" + ADDR);
+  // Desktop without wallet OR mobile inside MetaMask/Coinbase (window.ethereum present): deep-link block stays hidden
+  const deskScan = run(input.scan, input.app, { path: "/scan/", nav: { userAgent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/128.0.0.0 Safari/537.36" } });
+  const injectedMobile = run(input.scan, input.app, { path: "/scan/", search: qsInit, nav: { userAgent: mobileUa }, win: { ethereum: eth } });
+  res.co_mobile_webview_deeplinks = scanInitOk && scanEditOk && sealOk && same(ctaEvents, ["cta_click", "cta_click"])
+    && deskScan.document.getElementById("co-deeplinks").hidden === true
+    && injectedMobile.document.getElementById("co-deeplinks").hidden === true
+    && injectedMobile.document.getElementById("pf-address").value === C.usdc;
 }
 (async () => {
   try { await v45Scenario(); } catch (e) { res.harness_error = (res.harness_error || "") + String(e && e.stack || e); }

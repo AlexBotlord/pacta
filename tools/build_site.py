@@ -1317,6 +1317,22 @@ def short_addr(a):
     return a[:6] + "…" + a[-4:]
 
 
+def mobile_wallet_deeplinks(c):
+    """Progressive enhancement on /scan/ and /seal/ when window.ethereum is absent on a mobile browser (e.g. X in-app WebView):
+    app.js unhides this block and keeps the canonical pacta.wtf/<route>/?... deep-links synced with the selected chain and contract."""
+    canon = f"/{c['route']}/"
+    mm = f"https://metamask.app.link/dapp/pacta.wtf{canon}"
+    cb = "https://go.cb-wallet.com/dapp?cb_url=" + urllib.parse.quote(f"https://pacta.wtf{canon}", safe="")
+    return (f'<div class="co-deeplinks" id="co-deeplinks" data-co-deeplinks hidden>'
+            f'<p class="co-dl-head">In-app mobile browser detected — open in your wallet app for 1-tap Base USDC checkout:</p>'
+            f'<div class="co-dl-btns">'
+            f'<a class="co-dl-btn" href="{E(mm)}" rel="noopener" data-cta="wallet_metamask" data-co-metamask>'
+            f'<span>Open in MetaMask</span>{EXT}</a>'
+            f'<a class="co-dl-btn" href="{E(cb)}" rel="noopener" data-cta="wallet_coinbase" data-co-coinbase>'
+            f'<span>Open in Coinbase Wallet</span>{EXT}</a>'
+            f'</div></div>')
+
+
 def manual_drawer(c):
     """The manual / Safe / CLI path, collapsed by default: the exact amount, the treasury as a one-line pill (full value copied), the
     EIP-681 link and the transaction-hash check."""
@@ -1491,12 +1507,13 @@ def product_page(idx, sku):
                           help_="Kept private for delivery, never published."))
         preview = seal_preview(idx, lk)
     guarantee = (f'<p class="co-guarantee" data-co-guarantee>{U.icon("scale")}<span>{E(SEAL_GUARANTEE)}</span></p>' if sku == "reverify-seal-99" else "")
+    deeplinks = mobile_wallet_deeplinks(c) if sku in ("instant-scan-19", "reverify-seal-99") else ""
     form = (f'<form class="co" id="co-form" novalidate autocomplete="off" data-api="{E(ORDERS_VERIFY_API)}" data-sku="{sku}" data-chain-id="{CHECKOUT_CHAIN_ID}">'
             f'{fields}<div class="co-cta">'
             + U.button(f'<span>{E(c["cta"])}</span>', variant="default", size="lg", attrs='id="co-wallet" data-co-pay')
             + '<span class="req-status" id="co-status" role="status" aria-live="polite"></span></div>'
             f'<p class="co-assure">One exact USDC transfer on Base. No approvals, no allowances, no account.</p>{guarantee}'
-            f'{manual_drawer(c)}{receipt_card()}'
+            f'{deeplinks}{manual_drawer(c)}{receipt_card()}'
             f'<noscript><p class="note">Paying needs JavaScript. Without it, open the manual transfer above and send the transaction hash '
             f'through the <a href="../request/">request form</a> or to {CONTACT}.</p></noscript></form>')
     steps = (f'<section class="sec pd-how" id="how"><div class="wrap"><ol class="pd-steps">'
@@ -3227,7 +3244,7 @@ def mcp_page(idx):
 <p class="lede">The live Model Context Protocol endpoint is <code data-mcp-endpoint>{E(MCP_URL)}</code>: Streamable HTTP, JSON-RPC 2.0, stateless (no session), <b>no API key and no wallet</b>, {E(RATE_LIMIT)}. This page only documents it; point your MCP client at the endpoint above.</p></header>
 <section class="memo-sec" id="install"><h2>Install</h2>
 {install}
-<p>Optional attribution: <code>caller_agent</code>, <code>requester_role</code> and <code>caller_purpose</code> (non-personal; omitted fields never block a call; see <a href="../SKILL.md">SKILL.md</a>).</p></section>
+<p>Optional attribution: <code>caller_agent</code>, <code>requester_role</code> and <code>caller_purpose</code> (non-personal; omitted or invalid values never block a call — invalid values are silently dropped; see <a href="../SKILL.md">SKILL.md</a>).</p></section>
 <section class="memo-sec" id="tools"><h2>Tools ({E(B2A.REMOTE_TOOLS_DOC)})</h2><ul>{tools}</ul>
 <p>Indexed protocols: <a href="../api/v1/protocols.json">/api/v1/protocols.json</a> · machine-readable server card: <a href="../.well-known/mcp.json">/.well-known/mcp.json</a> · REST twin and OpenAPI 3.1: <a href="{E(OPENAPI_URL)}" target="_blank" rel="noopener">openapi.json{EXT}</a></p>
 <p class="s">The live check tool <code>pacta_check_preflight</code> rates the single contract address it is given, not the whole protocol (<a href="../methodology/#live-checker">methodology</a>).</p></section>

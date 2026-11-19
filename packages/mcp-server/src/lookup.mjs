@@ -553,8 +553,8 @@ export const REQUEST_SCHEMA_PROPS = Object.freeze({
   forum_proposal_url: { type: "string", format: "uri", maxLength: 200, pattern: "^https://", description: "Optional https:// link to the governance forum proposal this request concerns." },
   contact_handle: { type: "string", maxLength: 120, description: CONTACT_HANDLE_DESCRIPTION },
 });
-export const REQUEST_REQUIRED = Object.freeze(["caller_agent", "requester_role", "caller_purpose", "request_type", "target_subject", "requested_capability", "urgency_track"]);
-export const REQUEST_FIELDS = Object.freeze([...REQUEST_REQUIRED, "forum_proposal_url", "contact_handle"]);
+export const REQUEST_REQUIRED = Object.freeze(["request_type", "target_subject", "requested_capability", "urgency_track"]);
+export const REQUEST_FIELDS = Object.freeze(["caller_agent", "requester_role", "caller_purpose", ...REQUEST_REQUIRED, "forum_proposal_url", "contact_handle"]);
 const HEX64_RE = /(?:0x)?[a-fA-F0-9]{64,}/g;
 const SECRET_RES = [/sk-[A-Za-z0-9_-]{12,}/, /sk_live_[A-Za-z0-9]{8,}/, /gh[pousr]_[A-Za-z0-9]{16,}/, /github_pat_[A-Za-z0-9_]{16,}/, /\bBearer\s+/i,
   /eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+/, /\bAKIA[0-9A-Z]{16}\b/, /xox[abprs]-[A-Za-z0-9-]{10,}/, /-----BEGIN [A-Z ]*PRIVATE KEY-----/];

@@ -15,7 +15,7 @@
    "kind": "protocol",
    "name": "3F",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x54F862fa0612A8709F6Dec4A7B39AF015CD4E82E",
     "chain": "ethereum"
@@ -25,7 +25,7 @@
    "slug": "3f",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "3f-control-plane",
      "surface": "ERC1967Factory · Non-Proxy Bytecode & Controller",
@@ -258,44 +258,62 @@
    "whatDiffers": null
   },
   {
-   "baseEasUids": [],
+   "baseEasUids": [
+    "0x06edec4488a7b0389c63bd8551cb47e18600bb67d14decd9b1a56e69198cca1c"
+   ],
    "category": "Interest-bearing collateral loans minting MIM (Ethereum)",
    "chain": "ethereum",
    "chainId": 1,
-   "classification": "rpc_observed",
-   "controllerAddress": "0xDF2C270f610Dc35d8fFDA5B453E74db5471E126B",
-   "controllerKind": "multisig_safe",
-   "documentationComparison": "not_assessed",
+   "classification": "parameter_delta",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
    "documentedDelaySeconds": null,
-   "easAttested": false,
-   "evidenceBasis": "rpc_observed",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
    "kind": "protocol",
    "name": "Abracadabra Spell",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
-    "address": "0x090185f2135308BaD17527004364eBcC2D37e5F6",
+    "address": "0x5f0DeE98360d8200b20812e174d139A1a633EDd2",
     "chain": "ethereum"
    },
-   "primaryContract": "0x090185f2135308BaD17527004364eBcC2D37e5F6",
-   "relatedContracts": [],
+   "primaryContract": "0x5f0DeE98360d8200b20812e174d139A1a633EDd2",
+   "relatedContracts": [
+    "0x99D8a9C45b2ecA8864373A26D1459e3Dff1e17F3"
+   ],
    "slug": "abracadabra-spell",
+   "sprints": [
+    30
+   ],
    "surfaces": [
     {
-     "blockNumber": 26448221,
-     "classification": "rpc_observed",
-     "id": "abracadabra-spell-control-plane",
-     "surface": "Spell Token · Non-Proxy Bytecode & Controller",
-     "targetContract": "0x090185f2135308BaD17527004364eBcC2D37e5F6",
-     "targetLabel": "Spell Token"
+     "blockNumber": 26449594,
+     "classification": "parameter_delta",
+     "id": "abracadabra-spell-safe-threshold-s30",
+     "surface": "Abracadabra Spell multisig: docs state 5-of-10, the Safe is 5-of-11",
+     "targetContract": "0x5f0DeE98360d8200b20812e174d139A1a633EDd2",
+     "targetLabel": "Abracadabra Spell Safe"
     }
    ],
-   "targetLabel": "Spell Token",
+   "targetLabel": "Abracadabra Spell Safe",
    "tokens": [
     "SPELL"
    ],
    "url": "https://pacta.wtf/protocols/abracadabra-spell/",
-   "whatDiffers": null
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "parameter_delta",
+      "documented": "'The 5/10 multisign is composed of:' (docs.abracadabra.money/llms-full.txt)",
+      "observed": "Abracadabra Spell Safe 0x5f0DeE98360d8200b20812e174d139A1a633EDd2 (Ethereum): getThreshold() = 5 of getOwners() = 11 owners (Safe v1.3.0);",
+      "parameter": "Abracadabra Spell multisig: docs state 5-of-10, the Safe is 5-of-11",
+      "recordId": "abracadabra-spell-safe-threshold-s30"
+     }
+    ],
+    "matched": []
+   }
   },
   {
    "baseEasUids": [
@@ -367,7 +385,7 @@
    "kind": "protocol",
    "name": "ADI Bridge",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x8B1484d57abBE239bB280661377363b03c89CaEa",
     "chain": "ethereum"
@@ -379,7 +397,7 @@
    "slug": "adi-bridge",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "adi-bridge-control-plane",
      "surface": "ADI · EIP-1967 Proxy & Controller Chain",
@@ -409,7 +427,7 @@
    "kind": "protocol",
    "name": "Aegis YUSD",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x4274cD7277C7bb0806Bd5FE84b9aDAE466a8DA0a",
     "chain": "ethereum"
@@ -419,7 +437,7 @@
    "slug": "aegis-yusd",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "aegis-yusd-control-plane",
      "surface": "YUSD · Non-Proxy Bytecode & Controller",
@@ -449,7 +467,7 @@
    "kind": "protocol",
    "name": "Aera V3",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x29722cC9a1cACff4a15914F9bC274B46F3b90B4F",
     "chain": "ethereum"
@@ -459,7 +477,7 @@
    "slug": "aera-v3",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "aera-v3-control-plane",
      "surface": "MultiDepositorVaultFactory · Non-Proxy Bytecode & Controller",
@@ -618,7 +636,7 @@
    "kind": "protocol",
    "name": "Alchemix V3",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xdBdb4d16EdA451D0503b854CF79D55697F90c8DF",
     "chain": "ethereum"
@@ -628,7 +646,7 @@
    "slug": "alchemix-v3",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "alchemix-v3-control-plane",
      "surface": "Alchemix (AlchemixToken) · Non-Proxy Bytecode & Controller",
@@ -658,7 +676,7 @@
    "kind": "protocol",
    "name": "Anemoy Capital",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x8c213ee79581Ff4984583C6a801e5263418C4b86",
     "chain": "ethereum"
@@ -668,7 +686,7 @@
    "slug": "anemoy-capital",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "anemoy-capital-control-plane",
      "surface": "Janus Henderson Treasury Fund (Tranche) · Non-Proxy Bytecode & Controller",
@@ -698,7 +716,7 @@
    "kind": "protocol",
    "name": "Angle",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x31429d1856aD1377A8A0079410B297e1a9e214c2",
     "chain": "ethereum"
@@ -708,7 +726,7 @@
    "slug": "angle",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "angle-control-plane",
      "surface": "ANGLE · Non-Proxy Bytecode & Controller",
@@ -738,7 +756,7 @@
    "kind": "protocol",
    "name": "Angstrom",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x0000000aa232009084Bd71A5797d089AA4Edfad4",
     "chain": "ethereum"
@@ -748,7 +766,7 @@
    "slug": "angstrom",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "angstrom-control-plane",
      "surface": "Angstrom · Non-Proxy Bytecode & Controller",
@@ -778,7 +796,7 @@
    "kind": "protocol",
    "name": "Ankr",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x8290333ceF9e6D528dD5618Fb97a76f268f3EDD4",
     "chain": "ethereum"
@@ -788,7 +806,7 @@
    "slug": "ankr",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "ankr-control-plane",
      "surface": "Ankr Network · Non-Proxy Bytecode & Controller",
@@ -818,7 +836,7 @@
    "kind": "protocol",
    "name": "Anvil",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xAEEAa594e7dc112D67b8547fe9767a02c15B5597",
     "chain": "ethereum"
@@ -828,7 +846,7 @@
    "slug": "anvil",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "anvil-control-plane",
      "surface": "Anvil · Non-Proxy Bytecode & Controller",
@@ -858,7 +876,7 @@
    "kind": "protocol",
    "name": "AO Bridge",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xfE08D40Eee53d64936D3128838867c867602665c",
     "chain": "ethereum"
@@ -870,7 +888,7 @@
    "slug": "ao-bridge",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "ao-bridge-control-plane",
      "surface": "Distribution · EIP-1967 Proxy & Controller Chain",
@@ -900,7 +918,7 @@
    "kind": "protocol",
    "name": "ApeX Pro",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x52A8845DF664D76C69d2EEa607CD793565aF42B8",
     "chain": "ethereum"
@@ -910,7 +928,7 @@
    "slug": "apex-pro",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "apex-pro-control-plane",
      "surface": "ApeX Token · Non-Proxy Bytecode & Controller",
@@ -988,7 +1006,7 @@
    "kind": "protocol",
    "name": "Arkis",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xEA623eebd9c5bFd56067e36C89Db0C13e6c70ba8",
     "chain": "ethereum"
@@ -1001,7 +1019,7 @@
    "slug": "arkis",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "arkis-control-plane",
      "surface": "AgreementFactory · EIP-1967 Proxy & Controller Chain",
@@ -1017,39 +1035,52 @@
    "whatDiffers": null
   },
   {
-   "baseEasUids": [],
+   "baseEasUids": [
+    "0x06edec4488a7b0389c63bd8551cb47e18600bb67d14decd9b1a56e69198cca1c"
+   ],
    "category": "Market-making strategy vaults for token issuers, deployed by a meta-vault factory (Ethereum)",
    "chain": "ethereum",
    "chainId": 1,
-   "classification": "rpc_observed",
-   "controllerAddress": "0x5108EF86cF493905BcD35A3736e4B46DeCD7de58",
-   "controllerKind": "multisig_safe",
-   "documentationComparison": "not_assessed",
-   "documentedDelaySeconds": null,
-   "easAttested": false,
-   "evidenceBasis": "rpc_observed",
+   "classification": "aligned_baseline",
+   "controllerAddress": "0xAf6f9640092cB1236E5DB6E517576355b6C40b7f",
+   "controllerKind": "timelock",
+   "documentationComparison": "compared",
+   "documentedDelaySeconds": 172800,
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
    "kind": "protocol",
    "name": "Arrakis Modular",
-   "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "observedDelaySeconds": 172800,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
-    "address": "0x820FB8127a689327C863de8433278d6181123982",
+    "address": "0xAf6f9640092cB1236E5DB6E517576355b6C40b7f",
     "chain": "ethereum"
    },
-   "primaryContract": "0x820FB8127a689327C863de8433278d6181123982",
-   "relatedContracts": [],
+   "primaryContract": "0xAf6f9640092cB1236E5DB6E517576355b6C40b7f",
+   "relatedContracts": [
+    "0x820FB8127a689327C863de8433278d6181123982",
+    "0x2e6E879648293e939aA68bA4c6c129A1Be733bDA",
+    "0xE973Cf1e347EcF26232A95dBCc862AA488b0351b",
+    "0xFf0474792DEe71935a0CeF1306D93fC1DCF47BD9",
+    "0xdf4975A3515168f8c446aD4a2E974B89c64b6A38",
+    "0x022a0C7dc85Fc3fF81f9f8Ef65Ae2813A062F556",
+    "0x1436877899273D748eb433eFd6C437e37D627255"
+   ],
    "slug": "arrakis-modular",
+   "sprints": [
+    30
+   ],
    "surfaces": [
     {
-     "blockNumber": 26448221,
-     "classification": "rpc_observed",
-     "id": "arrakis-modular-control-plane",
-     "surface": "ArrakisMetaVaultFactory · Non-Proxy Bytecode & Controller",
-     "targetContract": "0x820FB8127a689327C863de8433278d6181123982",
-     "targetLabel": "ArrakisMetaVaultFactory"
+     "blockNumber": 26449594,
+     "classification": "aligned_baseline",
+     "id": "arrakis-modular-upgrade-timelock-48h-s30",
+     "surface": "Manager proxy and module beacons: timelock admin, getMinDelay() 172,800 s",
+     "targetContract": "0xAf6f9640092cB1236E5DB6E517576355b6C40b7f",
+     "targetLabel": "Arrakis TimelockController (manager proxy admin, module beacon owner)"
     }
    ],
-   "targetLabel": "ArrakisMetaVaultFactory",
+   "targetLabel": "Arrakis TimelockController (manager proxy admin, module beacon owner)",
    "tokens": [
     "Arrakis"
    ],
@@ -1071,7 +1102,7 @@
    "kind": "protocol",
    "name": "Aster Bridge",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x604DD02d620633Ae427888d41bfd15e38483736E",
     "chain": "ethereum"
@@ -1083,7 +1114,7 @@
    "slug": "aster-bridge",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "aster-bridge-control-plane",
      "surface": "AstherusVault · EIP-1967 Proxy & Controller Chain",
@@ -1160,7 +1191,7 @@
    "kind": "protocol",
    "name": "Augur",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x221657776846890989a759BA2973e427DfF5C9bB",
     "chain": "ethereum"
@@ -1170,7 +1201,7 @@
    "slug": "augur",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "augur-control-plane",
      "surface": "Reputation · Non-Proxy Bytecode & Controller",
@@ -1200,7 +1231,7 @@
    "kind": "protocol",
    "name": "Aura",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xC0c293ce456fF0ED870ADd98a0828Dd4d2903DBF",
     "chain": "ethereum"
@@ -1210,7 +1241,7 @@
    "slug": "aura",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "aura-control-plane",
      "surface": "Aura · Non-Proxy Bytecode & Controller",
@@ -1240,7 +1271,7 @@
    "kind": "protocol",
    "name": "AUTOfinance",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x2218F90A98b0C070676f249EF44834686dAa4285",
     "chain": "ethereum"
@@ -1250,7 +1281,7 @@
    "slug": "autofinance",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "autofinance-control-plane",
      "surface": "SystemRegistry · Non-Proxy Bytecode & Controller",
@@ -1280,7 +1311,7 @@
    "kind": "protocol",
    "name": "Avalon Superearn",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x5c8D0C48810FD37A0A824D074ee290E64f7A8Fa2",
     "chain": "ethereum"
@@ -1293,7 +1324,7 @@
    "slug": "avalon-superearn",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "avalon-superearn-control-plane",
      "surface": "AVL (AvalonMintable) · EIP-1967 Proxy & Controller Chain",
@@ -1323,7 +1354,7 @@
    "kind": "protocol",
    "name": "Avant avETH",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x9469470C9878bf3d6d0604831d9A3A366156f7EE",
     "chain": "ethereum"
@@ -1333,7 +1364,7 @@
    "slug": "avant-aveth",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "avant-aveth-control-plane",
      "surface": "avETH (AvantCoin) · Non-Proxy Bytecode & Controller",
@@ -1481,7 +1512,7 @@
    "kind": "protocol",
    "name": "Badger DAO",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x3472A5A71965499acd81997a54BBA8D852C6E53d",
     "chain": "ethereum"
@@ -1491,7 +1522,7 @@
    "slug": "badger-dao",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "badger-dao-control-plane",
      "surface": "Badger (MiniMeToken) · Non-Proxy Bytecode & Controller",
@@ -1577,7 +1608,7 @@
    "kind": "protocol",
    "name": "Bancor V3",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x1F573D6Fb3F13d689FF844B4cE37794d79a7FF1C",
     "chain": "ethereum"
@@ -1587,7 +1618,7 @@
    "slug": "bancor-v3",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "bancor-v3-control-plane",
      "surface": "Bancor Network Token (SmartToken) · Non-Proxy Bytecode & Controller",
@@ -1678,7 +1709,7 @@
    "kind": "protocol",
    "name": "Baseline Protocol",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x9fDbDE76236998Dc2836FE67A9954eDE456A1D63",
     "chain": "ethereum"
@@ -1688,7 +1719,7 @@
    "slug": "baseline-protocol",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "baseline-protocol-control-plane",
      "surface": "Baseline (BToken) · Non-Proxy Bytecode & Controller",
@@ -1702,6 +1733,69 @@
    ],
    "url": "https://pacta.wtf/protocols/baseline-protocol/",
    "whatDiffers": null
+  },
+  {
+   "baseEasUids": [
+    "0x06edec4488a7b0389c63bd8551cb47e18600bb67d14decd9b1a56e69198cca1c"
+   ],
+   "category": "Liquid restaking Bitcoin vault and token (uniBTC) with a Proof-of-Reserve mint check",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "parameter_delta",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
+   "documentedDelaySeconds": null,
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
+   "kind": "protocol",
+   "name": "Bedrock (uniBTC)",
+   "observedDelaySeconds": null,
+   "pinnedBlock": 26449594,
+   "preflightArgs": {
+    "address": "0x047D41F2544B7F63A8e991aF2068a363d210d6Da",
+    "chain": "ethereum"
+   },
+   "primaryContract": "0x047D41F2544B7F63A8e991aF2068a363d210d6Da",
+   "relatedContracts": [
+    "0xc590D9fb8eE78a0909dFF341ccf717000b7b7fF2",
+    "0xE542919E4b281f10b437F947c8Ba224DdfaBc716",
+    "0x004E9C3EF86bc1ca1f0bB5C7662861Ee93350568",
+    "0x9251fd3D79522bB2243a58FFf1dB43E25A495aaB",
+    "0x029E4FbDAa31DE075dD74B2238222A08233978f6",
+    "0xC9dA980fFABbE2bbe15d4734FDae5761B86b5Fc3"
+   ],
+   "slug": "bedrock-unibtc",
+   "sprints": [
+    30
+   ],
+   "surfaces": [
+    {
+     "blockNumber": 26449594,
+     "classification": "parameter_delta",
+     "id": "bedrock-unibtc-secure-mint-precondition-s30",
+     "surface": "Secure Mint precondition: adequacyRatio() 900 (existing supply x 0.9 vs reserves)",
+     "targetContract": "0x047D41F2544B7F63A8e991aF2068a363d210d6Da",
+     "targetLabel": "Bedrock uniBTC VaultWithoutNative"
+    }
+   ],
+   "targetLabel": "Bedrock uniBTC VaultWithoutNative",
+   "tokens": [
+    "Bedrock(uniBTC)"
+   ],
+   "url": "https://pacta.wtf/protocols/bedrock-unibtc/",
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "parameter_delta",
+      "documented": "'Before any minting action occurs, the smart contract automatically checks reserve sufficiency using the on-chain Proof of Reserve feed.",
+      "observed": "Bedrock VaultWithoutNative 0x047D41F2544B7F63A8e991aF2068a363d210d6Da (Ethereum): adequacyRatio() = 900, so checkReserve() evaluates existing supply * 900 / 1000 <= reserves before minting (feeders: reserve 0xc590D9fb8e…",
+      "parameter": "Secure Mint precondition: adequacyRatio() 900 (existing supply x 0.9 vs reserves)",
+      "recordId": "bedrock-unibtc-secure-mint-precondition-s30"
+     }
+    ],
+    "matched": []
+   }
   },
   {
    "baseEasUids": [
@@ -1920,7 +2014,7 @@
    "kind": "protocol",
    "name": "BendDAO APE Staking",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x0d02755a5700414B26FF040e1dE35D337DF56218",
     "chain": "ethereum"
@@ -1933,7 +2027,7 @@
    "slug": "benddao-ape-staking",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "benddao-ape-staking-control-plane",
      "surface": "Bend Token · EIP-1967 Proxy & Controller Chain",
@@ -1963,7 +2057,7 @@
    "kind": "protocol",
    "name": "Bio Protocol",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xcb1592591996765Ec0eFc1f92599A19767ee5ffA",
     "chain": "ethereum"
@@ -1973,7 +2067,7 @@
    "slug": "bio-protocol",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "bio-protocol-control-plane",
      "surface": "BIO · Non-Proxy Bytecode & Controller",
@@ -2003,7 +2097,7 @@
    "kind": "protocol",
    "name": "BitFi Basis",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xCdFb58c8C859Cb3F62ebe9Cf2767F9e036C7fb15",
     "chain": "ethereum"
@@ -2015,7 +2109,7 @@
    "slug": "bitfi-basis",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "bitfi-basis-control-plane",
      "surface": "BitFi Bitcoin (Bfbtc) · EIP-1967 Proxy & Controller Chain",
@@ -2045,7 +2139,7 @@
    "kind": "protocol",
    "name": "Blast pre-launch Farm",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x5F6AE08B8AeB7078cf2F96AFb089D7c9f51DA47d",
     "chain": "ethereum"
@@ -2057,7 +2151,7 @@
    "slug": "blast-pre-launch-farm",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "blast-pre-launch-farm-control-plane",
      "surface": "LaunchBridge · EIP-1967 Proxy & Controller Chain",
@@ -2087,7 +2181,7 @@
    "kind": "protocol",
    "name": "Blur Bids",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x5283D291DBCF85356A21bA090E6db59121208b44",
     "chain": "ethereum"
@@ -2097,7 +2191,7 @@
    "slug": "blur-bids",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "blur-bids-control-plane",
      "surface": "Blur · Non-Proxy Bytecode & Controller",
@@ -2127,7 +2221,7 @@
    "kind": "protocol",
    "name": "BMX Freestyle",
    "observedDelaySeconds": null,
-   "pinnedBlock": 59450023,
+   "pinnedBlock": 59532664,
    "preflightArgs": {
     "address": "0x6D63921D8203044f6AbaD8F346d3AEa9A2719dDD",
     "chain": "base"
@@ -2140,7 +2234,7 @@
    "slug": "bmx-freestyle",
    "surfaces": [
     {
-     "blockNumber": 59450023,
+     "blockNumber": 59532664,
      "classification": "rpc_observed",
      "id": "bmx-freestyle-control-plane",
      "surface": "MultiAccount · EIP-1967 Proxy & Controller Chain",
@@ -2170,7 +2264,7 @@
    "kind": "protocol",
    "name": "Brickken",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x0A638F07ACc6969abF392bB009f216D22aDEa36d",
     "chain": "ethereum"
@@ -2180,7 +2274,7 @@
    "slug": "brickken",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "brickken-control-plane",
      "surface": "Brickken · Non-Proxy Bytecode & Controller",
@@ -2298,7 +2392,7 @@
    "kind": "protocol",
    "name": "cBridge",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x4F9254C83EB525f9FCf346490bbb3ed28a81C667",
     "chain": "ethereum"
@@ -2308,7 +2402,7 @@
    "slug": "cbridge",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "cbridge-control-plane",
      "surface": "CelerToken · Non-Proxy Bytecode & Controller",
@@ -2510,7 +2604,7 @@
    "kind": "protocol",
    "name": "Chamber Vaults",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xca1207647Ff814039530D7d35df0e1Dd2e91Fa84",
     "chain": "ethereum"
@@ -2522,7 +2616,7 @@
    "slug": "chamber-vaults",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "chamber-vaults-control-plane",
      "surface": "dHedge DAO Token (DHedgeTokenProxy) · EIP-1967 Proxy & Controller Chain",
@@ -2552,7 +2646,7 @@
    "kind": "protocol",
    "name": "CIAN Yield Layer",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xB13aa2d0345b0439b064f26B82D8dCf3f508775d",
     "chain": "ethereum"
@@ -2565,7 +2659,7 @@
    "slug": "cian-yield-layer",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "cian-yield-layer-control-plane",
      "surface": "CIAN yield layer stETH (VaultYieldETH) · EIP-1967 Proxy & Controller Chain",
@@ -2679,7 +2773,7 @@
    "kind": "protocol",
    "name": "Clipper",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xd8F1460044925d2D5c723C7054cd9247027415B7",
     "chain": "ethereum"
@@ -2689,7 +2783,7 @@
    "slug": "clipper",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "clipper-control-plane",
      "surface": "SAIL Token · Non-Proxy Bytecode & Controller",
@@ -2893,7 +2987,7 @@
    "kind": "protocol",
    "name": "Concentrator",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xb3Ad645dB386D7F6D753B2b9C3F4B853DA6890B8",
     "chain": "ethereum"
@@ -2903,7 +2997,7 @@
    "slug": "concentrator",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "concentrator-control-plane",
      "surface": "Concentrator Token (Vyper_contract) · Non-Proxy Bytecode & Controller",
@@ -3021,7 +3115,7 @@
    "kind": "protocol",
    "name": "Convergence Fi",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xB0Afc8363b8F36E0ccE5D54251e20720FfaeaeE7",
     "chain": "ethereum"
@@ -3034,7 +3128,7 @@
    "slug": "convergence-fi",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "convergence-fi-control-plane",
      "surface": "CvgControlTowerV2 · EIP-1967 Proxy & Controller Chain",
@@ -3159,7 +3253,7 @@
    "kind": "protocol",
    "name": "CRETH2",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x2ba592F78dB6436527729929AAf6c908497cB200",
     "chain": "ethereum"
@@ -3169,7 +3263,7 @@
    "slug": "creth2",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "creth2-control-plane",
      "surface": "Cream (Comp) · Non-Proxy Bytecode & Controller",
@@ -3199,7 +3293,7 @@
    "kind": "protocol",
    "name": "Cronos zkEVM Bridge",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x28Ff2E4dD1B58efEB0fC138602A28D5aE81e44e2",
     "chain": "ethereum"
@@ -3211,7 +3305,7 @@
    "slug": "cronos-zkevm-bridge",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "cronos-zkevm-bridge-control-plane",
      "surface": "Cronos zkEVM CRO (ZkCro) · EIP-1967 Proxy & Controller Chain",
@@ -3350,7 +3444,7 @@
    "kind": "protocol",
    "name": "cVault Finance",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x62359Ed7505Efc61FF1D56fEF82158CcaffA23D7",
     "chain": "ethereum"
@@ -3360,7 +3454,7 @@
    "slug": "cvault-finance",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "cvault-finance-control-plane",
      "surface": "cVault.finance (CORE) · Non-Proxy Bytecode & Controller",
@@ -3390,7 +3484,7 @@
    "kind": "protocol",
    "name": "D2 Finance",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x07Dff4087b43c4A759f4Fc69511c26d51929dAF4",
     "chain": "ethereum"
@@ -3400,7 +3494,7 @@
    "slug": "d2-finance",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "d2-finance-control-plane",
      "surface": "DRV++ (VaultV3) · Non-Proxy Bytecode & Controller",
@@ -3430,7 +3524,7 @@
    "kind": "protocol",
    "name": "deBridge",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x43dE2d77BF8027e25dBD179B491e8d64f38398aA",
     "chain": "ethereum"
@@ -3443,7 +3537,7 @@
    "slug": "debridge",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "debridge-control-plane",
      "surface": "DeBridgeGate · EIP-1967 Proxy & Controller Chain",
@@ -3473,7 +3567,7 @@
    "kind": "protocol",
    "name": "Decentralized Euro",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x5052D3Cc819f53116641e89b96Ff4cD1EE80B182",
     "chain": "ethereum"
@@ -3483,7 +3577,7 @@
    "slug": "decentralized-euro",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "decentralized-euro-control-plane",
      "surface": "Wrapped Frankencoin Pool Share (FPSWrapper) · Non-Proxy Bytecode & Controller",
@@ -3572,7 +3666,7 @@
    "kind": "protocol",
    "name": "DeFIL",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x09ce2B746C32528B7d864A1e3979Bd97d2f095AB",
     "chain": "ethereum"
@@ -3584,7 +3678,7 @@
    "slug": "defil",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "defil-control-plane",
      "surface": "DeFIL-V2 (DFL) · Non-Proxy Bytecode & Controller",
@@ -3614,7 +3708,7 @@
    "kind": "protocol",
    "name": "DELV Yield",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x62F161BF3692E4015BefB05A03a94A40f520d1c0",
     "chain": "ethereum"
@@ -3624,7 +3718,7 @@
    "slug": "delv-yield",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "delv-yield-control-plane",
      "surface": "TrancheFactory · Non-Proxy Bytecode & Controller",
@@ -3654,7 +3748,7 @@
    "kind": "protocol",
    "name": "DerivaDEX",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x3A880652F47bFaa771908C07Dd8673A787dAEd3A",
     "chain": "ethereum"
@@ -3664,7 +3758,7 @@
    "slug": "derivadex",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "derivadex-control-plane",
      "surface": "DerivaDAO (DDX) · Non-Proxy Bytecode & Controller",
@@ -3694,7 +3788,7 @@
    "kind": "protocol",
    "name": "Derive V3 Options",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xB1D1eae60EEA9525032a6DCb4c1CE336a1dE71BE",
     "chain": "ethereum"
@@ -3706,7 +3800,7 @@
    "slug": "derive-v3-options",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "derive-v3-options-control-plane",
      "surface": "Derive · EIP-1967 Proxy & Controller Chain",
@@ -3736,7 +3830,7 @@
    "kind": "protocol",
    "name": "DexFi Aggregator",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x4C1a8a04577286Ce58d0723b1a90160F380E550A",
     "chain": "ethereum"
@@ -3746,7 +3840,7 @@
    "slug": "dexfi-aggregator",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "dexfi-aggregator-control-plane",
      "surface": "DexFiVaultFactory · Non-Proxy Bytecode & Controller",
@@ -3821,7 +3915,7 @@
    "kind": "protocol",
    "name": "DODO AMM",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x43Dfc4159D86F3A37A5A4B3D4580b888ad7d4DDd",
     "chain": "ethereum"
@@ -3831,7 +3925,7 @@
    "slug": "dodo-amm",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "dodo-amm-control-plane",
      "surface": "DODO bird · Non-Proxy Bytecode & Controller",
@@ -3861,7 +3955,7 @@
    "kind": "protocol",
    "name": "Dolomite",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x003Ca23Fd5F0ca87D01F6eC6CD14A8AE60c2b97D",
     "chain": "ethereum"
@@ -3871,7 +3965,7 @@
    "slug": "dolomite",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "dolomite-control-plane",
      "surface": "DolomiteMargin · Non-Proxy Bytecode & Controller",
@@ -3901,7 +3995,7 @@
    "kind": "protocol",
    "name": "Drakewell USDdw",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x2B5895b716311A1eaC8f93fB88C56aF9eC8C1A69",
     "chain": "ethereum"
@@ -3911,7 +4005,7 @@
    "slug": "drakewell-usddw",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "drakewell-usddw-control-plane",
      "surface": "JUSD Credit Vault (AccountableAsyncRedeemVault) · Non-Proxy Bytecode & Controller",
@@ -3941,7 +4035,7 @@
    "kind": "protocol",
    "name": "DxSale",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xF063fE1aB7a291c5d06a86e14730b00BF24cB589",
     "chain": "ethereum"
@@ -3951,7 +4045,7 @@
    "slug": "dxsale",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "dxsale-control-plane",
      "surface": "DxSale.Network (MainToken) · Non-Proxy Bytecode & Controller",
@@ -3981,7 +4075,7 @@
    "kind": "protocol",
    "name": "dYdX V3",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x92D6C1e31e14520e676a687F0a93788B716BEff5",
     "chain": "ethereum"
@@ -3991,7 +4085,7 @@
    "slug": "dydx-v3",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "dydx-v3-control-plane",
      "surface": "dYdX · Non-Proxy Bytecode & Controller",
@@ -4021,7 +4115,7 @@
    "kind": "protocol",
    "name": "Easedefi.org",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xEa5eDef1287AfDF9Eb8A46f9773AbFc10820c61c",
     "chain": "ethereum"
@@ -4031,7 +4125,7 @@
    "slug": "easedefi-org",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "easedefi-org-control-plane",
      "surface": "Ease Token · Non-Proxy Bytecode & Controller",
@@ -4108,7 +4202,7 @@
    "kind": "protocol",
    "name": "edgeX Bridge",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xB0076DE78Dc50581770BBa1D211dDc0aD4F2a241",
     "chain": "ethereum"
@@ -4120,7 +4214,7 @@
    "slug": "edgex-bridge",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "edgex-bridge-control-plane",
      "surface": "Edge · EIP-1967 Proxy & Controller Chain",
@@ -4201,7 +4295,7 @@
    "kind": "protocol",
    "name": "Eigenpie",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x20b70E4A1883b81429533FeD944d7957121c7CAB",
     "chain": "ethereum"
@@ -4214,7 +4308,7 @@
    "slug": "eigenpie",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "eigenpie-control-plane",
      "surface": "EigenpieConfig · EIP-1967 Proxy & Controller Chain",
@@ -4244,7 +4338,7 @@
    "kind": "protocol",
    "name": "Ekubo",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xe0e0e08A6A4b9Dc7bD67BCB7aadE5cF48157d444",
     "chain": "ethereum"
@@ -4254,7 +4348,7 @@
    "slug": "ekubo",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "ekubo-control-plane",
      "surface": "Core · Non-Proxy Bytecode & Controller",
@@ -4284,7 +4378,7 @@
    "kind": "protocol",
    "name": "ElfomoFi",
    "observedDelaySeconds": null,
-   "pinnedBlock": 59450023,
+   "pinnedBlock": 59532664,
    "preflightArgs": {
     "address": "0x64f8bE47A011DF0fAB47319d5De258D18E93f4ef",
     "chain": "base"
@@ -4294,7 +4388,7 @@
    "slug": "elfomofi",
    "surfaces": [
     {
-     "blockNumber": 59450023,
+     "blockNumber": 59532664,
      "classification": "rpc_observed",
      "id": "elfomofi-control-plane",
      "surface": "VaultsManager · Non-Proxy Bytecode & Controller",
@@ -4790,42 +4884,47 @@
    "whatDiffers": null
   },
   {
-   "baseEasUids": [],
+   "baseEasUids": [
+    "0x06edec4488a7b0389c63bd8551cb47e18600bb67d14decd9b1a56e69198cca1c"
+   ],
    "category": "Fixed and variable interest rate credit markets (Ethereum)",
    "chain": "ethereum",
    "chainId": 1,
-   "classification": "rpc_observed",
-   "controllerAddress": "0x3866eA62494597A5EDeA4A97f9429f82b9d7Ca34",
-   "controllerKind": "contract_controller",
-   "documentationComparison": "not_assessed",
-   "documentedDelaySeconds": null,
-   "easAttested": false,
-   "evidenceBasis": "rpc_observed",
+   "classification": "aligned_baseline",
+   "controllerAddress": "0x92024C4bDa9DA602b711B9AbB610d072018eb58b",
+   "controllerKind": "timelock",
+   "documentationComparison": "compared",
+   "documentedDelaySeconds": 86400,
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
    "kind": "protocol",
    "name": "Exactly",
-   "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "observedDelaySeconds": 86400,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
-    "address": "0x310A2694521f75C7B2b64b5937C16CE65C3EFE01",
+    "address": "0x92024C4bDa9DA602b711B9AbB610d072018eb58b",
     "chain": "ethereum"
    },
-   "primaryContract": "0x310A2694521f75C7B2b64b5937C16CE65C3EFE01",
+   "primaryContract": "0x92024C4bDa9DA602b711B9AbB610d072018eb58b",
    "relatedContracts": [
-    "0xaEb62e6F27BC103702E7BC879AE98bceA56f027E",
-    "0x92024C4bDa9DA602b711B9AbB610d072018eb58b"
+    "0x310A2694521f75C7B2b64b5937C16CE65C3EFE01",
+    "0x3866eA62494597A5EDeA4A97f9429f82b9d7Ca34"
    ],
    "slug": "exactly",
+   "sprints": [
+    30
+   ],
    "surfaces": [
     {
-     "blockNumber": 26448221,
-     "classification": "rpc_observed",
-     "id": "exactly-control-plane",
-     "surface": "Auditor · EIP-1967 Proxy & Controller Chain",
-     "targetContract": "0x310A2694521f75C7B2b64b5937C16CE65C3EFE01",
-     "targetLabel": "Auditor"
+     "blockNumber": 26449594,
+     "classification": "aligned_baseline",
+     "id": "exactly-auditor-timelock-24h-s30",
+     "surface": "Auditor upgrade path: ProxyAdmin owned by a timelock, getMinDelay() 86,400 s",
+     "targetContract": "0x92024C4bDa9DA602b711B9AbB610d072018eb58b",
+     "targetLabel": "Exactly TimelockController (owner of the Auditor's ProxyAdmin)"
     }
    ],
-   "targetLabel": "Auditor",
+   "targetLabel": "Exactly TimelockController (owner of the Auditor's ProxyAdmin)",
    "tokens": [
     "Exactly"
    ],
@@ -4847,7 +4946,7 @@
    "kind": "protocol",
    "name": "Extra Finance (Base)",
    "observedDelaySeconds": null,
-   "pinnedBlock": 59450023,
+   "pinnedBlock": 59532664,
    "preflightArgs": {
     "address": "0xBB505c54D71E9e599cB8435b4F0cEEc05fC71cbD",
     "chain": "base"
@@ -4857,7 +4956,7 @@
    "slug": "extra-finance-base",
    "surfaces": [
     {
-     "blockNumber": 59450023,
+     "blockNumber": 59532664,
      "classification": "rpc_observed",
      "id": "extra-finance-base-control-plane",
      "surface": "ExtraLendingPool_Base · Non-Proxy Bytecode & Role Architecture",
@@ -4969,7 +5068,7 @@
    "kind": "protocol",
    "name": "Fake World Assets V2",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xa0Df17B5aC76ABaBA36E1450E2cbCd18A620C845",
     "chain": "ethereum"
@@ -4979,7 +5078,7 @@
    "slug": "fake-world-assets-v2",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "fake-world-assets-v2-control-plane",
      "surface": "Fake World Assets (FWAToken) · Non-Proxy Bytecode & Controller",
@@ -5060,7 +5159,7 @@
    "kind": "protocol",
    "name": "FermiSwap",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xb1076fE3AB5e28005C7c323Bac5AC06a680d452e",
     "chain": "ethereum"
@@ -5070,7 +5169,7 @@
    "slug": "fermiswap",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "fermiswap-control-plane",
      "surface": "FermiSwapper · Non-Proxy Bytecode & Controller",
@@ -5145,7 +5244,7 @@
    "kind": "protocol",
    "name": "Flexa",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xfF20817765cB7f73d4bde2e66e067E58D11095C2",
     "chain": "ethereum"
@@ -5155,7 +5254,7 @@
    "slug": "flexa",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "flexa-control-plane",
      "surface": "Amp · Non-Proxy Bytecode & Controller",
@@ -5185,7 +5284,7 @@
    "kind": "protocol",
    "name": "FlokiFi Locker",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xcf0C122c6b73ff809C693DB761e7BaeBe62b6a2E",
     "chain": "ethereum"
@@ -5195,7 +5294,7 @@
    "slug": "flokifi-locker",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "flokifi-locker-control-plane",
      "surface": "FLOKI · Non-Proxy Bytecode & Controller",
@@ -5274,39 +5373,46 @@
    }
   },
   {
-   "baseEasUids": [],
+   "baseEasUids": [
+    "0x06edec4488a7b0389c63bd8551cb47e18600bb67d14decd9b1a56e69198cca1c"
+   ],
    "category": "Custom lending market on Sonic and Ethereum (Ethereum)",
    "chain": "ethereum",
    "chainId": 1,
-   "classification": "rpc_observed",
-   "controllerAddress": "0x1118e1c057211306a40A4d7006C040dbfE1370Cb",
-   "controllerKind": "multisig_safe",
-   "documentationComparison": "not_assessed",
+   "classification": "aligned_baseline",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
    "documentedDelaySeconds": null,
-   "easAttested": false,
-   "evidenceBasis": "rpc_observed",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
    "kind": "protocol",
    "name": "Flying Tulip Lend",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
-    "address": "0x5DD1A7A369e8273371d2DBf9d83356057088082c",
+    "address": "0x1118e1c057211306a40A4d7006C040dbfE1370Cb",
     "chain": "ethereum"
    },
-   "primaryContract": "0x5DD1A7A369e8273371d2DBf9d83356057088082c",
-   "relatedContracts": [],
+   "primaryContract": "0x1118e1c057211306a40A4d7006C040dbfE1370Cb",
+   "relatedContracts": [
+    "0x5DD1A7A369e8273371d2DBf9d83356057088082c"
+   ],
    "slug": "flying-tulip-lend",
+   "sprints": [
+    30
+   ],
    "surfaces": [
     {
-     "blockNumber": 26448221,
-     "classification": "rpc_observed",
-     "id": "flying-tulip-lend-control-plane",
-     "surface": "Flying Tulip (FT) · Non-Proxy Bytecode & Controller",
-     "targetContract": "0x5DD1A7A369e8273371d2DBf9d83356057088082c",
-     "targetLabel": "Flying Tulip (FT)"
+     "blockNumber": 26449594,
+     "classification": "aligned_baseline",
+     "id": "flying-tulip-treasury-safe-3of5-s30",
+     "surface": "Treasury Safe (FT owner): 3-of-5",
+     "targetContract": "0x1118e1c057211306a40A4d7006C040dbfE1370Cb",
+     "targetLabel": "Flying Tulip treasury Safe"
     }
    ],
-   "targetLabel": "Flying Tulip (FT)",
+   "targetLabel": "Flying Tulip treasury Safe",
    "tokens": [
     "FT"
    ],
@@ -5328,7 +5434,7 @@
    "kind": "protocol",
    "name": "Frankencoin",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xDb861830D9Ae2d1fCF99fA0cfd3973de382B0B5b",
     "chain": "ethereum"
@@ -5338,7 +5444,7 @@
    "slug": "frankencoin",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "frankencoin-control-plane",
      "surface": "Frankencoin Shares (FCS) · Non-Proxy Bytecode & Controller",
@@ -5504,7 +5610,7 @@
    "kind": "protocol",
    "name": "friend.tech V1",
    "observedDelaySeconds": null,
-   "pinnedBlock": 59450023,
+   "pinnedBlock": 59532664,
    "preflightArgs": {
     "address": "0x0bD4887f7D41B35CD75DFF9FfeE2856106f86670",
     "chain": "base"
@@ -5514,7 +5620,7 @@
    "slug": "friend-tech-v1",
    "surfaces": [
     {
-     "blockNumber": 59450023,
+     "blockNumber": 59532664,
      "classification": "rpc_observed",
      "id": "friend-tech-v1-control-plane",
      "surface": "FRIEND (Points) · Non-Proxy Bytecode & Controller",
@@ -5544,7 +5650,7 @@
    "kind": "protocol",
    "name": "Gamma",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x6BeA7CFEF803D1e3d5f7C0103f7ded065644e197",
     "chain": "ethereum"
@@ -5554,7 +5660,7 @@
    "slug": "gamma",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "gamma-control-plane",
      "surface": "Gamma · Non-Proxy Bytecode & Controller",
@@ -5654,7 +5760,7 @@
    "kind": "protocol",
    "name": "GETH",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x3802c218221390025BCEABBaD5D8C59F40eB74B8",
     "chain": "ethereum"
@@ -5664,7 +5770,7 @@
    "slug": "geth",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "geth-control-plane",
      "surface": "Guarded Ether (StakeToken) · Non-Proxy Bytecode & Controller",
@@ -5694,7 +5800,7 @@
    "kind": "protocol",
    "name": "GLIF",
    "observedDelaySeconds": null,
-   "pinnedBlock": 59450023,
+   "pinnedBlock": 59532664,
    "preflightArgs": {
     "address": "0xAeD7C2eD7Bb84396AfCB55fF72c8F8E87FFb68f3",
     "chain": "base"
@@ -5706,7 +5812,7 @@
    "slug": "glif",
    "surfaces": [
     {
-     "blockNumber": 59450023,
+     "blockNumber": 59532664,
      "classification": "rpc_observed",
      "id": "glif-control-plane",
      "surface": "Staked ICNT (PoolV2) · EIP-1967 Proxy & Controller Chain",
@@ -5722,44 +5828,60 @@
    "whatDiffers": null
   },
   {
-   "baseEasUids": [],
+   "baseEasUids": [
+    "0x06edec4488a7b0389c63bd8551cb47e18600bb67d14decd9b1a56e69198cca1c"
+   ],
    "category": "Undercollateralized real-world credit pools for off-chain borrowers (Ethereum)",
    "chain": "ethereum",
    "chainId": 1,
-   "classification": "rpc_observed",
+   "classification": "parameter_delta",
    "controllerAddress": null,
    "controllerKind": null,
-   "documentationComparison": "not_assessed",
+   "documentationComparison": "compared",
    "documentedDelaySeconds": null,
-   "easAttested": false,
-   "evidenceBasis": "rpc_observed",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
    "kind": "protocol",
    "name": "Goldfinch",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
-    "address": "0xdab396cCF3d84Cf2D07C4454e10C8A6F5b008D2b",
+    "address": "0xBEb28978B2c755155f20fd3d09Cb37e300A6981f",
     "chain": "ethereum"
    },
-   "primaryContract": "0xdab396cCF3d84Cf2D07C4454e10C8A6F5b008D2b",
+   "primaryContract": "0xBEb28978B2c755155f20fd3d09Cb37e300A6981f",
    "relatedContracts": [],
    "slug": "goldfinch",
+   "sprints": [
+    30
+   ],
    "surfaces": [
     {
-     "blockNumber": 26448221,
-     "classification": "rpc_observed",
-     "id": "goldfinch-control-plane",
-     "surface": "Goldfinch (GFI) · Non-Proxy Bytecode & Controller",
-     "targetContract": "0xdab396cCF3d84Cf2D07C4454e10C8A6F5b008D2b",
-     "targetLabel": "Goldfinch (GFI)"
+     "blockNumber": 26449594,
+     "classification": "parameter_delta",
+     "id": "goldfinch-safe-threshold-s30",
+     "surface": "Goldfinch multisig: docs state 6-of-10, the Safe is 6-of-12",
+     "targetContract": "0xBEb28978B2c755155f20fd3d09Cb37e300A6981f",
+     "targetLabel": "Goldfinch Council multisig (governance signers of the protocol)"
     }
    ],
-   "targetLabel": "Goldfinch (GFI)",
+   "targetLabel": "Goldfinch Council multisig (governance signers of the protocol)",
    "tokens": [
     "GFI"
    ],
    "url": "https://pacta.wtf/protocols/goldfinch/",
-   "whatDiffers": null
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "parameter_delta",
+      "documented": "'The Goldfinch Council is a 6-of-10 multisig with 10 members who represent all stakeholders of the protocol' (docs.goldfinch.finance/goldfinch/goldfinch-v1/governance.md)",
+      "observed": "Goldfinch Safe 0xBEb28978B2c755155f20fd3d09Cb37e300A6981f (Ethereum): getThreshold() = 6 of getOwners() = 12 owners (Safe v1.1.1).",
+      "parameter": "Goldfinch multisig: docs state 6-of-10, the Safe is 6-of-12",
+      "recordId": "goldfinch-safe-threshold-s30"
+     }
+    ],
+    "matched": []
+   }
   },
   {
    "baseEasUids": [],
@@ -5776,7 +5898,7 @@
    "kind": "protocol",
    "name": "Gondi V3",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xf65B99CE6DC5F6c556172BCC0Ff27D3665a7d9A8",
     "chain": "ethereum"
@@ -5786,7 +5908,7 @@
    "slug": "gondi-v3",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "gondi-v3-control-plane",
      "surface": "GONDI_MULTI_SOURCE_LOAN (MultiSourceLoan) · Non-Proxy Bytecode & Controller",
@@ -5861,7 +5983,7 @@
    "kind": "protocol",
    "name": "Gro",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x3Ec8798B81485A254928B70CDA1cf0A2BB0B74D7",
     "chain": "ethereum"
@@ -5871,7 +5993,7 @@
    "slug": "gro",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "gro-control-plane",
      "surface": "Gro DAO Token · Non-Proxy Bytecode & Controller",
@@ -5968,7 +6090,7 @@
    "kind": "protocol",
    "name": "Grvt Bridge",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xAD29F2723fcdBcF665F210F25E06f97477e417cF",
     "chain": "ethereum"
@@ -5978,7 +6100,7 @@
    "slug": "grvt-bridge",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "grvt-bridge-control-plane",
      "surface": "GRVT (GRVTToken) · Non-Proxy Bytecode & Controller",
@@ -6008,7 +6130,7 @@
    "kind": "protocol",
    "name": "Hakka Finance",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x0E29e5AbbB5FD88e28b2d355774e73BD47dE3bcd",
     "chain": "ethereum"
@@ -6018,7 +6140,7 @@
    "slug": "hakka-finance",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "hakka-finance-control-plane",
      "surface": "Hakka Finance · Non-Proxy Bytecode & Controller",
@@ -6048,7 +6170,7 @@
    "kind": "protocol",
    "name": "Harvest Finance",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xa0246c9032bC3A600820415aE600c6388619A14D",
     "chain": "ethereum"
@@ -6058,7 +6180,7 @@
    "slug": "harvest-finance",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "harvest-finance-control-plane",
      "surface": "FARM Reward Token · Non-Proxy Bytecode & Controller",
@@ -6088,7 +6210,7 @@
    "kind": "protocol",
    "name": "Hashport",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x367e59b559283C8506207d75B0c5D8C66c4Cd4B7",
     "chain": "ethereum"
@@ -6098,7 +6220,7 @@
    "slug": "hashport",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "hashport-control-plane",
      "surface": "Router · Non-Proxy Bytecode & Controller",
@@ -6128,7 +6250,7 @@
    "kind": "protocol",
    "name": "Hegic",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x584bC13c7D411c00c01A62e8019472dE68768430",
     "chain": "ethereum"
@@ -6138,7 +6260,7 @@
    "slug": "hegic",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "hegic-control-plane",
      "surface": "Hegic · Non-Proxy Bytecode & Controller",
@@ -6168,7 +6290,7 @@
    "kind": "protocol",
    "name": "Hop Protocol",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xc5102fE9359FD9a28f877a67E36B0F050d81a3CC",
     "chain": "ethereum"
@@ -6178,7 +6300,7 @@
    "slug": "hop-protocol",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "hop-protocol-control-plane",
      "surface": "Hop · Non-Proxy Bytecode & Controller",
@@ -6208,7 +6330,7 @@
    "kind": "protocol",
    "name": "Hyperlane",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x6D265C7dD8d76F25155F1a7687C693FDC1220D12",
     "chain": "ethereum"
@@ -6218,7 +6340,7 @@
    "slug": "hyperlane",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "hyperlane-control-plane",
      "surface": "XERC20Lockbox · Non-Proxy Bytecode & Controller",
@@ -6234,39 +6356,46 @@
    "whatDiffers": null
   },
   {
-   "baseEasUids": [],
+   "baseEasUids": [
+    "0x06edec4488a7b0389c63bd8551cb47e18600bb67d14decd9b1a56e69198cca1c"
+   ],
    "category": "Liquid locker automating veAERO voting and reward harvesting (Base)",
    "chain": "base",
    "chainId": 8453,
-   "classification": "rpc_observed",
+   "classification": "aligned_baseline",
    "controllerAddress": null,
    "controllerKind": null,
-   "documentationComparison": "not_assessed",
+   "documentationComparison": "compared",
    "documentedDelaySeconds": null,
-   "easAttested": false,
-   "evidenceBasis": "rpc_observed",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
    "kind": "protocol",
    "name": "iAero Protocol",
    "observedDelaySeconds": null,
-   "pinnedBlock": 59450023,
+   "pinnedBlock": 59532664,
    "preflightArgs": {
-    "address": "0x7ee8964160126081cebC443a42482E95e393e6A8",
+    "address": "0x1039CB48254a3150fC604d4B9ea08F66f4739D37",
     "chain": "base"
    },
-   "primaryContract": "0x7ee8964160126081cebC443a42482E95e393e6A8",
-   "relatedContracts": [],
+   "primaryContract": "0x1039CB48254a3150fC604d4B9ea08F66f4739D37",
+   "relatedContracts": [
+    "0x44D8172b95a208082327f58c5b42269d48a34847"
+   ],
    "slug": "iaero-protocol",
+   "sprints": [
+    30
+   ],
    "surfaces": [
     {
-     "blockNumber": 59450023,
-     "classification": "rpc_observed",
-     "id": "iaero-protocol-control-plane",
-     "surface": "Liquid (LIQToken) · Non-Proxy Bytecode & Controller",
-     "targetContract": "0x7ee8964160126081cebC443a42482E95e393e6A8",
-     "targetLabel": "Liquid (LIQToken)"
+     "blockNumber": 59532664,
+     "classification": "aligned_baseline",
+     "id": "iaero-protocol-safe-threshold-44d817-s30",
+     "surface": "iAero Protocol multisig: 3-of-4 Safe, as documented",
+     "targetContract": "0x1039CB48254a3150fC604d4B9ea08F66f4739D37",
+     "targetLabel": "iAero Protocol Safe"
     }
    ],
-   "targetLabel": "Liquid (LIQToken)",
+   "targetLabel": "iAero Protocol Safe",
    "tokens": [
     "LIQ"
    ],
@@ -6288,7 +6417,7 @@
    "kind": "protocol",
    "name": "ICHI",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x111111517e4929D3dcbdfa7CCe55d30d4B6BC4d6",
     "chain": "ethereum"
@@ -6298,7 +6427,7 @@
    "slug": "ichi",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "ichi-control-plane",
      "surface": "ICHI (IchiV2) · Non-Proxy Bytecode & Controller",
@@ -6328,7 +6457,7 @@
    "kind": "protocol",
    "name": "IDEX V1",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xB705268213D593B8FD88d3FDEFF93AFF5CbDcfAE",
     "chain": "ethereum"
@@ -6338,7 +6467,7 @@
    "slug": "idex-v1",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "idex-v1-control-plane",
      "surface": "IDEX Token (IDEX) · Non-Proxy Bytecode & Controller",
@@ -6368,7 +6497,7 @@
    "kind": "protocol",
    "name": "Idle",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x875773784Af8135eA0ef43b5a374AaD105c5D39e",
     "chain": "ethereum"
@@ -6378,7 +6507,7 @@
    "slug": "idle",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "idle-control-plane",
      "surface": "Idle · Non-Proxy Bytecode & Controller",
@@ -6408,7 +6537,7 @@
    "kind": "protocol",
    "name": "InceptionLRT (Isolated Restaking)",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x814CC6B8fd2555845541FB843f37418b05977d8d",
     "chain": "ethereum"
@@ -6421,7 +6550,7 @@
    "slug": "inceptionlrt-isolated-restaking",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "inceptionlrt-isolated-restaking-control-plane",
      "surface": "InstEthVault (InVault_E1) · EIP-1967 Proxy & Controller Chain",
@@ -6451,7 +6580,7 @@
    "kind": "protocol",
    "name": "Index Coop",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x0954906da0Bf32d5479e25f46056d22f08464cab",
     "chain": "ethereum"
@@ -6461,7 +6590,7 @@
    "slug": "index-coop",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "index-coop-control-plane",
      "surface": "Index · Non-Proxy Bytecode & Controller",
@@ -6478,6 +6607,7 @@
   },
   {
    "baseEasUids": [
+    "0x06edec4488a7b0389c63bd8551cb47e18600bb67d14decd9b1a56e69198cca1c",
     "0xe712dd31d79ab492e2e64eb5847396651dee81daa9f895ead45548e97f1a2eb7"
    ],
    "category": "Yield-Bearing Stablecoin",
@@ -6493,18 +6623,21 @@
    "kind": "protocol",
    "name": "infiniFi",
    "observedDelaySeconds": 604800,
-   "pinnedBlock": 26425374,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x3D18480CC32B6AB3B833dCabD80E76CfD41c48a9",
     "chain": "ethereum"
    },
    "primaryContract": "0x3D18480CC32B6AB3B833dCabD80E76CfD41c48a9",
    "relatedContracts": [
-    "0x4B174afbeD7b98BA01F50E36109EEE5e6d327c32"
+    "0x4B174afbeD7b98BA01F50E36109EEE5e6d327c32",
+    "0xee529A21Cea25EFDF527e85BB4c597603E14CcfC",
+    "0x579B18E60d0245c0F66Fa9463610b15E226Ae8FD"
    ],
    "slug": "infinifi",
    "sprints": [
-    20
+    20,
+    30
    ],
    "surfaces": [
     {
@@ -6530,6 +6663,14 @@
      "surface": "Team Multisig threshold: 4-of-7",
      "targetContract": "0x80608f852D152024c0a2087b16939235fEc2400c",
      "targetLabel": "infiniFi Team Multisig (timelock proposer)"
+    },
+    {
+     "blockNumber": 26449594,
+     "classification": "aligned_baseline",
+     "id": "infinifi-core-governance-token-roles-rotated-s30",
+     "surface": "InfiniFiCore GOVERNANCE_TOKEN_* roles: membership moved to a new holder since #26,425,374",
+     "targetContract": "0xF6d48735EcCf12bDC1DF2674b1ce3fcb3bD25490",
+     "targetLabel": "InfiniFiCore"
     }
    ],
    "targetLabel": "infiniFi Long Timelock (GOVERNOR)",
@@ -6559,6 +6700,11 @@
       "parameter": "Team Multisig threshold: 4-of-7",
       "recordId": "infinifi-team-multisig-4of7-s20",
       "value": "matches the documentation"
+     },
+     {
+      "parameter": "InfiniFiCore GOVERNANCE_TOKEN_* roles: membership moved to a new holder since #26,425,374",
+      "recordId": "infinifi-core-governance-token-roles-rotated-s30",
+      "value": "matches the documentation"
      }
     ]
    }
@@ -6578,7 +6724,7 @@
    "kind": "protocol",
    "name": "Injective Bridge",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xe28b3B32B6c345A34Ff64674606124Dd5Aceca30",
     "chain": "ethereum"
@@ -6588,7 +6734,7 @@
    "slug": "injective-bridge",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "injective-bridge-control-plane",
      "surface": "Injective Token · Non-Proxy Bytecode & Controller",
@@ -6618,7 +6764,7 @@
    "kind": "protocol",
    "name": "Interest Protocol",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x2A54bA2964C8Cd459Dc568853F79813a60761B58",
     "chain": "ethereum"
@@ -6631,7 +6777,7 @@
    "slug": "interest-protocol",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "interest-protocol-control-plane",
      "surface": "USDI Token · EIP-1967 Proxy & Controller Chain",
@@ -6648,6 +6794,7 @@
   },
   {
    "baseEasUids": [
+    "0x06edec4488a7b0389c63bd8551cb47e18600bb67d14decd9b1a56e69198cca1c",
     "0x34049a2c64fe3355f8e325481234754c8422a48bb4784fed1d028fa40eb93058",
     "0x541dcd6767b83d7e01b7ffe6843d486d6abce09ef00801c39bf287c6d14a5768",
     "0x8965ae6e51a78132a77eb14c0ac1c6cd1be357d6f261253efff28869478ae5b8"
@@ -6665,7 +6812,7 @@
    "kind": "protocol",
    "name": "Inverse Finance (FiRM)",
    "observedDelaySeconds": 172800,
-   "pinnedBlock": 26441165,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x4b6c63E6a94ef26E2dF60b89372db2d8e211F1B7",
     "chain": "ethereum"
@@ -6680,7 +6827,8 @@
    "sprints": [
     1,
     14,
-    28
+    28,
+    30
    ],
    "surfaces": [
     {
@@ -6706,6 +6854,14 @@
      "surface": "BorrowController stalenessThreshold (sDOLA market): 86,500 s at the Sprint pin, 0 (check off) at the #26,406,106 pin",
      "targetContract": "0x01ECA33e20a4c379Bd8A5361f896A7dd2bAE4ce8",
      "targetLabel": "FiRM BorrowController"
+    },
+    {
+     "blockNumber": 26449594,
+     "classification": "parameter_delta",
+     "id": "inverse-firm-policy-safe-3of6-s30",
+     "surface": "Policy Committee Safe: 3-of-6 (docs: 5 of 9); 4-of-7 at #26,399,876",
+     "targetContract": "0x4b6c63E6a94ef26E2dF60b89372db2d8e211F1B7",
+     "targetLabel": "Inverse Finance Policy Committee Safe"
     }
    ],
    "targetLabel": "Policy Committee Safe",
@@ -6737,6 +6893,13 @@
       "observed": "FiRM BorrowController 0x01ECA33e20a4c379Bd8A5361f896A7dd2bAE4ce8 (Ethereum): stalenessThreshold(sDOLA market 0xC45E9c231ab5D9Bd3F1131E7901B100D8D236C4d) = 86500s (24.03 h) at this pin.",
       "parameter": "BorrowController stalenessThreshold (sDOLA market): 86,500 s at the Sprint pin, 0 (check off) at the #26,406,106 pin",
       "recordId": "inverse-finance-firm-borrowcontroller-staleness-s28"
+     },
+     {
+      "classification": "parameter_delta",
+      "documented": "'| **Policy Committee** | 5 of 9 | Governance guardian role (can cancel proposals), manages reward rate policies, operates as BondsManager |' (docs.inverse.finance/inverse-finance/inverse-finance/governance/governance-o…",
+      "observed": "Inverse Finance Policy Committee Safe 0x4b6c63E6a94ef26E2dF60b89372db2d8e211F1B7 (Ethereum): getThreshold() = 3 of 6 owners at this pin.",
+      "parameter": "Policy Committee Safe: 3-of-6 (docs: 5 of 9); 4-of-7 at #26,399,876",
+      "recordId": "inverse-firm-policy-safe-3of6-s30"
      }
     ],
     "matched": [
@@ -6796,41 +6959,44 @@
    "whatDiffers": null
   },
   {
-   "baseEasUids": [],
+   "baseEasUids": [
+    "0x06edec4488a7b0389c63bd8551cb47e18600bb67d14decd9b1a56e69198cca1c"
+   ],
    "category": "Yen-tracking stablecoin minted permissionlessly by depositing crypto assets (Ethereum)",
    "chain": "ethereum",
    "chainId": 1,
-   "classification": "rpc_observed",
-   "controllerAddress": null,
-   "controllerKind": null,
-   "documentationComparison": "not_assessed",
-   "documentedDelaySeconds": null,
-   "easAttested": false,
-   "evidenceBasis": "rpc_observed",
+   "classification": "aligned_baseline",
+   "controllerAddress": "0xf27de84F11E089B838769EDFcFf9872BC45c84Fe",
+   "controllerKind": "timelock",
+   "documentationComparison": "compared",
+   "documentedDelaySeconds": 43200,
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
    "kind": "protocol",
    "name": "JPY DeFi",
-   "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "observedDelaySeconds": 43200,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
-    "address": "0x6042755eCCa71A1Be9C7091441ca5bEaA6b520e4",
+    "address": "0xf27de84F11E089B838769EDFcFf9872BC45c84Fe",
     "chain": "ethereum"
    },
-   "primaryContract": "0x6042755eCCa71A1Be9C7091441ca5bEaA6b520e4",
-   "relatedContracts": [
-    "0x878dA559D17458d84fD7A42804CCAEA53C2F10B5"
-   ],
+   "primaryContract": "0xf27de84F11E089B838769EDFcFf9872BC45c84Fe",
+   "relatedContracts": [],
    "slug": "jpy-defi",
+   "sprints": [
+    30
+   ],
    "surfaces": [
     {
-     "blockNumber": 26448221,
-     "classification": "rpc_observed",
-     "id": "jpy-defi-control-plane",
-     "surface": "CollateralVault · EIP-1967 Proxy & Controller Chain",
-     "targetContract": "0x6042755eCCa71A1Be9C7091441ca5bEaA6b520e4",
-     "targetLabel": "CollateralVault"
+     "blockNumber": 26449594,
+     "classification": "aligned_baseline",
+     "id": "jpy-defi-timelock-delay-s30",
+     "surface": "JPY DeFi timelock: 12-hour minimum delay, as documented",
+     "targetContract": "0xf27de84F11E089B838769EDFcFf9872BC45c84Fe",
+     "targetLabel": "Governance TimelockController queueing upgrades of the dToken and Strategy layers"
     }
    ],
-   "targetLabel": "CollateralVault",
+   "targetLabel": "Governance TimelockController queueing upgrades of the dToken and Strategy layers",
    "tokens": [
     "JPY"
    ],
@@ -6852,7 +7018,7 @@
    "kind": "protocol",
    "name": "Juicebox V1",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x3abF2A4f8452cCC2CF7b4C1e4663147600646f66",
     "chain": "ethereum"
@@ -6862,7 +7028,7 @@
    "slug": "juicebox-v1",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "juicebox-v1-control-plane",
      "surface": "Juicebox (Tickets) · Non-Proxy Bytecode & Controller",
@@ -6892,7 +7058,7 @@
    "kind": "protocol",
    "name": "K3 Capital",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xdC47953c816531a8CA9E1D461AB53687d48EEA26",
     "chain": "ethereum"
@@ -6905,7 +7071,7 @@
    "slug": "k3-capital",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "k3-capital-control-plane",
      "surface": "MigratableEntityProxy · EIP-1967 Proxy & Controller Chain",
@@ -6922,6 +7088,7 @@
   },
   {
    "baseEasUids": [
+    "0x06edec4488a7b0389c63bd8551cb47e18600bb67d14decd9b1a56e69198cca1c",
     "0x0e017bc4399101f9fef3d98a434dd9f2829b6e386e7733408dfd4b626d186eea",
     "0x8965ae6e51a78132a77eb14c0ac1c6cd1be357d6f261253efff28869478ae5b8"
    ],
@@ -6938,7 +7105,7 @@
    "kind": "protocol",
    "name": "Kelp DAO (rsETH)",
    "observedDelaySeconds": 864000,
-   "pinnedBlock": 26406106,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x49bD9989E31aD35B0A62c20BE86335196A3135B1",
     "chain": "ethereum"
@@ -6946,14 +7113,15 @@
    "primaryContract": "0x49bD9989E31aD35B0A62c20BE86335196A3135B1",
    "relatedContracts": [
     "0xb61e0E39b6d4030C36A176f576aaBE44BF59Dc78",
-    "0x947Cb49334e6571ccBFEF1f1f1178d8469D65ec7",
     "0xb3696a817D01C8623E66D156B6798291fa10a46d",
-    "0x036676389e48133B63a802f8635AD39E752D375D"
+    "0x036676389e48133B63a802f8635AD39E752D375D",
+    "0x7AAd74b7f0d60D5867B59dbD377a71783425af47"
    ],
    "slug": "kelp-dao-rseth",
    "sprints": [
     9,
-    14
+    14,
+    30
    ],
    "surfaces": [
     {
@@ -6971,6 +7139,14 @@
      "surface": "rsETH & LRTDepositPool ProxyAdmin owned by 10d TimelockController",
      "targetContract": "0xA1290d69c65A6Fe4DF752f95823fae25cB99e5A7",
      "targetLabel": "rsETH proxy (EIP-1967 admin slot)"
+    },
+    {
+     "blockNumber": 26449594,
+     "classification": "aligned_baseline",
+     "id": "kelp-lrtconfig-operator-revoked-s30",
+     "surface": "LRTConfig OPERATOR_ROLE: one operator account revoked since #26,406,106",
+     "targetContract": "0x947Cb49334e6571ccBFEF1f1f1178d8469D65ec7",
+     "targetLabel": "Kelp LRTConfig"
     }
    ],
    "targetLabel": "KelpTimelockController",
@@ -6995,7 +7171,7 @@
    "kind": "protocol",
    "name": "Kine Finance",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xbB7D94a423f4978545ecf73161f0678e8AfD1a92",
     "chain": "ethereum"
@@ -7007,7 +7183,7 @@
    "slug": "kine-finance",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "kine-finance-control-plane",
      "surface": "Unitroller · Non-Proxy Bytecode & Controller",
@@ -7037,7 +7213,7 @@
    "kind": "protocol",
    "name": "King Protocol",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x8F08B70456eb22f6109F57b8fafE862ED28E6040",
     "chain": "ethereum"
@@ -7049,7 +7225,7 @@
    "slug": "king-protocol",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "king-protocol-control-plane",
      "surface": "King Protocol (UUPSProxy) · EIP-1967 Proxy & Controller Chain",
@@ -7065,42 +7241,44 @@
    "whatDiffers": null
   },
   {
-   "baseEasUids": [],
+   "baseEasUids": [
+    "0x06edec4488a7b0389c63bd8551cb47e18600bb67d14decd9b1a56e69198cca1c"
+   ],
    "category": "Onchain Asset Manager & Risk Curator (DAO treasuries) (Ethereum)",
    "chain": "ethereum",
    "chainId": 1,
-   "classification": "rpc_observed",
-   "controllerAddress": "0x5912d39421109E4bf3Dc8108b403b74773bc5379",
-   "controllerKind": "contract_controller",
-   "documentationComparison": "not_assessed",
+   "classification": "aligned_baseline",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
    "documentedDelaySeconds": null,
-   "easAttested": false,
-   "evidenceBasis": "rpc_observed",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
    "kind": "protocol",
    "name": "KPK",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
-    "address": "0xbF3F63D8AC133B16d7D50C015036b33219Dd8D23",
+    "address": "0x8b884f80B3B839F52b6cE168f133e7a5D1f0A537",
     "chain": "ethereum"
    },
-   "primaryContract": "0xbF3F63D8AC133B16d7D50C015036b33219Dd8D23",
-   "relatedContracts": [
-    "0x5af203018E9043f2aAA5622C3f5014b0aa82904C",
-    "0xee27FAD903FeCa9e78C5075803c8833e885B2B7A"
-   ],
+   "primaryContract": "0x8b884f80B3B839F52b6cE168f133e7a5D1f0A537",
+   "relatedContracts": [],
    "slug": "kpk",
+   "sprints": [
+    30
+   ],
    "surfaces": [
     {
-     "blockNumber": 26448221,
-     "classification": "rpc_observed",
-     "id": "kpk-control-plane",
-     "surface": "kpk Token · EIP-1967 Proxy & Controller Chain",
-     "targetContract": "0xbF3F63D8AC133B16d7D50C015036b33219Dd8D23",
-     "targetLabel": "kpk Token"
+     "blockNumber": 26449594,
+     "classification": "aligned_baseline",
+     "id": "kpk-security-council-safe-5of8-s30",
+     "surface": "Security Council Safe (vault owner and sentinel): 5-of-8",
+     "targetContract": "0x8b884f80B3B839F52b6cE168f133e7a5D1f0A537",
+     "targetLabel": "KPK Security Council Safe"
     }
    ],
-   "targetLabel": "kpk Token",
+   "targetLabel": "KPK Security Council Safe",
    "tokens": [
     "KPK"
    ],
@@ -7275,7 +7453,7 @@
    "kind": "protocol",
    "name": "LandX Finance",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x08A1C30BBB26425c1031ee9E43FA0B9960742539",
     "chain": "ethereum"
@@ -7285,7 +7463,7 @@
    "slug": "landx-finance",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "landx-finance-control-plane",
      "surface": "LandX Governance Token (LNDX) · Non-Proxy Bytecode & Controller",
@@ -7390,7 +7568,7 @@
    "kind": "protocol",
    "name": "Lazy",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xd53B68fB4eb907c3c1E348CD7d7bEDE34f763805",
     "chain": "ethereum"
@@ -7400,7 +7578,7 @@
    "slug": "lazy",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "lazy-control-plane",
      "surface": "LazyUSD (LazyUSDVault) · Non-Proxy Bytecode & Controller",
@@ -7430,7 +7608,7 @@
    "kind": "protocol",
    "name": "Ledgity Yield",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x482dF7483a52496F4C65AB499966dfcdf4DDFDbc",
     "chain": "ethereum"
@@ -7440,7 +7618,7 @@
    "slug": "ledgity-yield",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "ledgity-yield-control-plane",
      "surface": "Ledgity Token (LDY) · Non-Proxy Bytecode & Controller",
@@ -7470,7 +7648,7 @@
    "kind": "protocol",
    "name": "Legion",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xa0BeB0A8C765482c128a2986c063AF5C3171ff2F",
     "chain": "ethereum"
@@ -7482,7 +7660,7 @@
    "slug": "legion",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "legion-control-plane",
      "surface": "LegionPreLiquidSaleV2Factory · Non-Proxy Bytecode & Controller",
@@ -7512,7 +7690,7 @@
    "kind": "protocol",
    "name": "LendFlare",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xB620Be8a1949AA9532e6a3510132864EF9Bc3F82",
     "chain": "ethereum"
@@ -7524,7 +7702,7 @@
    "slug": "lendflare",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "lendflare-control-plane",
      "surface": "LendFlare DAO Token (LendFlareProxy) · EIP-1967 Proxy & Controller Chain",
@@ -7625,7 +7803,7 @@
    "kind": "protocol",
    "name": "Lighter Bridge",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x232CE3bd40fCd6f80f3d55A522d03f25Df784Ee2",
     "chain": "ethereum"
@@ -7635,7 +7813,7 @@
    "slug": "lighter-bridge",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "lighter-bridge-control-plane",
      "surface": "Lighter · Non-Proxy Bytecode & Controller",
@@ -7841,7 +8019,7 @@
    "kind": "protocol",
    "name": "Lista Lending",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xf820fB4680712CD7263a0D3D024D5b5aEA82Fd70",
     "chain": "ethereum"
@@ -7853,7 +8031,7 @@
    "slug": "lista-lending",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "lista-lending-control-plane",
      "surface": "Moolah · EIP-1967 Proxy & Controller Chain",
@@ -7945,7 +8123,7 @@
    "kind": "protocol",
    "name": "LUSD ChickenBonds",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xB9D7DdDca9a4AC480991865EfEf82E01273F79C3",
     "chain": "ethereum"
@@ -7955,7 +8133,7 @@
    "slug": "lusd-chickenbonds",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "lusd-chickenbonds-control-plane",
      "surface": "bLUSD · Non-Proxy Bytecode & Controller",
@@ -8031,42 +8209,48 @@
    "whatDiffers": null
   },
   {
-   "baseEasUids": [],
+   "baseEasUids": [
+    "0x06edec4488a7b0389c63bd8551cb47e18600bb67d14decd9b1a56e69198cca1c"
+   ],
    "category": "Execution infrastructure where asset managers run strategies as Machines (Ethereum)",
    "chain": "ethereum",
    "chainId": 1,
-   "classification": "rpc_observed",
-   "controllerAddress": "0xEb78836D3aa3A0518A96fd7C9c549d0FFB7D6dA9",
-   "controllerKind": "contract_controller",
-   "documentationComparison": "not_assessed",
-   "documentedDelaySeconds": null,
-   "easAttested": false,
-   "evidenceBasis": "rpc_observed",
+   "classification": "aligned_baseline",
+   "controllerAddress": "0x0fCEfa3f1047F35521A49cD8B06faBd588665d7F",
+   "controllerKind": "timelock",
+   "documentationComparison": "compared",
+   "documentedDelaySeconds": 172800,
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
    "kind": "protocol",
    "name": "Makina",
-   "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "observedDelaySeconds": 172800,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
-    "address": "0x8d28A69328561eF9F171c58996fEcB9F494e070c",
+    "address": "0x0fCEfa3f1047F35521A49cD8B06faBd588665d7F",
     "chain": "ethereum"
    },
-   "primaryContract": "0x8d28A69328561eF9F171c58996fEcB9F494e070c",
+   "primaryContract": "0x0fCEfa3f1047F35521A49cD8B06faBd588665d7F",
    "relatedContracts": [
-    "0x6E969Ba0941ACD84d56B297864f6677d15ea6e29",
-    "0x0fCEfa3f1047F35521A49cD8B06faBd588665d7F"
+    "0x62244C74e1d09b3D86EF7342d354b5D7770bDE10",
+    "0x8d28A69328561eF9F171c58996fEcB9F494e070c",
+    "0xEb78836D3aa3A0518A96fd7C9c549d0FFB7D6dA9"
    ],
    "slug": "makina",
+   "sprints": [
+    30
+   ],
    "surfaces": [
     {
-     "blockNumber": 26448221,
-     "classification": "rpc_observed",
-     "id": "makina-control-plane",
-     "surface": "HubCoreFactory · EIP-1967 Proxy & Controller Chain",
-     "targetContract": "0x8d28A69328561eF9F171c58996fEcB9F494e070c",
-     "targetLabel": "HubCoreFactory"
+     "blockNumber": 26449594,
+     "classification": "aligned_baseline",
+     "id": "makina-upgrade-role-dao-delay-2d-s30",
+     "surface": "Upgrade role (6): DAO multisig execution delay 172,800 s",
+     "targetContract": "0x0fCEfa3f1047F35521A49cD8B06faBd588665d7F",
+     "targetLabel": "Makina AccessManager"
     }
    ],
-   "targetLabel": "HubCoreFactory",
+   "targetLabel": "Makina AccessManager",
    "tokens": [
     "Makina"
    ],
@@ -8306,42 +8490,50 @@
    }
   },
   {
-   "baseEasUids": [],
+   "baseEasUids": [
+    "0x06edec4488a7b0389c63bd8551cb47e18600bb67d14decd9b1a56e69198cca1c"
+   ],
    "category": "Liquid staking spanning NEAR and Ethereum validators (Ethereum)",
    "chain": "ethereum",
    "chainId": 1,
-   "classification": "rpc_observed",
-   "controllerAddress": "0x806F870ee04A2CC8bf2aD053BAa5ed9999A1f182",
-   "controllerKind": "contract_controller",
-   "documentationComparison": "not_assessed",
+   "classification": "aligned_baseline",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
    "documentedDelaySeconds": null,
-   "easAttested": false,
-   "evidenceBasis": "rpc_observed",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
    "kind": "protocol",
    "name": "Meta Pool ETH",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
-    "address": "0x48AFbBd342F64EF8a9Ab1C143719b63C2AD81710",
+    "address": "0x806F870ee04A2CC8bf2aD053BAa5ed9999A1f182",
     "chain": "ethereum"
    },
-   "primaryContract": "0x48AFbBd342F64EF8a9Ab1C143719b63C2AD81710",
+   "primaryContract": "0x806F870ee04A2CC8bf2aD053BAa5ed9999A1f182",
    "relatedContracts": [
-    "0x56C517308Ec9DCBE1Db9D38E8b42bc7A948F7fFa",
+    "0xD06f6a56c5f599cB375B616DF306f32B7F6f4A0E",
+    "0xD3dB79D2D00A6B82531D8Ccf65C376d9eE9513aC",
+    "0x48AFbBd342F64EF8a9Ab1C143719b63C2AD81710",
+    "0xdF261F967E87B2aa44e18a22f4aCE5d7f74f03Cc",
     "0x24D9664Ba8384D94499d6698ab285b69E879D971"
    ],
    "slug": "meta-pool-eth",
+   "sprints": [
+    30
+   ],
    "surfaces": [
     {
-     "blockNumber": 26448221,
-     "classification": "rpc_observed",
-     "id": "meta-pool-eth-control-plane",
-     "surface": "MetaPoolETH · EIP-1967 Proxy & Controller Chain",
-     "targetContract": "0x48AFbBd342F64EF8a9Ab1C143719b63C2AD81710",
-     "targetLabel": "MetaPoolETH"
+     "blockNumber": 26449594,
+     "classification": "aligned_baseline",
+     "id": "meta-pool-eth-proxy-admin-dao-safe-s30",
+     "surface": "spETH upgrade admin: the documented ProxyAdmin, owned by the DAO Admin Safe (3-of-6)",
+     "targetContract": "0x806F870ee04A2CC8bf2aD053BAa5ed9999A1f182",
+     "targetLabel": "Meta Pool ProxyAdmin (spETH, Liquid Unstake Pool, MetaPoolETH)"
     }
    ],
-   "targetLabel": "MetaPoolETH",
+   "targetLabel": "Meta Pool ProxyAdmin (spETH, Liquid Unstake Pool, MetaPoolETH)",
    "tokens": [
     "mpETH"
    ],
@@ -8432,7 +8624,7 @@
    "kind": "protocol",
    "name": "Metis Bridge",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x9E32b13ce7f2E80A01932B42553652E053D6ed8e",
     "chain": "ethereum"
@@ -8442,7 +8634,7 @@
    "slug": "metis-bridge",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "metis-bridge-control-plane",
      "surface": "Metis Token (MToken) · Non-Proxy Bytecode & Controller",
@@ -8472,7 +8664,7 @@
    "kind": "protocol",
    "name": "Metric V1",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x2a53833cc95548cf52c7b159110e22D3a9018f32",
     "chain": "ethereum"
@@ -8482,7 +8674,7 @@
    "slug": "metric-v1",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "metric-v1-control-plane",
      "surface": "MetricOmmPoolFactory · Non-Proxy Bytecode & Controller",
@@ -8512,7 +8704,7 @@
    "kind": "protocol",
    "name": "Metronome Synth",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x2Ebd53d035150f328bd754D6DC66B99B0eDB89aa",
     "chain": "ethereum"
@@ -8522,7 +8714,7 @@
    "slug": "metronome-synth",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "metronome-synth-control-plane",
      "surface": "Metronome2 · Non-Proxy Bytecode & Controller",
@@ -8552,7 +8744,7 @@
    "kind": "protocol",
    "name": "Monolith Market",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x6D961c9DCF1AD73566822BA4B087892e3839B849",
     "chain": "ethereum"
@@ -8562,7 +8754,7 @@
    "slug": "monolith-market",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "monolith-market-control-plane",
      "surface": "Factory · Non-Proxy Bytecode & Controller",
@@ -8673,7 +8865,7 @@
    "kind": "protocol",
    "name": "Morph Bridge",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xDc71366EFFA760804DCFC3EDF87fa2A6f1623304",
     "chain": "ethereum"
@@ -8686,7 +8878,7 @@
    "slug": "morph-bridge",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "morph-bridge-control-plane",
      "surface": "L1CrossDomainMessenger · EIP-1967 Proxy & Controller Chain",
@@ -8716,7 +8908,7 @@
    "kind": "protocol",
    "name": "MorpheusAI",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x47176B2Af9885dC6C4575d4eFd63895f7Aaa4790",
     "chain": "ethereum"
@@ -8728,7 +8920,7 @@
    "slug": "morpheusai",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "morpheusai-control-plane",
      "surface": "DepositPool · EIP-1967 Proxy & Controller Chain",
@@ -8805,7 +8997,7 @@
    "kind": "protocol",
    "name": "MortgageFi",
    "observedDelaySeconds": null,
-   "pinnedBlock": 59450023,
+   "pinnedBlock": 59532664,
    "preflightArgs": {
     "address": "0x1bE87D273d47C3832Ab7853812E9A995A4DE9EEA",
     "chain": "base"
@@ -8815,7 +9007,7 @@
    "slug": "mortgagefi",
    "surfaces": [
     {
-     "blockNumber": 59450023,
+     "blockNumber": 59532664,
      "classification": "rpc_observed",
      "id": "mortgagefi-control-plane",
      "surface": "mortgagefi-earn-usdc-weth (mortgagefipoolusdcweth) · Non-Proxy Bytecode & Controller",
@@ -8845,7 +9037,7 @@
    "kind": "protocol",
    "name": "Multichain",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x9Fb9a33956351cf4fa040f65A13b835A3C8764E3",
     "chain": "ethereum"
@@ -8855,7 +9047,7 @@
    "slug": "multichain",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "multichain-control-plane",
      "surface": "Multichain (AnyswapV5ERC20) · Non-Proxy Bytecode & Controller",
@@ -8885,7 +9077,7 @@
    "kind": "protocol",
    "name": "Nami",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x0100000002935Dce071f4AFA607b961575672b4C",
     "chain": "ethereum"
@@ -8895,7 +9087,7 @@
    "slug": "nami",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "nami-control-plane",
      "surface": "BatcherAccountProxyFactory · Non-Proxy Bytecode & Controller",
@@ -8925,7 +9117,7 @@
    "kind": "protocol",
    "name": "Native Credit Pool",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xe3D41d19564922C9952f692C5Dd0563030f5f2EF",
     "chain": "ethereum"
@@ -8937,7 +9129,7 @@
    "slug": "native-credit-pool",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "native-credit-pool-control-plane",
      "surface": "CreditVault · Non-Proxy Bytecode & Controller",
@@ -9021,7 +9213,7 @@
    "kind": "protocol",
    "name": "NFTX",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x87d73E916D7057945c9BcD8cdd94e42A6F47f776",
     "chain": "ethereum"
@@ -9031,7 +9223,7 @@
    "slug": "nftx",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "nftx-control-plane",
      "surface": "NFTX (MiniMeToken) · Non-Proxy Bytecode & Controller",
@@ -9061,7 +9253,7 @@
    "kind": "protocol",
    "name": "NodeDAO",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xd7C049CD4ba216679ecC04Eb2767cC5E39812121",
     "chain": "ethereum"
@@ -9073,7 +9265,7 @@
    "slug": "nodedao",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "nodedao-control-plane",
      "surface": "NodeDAOView · EIP-1967 Proxy & Controller Chain",
@@ -9103,7 +9295,7 @@
    "kind": "protocol",
    "name": "Noon",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xdA67B4284609d2d48e5d10cfAc411572727dc1eD",
     "chain": "ethereum"
@@ -9116,7 +9308,7 @@
    "slug": "noon",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "noon-control-plane",
      "surface": "USN (USNUpgradeableHyperlane) · EIP-1967 Proxy & Controller Chain",
@@ -9146,7 +9338,7 @@
    "kind": "protocol",
    "name": "Nucleus",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x52E4d8989fa8b3E1C06696e7b16DEf5d7707A0d1",
     "chain": "ethereum"
@@ -9156,7 +9348,7 @@
    "slug": "nucleus",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "nucleus-control-plane",
      "surface": "Boba Native Yield Nucleus Token (BoringVault) · Non-Proxy Bytecode & Controller",
@@ -9172,41 +9364,47 @@
    "whatDiffers": null
   },
   {
-   "baseEasUids": [],
+   "baseEasUids": [
+    "0x06edec4488a7b0389c63bd8551cb47e18600bb67d14decd9b1a56e69198cca1c"
+   ],
    "category": "Real-world asset vaults with tokenized yield products (Ethereum)",
    "chain": "ethereum",
    "chainId": 1,
-   "classification": "rpc_observed",
+   "classification": "aligned_baseline",
    "controllerAddress": "0xDEa75A312b2F99b5A7558c4636897b39C195E241",
    "controllerKind": "timelock",
-   "documentationComparison": "not_assessed",
-   "documentedDelaySeconds": null,
-   "easAttested": false,
-   "evidenceBasis": "rpc_observed",
+   "documentationComparison": "compared",
+   "documentedDelaySeconds": 172800,
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
    "kind": "protocol",
    "name": "NUVA",
-   "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "observedDelaySeconds": 172800,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
-    "address": "0x50AE1e4A612A4623b747aEeFb30aFBA82804e12c",
+    "address": "0xDEa75A312b2F99b5A7558c4636897b39C195E241",
     "chain": "ethereum"
    },
-   "primaryContract": "0x50AE1e4A612A4623b747aEeFb30aFBA82804e12c",
+   "primaryContract": "0xDEa75A312b2F99b5A7558c4636897b39C195E241",
    "relatedContracts": [
+    "0x50AE1e4A612A4623b747aEeFb30aFBA82804e12c",
     "0x027207E16E2BB920dc89AA9FeF7826e23091588a"
    ],
    "slug": "nuva",
+   "sprints": [
+    30
+   ],
    "surfaces": [
     {
-     "blockNumber": 26448221,
-     "classification": "rpc_observed",
-     "id": "nuva-control-plane",
-     "surface": "DedicatedVaultRouter · EIP-1967 Proxy & Controller Chain",
-     "targetContract": "0x50AE1e4A612A4623b747aEeFb30aFBA82804e12c",
-     "targetLabel": "DedicatedVaultRouter"
+     "blockNumber": 26449594,
+     "classification": "aligned_baseline",
+     "id": "nuva-router-timelock-48h-s30",
+     "surface": "DedicatedVaultRouter upgrade authority: timelock, getMinDelay() 172,800 s",
+     "targetContract": "0xDEa75A312b2F99b5A7558c4636897b39C195E241",
+     "targetLabel": "NUVA TimelockController (owner of the DedicatedVaultRouter)"
     }
    ],
-   "targetLabel": "DedicatedVaultRouter",
+   "targetLabel": "NUVA TimelockController (owner of the DedicatedVaultRouter)",
    "tokens": [
     "NUVA"
    ],
@@ -9398,7 +9596,7 @@
    "kind": "protocol",
    "name": "OpenGDP Shared Security",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x54e44DbB92dBA848ACe27F44c0CB4268981eF1CC",
     "chain": "ethereum"
@@ -9410,7 +9608,7 @@
    "slug": "opengdp-shared-security",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "opengdp-shared-security-control-plane",
      "surface": "VaultSupervisor · EIP-1967 Proxy & Controller Chain",
@@ -9440,7 +9638,7 @@
    "kind": "protocol",
    "name": "Orderly Bridge",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xABD4C63d2616A5201454168269031355f4764337",
     "chain": "ethereum"
@@ -9450,7 +9648,7 @@
    "slug": "orderly-bridge",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "orderly-bridge-control-plane",
      "surface": "Orderly Network (OrderToken) · Non-Proxy Bytecode & Controller",
@@ -9480,7 +9678,7 @@
    "kind": "protocol",
    "name": "Origami Finance",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x07c5500359161b81eb0DfFF83097d5025D3cF5A2",
     "chain": "ethereum"
@@ -9490,7 +9688,7 @@
    "slug": "origami-finance",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "origami-finance-control-plane",
      "surface": "Origami SKY+ Auto-Compounder (OrigamiDelegated4626Vault) · Non-Proxy Bytecode & Controller",
@@ -9520,7 +9718,7 @@
    "kind": "protocol",
    "name": "Origin Protocol (SuperOETHb Base)",
    "observedDelaySeconds": 172800,
-   "pinnedBlock": 59450023,
+   "pinnedBlock": 59532664,
    "preflightArgs": {
     "address": "0xDBFeFD2e8460a6Ee4955A68582F85708BAEA60A3",
     "chain": "base"
@@ -9532,7 +9730,7 @@
    "slug": "origin-superoeth-base",
    "surfaces": [
     {
-     "blockNumber": 59450023,
+     "blockNumber": 59532664,
      "classification": "rpc_observed",
      "id": "origin-superoeth-base-control-plane",
      "surface": "SuperOETHb_VaultProxy · 2d Timelock Admin Path",
@@ -9564,7 +9762,7 @@
    "kind": "protocol",
    "name": "Outcome Finance",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x0b8de441B26E36f461b2748919ed71f50593A67b",
     "chain": "ethereum"
@@ -9574,7 +9772,7 @@
    "slug": "outcome-finance",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "outcome-finance-control-plane",
      "surface": "LongShortPairCreator · Non-Proxy Bytecode & Controller",
@@ -9604,7 +9802,7 @@
    "kind": "protocol",
    "name": "Overtime",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x90cE5720c17587D28E4Af120ae2d313B3BAD1722",
     "chain": "ethereum"
@@ -9614,7 +9812,7 @@
    "slug": "overtime",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "overtime-control-plane",
      "surface": "Overtime DAO Token (OverToken) · Non-Proxy Bytecode & Controller",
@@ -9644,7 +9842,7 @@
    "kind": "protocol",
    "name": "PancakeSwap AMM V3",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x0BFbCF9fa4f9C56B0F40a671Ad40E0805A091865",
     "chain": "ethereum"
@@ -9656,7 +9854,7 @@
    "slug": "pancakeswap-amm-v3",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "pancakeswap-amm-v3-control-plane",
      "surface": "PlunderV3Factory · Non-Proxy Bytecode & Controller",
@@ -9672,39 +9870,47 @@
    "whatDiffers": null
   },
   {
-   "baseEasUids": [],
+   "baseEasUids": [
+    "0x06edec4488a7b0389c63bd8551cb47e18600bb67d14decd9b1a56e69198cca1c"
+   ],
    "category": "Perpetual options built on concentrated-liquidity positions (Ethereum)",
    "chain": "ethereum",
    "chainId": 1,
-   "classification": "rpc_observed",
+   "classification": "aligned_baseline",
    "controllerAddress": null,
    "controllerKind": null,
-   "documentationComparison": "not_assessed",
+   "documentationComparison": "compared",
    "documentedDelaySeconds": null,
-   "easAttested": false,
-   "evidenceBasis": "rpc_observed",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
    "kind": "protocol",
    "name": "Panoptic V2",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
-    "address": "0x0000000000000aDC9A108591e718F2aee963a2a7",
+    "address": "0x000000000000ffE5eFdB5AE76b9200263C58b4c0",
     "chain": "ethereum"
    },
-   "primaryContract": "0x0000000000000aDC9A108591e718F2aee963a2a7",
-   "relatedContracts": [],
+   "primaryContract": "0x000000000000ffE5eFdB5AE76b9200263C58b4c0",
+   "relatedContracts": [
+    "0x000000000000f69c150aFEa8Cc4f8fC4462AdBB4",
+    "0x22BD5EC2Ee6685C373781420E12c1426dd7776F2"
+   ],
    "slug": "panoptic-v2",
+   "sprints": [
+    30
+   ],
    "surfaces": [
     {
-     "blockNumber": 26448221,
-     "classification": "rpc_observed",
-     "id": "panoptic-v2-control-plane",
-     "surface": "Panoptic V2 Factory Deployer NFTs (PanopticFactoryV3) · Non-Proxy Bytecode & Controller",
-     "targetContract": "0x0000000000000aDC9A108591e718F2aee963a2a7",
-     "targetLabel": "Panoptic V2 Factory Deployer NFTs (PanopticFactoryV3)"
+     "blockNumber": 26449594,
+     "classification": "aligned_baseline",
+     "id": "panoptic-v2-upgradeability-s30",
+     "surface": "Panoptic V2 RiskEngineProxy: upgradeable (proxy admin), as documented",
+     "targetContract": "0x000000000000ffE5eFdB5AE76b9200263C58b4c0",
+     "targetLabel": "Panoptic V2 RiskEngineProxy"
     }
    ],
-   "targetLabel": "Panoptic V2 Factory Deployer NFTs (PanopticFactoryV3)",
+   "targetLabel": "Panoptic V2 RiskEngineProxy",
    "tokens": [
     "PANOPTIC-NFT"
    ],
@@ -9726,7 +9932,7 @@
    "kind": "protocol",
    "name": "Paradex Bridge",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xb32E10022FFBeDfE10bc818a1C7e67D9d87e0fa7",
     "chain": "ethereum"
@@ -9738,7 +9944,7 @@
    "slug": "paradex-bridge",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "paradex-bridge-control-plane",
      "surface": "DIME · EIP-1967 Proxy & Controller Chain",
@@ -9768,7 +9974,7 @@
    "kind": "protocol",
    "name": "Parallel Protocol V3",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x6c0aeceeDc55c9d55d8B99216a670D85330941c3",
     "chain": "ethereum"
@@ -9778,7 +9984,7 @@
    "slug": "parallel-protocol-v3",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "parallel-protocol-v3-control-plane",
      "surface": "Parallel Governance Token (PRL) · Non-Proxy Bytecode & Controller",
@@ -9875,7 +10081,7 @@
    "kind": "protocol",
    "name": "Peapods Finance",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x02f92800F57BCD74066F5709F1Daa1A4302Df875",
     "chain": "ethereum"
@@ -9887,7 +10093,7 @@
    "slug": "peapods-finance",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "peapods-finance-control-plane",
      "surface": "Peapods (PEAS) · Non-Proxy Bytecode & Controller",
@@ -9976,7 +10182,7 @@
    "kind": "protocol",
    "name": "Pickle",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x429881672B9AE42b8EbA0E26cD9C73711b891Ca5",
     "chain": "ethereum"
@@ -9988,7 +10194,7 @@
    "slug": "pickle",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "pickle-control-plane",
      "surface": "PickleToken · Non-Proxy Bytecode & Controller",
@@ -10018,7 +10224,7 @@
    "kind": "protocol",
    "name": "Piku Finance",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x2E4039E8E31475d65DC00293C366FDBfBBC02DC3",
     "chain": "ethereum"
@@ -10028,7 +10234,7 @@
    "slug": "piku-finance",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "piku-finance-control-plane",
      "surface": "Piku Utility Token · Non-Proxy Bytecode & Controller",
@@ -10058,7 +10264,7 @@
    "kind": "protocol",
    "name": "Pirex",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xc55126051B22eBb829D00368f4B12Bde432de5Da",
     "chain": "ethereum"
@@ -10068,7 +10274,7 @@
    "slug": "pirex",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "pirex-control-plane",
      "surface": "BTRFLY (BTRFLYV2) · Non-Proxy Bytecode & Controller",
@@ -10085,12 +10291,13 @@
   },
   {
    "baseEasUids": [
+    "0x06edec4488a7b0389c63bd8551cb47e18600bb67d14decd9b1a56e69198cca1c",
     "0x6692c36731ecd514fb7a92fe3de0a6770b67f68f55eece26faa669c2c84b3a08"
    ],
    "category": "Canonical Bridge (sidechain checkpoints) (Ethereum)",
    "chain": "ethereum",
    "chainId": 1,
-   "classification": "aligned_baseline",
+   "classification": "mixed",
    "controllerAddress": null,
    "controllerKind": null,
    "documentationComparison": "compared",
@@ -10100,16 +10307,21 @@
    "kind": "protocol",
    "name": "Polygon Bridge",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26438867,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xFa7D2a996aC6350f4b56C043112Da0366a59b74c",
     "chain": "ethereum"
    },
    "primaryContract": "0xFa7D2a996aC6350f4b56C043112Da0366a59b74c",
-   "relatedContracts": [],
+   "relatedContracts": [
+    "0x40ec5B33f54e0E8A33A975908C5BA1c14e5BbbDf",
+    "0x8484Ef722627bf18ca5Ae6BcF031c23E6e922B30",
+    "0xCaf0aa768A3AE1297DF20072419Db8Bb8b5C8cEf"
+   ],
    "slug": "polygon-bridge",
    "sprints": [
-    26
+    26,
+    30
    ],
    "surfaces": [
     {
@@ -10119,6 +10331,22 @@
      "surface": "Polygon Bridge multisig: 5-of-9 Safe, as documented",
      "targetContract": "0xFa7D2a996aC6350f4b56C043112Da0366a59b74c",
      "targetLabel": "Polygon Bridge Safe"
+    },
+    {
+     "blockNumber": 26449594,
+     "classification": "parameter_delta",
+     "id": "polygon-bridge-mapping-safe-4of13-s30",
+     "surface": "Custom ChildERC20 mapping Safe: 4-of-13 (docs: 4/8)",
+     "targetContract": "0x424bDE99FCfB68c5a1218fd3215caFfD031f19C4",
+     "targetLabel": "Polygon commitchain token-mapping multisig"
+    },
+    {
+     "blockNumber": 26449594,
+     "classification": "parameter_delta",
+     "id": "polygon-bridge-rootchainmanager-zero-delay-upgrade-s30",
+     "surface": "RootChainManager + predicates: upgrades via a 0 s timelock run by the 5-of-9 Safe",
+     "targetContract": "0xA0c68C638235ee32657e8f720a23ceC1bFc77C77",
+     "targetLabel": "Polygon RootChainManagerProxy"
     }
    ],
    "targetLabel": "Polygon Bridge Safe",
@@ -10126,7 +10354,31 @@
     "Polygon"
    ],
    "url": "https://pacta.wtf/protocols/polygon-bridge/",
-   "whatDiffers": null
+   "whatDiffers": {
+    "changed": [
+     {
+      "classification": "parameter_delta",
+      "documented": "'4/8 Multisig 0x424bDE99FCfB68c5a1218fd3215caFfD031f19C4' (docs.polygon.technology/pos/reference/commit-chain-multisigs)",
+      "observed": "Polygon custom ChildERC20 mapping Safe 0x424bDE99FCfB68c5a1218fd3215caFfD031f19C4 (Ethereum): getThreshold() = 4 of 13 owners;",
+      "parameter": "Custom ChildERC20 mapping Safe: 4-of-13 (docs: 4/8)",
+      "recordId": "polygon-bridge-mapping-safe-4of13-s30"
+     },
+     {
+      "classification": "parameter_delta",
+      "documented": "'The existing multisigs do not have the capability to censor transactions, including bridge transactions.' (docs.polygon.technology/pos/reference/commit-chain-multisigs)",
+      "observed": "Polygon RootChainManagerProxy 0xA0c68C638235ee32657e8f720a23ceC1bFc77C77, ERC20PredicateProxy 0x40ec5B33f54e0E8A33A975908C5BA1c14e5BbbDf and EtherPredicateProxy 0x8484Ef722627bf18ca5Ae6BcF031c23E6e922B30 (Ethereum): pro…",
+      "parameter": "RootChainManager + predicates: upgrades via a 0 s timelock run by the 5-of-9 Safe",
+      "recordId": "polygon-bridge-rootchainmanager-zero-delay-upgrade-s30"
+     }
+    ],
+    "matched": [
+     {
+      "parameter": "Polygon Bridge multisig: 5-of-9 Safe, as documented",
+      "recordId": "polygon-bridge-safe-threshold-s26",
+      "value": "matches the documentation"
+     }
+    ]
+   }
   },
   {
    "baseEasUids": [],
@@ -10143,7 +10395,7 @@
    "kind": "protocol",
    "name": "PoolTogether V3",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x0cEC1A9154Ff802e7934Fc916Ed7Ca50bDE6844e",
     "chain": "ethereum"
@@ -10153,7 +10405,7 @@
    "slug": "pooltogether-v3",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "pooltogether-v3-control-plane",
      "surface": "PoolTogether (Pool) · Non-Proxy Bytecode & Controller",
@@ -10314,7 +10566,7 @@
    "kind": "protocol",
    "name": "Punks Terminal",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x000000000000A6fA31F5fC51c1640aAc76866750",
     "chain": "ethereum"
@@ -10326,7 +10578,7 @@
    "slug": "punks-terminal",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "punks-terminal-control-plane",
      "surface": "StashFactory · Non-Proxy Bytecode & Controller",
@@ -10356,7 +10608,7 @@
    "kind": "protocol",
    "name": "Quickswap V4",
    "observedDelaySeconds": null,
-   "pinnedBlock": 59450023,
+   "pinnedBlock": 59532664,
    "preflightArgs": {
     "address": "0xC5396866754799B9720125B104AE01d935Ab9C7b",
     "chain": "base"
@@ -10366,7 +10618,7 @@
    "slug": "quickswap-v4",
    "surfaces": [
     {
-     "blockNumber": 59450023,
+     "blockNumber": 59532664,
      "classification": "rpc_observed",
      "id": "quickswap-v4-control-plane",
      "surface": "AlgebraFactory · Non-Proxy Bytecode & Controller",
@@ -10556,7 +10808,7 @@
    "kind": "protocol",
    "name": "Reflexer",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x6243d8CEA23066d098a15582d81a598b4e8391F4",
     "chain": "ethereum"
@@ -10566,7 +10818,7 @@
    "slug": "reflexer",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "reflexer-control-plane",
      "surface": "Flex Ungovernance Token (DSDelegateToken) · Non-Proxy Bytecode & Controller",
@@ -10724,6 +10976,7 @@
   },
   {
    "baseEasUids": [
+    "0x06edec4488a7b0389c63bd8551cb47e18600bb67d14decd9b1a56e69198cca1c",
     "0x754edd7612258b755ff2e56903243d1f8867bad53c29ce3febb5ed9114005e42"
    ],
    "category": "Delta-Neutral Synthetic Dollar",
@@ -10739,7 +10992,7 @@
    "kind": "protocol",
    "name": "Resolv (USR / RLP)",
    "observedDelaySeconds": 86400,
-   "pinnedBlock": 26403523,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x66a1E37c9b0eAddca17d3662D6c05F4DECf3e110",
     "chain": "ethereum"
@@ -10747,13 +11000,14 @@
    "primaryContract": "0x66a1E37c9b0eAddca17d3662D6c05F4DECf3e110",
    "relatedContracts": [
     "0xD6889F307BE1b83Bb355d5DA7d4478FB0d2Af547",
-    "0xa27a69Ae180e202fDe5D38189a3F24Fe24E55861",
     "0xc7AB90c2Ea9271EFB31f5fA2843Eeb4B331eaFA0",
-    "0x4956b52aE2fF65D74CA2d61207523288e4528f96"
+    "0x4956b52aE2fF65D74CA2d61207523288e4528f96",
+    "0x15CAd41e6BdCaDc7121ce65080489C92CF6de398"
    ],
    "slug": "resolv-usr-rlp",
    "sprints": [
-    11
+    11,
+    30
    ],
    "surfaces": [
     {
@@ -10763,6 +11017,14 @@
      "surface": "Sampled USR AccessControlDefaultAdminRules Delay & Request Counters",
      "targetContract": "0x66a1E37c9b0eAddca17d3662D6c05F4DECf3e110",
      "targetLabel": "Resolv USR Token"
+    },
+    {
+     "blockNumber": 26449594,
+     "classification": "aligned_baseline",
+     "id": "resolv-usr-counter-service-role-revoked-s30",
+     "surface": "USR Counter SERVICE_ROLE: one service account revoked since #26,403,523",
+     "targetContract": "0xa27a69Ae180e202fDe5D38189a3F24Fe24E55861",
+     "targetLabel": "Resolv USR Counter"
     }
    ],
    "targetLabel": "Resolv USR Token",
@@ -10890,7 +11152,7 @@
    "kind": "protocol",
    "name": "Ribbon",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x6123B0049F904d730dB3C36a31167D9d4121fA6B",
     "chain": "ethereum"
@@ -10900,7 +11162,7 @@
    "slug": "ribbon",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "ribbon-control-plane",
      "surface": "Ribbon · Non-Proxy Bytecode & Controller",
@@ -10930,7 +11192,7 @@
    "kind": "protocol",
    "name": "Ring Few",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x7D86394139bf1122E82FDF45Bb4e3b038A4464DD",
     "chain": "ethereum"
@@ -10940,7 +11202,7 @@
    "slug": "ring-few",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "ring-few-control-plane",
      "surface": "FewFactory · Non-Proxy Bytecode & Controller",
@@ -10970,7 +11232,7 @@
    "kind": "protocol",
    "name": "RockawayX",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x953972ea0C1703c58F09FB6fD2477Fdcf0FEe074",
     "chain": "ethereum"
@@ -10982,7 +11244,7 @@
    "slug": "rockawayx",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "rockawayx-control-plane",
      "surface": "Ember Y10K (EmberVault) · EIP-1967 Proxy & Controller Chain",
@@ -11098,7 +11360,7 @@
    "kind": "protocol",
    "name": "Royco V2",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x7cC6fB28eC7b5e7afC3cB3986141797ffc27253C",
     "chain": "ethereum"
@@ -11110,7 +11372,7 @@
    "slug": "royco-v2",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "royco-v2-control-plane",
      "surface": "RoycoFactory · EIP-1967 Proxy & Controller Chain",
@@ -11212,7 +11474,7 @@
    "kind": "protocol",
    "name": "Saffron Vaults",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xb753428af26E81097e7fD17f40c88aaA3E04902c",
     "chain": "ethereum"
@@ -11222,7 +11484,7 @@
    "slug": "saffron-vaults",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "saffron-vaults-control-plane",
      "surface": "Spice (SFI) · Non-Proxy Bytecode & Controller",
@@ -11252,7 +11514,7 @@
    "kind": "protocol",
    "name": "SATO",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x0000f07d2B5F1Ddf3244b8780F972f306EFd2888",
     "chain": "ethereum"
@@ -11262,7 +11524,7 @@
    "slug": "sato",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "sato-control-plane",
      "surface": "SatoHook · Non-Proxy Bytecode & Controller",
@@ -11292,7 +11554,7 @@
    "kind": "protocol",
    "name": "Saturn",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x23238f20b894f29041f48D88eE91131C395Aaa71",
     "chain": "ethereum"
@@ -11305,7 +11567,7 @@
    "slug": "saturn",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "saturn-control-plane",
      "surface": "USDat · EIP-1967 Proxy & Controller Chain",
@@ -11335,7 +11597,7 @@
    "kind": "protocol",
    "name": "Seamless Protocol (Base)",
    "observedDelaySeconds": null,
-   "pinnedBlock": 59450023,
+   "pinnedBlock": 59532664,
    "preflightArgs": {
     "address": "0x0E02EB705be325407707662C6f6d3466E939f3a0",
     "chain": "base"
@@ -11345,7 +11607,7 @@
    "slug": "seamless-protocol-base",
    "surfaces": [
     {
-     "blockNumber": 59450023,
+     "blockNumber": 59532664,
      "classification": "rpc_observed",
      "id": "seamless-protocol-base-control-plane",
      "surface": "SeamlessPoolAddressesProvider · Non-Proxy Bytecode & Role Architecture",
@@ -11361,42 +11623,44 @@
    "whatDiffers": null
   },
   {
-   "baseEasUids": [],
+   "baseEasUids": [
+    "0x06edec4488a7b0389c63bd8551cb47e18600bb67d14decd9b1a56e69198cca1c"
+   ],
    "category": "Institutional Portfolio Yield Platform (Ethereum)",
    "chain": "ethereum",
    "chainId": 1,
-   "classification": "rpc_observed",
-   "controllerAddress": "0x83B975e5F33c0251eFEA5D355A91b3d8d58E6d9a",
-   "controllerKind": "contract_controller",
-   "documentationComparison": "not_assessed",
+   "classification": "aligned_baseline",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
    "documentedDelaySeconds": null,
-   "easAttested": false,
-   "evidenceBasis": "rpc_observed",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
    "kind": "protocol",
    "name": "Shift DeFi",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
-    "address": "0x1d71c888961c4600cF0E31F6196b4dA7fE72e4B3",
+    "address": "0x4cC8D45644eCCD8cA77DBF3A8E3eE2dBf4596983",
     "chain": "ethereum"
    },
-   "primaryContract": "0x1d71c888961c4600cF0E31F6196b4dA7fE72e4B3",
-   "relatedContracts": [
-    "0x2CA2c32Cf096C9FC4B07Bf54398dBfA14258a318",
-    "0x94e67cbE0917c04237bA9a48DA2519F103D6e0d9"
-   ],
+   "primaryContract": "0x4cC8D45644eCCD8cA77DBF3A8E3eE2dBf4596983",
+   "relatedContracts": [],
    "slug": "shift-defi",
+   "sprints": [
+    30
+   ],
    "surfaces": [
     {
-     "blockNumber": 26448221,
-     "classification": "rpc_observed",
-     "id": "shift-defi-control-plane",
-     "surface": "Shift-DeFi USDC Vault (Vault) · EIP-1967 Proxy & Controller Chain",
-     "targetContract": "0x1d71c888961c4600cF0E31F6196b4dA7fE72e4B3",
-     "targetLabel": "Shift-DeFi USDC Vault (Vault)"
+     "blockNumber": 26449594,
+     "classification": "aligned_baseline",
+     "id": "shift-defi-safe-threshold-4cc8d4-s30",
+     "surface": "Shift DeFi multisig: 2-of-6 Safe, as documented",
+     "targetContract": "0x4cC8D45644eCCD8cA77DBF3A8E3eE2dBf4596983",
+     "targetLabel": "Shift DeFi Safe"
     }
    ],
-   "targetLabel": "Shift-DeFi USDC Vault (Vault)",
+   "targetLabel": "Shift DeFi Safe",
    "tokens": [
     "sdUSDC-vault"
    ],
@@ -11418,7 +11682,7 @@
    "kind": "protocol",
    "name": "Sierra Protocol",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xe1b1252652A2FF0CC3A4214eE73d9FeD1FEa5b4f",
     "chain": "ethereum"
@@ -11428,7 +11692,7 @@
    "slug": "sierra-protocol",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "sierra-protocol-control-plane",
      "surface": "SOL Staking Yield Vault · Non-Proxy Bytecode & Controller",
@@ -11458,7 +11722,7 @@
    "kind": "protocol",
    "name": "SMARDEX USDN",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x656cB8C6d154Aad29d8771384089be5B5141f01a",
     "chain": "ethereum"
@@ -11470,7 +11734,7 @@
    "slug": "smardex-usdn",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "smardex-usdn-control-plane",
      "surface": "UsdnProtocolImpl · EIP-1967 Proxy & Controller Chain",
@@ -11500,7 +11764,7 @@
    "kind": "protocol",
    "name": "SOFA.org",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x57B96D4aF698605563A4653D882635da59Bf11AF",
     "chain": "ethereum"
@@ -11512,7 +11776,7 @@
    "slug": "sofa-org",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "sofa-org-control-plane",
      "surface": "RCH Token · Non-Proxy Bytecode & Controller",
@@ -11618,7 +11882,7 @@
    "kind": "protocol",
    "name": "Sommelier",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xa670d7237398238DE01267472C6f13e5B8010FD1",
     "chain": "ethereum"
@@ -11628,7 +11892,7 @@
    "slug": "sommelier",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "sommelier-control-plane",
      "surface": "somm (CosmosERC20) · Non-Proxy Bytecode & Controller",
@@ -11658,7 +11922,7 @@
    "kind": "protocol",
    "name": "Sonic Gateway",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xa1E2481a9CD0Cb0447EeB1cbc26F1b3fff3bec20",
     "chain": "ethereum"
@@ -11670,7 +11934,7 @@
    "slug": "sonic-gateway",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "sonic-gateway-control-plane",
      "surface": "TokenDeposit · EIP-1967 Proxy & Controller Chain",
@@ -11700,7 +11964,7 @@
    "kind": "protocol",
    "name": "SoSoValue Basis",
    "observedDelaySeconds": null,
-   "pinnedBlock": 59450023,
+   "pinnedBlock": 59532664,
    "preflightArgs": {
     "address": "0x624e2e7fDc8903165F64891672267AB0FCB98831",
     "chain": "base"
@@ -11710,7 +11974,7 @@
    "slug": "sosovalue-basis",
    "surfaces": [
     {
-     "blockNumber": 59450023,
+     "blockNumber": 59532664,
      "classification": "rpc_observed",
      "id": "sosovalue-basis-control-plane",
      "surface": "SoSoValue (OptimismMintableERC20) · Non-Proxy Bytecode & Controller",
@@ -11779,42 +12043,47 @@
    "whatDiffers": null
   },
   {
-   "baseEasUids": [],
+   "baseEasUids": [
+    "0x06edec4488a7b0389c63bd8551cb47e18600bb67d14decd9b1a56e69198cca1c"
+   ],
    "category": "Curated fixed-rate vaults with automated rollovers (Base)",
-   "chain": "base",
-   "chainId": 8453,
-   "classification": "rpc_observed",
-   "controllerAddress": "0xAA8578C937f8Ce1eDb10477817FfA424EdfAE6fc",
-   "controllerKind": "contract_controller",
-   "documentationComparison": "not_assessed",
+   "chain": "ethereum",
+   "chainId": 1,
+   "classification": "aligned_baseline",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
    "documentedDelaySeconds": null,
-   "easAttested": false,
-   "evidenceBasis": "rpc_observed",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
    "kind": "protocol",
    "name": "Spectra MetaVaults",
    "observedDelaySeconds": null,
-   "pinnedBlock": 59450023,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
-    "address": "0x64FCC3A02eeEba05Ef701b7eed066c6ebD5d4E51",
-    "chain": "base"
+    "address": "0x16b28223b607B4D90e2eC628fdC1a0AD9Ee1f6B8",
+    "chain": "ethereum"
    },
-   "primaryContract": "0x64FCC3A02eeEba05Ef701b7eed066c6ebD5d4E51",
+   "primaryContract": "0x16b28223b607B4D90e2eC628fdC1a0AD9Ee1f6B8",
    "relatedContracts": [
-    "0x690700C0255C745B97A0B0C13e6f08AEc011670E",
-    "0x4973b53b300d64ab72147EFF8C9d962f6b1dA02e"
+    "0x47a9B7E7E1bf368D2e0f3053Dde9270DD8E48eEA",
+    "0xf300d5032D7F607f1C5a54BA70b93bAA62172f20"
    ],
    "slug": "spectra-metavaults",
+   "sprints": [
+    30
+   ],
    "surfaces": [
     {
-     "blockNumber": 59450023,
-     "classification": "rpc_observed",
-     "id": "spectra-metavaults-control-plane",
-     "surface": "Spectra Token · EIP-1967 Proxy & Controller Chain",
-     "targetContract": "0x64FCC3A02eeEba05Ef701b7eed066c6ebD5d4E51",
-     "targetLabel": "Spectra Token"
+     "blockNumber": 26449594,
+     "classification": "aligned_baseline",
+     "id": "spectra-metavaults-upgradeability-16b282-s30",
+     "surface": "Spectra MetaVaults TransparentUpgradeableProxy: upgradeable (proxy admin), as documented",
+     "targetContract": "0x16b28223b607B4D90e2eC628fdC1a0AD9Ee1f6B8",
+     "targetLabel": "Spectra MetaVaults TransparentUpgradeableProxy"
     }
    ],
-   "targetLabel": "Spectra Token",
+   "targetLabel": "Spectra MetaVaults TransparentUpgradeableProxy",
    "tokens": [
     "SPECTRA"
    ],
@@ -11836,7 +12105,7 @@
    "kind": "protocol",
    "name": "Sport.fun",
    "observedDelaySeconds": null,
-   "pinnedBlock": 59450023,
+   "pinnedBlock": 59532664,
    "preflightArgs": {
     "address": "0x16EE7ecAc70d1028E7712751E2Ee6BA808a7dd92",
     "chain": "base"
@@ -11848,7 +12117,7 @@
    "slug": "sport-fun",
    "surfaces": [
     {
-     "blockNumber": 59450023,
+     "blockNumber": 59532664,
      "classification": "rpc_observed",
      "id": "sport-fun-control-plane",
      "surface": "Sport.fun · EIP-1967 Proxy & Controller Chain",
@@ -11933,7 +12202,7 @@
    "kind": "protocol",
    "name": "StableHodl",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x109D3042a3c682F94107b3818e93b3aDE2A47544",
     "chain": "ethereum"
@@ -11945,7 +12214,7 @@
    "slug": "stablehodl",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "stablehodl-control-plane",
      "surface": "stake_pool · EIP-1967 Proxy & Controller Chain",
@@ -12044,7 +12313,7 @@
    "kind": "protocol",
    "name": "Stafi",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xef3A930e1FfFFAcd2fc13434aC81bD278B0ecC8d",
     "chain": "ethereum"
@@ -12054,7 +12323,7 @@
    "slug": "stafi",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "stafi-control-plane",
      "surface": "StaFi (FISToken) · Non-Proxy Bytecode & Controller",
@@ -12253,7 +12522,7 @@
    "kind": "protocol",
    "name": "StakeStone STONE",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x1D88713b483A8E45cfF0e5CD7c2e15E5Fab4534d",
     "chain": "ethereum"
@@ -12263,7 +12532,7 @@
    "slug": "stakestone-stone",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "stakestone-stone-control-plane",
      "surface": "StakeStone (STO) · Non-Proxy Bytecode & Controller",
@@ -12407,7 +12676,7 @@
    "kind": "protocol",
    "name": "Starknet Bridge",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xCa14007Eff0dB1f8135f4C25B34De49AB0d42766",
     "chain": "ethereum"
@@ -12417,7 +12686,7 @@
    "slug": "starknet-bridge",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "starknet-bridge-control-plane",
      "surface": "StarkNet Token · Non-Proxy Bytecode & Controller",
@@ -12634,7 +12903,7 @@
    "kind": "protocol",
    "name": "Steer Protocol",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xCEBF1A54A9Ce703FC80967760b5A6cbDb4111099",
     "chain": "ethereum"
@@ -12647,7 +12916,7 @@
    "slug": "steer-protocol",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "steer-protocol-control-plane",
      "surface": "SteerPeriphery · EIP-1967 Proxy & Controller Chain",
@@ -12722,7 +12991,7 @@
    "kind": "protocol",
    "name": "Superform Core v2 (Base)",
    "observedDelaySeconds": null,
-   "pinnedBlock": 59450023,
+   "pinnedBlock": 59532664,
    "preflightArgs": {
     "address": "0xB5396ef2bF8CA360cEB4166b77AFb2bed20e74d4",
     "chain": "base"
@@ -12732,7 +13001,7 @@
    "slug": "superform-v2-base",
    "surfaces": [
     {
-     "blockNumber": 59450023,
+     "blockNumber": 59532664,
      "classification": "rpc_observed",
      "id": "superform-v2-base-control-plane",
      "surface": "SuperGovernor & SuperVaultAggregator Control Plane",
@@ -12763,7 +13032,7 @@
    "kind": "protocol",
    "name": "Supernova CL",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x44B7fBd4D87149eFa5347c451E74B9FD18E89c55",
     "chain": "ethereum"
@@ -12773,7 +13042,7 @@
    "slug": "supernova-cl",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "supernova-cl-control-plane",
      "surface": "AlgebraFactory · Non-Proxy Bytecode & Controller",
@@ -12853,7 +13122,7 @@
    "kind": "protocol",
    "name": "SushiSwap V3",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xc35DADB65012eC5796536bD9864eD8773aBc74C4",
     "chain": "ethereum"
@@ -12863,7 +13132,7 @@
    "slug": "sushiswap-v3",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "sushiswap-v3-control-plane",
      "surface": "MISOAccessControls · Non-Proxy Bytecode & Controller",
@@ -12948,7 +13217,7 @@
    "kind": "protocol",
    "name": "Symbiosis",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xd38BB40815d2B0c2d2c866e0c72c5728ffC76dd9",
     "chain": "ethereum"
@@ -12958,7 +13227,7 @@
    "slug": "symbiosis",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "symbiosis-control-plane",
      "surface": "Symbiosis · Non-Proxy Bytecode & Controller",
@@ -13039,7 +13308,7 @@
    "kind": "protocol",
    "name": "Synapse Cross Chain Bridge",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x0f2D719407FdBeFF09D87557AbB7232601FD9F29",
     "chain": "ethereum"
@@ -13049,7 +13318,7 @@
    "slug": "synapse-cross-chain-bridge",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "synapse-cross-chain-bridge-control-plane",
      "surface": "Synapse · Non-Proxy Bytecode & Controller",
@@ -13079,7 +13348,7 @@
    "kind": "protocol",
    "name": "SynFutures V3",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x6e15A54B5EcAc17e58daDedDbe8506a7560252F9",
     "chain": "ethereum"
@@ -13089,7 +13358,7 @@
    "slug": "synfutures-v3",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "synfutures-v3-control-plane",
      "surface": "SynFutures · Non-Proxy Bytecode & Controller",
@@ -13191,7 +13460,7 @@
    "kind": "protocol",
    "name": "Syntropia",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x1b2CB79a4564206f53Ba80b4d780F251b4Ae6765",
     "chain": "ethereum"
@@ -13204,7 +13473,7 @@
    "slug": "syntropia",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "syntropia-control-plane",
      "surface": "Syntropia USDC Core · EIP-1967 Proxy & Controller Chain",
@@ -13234,7 +13503,7 @@
    "kind": "protocol",
    "name": "Taiko Bridge",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x10dea67478c5F8C5E2D90e5E9B26dBe60c54d800",
     "chain": "ethereum"
@@ -13247,7 +13516,7 @@
    "slug": "taiko-bridge",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "taiko-bridge-control-plane",
      "surface": "Taiko Token · EIP-1967 Proxy & Controller Chain",
@@ -13277,7 +13546,7 @@
    "kind": "protocol",
    "name": "Tangent Finance",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x214C8A1023B30032a2Eded109146658C6D6F2781",
     "chain": "ethereum"
@@ -13287,7 +13556,7 @@
    "slug": "tangent-finance",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "tangent-finance-control-plane",
      "surface": "MarketCreator · Non-Proxy Bytecode & Controller",
@@ -13317,7 +13586,7 @@
    "kind": "protocol",
    "name": "Team Finance",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xCC4304A31d09258b0029eA7FE63d032f52e44EFe",
     "chain": "ethereum"
@@ -13329,7 +13598,7 @@
    "slug": "team-finance",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "team-finance-control-plane",
      "surface": "TrustSwap Token (SwapToken) · EIP-1967 Proxy & Controller Chain",
@@ -13414,7 +13683,7 @@
    "kind": "protocol",
    "name": "The Idols",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x9416bA76e88D873050A06e5956A3EBF10386b863",
     "chain": "ethereum"
@@ -13424,7 +13693,7 @@
    "slug": "the-idols",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "the-idols-control-plane",
      "surface": "Virtue · Non-Proxy Bytecode & Controller",
@@ -13454,7 +13723,7 @@
    "kind": "protocol",
    "name": "Theo Network thUSD",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xa3fE5c7596024E6811E14F029937D5bd8Ae485b3",
     "chain": "ethereum"
@@ -13466,7 +13735,7 @@
    "slug": "theo-network-thusd",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "theo-network-thusd-control-plane",
      "surface": "thUSD · EIP-1967 Proxy & Controller Chain",
@@ -13483,6 +13752,7 @@
   },
   {
    "baseEasUids": [
+    "0x06edec4488a7b0389c63bd8551cb47e18600bb67d14decd9b1a56e69198cca1c",
     "0x967a4935786194575835d5a46e3e39b1d553225deb6a96c7ff4acf52a34dff22"
    ],
    "category": "Decentralized Bitcoin Bridge",
@@ -13498,7 +13768,7 @@
    "kind": "protocol",
    "name": "Threshold Network (tBTC)",
    "observedDelaySeconds": 86400,
-   "pinnedBlock": 26407707,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x92f2d8b72a7F6a551Be60b9aa4194248E9B4913D",
     "chain": "ethereum"
@@ -13511,7 +13781,8 @@
    ],
    "slug": "threshold-network-tbtc",
    "sprints": [
-    15
+    15,
+    30
    ],
    "surfaces": [
     {
@@ -13521,6 +13792,14 @@
      "surface": "tBTC TimelockController 1d delay — public WalletRegistry upgradeAndCall schedule",
      "targetContract": "0x92f2d8b72a7F6a551Be60b9aa4194248E9B4913D",
      "targetLabel": "Threshold Council TimelockController"
+    },
+    {
+     "blockNumber": 26449594,
+     "classification": "aligned_baseline",
+     "id": "threshold-tbtc-walletregistry-op-0xb667-executed-s30",
+     "surface": "Timelock operation 0xb6671bbb: executed since #26,407,707; getMinDelay() still 86,400 s",
+     "targetContract": "0x92f2d8b72a7F6a551Be60b9aa4194248E9B4913D",
+     "targetLabel": "Threshold tBTC TimelockController"
     }
    ],
    "targetLabel": "Threshold Council TimelockController",
@@ -13546,7 +13825,7 @@
    "kind": "protocol",
    "name": "TokenWorks",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xA1a196b5BE89Be04a2c1dc71643689CE013c22e5",
     "chain": "ethereum"
@@ -13556,7 +13835,7 @@
    "slug": "tokenworks",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "tokenworks-control-plane",
      "surface": "NFTStrategyFactory · Non-Proxy Bytecode & Controller",
@@ -13586,7 +13865,7 @@
    "kind": "protocol",
    "name": "Tori Finance",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xd0580192E98eA6CEB9c7b6191Ed2E27560911697",
     "chain": "ethereum"
@@ -13598,7 +13877,7 @@
    "slug": "tori-finance",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "tori-finance-control-plane",
      "surface": "trUSD · EIP-1967 Proxy & Controller Chain",
@@ -13628,7 +13907,7 @@
    "kind": "protocol",
    "name": "Tornado Cash",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x77777FeDdddFfC19Ff86DB637967013e6C6A116C",
     "chain": "ethereum"
@@ -13638,7 +13917,7 @@
    "slug": "tornado-cash",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "tornado-cash-control-plane",
      "surface": "TornadoCash (TORN) · Non-Proxy Bytecode & Controller",
@@ -13759,7 +14038,7 @@
    "kind": "protocol",
    "name": "Trueo",
    "observedDelaySeconds": null,
-   "pinnedBlock": 59450023,
+   "pinnedBlock": 59532664,
    "preflightArgs": {
     "address": "0x21CFCFc3d8F98fC728f48341D10Ad8283F6EB7AB",
     "chain": "base"
@@ -13769,7 +14048,7 @@
    "slug": "trueo",
    "surfaces": [
     {
-     "blockNumber": 59450023,
+     "blockNumber": 59532664,
      "classification": "rpc_observed",
      "id": "trueo-control-plane",
      "surface": "True · Non-Proxy Bytecode & Controller",
@@ -13799,7 +14078,7 @@
    "kind": "protocol",
    "name": "UltraYield Vaults",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x8ECC0B419dfe3AE197BC96f2a03636b5E1BE91db",
     "chain": "ethereum"
@@ -13811,7 +14090,7 @@
    "slug": "ultrayield-vaults",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "ultrayield-vaults-control-plane",
      "surface": "Stable Gain Vault (UUPSProxy) · EIP-1967 Proxy & Controller Chain",
@@ -13896,7 +14175,7 @@
    "kind": "protocol",
    "name": "UNCX Network V2",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xaDB2437e6F65682B85F814fBc12FeC0508A7B1D0",
     "chain": "ethereum"
@@ -13906,7 +14185,7 @@
    "slug": "uncx-network-v2",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "uncx-network-v2-control-plane",
      "surface": "UniCrypt (UNCX) · Non-Proxy Bytecode & Controller",
@@ -14110,7 +14389,7 @@
    "kind": "protocol",
    "name": "Unitus",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x3B6564b5DA73A41d3A66e6558a98FD0e9E1e77ad",
     "chain": "ethereum"
@@ -14123,7 +14402,7 @@
    "slug": "unitus",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "unitus-control-plane",
      "surface": "Unitus (UnitusCompOFT) · EIP-1967 Proxy & Controller Chain",
@@ -14153,7 +14432,7 @@
    "kind": "protocol",
    "name": "Unslashed",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xE0e05c43c097B0982Db6c9d626c4eb9e95C3b9ce",
     "chain": "ethereum"
@@ -14163,7 +14442,7 @@
    "slug": "unslashed",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "unslashed-control-plane",
      "surface": "Unslashed Finance Governance Token (USF) · Non-Proxy Bytecode & Controller",
@@ -14253,7 +14532,7 @@
    "kind": "protocol",
    "name": "USDT0",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x6C96dE32CEa08842dcc4058c14d3aaAD7Fa41dee",
     "chain": "ethereum"
@@ -14266,7 +14545,7 @@
    "slug": "usdt0",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "usdt0-control-plane",
      "surface": "OAdapterUpgradeable · EIP-1967 Proxy & Controller Chain",
@@ -14356,7 +14635,7 @@
    "kind": "protocol",
    "name": "Veda",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x5232bc0F5999f8dA604c42E1748A13a170F94A1B",
     "chain": "ethereum"
@@ -14366,7 +14645,7 @@
    "slug": "veda",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "veda-control-plane",
      "surface": "ArcticArchitectureLens · Non-Proxy Bytecode & Controller",
@@ -14442,39 +14721,47 @@
    }
   },
   {
-   "baseEasUids": [],
+   "baseEasUids": [
+    "0x06edec4488a7b0389c63bd8551cb47e18600bb67d14decd9b1a56e69198cca1c"
+   ],
    "category": "CDP issuing VUSD and vetBTC against yield-bearing reserves (Ethereum)",
    "chain": "ethereum",
    "chainId": 1,
-   "classification": "rpc_observed",
-   "controllerAddress": "0x6649Ddb5c7e52348b73c8bBdD2A1cbA630b7AaEA",
-   "controllerKind": "multisig_safe",
-   "documentationComparison": "not_assessed",
+   "classification": "aligned_baseline",
+   "controllerAddress": null,
+   "controllerKind": null,
+   "documentationComparison": "compared",
    "documentedDelaySeconds": null,
-   "easAttested": false,
-   "evidenceBasis": "rpc_observed",
+   "easAttested": true,
+   "evidenceBasis": "eas_attested",
    "kind": "protocol",
    "name": "VETRO",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
-    "address": "0xC8317A10385BE07901A4c9ee3d06E1D83AE378c9",
+    "address": "0xDaD503f8B9d42bb7af3AfC588358D30163e4416F",
     "chain": "ethereum"
    },
-   "primaryContract": "0xC8317A10385BE07901A4c9ee3d06E1D83AE378c9",
-   "relatedContracts": [],
+   "primaryContract": "0xDaD503f8B9d42bb7af3AfC588358D30163e4416F",
+   "relatedContracts": [
+    "0x07Ee70DFd5a74d4a038Ff6AAE1d31Ca2C71F4DF1",
+    "0x83B2435d9A30b7463B3Ba997ba47a14B73149e2A"
+   ],
    "slug": "vetro",
+   "sprints": [
+    30
+   ],
    "surfaces": [
     {
-     "blockNumber": 26448221,
-     "classification": "rpc_observed",
-     "id": "vetro-control-plane",
-     "surface": "Treasury · Non-Proxy Bytecode & Controller",
-     "targetContract": "0xC8317A10385BE07901A4c9ee3d06E1D83AE378c9",
-     "targetLabel": "Treasury"
+     "blockNumber": 26449594,
+     "classification": "aligned_baseline",
+     "id": "vetro-upgradeability-dad503-s30",
+     "surface": "VETRO contract: upgradeable (proxy admin), as documented",
+     "targetContract": "0xDaD503f8B9d42bb7af3AfC588358D30163e4416F",
+     "targetLabel": "VETRO contract"
     }
    ],
-   "targetLabel": "Treasury",
+   "targetLabel": "VETRO contract",
    "tokens": [
     "VETRO"
    ],
@@ -14496,7 +14783,7 @@
    "kind": "protocol",
    "name": "Wan Bridge",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xfCeAAaEB8D564a9D0e71Ef36f027b9D162bC334e",
     "chain": "ethereum"
@@ -14506,7 +14793,7 @@
    "slug": "wan-bridge",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "wan-bridge-control-plane",
      "surface": "CrossProxy · Non-Proxy Bytecode & Controller",
@@ -14595,7 +14882,7 @@
    "kind": "protocol",
    "name": "Wildcat Protocol",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xfEB516d9D946dD487A9346F6fee11f40C6945eE4",
     "chain": "ethereum"
@@ -14605,7 +14892,7 @@
    "slug": "wildcat-protocol",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "wildcat-protocol-control-plane",
      "surface": "WildcatArchController · Non-Proxy Bytecode & Controller",
@@ -14682,7 +14969,7 @@
    "kind": "protocol",
    "name": "WOOFi Earn",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x4691937a7508860F876c9c0a2a617E7d9E945D4B",
     "chain": "ethereum"
@@ -14692,7 +14979,7 @@
    "slug": "woofi-earn",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "woofi-earn-control-plane",
      "surface": "Wootrade Network · Non-Proxy Bytecode & Controller",
@@ -14722,7 +15009,7 @@
    "kind": "protocol",
    "name": "World Chain Bridge",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x90BB48fe3310499Db36437dCAE642F721e32d094",
     "chain": "ethereum"
@@ -14735,7 +15022,7 @@
    "slug": "world-chain-bridge",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "world-chain-bridge-control-plane",
      "surface": "AnchorStateRegistry · EIP-1967 Proxy & Controller Chain",
@@ -14839,7 +15126,7 @@
    "kind": "protocol",
    "name": "xDAI Stake Bridge",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x0Ae055097C6d159879521C384F1D2123D1f195e6",
     "chain": "ethereum"
@@ -14849,7 +15136,7 @@
    "slug": "xdai-stake-bridge",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "xdai-stake-bridge-control-plane",
      "surface": "STAKE (ERC677MultiBridgeToken) · Non-Proxy Bytecode & Controller",
@@ -14879,7 +15166,7 @@
    "kind": "protocol",
    "name": "XSY",
    "observedDelaySeconds": null,
-   "pinnedBlock": 59450023,
+   "pinnedBlock": 59532664,
    "preflightArgs": {
     "address": "0xBA515304d8153c4b162dC79f867E152DF9c127eb",
     "chain": "base"
@@ -14891,7 +15178,7 @@
    "slug": "xsy",
    "surfaces": [
     {
-     "blockNumber": 59450023,
+     "blockNumber": 59532664,
      "classification": "rpc_observed",
      "id": "xsy-control-plane",
      "surface": "Unity (UTY) · EIP-1967 Proxy & Controller Chain",
@@ -14997,7 +15284,7 @@
    "kind": "protocol",
    "name": "Yield Basis",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x01791F726B4103694969820be083196cC7c045fF",
     "chain": "ethereum"
@@ -15007,7 +15294,7 @@
    "slug": "yield-basis",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "yield-basis-control-plane",
      "surface": "Yield Basis (YB) · Non-Proxy Bytecode & Controller",
@@ -15037,7 +15324,7 @@
    "kind": "protocol",
    "name": "YieldFi",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x19Ebd191f7A24ECE672ba13A302212b5eF7F35cb",
     "chain": "ethereum"
@@ -15050,7 +15337,7 @@
    "slug": "yieldfi",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "yieldfi-control-plane",
      "surface": "YieldFi yUSD (YToken) · EIP-1967 Proxy & Controller Chain",
@@ -15241,7 +15528,7 @@
    "kind": "protocol",
    "name": "Yuzu Money",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0x224e90591A2d63fb66E677D0561Ea4A6Ad1F098D",
     "chain": "ethereum"
@@ -15254,7 +15541,7 @@
    "slug": "yuzu-money",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "yuzu-money-control-plane",
      "surface": "Yuzu Cash (YuzuILPV3) · EIP-1967 Proxy & Controller Chain",
@@ -15284,7 +15571,7 @@
    "kind": "protocol",
    "name": "Zama",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xA12CC123ba206d4031D1c7f6223D1C2Ec249f4f3",
     "chain": "ethereum"
@@ -15294,7 +15581,7 @@
    "slug": "zama",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "zama-control-plane",
      "surface": "Zama (ZamaERC20) · Non-Proxy Bytecode & Controller",
@@ -15324,7 +15611,7 @@
    "kind": "protocol",
    "name": "ZEROBASE CeDeFi",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xfAB99fCF605fD8f4593EDb70A43bA56542777777",
     "chain": "ethereum"
@@ -15334,7 +15621,7 @@
    "slug": "zerobase-cedefi",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "zerobase-cedefi-control-plane",
      "surface": "ZEROBASE · Non-Proxy Bytecode & Controller",
@@ -15420,7 +15707,7 @@
    "kind": "protocol",
    "name": "Zora Bridge",
    "observedDelaySeconds": null,
-   "pinnedBlock": 59450023,
+   "pinnedBlock": 59532664,
    "preflightArgs": {
     "address": "0x1111111111166b7FE7bd91427724B487980aFc69",
     "chain": "base"
@@ -15430,7 +15717,7 @@
    "slug": "zora-bridge",
    "surfaces": [
     {
-     "blockNumber": 59450023,
+     "blockNumber": 59532664,
      "classification": "rpc_observed",
      "id": "zora-bridge-control-plane",
      "surface": "Zora · Non-Proxy Bytecode & Controller",
@@ -15460,7 +15747,7 @@
    "kind": "protocol",
    "name": "ZTLN-P",
    "observedDelaySeconds": null,
-   "pinnedBlock": 26448221,
+   "pinnedBlock": 26449594,
    "preflightArgs": {
     "address": "0xfEd3D6557Dc46A1B25d0A6F666513Cb33835864B",
     "chain": "ethereum"
@@ -15472,7 +15759,7 @@
    "slug": "ztln-p",
    "surfaces": [
     {
-     "blockNumber": 26448221,
+     "blockNumber": 26449594,
      "classification": "rpc_observed",
      "id": "ztln-p-control-plane",
      "surface": "Zoth Tokenized Liquid Notes Prime (ZTLNPrime) · EIP-1967 Proxy & Controller Chain",
@@ -16015,9 +16302,9 @@
  ],
  "totals": {
   "briefs": 17,
-  "easAttestedProtocols": 116,
-  "items": 328,
-  "protocols": 311,
-  "rpcObservedProtocols": 195
+  "easAttestedProtocols": 132,
+  "items": 329,
+  "protocols": 312,
+  "rpcObservedProtocols": 180
  }
 }

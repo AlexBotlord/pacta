@@ -6,7 +6,7 @@
   "chainId": 1,
   "contractAddress": "0x85d456B2DfF1fd8245387C0BfB64Dfb700e98Ef3",
   "pactaSlug": "kelp-dao-rseth",
-  "priorPin": "Pacta's published Kelp governance surfaces were pinned at Ethereum block 26406106. A separate owner() read on the Ethereum rsETH OFT adapter returned 0xCbcdd778AA25476F203814214dD3E9b9c46829A1 at that block and again at 26426341. Transaction 0x8d1ba241520ee255cfec426158b1036a642a347cab1af6205ce634a23bf952c7, log 127, emitted OwnershipTransferred on the adapter at block 26426342. At the end of that block owner() returned 0xb3696a817D01C8623E66D156B6798291fa10a46d. Both archive providers also returned 0xb3696a817D01C8623E66D156B6798291fa10a46d at finalized block 26449848 (0xe834693ce3071fcfb265d4a8758254d46101c6a53767fe399db9bba39ab333c2, 2026-11-19T14:53:11+00:00).",
+  "priorPin": "In Sprint 14, Pacta's published Kelp governance surfaces were pinned at Ethereum block 26406106. A separate owner() read on the Ethereum rsETH OFT adapter returned 0xCbcdd778AA25476F203814214dD3E9b9c46829A1 at that block and again at 26426341. Transaction 0x8d1ba241520ee255cfec426158b1036a642a347cab1af6205ce634a23bf952c7, log 127, emitted OwnershipTransferred on the adapter at block 26426342. At the end of that block owner() returned 0xb3696a817D01C8623E66D156B6798291fa10a46d. Sprint 30 subsequently advanced Pacta's latest Kelp pin to block 26449594. The transfer at block 26426342 predates that pin. Both archive providers also returned 0xb3696a817D01C8623E66D156B6798291fa10a46d at finalized block 26449848 (0xe834693ce3071fcfb265d4a8758254d46101c6a53767fe399db9bba39ab333c2, 2026-11-19T14:53:11+00:00).",
   "hunter": "oppo2357",
   "agentFramework": "codex",
   "basePayoutAddress": "0x672F00baB14dEfC00Bef12A2fB93533Ede40A32d",
@@ -161,11 +161,11 @@
       }
     }
   },
-  "blockNumber": 26426342,
-  "blockHash": "0xaf9a3eb0a51192df5b5ff72eb5c49263e1061d968700d9917103a6c1553a0f0c",
+  "blockNumber": 26449848,
+  "blockHash": "0xe834693ce3071fcfb265d4a8758254d46101c6a53767fe399db9bba39ab333c2",
   "castCommands": [
-    "cast call 0x85d456B2DfF1fd8245387C0BfB64Dfb700e98Ef3 \"owner()(address)\" --block 26426342 --rpc-url https://eth.drpc.org",
-    "cast call 0x85d456B2DfF1fd8245387C0BfB64Dfb700e98Ef3 \"owner()(address)\" --block 26426342 --rpc-url https://eth-mainnet.public.blastapi.io"
+    "cast call 0x85d456B2DfF1fd8245387C0BfB64Dfb700e98Ef3 \"owner()(address)\" --block 26449848 --rpc-url https://eth.drpc.org",
+    "cast call 0x85d456B2DfF1fd8245387C0BfB64Dfb700e98Ef3 \"owner()(address)\" --block 26449848 --rpc-url https://eth-mainnet.public.blastapi.io"
   ],
   "rpcOutputs": {
     "a": "0xb3696a817D01C8623E66D156B6798291fa10a46d",

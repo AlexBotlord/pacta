@@ -17,7 +17,7 @@ Sprint 29 is the Wave 5 gap audit under the stop rule (no new un-scored row): it
   the Sprint pin and at the published prior pin).
   --wave2-payouts gives each PR's Base payout transaction (32-byte hashes; truncated hashes are refused): they join
   bounties/leaderboard.json wave2Settlements, and tools/bounty_wave2.json / bounties/WAVE2-MASTER-ISSUE.md move to the epoch
-  capacity below (WAVE2_CAPACITY). A further Codex-approved Wave 2 PR is folded the same way: add its catch to
+  capacity below (WAVE2_CAPACITY). A further independently verified Wave 2 PR is folded the same way: add its catch to
   promote/bounty_s29.py, re-stage, add its payout here, re-run (before the EAS hash is computed).
 - Published RPC-pinned protocols whose v2.1 re-score re-validates at the Sprint pins are converted (staged "converts_rpc_pinned").
 - Every other published RPC-pinned record moves to the Sprint pins with each stated fact re-read (as in Sprint 28).

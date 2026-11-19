@@ -1,0 +1,260 @@
+{
+  "wave": 2,
+  "category": "protocol_mismatch",
+  "slug": "polygon-pos-bridge",
+  "protocol": "Polygon PoS Bridge",
+  "chainId": 1,
+  "contractAddress": "0xA0c68C638235ee32657e8f720a23ceC1bFc77C77",
+  "hunter": "random-solver",
+  "agentFramework": "antigravity",
+  "basePayoutAddress": "0x7EDAC178137184cB0a3e291CFAefAcFe138137Bb",
+  "mcpProof": {
+    "tool": "pacta_check_preflight",
+    "arguments": {
+      "chain": "ethereum",
+      "address": "0xA0c68C638235ee32657e8f720a23ceC1bFc77C77"
+    },
+    "result": {
+      "schema": "pacta.preflight_check.v1",
+      "chain": "ethereum",
+      "chainId": 1,
+      "address": "0xA0c68C638235ee32657e8f720a23ceC1bFc77C77",
+      "pinnedBlock": 26449156,
+      "pinnedBlockHash": "0x66dd692e3b552d1ee965c04eba995f8a0f220869b97fd739fd652ebf67e0897f",
+      "blockTimestamp": 1795091651,
+      "verdict": "MULTISIG_NO_TIMELOCK",
+      "riskScore": 55,
+      "isContract": true,
+      "isProxy": false,
+      "proxyType": null,
+      "implementation": null,
+      "beacon": null,
+      "hasAdminSlot": false,
+      "canUpgradeZeroDelay": false,
+      "capabilities": {
+        "pause": false,
+        "blacklist": false,
+        "upgrade": false
+      },
+      "paused": null,
+      "controller": {
+        "address": "0xFa7D2a996aC6350f4b56C043112Da0366a59b74c",
+        "kind": "multisig_safe",
+        "safeThreshold": 5,
+        "timelockDelaySec": null,
+        "safeOwnerCount": 9,
+        "source": "AccessControl.DEFAULT_ADMIN_ROLE"
+      },
+      "roleAdminMembers": 1,
+      "codeBytes": 2949,
+      "method": "Batched JSON-RPC reads pinned to the block hash (EIP-1898); EIP-1967 / EIP-1822 / beacon proxies; capabilities from PUSH4 selectors in proxy + implementation bytecode (heuristic).",
+      "summary": "Controlled by a 5-of-9 Safe with no timelock: changes can land instantly once signers agree.",
+      "source": "live_rpc",
+      "assessment": {
+        "coverage": "unindexed_bytecode_heuristic",
+        "confidence": "medium",
+        "method": "Live bytecode + storage heuristic at the pinned block only: this contract is not in Pacta's indexed catalog (no documentation comparison).",
+        "limits": [
+          "riskScore (0-100) is a heuristic of the controller type and of pause / blacklist / upgrade capabilities read at one block; it is not an audit.",
+          "The live check reads EIP-1967 slots, owner(), Safe getThreshold() / getOwners() and TimelockController getMinDelay(); custom role systems, bridge or L2 admin paths and off-chain operations are not resolved.",
+          "Documentation is compared only for indexed protocols (catalogMatch), at their pinned block."
+        ]
+      },
+      "coverage_gap_hint": "Target is not yet indexed or fully classified. Ask the user if they want you to queue coverage or request this capability via pacta_submit_request (free community queue, or 24h priority clearance for issuers).",
+      "meter": {
+        "limit": 50,
+        "remaining": 27,
+        "reset": 1795132800
+      },
+      "upgrade_x402": {
+        "note": "Free tier: 50 pre-flight calls per caller per UTC day (REST and MCP), then $0.01 per call over x402 (HTTP 402, never a dead-end 429). Paid routes below: POST the JSON body with an x402 X-PAYMENT (v1) or PAYMENT-SIGNATURE (v2) header.",
+        "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "network": "base (eip155:8453)",
+        "payTo": "0x4348DF1BEFAffcbA248B5118B1b782B1B2bdEd14",
+        "discovery": "https://pacta.fractalneurons.com/.well-known/x402",
+        "overflow": {
+          "method": "GET or POST",
+          "url": "https://pacta.fractalneurons.com/v1/check/preflight",
+          "priceUsd": "0.01",
+          "amountAtomic": "10000",
+          "after": "50 free calls per UTC day"
+        },
+        "endpoints": [
+          {
+            "method": "POST",
+            "url": "https://pacta.fractalneurons.com/v1/x402/verdict",
+            "priceUsd": "0.02",
+            "amountAtomic": "20000",
+            "unlocks": "fast contract / token control-plane verdict: riskScore 0-100, grade A-F, upgrade / owner / pause / blacklist / mint flags and a shareable scan URL",
+            "example": {
+              "chain": "ethereum",
+              "address": "0xA35b1B31Ce002FBF2058D22F30f95D405200A15b"
+            }
+          },
+          {
+            "method": "POST",
+            "url": "https://pacta.fractalneurons.com/v1/x402/dossier",
+            "priceUsd": "0.05",
+            "amountAtomic": "50000",
+            "unlocks": "full control-plane dossier: every controller Safe's signers and threshold, signers shared with other indexed protocols, Base EAS proof",
+            "example": {
+              "slug": "stader-labs-ethx"
+            }
+          },
+          {
+            "method": "POST",
+            "url": "https://pacta.fractalneurons.com/v1/x402/calldata-sim",
+            "priceUsd": "0.25",
+            "amountAtomic": "250000",
+            "unlocks": "pre-signing calldata check: timelock / Safe / multicall calls decoded, each rated against live delays and the authority that governs it",
+            "example": {
+              "chain": "ethereum",
+              "target": "0x2225DAbFfC7F862c99477381E971E8B1FDaB467e",
+              "data": "0x64d623530000000000000000000000000000000000000000000000000000000000015180"
+            }
+          },
+          {
+            "method": "POST",
+            "url": "https://pacta.fractalneurons.com/v1/x402/deep-scan",
+            "priceUsd": "9.00",
+            "amountAtomic": "9000000",
+            "unlocks": "deep control-plane scan cross-checked on two independent RPC operators, auditor receipt and a queued Base EAS ticket",
+            "example": {
+              "chain": "base",
+              "address": "0x35D21Bb4Df6586FE7759b5e57263ffeB3e1fd872"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "blockNumber": 26449083,
+  "blockHash": "0x1e0489385d723e9091060e0acc0939a4cdf7774dc4395e5f55a304f1b5a9cc6b",
+  "castCommands": [
+    "cast call 0xA0c68C638235ee32657e8f720a23ceC1bFc77C77 \"proxyOwner()(address)\" --block 26449083 --rpc-url https://gateway.tenderly.co/public/mainnet",
+    "cast call 0xA0c68C638235ee32657e8f720a23ceC1bFc77C77 \"proxyOwner()(address)\" --block 26449083 --rpc-url https://ethereum-rpc.publicnode.com"
+  ],
+  "rpcOutputs": {
+    "a": "0xCaf0aa768A3AE1297DF20072419Db8Bb8b5C8cEf",
+    "b": "0xCaf0aa768A3AE1297DF20072419Db8Bb8b5C8cEf",
+    "pinnedDualRpcChainProof": {
+      "blockNumber": 26449083,
+      "blockHash": "0x1e0489385d723e9091060e0acc0939a4cdf7774dc4395e5f55a304f1b5a9cc6b",
+      "rpcEndpoints": [
+        "https://gateway.tenderly.co/public/mainnet",
+        "https://ethereum-rpc.publicnode.com"
+      ],
+      "note": "Mismatch summary: Polygon official PoS mainnet multi-signatures documentation states that the existing multisigs do not have the capability to censor transactions (including bridge transactions), and lists a dedicated Timelock contract (0xCaf0aa768A3AE1297DF20072419Db8Bb8b5C8cEf) and a 5/9 Multisig (0xFa7D2a996aC6350f4b56C043112Da0366a59b74c) plus a '4/8 Multisig' (0x424bDE99FCfB68c5a1218fd3215caFfD031f19C4). At the pinned finalized Ethereum block, RootChainManagerProxy (0xA0c68C638235ee32657e8f720a23ceC1bFc77C77), ERC20PredicateProxy (0x40ec5B33f54e0E8A33A975908C5BA1c14e5BbbDf), and EtherPredicateProxy (0x8484Ef722627bf18ca5Ae6BcF031c23E6e922B30) all set proxyOwner() to Timelock 0xCaf0aa768A3AE1297DF20072419Db8Bb8b5C8cEf, whose getMinDelay() is 0 seconds (reduced from 172800s to 0s at block 20606116). The 5-of-9 Safe (0xFa7D2a996aC6350f4b56C043112Da0366a59b74c) holds both PROPOSER_ROLE and EXECUTOR_ROLE on the 0s Timelock and directly holds AccessControl.DEFAULT_ADMIN_ROLE on all three bridge contracts, enabling immediate zero-delay implementation upgrades and predicate/token-mapping modifications across L1 bridge custody contracts. Additionally, the documented '4/8 Multisig' (0x424bDE99FCfB68c5a1218fd3215caFfD031f19C4) is configured as a 4-of-13 Safe on-chain.",
+      "reads": {
+        "rootChainManagerProxyOwner": {
+          "contract": "0xA0c68C638235ee32657e8f720a23ceC1bFc77C77",
+          "castCommands": [
+            "cast call 0xA0c68C638235ee32657e8f720a23ceC1bFc77C77 \"proxyOwner()(address)\" --block 26449083 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0xA0c68C638235ee32657e8f720a23ceC1bFc77C77 \"proxyOwner()(address)\" --block 26449083 --rpc-url https://ethereum-rpc.publicnode.com"
+          ],
+          "output": "0xCaf0aa768A3AE1297DF20072419Db8Bb8b5C8cEf"
+        },
+        "timelockMinDelay": {
+          "contract": "0xCaf0aa768A3AE1297DF20072419Db8Bb8b5C8cEf",
+          "castCommands": [
+            "cast call 0xCaf0aa768A3AE1297DF20072419Db8Bb8b5C8cEf \"getMinDelay()(uint256)\" --block 26449083 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0xCaf0aa768A3AE1297DF20072419Db8Bb8b5C8cEf \"getMinDelay()(uint256)\" --block 26449083 --rpc-url https://ethereum-rpc.publicnode.com"
+          ],
+          "output": "0"
+        },
+        "timelockProposerRole": {
+          "contract": "0xCaf0aa768A3AE1297DF20072419Db8Bb8b5C8cEf",
+          "castCommands": [
+            "cast call 0xCaf0aa768A3AE1297DF20072419Db8Bb8b5C8cEf \"hasRole(bytes32,address)(bool)\" 0xb09aa5aeb3702cfd50b6b62bc4532604938f21248a27a1d5ca736082b6819cc1 0xFa7D2a996aC6350f4b56C043112Da0366a59b74c --block 26449083 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0xCaf0aa768A3AE1297DF20072419Db8Bb8b5C8cEf \"hasRole(bytes32,address)(bool)\" 0xb09aa5aeb3702cfd50b6b62bc4532604938f21248a27a1d5ca736082b6819cc1 0xFa7D2a996aC6350f4b56C043112Da0366a59b74c --block 26449083 --rpc-url https://ethereum-rpc.publicnode.com"
+          ],
+          "output": "true"
+        },
+        "timelockExecutorRole": {
+          "contract": "0xCaf0aa768A3AE1297DF20072419Db8Bb8b5C8cEf",
+          "castCommands": [
+            "cast call 0xCaf0aa768A3AE1297DF20072419Db8Bb8b5C8cEf \"hasRole(bytes32,address)(bool)\" 0xd8aa0f3194971a2a116679f7c2090f6939c8d4e01a2a8d7e41d55e5351469e63 0xFa7D2a996aC6350f4b56C043112Da0366a59b74c --block 26449083 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0xCaf0aa768A3AE1297DF20072419Db8Bb8b5C8cEf \"hasRole(bytes32,address)(bool)\" 0xd8aa0f3194971a2a116679f7c2090f6939c8d4e01a2a8d7e41d55e5351469e63 0xFa7D2a996aC6350f4b56C043112Da0366a59b74c --block 26449083 --rpc-url https://ethereum-rpc.publicnode.com"
+          ],
+          "output": "true"
+        },
+        "rootChainManagerDefaultAdmin": {
+          "contract": "0xA0c68C638235ee32657e8f720a23ceC1bFc77C77",
+          "castCommands": [
+            "cast call 0xA0c68C638235ee32657e8f720a23ceC1bFc77C77 \"getRoleMember(bytes32,uint256)(address)\" 0x0000000000000000000000000000000000000000000000000000000000000000 0 --block 26449083 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0xA0c68C638235ee32657e8f720a23ceC1bFc77C77 \"getRoleMember(bytes32,uint256)(address)\" 0x0000000000000000000000000000000000000000000000000000000000000000 0 --block 26449083 --rpc-url https://ethereum-rpc.publicnode.com"
+          ],
+          "output": "0xFa7D2a996aC6350f4b56C043112Da0366a59b74c"
+        },
+        "upgradeSafeThreshold": {
+          "contract": "0xFa7D2a996aC6350f4b56C043112Da0366a59b74c",
+          "castCommands": [
+            "cast call 0xFa7D2a996aC6350f4b56C043112Da0366a59b74c \"getThreshold()(uint256)\" --block 26449083 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0xFa7D2a996aC6350f4b56C043112Da0366a59b74c \"getThreshold()(uint256)\" --block 26449083 --rpc-url https://ethereum-rpc.publicnode.com"
+          ],
+          "output": "5"
+        },
+        "upgradeSafeOwners": {
+          "contract": "0xFa7D2a996aC6350f4b56C043112Da0366a59b74c",
+          "castCommands": [
+            "cast call 0xFa7D2a996aC6350f4b56C043112Da0366a59b74c \"getOwners()(address[])\" --block 26449083 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0xFa7D2a996aC6350f4b56C043112Da0366a59b74c \"getOwners()(address[])\" --block 26449083 --rpc-url https://ethereum-rpc.publicnode.com"
+          ],
+          "output": "[0xAB4045C93e4eFFa9b325F706C9a690Ed00d08958, 0x1aE033D45ce93bbB0dDBF71a0Da9de01FeFD8529, 0x4e981bAe8E3cd06Ca911ffFE5504B2653ac1C38a, 0x342EBaca3ACC54d6f5Ee78073FeC4af07f42B94e, 0x39415255619783A2E71fcF7d8f708A951d92e1b6, 0xb771380f912E4b5F6beDdf81314C383c13F16ab5, 0x10cb290Fc4a5473460572ECF67B4C0cf06Da99A3, 0xdA66Df3920091eF4B54782B9463587c314DAdD41, 0x9d851f8b8751c5FbC09b9E74E6e68E9950949052]"
+        },
+        "erc20PredicateProxyOwner": {
+          "contract": "0x40ec5B33f54e0E8A33A975908C5BA1c14e5BbbDf",
+          "castCommands": [
+            "cast call 0x40ec5B33f54e0E8A33A975908C5BA1c14e5BbbDf \"proxyOwner()(address)\" --block 26449083 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x40ec5B33f54e0E8A33A975908C5BA1c14e5BbbDf \"proxyOwner()(address)\" --block 26449083 --rpc-url https://ethereum-rpc.publicnode.com"
+          ],
+          "output": "0xCaf0aa768A3AE1297DF20072419Db8Bb8b5C8cEf"
+        },
+        "etherPredicateProxyOwner": {
+          "contract": "0x8484Ef722627bf18ca5Ae6BcF031c23E6e922B30",
+          "castCommands": [
+            "cast call 0x8484Ef722627bf18ca5Ae6BcF031c23E6e922B30 \"proxyOwner()(address)\" --block 26449083 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x8484Ef722627bf18ca5Ae6BcF031c23E6e922B30 \"proxyOwner()(address)\" --block 26449083 --rpc-url https://ethereum-rpc.publicnode.com"
+          ],
+          "output": "0xCaf0aa768A3AE1297DF20072419Db8Bb8b5C8cEf"
+        },
+        "mappingSafeQuorumMismatch": {
+          "contract": "0x424bDE99FCfB68c5a1218fd3215caFfD031f19C4",
+          "castCommands": [
+            "cast call 0x424bDE99FCfB68c5a1218fd3215caFfD031f19C4 \"getThreshold()(uint256)\" --block 26449083 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x424bDE99FCfB68c5a1218fd3215caFfD031f19C4 \"getThreshold()(uint256)\" --block 26449083 --rpc-url https://ethereum-rpc.publicnode.com",
+            "cast call 0x424bDE99FCfB68c5a1218fd3215caFfD031f19C4 \"getOwners()(address[])\" --block 26449083 --rpc-url https://gateway.tenderly.co/public/mainnet",
+            "cast call 0x424bDE99FCfB68c5a1218fd3215caFfD031f19C4 \"getOwners()(address[])\" --block 26449083 --rpc-url https://ethereum-rpc.publicnode.com"
+          ],
+          "output": "threshold=4, owners=13 (4-of-13 vs documented 4/8)",
+          "owners": [
+            "0xfB948CB3fE208fd067d36768B2bACd5dCF886066",
+            "0x2100482bc290716DE46e38046EeD343cfb1aC740",
+            "0x61Cb29AF9E503f0e2d88717f388931f1d10DE768",
+            "0x9f02595fBFD199C4cBC02878fc9B2b2E07b0840C",
+            "0x28260fD38F737e98F1599eCd385d4eB13C5A7A1f",
+            "0x5F050BECf0746E4E95C4dB3254eA0E9a56268C0d",
+            "0x573D7a729cfcF20B81D70732d625Ae31549B8b91",
+            "0xFAc88BB6229F47A31A78F0Ba91E5a541Cb1866a3",
+            "0xb20d2bA1C74744a0Df7852f62BF802AbC8e4d91E",
+            "0xc1bb11e60Dbd9817F34b5E7AfE39F2B3adDfA83E",
+            "0x54DFA4B635E7eB98515fEBA81d360A3871739277",
+            "0x10cb290Fc4a5473460572ECF67B4C0cf06Da99A3",
+            "0x803B74766D8f79195D4DaeCF6f2aac31Dba78F25"
+          ]
+        }
+      }
+    }
+  },
+  "docsUrl": "https://docs.polygon.technology/pos/reference/commit-chain-multisigs",
+  "docsQuote": "The existing multisigs do not have the capability to censor transactions, including bridge transactions.",
+  "tvlUsd": 2200591465.41,
+  "tvlReference": "https://api.llama.fi/protocol/polygon-bridge",
+  "apache2CommercialGrant": true,
+  "rulesAccepted": [
+    true,
+    true,
+    true,
+    true
+  ]
+}

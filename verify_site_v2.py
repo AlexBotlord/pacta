@@ -2776,7 +2776,15 @@ def main(argv=None):
           and all(res.get(k_) is True for k_ in ma_keys),
           f"ma_png {ma_png_ok}; embeds {valid_fc_embed(ma_html)}/{valid_fc_embed(scan_html)}; failed {[k_ for k_ in ma_keys if res.get(k_) is not True]}")
 
-    ads_expected = (("pacta-hypelab-728x90.png", (728, 90)), ("pacta-hypelab-300x250.png", (300, 250)), ("pacta-hypelab-320x50.png", (320, 50)))
+    ads_expected = (
+        ("pacta-hypelab-728x90.png", (728, 90)),
+        ("pacta-hypelab-300x250.png", (300, 250)),
+        ("pacta-hypelab-320x50.png", (320, 50)),
+        ("pacta-hypelab-1456x180.png", (1456, 180)),
+        ("pacta-hypelab-600x500.png", (600, 500)),
+        ("pacta-hypelab-640x100.png", (640, 100)),
+        ("pacta-hypelab-640x200.png", (640, 200)),
+    )
     ads_ok = True
     for ad_name, ad_dims in ads_expected:
         ad_src_p = os.path.join(ROOT, "tools", "ads", ad_name)

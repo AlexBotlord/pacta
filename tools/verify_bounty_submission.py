@@ -343,7 +343,8 @@ def load_fixture(path):
 
 def max_pinned_block(slug, docs=None):
     """Highest block Pacta has pinned for a published protocol, across protocols.json (surfaces), index.json (EAS records, by
-    protocol name and surface id) and rpc-pinned.json (by slug). None when the slug is not published."""
+    protocol name and surface id, including each record's later re-verification pins in reverified[]) and rpc-pinned.json (by slug).
+    None when the slug is not published."""
     d = docs or os.path.join(ROOT, "docs", "api", "v1")
     prot = {x["slug"]: x for x in json.load(open(os.path.join(d, "protocols.json")))["protocols"]}
     if slug not in prot:
@@ -351,7 +352,9 @@ def max_pinned_block(slug, docs=None):
     p = prot[slug]
     ids = {s.get("id") for s in p.get("surfaces") or []}
     blocks = [s.get("blockNumber") for s in p.get("surfaces") or []]
-    blocks += [e.get("block_number") for e in json.load(open(os.path.join(d, "index.json")))["entries"] if e.get("protocol") == p["name"] or e.get("id") in ids]
+    mine = [e for e in json.load(open(os.path.join(d, "index.json")))["entries"] if e.get("protocol") == p["name"] or e.get("id") in ids]
+    blocks += [e.get("block_number") for e in mine]
+    blocks += [r.get("block_number") for e in mine for r in e.get("reverified") or [] if isinstance(r, dict)]
     blocks += [e.get("block_number") for e in json.load(open(os.path.join(d, "rpc-pinned.json")))["entries"] if e.get("slug") == slug or e.get("id") in ids]
     nums = [int(b) for b in blocks if isinstance(b, int) or (isinstance(b, str) and b.isdigit())]
     return max(nums) if nums else None
@@ -621,6 +624,15 @@ def self_test_wave2(idx, verbose=False):
             ok = False
             print(f"self-test FAIL: wave 2 valid {c} fixture -> {validate_wave2(g, idx)}")
     good, vault, drift = goods["protocol_mismatch"], goods["curated_vault_mismatch"], goods["post_pin_drift"]
+    # a post_pin_drift read must postdate every published pin of the protocol, its records' re-verification pins included
+    prots = json.load(open(PROTOCOLS))["protocols"]
+    names = {x["name"]: x["slug"] for x in prots}
+    for e in json.load(open(os.path.join(os.path.dirname(PROTOCOLS), "index.json")))["entries"]:
+        for r in e.get("reverified") or []:
+            sl = names.get(e.get("protocol"))
+            if sl and (max_pinned_block(sl) or 0) < int(r["block_number"]):
+                ok = False
+                print(f"self-test FAIL: max_pinned_block({sl}) ignores the re-verification pin #{r['block_number']} of {e['id']}")
     tok = "gh" + "p_" + "B" * 20
     sib = [(1, good["contractAddress"].lower(), "other-target")]
     cases = [

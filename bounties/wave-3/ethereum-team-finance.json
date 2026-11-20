@@ -134,7 +134,7 @@
         "closed_date": null,
         "duration_days": 1304,
         "status": "unrepaired_open",
-        "summary": "Public-documentation disclosure gap, not an \"audit gap\": from the first 2023 implementation swap the public security page has kept an unversioned \"triple-audited framework\" claim while five vault implementation versions and three token-proxy pushes landed without any public, version-scoped report. The sampled pages (security page 2023-03-18 / 2025-08-04 / 2026-10-12, docs 2023-05-21, GitHub org, Hacken public index) show no Ethereum version-to-audit mapping; the only dated report found (Hacken, 2026-05-08) covers the Stellar suite. The gap is defined as open until public assurance is tied to specific implementations; this is not proof that no private or unindexed Ethereum audit existed."
+        "summary": "Public-documentation disclosure gap, not an \"audit gap\": from the first 2023 implementation swap the public security page has kept an unversioned \"triple-audited framework\" claim while four further vault implementation versions and three token-proxy pushes landed without any public, version-scoped report. The sampled pages (security page 2023-03-18 / 2025-08-04 / 2026-10-12, docs 2023-05-21, GitHub org, Hacken public index) show no Ethereum version-to-audit mapping; the only dated report found (Hacken, 2026-05-08) covers the Stellar suite. The gap is defined as open until public assurance is tied to specific implementations; this is not proof that no private or unindexed Ethereum audit existed."
       }
     ]
   },

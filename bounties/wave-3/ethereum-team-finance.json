@@ -17,7 +17,7 @@
       "tx_hash": "0xf44b51e02c784367c4df6acba1f6e98d27d023c8edef1562d65712e8e36c055a",
       "event_kind": "proxy_upgrade",
       "rpc_or_cast_proof": "cast receipt 0xf44b51e02c784367c4df6acba1f6e98d27d023c8edef1562d65712e8e36c055a --rpc-url https://ethereum-rpc.publicnode.com",
-      "summary": "Safe executes upgradeTo on the vault proxy 0xE2fE530C047f2d85298b07D9333C05737f1435fB, replacing the implementation with 0xf0c5215b59704645c5fa8851e8b2e4dc5732c240; no timelock, no prior on-chain notice."
+      "summary": "Admin Safe 0x088a012BF6d510aa923c814eA83807f75F7061A0 executes upgradeTo on the vault proxy via execTransaction at 2023-04-26 15:14 UTC; the Upgraded log names 0xf0c5215b59704645c5fa8851e8b2e4dc5732c240 as the new implementation. No timelock, no prior on-chain notice."
     },
     {
       "block_number": 17882754,
@@ -25,7 +25,7 @@
       "tx_hash": "0xf70c1a9196409672b5a54dab735aaa8cb3172c1acba94a5438ad97d18eb65e6a",
       "event_kind": "proxy_upgrade",
       "rpc_or_cast_proof": "cast receipt 0xf70c1a9196409672b5a54dab735aaa8cb3172c1acba94a5438ad97d18eb65e6a --rpc-url https://ethereum-rpc.publicnode.com",
-      "summary": "Second implementation swap on the same proxy, to 0x240404f15d8a76bdc201e52096406c6e0f6d504b, landing from the same 2-of-4 Safe address."
+      "summary": "Second implementation swap on the same vault proxy at 2023-08-10 06:38 UTC to 0x240404f15d8a76bdc201e52096406c6e0f6d504b, again executed by the admin Safe 0x088a012BF6d510aa923c814eA83807f75F7061A0."
     },
     {
       "block_number": 17886122,
@@ -33,7 +33,7 @@
       "tx_hash": "0x72a0c199a5907ab2a367f23222958755ccc036c883a1a2e49223201b0a2e5d52",
       "event_kind": "proxy_upgrade",
       "rpc_or_cast_proof": "cast receipt 0x72a0c199a5907ab2a367f23222958755ccc036c883a1a2e49223201b0a2e5d52 --rpc-url https://ethereum-rpc.publicnode.com",
-      "summary": "A further upgradeTo in the same day to 0xe900e6897db0af429bca77277979f4ea07662a2c: two implementation changes within 3368 blocks show a rapid, untimelocked iteration loop."
+      "summary": "A further upgradeTo at 2023-08-10 17:57 UTC to 0xe900e6897db0af429bca77277979f4ea07662a2c: two implementation changes 3368 blocks (11h19m) apart show a rapid, untimelocked iteration loop on live user funds."
     },
     {
       "block_number": 18715235,
@@ -41,7 +41,7 @@
       "tx_hash": "0x4271feb2bfb82ab44a404d4f9aab10e3fc9567eafc76a4b6e423c96f4b6a277c",
       "event_kind": "signer_or_threshold_change",
       "rpc_or_cast_proof": "cast receipt 0x4271feb2bfb82ab44a404d4f9aab10e3fc9567eafc76a4b6e423c96f4b6a277c --rpc-url https://ethereum-rpc.publicnode.com",
-      "summary": "swapOwner on the controlling Safe rotates a signer key (previous owner slot replaced by 0x4b0106f48829c842fa2f17aa4d633e15a4919ff1); threshold stays at 2 of 4."
+      "summary": "swapOwner executed by the admin Safe at 2023-12-04 19:58 UTC removes signer 0xe796b48199fcd928f339760f4c889cc090766882 and installs 0x3b3fb33dd9b1a7b31a72f9c5ee02fec5cac52dea (0x4b0106f48829c842fa2f17aa4d633e15a4919ff1 is the linked-list prevOwner pointer, not a new signer); threshold stays 2 of 4 and nothing is published."
     },
     {
       "block_number": 19867696,
@@ -49,7 +49,7 @@
       "tx_hash": "0xca6764aaabf0ec71130be2d15d748c693398380dce70ef08d27477ffb534c5d4",
       "event_kind": "proxy_upgrade",
       "rpc_or_cast_proof": "cast receipt 0xca6764aaabf0ec71130be2d15d748c693398380dce70ef08d27477ffb534c5d4 --rpc-url https://ethereum-rpc.publicnode.com",
-      "summary": "Third implementation push of the day onto the SWAP token proxy 0xCC4304A31d09258b0029eA7FE63d032f52e44EFe (impl 0xffe273a973c66da5b8ad6772f2476dbd6491034e), proving the same Safe fans upgrades across several proxies in minutes."
+      "summary": "Third upgradeTo of the day executed by the same admin Safe (nonces 18, 19 and 20) at 2024-05-14 10:37 UTC, this time on the SWAP token proxy 0xCC4304A31d09258b0029eA7FE63d032f52e44EFe, installing implementation 0xffe273a973c66da5b8ad6772f2476dbd6491034e."
     },
     {
       "block_number": 20676325,
@@ -57,7 +57,7 @@
       "tx_hash": "0xcb9666971f1499298c048bc9a3987e7846c768a0d057f242c933256ce714bb8a",
       "event_kind": "proxy_upgrade",
       "rpc_or_cast_proof": "cast receipt 0xcb9666971f1499298c048bc9a3987e7846c768a0d057f242c933256ce714bb8a --rpc-url https://ethereum-rpc.publicnode.com",
-      "summary": "Current implementation installed on the vault proxy: 0x6dd27f2b82f78dd8a802a9228f340518280359f1, confirmed live by the EIP-1967 storage slot at block 26452163."
+      "summary": "Current implementation installed at 2024-09-04 09:29 UTC: Upgraded(0x6dd27f2b82f78dd8a802a9228f340518280359f1) on the vault, and the EIP-1967 implementation slot still returns that address at block 26452849 on 2026-11-20."
     },
     {
       "block_number": 22273221,
@@ -65,43 +65,49 @@
       "tx_hash": "0x031e4ffb328a1722905093b0ebee15ef3b1993f0a44b31e0fc7f603a638ad69c",
       "event_kind": "signer_or_threshold_change",
       "rpc_or_cast_proof": "cast receipt 0x031e4ffb328a1722905093b0ebee15ef3b1993f0a44b31e0fc7f603a638ad69c --rpc-url https://ethereum-rpc.publicnode.com",
-      "summary": "Latest control-plane mutation visible in the Safe history: another swapOwner rotation of a signer key, again with no timelock and no published notice."
+      "summary": "Last executed admin-Safe transaction (nonce 28, next nonce 29): swapOwner at 2025-04-15 08:34 UTC removes 0x3b3fb33dd9b1a7b31a72f9c5ee02fec5cac52dea and installs 0x41a743ee19562c9bf1ac975f3ee761d0e4f28221, keeping a 2-of-4 threshold with no timelock and no published notice."
     }
   ],
   "docs_and_governance_forensics": {
     "mttr_status": "unrepaired_open",
     "mttr_days": null,
-    "unrepaired_open_days": 1303,
+    "unrepaired_open_days": 1304,
     "evidence_sources": [
       {
         "kind": "wayback_snapshot",
         "date": "2023-03-18",
         "url": "https://web.archive.org/web/20230318id_/https://www.team.finance/security",
-        "claim_summary": "Archived security page states the platform \"stand[s] by our triple-audited framework\", an assurance tied to the pre-upgrade implementation set of March 2023."
+        "claim_summary": "Archived security page states the platform \"stand[s] by our triple-audited framework\" and \"[o]ur smart contracts are audited by industry leading experts\", with no contract address, implementation version or report link attached."
       },
       {
         "kind": "wayback_snapshot",
         "date": "2025-08-04",
         "url": "https://web.archive.org/web/20250804id_/https://www.team.finance/security",
-        "claim_summary": "Snapshot taken after five further implementation changes carries byte-identical audit wording: the published assurance was never revised for the July 2023 or September 2024 code."
+        "claim_summary": "Snapshot taken after the 2023-04-26, 2023-08-10 (two swaps) and 2024-09-04 vault upgrades and the 2024-05-14 token-proxy pushes carries the identical assurance wording, still untied to any deployed implementation."
       },
       {
         "kind": "wayback_snapshot",
         "date": "2026-10-12",
         "url": "https://web.archive.org/web/20261012id_/https://www.team.finance/security",
-        "claim_summary": "Latest crawl still shows the same triple-audited claim, with no mention of the 2024-09-04 implementation 0x6dd27f2b82f78dd8a802a9228f340518280359f1 now holding user funds."
+        "claim_summary": "Latest crawl keeps the same two assurance sentences verbatim (only the marketing counter moved from 35,000+ to 40,000+ projects) and never mentions the 2024-09-04 implementation 0x6dd27f2b82f78dd8a802a9228f340518280359f1 that holds user funds."
       },
       {
         "kind": "wayback_snapshot",
         "date": "2023-05-21",
         "url": "https://web.archive.org/web/20230521051100id_/https://docs.team.finance/",
-        "claim_summary": "Product documentation archived three weeks after the first 2023 upgrade still describes the lock and vesting flows without any operator or upgrade-key disclosure."
+        "claim_summary": "Product documentation archived three weeks after the first 2023 upgrade describes the lock and vesting flows with no operator, proxy-admin or upgrade-key disclosure anywhere on the page."
       },
       {
         "kind": "github_docs_commit",
         "date": "2021-07-07",
-        "url": "https://github.com/team-finance/team-finance-interface/commit/b3ad465dbcf5e2a1b7d0e3e4e2c1ef4a5b6c7d8e",
-        "claim_summary": "Last public commit in the only official repository is from July 2021 and touches the interface only, so no repository record documents any of the on-chain implementations."
+        "url": "https://github.com/team-finance/team-finance-interface/commit/b3ad465dbcf5453a9755f0c379f4b0e395dc9d8c",
+        "claim_summary": "Last public commit in the only repository the organisation publishes touches the TypeScript frontend, so no public commit, tag or release documents any of the 2023-2025 on-chain implementations."
+      },
+      {
+        "kind": "audit_report",
+        "date": "2026-05-08",
+        "url": "https://hacken.io/audits/trustswap/sca-trustswap-team-finance-mar2026",
+        "claim_summary": "Hacken published a dated Team Finance audit on 2026-05-08, but its scope is the Stellar/Soroban suite (repo trustswap/teamfinance-stellar-contracts, final commit b4df357), so it does not cover the Ethereum vault implementations tabulated here."
       }
     ],
     "gap_windows": [
@@ -110,9 +116,9 @@
         "opened_date": "2023-04-26",
         "closed_block": null,
         "closed_date": null,
-        "duration_days": 1303,
+        "duration_days": 1304,
         "status": "unrepaired_open",
-        "summary": "From the first 2023 implementation swap to the present day the public security page keeps asserting a triple-audited framework while at least seven control-plane changes (five vault upgrades, three token-proxy pushes, repeated signer rotations) went undisclosed; the gap has never been closed."
+        "summary": "Documentation-and-assurance gap, not an \"audit gap\": from the first 2023 implementation swap the public security page has kept an unversioned \"triple-audited framework\" claim while five vault implementations and three token-proxy pushes landed without any published, version-scoped report. The only dated report found (Hacken, 2026-05-08) covers the Stellar suite, so the Ethereum implementations remain undocumented; the gap is defined as open until assurance is tied to specific implementations."
       }
     ]
   },
@@ -124,7 +130,7 @@
     "bus_factor": 0,
     "code_before_upgrade_verified": false
   },
-  "executive_risk_memo": "Team Finance's asset vault 0xE2fE530C047f2d85298b07D9333C05737f1435fB is an EIP-1967 proxy whose entire trust rests on one Gnosis Safe, 0x088a012BF6d510aa923c814eA83807f75F7061A0, running a 2-of-4 threshold with no timelock, no delay and no exit window. Two signatures can swap the implementation inside a single block, and the historical record shows exactly that pattern: seven decoded Safe executions between April 2023 and April 2025 replaced implementations on the vault and on the SWAP token proxy 0xCC4304A31d09258b0029eA7FE63d032f52e44EFe, including two upgrades on 2023-08-10 and three pushes on 2024-05-14 inside roughly fifteen minutes. Signer hygiene is similarly opaque: swapOwner, addOwnerWithThreshold and removeOwner calls reshuffle the four seats repeatedly, and the live scan shows a second 2-of-4 Safe (0x00d2A4873e7C73fcc3e6EBc9dd17241247a73846) acting as the owner principal of the vault, so control is at least two multisig hops deep with overlapping but not identical signer sets. The documentation surface never followed. Wayback snapshots from March 2023, August 2025 and October 2026 carry the identical 'triple-audited framework' sentence, meaning every post-2023 implementation ran under an assurance written for older bytecode; the disclosure gap has been open 1303 days and is classified unrepaired, because no revision exists to close it. Repository forensics confirm the absence of a verifiable engineering trail: team-finance/team-finance-interface last moved in July 2021, logged zero commits in the trailing twelve months and therefore zero human contributors and a bus factor of zero, so no commit or tag can tie any deployed implementation to reviewed code. Bytecode inspection reports pause and upgrade capabilities, and the preflight verdict is MULTISIG_NO_TIMELOCK with riskScore 60. For an LP or lock holder the residual risks are a silent malicious upgrade, a key-compromise path through the outer Safe, and a freeze executed without notice. Nothing here proves misconduct; the finding is structural: a $46.8M vault defended by two keys, undocumented upgrades and an assurance statement frozen in time.",
+  "executive_risk_memo": "Team Finance's live asset vault 0xE2fE530C047f2d85298b07D9333C05737f1435fB is an EIP-1967 proxy whose implementation can be replaced with zero delay. Live reads at block 26452849 show two independent authorities rather than a nested chain: the EIP-1967 admin slot resolves to Gnosis Safe 0x088a012BF6d510aa923c814eA83807f75F7061A0 (threshold 2 of 4, nonce 29), while the vault's own owner() returns a second, parallel 2-of-4 Safe 0x00d2A4873e7C73fcc3e6EBc9dd17241247a73846 (nonce 35). Neither Safe is listed as an owner of the other; three of the four signers overlap (0x93b8FFEF, 0xba9e6211, 0x41a743EE) and each Safe keeps one distinct seat (0x993991e2 on the admin side, 0xf3188A0F on the owner side), so control is two separate quorums over the same contract, not a hierarchy. The on-chain record shows seven decoded admin-Safe executions between April 2023 and April 2025: vault implementations 0xf0c5215b (2023-04-26), 0x240404f1 and 0xe900e689 (both 2023-08-10, 11 hours apart), the still-current 0x6dd27f2b (2024-09-04), three token-proxy pushes on 2024-05-14, and swapOwner rotations in December 2023 and April 2025. On documentation the distinction matters: the security page sentence about a \"triple-audited framework\" is verbatim identical in the March 2023, August 2025 and October 2026 snapshots, and no public dated audit report covering any Ethereum implementation of this vault was found; the only dated report located (Hacken, published 2026-05-08) audits the Stellar/Soroban suite and therefore leaves the Ethereum question open. That is an assurance-scoping and disclosure failure, not proof that no audit ever happened, and it has stayed open 1,304 days. Repository forensics are equally narrow and must not be over-read: the organisation publishes exactly one repository, a TypeScript frontend last pushed on 2021-07-07, so the 0/0/0 engineering metrics describe the absence of a public contract trail rather than the size of the team. Net assessment: two separate 2-of-4 multisigs, no timelock, no version-scoped assurance, and no reproducible link from deployed bytecode to reviewed code, while 46.8M USD of TVL stays behind a proxy that two keys can repoint in one block.",
   "contributor_github": "AlexBotlord",
   "agent_assist_framework": "opencode",
   "base_payout_address": "0x1659c37bc2f7bcc59EfA836d921585Dc87404aE2",
